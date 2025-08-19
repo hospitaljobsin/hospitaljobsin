@@ -1,13 +1,7 @@
 name: Deploy Worker
 
 on:
-  push:
-    branches:
-      - production
-      - staging
-    paths:
-      - 'server/**'
-      - '.github/workflows/deploy-worker.yml'
+  workflow_call:
 
 concurrency:
   group: ${{ github.workflow }}  # Ensures only one run of this workflow at a time

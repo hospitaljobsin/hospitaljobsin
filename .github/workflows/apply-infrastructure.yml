@@ -1,15 +1,7 @@
 name: Plan and Apply Terraform Changes
 
 on:
-  push:
-    branches:
-      - production
-      - staging
-    paths:
-      - "infrastructure/production/**"
-      - "infrastructure/staging/**"
-      - "infrastructure/modules/**"
-      - ".github/workflows/apply-infrastructure.yml"
+  workflow_call:
   pull_request:
     branches:
       - production

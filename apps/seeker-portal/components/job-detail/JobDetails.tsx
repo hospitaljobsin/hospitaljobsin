@@ -321,7 +321,11 @@ export default function JobDetails({
 								className="w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3"
 								isDisabled={data.isApplied}
 							>
-								{data.isApplied ? "Already Applied" : "Log In to Apply"}
+								{!isAuthenticated
+									? "Log In to Apply"
+									: data.isApplied
+										? "Already Applied"
+										: "Apply now"}
 							</Button>
 						)}
 					</div>

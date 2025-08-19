@@ -4,6 +4,7 @@ import type {
 	JobApplicantStatus,
 	JobApplicantsSortBy,
 } from "@/__generated__/ApplicantListPaginationQuery.graphql";
+import { useNavigationGuard } from "@/lib/hooks/useNavigationGuard";
 import {
 	Button,
 	Card,
@@ -18,7 +19,6 @@ import {
 	Spinner,
 } from "@heroui/react";
 import { ChevronDown, Sparkles, XIcon } from "lucide-react";
-import { useNavigationGuard } from "next-navigation-guard";
 import { startTransition } from "react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";

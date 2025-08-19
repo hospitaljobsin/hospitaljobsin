@@ -544,6 +544,12 @@ class JobRepo:
             },
             {"$unwind": "$job"},
             {
+                "$match": {
+                    "job.is_active": True,
+                    "job.expires_at": {"$gt": datetime.now(UTC)},
+                }
+            },
+            {
                 "$replaceRoot": {
                     "newRoot": {"$mergeObjects": ["$job", {"views": "$views"}]}
                 }

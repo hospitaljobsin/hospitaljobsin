@@ -1,6 +1,7 @@
 "use client";
 
 import { env } from "@/lib/env/client";
+import { useNavigationGuard } from "@/lib/hooks/useNavigationGuard";
 import links from "@/lib/links";
 import {
 	Button,
@@ -11,7 +12,6 @@ import {
 	Divider,
 } from "@heroui/react";
 import { Google } from "@lobehub/icons";
-import { useNavigationGuard } from "next-navigation-guard";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { getValidRedirectURL } from "../../../lib/redirects";

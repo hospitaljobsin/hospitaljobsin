@@ -3,6 +3,7 @@ import type { JobCreationFormMutation } from "@/__generated__/JobCreationFormMut
 import { ChipsInput } from "@/components/forms/ChipsInput";
 import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
+import { useNavigationGuard } from "@/lib/hooks/useNavigationGuard";
 import links from "@/lib/links";
 import { findAllConnectionIds } from "@/lib/relay/findAllConnectionIds";
 import { useRouter } from "@bprogress/next";
@@ -33,7 +34,6 @@ import {
 	MapPin,
 	TimerIcon,
 } from "lucide-react";
-import { useNavigationGuard } from "next-navigation-guard";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";

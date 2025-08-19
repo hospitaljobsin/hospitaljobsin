@@ -1,17 +1,7 @@
 name: Build and Deploy Recruiter Portal Core UI
 
 on:
-  push:
-    branches:
-      - production
-      - staging
-    paths:
-      - 'apps/recruiter-portal-core/**'
-      - '.github/workflows/deploy-recruiter-portal-core-ui.yml'
-  workflow_run:
-    workflows: ["Deploy Backend"]
-    types:
-      - completed
+  workflow_call:
 
 
 concurrency:

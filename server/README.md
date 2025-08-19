@@ -16,7 +16,6 @@
 - [MongoDB](https://www.mongodb.com/) - Database
 - [Redis](https://redis.io/) - Cache/ Secondary Database
 - [Pydantic AI](https://ai.pydantic.dev/) - Agentic AI Framework
-- [Gemini 2.5 Flash](https://ai.google.dev/gemini-2.5-flash) - AI Model
 
 and other packages from [pyproject.toml](./pyproject.toml) 💖
 
@@ -35,7 +34,7 @@ The generated GraphQL Schema can be read [here](../schema/schema.graphql)
 
 #### 1. Install dependencies
 ```bash
-uv sync -p 3.12 --frozen
+uv sync -p 3.13 --frozen
 ```
 
 #### 2. Setup Google Oauth2 Client

@@ -16,14 +16,14 @@ async def insert_missing_analysis():
     container = create_container()
     async with container.context() as ctx:
         analysis_service = await ctx.resolve(JobApplicantAnalysisService)
-    job_applicants = await JobApplicant.find_all(
-        fetch_links=True, nesting_depth=2
+    job_applicants = await JobApplicant.find(
+        JobApplicant.analysis == None, fetch_links=True, nesting_depth=2
     ).to_list()
-    print(job_applicants)
+    print(f"Found {len(job_applicants)} job applicants")
     for job_applicant in job_applicants:
-        print(job_applicant.analysis)
-        # if job_applicant.analysis is not None:
-        #     continue
+        print(
+            f"Analysing job applicant {job_applicant.id} for job {job_applicant.job.id}"
+        )
         await analysis_service.analyse_job_applicant(
             job_application=job_applicant,
             job=job_applicant.job,

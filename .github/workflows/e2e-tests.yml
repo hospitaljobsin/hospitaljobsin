@@ -1,16 +1,6 @@
 name: E2E Tests
-# TODO: update this such that we wait for all source workflows to complete before running the e2e tests
 on:
-  workflow_run:
-    workflows:
-      - Deploy Backend
-      - Deploy Worker
-      - Build and Deploy Accounts UI
-      - Build and Deploy Recruiter Dashboard UI
-      - Build and Deploy Recruiter Portal Core UI
-      - Build and Deploy Seeker Portal UI
-    types:
-      - completed
+  workflow_call:
 
 env:
   COMPOSE_BAKE: true
@@ -23,9 +13,6 @@ env:
 
 jobs:
   test-e2e:
-    if: |
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'staging'
     environment: staging
     name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
     strategy:
