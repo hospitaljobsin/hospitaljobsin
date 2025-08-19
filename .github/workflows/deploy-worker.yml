@@ -2,6 +2,10 @@ name: Deploy Worker
 
 on:
   workflow_call:
+    inputs:
+      run-deploy:
+        required: true
+        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
@@ -9,6 +13,7 @@ concurrency:
 
 jobs:
   build-and-push:
+    if: ${{ inputs.run-deploy }}
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
     steps:
@@ -46,7 +51,3 @@ jobs:
           IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
           IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
         run: aws lambda update-function-code --function-name ${{ vars.AWS_WORKER_FUNCTION_NAME }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
-
-
-
-# TODO: wait for relevant tests to pass before building and pushing

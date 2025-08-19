@@ -2,7 +2,10 @@ name: Build and Deploy Recruiter Dashboard UI
 
 on:
   workflow_call:
-
+    inputs:
+      run-deploy:
+        required: true
+        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
@@ -14,29 +17,10 @@ env:  # repo-level and non-env-specific secrets/vars
   AWS_REGION: ${{ vars.AWS_REGION }}
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
-    outputs:
-      query_map_changed: ${{ steps.detect.outputs.changed }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Detect persisted-query changes
-        uses: ./.github/actions/detect-changes
-        id: detect
-        with:
-          path: server/query_map.json
-
   build-and-push:
-    needs: check
+    if: ${{ inputs.run-deploy }}
     environment: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
     runs-on: ubuntu-latest
-    # Only deploy when:
-    #  • a backend workflow_run happened (so server is already up), OR
-    #  • a push happened and query_map.json did NOT change
-    if: github.event_name == 'workflow_run' || (github.event_name == 'push' && needs.check.outputs.query_map_changed == false)
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -101,6 +85,3 @@ jobs:
             BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
             NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.POSTHOG_API_KEY }}
             NEXT_PUBLIC_POSTHOG_HOST: ${{ vars.POSTHOG_API_HOST }}
-
-
-# TODO: wait for relevant tests to pass before building and pushing

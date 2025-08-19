@@ -2,6 +2,11 @@ name: Plan and Apply Terraform Changes
 
 on:
   workflow_call:
+    inputs:
+      run-deploy:
+        required: true
+        type: boolean
+
   pull_request:
     branches:
       - production
@@ -38,6 +43,7 @@ concurrency:
 
 jobs:
   terraform:
+    if: ${{ github.event_name == 'pull_request' || inputs.run-deploy }}
     runs-on: ubuntu-latest
     # defaults:
     #   run:

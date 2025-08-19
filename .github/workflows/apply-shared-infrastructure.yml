@@ -2,6 +2,11 @@ name: Plan and Apply Shared Terraform Changes
 
 on:
   workflow_call:
+    inputs:
+      run-deploy:
+        required: true
+        type: boolean
+
   pull_request:
     branches:
       - production
@@ -37,6 +42,7 @@ concurrency:
 
 jobs:
   terraform-shared:
+    if: ${{ github.event_name == 'pull_request' || inputs.run-deploy }}
     runs-on: ubuntu-latest
 
     steps:

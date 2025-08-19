@@ -67,8 +67,9 @@ jobs:
           echo "Infra: ${{ steps.filter.outputs.infra == 'true' }}"
           echo "Shared Infra: ${{ steps.filter.outputs.shared_infra == 'true' }}"
   deploy-backend:
-    if: ${{ needs.changes.outputs.backend == 'true' && (needs.deploy-shared-infra.result == 'success' || needs.deploy-shared-infra.result == 'skipped') && (needs.deploy-infra.result == 'success' || needs.deploy-infra.result == 'skipped') }}
     uses: ./.github/workflows/deploy-backend.yml
+    with:
+        run-deploy: ${{ needs.changes.outputs.backend == 'true' }}
     secrets: inherit
     needs:
         - changes
@@ -76,8 +77,9 @@ jobs:
         - deploy-infra
 
   deploy-worker:
-    if: ${{ needs.changes.outputs.worker == 'true' && (needs.deploy-shared-infra.result == 'success' || needs.deploy-shared-infra.result == 'skipped') && (needs.deploy-infra.result == 'success' || needs.deploy-infra.result == 'skipped') }}
     uses: ./.github/workflows/deploy-worker.yml
+    with:
+        run-deploy: ${{ needs.changes.outputs.worker == 'true' }}
     secrets: inherit
     needs:
         - changes
@@ -85,8 +87,9 @@ jobs:
         - deploy-infra
 
   deploy-accounts-ui:
-    if: ${{ needs.changes.outputs.accounts_ui == 'true' && (needs.deploy-backend.result == 'success' || needs.deploy-backend.result == 'skipped') && (needs.deploy-shared-infra.result == 'success' || needs.deploy-shared-infra.result == 'skipped') && (needs.deploy-infra.result == 'success' || needs.deploy-infra.result == 'skipped') }}
     uses: ./.github/workflows/deploy-accounts-ui.yml
+    with:
+        run-deploy: ${{ needs.changes.outputs.accounts_ui == 'true' }}
     secrets: inherit
     needs:
       - changes
@@ -95,8 +98,9 @@ jobs:
       - deploy-infra
 
   deploy-recruiter-dashboard-ui:
-    if: ${{ needs.changes.outputs.recruiter_dashboard_ui == 'true' && (needs.deploy-backend.result == 'success' || needs.deploy-backend.result == 'skipped') && (needs.deploy-shared-infra.result == 'success' || needs.deploy-shared-infra.result == 'skipped') && (needs.deploy-infra.result == 'success' || needs.deploy-infra.result == 'skipped') }}
     uses: ./.github/workflows/deploy-recruiter-dashboard-ui.yml
+    with:
+        run-deploy: ${{ needs.changes.outputs.recruiter_dashboard_ui == 'true' }}
     secrets: inherit
     needs:
       - changes
@@ -105,8 +109,9 @@ jobs:
       - deploy-infra
 
   deploy-recruiter-portal-ui:
-    if: ${{ needs.changes.outputs.recruiter_portal_ui == 'true' && (needs.deploy-backend.result == 'success' || needs.deploy-backend.result == 'skipped') && (needs.deploy-shared-infra.result == 'success' || needs.deploy-shared-infra.result == 'skipped') && (needs.deploy-infra.result == 'success' || needs.deploy-infra.result == 'skipped') }}
     uses: ./.github/workflows/deploy-recruiter-portal-core-ui.yml
+    with:
+        run-deploy: ${{ needs.changes.outputs.recruiter_portal_ui == 'true' }}
     secrets: inherit
     needs:
       - changes
@@ -115,8 +120,9 @@ jobs:
       - deploy-infra
 
   deploy-seeker-portal-ui:
-    if: ${{ needs.changes.outputs.seeker_portal_ui == 'true' && (needs.deploy-backend.result == 'success' || needs.deploy-backend.result == 'skipped') && (needs.deploy-shared-infra.result == 'success' || needs.deploy-shared-infra.result == 'skipped') && (needs.deploy-infra.result == 'success' || needs.deploy-infra.result == 'skipped') }}
     uses: ./.github/workflows/deploy-seeker-portal-ui.yml
+    with:
+        run-deploy: ${{ needs.changes.outputs.seeker_portal_ui == 'true' }}
     secrets: inherit
     needs:
       - changes
@@ -125,13 +131,15 @@ jobs:
       - deploy-infra
 
   deploy-shared-infra:
-    if: ${{ needs.changes.outputs.shared_infra == 'true' }}
     uses: ./.github/workflows/apply-shared-infrastructure.yml
+    with:
+        run-deploy: ${{ needs.changes.outputs.shared_infra == 'true' }}
     secrets: inherit
     needs: changes
   deploy-infra:
-    if: ${{ needs.changes.outputs.infra == 'true' && (needs.deploy-shared-infra.result == 'success' || needs.deploy-shared-infra.result == 'skipped') }}
     uses: ./.github/workflows/apply-infrastructure.yml
+    with:
+        run-deploy: ${{ needs.changes.outputs.infra == 'true' }}
     secrets: inherit
     needs:
       - changes
