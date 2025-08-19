@@ -413,6 +413,7 @@ resource "aws_ecs_capacity_provider" "asg_capacity_provider" {
 
   auto_scaling_group_provider {
     auto_scaling_group_arn = aws_autoscaling_group.ecs_asg.arn
+
     # Enable termination protection for production to prevent accidental instance termination
     managed_termination_protection = var.environment_name == "production" ? "ENABLED" : "DISABLED"
     managed_scaling {
@@ -425,7 +426,7 @@ resource "aws_ecs_capacity_provider" "asg_capacity_provider" {
   }
 
   lifecycle {
-    create_before_destroy = true
+    prevent_destroy = false
   }
 }
 
@@ -654,6 +655,15 @@ resource "aws_ecs_service" "app" {
     target_group_arn = aws_lb_target_group.ecs_new_tg.arn
     container_name   = "my-app"
     container_port   = 8000
+  }
+
+  deployment_controller {
+    type = "ECS"
+  }
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
   }
 
   depends_on = [aws_lb_listener.https, aws_lb_target_group.ecs_new_tg]
