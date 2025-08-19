@@ -25,9 +25,6 @@ env:
 
 jobs:
   test-e2e:
-    if: |
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'staging'
     environment: staging
     name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
     strategy:
