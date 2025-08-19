@@ -56,16 +56,7 @@ jobs:
             shared_infra:
               - 'infrastructure/shared/**'
               - '.github/workflows/apply-shared-infrastructure.yml'
-      - run: |
-          echo "Backend: ${{ steps.filter.outputs.backend == 'true' }}"
-          echo "Worker: ${{ steps.filter.outputs.worker == 'true' }}"
-          echo "Accounts UI: ${{ steps.filter.outputs.accounts_ui == 'true' }}"
-          echo "Recruiter Dashboard UI: ${{ steps.filter.outputs.recruiter_dashboard_ui == 'true' }}"
-          echo "Recruiter Portal UI: ${{ steps.filter.outputs.recruiter_portal_ui == 'true' }}"
-          echo "Seeker Portal UI: ${{ steps.filter.outputs.seeker_portal_ui == 'true' }}"
-          echo "E2E Tests: ${{ steps.filter.outputs.e2e_tests == 'true' }}"
-          echo "Infra: ${{ steps.filter.outputs.infra == 'true' }}"
-          echo "Shared Infra: ${{ steps.filter.outputs.shared_infra == 'true' }}"
+
   deploy-backend:
     uses: ./.github/workflows/deploy-backend.yml
     with:
