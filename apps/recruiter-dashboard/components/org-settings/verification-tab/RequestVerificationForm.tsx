@@ -2,6 +2,7 @@
 import type { RequestVerificationFormFragment$key } from "@/__generated__/RequestVerificationFormFragment.graphql";
 import type { RequestVerificationFormMutation } from "@/__generated__/RequestVerificationFormMutation.graphql";
 import type { RequestVerificationFormPresignedUrlMutation } from "@/__generated__/RequestVerificationFormPresignedUrlMutation.graphql";
+import { useNavigationGuard } from "@/lib/hooks/useFixedNavigationGuard";
 import {
 	Alert,
 	Button,
@@ -15,7 +16,6 @@ import {
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UploadIcon, VerifiedIcon } from "lucide-react";
-import { useNavigationGuard } from "next-navigation-guard";
 import Image from "next/image";
 import { useCallback, useState } from "react";
 import { Controller, useForm } from "react-hook-form";

@@ -4,6 +4,7 @@ import type { JobEditFormMutation } from "@/__generated__/JobEditFormMutation.gr
 import { ChipsInput } from "@/components/forms/ChipsInput";
 import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
+import { useNavigationGuard } from "@/lib/hooks/useFixedNavigationGuard";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import {
@@ -43,7 +44,6 @@ import {
 	MapPin,
 	TimerIcon,
 } from "lucide-react";
-import { useNavigationGuard } from "next-navigation-guard";
 import { useEffect, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { Controller, useForm } from "react-hook-form";
