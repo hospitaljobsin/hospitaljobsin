@@ -2,18 +2,6 @@ name: Build and Deploy Recruiter Dashboard UI
 
 on:
   workflow_call:
-# on:
-#   push:
-#     branches:
-#       - production
-#       - staging
-#     paths:
-#       - 'apps/recruiter-dashboard/**'
-#       - '.github/workflows/deploy-recruiter-dashboard-ui.yml'
-#   workflow_run:
-#     workflows: ["Deploy Backend"]
-#     types:
-#       - completed
 
 
 concurrency:

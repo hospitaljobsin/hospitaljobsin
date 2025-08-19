@@ -2,18 +2,6 @@ name: Build and Deploy Seeker Portal UI
 
 on:
   workflow_call:
-# on:
-#   push:
-#     branches:
-#       - production
-#       - staging
-#     paths:
-#       - 'apps/seeker-portal/**'
-#       - '.github/workflows/deploy-seeker-portal-ui.yml'
-#   workflow_run:
-#     workflows: ["Deploy Backend"]
-#     types:
-#       - completed
 
 
 concurrency:

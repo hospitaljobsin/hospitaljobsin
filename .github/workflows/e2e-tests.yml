@@ -1,18 +1,6 @@
 name: E2E Tests
 on:
   workflow_call:
-# TODO: update this such that we wait for all source workflows to complete before running the e2e tests
-# on:
-#   workflow_run:
-#     workflows:
-#       - Deploy Backend
-#       - Deploy Worker
-#       - Build and Deploy Accounts UI
-#       - Build and Deploy Recruiter Dashboard UI
-#       - Build and Deploy Recruiter Portal Core UI
-#       - Build and Deploy Seeker Portal UI
-#     types:
-#       - completed
 
 env:
   COMPOSE_BAKE: true
