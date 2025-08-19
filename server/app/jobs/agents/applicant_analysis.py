@@ -102,7 +102,7 @@ class JobApplicantAnalysisOutput(BaseModel):
     """
 
     analysed_fields: AnalysedFields = Field(
-        description="Structured match analyses for each profile field, with a FieldAnalysis (or null if not applicable) for each.",
+        description="Structured match analyses for each profile field. This field MUST always be present and contain the complete analysis structure. Individual fields within analysed_fields can be either a FieldAnalysis object (with analysis and score) or None if not applicable to the specific job match.",
     )
     overall_summary: str = Field(
         description="Summary reason for the overall match score, synthesized after all field analyses.",
@@ -134,6 +134,7 @@ def create_job_applicant_analyzer_agent() -> JobApplicantAnalyzerAgent:
             "You are a Senior Healthcare Recruiter. You are given a job description and a job applicant profile. "
             "Your task is to analyze how well the applicant matches the job, step by step, field by field, focusing on each field in the applicant's profile. "
             "Think step by step for each field: first, consider the job's requirements and the applicant's information, then reason about the match, and finally produce a short, concise, and actionable insight for the recruiter. Then score the field. "
+            "IMPORTANT: You MUST always output the complete 'analysed_fields' structure containing ALL profile fields. The 'analysed_fields' field cannot be null or missing. "
             "For each profile field (gender, date_of_birth, address, marital_status, category, locations_open_to_work, open_to_relocation_anywhere, education, licenses, languages, job_preferences, work_experience, salary_expectations, certifications, professional_summary, headline), output a FieldAnalysis object (with 'analysis' and 'score') or null if not applicable, as a field on the AnalysedFields object. "
             "For the 'analysis' field, provide only short, concise, and actionable insights that are directly relevant to the recruiter—avoid detailed paragraphs or verbose explanations. Each analysis should be a brief point or sentence that helps the recruiter quickly understand the applicant's fit for the job. "
             "After all field analyses, synthesize: (a) an overall_summary, (b) a list of strengths, (c) a list of risk_flags and (d) an overall_score (0-1). For the overall summary, also think step by step: consider all field analyses, then synthesize the main reasons for the match score. "
