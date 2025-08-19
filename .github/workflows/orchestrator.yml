@@ -19,6 +19,10 @@ jobs:
         e2e_tests: ${{ steps.filter.outputs.e2e_tests }}
       steps:
       - uses: actions/checkout@v4
+        with:
+          # This may save additional git fetch roundtrip if
+          # merge-base is found within latest 20 commits
+          fetch-depth: 20
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -59,7 +63,7 @@ jobs:
       - changes
       - deploy-shared-infra
       - deploy-infra
-    if: needs.changes.outputs.backend == 'true'
+    if: ${{ needs.changes.outputs.backend == 'true' }}
     uses: ./.github/workflows/deploy-backend.yml
     secrets: inherit
 
@@ -68,12 +72,12 @@ jobs:
         - changes
         - deploy-shared-infra
         - deploy-infra
-    if: needs.changes.outputs.worker == 'true'
+    if: ${{ needs.changes.outputs.worker == 'true' }}
     uses: ./.github/workflows/deploy-worker.yml
     secrets: inherit
 
   deploy-accounts-ui:
-    if: needs.changes.outputs.accounts_ui == 'true'
+    if: ${{ needs.changes.outputs.accounts_ui == 'true' }}
     uses: ./.github/workflows/deploy-accounts-ui.yml
     secrets: inherit
     needs:
@@ -83,7 +87,7 @@ jobs:
       - deploy-infra
 
   deploy-recruiter-dashboard-ui:
-    if: needs.changes.outputs.recruiter_dashboard_ui == 'true'
+    if: ${{ needs.changes.outputs.recruiter_dashboard_ui == 'true' }}
     uses: ./.github/workflows/deploy-recruiter-dashboard-ui.yml
     secrets: inherit
     needs:
@@ -93,7 +97,7 @@ jobs:
       - deploy-infra
 
   deploy-recruiter-portal-ui:
-    if: needs.changes.outputs.recruiter_portal_ui == 'true'
+    if: ${{ needs.changes.outputs.recruiter_portal_ui == 'true' }}
     uses: ./.github/workflows/deploy-recruiter-portal-core-ui.yml
     secrets: inherit
     needs:
@@ -103,7 +107,7 @@ jobs:
       - deploy-infra
 
   deploy-seeker-portal-ui:
-    if: needs.changes.outputs.seeker_portal_ui == 'true'
+    if: ${{ needs.changes.outputs.seeker_portal_ui == 'true' }}
     uses: ./.github/workflows/deploy-seeker-portal-ui.yml
     secrets: inherit
     needs:
@@ -114,12 +118,12 @@ jobs:
 
   deploy-shared-infra:
     needs: changes
-    if: needs.changes.outputs.shared_infra == 'true'
+    if: ${{ needs.changes.outputs.shared_infra == 'true' }}
     uses: ./.github/workflows/apply-shared-infrastructure.yml
     secrets: inherit
 
   deploy-infra:
-    if: needs.changes.outputs.infra == 'true'
+    if: ${{ needs.changes.outputs.infra == 'true' }}
     uses: ./.github/workflows/apply-infrastructure.yml
     secrets: inherit
     needs:
@@ -127,17 +131,7 @@ jobs:
       - deploy-shared-infra
 
   e2e-tests:
-    if: github.ref == 'refs/heads/staging' && (
-        needs.changes.outputs.backend == 'true' ||
-        needs.changes.outputs.worker == 'true' ||
-        needs.changes.outputs.accounts_ui == 'true' ||
-        needs.changes.outputs.recruiter_dashboard_ui == 'true' ||
-        needs.changes.outputs.recruiter_portal_ui == 'true' ||
-        needs.changes.outputs.seeker_portal_ui == 'true' ||
-        needs.changes.outputs.shared_infra == 'true' ||
-        needs.changes.outputs.infra == 'true' ||
-        needs.changes.outputs.e2e_tests == 'true'
-      )
+    if: ${{ github.ref == 'refs/heads/staging' && (needs.changes.outputs.backend == 'true' || needs.changes.outputs.worker == 'true' || needs.changes.outputs.accounts_ui == 'true' || needs.changes.outputs.recruiter_dashboard_ui == 'true' || needs.changes.outputs.recruiter_portal_ui == 'true' || needs.changes.outputs.seeker_portal_ui == 'true' || needs.changes.outputs.shared_infra == 'true' || needs.changes.outputs.infra == 'true' || needs.changes.outputs.e2e_tests == 'true') }}
     needs:
       - changes
       - deploy-backend
