@@ -55,13 +55,19 @@ jobs:
 
 
   deploy-backend:
-    needs: changes
+    needs:
+      - changes
+      - deploy-shared-infra
+      - deploy-infra
     if: needs.changes.outputs.backend == 'true'
     uses: ./.github/workflows/deploy-backend.yml
     secrets: inherit
 
   deploy-worker:
-    needs: changes
+    needs:
+        - changes
+        - deploy-shared-infra
+        - deploy-infra
     if: needs.changes.outputs.worker == 'true'
     uses: ./.github/workflows/deploy-worker.yml
     secrets: inherit
@@ -73,6 +79,8 @@ jobs:
     needs:
       - changes
       - deploy-backend
+      - deploy-shared-infra
+      - deploy-infra
 
   deploy-recruiter-dashboard-ui:
     if: needs.changes.outputs.recruiter_dashboard_ui == 'true'
@@ -81,6 +89,8 @@ jobs:
     needs:
       - changes
       - deploy-backend
+      - deploy-shared-infra
+      - deploy-infra
 
   deploy-recruiter-portal-ui:
     if: needs.changes.outputs.recruiter_portal_ui == 'true'
@@ -89,6 +99,8 @@ jobs:
     needs:
       - changes
       - deploy-backend
+      - deploy-shared-infra
+      - deploy-infra
 
   deploy-seeker-portal-ui:
     if: needs.changes.outputs.seeker_portal_ui == 'true'
@@ -97,7 +109,8 @@ jobs:
     needs:
       - changes
       - deploy-backend
-
+      - deploy-shared-infra
+      - deploy-infra
 
   deploy-shared-infra:
     needs: changes
