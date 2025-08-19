@@ -5,7 +5,7 @@ on:
 
 
 concurrency:
-  group: ${{ github.workflow }}  # Ensures only one run of this workflow at a time
+  group: ${{ github.workflow }}-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
   cancel-in-progress: false      # Waits instead of cancelling previous runs
 
 env:  # repo-level and non-env-specific secrets/vars
