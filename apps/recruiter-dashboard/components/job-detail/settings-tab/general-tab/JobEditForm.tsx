@@ -44,7 +44,7 @@ import {
 	MapPin,
 	TimerIcon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { Controller, useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
@@ -191,6 +191,7 @@ type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "UNSPECIFIED";
 export default function JobEditForm({ rootQuery }: Props) {
 	const router = useRouter();
 	const { isOpen, onOpenChange, onOpen } = useDisclosure();
+	const isNavigatingAfterUpdate = useRef(false);
 
 	const jobData = useFragment(JobEditFormFragment, rootQuery);
 
@@ -240,7 +241,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 	});
 
 	useNavigationGuard({
-		enabled: isDirty,
+		enabled: () => isDirty && !isNavigatingAfterUpdate.current,
 		confirm: () =>
 			window.confirm(
 				"You have unsaved changes. Are you sure you want to leave?",
@@ -321,9 +322,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 					});
 				} else if (response.updateJob.__typename === "UpdateJobSuccess") {
 					// handle success
-					if (response.updateJob.job.slug !== jobData.slug) {
-						router.push(links.jobDetailSettings(response.updateJob.job.slug));
-					}
+
 					reset({
 						title: response.updateJob.job.title,
 						description: response.updateJob.job.description ?? "",
@@ -354,6 +353,12 @@ export default function JobEditForm({ rootQuery }: Props) {
 						color: "success",
 						title: "Job updated successfully.",
 					});
+
+					if (response.updateJob.job.slug !== jobData.slug) {
+						// Temporarily disable navigation guard before navigating
+						isNavigatingAfterUpdate.current = true;
+						router.push(links.jobDetailSettings(response.updateJob.job.slug));
+					}
 				} else if (
 					response.updateJob.__typename === "OrganizationAuthorizationError"
 				) {
