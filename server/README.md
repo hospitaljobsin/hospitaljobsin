@@ -60,6 +60,7 @@ uv sync -p 3.13 --frozen
 		- *Authorized domains:*
 			- localtest.me
 
+
 #### 3. Set Environment variables
 Create a `.env` file, referencing the template [here](./.env.example)
 

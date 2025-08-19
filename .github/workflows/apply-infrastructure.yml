@@ -2,6 +2,11 @@ name: Plan and Apply Terraform Changes
 
 on:
   workflow_call:
+    inputs:
+      run-deploy:
+        required: true
+        type: boolean
+
   pull_request:
     branches:
       - production
@@ -39,15 +44,14 @@ concurrency:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     working-directory: ./infrastructure/production
 
     steps:
       - name: Checkout code
+        if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}
         uses: actions/checkout@v4
 
       - name: Set env
+        if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}
         id: env
         run: |
           if [[ "${GITHUB_REF_NAME}" == "production" ]]; then
@@ -57,38 +61,43 @@ jobs:
           fi
 
       - name: Set up Docker Buildx
+        if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}
         uses: docker/setup-buildx-action@v3
 
       - name: Set up Terraform
+        if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.12.1
 
 
       - name: Terraform Init
+        if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}
         id: init
         working-directory: ./infrastructure/${{ steps.env.outputs.dir }}
         run: terraform init -backend-config="bucket=${{vars.TERRAFORM_AWS_BACKEND_BUCKET_NAME}}" -backend-config="region=${{vars.TERRAFORM_AWS_REGION}}"
 
       - name: Terraform Format
+        if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}
         id: fmt
         working-directory: ./infrastructure/${{ steps.env.outputs.dir }}
         run: terraform fmt -check
 
 
       - name: Terraform Validate
+        if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}
         id: validate
         working-directory: ./infrastructure/${{ steps.env.outputs.dir }}
         run: terraform validate
 
       - name: Terraform Plan
-        if: github.event_name == 'pull_request'
+        if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}
         id: plan
         run: terraform plan -no-color -input=false
         continue-on-error: true
 
       - uses: actions/github-script@v7
-        if: github.event_name == 'pull_request'
+        if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
@@ -115,10 +124,10 @@ jobs:
             })
 
       - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
+        if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) && steps.plan.outcome == 'failure' }}
         run: exit 1
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/production' && github.event_name == 'push'
+        if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}
         run: terraform apply -auto-approve -no-color
         working-directory: ./infrastructure/${{ steps.env.outputs.dir }}

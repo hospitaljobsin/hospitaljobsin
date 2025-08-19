@@ -2,7 +2,10 @@ name: Build and Deploy Recruiter Dashboard UI
 
 on:
   workflow_call:
-
+    inputs:
+      run-deploy:
+        required: true
+        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
@@ -14,49 +17,37 @@ env:  # repo-level and non-env-specific secrets/vars
   AWS_REGION: ${{ vars.AWS_REGION }}
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
-    outputs:
-      query_map_changed: ${{ steps.detect.outputs.changed }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Detect persisted-query changes
-        uses: ./.github/actions/detect-changes
-        id: detect
-        with:
-          path: server/query_map.json
-
   build-and-push:
-    needs: check
     environment: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
     runs-on: ubuntu-latest
-    # Only deploy when:
-    #  • a backend workflow_run happened (so server is already up), OR
-    #  • a push happened and query_map.json did NOT change
-    if: github.event_name == 'workflow_run' || (github.event_name == 'push' && needs.check.outputs.query_map_changed == false)
     steps:
       - name: Checkout code
+        if: ${{ inputs.run-deploy }}
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
+        if: ${{ inputs.run-deploy }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - uses: pnpm/action-setup@v4
+      - name: Setup pnpm
+        if: ${{ inputs.run-deploy }}
+        uses: pnpm/action-setup@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        if: ${{ inputs.run-deploy }}
+        uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
-      - uses: actions/cache@v4
+      - name: Cache dependencies
+        if: ${{ inputs.run-deploy }}
+        uses: actions/cache@v4
         with:
             # Cache the .next/cache folder for the apps/recruiter-dashboard app
             path: |
@@ -68,14 +59,16 @@ jobs:
               ${{ runner.os }}-nextjs-recruiter-dashboard-${{ hashFiles('pnpm-lock.yaml') }}-
 
       - name: Install dependencies
+        if: ${{ inputs.run-deploy }}
         run: pnpm install --filter recruiter-dashboard --frozen-lockfile --shamefully-hoist
 
       - name: Validate Relay Compiler Artifacts
+        if: ${{ inputs.run-deploy }}
         run: pnpm --filter recruiter-dashboard run relay --validate
 
-      # TODO: use pnpm workspace config while building with sst
       - name: SST Deploy
         working-directory: ./apps/recruiter-dashboard
+        if: ${{ inputs.run-deploy }}
         run: npx sst deploy --stage ${{ github.ref_name == 'production' && 'production' || 'staging' }} --print-logs
         env:
             SST_VPC_PRIVATE_SUBNETS: ${{ vars.SST_VPC_PRIVATE_SUBNETS }}
@@ -101,6 +94,3 @@ jobs:
             BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
             NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.POSTHOG_API_KEY }}
             NEXT_PUBLIC_POSTHOG_HOST: ${{ vars.POSTHOG_API_HOST }}
-
-
-# TODO: wait for relevant tests to pass before building and pushing
