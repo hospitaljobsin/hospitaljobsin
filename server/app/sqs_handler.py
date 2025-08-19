@@ -2,7 +2,6 @@ import asyncio
 import json
 
 from aws_lambda_powertools.utilities.data_classes import SQSEvent, event_source
-from aws_lambda_powertools.utilities.parser import envelopes, event_parser
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from bson import ObjectId
 from structlog import get_logger
@@ -48,23 +47,31 @@ loop.run_until_complete(initialize_handler())
 
 
 @event_source(data_class=SQSEvent)
-@event_parser(model=JobApplicantAnalysisEventBody, envelope=envelopes.SqsEnvelope)
-def lambda_handler(
-    event: list[JobApplicantAnalysisEventBody], context: LambdaContext
-) -> str:
+def lambda_handler(event: SQSEvent, context: LambdaContext) -> str:
     """Lambda handler for the job applicant analysis event."""
-    return loop.run_until_complete(process_job_applicant_analysis_event(event))
+    processing_requests: list[tuple[JobApplicantAnalysisEventBody, str]] = [
+        (
+            JobApplicantAnalysisEventBody(**record.json_body),
+            record.message_id,
+        )
+        for record in event.records
+    ]
+    return loop.run_until_complete(
+        process_job_applicant_analysis_event(processing_requests)
+    )
 
 
 async def process_job_applicant_analysis_event(
-    event: list[JobApplicantAnalysisEventBody],
+    event: list[tuple[JobApplicantAnalysisEventBody, str]],
 ) -> str:
     """Process the job applicant analysis event."""
+    batch_item_failures = []
+    sqs_batch_response = {}
     async with container.context() as ctx:
         job_applicant_analysis_service = await ctx.resolve(JobApplicantAnalysisService)
         job_applicant_repo = await ctx.resolve(JobApplicantRepo)
 
-    for record in event:
+    for record, message_id in event:
         job_applicant = await job_applicant_repo.get(
             account_id=ObjectId(record.account_id),
             job_id=ObjectId(record.job_id),
@@ -77,9 +84,16 @@ async def process_job_applicant_analysis_event(
             )
             continue
 
-        await job_applicant_analysis_service.analyse_job_applicant(
+        job_applicant = await job_applicant_analysis_service.analyse_job_applicant(
             job=job_applicant.job,
             job_application=job_applicant,
         )
 
-    return json.dumps({"status": "ok"})
+        if job_applicant.analysis_status == "failed":
+            batch_item_failures.append(
+                {
+                    "itemIdentifier": message_id,
+                }
+            )
+    sqs_batch_response["batchItemFailures"] = batch_item_failures
+    return json.dumps(sqs_batch_response)
