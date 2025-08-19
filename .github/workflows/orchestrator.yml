@@ -27,7 +27,7 @@ jobs:
               - 'server/**'
               - '.github/workflows/deploy-backend.yml'
             worker:
-               - 'server/**'
+              - 'server/**'
               - '.github/workflows/deploy-worker.yml'
             accounts_ui:
               - 'apps/accounts/**'
