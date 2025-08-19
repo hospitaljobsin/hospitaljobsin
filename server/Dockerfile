@@ -122,7 +122,6 @@ EXPOSE 8000
 # Set the Lambda handler
 CMD ["python", "scripts/run_server.py"]
 
-
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS lambda-handler
 
 # Build argument for Lambda handler - can be overridden during build
