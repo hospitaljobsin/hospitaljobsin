@@ -56,25 +56,33 @@ jobs:
             shared_infra:
               - 'infrastructure/shared/**'
               - '.github/workflows/apply-shared-infrastructure.yml'
-
-
+      - run: |
+          echo "Backend: ${{ steps.filter.outputs.backend == 'true' }}"
+          echo "Worker: ${{ steps.filter.outputs.worker == 'true' }}"
+          echo "Accounts UI: ${{ steps.filter.outputs.accounts_ui == 'true' }}"
+          echo "Recruiter Dashboard UI: ${{ steps.filter.outputs.recruiter_dashboard_ui == 'true' }}"
+          echo "Recruiter Portal UI: ${{ steps.filter.outputs.recruiter_portal_ui == 'true' }}"
+          echo "Seeker Portal UI: ${{ steps.filter.outputs.seeker_portal_ui == 'true' }}"
+          echo "E2E Tests: ${{ steps.filter.outputs.e2e_tests == 'true' }}"
+          echo "Infra: ${{ steps.filter.outputs.infra == 'true' }}"
+          echo "Shared Infra: ${{ steps.filter.outputs.shared_infra == 'true' }}"
   deploy-backend:
-    needs:
-      - changes
-      - deploy-shared-infra
-      - deploy-infra
     if: ${{ needs.changes.outputs.backend == 'true' }}
     uses: ./.github/workflows/deploy-backend.yml
     secrets: inherit
-
-  deploy-worker:
     needs:
         - changes
         - deploy-shared-infra
         - deploy-infra
+
+  deploy-worker:
     if: ${{ needs.changes.outputs.worker == 'true' }}
     uses: ./.github/workflows/deploy-worker.yml
     secrets: inherit
+    needs:
+        - changes
+        - deploy-shared-infra
+        - deploy-infra
 
   deploy-accounts-ui:
     if: ${{ needs.changes.outputs.accounts_ui == 'true' }}
@@ -117,11 +125,10 @@ jobs:
       - deploy-infra
 
   deploy-shared-infra:
-    needs: changes
     if: ${{ needs.changes.outputs.shared_infra == 'true' }}
     uses: ./.github/workflows/apply-shared-infrastructure.yml
     secrets: inherit
-
+    needs: changes
   deploy-infra:
     if: ${{ needs.changes.outputs.infra == 'true' }}
     uses: ./.github/workflows/apply-infrastructure.yml
