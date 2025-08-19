@@ -1,0 +1,128 @@
+name: Deploy and Run E2E
+
+on:
+  push:
+    branches: [staging, production]
+
+jobs:
+  changes:
+      runs-on: ubuntu-latest
+      outputs:
+        backend: ${{ steps.filter.outputs.backend }}
+        worker: ${{ steps.filter.outputs.worker }}
+        accounts_ui: ${{ steps.filter.outputs.accounts_ui }}
+        recruiter_dashboard_ui: ${{ steps.filter.outputs.recruiter_dashboard_ui }}
+        recruiter_portal_ui: ${{ steps.filter.outputs.recruiter_portal_ui }}
+        seeker_portal_ui: ${{ steps.filter.outputs.seeker_portal_ui }}
+        infra: ${{ steps.filter.outputs.infra }}
+        shared_infra: ${{ steps.filter.outputs.shared_infra }}
+        e2e_tests: ${{ steps.filter.outputs.e2e_tests }}
+      steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'server/**'
+              - '.github/workflows/deploy-backend.yml'
+            worker:
+               - 'server/**'
+              - '.github/workflows/deploy-worker.yml'
+            accounts_ui:
+              - 'apps/accounts/**'
+              - '.github/workflows/deploy-accounts-ui.yml'
+            recruiter_dashboard_ui:
+              - 'apps/recruiter-dashboard/**'
+              - '.github/workflows/deploy-recruiter-dashboard-ui.yml'
+            recruiter_portal_ui:
+              - 'apps/recruiter-portal-core/**'
+              - '.github/workflows/deploy-recruiter-portal-core-ui.yml'
+            seeker_portal_ui:
+              - 'apps/seeker-portal/**'
+              - '.github/workflows/deploy-seeker-portal-ui.yml'
+            e2e_tests:
+              - '.github/workflows/e2e-tests.yml'
+            infra:
+              - 'infrastructure/production/**'
+              - 'infrastructure/staging/**'
+              - 'infrastructure/modules/**'
+              - '.github/workflows/apply-infrastructure.yml'
+            shared_infra:
+              - 'infrastructure/shared/**'
+              - '.github/workflows/apply-shared-infrastructure.yml'
+
+
+  deploy-backend:
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    uses: ./.github/workflows/deploy-backend.yml
+
+  deploy-worker:
+    needs: changes
+    if: needs.changes.outputs.worker == 'true'
+    uses: ./.github/workflows/deploy-worker.yml
+
+  deploy-accounts-ui:
+    if: needs.changes.outputs.accounts_ui == 'true'
+    uses: ./.github/workflows/deploy-accounts-ui.yml
+    needs:
+      - changes
+      - deploy-backend
+
+  deploy-recruiter-dashboard-ui:
+    if: needs.changes.outputs.recruiter_dashboard_ui == 'true'
+    uses: ./.github/workflows/deploy-recruiter-dashboard-ui.yml
+    needs:
+      - changes
+      - deploy-backend
+
+  deploy-recruiter-portal-ui:
+    if: needs.changes.outputs.recruiter_portal_ui == 'true'
+    uses: ./.github/workflows/deploy-recruiter-portal-core-ui.yml
+    needs:
+      - changes
+      - deploy-backend
+
+  deploy-seeker-portal-ui:
+    if: needs.changes.outputs.seeker_portal_ui == 'true'
+    uses: ./.github/workflows/deploy-seeker-portal-ui.yml
+    needs:
+      - changes
+      - deploy-backend
+
+
+  deploy-shared-infra:
+    needs: changes
+    if: needs.changes.outputs.shared_infra == 'true'
+    uses: ./.github/workflows/apply-shared-infrastructure.yml
+
+  deploy-infra:
+    if: needs.changes.outputs.infra == 'true'
+    uses: ./.github/workflows/apply-infrastructure.yml
+    needs:
+      - changes
+      - deploy-shared-infra
+
+  e2e-tests:
+    if: github.ref == 'refs/heads/staging' && (
+        needs.changes.outputs.backend == 'true' ||
+        needs.changes.outputs.worker == 'true' ||
+        needs.changes.outputs.accounts_ui == 'true' ||
+        needs.changes.outputs.recruiter_dashboard_ui == 'true' ||
+        needs.changes.outputs.recruiter_portal_ui == 'true' ||
+        needs.changes.outputs.seeker_portal_ui == 'true' ||
+        needs.changes.outputs.shared_infra == 'true' ||
+        needs.changes.outputs.infra == 'true' ||
+        needs.changes.outputs.e2e_tests == 'true'
+      )
+    needs:
+      - deploy-backend
+      - deploy-worker
+      - deploy-accounts-ui
+      - deploy-recruiter-dashboard-ui
+      - deploy-recruiter-portal-ui
+      - deploy-seeker-portal-ui
+      - deploy-shared-infra
+      - deploy-infra
+    uses: ./.github/workflows/e2e-tests.yml

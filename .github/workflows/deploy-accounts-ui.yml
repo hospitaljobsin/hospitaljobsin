@@ -1,17 +1,19 @@
 name: Build and Deploy Accounts UI
 
 on:
-  push:
-    branches:
-      - production
-      - staging
-    paths:
-      - 'apps/accounts/**'
-      - '.github/workflows/deploy-accounts-ui.yml'
-  workflow_run:
-    workflows: ["Deploy Backend"]
-    types:
-      - completed
+  workflow_call:
+# on:
+#   push:
+#     branches:
+#       - production
+#       - staging
+#     paths:
+#       - 'apps/accounts/**'
+#       - '.github/workflows/deploy-accounts-ui.yml'
+#   workflow_run:
+#     workflows: ["Deploy Backend"]
+#     types:
+#       - completed
 
 concurrency:
   group: ${{ github.workflow }}  # Ensures only one run of this workflow at a time
