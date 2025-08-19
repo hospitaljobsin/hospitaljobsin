@@ -57,15 +57,18 @@ jobs:
     needs: changes
     if: needs.changes.outputs.backend == 'true'
     uses: ./.github/workflows/deploy-backend.yml
+    secrets: inherit
 
   deploy-worker:
     needs: changes
     if: needs.changes.outputs.worker == 'true'
     uses: ./.github/workflows/deploy-worker.yml
+    secrets: inherit
 
   deploy-accounts-ui:
     if: needs.changes.outputs.accounts_ui == 'true'
     uses: ./.github/workflows/deploy-accounts-ui.yml
+    secrets: inherit
     needs:
       - changes
       - deploy-backend
@@ -73,6 +76,7 @@ jobs:
   deploy-recruiter-dashboard-ui:
     if: needs.changes.outputs.recruiter_dashboard_ui == 'true'
     uses: ./.github/workflows/deploy-recruiter-dashboard-ui.yml
+    secrets: inherit
     needs:
       - changes
       - deploy-backend
@@ -80,6 +84,7 @@ jobs:
   deploy-recruiter-portal-ui:
     if: needs.changes.outputs.recruiter_portal_ui == 'true'
     uses: ./.github/workflows/deploy-recruiter-portal-core-ui.yml
+    secrets: inherit
     needs:
       - changes
       - deploy-backend
@@ -87,6 +92,7 @@ jobs:
   deploy-seeker-portal-ui:
     if: needs.changes.outputs.seeker_portal_ui == 'true'
     uses: ./.github/workflows/deploy-seeker-portal-ui.yml
+    secrets: inherit
     needs:
       - changes
       - deploy-backend
@@ -96,10 +102,12 @@ jobs:
     needs: changes
     if: needs.changes.outputs.shared_infra == 'true'
     uses: ./.github/workflows/apply-shared-infrastructure.yml
+    secrets: inherit
 
   deploy-infra:
     if: needs.changes.outputs.infra == 'true'
     uses: ./.github/workflows/apply-infrastructure.yml
+    secrets: inherit
     needs:
       - changes
       - deploy-shared-infra
@@ -117,6 +125,7 @@ jobs:
         needs.changes.outputs.e2e_tests == 'true'
       )
     needs:
+      - changes
       - deploy-backend
       - deploy-worker
       - deploy-accounts-ui
@@ -126,3 +135,4 @@ jobs:
       - deploy-shared-infra
       - deploy-infra
     uses: ./.github/workflows/e2e-tests.yml
+    secrets: inherit
