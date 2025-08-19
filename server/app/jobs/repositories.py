@@ -546,7 +546,10 @@ class JobRepo:
             {
                 "$match": {
                     "job.is_active": True,
-                    "job.expires_at": {"$gt": datetime.now(UTC)},
+                    "$or": [
+                        {"job.expires_at": {"$gt": datetime.now(UTC)}},
+                        {"job.expires_at": None},
+                    ],
                 }
             },
             {
@@ -643,7 +646,10 @@ class JobRepo:
                 "$match": {
                     "_id": {"$ne": job_id},
                     "is_active": True,  # also exclude inactive jobs here
-                    "expires_at": {"$gt": datetime.now(UTC)},
+                    "$or": [
+                        {"expires_at": {"$gt": datetime.now(UTC)}},
+                        {"expires_at": None},
+                    ],
                 }
             },
             {"$addFields": {"search_score": {"$meta": "vectorSearchScore"}}},
