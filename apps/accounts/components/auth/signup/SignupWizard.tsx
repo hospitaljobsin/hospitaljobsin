@@ -1,7 +1,7 @@
 "use client";
 
 import { env } from "@/lib/env/client";
-import { useNavigationGuard } from "@/lib/hooks/useFixedNavigationGuard";
+import { useNavigationGuard } from "@/lib/hooks/useNavigationGuard";
 import links from "@/lib/links";
 import {
 	Button,

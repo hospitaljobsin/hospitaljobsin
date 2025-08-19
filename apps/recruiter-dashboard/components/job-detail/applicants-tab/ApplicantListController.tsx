@@ -4,7 +4,7 @@ import type {
 	JobApplicantStatus,
 	JobApplicantsSortBy,
 } from "@/__generated__/ApplicantListPaginationQuery.graphql";
-import { useNavigationGuard } from "@/lib/hooks/useFixedNavigationGuard";
+import { useNavigationGuard } from "@/lib/hooks/useNavigationGuard";
 import {
 	Button,
 	Card,

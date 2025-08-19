@@ -4,7 +4,7 @@ import type { JobEditFormMutation } from "@/__generated__/JobEditFormMutation.gr
 import { ChipsInput } from "@/components/forms/ChipsInput";
 import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
-import { useNavigationGuard } from "@/lib/hooks/useFixedNavigationGuard";
+import { useNavigationGuard } from "@/lib/hooks/useNavigationGuard";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import {

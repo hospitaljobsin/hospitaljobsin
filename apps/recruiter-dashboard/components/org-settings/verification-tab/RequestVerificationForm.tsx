@@ -2,7 +2,7 @@
 import type { RequestVerificationFormFragment$key } from "@/__generated__/RequestVerificationFormFragment.graphql";
 import type { RequestVerificationFormMutation } from "@/__generated__/RequestVerificationFormMutation.graphql";
 import type { RequestVerificationFormPresignedUrlMutation } from "@/__generated__/RequestVerificationFormPresignedUrlMutation.graphql";
-import { useNavigationGuard } from "@/lib/hooks/useFixedNavigationGuard";
+import { useNavigationGuard } from "@/lib/hooks/useNavigationGuard";
 import {
 	Alert,
 	Button,
