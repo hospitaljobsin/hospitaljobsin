@@ -53,6 +53,13 @@ resource "github_actions_environment_variable" "aws_worker_function_name" {
   value         = var.aws_worker_function_name
 }
 
+resource "github_actions_environment_variable" "aws_automation_generate_wa_messages_function_name" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "AWS_AUTOMATION_GENERATE_WA_MESSAGES_FUNCTION_NAME"
+  value         = var.aws_automation_generate_wa_messages_function_name
+}
+
 # Store the worker ECR image name as a variable in GitHub Actions
 resource "github_actions_environment_variable" "aws_lambda_worker_image" {
   repository    = data.github_repository.this.name

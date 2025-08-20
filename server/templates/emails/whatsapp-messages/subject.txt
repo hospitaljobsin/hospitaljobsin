@@ -1,0 +1,1 @@
+[SYSTEM] 🚨 URGENT: {{ message_count }} WhatsApp {% if message_count == 1 %}Message{% else %}Messages{% endif %} Ready for {{ app_name }} Channel

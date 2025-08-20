@@ -12,7 +12,6 @@ from app.core.constants import SESSION_TOKEN_KEY
 
 from .context import AuthContext, BaseContext, Context
 from .dataloaders import Dataloaders
-from .schema import schema
 
 
 @inject
@@ -55,6 +54,8 @@ async def get_context(
 
 def create_graphql_router(app_settings: AppSettings) -> GraphQLRouter:
     """Create a GraphQL router."""
+    from .schema import schema
+
     return GraphQLRouter(
         schema=schema,
         context_getter=get_context,

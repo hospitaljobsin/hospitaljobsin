@@ -47,6 +47,7 @@ from app.config import (
     AWSSettings,
     DatabaseSettings,
     EmailSettings,
+    EnvironmentSettings,
     GeocoderSettings,
     PosthogSettings,
     RedisSettings,
@@ -148,6 +149,7 @@ settings_classes: list[type[BaseSettings]] = [
     TesseractSettings,
     WhatsappSettings,
     PosthogSettings,
+    EnvironmentSettings,
 ]
 
 
@@ -232,8 +234,8 @@ def register_location_service(container: aioinject.Container) -> None:
 
 
 def register_ocr_client(container: aioinject.Container) -> None:
-    app_settings = get_settings(AppSettings)
-    if app_settings.is_production:
+    env_settings = get_settings(EnvironmentSettings)
+    if env_settings.is_production:
         container.register(aioinject.Scoped(create_textract_client))
         container.register(aioinject.Scoped(TextractOCRClient, BaseOCRClient))
     else:
@@ -241,8 +243,8 @@ def register_ocr_client(container: aioinject.Container) -> None:
 
 
 def register_message_sender(container: aioinject.Container) -> None:
-    app_settings = get_settings(AppSettings)
-    if app_settings.is_production:
+    env_settings = get_settings(EnvironmentSettings)
+    if env_settings.is_production:
         container.register(
             aioinject.Scoped(TwoFactorINSMSMessageSender, BaseMessageSender)
         )
@@ -267,8 +269,8 @@ def create_container() -> aioinject.Container:
     register_location_service(container)
     register_ocr_client(container)
     register_message_sender(container)
-    app_settings = get_settings(AppSettings)
-    if app_settings.is_testing:
+    env_settings = get_settings(EnvironmentSettings)
+    if env_settings.is_testing:
         container.register(aioinject.Scoped(TestSetupService))
     container.register(aioinject.Singleton(create_posthog_client))
     container.register(aioinject.Singleton(create_aioboto3_session))

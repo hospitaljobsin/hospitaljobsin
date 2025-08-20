@@ -195,6 +195,11 @@ variable "aws_worker_function_name" {
   type        = string
 }
 
+variable "aws_automation_generate_wa_messages_function_name" {
+  description = "The name of the AWS Lambda function for the automation generate wa messages."
+  type        = string
+}
+
 variable "aws_worker_image_name" {
   description = "The name of the AWS ECR image for the worker."
   type        = string

@@ -1,7 +1,7 @@
 import multiprocessing
 from pathlib import Path
 
-from app.config import AppSettings, get_settings
+from app.config import AppSettings, EnvironmentSettings, get_settings
 from app.core.instrumentation import initialize_instrumentation
 from app.logger import build_server_log_config, setup_logging
 from granian import Granian
@@ -16,12 +16,13 @@ class PyJsonFilter(BaseFilter):
 
 if __name__ == "__main__":
     settings = get_settings(AppSettings)
+    env_settings = get_settings(EnvironmentSettings)
 
-    initialize_instrumentation(settings=settings)
+    initialize_instrumentation(settings=env_settings)
 
     # set up logging
     setup_logging(
-        human_readable=settings.debug,
+        human_readable=env_settings.debug,
     )
 
     Granian(
@@ -30,14 +31,14 @@ if __name__ == "__main__":
         address=settings.host,
         port=settings.port,
         workers=multiprocessing.cpu_count(),
-        reload=settings.debug,
+        reload=env_settings.debug,
         reload_filter=PyJsonFilter,
         reload_paths=[Path(__file__).parent.parent],
         log_enabled=True,
         log_dictconfig=build_server_log_config(
             log_level=settings.log_level,
-            human_readable=settings.debug,
+            human_readable=env_settings.debug,
         ),
-        log_access=settings.debug,
+        log_access=env_settings.debug,
         interface=Interfaces.ASGI,
     ).serve()
