@@ -14,7 +14,7 @@ from app.accounts.exceptions import InvalidPhoneNumberError
 from app.accounts.repositories import AccountRepo
 from app.auth.exceptions import InvalidEmailError
 from app.base.models import Address
-from app.config import AppSettings, AWSSettings
+from app.config import AppSettings, AWSSettings, FrontendSettings
 from app.core.constants import (
     ORGANIZATION_INVITE_EXPIRES_IN,
     RESERVED_ORGANIZATION_NAMES,
@@ -475,6 +475,7 @@ class OrganizationInviteService:
         account_repo: AccountRepo,
         email_sender: BaseEmailSender,
         app_settings: AppSettings,
+        frontend_settings: FrontendSettings,
     ) -> None:
         self._invite_repo = invite_repo
         self._organization_repo = organization_repo
@@ -483,6 +484,7 @@ class OrganizationInviteService:
         self._account_repo = account_repo
         self._email_sender = email_sender
         self._app_settings = app_settings
+        self._frontend_settings = frontend_settings
 
     async def create(
         self,
@@ -539,7 +541,7 @@ class OrganizationInviteService:
             context={
                 "invited_by_name": account.full_name,
                 "organization_name": existing_organization.name,
-                "invite_link": f"{self._app_settings.recruiter_portal_base_url}/invites/{invite_token}",
+                "invite_link": f"{self._frontend_settings.recruiter_portal_base_url}/invites/{invite_token}",
                 "organization_logo_url": existing_organization.logo_url,
                 "invite_expires_in": naturaldelta(
                     timedelta(seconds=ORGANIZATION_INVITE_EXPIRES_IN)

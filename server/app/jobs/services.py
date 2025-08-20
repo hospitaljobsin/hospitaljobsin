@@ -15,7 +15,7 @@ from types_aiobotocore_sqs import SQSClient
 from app.accounts.documents import Account
 from app.accounts.exceptions import AccountProfileIncompleteError
 from app.base.models import GeoObject
-from app.config import AppSettings, AWSSettings
+from app.config import AppSettings, AWSSettings, EnvironmentSettings
 from app.core.constants import (
     ImpressionJobMetricEventType,
     JobApplicantStatus,
@@ -519,6 +519,7 @@ class JobApplicantService:
         sqs_client: SQSClient,
         aws_settings: AWSSettings,
         settings: AppSettings,
+        env_settings: EnvironmentSettings,
         job_applicant_analysis_service: JobApplicantAnalysisService,
         dataloaders: Dataloaders,
         posthog_client: Posthog,
@@ -531,6 +532,7 @@ class JobApplicantService:
         self._sqs_client = sqs_client
         self._aws_settings = aws_settings
         self._settings = settings
+        self._env_settings = env_settings
         self._job_applicant_analyzer_agent = job_applicant_analyzer_agent
         self._job_applicant_analysis_service = job_applicant_analysis_service
         self._dataloaders = dataloaders
@@ -592,7 +594,7 @@ class JobApplicantService:
             applicant_fields=applicant_fields,
         )
         # --- AGENT INTEGRATION ---
-        if self._settings.is_production:
+        if self._env_settings.is_production:
             await self._sqs_client.send_message(
                 QueueUrl=self._aws_settings.sqs_queue_url,
                 MessageBody=JobApplicantAnalysisEventBody(

@@ -86,7 +86,7 @@ from app.auth.repositories import (
     WebAuthnCredentialRepo,
 )
 from app.auth.utils import get_analytics_preference
-from app.config import AppSettings, AuthSettings
+from app.config import AppSettings, AuthSettings, FrontendSettings
 from app.core.captcha import BaseCaptchaVerifier
 from app.core.constants import (
     APP_NAME,
@@ -116,6 +116,7 @@ class AuthService:
         captcha_verifier: BaseCaptchaVerifier,
         settings: AuthSettings,
         app_settings: AppSettings,
+        frontend_settings: FrontendSettings,
         posthog_client: Posthog,
     ) -> None:
         self._account_repo = account_repo
@@ -134,6 +135,7 @@ class AuthService:
         self._email_sender = email_sender
         self._settings = settings
         self._app_settings = app_settings
+        self._frontend_settings = frontend_settings
         self._captcha_verifier = captcha_verifier
         self._posthog_client = posthog_client
 
@@ -1046,7 +1048,7 @@ class AuthService:
             receiver=existing_user.email,
             context={
                 "is_initial": existing_user.password_hash is None,
-                "reset_link": f"{self._app_settings.accounts_base_url}/auth/reset-password/{password_reset_token}?email={existing_user.email}",
+                "reset_link": f"{self._frontend_settings.accounts_base_url}/auth/reset-password/{password_reset_token}?email={existing_user.email}",
                 "link_expires_in": naturaldelta(
                     timedelta(seconds=PASSWORD_RESET_EXPIRES_IN)
                 ),

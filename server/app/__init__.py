@@ -28,14 +28,18 @@ from app.middleware.fingerprints import FingerprintMiddleware
 from app.testing.routes import test_setup_router
 
 
-def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
+def add_routes(
+    app: FastAPI,
+    app_settings: AppSettings,
+    env_settings: EnvironmentSettings,
+) -> None:
     """Register routes for the app."""
-    if app_settings.is_testing:
+    if env_settings.is_testing:
         # add E2E Setup API routes during testing
         app.include_router(test_setup_router)
 
     app.include_router(
-        create_graphql_router(app_settings=app_settings),
+        create_graphql_router(env_settings=env_settings),
         prefix="/graphql",
     )
     app.include_router(health_router)
@@ -108,7 +112,7 @@ def create_app() -> FastAPI:
         root_path=app_settings.root_path,
         lifespan=app_lifespan,
     )
-    add_routes(app, app_settings=app_settings)
+    add_routes(app, app_settings=app_settings, env_settings=env_settings)
     add_middleware(
         app,
         app_settings=app_settings,

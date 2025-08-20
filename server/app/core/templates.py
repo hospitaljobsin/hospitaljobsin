@@ -1,6 +1,6 @@
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from app.config import AppSettings
+from app.config import FrontendSettings
 from app.core.constants import (
     APP_NAME,
     AUTOMATION_BOT_NAME,
@@ -8,7 +8,7 @@ from app.core.constants import (
 )
 
 
-def register_globals(environment: Environment, settings: AppSettings) -> None:
+def register_globals(environment: Environment, settings: FrontendSettings) -> None:
     """Register global variables for the environment."""
     environment.globals["app_name"] = APP_NAME
     environment.globals["app_url"] = settings.seeker_portal_base_url
@@ -16,7 +16,7 @@ def register_globals(environment: Environment, settings: AppSettings) -> None:
     environment.globals["automation_bot_name"] = AUTOMATION_BOT_NAME
 
 
-def create_jinja2_environment(settings: AppSettings) -> Environment:
+def create_jinja2_environment(settings: FrontendSettings) -> Environment:
     """Create an environment for template rendering."""
     environment = Environment(
         loader=FileSystemLoader(
