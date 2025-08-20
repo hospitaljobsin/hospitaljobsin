@@ -48,7 +48,7 @@ export const JobFragment = graphql`
       name @include(if: $showOrganization)
       logoUrl @include(if: $showOrganization)
 	  slug
-	  verificationStatus {
+	  verificationStatus @include(if: $showOrganization) {
 		__typename
 		... on Verified @alias(as: "verified") {
 			verifiedAt
@@ -189,7 +189,8 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 								<h4 className="text-base sm:text-xl font-medium truncate max-w-full sm:max-w-none">
 									{data.title}
 								</h4>
-								{data.organization && (
+								{data.organization.name &&
+								data.organization.verificationStatus ? (
 									<div className="flex flex-row items-center gap-2">
 										<p className="text-xs sm:text-base font-normal text-foreground-500 truncate max-w-[140px] sm:max-w-none">
 											{data.organization.name}
@@ -206,7 +207,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 											</Tooltip>
 										)}
 									</div>
-								)}
+								) : null}
 							</div>
 						</div>
 						<div className="mt-2 sm:mt-0 w-full sm:w-auto flex justify-start sm:justify-end">

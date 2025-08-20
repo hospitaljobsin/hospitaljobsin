@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<d5ca1beb53384c04b068b00de05b9dde>>
- * @relayHash 524ff612d411f6dc417bfcf98847b72d
+ * @generated SignedSource<<2ebd55962421af6fa5dc92a1adfb904e>>
+ * @relayHash dbf6c912a3ea46d375696ba63c4c22a1
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 524ff612d411f6dc417bfcf98847b72d
+// @relayRequestID dbf6c912a3ea46d375696ba63c4c22a1
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -234,61 +234,7 @@ return {
                                 "storageKey": null
                               },
                               (v9/*: any*/),
-                              (v7/*: any*/),
-                              {
-                                "alias": null,
-                                "args": null,
-                                "concreteType": null,
-                                "kind": "LinkedField",
-                                "name": "verificationStatus",
-                                "plural": false,
-                                "selections": [
-                                  (v6/*: any*/),
-                                  {
-                                    "kind": "InlineFragment",
-                                    "selections": [
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
-                                        "name": "verifiedAt",
-                                        "storageKey": null
-                                      }
-                                    ],
-                                    "type": "Verified",
-                                    "abstractKey": null
-                                  },
-                                  {
-                                    "kind": "InlineFragment",
-                                    "selections": [
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
-                                        "name": "rejectedAt",
-                                        "storageKey": null
-                                      }
-                                    ],
-                                    "type": "Rejected",
-                                    "abstractKey": null
-                                  },
-                                  {
-                                    "kind": "InlineFragment",
-                                    "selections": [
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
-                                        "name": "requestedAt",
-                                        "storageKey": null
-                                      }
-                                    ],
-                                    "type": "Pending",
-                                    "abstractKey": null
-                                  }
-                                ],
-                                "storageKey": null
-                              }
+                              (v7/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -425,7 +371,7 @@ return {
     ]
   },
   "params": {
-    "id": "524ff612d411f6dc417bfcf98847b72d",
+    "id": "dbf6c912a3ea46d375696ba63c4c22a1",
     "metadata": {},
     "name": "OrganizationJobsListPaginationQuery",
     "operationKind": "query",

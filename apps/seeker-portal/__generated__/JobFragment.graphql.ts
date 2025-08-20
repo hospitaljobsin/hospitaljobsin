@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6d50aae7966a453a93440172944fe62d>>
+ * @generated SignedSource<<b1848dac6c58c55fa4b02e17a0f40c65>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -25,7 +25,7 @@ export type JobFragment$data = {
     readonly logoUrl?: string;
     readonly name?: string;
     readonly slug: string;
-    readonly verificationStatus: {
+    readonly verificationStatus?: {
       readonly __typename: string;
       readonly rejectedAt?: any;
       readonly requestedAt?: any;
@@ -178,74 +178,74 @@ return {
                 "kind": "ScalarField",
                 "name": "logoUrl",
                 "storageKey": null
-              }
-            ]
-          },
-          (v0/*: any*/),
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": null,
-            "kind": "LinkedField",
-            "name": "verificationStatus",
-            "plural": false,
-            "selections": [
+              },
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "__typename",
+                "concreteType": null,
+                "kind": "LinkedField",
+                "name": "verificationStatus",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "__typename",
+                    "storageKey": null
+                  },
+                  {
+                    "fragment": {
+                      "kind": "InlineFragment",
+                      "selections": [
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "verifiedAt",
+                          "storageKey": null
+                        }
+                      ],
+                      "type": "Verified",
+                      "abstractKey": null
+                    },
+                    "kind": "AliasedInlineFragmentSpread",
+                    "name": "verified"
+                  },
+                  {
+                    "kind": "InlineFragment",
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "rejectedAt",
+                        "storageKey": null
+                      }
+                    ],
+                    "type": "Rejected",
+                    "abstractKey": null
+                  },
+                  {
+                    "kind": "InlineFragment",
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "requestedAt",
+                        "storageKey": null
+                      }
+                    ],
+                    "type": "Pending",
+                    "abstractKey": null
+                  }
+                ],
                 "storageKey": null
-              },
-              {
-                "fragment": {
-                  "kind": "InlineFragment",
-                  "selections": [
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "verifiedAt",
-                      "storageKey": null
-                    }
-                  ],
-                  "type": "Verified",
-                  "abstractKey": null
-                },
-                "kind": "AliasedInlineFragmentSpread",
-                "name": "verified"
-              },
-              {
-                "kind": "InlineFragment",
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "rejectedAt",
-                    "storageKey": null
-                  }
-                ],
-                "type": "Rejected",
-                "abstractKey": null
-              },
-              {
-                "kind": "InlineFragment",
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "requestedAt",
-                    "storageKey": null
-                  }
-                ],
-                "type": "Pending",
-                "abstractKey": null
               }
-            ],
-            "storageKey": null
-          }
+            ]
+          },
+          (v0/*: any*/)
         ],
         "storageKey": null
       },
@@ -257,6 +257,6 @@ return {
 };
 })();
 
-(node as any).hash = "5eb4fdb55069cd2ea772472d87eebdab";
+(node as any).hash = "ca30b48531e9b4757e6e701797666aae";
 
 export default node;
