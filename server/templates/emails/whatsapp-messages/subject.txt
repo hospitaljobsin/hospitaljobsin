@@ -1,1 +1,1 @@
-[{{ app_name }} System] {{ message_count }} WhatsApp Messages Generated
+[SYSTEM] 🚨 URGENT: {{ message_count }} WhatsApp {% if message_count == 1 %}Message{% else %}Messages{% endif %} Ready for {{ app_name }} Channel

@@ -25,7 +25,9 @@ output "aws_lambda_worker_function_name" {
   value = aws_lambda_function.worker.function_name
 }
 
-
+output "aws_lambda_automation_generate_wa_messages_function_name" {
+  value = aws_lambda_function.automation_generate_wa_messages.function_name
+}
 
 
 # SST variables and secrets

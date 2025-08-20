@@ -8,6 +8,8 @@ SENDER_EMAIL = "noreply@hospitaljobs.in"
 
 APP_NAME = "Hospital Jobs"
 
+AUTOMATION_BOT_NAME = "Hoppy (Automation Bot)"
+
 # pagination
 
 MAX_PAGINATION_LIMIT = 100

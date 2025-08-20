@@ -1,17 +1,46 @@
 {% extends "emails/base/body.txt" %}
 
 {% block title %}
-{{ message_count }} WhatsApp Messages Generated
+{{ message_count }} WhatsApp {% if message_count == 1 %}Message{% else %}Messages{% endif %} Ready for {{ app_name }} Channel
 {% endblock%}
 
 {% block content %}
 Hello Support Team,
 
-{{ message_count }} new WhatsApp messages have been generated. Please post them in our WhatsApp Channel.
+🚨 **URGENT ACTION REQUIRED** 🚨
 
-Please find the attached zip file containing individual text files for each message.
-Each file is named with the job details for easy identification.
+{{ message_count }} new WhatsApp {% if message_count == 1 %}message{% else %}messages{% endif %} {% if message_count == 1 %}is{% else %}are{% endif %} ready to be posted in the {{ app_name }} WhatsApp Channel.
+
+**📋 STEP-BY-STEP INSTRUCTIONS:**
+
+1. **Download & Extract**:
+   - Download the attached ZIP file
+   - Extract it to a folder on your computer
+   - You'll find {{ message_count }} individual text file{% if message_count != 1 %}s{% endif %}
+
+2. **Review Content**:
+   - Each file contains a complete WhatsApp message
+   - Files are named with job details for easy identification
+   - Review each message before posting
+
+3. **Post to {{ app_name }} WhatsApp Channel**:
+   - Copy the content from each text file
+   - Post each message individually in the {{ app_name }} WhatsApp Channel
+   - Ensure proper formatting and spacing
+   - Wait for the WhatsApp image preview to appear before posting each message
+
+4. **Verification**:
+   - Confirm all {{ message_count }} message{% if message_count != 1 %}s{% endif %} have been posted
+   - Check for any formatting issues
+
+**⚠️ IMPORTANT NOTES:**
+- These messages contain time-sensitive job postings
+- Post them promptly to maximize reach
+- Each message is pre-formatted and ready to use
+- Contact the development team if you encounter any issues
+
+**📎 ATTACHMENT**: ZIP file containing {{ message_count }} text file{% if message_count != 1 %}s{% endif %} with individual messages
 
 Best regards,
-{{ app_name }} System
+{{ automation_bot_name }}
 {% endblock %}

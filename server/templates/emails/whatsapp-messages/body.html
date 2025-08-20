@@ -1,15 +1,77 @@
 {% extends "emails/base/body.html" %}
 
 {% block title %}
-{{ message_count }} WhatsApp Messages Generated
+{{ message_count }} WhatsApp {% if message_count == 1 %}Message{% else %}Messages{% endif %} Ready for {{ app_name }} Channel
 {% endblock%}
 
 {% block content %}
-<h2>WhatsApp Messages Generated</h2>
-<p>Hello Support Team,</p>
-<p><strong>{{ message_count }} WhatsApp messages</strong> have been generated for today's job postings. Please post them in our WhatsApp Channel.</p>
-<p>Please find the attached zip file containing individual text files for each message.</p>
-<p>Each file is named with the job details for easy identification.</p>
+<h2 style="color: #00a925; font-size: 24px; margin-bottom: 25px;">
+    🚨 URGENT ACTION REQUIRED 🚨
+</h2>
+
+<p style="font-size: 16px; color: #333333; margin-bottom: 20px;">Hello Support Team,</p>
+
+<div style="background-color: #f3faf4; border-radius: 8px; padding: 20px; margin: 25px 0; box-shadow: 0 2px 4px rgba(0, 169, 37, 0.1);">
+    <p style="margin: 0; font-weight: 600; color: #006614; font-size: 16px; line-height: 1.5;">
+        {{ message_count }} new WhatsApp {% if message_count == 1 %}message{% else %}messages{% endif %} {% if message_count == 1 %}is{% else %}are{% endif %} ready to be posted in the <strong style="color: #00a925;">{{ app_name }} WhatsApp Channel</strong>.
+    </p>
+</div>
+
+<h3 style="color: #00a925; margin-top: 30px; margin-bottom: 20px; font-size: 20px;">📋 STEP-BY-STEP INSTRUCTIONS:</h3>
+
+<ol style="margin-left: 20px; color: #333333;">
+    <li style="margin-bottom: 20px; line-height: 1.6;">
+        <strong style="color: #00a925;">Download & Extract:</strong>
+        <ul style="margin-top: 8px; margin-left: 25px; color: #333333;">
+            <li>Download the attached ZIP file</li>
+            <li>Extract it to a folder on your computer</li>
+            <li>You'll find {{ message_count }} individual text file{% if message_count != 1 %}s{% endif %}</li>
+        </ul>
+    </li>
+
+    <li style="margin-bottom: 20px; line-height: 1.6;">
+        <strong style="color: #00a925;">Review Content:</strong>
+        <ul style="margin-top: 8px; margin-left: 25px; color: #333333;">
+            <li>Each file contains a complete WhatsApp message</li>
+            <li>Files are named with job details for easy identification</li>
+            <li>Review each message before posting</li>
+        </ul>
+    </li>
+
+    <li style="margin-bottom: 20px; line-height: 1.6;">
+        <strong style="color: #00a925;">Post to {{ app_name }} WhatsApp Channel:</strong>
+        <ul style="margin-top: 8px; margin-left: 25px; color: #333333;">
+            <li>Copy the content from each text file</li>
+            <li>Post each message individually in the {{ app_name }} WhatsApp Channel</li>
+            <li>Ensure proper formatting and spacing</li>
+            <li>Wait for the WhatsApp image preview to appear before posting each message</li>
+        </ul>
+    </li>
+
+    <li style="margin-bottom: 20px; line-height: 1.6;">
+        <strong style="color: #00a925;">Verification:</strong>
+        <ul style="margin-top: 8px; margin-left: 25px; color: #333333;">
+            <li>Confirm all {{ message_count }} message{% if message_count != 1 %}s{% endif %} have been posted</li>
+            <li>Check for any formatting issues</li>
+        </ul>
+    </li>
+</ol>
+
+<div style="background-color: #f3faf4; border-radius: 8px; padding: 20px; margin: 25px 0; box-shadow: 0 2px 4px rgba(0, 169, 37, 0.1);">
+    <h4 style="margin: 0 0 12px 0; color: #006614; font-size: 18px;">⚠️ IMPORTANT NOTES:</h4>
+    <ul style="margin: 0; padding-left: 20px; color: #333333; line-height: 1.6;">
+        <li>These messages contain time-sensitive job postings</li>
+        <li>Post them promptly to maximize reach</li>
+        <li>Each message is pre-formatted and ready to use</li>
+        <li>Contact the development team if you encounter any issues</li>
+    </ul>
+</div>
+
+<div style="background-color: #f3faf4; border-radius: 8px; padding: 20px; margin: 25px 0; box-shadow: 0 2px 4px rgba(0, 169, 37, 0.1);">
+    <h4 style="margin: 0 0 12px 0; color: #006614; font-size: 18px;">📎 ATTACHMENT:</h4>
+    <p style="margin: 0; color: #333333; line-height: 1.6;">ZIP file containing {{ message_count }} text file{% if message_count != 1 %}s{% endif %} with individual messages</p>
+</div>
+
 <br>
-<p>Best regards,<br>{{ app_name }} System</p>
+<p style="font-size: 16px; color: #333333;">Best regards,<br><strong style="color: #00a925;">{{ automation_bot_name }}</strong></p>
 {% endblock %}

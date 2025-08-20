@@ -7,7 +7,7 @@ import zipfile
 from datetime import UTC, datetime
 from pathlib import Path
 
-from app.config import AppSettings, DatabaseSettings, get_settings
+from app.config import DatabaseSettings, EnvironmentSettings, get_settings
 from app.container import create_container
 from app.core.constants import SENDER_EMAIL, SUPPORT_EMAIL
 from app.core.emails import BaseEmailSender
@@ -21,14 +21,13 @@ from aws_lambda_powertools.utilities.typing import LambdaContext
 from bson import ObjectId
 from structlog import get_logger
 
-settings = get_settings(AppSettings)
+env_settings = get_settings(EnvironmentSettings)
 
-
-initialize_instrumentation(settings=settings)
+initialize_instrumentation(settings=env_settings)
 
 # set up logging
 setup_logging(
-    human_readable=settings.debug,
+    human_readable=env_settings.debug,
 )
 
 # initialize container outside lambda handler to avoid re-initialization on each invocation
@@ -140,8 +139,8 @@ async def create_message_files_and_zip(wa_messages: list[str], jobs: list[Job]) 
                 f.write(message.strip())
 
         # Create zip file
-        timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
-        zip_filename = f"whatsapp_messages_{timestamp}.zip"
+        timestamp = datetime.now(UTC).strftime("%d_%m_%Y")
+        zip_filename = f"checkpoint_{timestamp}.zip"
         zip_path = temp_path / zip_filename
 
         with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:

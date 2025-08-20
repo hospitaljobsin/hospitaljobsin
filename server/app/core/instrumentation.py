@@ -3,10 +3,10 @@ from sentry_sdk.integrations import Integration
 from sentry_sdk.integrations.strawberry import StrawberryIntegration
 from structlog import get_logger
 
-from app.config import AppSettings, SentrySettings, get_settings
+from app.config import EnvironmentSettings, SentrySettings, get_settings
 
 
-def initialize_instrumentation(settings: AppSettings) -> None:
+def initialize_instrumentation(settings: EnvironmentSettings) -> None:
     """Initialize Sentry for error tracking and performance monitoring."""
     logger = get_logger(__name__)
     logger.debug("Initializing Sentry for error tracking and performance monitoring.")

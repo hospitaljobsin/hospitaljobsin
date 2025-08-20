@@ -6,7 +6,7 @@ from aws_lambda_powertools.utilities.typing import LambdaContext
 from bson import ObjectId
 from structlog import get_logger
 
-from app.config import AppSettings, DatabaseSettings, get_settings
+from app.config import AppSettings, DatabaseSettings, EnvironmentSettings, get_settings
 from app.container import create_container
 from app.core.instrumentation import initialize_instrumentation
 from app.database import initialize_database
@@ -17,12 +17,13 @@ from app.logger import setup_logging
 
 settings = get_settings(AppSettings)
 
+env_settings = get_settings(EnvironmentSettings)
 
-initialize_instrumentation(settings=settings)
+initialize_instrumentation(settings=env_settings)
 
 # set up logging
 setup_logging(
-    human_readable=settings.debug,
+    human_readable=env_settings.debug,
 )
 
 # initialize container outside lambda handler to avoid re-initialization on each invocation

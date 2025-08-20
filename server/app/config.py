@@ -78,11 +78,42 @@ MongoSRVDsn = Annotated[
 ]
 
 
-class AppSettings(BaseSettings):
+class EnvironmentSettings(BaseSettings):
     debug: bool
-
     environment: Environment = Environment.development
 
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+    def _is_environment(self, environment: Environment) -> bool:
+        """Check whether the current environment is the given environment."""
+        return self.environment == environment
+
+    @property
+    def is_development(self) -> bool:
+        """Check whether the current environment is development."""
+        return self._is_environment(Environment.development)
+
+    @property
+    def is_testing(self) -> bool:
+        """Check whether the current environment is testing."""
+        return self._is_environment(Environment.testing)
+
+    @property
+    def is_production(self) -> bool:
+        """Check whether the current environment is production."""
+        return self._is_environment(Environment.production)
+
+    @property
+    def is_staging(self) -> bool:
+        """Check whether the current environment is staging."""
+        return self._is_environment(Environment.staging)
+
+
+class AppSettings(BaseSettings):
     host: Annotated[
         str,
         Field(
@@ -146,30 +177,6 @@ class AppSettings(BaseSettings):
         env_prefix="server_",
         extra="allow",
     )
-
-    def _is_environment(self, environment: Environment) -> bool:
-        """Check whether the current environment is the given environment."""
-        return self.environment == environment
-
-    @property
-    def is_development(self) -> bool:
-        """Check whether the current environment is development."""
-        return self._is_environment(Environment.development)
-
-    @property
-    def is_testing(self) -> bool:
-        """Check whether the current environment is testing."""
-        return self._is_environment(Environment.testing)
-
-    @property
-    def is_production(self) -> bool:
-        """Check whether the current environment is production."""
-        return self._is_environment(Environment.production)
-
-    @property
-    def is_staging(self) -> bool:
-        """Check whether the current environment is staging."""
-        return self._is_environment(Environment.staging)
 
 
 class DatabaseSettings(BaseSettings):

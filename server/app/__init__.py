@@ -10,11 +10,13 @@ from fastapi.middleware.gzip import GZipMiddleware
 from granian.utils.proxies import wrap_asgi_with_proxy_headers
 from structlog import get_logger
 
+from app.accounts.routes import accounts_router
 from app.auth.routes import auth_router
 from app.config import (
     AppSettings,
     AuthSettings,
     DatabaseSettings,
+    EnvironmentSettings,
     get_settings,
 )
 from app.container import create_container
@@ -24,7 +26,6 @@ from app.health.routes import health_router
 from app.middleware import SessionMiddleware
 from app.middleware.fingerprints import FingerprintMiddleware
 from app.testing.routes import test_setup_router
-from app.accounts.routes import accounts_router
 
 
 def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
@@ -99,9 +100,10 @@ async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None]:
 def create_app() -> FastAPI:
     """Create an application instance."""
     app_settings = get_settings(AppSettings)
+    env_settings = get_settings(EnvironmentSettings)
     app = FastAPI(
         version="0.0.1",
-        debug=app_settings.debug,
+        debug=env_settings.debug,
         openapi_url=app_settings.openapi_url,
         root_path=app_settings.root_path,
         lifespan=app_lifespan,

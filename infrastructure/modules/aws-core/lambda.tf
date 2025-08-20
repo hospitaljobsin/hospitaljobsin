@@ -507,3 +507,44 @@ resource "aws_lambda_function" "staging_database_teardown" {
   memory_size = 1024
   timeout     = 60
 }
+
+
+resource "aws_lambda_function" "automation_generate_wa_messages" {
+  # depends_on    = [docker_registry_image.backend]
+  function_name = "${var.resource_prefix}-automation-generate-wa-messages-lambda"
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+  role         = aws_iam_role.lambda_worker_exec_role.arn
+  package_type = "Image"
+  image_uri    = "${var.aws_lambda_worker_repository_url}:${var.environment_name}-latest"
+
+  image_config {
+    command = ["lambda_handlers.generate_whatsapp_messages.lambda_handler"]
+  }
+
+  publish = true
+
+  # VPC Configuration - uncomment this while moving to private subnets
+  # vpc_config {
+  #   subnet_ids         = values(aws_subnet.private)[*].id
+  #   security_group_ids = [aws_security_group.lambda.id] # Security group for Lambda
+  # }
+
+  environment {
+    variables = {
+      SERVER_DATABASE_URL          = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
+      SERVER_LOG_LEVEL             = "DEBUG"
+      SERVER_ENVIRONMENT           = "production"
+      SERVER_EMAIl_PROVIDER        = "aws_ses"
+      SERVER_EMAIL_FROM            = aws_ses_email_identity.this.email
+      SERVER_SENTRY_DSN            = var.sentry_backend_dsn
+    }
+  }
+
+  memory_size = 1024
+  timeout     = 60
+}
