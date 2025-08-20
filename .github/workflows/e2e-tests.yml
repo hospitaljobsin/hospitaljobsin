@@ -11,6 +11,10 @@ env:
   ACCOUNTS_UI_SENTRY_DSN:  ${{secrets.ACCOUNTS_SENTRY_DSN}}
   SERVER_SENTRY_DSN: ${{secrets.SERVER_SENTRY_DSN}}
 
+concurrency:
+  group: e2e-tests-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
+  cancel-in-progress: true
+
 jobs:
   test-e2e:
     environment: staging

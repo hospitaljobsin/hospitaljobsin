@@ -8,7 +8,7 @@ on:
         type: boolean
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
+  group: deploy-seeker-portal-ui-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
   cancel-in-progress: false      # Waits instead of cancelling previous runs
 
 env:  # repo-level and non-env-specific secrets/vars
