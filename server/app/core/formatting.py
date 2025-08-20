@@ -1,6 +1,6 @@
 import re
 import unicodedata
-from datetime import datetime
+from datetime import UTC, datetime
 
 from bs4 import BeautifulSoup
 from markdown import markdown
@@ -9,6 +9,14 @@ from markdown import markdown
 def format_datetime(value: datetime) -> str:
     """Format a datetime object as an ISO 8601 string (with the military timezone)."""
     return value.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def ensure_utc(dt: datetime | None) -> datetime | None:
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=UTC)  # assume naive means UTC
+    return dt.astimezone(UTC)
 
 
 def slugify(text: str) -> str:
