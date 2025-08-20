@@ -77,7 +77,13 @@ export default function OrganizationJobsController(
 				placeholder="Find a job posting..."
 				variant="bordered"
 				value={props.searchTerm || ""}
-				onValueChange={(value) => props.setSearchTerm(value)}
+				onValueChange={(value) => {
+					if (value === "") {
+						props.setSearchTerm(null);
+						return;
+					}
+					props.setSearchTerm(value);
+				}}
 				onClear={() => props.setSearchTerm(null)}
 				fullWidth
 			/>

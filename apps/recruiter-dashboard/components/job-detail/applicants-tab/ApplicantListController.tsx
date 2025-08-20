@@ -194,7 +194,13 @@ export default function ApplicantListController(
 				placeholder="e.g., 'candidates with 5 years of experience in cardiology'"
 				variant="bordered"
 				value={props.searchTerm || ""}
-				onValueChange={(value) => props.setSearchTerm(value)}
+				onValueChange={(value) => {
+					if (value === "") {
+						props.setSearchTerm(null);
+						return;
+					}
+					props.setSearchTerm(value);
+				}}
 				onClear={() => {
 					// we need to wait for the debounce to complete
 					setTimeout(() => props.setSearchTerm(null), 0);
