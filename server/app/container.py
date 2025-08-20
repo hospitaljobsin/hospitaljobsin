@@ -48,6 +48,7 @@ from app.config import (
     DatabaseSettings,
     EmailSettings,
     EnvironmentSettings,
+    FrontendSettings,
     GeocoderSettings,
     PosthogSettings,
     RedisSettings,
@@ -150,6 +151,7 @@ settings_classes: list[type[BaseSettings]] = [
     WhatsappSettings,
     PosthogSettings,
     EnvironmentSettings,
+    FrontendSettings,
 ]
 
 
@@ -161,6 +163,7 @@ class SettingsProvider(aioinject.Provider[TSettings]):
         self,
         kwargs: dict[str, Any],  # noqa: ARG002
     ) -> TSettings:
+        print(f"Providing {self.implementation}")
         return self.implementation()
 
 
@@ -264,6 +267,7 @@ def create_container() -> aioinject.Container:
     )
     for settings_cls in settings_classes:
         container.register(SettingsProvider(settings_cls))
+    print("registered settings")
     container.register(aioinject.Singleton(create_jinja2_environment))
     register_email_sender(container)
     register_location_service(container)

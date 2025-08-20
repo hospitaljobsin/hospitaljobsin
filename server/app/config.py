@@ -160,6 +160,17 @@ class AppSettings(BaseSettings):
 
     root_path: str = ""
 
+    # persisted queries config
+    persisted_queries_path: Path = Path("query_map.json")
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+
+class FrontendSettings(BaseSettings):
     # accounts config
     accounts_base_url: str = "http://localtest.me:5002"
 
@@ -168,9 +179,6 @@ class AppSettings(BaseSettings):
 
     # seeker portal config
     seeker_portal_base_url: str = "http://localtest.me:5000"
-
-    # persisted queries config
-    persisted_queries_path: Path = Path("query_map.json")
 
     model_config = SettingsConfigDict(
         env_file=".env",

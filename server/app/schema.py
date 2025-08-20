@@ -13,7 +13,7 @@ from app.accounts.mutation import AccountMutation
 from app.accounts.query import AccountQuery
 from app.auth.mutation import AuthMutation
 from app.auth.query import AuthQuery
-from app.config import AppSettings, get_settings
+from app.config import AppSettings, EnvironmentSettings, get_settings
 from app.core.schema.extensions import PersistedQueriesExtension
 from app.geocoding.query import GeocodingQuery
 from app.jobs.mutation import JobMutation
@@ -49,7 +49,9 @@ mutation = merge_types(
 )
 
 
-def create_schema(app_settings: AppSettings) -> Schema:
+def create_schema(
+    app_settings: AppSettings, env_settings: EnvironmentSettings
+) -> Schema:
     """Create a GraphQL schema."""
     extensions = [
         AioInjectExtension(
@@ -62,7 +64,7 @@ def create_schema(app_settings: AppSettings) -> Schema:
         ValidationCache(maxsize=128),
     ]
 
-    if app_settings.is_production:
+    if env_settings.is_production:
         extensions.append(
             AddValidationRules([NoSchemaIntrospectionCustomRule]),
         )
@@ -82,4 +84,7 @@ def create_schema(app_settings: AppSettings) -> Schema:
     )
 
 
-schema = create_schema(app_settings=get_settings(AppSettings))
+schema = create_schema(
+    app_settings=get_settings(AppSettings),
+    env_settings=get_settings(EnvironmentSettings),
+)

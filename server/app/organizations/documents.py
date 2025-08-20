@@ -9,7 +9,7 @@ from pymongo import IndexModel
 
 from app.accounts.documents import Account
 from app.base.models import Address
-from app.config import AppSettings, get_settings
+from app.config import FrontendSettings, get_settings
 
 
 class OrganizationVerificationRequest(BaseModel):
@@ -80,7 +80,7 @@ class Organization(Document):
 
         banner_index = hash(self.slug) % 4
 
-        return f"{get_settings(AppSettings).seeker_portal_base_url}/banners/{banner_index}.png"
+        return f"{get_settings(FrontendSettings).seeker_portal_base_url}/banners/{banner_index}.png"
 
     @banner_url.setter
     def banner_url(self, value: str | None) -> None:
