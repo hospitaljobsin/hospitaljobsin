@@ -538,6 +538,7 @@ resource "aws_lambda_function" "automation_generate_wa_messages" {
       SERVER_DATABASE_URL          = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
       SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
       SERVER_LOG_LEVEL             = "DEBUG"
+      SERVER_DEBUG                 = "True"
       SERVER_ENVIRONMENT           = "production"
       SERVER_EMAIl_PROVIDER        = "aws_ses"
       SERVER_EMAIL_FROM            = aws_ses_email_identity.this.email
@@ -547,4 +548,34 @@ resource "aws_lambda_function" "automation_generate_wa_messages" {
 
   memory_size = 1024
   timeout     = 60
+}
+
+# EventBridge rule to trigger automation_generate_wa_messages lambda daily
+resource "aws_cloudwatch_event_rule" "automation_generate_wa_messages_schedule" {
+  count       = var.environment_name == "production" ? 1 : 0
+  name        = "${var.resource_prefix}-automation-generate-wa-messages-schedule"
+  description = "Trigger automation_generate_wa_messages lambda function daily"
+  # schedule_expression = "cron(0 0 * * ? *)" # Every day at midnight UTC
+  schedule_expression = "cron(0/2 * * * ? *)" # Every 2 minutes
+  tags = {
+    Environment = var.environment_name
+  }
+}
+
+# EventBridge target to invoke the lambda function
+resource "aws_cloudwatch_event_target" "automation_generate_wa_messages_target" {
+  count     = var.environment_name == "production" ? 1 : 0
+  rule      = aws_cloudwatch_event_rule.automation_generate_wa_messages_schedule[0].name
+  target_id = "AutomationGenerateWaMessagesTarget"
+  arn       = aws_lambda_function.automation_generate_wa_messages.arn
+}
+
+# Permission for EventBridge to invoke the lambda function
+resource "aws_lambda_permission" "allow_eventbridge_automation_generate_wa_messages" {
+  count         = var.environment_name == "production" ? 1 : 0
+  statement_id  = "AllowExecutionFromEventBridge"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.automation_generate_wa_messages.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.automation_generate_wa_messages_schedule[0].arn
 }

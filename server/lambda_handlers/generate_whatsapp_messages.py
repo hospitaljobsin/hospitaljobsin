@@ -14,10 +14,10 @@ from app.core.emails import BaseEmailSender
 from app.core.instrumentation import initialize_instrumentation
 from app.database import initialize_database
 from app.jobs.documents import Job
-from app.jobs.repositories import JobRepo
 from app.logger import setup_logging
 from aws_lambda_powertools.utilities.data_classes import EventBridgeEvent, event_source
 from aws_lambda_powertools.utilities.typing import LambdaContext
+from beanie.operators import In, Or
 from bson import ObjectId
 from structlog import get_logger
 
@@ -60,10 +60,19 @@ def lambda_handler(event: EventBridgeEvent, context: LambdaContext) -> str:
 async def process_wa_messages_generation_event() -> str:
     """Process the daily WhatsApp message generation job."""
     async with container.context() as ctx:
-        job_repo = await ctx.resolve(JobRepo)
+        # TODO: job repo needs to connect to redis client. need to fix this.
+        # job_repo = await ctx.resolve(JobRepo)
         email_sender = await ctx.resolve(BaseEmailSender)
 
-        unposted_jobs = await job_repo.get_for_whatsapp_message_generation()
+        # TODO: job repo needs to connect to redis client. need to fix this.
+        # unposted_jobs = await job_repo.get_for_whatsapp_message_generation()
+        unposted_jobs = await Job.find(
+            Job.is_active == True,
+            Job.whatsapp_channel_posted_at == None,
+            Or(Job.expires_at == None, Job.expires_at > datetime.now(UTC)),
+            fetch_links=True,
+            nesting_depth=2,
+        ).to_list()
         wa_messages = [
             format_job_for_whatsapp_message(job=job) for job in unposted_jobs
         ]
@@ -82,10 +91,13 @@ async def process_wa_messages_generation_event() -> str:
             # Clean up temporary files
             cleanup_temp_files(zip_file_path)
 
-        await job_repo.mark_as_posted_on_whatsapp(
-            [ObjectId(job.id) for job in unposted_jobs]
+        # TODO: job repo needs to connect to redis client. need to fix this.
+        # await job_repo.mark_as_posted_on_whatsapp(
+        #     [ObjectId(job.id) for job in unposted_jobs]
+        # )
+        await Job.find(In(Job.id, [ObjectId(job.id) for job in unposted_jobs])).set(
+            {Job.whatsapp_channel_posted_at: datetime.now(UTC)}
         )
-
         return json.dumps({"status": "ok", "jobs_processed": len(unposted_jobs)})
 
 
@@ -207,3 +219,7 @@ def format_job_for_whatsapp_message(job: Job) -> str:
 🔗 *Apply Now:*
 https://hospitaljobs.in/organizations/{job.organization.slug}/jobs/{job.slug}
         """
+
+
+if __name__ == "__main__":
+    loop.run_until_complete(process_wa_messages_generation_event())
