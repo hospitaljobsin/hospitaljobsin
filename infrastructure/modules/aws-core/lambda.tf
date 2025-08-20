@@ -538,6 +538,7 @@ resource "aws_lambda_function" "automation_generate_wa_messages" {
       SERVER_DATABASE_URL          = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
       SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
       SERVER_LOG_LEVEL             = "DEBUG"
+      SERVER_DEBUG                 = "True"
       SERVER_ENVIRONMENT           = "production"
       SERVER_EMAIl_PROVIDER        = "aws_ses"
       SERVER_EMAIL_FROM            = aws_ses_email_identity.this.email
