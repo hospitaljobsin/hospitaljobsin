@@ -548,3 +548,30 @@ resource "aws_lambda_function" "automation_generate_wa_messages" {
   memory_size = 1024
   timeout     = 60
 }
+
+# EventBridge rule to trigger automation_generate_wa_messages lambda daily
+resource "aws_cloudwatch_event_rule" "automation_generate_wa_messages_schedule" {
+  name        = "${var.resource_prefix}-automation-generate-wa-messages-schedule"
+  description = "Trigger automation_generate_wa_messages lambda function daily"
+  # schedule_expression = "cron(0 0 * * ? *)" # Every day at midnight UTC
+  schedule_expression = "cron(0/2 * * * ? *)" # Every 2 minutes
+  tags = {
+    Environment = var.environment_name
+  }
+}
+
+# EventBridge target to invoke the lambda function
+resource "aws_cloudwatch_event_target" "automation_generate_wa_messages_target" {
+  rule      = aws_cloudwatch_event_rule.automation_generate_wa_messages_schedule.name
+  target_id = "AutomationGenerateWaMessagesTarget"
+  arn       = aws_lambda_function.automation_generate_wa_messages.arn
+}
+
+# Permission for EventBridge to invoke the lambda function
+resource "aws_lambda_permission" "allow_eventbridge_automation_generate_wa_messages" {
+  statement_id  = "AllowExecutionFromEventBridge"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.automation_generate_wa_messages.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.automation_generate_wa_messages_schedule.arn
+}
