@@ -1,8 +1,11 @@
 import re
 from base64 import b64decode, b64encode
 from datetime import UTC, datetime, timedelta
+from http import HTTPStatus
 from typing import Any
 
+import httpx
+import phonenumbers
 import pyotp
 from bson.objectid import ObjectId
 from email_validator import EmailNotValidError, validate_email
@@ -761,8 +764,44 @@ class AuthService:
         )
         return bool(pattern.match(password))
 
+    async def _get_google_phone_number(self, access_token: str) -> str | None:
+        """Get the phone number from the user info."""
+        phone_number = None
+        async with httpx.AsyncClient() as client:
+            # Request additional fields that might contain phone numbers
+            response = await client.get(
+                "https://people.googleapis.com/v1/people/me",
+                params={
+                    "personFields": "phoneNumbers",
+                },
+                headers={"Authorization": f"Bearer {access_token}"},
+            )
+
+            print("RESPONSE", response.json())
+
+            if response.status_code == HTTPStatus.OK:
+                data = response.json()
+                # This will likely be empty if the auth app isn't verified by Google.
+                phone_numbers = data.get("phoneNumbers", [])
+                if phone_numbers:
+                    phone_number = phone_numbers[0].get("value")
+            else:
+                # Log error but don't fail the signup process
+                print(f"Failed to fetch Google profile: {response.status_code}")
+
+        if not phone_number:
+            return None
+        return phonenumbers.format_number(
+            phone_number, phonenumbers.PhoneNumberFormat.E164
+        )
+
     async def signin_with_google(
-        self, user_info: dict, request: Request, user_agent: str, response: Response
+        self,
+        user_info: dict,
+        request: Request,
+        user_agent: str,
+        response: Response,
+        access_token: str,
     ) -> Result[Account, InvalidEmailError | TwoFactorAuthenticationRequiredError]:
         """Sign in with Google."""
         if not user_info["email_verified"]:
@@ -772,9 +811,12 @@ class AuthService:
         account = await self._account_repo.get_by_email(email=user_info["email"])
         if account is None:
             is_signup = True
+            # TODO: uncomment after google auth app is verified
+            # phone_number = await self._get_google_phone_number(access_token)
             account = await self._account_repo.create(
                 email=user_info["email"],
                 full_name=user_info["name"],
+                # phone_number=phone_number, # TODO: uncomment after google auth app is verified
                 # set initial password to None for the user
                 password=None,
                 auth_providers=["oauth_google"],
