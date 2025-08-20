@@ -9,7 +9,7 @@ from pathlib import Path
 
 from app.config import DatabaseSettings, EnvironmentSettings, get_settings
 from app.container import create_container
-from app.core.constants import SENDER_EMAIL, SUPPORT_EMAIL
+from app.core.constants import SUPPORT_EMAIL
 from app.core.emails import BaseEmailSender
 from app.core.instrumentation import initialize_instrumentation
 from app.database import initialize_database
@@ -126,7 +126,6 @@ async def send_whatsapp_messages_email(
             receiver=SUPPORT_EMAIL,
             template="whatsapp-messages",
             context=context,
-            sender=SENDER_EMAIL,
             attachments=attachments,
         )
 

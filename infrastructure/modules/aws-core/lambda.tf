@@ -555,11 +555,11 @@ resource "aws_lambda_function" "automation_generate_wa_messages" {
 
 # EventBridge rule to trigger automation_generate_wa_messages lambda daily
 resource "aws_cloudwatch_event_rule" "automation_generate_wa_messages_schedule" {
-  count       = var.environment_name == "production" ? 1 : 0
-  name        = "${var.resource_prefix}-automation-generate-wa-messages-schedule"
-  description = "Trigger automation_generate_wa_messages lambda function daily"
-  # schedule_expression = "cron(0 0 * * ? *)" # Every day at midnight UTC
-  schedule_expression = "cron(0/2 * * * ? *)" # Every 2 minutes
+  count               = var.environment_name == "production" ? 1 : 0
+  name                = "${var.resource_prefix}-automation-generate-wa-messages-schedule"
+  description         = "Trigger automation_generate_wa_messages lambda function daily"
+  schedule_expression = "cron(0 0 * * ? *)" # Every day at midnight UTC
+  # schedule_expression = "cron(0/2 * * * ? *)" # Every 2 minutes
   tags = {
     Environment = var.environment_name
   }
