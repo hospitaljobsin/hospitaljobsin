@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<dbca459930030943fc136881773a4699>>
- * @relayHash 05bb82d8fe9ed8dbb3a1e65cf80ad96c
+ * @generated SignedSource<<6add5472b0923d8ed02eba94dc773752>>
+ * @relayHash 8d48ed2bfe07c1eb101e25ed9726b6c6
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 05bb82d8fe9ed8dbb3a1e65cf80ad96c
+// @relayRequestID 8d48ed2bfe07c1eb101e25ed9726b6c6
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -104,7 +104,14 @@ v12 = {
   "name": "externalApplicationUrl",
   "storageKey": null
 },
-v13 = [
+v13 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isVisible",
+  "storageKey": null
+},
+v14 = [
   {
     "kind": "Variable",
     "name": "jobSlug",
@@ -112,22 +119,22 @@ v13 = [
   },
   (v5/*: any*/)
 ],
-v14 = {
+v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v15 = {
+v16 = {
   "kind": "InlineFragment",
   "selections": [
-    (v14/*: any*/)
+    (v15/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
 },
-v16 = {
+v17 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -204,7 +211,8 @@ return {
                           (v9/*: any*/),
                           (v10/*: any*/),
                           (v11/*: any*/),
-                          (v12/*: any*/)
+                          (v12/*: any*/),
+                          (v13/*: any*/)
                         ],
                         "type": "Job",
                         "abstractKey": null
@@ -220,11 +228,11 @@ return {
             "storageKey": null
           }
         ],
-        "args": (v13/*: any*/),
+        "args": (v14/*: any*/),
         "argumentDefinitions": (v2/*: any*/)
       },
       {
-        "args": (v13/*: any*/),
+        "args": (v14/*: any*/),
         "kind": "FragmentSpread",
         "name": "JobApplyViewClientComponentFragment"
       }
@@ -262,7 +270,7 @@ return {
                 "plural": false,
                 "selections": [
                   (v4/*: any*/),
-                  (v14/*: any*/)
+                  (v15/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -270,7 +278,7 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v15/*: any*/)
+          (v16/*: any*/)
         ],
         "storageKey": null
       },
@@ -303,8 +311,9 @@ return {
                       (v10/*: any*/),
                       (v11/*: any*/),
                       (v12/*: any*/),
-                      (v14/*: any*/),
-                      (v16/*: any*/),
+                      (v13/*: any*/),
+                      (v15/*: any*/),
+                      (v17/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -345,7 +354,7 @@ return {
                             ],
                             "storageKey": null
                           },
-                          (v14/*: any*/)
+                          (v15/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -371,8 +380,8 @@ return {
                             "name": "logoUrl",
                             "storageKey": null
                           },
-                          (v16/*: any*/),
-                          (v14/*: any*/),
+                          (v17/*: any*/),
+                          (v15/*: any*/),
                           (v10/*: any*/),
                           {
                             "alias": null,
@@ -540,7 +549,7 @@ return {
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v15/*: any*/)
+                  (v16/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -548,14 +557,14 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v15/*: any*/)
+          (v16/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "05bb82d8fe9ed8dbb3a1e65cf80ad96c",
+    "id": "8d48ed2bfe07c1eb101e25ed9726b6c6",
     "metadata": {},
     "name": "pageJobApplyViewQuery",
     "operationKind": "query",

@@ -1226,6 +1226,11 @@ type Job implements Node {
 	expiresAt: DateTime
 
 	"""
+	Whether the job is visible for job seekers.
+	"""
+	isVisible: Boolean!
+
+	"""
 	When the job was created at.
 	"""
 	createdAt: DateTime!

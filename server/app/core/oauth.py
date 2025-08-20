@@ -10,7 +10,11 @@ def create_oauth_client(settings: SecretSettings) -> OAuth:
     oauth_client.register(
         name="google",
         server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
-        client_kwargs={"scope": "openid email profile"},
+        client_kwargs={
+            # TODO: uncomment after google auth app is verified
+            # "scope": "openid email profile https://www.googleapis.com/auth/user.phonenumbers.read",
+            "scope": "openid email profile"
+        },
         client_id=settings.google_client_id,
         client_secret=settings.google_client_secret.get_secret_value(),
     )

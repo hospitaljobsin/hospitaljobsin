@@ -15,10 +15,10 @@ from app.core.constants import (
     EMAIL_VERIFICATION_EXPIRES_IN,
     EMAIL_VERIFICATION_TOKEN_LENGTH,
     PHONE_NUMBER_VERIFICATION_EXPIRES_IN,
+    TERMS_AND_POLICY_LATEST_VERSION,
     AuthProvider,
 )
 from app.core.geocoding import BaseLocationService
-from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
 
 from .documents import (
     Account,
@@ -50,12 +50,14 @@ class AccountRepo:
         analytics_preference: Literal[
             "acceptance", "rejection", "undecided"
         ] = "undecided",
+        phone_number: str | None = None,
     ) -> Account:
         """Create a new account."""
         account = Account(
             id=account_id,
             full_name=full_name,
             email=email,
+            phone_number=phone_number,
             password_hash=self.hash_password(
                 password=password,
             )

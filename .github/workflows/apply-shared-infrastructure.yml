@@ -37,7 +37,7 @@ env:
   TF_VAR_posthog_api_host: ${{ vars.POSTHOG_API_HOST }}
 
 concurrency:
-  group: ${{ github.workflow }}
+  group: deploy-shared-infrastructure
   cancel-in-progress: false
 
 jobs:

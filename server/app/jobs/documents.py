@@ -99,6 +99,13 @@ class Job(Document):
             exclude={"organization", "embedding", "external_application_url", "slug"}
         )
 
+    @property
+    def is_visible(self) -> bool:
+        """Whether the job is visible for job seekers."""
+        return self.is_active and (
+            self.expires_at is None or self.expires_at > datetime.now(UTC)
+        )
+
 
 class SavedJob(Document):
     account: Link[Account]
