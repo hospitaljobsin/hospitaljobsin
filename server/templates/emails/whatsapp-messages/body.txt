@@ -1,0 +1,17 @@
+{% extends "emails/base/body.txt" %}
+
+{% block title %}
+{{ message_count }} WhatsApp Messages Generated
+{% endblock%}
+
+{% block content %}
+Hello Support Team,
+
+{{ message_count }} new WhatsApp messages have been generated. Please post them in our WhatsApp Channel.
+
+Please find the attached zip file containing individual text files for each message.
+Each file is named with the job details for easy identification.
+
+Best regards,
+{{ app_name }} System
+{% endblock %}

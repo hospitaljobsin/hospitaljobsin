@@ -4,6 +4,8 @@ from typing import Literal
 
 SUPPORT_EMAIL = "support@hospitaljobs.in"
 
+SENDER_EMAIL = "noreply@hospitaljobs.in"
+
 APP_NAME = "Hospital Jobs"
 
 # pagination

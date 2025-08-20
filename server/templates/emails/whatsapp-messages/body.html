@@ -1,0 +1,15 @@
+{% extends "emails/base/body.html" %}
+
+{% block title %}
+{{ message_count }} WhatsApp Messages Generated
+{% endblock%}
+
+{% block content %}
+<h2>WhatsApp Messages Generated</h2>
+<p>Hello Support Team,</p>
+<p><strong>{{ message_count }} WhatsApp messages</strong> have been generated for today's job postings. Please post them in our WhatsApp Channel.</p>
+<p>Please find the attached zip file containing individual text files for each message.</p>
+<p>Each file is named with the job details for easy identification.</p>
+<br>
+<p>Best regards,<br>{{ app_name }} System</p>
+{% endblock %}

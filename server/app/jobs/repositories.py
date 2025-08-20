@@ -133,8 +133,8 @@ class JobRepo:
 
     async def mark_as_posted_on_whatsapp(self, job_ids: list[ObjectId]) -> None:
         """Mark a job as posted on whatsapp."""
-        await Job.find(In(Job.id, job_ids)).update_many(
-            Set(Job.whatsapp_channel_posted_at, datetime.now(UTC))
+        await Job.find(In(Job.id, job_ids)).set(
+            {Job.whatsapp_channel_posted_at: datetime.now(UTC)}
         )
 
     async def create(
