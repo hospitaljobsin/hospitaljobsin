@@ -63,8 +63,6 @@ async def oauth2_signin_callback_google(
 
     access_token = token["access_token"]
 
-    id_token = token["id_token"]
-
     redirect_uri = request.session.get("redirect_uri", app_settings.accounts_base_url)
 
     response = RedirectResponse(url=redirect_uri)

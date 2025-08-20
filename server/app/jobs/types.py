@@ -814,6 +814,10 @@ class JobType(BaseNodeType[Job]):
         description="The expiry time of the job.",
     )
 
+    is_visible: bool = strawberry.field(
+        description="Whether the job is visible for job seekers.",
+    )
+
     created_at: datetime = strawberry.field(
         description="When the job was created at.",
     )
@@ -853,6 +857,7 @@ class JobType(BaseNodeType[Job]):
             external_application_url=job.external_application_url,
             organization_id=str(job.organization.ref.id),
             embedding=job.embedding,
+            is_visible=job.is_visible,
         )
 
     @strawberry.field(  # type: ignore[misc]

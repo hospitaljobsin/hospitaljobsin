@@ -575,6 +575,7 @@ class JobRepo:
 
     async def get_all_by_organization_id(
         self,
+        *,
         organization_id: ObjectId,
         sort_by: JobSortBy,
         search_term: str | None = None,

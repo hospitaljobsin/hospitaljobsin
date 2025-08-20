@@ -29,6 +29,7 @@ const PageJobDetailMetadataFragment = graphql`
 			... on Job {
 				title
 				descriptionCleaned
+				isVisible
 			}
 			}
 		}
@@ -72,7 +73,10 @@ export async function generateMetadata({
 		};
 	}
 
-	if (data.organization.job.__typename !== "Job") {
+	if (
+		data.organization.job.__typename !== "Job" ||
+		!data.organization.job.isVisible
+	) {
 		return {
 			title: "Job Not found",
 			description: "The job you are looking for does not exist",
@@ -107,7 +111,8 @@ export default async function JobDetailPage({
 
 	if (
 		data.organization.__typename !== "Organization" ||
-		data.organization.job.__typename !== "Job"
+		data.organization.job.__typename !== "Job" ||
+		!data.organization.job.isVisible
 	) {
 		notFound();
 	}
