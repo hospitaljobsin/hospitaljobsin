@@ -24,6 +24,7 @@ from app.core.constants import (
     JobApplicantStatus,
     JobKindType,
 )
+from app.core.formatting import ensure_utc
 from app.jobs.agents.applicant_analysis import AnalysedFields
 from app.organizations.documents import Organization
 
@@ -102,9 +103,8 @@ class Job(Document):
     @property
     def is_visible(self) -> bool:
         """Whether the job is visible for job seekers."""
-        return self.is_active and (
-            self.expires_at is None or self.expires_at > datetime.now(UTC)
-        )
+        expires_at = ensure_utc(self.expires_at)
+        return self.is_active and (expires_at is None or expires_at > datetime.now(UTC))
 
 
 class SavedJob(Document):
