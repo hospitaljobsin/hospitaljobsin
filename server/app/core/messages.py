@@ -3,7 +3,7 @@ import phonenumbers
 from jinja2 import Environment
 from phonenumbers import PhoneNumber, PhoneNumberFormat
 
-from app.config import SecretSettings, WhatsappSettings
+from app.config import TwoFactorINSettings, WhatsappSettings
 
 
 class BaseMessageSender:
@@ -39,12 +39,12 @@ class TwoFactorINSMSMessageSender(BaseMessageSender):
     def __init__(
         self,
         environment: Environment,
-        secret_settings: SecretSettings,
+        two_factor_in_settings: TwoFactorINSettings,
     ) -> None:
         super().__init__(
             environment=environment,
         )
-        self._secret_settings = secret_settings
+        self._two_factor_in_settings = two_factor_in_settings
 
     async def send_otp_message(
         self,
@@ -52,7 +52,7 @@ class TwoFactorINSMSMessageSender(BaseMessageSender):
         otp: str,
     ) -> None:
         """Send a dummy message."""
-        url = f"https://2factor.in/API/V1/{self._secret_settings.two_factor_in_api_key.get_secret_value()}/SMS/{phonenumbers.format_number(receiver, PhoneNumberFormat.E164)}/{otp}/OTP1"
+        url = f"https://2factor.in/API/V1/{self._two_factor_in_settings.two_factor_in_api_key.get_secret_value()}/SMS/{phonenumbers.format_number(receiver, PhoneNumberFormat.E164)}/{otp}/OTP1"
         headers = {
             "Content-Type": "application/json",
         }
@@ -118,13 +118,11 @@ class WhatsappMessageSender(BaseMessageSender):
         self,
         environment: Environment,
         settings: WhatsappSettings,
-        secret_settings: SecretSettings,
     ) -> None:
         super().__init__(
             environment=environment,
         )
         self._settings = settings
-        self._secret_settings = secret_settings
 
     async def send_message(
         self,
@@ -135,7 +133,7 @@ class WhatsappMessageSender(BaseMessageSender):
         """Send a Whatsapp message."""
         url = f"https://graph.facebook.com/v22.0/{self._settings.whatsapp_phone_number_id}/messages"
         headers = {
-            "Authorization": f"Bearer {self._secret_settings.whatsapp_access_token.get_secret_value()}",
+            "Authorization": f"Bearer {self._settings.whatsapp_access_token.get_secret_value()}",
             "Content-Type": "application/json",
         }
         data = {

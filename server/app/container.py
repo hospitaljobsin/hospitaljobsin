@@ -50,11 +50,13 @@ from app.config import (
     EnvironmentSettings,
     FrontendSettings,
     GeocoderSettings,
+    Oauth2Settings,
     PosthogSettings,
     RedisSettings,
     SecretSettings,
     TesseractSettings,
     TSettings,
+    TwoFactorINSettings,
     WhatsappSettings,
     get_settings,
 )
@@ -152,6 +154,8 @@ settings_classes: list[type[BaseSettings]] = [
     PosthogSettings,
     EnvironmentSettings,
     FrontendSettings,
+    TwoFactorINSettings,
+    Oauth2Settings,
 ]
 
 

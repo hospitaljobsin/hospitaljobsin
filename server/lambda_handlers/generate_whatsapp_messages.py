@@ -1,6 +1,5 @@
 import asyncio
 import json
-import os
 import shutil
 import tempfile
 import zipfile
@@ -9,15 +8,15 @@ from pathlib import Path
 
 from app.config import DatabaseSettings, EnvironmentSettings, get_settings
 from app.container import create_container
-from app.core.constants import SENDER_EMAIL, SUPPORT_EMAIL
+from app.core.constants import SUPPORT_EMAIL
 from app.core.emails import BaseEmailSender
 from app.core.instrumentation import initialize_instrumentation
 from app.database import initialize_database
 from app.jobs.documents import Job
+from app.jobs.repositories import JobRepo
 from app.logger import setup_logging
 from aws_lambda_powertools.utilities.data_classes import EventBridgeEvent, event_source
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from beanie.operators import In, Or
 from bson import ObjectId
 from structlog import get_logger
 
@@ -60,19 +59,10 @@ def lambda_handler(event: EventBridgeEvent, context: LambdaContext) -> str:
 async def process_wa_messages_generation_event() -> str:
     """Process the daily WhatsApp message generation job."""
     async with container.context() as ctx:
-        # TODO: job repo needs to connect to redis client. need to fix this.
-        # job_repo = await ctx.resolve(JobRepo)
+        job_repo = await ctx.resolve(JobRepo)
         email_sender = await ctx.resolve(BaseEmailSender)
 
-        # TODO: job repo needs to connect to redis client. need to fix this.
-        # unposted_jobs = await job_repo.get_for_whatsapp_message_generation()
-        unposted_jobs = await Job.find(
-            Job.is_active == True,
-            Job.whatsapp_channel_posted_at == None,
-            Or(Job.expires_at == None, Job.expires_at > datetime.now(UTC)),
-            fetch_links=True,
-            nesting_depth=2,
-        ).to_list()
+        unposted_jobs = await job_repo.get_for_whatsapp_message_generation()
         wa_messages = [
             format_job_for_whatsapp_message(job=job) for job in unposted_jobs
         ]
@@ -91,12 +81,8 @@ async def process_wa_messages_generation_event() -> str:
             # Clean up temporary files
             cleanup_temp_files(zip_file_path)
 
-        # TODO: job repo needs to connect to redis client. need to fix this.
-        # await job_repo.mark_as_posted_on_whatsapp(
-        #     [ObjectId(job.id) for job in unposted_jobs]
-        # )
-        await Job.find(In(Job.id, [ObjectId(job.id) for job in unposted_jobs])).set(
-            {Job.whatsapp_channel_posted_at: datetime.now(UTC)}
+        await job_repo.mark_as_posted_on_whatsapp(
+            [ObjectId(job.id) for job in unposted_jobs]
         )
         return json.dumps({"status": "ok", "jobs_processed": len(unposted_jobs)})
 
@@ -107,18 +93,16 @@ async def send_whatsapp_messages_email(
     """Send email with zip attachment using the email template."""
     try:
         # Read the zip file
-        with open(zip_file_path, "rb") as f:
+        with Path(zip_file_path).open("rb") as f:
             zip_content = f.read()
 
         # Prepare context for the template
         context = {
-            "app_name": "HospitalJobs.in",
-            "app_url": "https://hospitaljobs.in",
             "message_count": message_count,
         }
 
         # Prepare attachment
-        zip_filename = os.path.basename(zip_file_path)
+        zip_filename = Path(zip_file_path).name
         attachments = [(zip_filename, zip_content, "application/zip")]
 
         # Send email using template
@@ -126,7 +110,6 @@ async def send_whatsapp_messages_email(
             receiver=SUPPORT_EMAIL,
             template="whatsapp-messages",
             context=context,
-            sender=SENDER_EMAIL,
             attachments=attachments,
         )
 
@@ -147,7 +130,7 @@ async def create_message_files_and_zip(wa_messages: list[str], jobs: list[Job]) 
             filename = f"job_{i + 1}_{job.organization.slug}_{job.slug}.txt"
             file_path = temp_path / filename
 
-            with open(file_path, "w", encoding="utf-8") as f:
+            with Path(file_path).open("w", encoding="utf-8") as f:
                 f.write(message.strip())
 
         # Create zip file
@@ -160,7 +143,7 @@ async def create_message_files_and_zip(wa_messages: list[str], jobs: list[Job]) 
                 zipf.write(file_path, file_path.name)
 
         # Copy zip to a persistent location (Lambda /tmp directory)
-        persistent_zip_path = f"/tmp/{zip_filename}"
+        persistent_zip_path = f"/tmp/{zip_filename}"  # noqa: S108
 
         shutil.copy2(zip_path, persistent_zip_path)
 
@@ -170,8 +153,8 @@ async def create_message_files_and_zip(wa_messages: list[str], jobs: list[Job]) 
 def cleanup_temp_files(zip_file_path: str) -> None:
     """Clean up temporary files."""
     try:
-        if os.path.exists(zip_file_path):
-            os.remove(zip_file_path)
+        if Path(zip_file_path).exists():
+            Path(zip_file_path).unlink()
             logger.info(f"Cleaned up temporary file: {zip_file_path}")
     except Exception as e:
         logger.warning(f"Failed to clean up temporary file {zip_file_path}: {e!s}")
@@ -219,7 +202,3 @@ def format_job_for_whatsapp_message(job: Job) -> str:
 🔗 *Apply Now:*
 https://hospitaljobs.in/organizations/{job.organization.slug}/jobs/{job.slug}
         """
-
-
-if __name__ == "__main__":
-    loop.run_until_complete(process_wa_messages_generation_event())

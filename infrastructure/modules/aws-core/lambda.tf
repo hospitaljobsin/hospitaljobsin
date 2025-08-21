@@ -537,6 +537,10 @@ resource "aws_lambda_function" "automation_generate_wa_messages" {
     variables = {
       SERVER_DATABASE_URL              = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
       SERVER_DEFAULT_DATABASE_NAME     = var.mongodb_database_name
+      SERVER_REDIS_HOST                = tostring(local.redis_host)
+      SERVER_REDIS_PORT                = tostring(local.redis_port)
+      SERVER_REDIS_USERNAME            = "default"
+      SERVER_REDIS_SSL                 = "True"
       SERVER_LOG_LEVEL                 = "DEBUG"
       SERVER_DEBUG                     = "True"
       SERVER_ENVIRONMENT               = "production"
@@ -555,11 +559,11 @@ resource "aws_lambda_function" "automation_generate_wa_messages" {
 
 # EventBridge rule to trigger automation_generate_wa_messages lambda daily
 resource "aws_cloudwatch_event_rule" "automation_generate_wa_messages_schedule" {
-  count       = var.environment_name == "production" ? 1 : 0
-  name        = "${var.resource_prefix}-automation-generate-wa-messages-schedule"
-  description = "Trigger automation_generate_wa_messages lambda function daily"
-  # schedule_expression = "cron(0 0 * * ? *)" # Every day at midnight UTC
-  schedule_expression = "cron(0/2 * * * ? *)" # Every 2 minutes
+  count               = var.environment_name == "production" ? 1 : 0
+  name                = "${var.resource_prefix}-automation-generate-wa-messages-schedule"
+  description         = "Trigger automation_generate_wa_messages lambda function daily"
+  schedule_expression = "cron(0 0 * * ? *)" # Every day at midnight UTC
+  # schedule_expression = "cron(0/2 * * * ? *)" # Every 2 minutes
   tags = {
     Environment = var.environment_name
   }
