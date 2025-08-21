@@ -13,10 +13,12 @@ async function findVerificationCode({
 	emailMessage: Email;
 	context: PlaywrightTestArgs["context"];
 }): Promise<string> {
+	if (!emailMessage.html) {
+		throw new Error("Email message not found");
+	}
+
 	const emailPage = await context.newPage();
-	await emailPage.goto(
-		`${env.MAILCATCHER_BASE_URL}/messages/${emailMessage.id}.html`,
-	);
+	await emailPage.setContent(emailMessage.html);
 
 	const verificationCode = await emailPage.evaluate(() => {
 		const codeElement = document.querySelector(".btn-primary h1");
@@ -190,6 +192,9 @@ test.describe("Sign Up Page", () => {
 		});
 
 		expect(emailMessage).not.toBeNull();
+		if (!emailMessage) {
+			throw new Error("Email message not found");
+		}
 		const verificationCode = await findVerificationCode({
 			emailMessage,
 			context,

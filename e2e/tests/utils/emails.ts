@@ -6,7 +6,7 @@ export type Email = {
 	id: number;
 	recipients: string[];
 	subject: string;
-	html?: string;
+	html: string | undefined;
 };
 
 // Initialize mailjs instance for staging environment
@@ -49,10 +49,56 @@ export async function findLastEmail({
 	timeout?: number;
 }): Promise<Email | null> {
 	if (env.ENVIRONMENT === "staging") {
-		return findLastEmailStaging({ filter, inboxAddress, timeout });
+		return findLastEmailStaging({ filter, inboxAddress, timeout, request });
 	}
 
 	return findLastEmailTesting({ request, filter, inboxAddress, timeout });
+}
+
+/**
+ * Get the HTML content of an email by its ID.
+ * This function works in both testing and staging environments.
+ */
+export async function getEmailHtml({
+	request,
+	messageId,
+}: {
+	request: APIRequestContext;
+	messageId: string;
+}): Promise<string | undefined> {
+	if (env.ENVIRONMENT === "staging") {
+		const message = await mailjs.getMessage(messageId);
+
+		if (!message.status || !message.data) {
+			return undefined;
+		}
+
+		// Handle html content - it can be a string or array of strings
+		let html = "";
+		if (typeof message.data.html === "string") {
+			html = message.data.html;
+		} else if (Array.isArray(message.data.html)) {
+			html = message.data.html.join("");
+		}
+
+		return html || undefined;
+	}
+
+	// For testing environment, fetch HTML from mailcatcher
+	try {
+		const response = await request.get(
+			`${env.MAILCATCHER_BASE_URL}/messages/${messageId}.html`,
+		);
+
+		if (response.ok()) {
+			return await response.text();
+		}
+
+		return undefined;
+	} catch (error) {
+		console.warn(`Failed to fetch HTML for email ${messageId}:`, error);
+		return undefined;
+	}
 }
 
 // Internal implementation functions below
@@ -125,7 +171,15 @@ async function findLastEmailTesting({
 
 				const email = filteredEmails[filteredEmails.length - 1];
 				if (email) {
-					return email;
+					// Fetch HTML content for the email
+					const htmlContent = await getEmailHtml({
+						request,
+						messageId: String(email.id),
+					});
+					return {
+						...email,
+						html: htmlContent || undefined,
+					};
 				}
 
 				// Wait for 100ms before checking again
@@ -145,9 +199,11 @@ async function findLastEmailTesting({
  */
 async function findLastEmailStaging({
 	filter,
+	request,
 	inboxAddress,
 	timeout = 5000,
 }: {
+	request: APIRequestContext;
 	filter?: (email: Email) => boolean;
 	inboxAddress: string;
 	timeout?: number;
@@ -174,7 +230,13 @@ async function findLastEmailStaging({
 
 				if (filteredEmails.length > 0) {
 					const lastEmail = filteredEmails[filteredEmails.length - 1];
-					return lastEmail;
+					return {
+						...lastEmail,
+						html: await getEmailHtml({
+							request,
+							messageId: String(lastEmail.id),
+						}),
+					};
 				}
 
 				// Wait for 100ms before checking again
