@@ -21,7 +21,7 @@ concurrency:
 jobs:
   setup-aws-infrastructure:
     environment: staging
-    name: Setup AWS Infrastructure
+    name: Wake up Infrastructure
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -116,7 +116,7 @@ jobs:
 
   cleanup-aws-infrastructure:
     environment: staging
-    name: Cleanup AWS Infrastructure
+    name: Cleanup Infrastructure
     needs: test-e2e
     runs-on: ubuntu-latest
     if: always()
