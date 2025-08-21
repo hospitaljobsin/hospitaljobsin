@@ -20,6 +20,23 @@ from pydantic_settings import (
 from tenacity import retry, retry_if_result
 
 
+@lru_cache(maxsize=128)
+@retry(
+    retry=retry_if_result(
+        lambda response: response.status_code != HTTPStatus.OK,
+    )
+)
+def _fetch_secret_payload_cached(secret_id: str):
+    """Fetch secret payload from AWS Parameters and Secrets Extension."""
+    port = os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT", "2773")
+    session_token = os.getenv("AWS_SESSION_TOKEN", "")
+    url = f"http://localhost:{port}/secretsmanager/get?secretId={secret_id}"
+    headers = {"X-Aws-Parameters-Secrets-Token": session_token}
+    with httpx.Client() as client:
+        response = client.get(url, headers=headers)
+    return response
+
+
 class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
     _secret_id: str
 
@@ -42,21 +59,8 @@ class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
             env_parse_enums=env_parse_enums,
         )
 
-    @retry(
-        retry=retry_if_result(
-            lambda response: response.status_code != HTTPStatus.OK,
-        )
-    )
-    def _fetch_secret_payload(self):
-        port = os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT", 2773)
-        url = f"http://localhost:{port}/secretsmanager/get?secretId={self._secret_id}"
-        headers = {"X-Aws-Parameters-Secrets-Token": os.getenv("AWS_SESSION_TOKEN", "")}
-        with httpx.Client() as client:
-            response = client.get(url, headers=headers)
-        return response
-
     def _load_env_vars(self) -> Mapping[str, str | None]:
-        response = self._fetch_secret_payload()
+        response = _fetch_secret_payload_cached(self._secret_id)
 
         payload = response.json()
 
@@ -110,7 +114,7 @@ MongoSRVDsn = Annotated[
 ]
 
 
-class EnvironmentSettings(BaseSettings):
+class EnvironmentSettings(BaseSecretSettings):
     debug: bool
     environment: Environment = Environment.development
 
@@ -145,7 +149,7 @@ class EnvironmentSettings(BaseSettings):
         return self._is_environment(Environment.staging)
 
 
-class AppSettings(BaseSettings):
+class AppSettings(BaseSecretSettings):
     host: Annotated[
         str,
         Field(
@@ -202,7 +206,7 @@ class AppSettings(BaseSettings):
     )
 
 
-class FrontendSettings(BaseSettings):
+class FrontendSettings(BaseSecretSettings):
     # accounts config
     accounts_base_url: str = "http://localtest.me:5002"
 
@@ -219,7 +223,7 @@ class FrontendSettings(BaseSettings):
     )
 
 
-class DatabaseSettings(BaseSettings):
+class DatabaseSettings(BaseSecretSettings):
     # database config
 
     database_url: Annotated[
@@ -258,7 +262,7 @@ class RedisSettings(BaseSecretSettings):
     )
 
 
-class SentrySettings(BaseSettings):
+class SentrySettings(BaseSecretSettings):
     # sentry dsn
     sentry_dsn: str
 
@@ -316,7 +320,7 @@ class SecretSettings(BaseSecretSettings):
     )
 
 
-class TesseractSettings(BaseSettings):
+class TesseractSettings(BaseSecretSettings):
     tesseract_data_path: str
 
     model_config = SettingsConfigDict(
@@ -339,7 +343,7 @@ class WhatsappSettings(BaseSecretSettings):
     )
 
 
-class EmailSettings(BaseSettings):
+class EmailSettings(BaseSecretSettings):
     # email config
 
     email_provider: Literal["smtp", "aws_ses"] = "smtp"
@@ -421,7 +425,7 @@ class EmailSettings(BaseSettings):
         return values
 
 
-class AWSSettings(BaseSettings):
+class AWSSettings(BaseSecretSettings):
     # AWS Config
 
     s3_bucket_name: str
@@ -441,7 +445,7 @@ class AWSSettings(BaseSettings):
     )
 
 
-class AuthSettings(BaseSettings):
+class AuthSettings(BaseSecretSettings):
     session_user_cookie_name: str = "user_session"
 
     analytics_preference_cookie_name: str = "analytics_preference"
@@ -492,7 +496,7 @@ class AuthSettings(BaseSettings):
     )
 
 
-class GeocoderSettings(BaseSettings):
+class GeocoderSettings(BaseSecretSettings):
     # geocoder config
     geocoding_provider: Literal["nominatim", "aws_location"] = "nominatim"
 
