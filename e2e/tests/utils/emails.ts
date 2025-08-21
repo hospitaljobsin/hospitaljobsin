@@ -132,15 +132,18 @@ async function registerEmailStaging({
 	const registerResponse = await mailjs.register(email, password);
 
 	if (!registerResponse.status) {
-		const errorMessage =
-			registerResponse.message ||
-			"Unknown error occurred during email registration";
 		console.error("Email registration failed:", {
 			status: registerResponse.status,
 			message: registerResponse.message,
 			response: registerResponse,
 		});
-		throw new Error(`Failed to register email: ${errorMessage}`);
+		throw new Error(
+			`Failed to register email: ${JSON.stringify({
+				status: registerResponse.status,
+				message: registerResponse.message,
+				response: registerResponse,
+			})}`,
+		);
 	}
 
 	console.log(`Successfully registered email: ${email}`);
@@ -281,14 +284,18 @@ async function getMailbox(
 		// Login to mailjs
 		const loginResponse = await mailjs.login(email, password);
 		if (!loginResponse.status) {
-			const errorMessage =
-				loginResponse.message || "Unknown error occurred during login";
 			console.error("Mailjs login failed:", {
 				status: loginResponse.status,
 				message: loginResponse.message,
 				response: loginResponse,
 			});
-			throw new Error(`Failed to login to mailjs: ${errorMessage}`);
+			throw new Error(
+				`Failed to login to mailjs: ${JSON.stringify({
+					status: loginResponse.status,
+					message: loginResponse.message,
+					response: loginResponse,
+				})}`,
+			);
 		}
 
 		// Get messages

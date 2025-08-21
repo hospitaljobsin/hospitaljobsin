@@ -19,7 +19,7 @@ async def teardown_test_database() -> None:
     settings = get_settings(DatabaseSettings)
     client: AsyncIOMotorClient = AsyncIOMotorClient(str(settings.database_url))
 
-    database = client.get_default_database()
+    database = client.get_default_database(default=settings.default_database_name)
 
     collections = await database.list_collection_names()
 
