@@ -122,7 +122,15 @@ async function registerEmailStaging({
 	const registerResponse = await mailjs.register(email, password);
 
 	if (!registerResponse.status) {
-		throw new Error(`Failed to register email: ${registerResponse.message}`);
+		const errorMessage =
+			registerResponse.message ||
+			"Unknown error occurred during email registration";
+		console.error("Email registration failed:", {
+			status: registerResponse.status,
+			message: registerResponse.message,
+			response: registerResponse,
+		});
+		throw new Error(`Failed to register email: ${errorMessage}`);
 	}
 
 	console.log(`Successfully registered email: ${email}`);
@@ -263,7 +271,14 @@ async function getMailbox(
 		// Login to mailjs
 		const loginResponse = await mailjs.login(email, password);
 		if (!loginResponse.status) {
-			throw new Error(`Failed to login to mailjs: ${loginResponse.message}`);
+			const errorMessage =
+				loginResponse.message || "Unknown error occurred during login";
+			console.error("Mailjs login failed:", {
+				status: loginResponse.status,
+				message: loginResponse.message,
+				response: loginResponse,
+			});
+			throw new Error(`Failed to login to mailjs: ${errorMessage}`);
 		}
 
 		// Get messages
@@ -283,9 +298,15 @@ async function getMailbox(
 					const messageDetail = await mailjs.getMessage(message.id);
 
 					if (!messageDetail.status || !messageDetail.data) {
-						throw new Error(
-							`Failed to fetch message details: ${messageDetail.message}`,
-						);
+						const errorMessage =
+							messageDetail.message ||
+							"Unknown error occurred while fetching message details";
+						console.error("Message detail fetch failed:", {
+							status: messageDetail.status,
+							message: messageDetail.message,
+							response: messageDetail,
+						});
+						throw new Error(`Failed to fetch message details: ${errorMessage}`);
 					}
 
 					// Extract data with safe fallbacks
