@@ -92,6 +92,8 @@ jobs:
           ENVIRONMENT: staging
           STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN: ${{ vars.STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN }}
           STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN: ${{ vars.STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN }}
+          BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
+          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
 
       # Always scale ECS + ASG down after tests
       - name: Scale down ECS service and ASG

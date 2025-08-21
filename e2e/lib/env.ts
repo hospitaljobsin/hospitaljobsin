@@ -15,6 +15,8 @@ export const env = createEnv({
 		AWS_REGION: z.string().default("us-east-1"),
 		// Mailjs configuration for staging environment (optional password override)
 		MAILJS_PASSWORD: z.string().default("Pass@123"),
+		BASIC_AUTH_USERNAME: z.string().optional(),
+		BASIC_AUTH_PASSWORD: z.string().optional(),
 	},
 
 	/**
@@ -33,5 +35,7 @@ export const env = createEnv({
 			process.env.STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN,
 		AWS_REGION: process.env.AWS_REGION,
 		MAILJS_PASSWORD: process.env.MAILJS_PASSWORD,
+		BASIC_AUTH_USERNAME: process.env.BASIC_AUTH_USERNAME,
+		BASIC_AUTH_PASSWORD: process.env.BASIC_AUTH_PASSWORD,
 	},
 });

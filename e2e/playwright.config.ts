@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { getBasicAuthHeaders, isBasicAuthConfigured } from "./lib/basic-auth";
 
 /**
  * Read environment variables from file.
@@ -30,6 +31,11 @@ export default defineConfig({
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: "on",
+
+		// Add basic auth headers to all requests if configured
+		...(isBasicAuthConfigured() && {
+			extraHTTPHeaders: getBasicAuthHeaders(),
+		}),
 	},
 
 	globalSetup: require.resolve("./tests/global.setup.ts"),
