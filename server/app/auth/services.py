@@ -814,10 +814,23 @@ class AuthService:
         if account is None:
             is_signup = True
             phone_number = await self._get_google_phone_number(access_token)
+            # Only add phone number if no account exists with that phone number already.
+            existing_account_with_phone_number = None
+
+            if phone_number is not None:
+                existing_account_with_phone_number = (
+                    await self._account_repo.get_by_phone_number(phone_number)
+                )
+
             account = await self._account_repo.create(
                 email=user_info["email"],
                 full_name=user_info["name"],
-                phone_number=phone_number,
+                phone_number=phone_number
+                if (
+                    existing_account_with_phone_number is None
+                    and phone_number is not None
+                )
+                else None,
                 # set initial password to None for the user
                 password=None,
                 auth_providers=["oauth_google"],
@@ -832,10 +845,20 @@ class AuthService:
             )
         elif account.phone_number is None:
             phone_number = await self._get_google_phone_number(access_token)
-            await self._account_repo.update(
-                account=account,
-                phone_number=phone_number,
-            )
+
+            # Only add phone number if no account exists with that phone number already.
+            existing_account_with_phone_number = None
+
+            if phone_number is not None:
+                existing_account_with_phone_number = (
+                    await self._account_repo.get_by_phone_number(phone_number)
+                )
+
+            if existing_account_with_phone_number is None and phone_number is not None:
+                await self._account_repo.update(
+                    account=account,
+                    phone_number=phone_number,
+                )
 
         if "oauth_google" not in account.auth_providers:
             # user already exists, but this is the first time they are
