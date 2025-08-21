@@ -233,6 +233,11 @@ Follow these steps to deploy the project to the cloud:
 		- *Authorized domains:*
 			- hospitaljobs.in
 
+	- **OAuth Consent Screen Configuration:**
+		- Under "Scopes", add the following scope:
+			- `https://www.googleapis.com/auth/user.phonenumbers.read`
+		- Request verification for your OAuth app to ensure compliance with Google's policies
+
 ### 4. Cloudflare Setup
 - [Go to the Cloudflare dashboard](https://dash.cloudflare.com/)
 - Login to your cloudflare account

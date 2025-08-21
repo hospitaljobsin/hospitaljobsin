@@ -7,6 +7,7 @@ RUN apk update
 # Install pnpm
 RUN npm install -g pnpm@latest-10
 
+
 # Configure pnpm global
 ENV PNPM_HOME=/app/.pnpm
 ENV PATH=$PATH:$PNPM_HOME
