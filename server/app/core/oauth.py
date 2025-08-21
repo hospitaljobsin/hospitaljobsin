@@ -1,9 +1,9 @@
 from authlib.integrations.starlette_client import OAuth
 
-from app.config import SecretSettings
+from app.config import Oauth2Settings
 
 
-def create_oauth_client(settings: SecretSettings) -> OAuth:
+def create_oauth_client(settings: Oauth2Settings) -> OAuth:
     """Create an Oauth client."""
     oauth_client = OAuth()
 

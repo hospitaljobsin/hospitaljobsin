@@ -537,6 +537,10 @@ resource "aws_lambda_function" "automation_generate_wa_messages" {
     variables = {
       SERVER_DATABASE_URL              = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
       SERVER_DEFAULT_DATABASE_NAME     = var.mongodb_database_name
+      SERVER_REDIS_HOST                = tostring(local.redis_host)
+      SERVER_REDIS_PORT                = tostring(local.redis_port)
+      SERVER_REDIS_USERNAME            = "default"
+      SERVER_REDIS_SSL                 = "True"
       SERVER_LOG_LEVEL                 = "DEBUG"
       SERVER_DEBUG                     = "True"
       SERVER_ENVIRONMENT               = "production"
