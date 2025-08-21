@@ -58,14 +58,14 @@ jobs:
 
           echo "Scaling up ECS service..."
           aws ecs update-service \
-            --cluster ${{ vars.AWS_ECS_CLUSTER }} \
-            --service ${{ vars.AWS_ECS_SERVICE }} \
+            --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+            --service ${{ vars.AWS_BACKEND_ECS_SERVICE }} \
             --desired-count 1
 
           echo "Waiting for ECS service to stabilize..."
           aws ecs wait services-stable \
-            --cluster ${{ vars.AWS_ECS_CLUSTER }} \
-            --services ${{ vars.AWS_ECS_SERVICE }}
+            --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+            --services ${{ vars.AWS_BACKEND_ECS_SERVICE }}
 
       - name: Install dependencies
         run: pnpm --filter e2e install --frozen-lockfile
@@ -100,8 +100,8 @@ jobs:
         run: |
           echo "Scaling down ECS service..."
           aws ecs update-service \
-            --cluster ${{ vars.AWS_ECS_CLUSTER }} \
-            --service ${{ vars.AWS_ECS_SERVICE }} \
+            --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+            --service ${{ vars.AWS_BACKEND_ECS_SERVICE }} \
             --desired-count 0
 
           echo "Scaling down ASG..."
