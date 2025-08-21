@@ -813,6 +813,7 @@ class AuthService:
         account = await self._account_repo.get_by_email(email=user_info["email"])
         if account is None:
             is_signup = True
+
             phone_number = await self._get_google_phone_number(access_token)
             # Only add phone number if no account exists with that phone number already.
             existing_account_with_phone_number = None
