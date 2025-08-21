@@ -155,6 +155,7 @@ COPY app/ ./app/
 COPY scripts/ ./scripts/
 COPY templates/ ./templates/
 COPY lambda_handlers/ ./lambda_handlers/
+COPY tests/ ./tests/
 COPY pyproject.toml uv.lock query_map.json ./
 
 # Sync the project

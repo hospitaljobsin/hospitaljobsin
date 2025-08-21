@@ -7,18 +7,57 @@ env:
   GOOGLE_CLIENT_ID: ${{ secrets.TEST_GOOGLE_OAUTH_CLIENT_ID }}
   GOOGLE_CLIENT_SECRET: ${{ secrets.TEST_GOOGLE_OAUTH_CLIENT_SECRET }}
   SEEKER_PORTAL_UI_SENTRY_DSN: ${{secrets.SEEKER_PORTAL_SENTRY_DSN}}
-  RECRUITER_PORTAL_UI_SENTRY_DSN: ${{secrets.RECRUITER_PORTAL_SENTRY_DSN}}
+  RECRUITER_PORTAL_UI_SENTRY_DSN: ${{secrets.RECRUITER_PORTAL_UI_SENTRY_DSN}}
   ACCOUNTS_UI_SENTRY_DSN:  ${{secrets.ACCOUNTS_SENTRY_DSN}}
   SERVER_SENTRY_DSN: ${{secrets.SERVER_SENTRY_DSN}}
+  # repo-level and non-env-specific secrets/vars
+  AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
 
 concurrency:
   group: e2e-tests-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
   cancel-in-progress: true
 
 jobs:
+  setup-aws-infrastructure:
+    environment: staging
+    name: Wake up Infrastructure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Configure AWS CLI
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      # Scale ECS + ASG up
+      - name: Scale up ECS service and ASG
+        run: |
+          echo "Scaling up ASG..."
+          aws autoscaling update-auto-scaling-group \
+            --auto-scaling-group-name ${{ vars.AWS_ASG_NAME }} \
+            --min-size 1 \
+            --desired-capacity 1
+
+          echo "Scaling up ECS service..."
+          aws ecs update-service \
+            --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+            --service ${{ vars.AWS_BACKEND_ECS_SERVICE }} \
+            --desired-count 1
+
+          echo "Waiting for ECS service to stabilize..."
+          aws ecs wait services-stable \
+            --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+            --services ${{ vars.AWS_BACKEND_ECS_SERVICE }}
+
   test-e2e:
     environment: staging
     name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
+    needs: setup-aws-infrastructure
     strategy:
       fail-fast: false
       matrix:
@@ -35,34 +74,6 @@ jobs:
           node-version: 24
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
-
-      # Configure AWS CLI
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      # Scale ECS + ASG up
-      - name: Scale up ECS service and ASG
-        run: |
-          echo "Scaling up ASG..."
-          aws autoscaling update-auto-scaling-group \
-            --auto-scaling-group-name ${{ vars.AWS_ASG_NAME }} \
-            --min-size 1 \
-            --desired-capacity 1
-
-          echo "Scaling up ECS service..."
-          aws ecs update-service \
-            --cluster ${{ vars.AWS_ECS_CLUSTER }} \
-            --service ${{ vars.AWS_ECS_SERVICE }} \
-            --desired-count 1
-
-          echo "Waiting for ECS service to stabilize..."
-          aws ecs wait services-stable \
-            --cluster ${{ vars.AWS_ECS_CLUSTER }} \
-            --services ${{ vars.AWS_ECS_SERVICE }}
 
       - name: Install dependencies
         run: pnpm --filter e2e install --frozen-lockfile
@@ -87,26 +98,11 @@ jobs:
           API_BASE_URL: ${{ vars.SST_API_URL }}
           ACCOUNTS_UI_BASE_URL: ${{ vars.SST_ACCOUNTS_BASE_URL }}
           SEEKER_PORTAL_BASE_URL: ${{ vars.SST_SEEKER_PORTAL_BASE_URL }}
-          MAILCATCHER_BASE_URL: http://localhost:1080
           ENVIRONMENT: staging
           STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN: ${{ vars.STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN }}
           STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN: ${{ vars.STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN }}
-
-      # Always scale ECS + ASG down after tests
-      - name: Scale down ECS service and ASG
-        if: always()
-        run: |
-          echo "Scaling down ECS service..."
-          aws ecs update-service \
-            --cluster ${{ vars.AWS_ECS_CLUSTER }} \
-            --service ${{ vars.AWS_ECS_SERVICE }} \
-            --desired-count 0
-
-          echo "Scaling down ASG..."
-          aws autoscaling update-auto-scaling-group \
-            --auto-scaling-group-name ${{ vars.AWS_ASG_NAME }} \
-            --min-size 0 \
-            --desired-capacity 0
+          BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
+          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
 
       - name: Upload Playwright Report and Traces
         uses: actions/upload-artifact@v4
@@ -117,3 +113,35 @@ jobs:
             e2e/playwright-report/
             e2e/test-results/**/*.zip
           retention-days: 30
+
+  cleanup-aws-infrastructure:
+    environment: staging
+    name: Cleanup Infrastructure
+    needs: test-e2e
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+
+      # Configure AWS CLI
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      # Always scale ECS + ASG down after tests
+      - name: Scale down ECS service and ASG
+        run: |
+          echo "Scaling down ECS service..."
+          aws ecs update-service \
+            --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+            --service ${{ vars.AWS_BACKEND_ECS_SERVICE }} \
+            --desired-count 0
+
+          echo "Scaling down ASG..."
+          aws autoscaling update-auto-scaling-group \
+            --auto-scaling-group-name ${{ vars.AWS_ASG_NAME }} \
+            --min-size 0 \
+            --desired-capacity 0

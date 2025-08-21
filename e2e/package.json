@@ -18,6 +18,7 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-lambda": "^3.828.0",
+		"@cemalgnlts/mailjs": "^3.1.1",
 		"@heroui/react": "2.8.2",
 		"@heroui/theme": "2.4.20",
 		"@next/bundle-analyzer": "^15.3.5",

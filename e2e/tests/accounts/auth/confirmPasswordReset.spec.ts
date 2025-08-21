@@ -3,7 +3,7 @@ import { authTest, expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import { TOTP_USER_SECRET } from "@/tests/utils/constants";
-import { findLastEmail } from "@/tests/utils/mailcatcher";
+import { findLastEmail } from "@/tests/utils/emails";
 import type { PlaywrightTestArgs } from "@playwright/test";
 
 // TODO: increase test timeout here. the delay is happening because of cloudflare errors
@@ -46,25 +46,37 @@ test.describe("Confirm Password Reset Page", () => {
 		const emailMessage = await findLastEmail({
 			request,
 			timeout: 10_000,
-			filter: (e) =>
-				e.recipients.includes(`<${emailAddress}>`) &&
-				e.subject.includes("Password Reset Request"),
+			inboxAddress: emailAddress,
+			filter: (e) => e.subject.includes("Password Reset Request"),
 		});
 
 		expect(emailMessage).not.toBeNull();
+		expect(emailMessage?.html).toBeDefined();
 
-		await page.goto(
-			`${env.MAILCATCHER_BASE_URL}/messages/${emailMessage.id}.html`,
-		);
+		if (!emailMessage || !emailMessage.html) {
+			throw new Error("Email message or HTML content not found");
+		}
 
-		// Extract the reset password link
-		const resetLink = await page.getAttribute(
+		// Create a new page context to parse the email HTML
+		const emailPage = await page.context().newPage();
+
+		// Load the email HTML content directly into the page
+		await emailPage.setContent(emailMessage.html);
+
+		// Extract the reset password link from the email content
+		const resetLink = await emailPage.getAttribute(
 			'a[href*="reset-password"]',
 			"href",
 		);
 
 		expect(resetLink).not.toBeNull();
 
+		if (!resetLink) {
+			throw new Error("Reset link not found in email");
+		}
+
+		// Close the email page and navigate to the reset link
+		await emailPage.close();
 		await page.goto(resetLink);
 	});
 
@@ -203,25 +215,37 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		const emailMessage = await findLastEmail({
 			request,
 			timeout: 10_000,
-			filter: (e) =>
-				e.recipients.includes(`<${emailAddress}>`) &&
-				e.subject.includes("Password Reset Request"),
+			inboxAddress: emailAddress,
+			filter: (e) => e.subject.includes("Password Reset Request"),
 		});
 
 		expect(emailMessage).not.toBeNull();
+		expect(emailMessage?.html).toBeDefined();
 
-		await page.goto(
-			`${env.MAILCATCHER_BASE_URL}/messages/${emailMessage.id}.html`,
-		);
+		if (!emailMessage || !emailMessage.html) {
+			throw new Error("Email message or HTML content not found");
+		}
 
-		// Extract the reset password link
-		const resetLink = await page.getAttribute(
+		// Create a new page context to parse the email HTML
+		const emailPage = await page.context().newPage();
+
+		// Load the email HTML content directly into the page
+		await emailPage.setContent(emailMessage.html);
+
+		// Extract the reset password link from the email content
+		const resetLink = await emailPage.getAttribute(
 			'a[href*="reset-password"]',
 			"href",
 		);
 
 		expect(resetLink).not.toBeNull();
 
+		if (!resetLink) {
+			throw new Error("Reset link not found in email");
+		}
+
+		// Close the email page and navigate to the reset link
+		await emailPage.close();
 		await page.goto(resetLink);
 	});
 
@@ -399,25 +423,37 @@ authTest.describe(
 				const emailMessage = await findLastEmail({
 					request,
 					timeout: 10_000,
-					filter: (e) =>
-						e.recipients.includes(`<${emailAddress}>`) &&
-						e.subject.includes("Password Reset Request"),
+					inboxAddress: emailAddress,
+					filter: (e) => e.subject.includes("Password Reset Request"),
 				});
 
 				expect(emailMessage).not.toBeNull();
+				expect(emailMessage?.html).toBeDefined();
 
-				await page.goto(
-					`${env.MAILCATCHER_BASE_URL}/messages/${emailMessage.id}.html`,
-				);
+				if (!emailMessage || !emailMessage.html) {
+					throw new Error("Email message or HTML content not found");
+				}
 
-				// Extract the reset password link
-				const resetLink = await page.getAttribute(
+				// Create a new page context to parse the email HTML
+				const emailPage = await page.context().newPage();
+
+				// Load the email HTML content directly into the page
+				await emailPage.setContent(emailMessage.html);
+
+				// Extract the reset password link from the email content
+				const resetLink = await emailPage.getAttribute(
 					'a[href*="reset-password"]',
 					"href",
 				);
 
 				expect(resetLink).not.toBeNull();
 
+				if (!resetLink) {
+					throw new Error("Reset link not found in email");
+				}
+
+				// Close the email page and navigate to the reset link
+				await emailPage.close();
 				await page.goto(resetLink);
 				// ensure we are not redirected here
 				await expect(page).not.toHaveURL(`${env.SEEKER_PORTAL_BASE_URL}/`);

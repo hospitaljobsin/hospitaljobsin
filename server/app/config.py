@@ -20,6 +20,23 @@ from pydantic_settings import (
 from tenacity import retry, retry_if_result
 
 
+@lru_cache(maxsize=128)
+@retry(
+    retry=retry_if_result(
+        lambda response: response.status_code != HTTPStatus.OK,
+    )
+)
+def _fetch_secret_payload_cached(secret_id: str):
+    """Fetch secret payload from AWS Parameters and Secrets Extension."""
+    port = os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT", "2773")
+    session_token = os.getenv("AWS_SESSION_TOKEN", "")
+    url = f"http://localhost:{port}/secretsmanager/get?secretId={secret_id}"
+    headers = {"X-Aws-Parameters-Secrets-Token": session_token}
+    with httpx.Client() as client:
+        response = client.get(url, headers=headers)
+    return response
+
+
 class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
     _secret_id: str
 
@@ -42,21 +59,8 @@ class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
             env_parse_enums=env_parse_enums,
         )
 
-    @retry(
-        retry=retry_if_result(
-            lambda response: response.status_code != HTTPStatus.OK,
-        )
-    )
-    def _fetch_secret_payload(self):
-        port = os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT", 2773)
-        url = f"http://localhost:{port}/secretsmanager/get?secretId={self._secret_id}"
-        headers = {"X-Aws-Parameters-Secrets-Token": os.getenv("AWS_SESSION_TOKEN", "")}
-        with httpx.Client() as client:
-            response = client.get(url, headers=headers)
-        return response
-
     def _load_env_vars(self) -> Mapping[str, str | None]:
-        response = self._fetch_secret_payload()
+        response = _fetch_secret_payload_cached(self._secret_id)
 
         payload = response.json()
 
@@ -64,6 +68,44 @@ class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
             raise Exception("SecretString missing in extension response")
 
         return json.loads(payload["SecretString"])
+
+
+class CoreSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
+        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
+
+        if aws_secret_id is not None:
+            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
+                # AWS Lambda Secrets and Parameters Extension is enabled
+                sources.append(
+                    AWSSecretsManagerExtensionSettingsSource(
+                        settings_cls,
+                        secret_id=aws_secret_id,
+                    )
+                )
+            else:
+                sources.append(
+                    AWSSecretsManagerSettingsSource(
+                        settings_cls,
+                        secret_id=aws_secret_id,
+                    )
+                )
+        return tuple(sources)
 
 
 class Environment(StrEnum):
@@ -78,15 +120,9 @@ MongoSRVDsn = Annotated[
 ]
 
 
-class EnvironmentSettings(BaseSettings):
+class EnvironmentSettings(CoreSettings):
     debug: bool
     environment: Environment = Environment.development
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
     def _is_environment(self, environment: Environment) -> bool:
         """Check whether the current environment is the given environment."""
@@ -113,7 +149,7 @@ class EnvironmentSettings(BaseSettings):
         return self._is_environment(Environment.staging)
 
 
-class AppSettings(BaseSettings):
+class AppSettings(CoreSettings):
     host: Annotated[
         str,
         Field(
@@ -163,14 +199,8 @@ class AppSettings(BaseSettings):
     # persisted queries config
     persisted_queries_path: Path = Path("query_map.json")
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
-
-class FrontendSettings(BaseSettings):
+class FrontendSettings(CoreSettings):
     # accounts config
     accounts_base_url: str = "http://localtest.me:5002"
 
@@ -180,14 +210,8 @@ class FrontendSettings(BaseSettings):
     # seeker portal config
     seeker_portal_base_url: str = "http://localtest.me:5000"
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
-
-class DatabaseSettings(BaseSettings):
+class DatabaseSettings(CoreSettings):
     # database config
 
     database_url: Annotated[
@@ -201,14 +225,8 @@ class DatabaseSettings(BaseSettings):
 
     default_database_name: str = "medicaljobs"
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
-
-class RedisSettings(BaseSettings):
+class RedisSettings(CoreSettings):
     redis_host: str
 
     redis_port: int
@@ -219,275 +237,47 @@ class RedisSettings(BaseSettings):
 
     redis_password: SecretStr | None = None
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
-        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
-
-        if aws_secret_id is not None:
-            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
-                # AWS Lambda Secrets and Parameters Extension is enabled
-                sources.append(
-                    AWSSecretsManagerExtensionSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-            else:
-                sources.append(
-                    AWSSecretsManagerSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-        return tuple(sources)
-
-
-class SentrySettings(BaseSettings):
+class SentrySettings(CoreSettings):
     # sentry dsn
     sentry_dsn: str
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
-
-class PosthogSettings(BaseSettings):
+class PosthogSettings(CoreSettings):
     # posthog config
     posthog_api_host: str
 
     posthog_api_key: SecretStr
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
-        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
-
-        if aws_secret_id is not None:
-            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
-                # AWS Lambda Secrets and Parameters Extension is enabled
-                sources.append(
-                    AWSSecretsManagerExtensionSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-            else:
-                sources.append(
-                    AWSSecretsManagerSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-        return tuple(sources)
-
-
-class TwoFactorINSettings(BaseSettings):
+class TwoFactorINSettings(CoreSettings):
     two_factor_in_api_key: SecretStr
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
-        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
-
-        if aws_secret_id is not None:
-            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
-                # AWS Lambda Secrets and Parameters Extension is enabled
-                sources.append(
-                    AWSSecretsManagerExtensionSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-            else:
-                sources.append(
-                    AWSSecretsManagerSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-        return tuple(sources)
-
-
-class Oauth2Settings(BaseSettings):
+class Oauth2Settings(CoreSettings):
     google_client_id: str
 
     google_client_secret: SecretStr
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
-        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
-
-        if aws_secret_id is not None:
-            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
-                # AWS Lambda Secrets and Parameters Extension is enabled
-                sources.append(
-                    AWSSecretsManagerExtensionSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-            else:
-                sources.append(
-                    AWSSecretsManagerSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-        return tuple(sources)
-
-
-class SecretSettings(BaseSettings):
+class SecretSettings(CoreSettings):
     captcha_secret_key: SecretStr
 
     jwe_secret_key: SecretStr
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
-        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
-
-        if aws_secret_id is not None:
-            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
-                # AWS Lambda Secrets and Parameters Extension is enabled
-                sources.append(
-                    AWSSecretsManagerExtensionSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-            else:
-                sources.append(
-                    AWSSecretsManagerSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-        return tuple(sources)
-
-
-class TesseractSettings(BaseSettings):
+class TesseractSettings(CoreSettings):
     tesseract_data_path: str
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
-
-class WhatsappSettings(BaseSettings):
+class WhatsappSettings(CoreSettings):
     # whatsapp config
     whatsapp_access_token: SecretStr
 
     whatsapp_phone_number_id: str
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
-        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
-
-        if aws_secret_id is not None:
-            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
-                # AWS Lambda Secrets and Parameters Extension is enabled
-                sources.append(
-                    AWSSecretsManagerExtensionSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-            else:
-                sources.append(
-                    AWSSecretsManagerSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-        return tuple(sources)
-
-
-class EmailSettings(BaseSettings):
+class EmailSettings(CoreSettings):
     # email config
 
     email_provider: Literal["smtp", "aws_ses"] = "smtp"
@@ -522,12 +312,6 @@ class EmailSettings(BaseSettings):
             ],
         ),
     ]
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
     @classmethod
     def model_validate(cls, values):
@@ -569,7 +353,7 @@ class EmailSettings(BaseSettings):
         return values
 
 
-class AWSSettings(BaseSettings):
+class AWSSettings(CoreSettings):
     # AWS Config
 
     s3_bucket_name: str
@@ -582,14 +366,8 @@ class AWSSettings(BaseSettings):
 
     aws_access_key_id: str | None = None
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
-
-class AuthSettings(BaseSettings):
+class AuthSettings(CoreSettings):
     session_user_cookie_name: str = "user_session"
 
     analytics_preference_cookie_name: str = "analytics_preference"
@@ -633,14 +411,8 @@ class AuthSettings(BaseSettings):
 
     password_reset_token_cooldown: int = 60 * 3
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
-
-class GeocoderSettings(BaseSettings):
+class GeocoderSettings(CoreSettings):
     # geocoder config
     geocoding_provider: Literal["nominatim", "aws_location"] = "nominatim"
 
@@ -653,12 +425,6 @@ class GeocoderSettings(BaseSettings):
     geocoder_user_agent: str | None = None
 
     geocoder_scheme: str = "http"
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
     @classmethod
     def model_validate(cls, values):

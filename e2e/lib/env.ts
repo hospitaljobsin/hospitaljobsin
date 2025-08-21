@@ -7,12 +7,16 @@ export const env = createEnv({
 		API_BASE_URL: z.string().url(),
 		ACCOUNTS_UI_BASE_URL: z.string().url(),
 		SEEKER_PORTAL_BASE_URL: z.string().url(),
-		MAILCATCHER_BASE_URL: z.string().url(),
+		MAILCATCHER_BASE_URL: z.string().url().default("http://localhost:1080"),
 		ENVIRONMENT: z.enum(["staging", "testing"]),
 		// AWS Lambda configuration for test database setup
 		STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN: z.string().optional(),
 		STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN: z.string().optional(),
 		AWS_REGION: z.string().default("us-east-1"),
+		// Mailjs configuration for staging environment (optional password override)
+		MAILJS_PASSWORD: z.string().default("Pass@123"),
+		BASIC_AUTH_USERNAME: z.string().optional(),
+		BASIC_AUTH_PASSWORD: z.string().optional(),
 	},
 
 	/**
@@ -30,5 +34,8 @@ export const env = createEnv({
 		STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN:
 			process.env.STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN,
 		AWS_REGION: process.env.AWS_REGION,
+		MAILJS_PASSWORD: process.env.MAILJS_PASSWORD,
+		BASIC_AUTH_USERNAME: process.env.BASIC_AUTH_USERNAME,
+		BASIC_AUTH_PASSWORD: process.env.BASIC_AUTH_PASSWORD,
 	},
 });

@@ -2,8 +2,12 @@ import { env } from "@/lib/env";
 import { authTest, expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import { EMAIL_VERIFICATION_TOKEN_COOLDOWN } from "@/tests/utils/constants";
-import type { Email } from "@/tests/utils/mailcatcher";
-import { findLastEmail } from "@/tests/utils/mailcatcher";
+import type { Email } from "@/tests/utils/emails";
+import {
+	findLastEmail,
+	generateUniqueEmailLabel,
+	registerNewEmail,
+} from "@/tests/utils/emails";
 import type { PlaywrightTestArgs } from "@playwright/test";
 
 async function findVerificationCode({
@@ -13,10 +17,12 @@ async function findVerificationCode({
 	emailMessage: Email;
 	context: PlaywrightTestArgs["context"];
 }): Promise<string> {
+	if (!emailMessage.html) {
+		throw new Error("Email message not found");
+	}
+
 	const emailPage = await context.newPage();
-	await emailPage.goto(
-		`${env.MAILCATCHER_BASE_URL}/messages/${emailMessage.id}.html`,
-	);
+	await emailPage.setContent(emailMessage.html);
 
 	const verificationCode = await emailPage.evaluate(() => {
 		const codeElement = document.querySelector(".btn-primary h1");
@@ -133,7 +139,9 @@ test.describe("Sign Up Page", () => {
 	});
 
 	test("should validate invalid email verification token", async ({ page }) => {
-		const emailAddress = "new-tester@outlook.com";
+		const emailAddress = await registerNewEmail({
+			label: generateUniqueEmailLabel("new-tester"),
+		});
 		await test.step("Step 1: Enter email address", async () => {
 			await page.getByLabel("Email Address").fill(emailAddress);
 
@@ -185,12 +193,14 @@ test.describe("Sign Up Page", () => {
 		const emailMessage = await findLastEmail({
 			request,
 			timeout: 10_000,
-			filter: (e) =>
-				e.recipients.includes(`<${emailAddress}>`) &&
-				e.subject.includes("Email Verification Request"),
+			inboxAddress: emailAddress,
+			filter: (e) => e.subject.includes("Email Verification Request"),
 		});
 
 		expect(emailMessage).not.toBeNull();
+		if (!emailMessage) {
+			throw new Error("Email message not found");
+		}
 		const verificationCode = await findVerificationCode({
 			emailMessage,
 			context,
@@ -459,7 +469,9 @@ test.describe("Sign Up Page", () => {
 	}) => {
 		// increase timeout to incorporate cooldown
 		test.setTimeout(45_000);
-		const emailAddress = "new-tester2@outlook.com";
+		const emailAddress = await registerNewEmail({
+			label: generateUniqueEmailLabel("new-tester2"),
+		});
 
 		// First email verification request
 
@@ -472,12 +484,14 @@ test.describe("Sign Up Page", () => {
 		const firstEmail = await findLastEmail({
 			request,
 			timeout: 10_000,
-			filter: (e) =>
-				e.recipients.includes(`<${emailAddress}>`) &&
-				e.subject.includes("Email Verification Request"),
+			inboxAddress: emailAddress,
+			filter: (e) => e.subject.includes("Email Verification Request"),
 		});
 
 		expect(firstEmail).not.toBeNull();
+		if (!firstEmail) {
+			throw new Error("First email not found");
+		}
 
 		// Navigate to signup page
 		await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/signup`);
@@ -494,13 +508,15 @@ test.describe("Sign Up Page", () => {
 		const secondEmail = await findLastEmail({
 			request,
 			timeout: 3_000,
-			filter: (e) =>
-				e.recipients.includes(`<${emailAddress}>`) &&
-				e.subject.includes("Email Verification Request"),
+			inboxAddress: emailAddress,
+			filter: (e) => e.subject.includes("Email Verification Request"),
 		});
 
 		// Ensure no second email was sent due to rate limit
 		expect(secondEmail).not.toBeNull();
+		if (!secondEmail) {
+			throw new Error("Second email not found");
+		}
 		expect(secondEmail.id).toEqual(firstEmail.id);
 
 		// Wait for cooldown and try again (after testing env rate limit expires)
@@ -521,13 +537,15 @@ test.describe("Sign Up Page", () => {
 		const thirdEmail = await findLastEmail({
 			request,
 			timeout: 10_000,
-			filter: (e) =>
-				e.recipients.includes(`<${emailAddress}>`) &&
-				e.subject.includes("Email Verification Request"),
+			inboxAddress: emailAddress,
+			filter: (e) => e.subject.includes("Email Verification Request"),
 		});
 
 		// Confirm third attempt succeeded after rate limit expired
 		expect(thirdEmail).not.toBeNull();
+		if (!thirdEmail) {
+			throw new Error("Third email not found");
+		}
 		expect(thirdEmail.id).not.toEqual(firstEmail.id);
 	});
 });

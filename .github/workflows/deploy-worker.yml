@@ -65,4 +65,20 @@ jobs:
         run: aws lambda update-function-code --function-name ${{ vars.AWS_AUTOMATION_GENERATE_WA_MESSAGES_FUNCTION_NAME }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
 
 
+      - name: Update AWS Lambda Staging Setup function
+        if: ${{ inputs.run-deploy && github.ref_name == 'staging' }}
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
+          IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
+        run: aws lambda update-function-code --function-name ${{ vars.STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+
+      - name: Update AWS Lambda Staging Teardown function
+        if: ${{ inputs.run-deploy && github.ref_name == 'staging' }}
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
+          IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
+        run: aws lambda update-function-code --function-name ${{ vars.STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+
       # TODO: update staging setup and teardown lambdas here
