@@ -66,6 +66,38 @@ class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
         return json.loads(payload["SecretString"])
 
 
+class BaseSecretSettings(BaseSettings):
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
+        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
+
+        if aws_secret_id is not None:
+            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
+                # AWS Lambda Secrets and Parameters Extension is enabled
+                sources.append(
+                    AWSSecretsManagerExtensionSettingsSource(
+                        settings_cls,
+                        secret_id=aws_secret_id,
+                    )
+                )
+            else:
+                sources.append(
+                    AWSSecretsManagerSettingsSource(
+                        settings_cls,
+                        secret_id=aws_secret_id,
+                    )
+                )
+        return tuple(sources)
+
+
 class Environment(StrEnum):
     development = "development"
     testing = "testing"
@@ -208,7 +240,7 @@ class DatabaseSettings(BaseSettings):
     )
 
 
-class RedisSettings(BaseSettings):
+class RedisSettings(BaseSecretSettings):
     redis_host: str
 
     redis_port: int
@@ -225,36 +257,6 @@ class RedisSettings(BaseSettings):
         extra="allow",
     )
 
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
-        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
-
-        if aws_secret_id is not None:
-            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
-                # AWS Lambda Secrets and Parameters Extension is enabled
-                sources.append(
-                    AWSSecretsManagerExtensionSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-            else:
-                sources.append(
-                    AWSSecretsManagerSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-        return tuple(sources)
-
 
 class SentrySettings(BaseSettings):
     # sentry dsn
@@ -267,7 +269,7 @@ class SentrySettings(BaseSettings):
     )
 
 
-class PosthogSettings(BaseSettings):
+class PosthogSettings(BaseSecretSettings):
     # posthog config
     posthog_api_host: str
 
@@ -279,38 +281,8 @@ class PosthogSettings(BaseSettings):
         extra="allow",
     )
 
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
-        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
 
-        if aws_secret_id is not None:
-            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
-                # AWS Lambda Secrets and Parameters Extension is enabled
-                sources.append(
-                    AWSSecretsManagerExtensionSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-            else:
-                sources.append(
-                    AWSSecretsManagerSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-        return tuple(sources)
-
-
-class TwoFactorINSettings(BaseSettings):
+class TwoFactorINSettings(BaseSecretSettings):
     two_factor_in_api_key: SecretStr
 
     model_config = SettingsConfigDict(
@@ -319,38 +291,8 @@ class TwoFactorINSettings(BaseSettings):
         extra="allow",
     )
 
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
-        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
 
-        if aws_secret_id is not None:
-            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
-                # AWS Lambda Secrets and Parameters Extension is enabled
-                sources.append(
-                    AWSSecretsManagerExtensionSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-            else:
-                sources.append(
-                    AWSSecretsManagerSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-        return tuple(sources)
-
-
-class Oauth2Settings(BaseSettings):
+class Oauth2Settings(BaseSecretSettings):
     google_client_id: str
 
     google_client_secret: SecretStr
@@ -361,38 +303,8 @@ class Oauth2Settings(BaseSettings):
         extra="allow",
     )
 
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
-        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
 
-        if aws_secret_id is not None:
-            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
-                # AWS Lambda Secrets and Parameters Extension is enabled
-                sources.append(
-                    AWSSecretsManagerExtensionSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-            else:
-                sources.append(
-                    AWSSecretsManagerSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-        return tuple(sources)
-
-
-class SecretSettings(BaseSettings):
+class SecretSettings(BaseSecretSettings):
     captcha_secret_key: SecretStr
 
     jwe_secret_key: SecretStr
@@ -402,36 +314,6 @@ class SecretSettings(BaseSettings):
         env_prefix="server_",
         extra="allow",
     )
-
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
-        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
-
-        if aws_secret_id is not None:
-            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
-                # AWS Lambda Secrets and Parameters Extension is enabled
-                sources.append(
-                    AWSSecretsManagerExtensionSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-            else:
-                sources.append(
-                    AWSSecretsManagerSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-        return tuple(sources)
 
 
 class TesseractSettings(BaseSettings):
@@ -444,7 +326,7 @@ class TesseractSettings(BaseSettings):
     )
 
 
-class WhatsappSettings(BaseSettings):
+class WhatsappSettings(BaseSecretSettings):
     # whatsapp config
     whatsapp_access_token: SecretStr
 
@@ -455,36 +337,6 @@ class WhatsappSettings(BaseSettings):
         env_prefix="server_",
         extra="allow",
     )
-
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
-        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
-
-        if aws_secret_id is not None:
-            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
-                # AWS Lambda Secrets and Parameters Extension is enabled
-                sources.append(
-                    AWSSecretsManagerExtensionSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-            else:
-                sources.append(
-                    AWSSecretsManagerSettingsSource(
-                        settings_cls,
-                        secret_id=aws_secret_id,
-                    )
-                )
-        return tuple(sources)
 
 
 class EmailSettings(BaseSettings):
