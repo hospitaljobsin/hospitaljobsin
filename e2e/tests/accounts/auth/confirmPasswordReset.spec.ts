@@ -3,7 +3,7 @@ import { authTest, expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import { TOTP_USER_SECRET } from "@/tests/utils/constants";
-import { findLastEmail } from "@/tests/utils/mailcatcher";
+import { findLastEmail } from "@/tests/utils/emails";
 import type { PlaywrightTestArgs } from "@playwright/test";
 
 // TODO: increase test timeout here. the delay is happening because of cloudflare errors
@@ -46,9 +46,8 @@ test.describe("Confirm Password Reset Page", () => {
 		const emailMessage = await findLastEmail({
 			request,
 			timeout: 10_000,
-			filter: (e) =>
-				e.recipients.includes(`<${emailAddress}>`) &&
-				e.subject.includes("Password Reset Request"),
+			inboxAddress: emailAddress,
+			filter: (e) => e.subject.includes("Password Reset Request"),
 		});
 
 		expect(emailMessage).not.toBeNull();
@@ -203,9 +202,8 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		const emailMessage = await findLastEmail({
 			request,
 			timeout: 10_000,
-			filter: (e) =>
-				e.recipients.includes(`<${emailAddress}>`) &&
-				e.subject.includes("Password Reset Request"),
+			inboxAddress: emailAddress,
+			filter: (e) => e.subject.includes("Password Reset Request"),
 		});
 
 		expect(emailMessage).not.toBeNull();
@@ -399,9 +397,8 @@ authTest.describe(
 				const emailMessage = await findLastEmail({
 					request,
 					timeout: 10_000,
-					filter: (e) =>
-						e.recipients.includes(`<${emailAddress}>`) &&
-						e.subject.includes("Password Reset Request"),
+					inboxAddress: emailAddress,
+					filter: (e) => e.subject.includes("Password Reset Request"),
 				});
 
 				expect(emailMessage).not.toBeNull();

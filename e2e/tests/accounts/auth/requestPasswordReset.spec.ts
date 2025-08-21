@@ -5,7 +5,7 @@ import {
 	NONEXISTENT_TESTER_EMAIL,
 	PASSWORD_RESET_TOKEN_COOLDOWN,
 } from "@/tests/utils/constants";
-import { findLastEmail } from "@/tests/utils/mailcatcher";
+import { findLastEmail } from "@/tests/utils/emails";
 
 test.describe("Request Password Reset Page", () => {
 	test.beforeEach(async ({ page }) => {
@@ -84,9 +84,8 @@ test.describe("Request Password Reset Page", () => {
 		const emailMessage = await findLastEmail({
 			request,
 			timeout: 10_000,
-			filter: (e) =>
-				e.recipients.includes(`<${emailAddress}>`) &&
-				e.subject.includes("Password Reset Request"),
+			inboxAddress: emailAddress,
+			filter: (e) => e.subject.includes("Password Reset Request"),
 		});
 
 		expect(emailMessage).not.toBeNull();
@@ -113,7 +112,8 @@ test.describe("Request Password Reset Page", () => {
 		const emailMessage = await findLastEmail({
 			request,
 			timeout: 2_000,
-			filter: (e) => e.recipients.includes(`<${emailAddress}>`),
+			inboxAddress: emailAddress,
+			filter: (e) => e.subject.includes("Password Reset Request"),
 		});
 
 		expect(emailMessage).toBeNull();
@@ -165,9 +165,8 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		const firstEmail = await findLastEmail({
 			request,
 			timeout: 10_000,
-			filter: (e) =>
-				e.recipients.includes(`<${emailAddress}>`) &&
-				e.subject.includes("Password Reset Request"),
+			inboxAddress: emailAddress,
+			filter: (e) => e.subject.includes("Password Reset Request"),
 		});
 
 		expect(firstEmail).not.toBeNull();
@@ -190,9 +189,8 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		const secondEmail = await findLastEmail({
 			request,
 			timeout: 3_000,
-			filter: (e) =>
-				e.recipients.includes(`<${emailAddress}>`) &&
-				e.subject.includes("Password Reset Request"),
+			inboxAddress: emailAddress,
+			filter: (e) => e.subject.includes("Password Reset Request"),
 		});
 
 		// Ensure no second email was sent due to rate limit
@@ -219,9 +217,8 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		const thirdEmail = await findLastEmail({
 			request,
 			timeout: 10_000,
-			filter: (e) =>
-				e.recipients.includes(`<${emailAddress}>`) &&
-				e.subject.includes("Password Reset Request"),
+			inboxAddress: emailAddress,
+			filter: (e) => e.subject.includes("Password Reset Request"),
 		});
 
 		// Confirm third attempt succeeded after rate limit expired

@@ -3,6 +3,7 @@ import {
 	createTestAccount,
 } from "@/tests/utils/authentication";
 import { TOTP_USER_SECRET } from "@/tests/utils/constants";
+import { registerNewEmail } from "@/tests/utils/emails";
 import {
 	type BrowserContext,
 	test as baseTest,
@@ -27,7 +28,7 @@ const createUserContext = async (
 	// Important: make sure we authenticate in a clean environment by unsetting storage state.
 	const context = await request.newContext({ storageState: undefined });
 	const user = await createTestAccount(context, options);
-	const result = await context.storageState({ path: storagePath });
+	await context.storageState({ path: storagePath });
 	await context.dispose();
 
 	fs.writeFileSync(accountPath, JSON.stringify(user, null, 2));
@@ -74,7 +75,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: `tester-${id}@gmail.com`,
+					email: await registerNewEmail({ label: `tester-${id}` }),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -104,7 +105,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: `tester-webauthn-${id}@gmail.com`,
+					email: await registerNewEmail({ label: `tester-webauthn-${id}` }),
 					password: null,
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -134,7 +135,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: `two-factor-${id}@gmail.com`,
+					email: await registerNewEmail({ label: `two-factor-${id}` }),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: TOTP_USER_SECRET,
@@ -164,7 +165,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: `tester-sudo-${id}@gmail.com`,
+					email: await registerNewEmail({ label: `tester-sudo-${id}` }),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -194,7 +195,9 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: `tester-webauthn-sudo-${id}@gmail.com`,
+					email: await registerNewEmail({
+						label: `tester-webauthn-sudo-${id}`,
+					}),
 					password: null,
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -224,7 +227,9 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: `two-factor-sudo-${id}@gmail.com`,
+					email: await registerNewEmail({
+						label: `two-factor-sudo-${id}`,
+					}),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: TOTP_USER_SECRET,
