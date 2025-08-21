@@ -70,7 +70,7 @@ class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
         return json.loads(payload["SecretString"])
 
 
-class BaseSecretSettings(BaseSettings):
+class CoreSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="server_",
@@ -120,7 +120,7 @@ MongoSRVDsn = Annotated[
 ]
 
 
-class EnvironmentSettings(BaseSecretSettings):
+class EnvironmentSettings(CoreSettings):
     debug: bool
     environment: Environment = Environment.development
 
@@ -149,7 +149,7 @@ class EnvironmentSettings(BaseSecretSettings):
         return self._is_environment(Environment.staging)
 
 
-class AppSettings(BaseSecretSettings):
+class AppSettings(CoreSettings):
     host: Annotated[
         str,
         Field(
@@ -200,7 +200,7 @@ class AppSettings(BaseSecretSettings):
     persisted_queries_path: Path = Path("query_map.json")
 
 
-class FrontendSettings(BaseSecretSettings):
+class FrontendSettings(CoreSettings):
     # accounts config
     accounts_base_url: str = "http://localtest.me:5002"
 
@@ -211,7 +211,7 @@ class FrontendSettings(BaseSecretSettings):
     seeker_portal_base_url: str = "http://localtest.me:5000"
 
 
-class DatabaseSettings(BaseSecretSettings):
+class DatabaseSettings(CoreSettings):
     # database config
 
     database_url: Annotated[
@@ -226,7 +226,7 @@ class DatabaseSettings(BaseSecretSettings):
     default_database_name: str = "medicaljobs"
 
 
-class RedisSettings(BaseSecretSettings):
+class RedisSettings(CoreSettings):
     redis_host: str
 
     redis_port: int
@@ -238,46 +238,46 @@ class RedisSettings(BaseSecretSettings):
     redis_password: SecretStr | None = None
 
 
-class SentrySettings(BaseSecretSettings):
+class SentrySettings(CoreSettings):
     # sentry dsn
     sentry_dsn: str
 
 
-class PosthogSettings(BaseSecretSettings):
+class PosthogSettings(CoreSettings):
     # posthog config
     posthog_api_host: str
 
     posthog_api_key: SecretStr
 
 
-class TwoFactorINSettings(BaseSecretSettings):
+class TwoFactorINSettings(CoreSettings):
     two_factor_in_api_key: SecretStr
 
 
-class Oauth2Settings(BaseSecretSettings):
+class Oauth2Settings(CoreSettings):
     google_client_id: str
 
     google_client_secret: SecretStr
 
 
-class SecretSettings(BaseSecretSettings):
+class SecretSettings(CoreSettings):
     captcha_secret_key: SecretStr
 
     jwe_secret_key: SecretStr
 
 
-class TesseractSettings(BaseSecretSettings):
+class TesseractSettings(CoreSettings):
     tesseract_data_path: str
 
 
-class WhatsappSettings(BaseSecretSettings):
+class WhatsappSettings(CoreSettings):
     # whatsapp config
     whatsapp_access_token: SecretStr
 
     whatsapp_phone_number_id: str
 
 
-class EmailSettings(BaseSecretSettings):
+class EmailSettings(CoreSettings):
     # email config
 
     email_provider: Literal["smtp", "aws_ses"] = "smtp"
@@ -353,7 +353,7 @@ class EmailSettings(BaseSecretSettings):
         return values
 
 
-class AWSSettings(BaseSecretSettings):
+class AWSSettings(CoreSettings):
     # AWS Config
 
     s3_bucket_name: str
@@ -367,7 +367,7 @@ class AWSSettings(BaseSecretSettings):
     aws_access_key_id: str | None = None
 
 
-class AuthSettings(BaseSecretSettings):
+class AuthSettings(CoreSettings):
     session_user_cookie_name: str = "user_session"
 
     analytics_preference_cookie_name: str = "analytics_preference"
@@ -412,7 +412,7 @@ class AuthSettings(BaseSecretSettings):
     password_reset_token_cooldown: int = 60 * 3
 
 
-class GeocoderSettings(BaseSecretSettings):
+class GeocoderSettings(CoreSettings):
     # geocoder config
     geocoding_provider: Literal["nominatim", "aws_location"] = "nominatim"
 
