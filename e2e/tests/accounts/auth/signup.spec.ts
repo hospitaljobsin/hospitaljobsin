@@ -481,6 +481,9 @@ test.describe("Sign Up Page", () => {
 		});
 
 		expect(firstEmail).not.toBeNull();
+		if (!firstEmail) {
+			throw new Error("First email not found");
+		}
 
 		// Navigate to signup page
 		await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/signup`);
@@ -503,6 +506,9 @@ test.describe("Sign Up Page", () => {
 
 		// Ensure no second email was sent due to rate limit
 		expect(secondEmail).not.toBeNull();
+		if (!secondEmail) {
+			throw new Error("Second email not found");
+		}
 		expect(secondEmail.id).toEqual(firstEmail.id);
 
 		// Wait for cooldown and try again (after testing env rate limit expires)
@@ -529,6 +535,9 @@ test.describe("Sign Up Page", () => {
 
 		// Confirm third attempt succeeded after rate limit expired
 		expect(thirdEmail).not.toBeNull();
+		if (!thirdEmail) {
+			throw new Error("Third email not found");
+		}
 		expect(thirdEmail.id).not.toEqual(firstEmail.id);
 	});
 });

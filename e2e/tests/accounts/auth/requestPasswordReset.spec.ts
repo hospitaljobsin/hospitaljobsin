@@ -170,7 +170,9 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		});
 
 		expect(firstEmail).not.toBeNull();
-
+		if (!firstEmail) {
+			throw new Error("First email not found");
+		}
 		// Navigate to reset password page
 		await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/reset-password`);
 		// Wait for recaptcha to load
@@ -195,6 +197,9 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 
 		// Ensure no second email was sent due to rate limit
 		expect(secondEmail).not.toBeNull();
+		if (!secondEmail) {
+			throw new Error("Second email not found");
+		}
 		expect(secondEmail.id).toEqual(firstEmail.id);
 
 		// Wait for cooldown and try again (after testing env rate limit expires)
@@ -223,6 +228,9 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 
 		// Confirm third attempt succeeded after rate limit expired
 		expect(thirdEmail).not.toBeNull();
+		if (!thirdEmail) {
+			throw new Error("Third email not found");
+		}
 		expect(thirdEmail.id).not.toEqual(firstEmail.id);
 	});
 });
