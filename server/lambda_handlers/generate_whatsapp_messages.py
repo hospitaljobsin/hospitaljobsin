@@ -63,11 +63,12 @@ async def process_wa_messages_generation_event() -> str:
         email_sender = await ctx.resolve(BaseEmailSender)
 
         unposted_jobs = await job_repo.get_for_whatsapp_message_generation()
-        wa_messages = [
-            format_job_for_whatsapp_message(job=job) for job in unposted_jobs
-        ]
 
-        if wa_messages:
+        if unposted_jobs:
+            logger.info(f"Found {len(unposted_jobs)} unposted jobs")
+            wa_messages = [
+                format_job_for_whatsapp_message(job=job) for job in unposted_jobs
+            ]
             # Create individual text files and zip them
             zip_file_path = await create_message_files_and_zip(
                 wa_messages, unposted_jobs
@@ -81,9 +82,9 @@ async def process_wa_messages_generation_event() -> str:
             # Clean up temporary files
             cleanup_temp_files(zip_file_path)
 
-        await job_repo.mark_as_posted_on_whatsapp(
-            [ObjectId(job.id) for job in unposted_jobs]
-        )
+            await job_repo.mark_as_posted_on_whatsapp(
+                [ObjectId(job.id) for job in unposted_jobs]
+            )
         return json.dumps({"status": "ok", "jobs_processed": len(unposted_jobs)})
 
 
