@@ -71,6 +71,12 @@ class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
 
 
 class BaseSecretSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
     @classmethod
     def settings_customise_sources(
         cls,
@@ -117,12 +123,6 @@ MongoSRVDsn = Annotated[
 class EnvironmentSettings(BaseSecretSettings):
     debug: bool
     environment: Environment = Environment.development
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
     def _is_environment(self, environment: Environment) -> bool:
         """Check whether the current environment is the given environment."""
@@ -199,12 +199,6 @@ class AppSettings(BaseSecretSettings):
     # persisted queries config
     persisted_queries_path: Path = Path("query_map.json")
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
-
 
 class FrontendSettings(BaseSecretSettings):
     # accounts config
@@ -215,12 +209,6 @@ class FrontendSettings(BaseSecretSettings):
 
     # seeker portal config
     seeker_portal_base_url: str = "http://localtest.me:5000"
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
 
 class DatabaseSettings(BaseSecretSettings):
@@ -237,12 +225,6 @@ class DatabaseSettings(BaseSecretSettings):
 
     default_database_name: str = "medicaljobs"
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
-
 
 class RedisSettings(BaseSecretSettings):
     redis_host: str
@@ -255,22 +237,10 @@ class RedisSettings(BaseSecretSettings):
 
     redis_password: SecretStr | None = None
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
-
 
 class SentrySettings(BaseSecretSettings):
     # sentry dsn
     sentry_dsn: str
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
 
 class PosthogSettings(BaseSecretSettings):
@@ -279,21 +249,9 @@ class PosthogSettings(BaseSecretSettings):
 
     posthog_api_key: SecretStr
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
-
 
 class TwoFactorINSettings(BaseSecretSettings):
     two_factor_in_api_key: SecretStr
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
 
 class Oauth2Settings(BaseSecretSettings):
@@ -301,33 +259,15 @@ class Oauth2Settings(BaseSecretSettings):
 
     google_client_secret: SecretStr
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
-
 
 class SecretSettings(BaseSecretSettings):
     captcha_secret_key: SecretStr
 
     jwe_secret_key: SecretStr
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
-
 
 class TesseractSettings(BaseSecretSettings):
     tesseract_data_path: str
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
 
 class WhatsappSettings(BaseSecretSettings):
@@ -335,12 +275,6 @@ class WhatsappSettings(BaseSecretSettings):
     whatsapp_access_token: SecretStr
 
     whatsapp_phone_number_id: str
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
 
 class EmailSettings(BaseSecretSettings):
@@ -378,12 +312,6 @@ class EmailSettings(BaseSecretSettings):
             ],
         ),
     ]
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
     @classmethod
     def model_validate(cls, values):
@@ -438,12 +366,6 @@ class AWSSettings(BaseSecretSettings):
 
     aws_access_key_id: str | None = None
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
-
 
 class AuthSettings(BaseSecretSettings):
     session_user_cookie_name: str = "user_session"
@@ -489,12 +411,6 @@ class AuthSettings(BaseSecretSettings):
 
     password_reset_token_cooldown: int = 60 * 3
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
-
 
 class GeocoderSettings(BaseSecretSettings):
     # geocoder config
@@ -509,12 +425,6 @@ class GeocoderSettings(BaseSecretSettings):
     geocoder_user_agent: str | None = None
 
     geocoder_scheme: str = "http"
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
     @classmethod
     def model_validate(cls, values):
