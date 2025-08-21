@@ -7,36 +7,24 @@ env:
   GOOGLE_CLIENT_ID: ${{ secrets.TEST_GOOGLE_OAUTH_CLIENT_ID }}
   GOOGLE_CLIENT_SECRET: ${{ secrets.TEST_GOOGLE_OAUTH_CLIENT_SECRET }}
   SEEKER_PORTAL_UI_SENTRY_DSN: ${{secrets.SEEKER_PORTAL_SENTRY_DSN}}
-  RECRUITER_PORTAL_UI_SENTRY_DSN: ${{secrets.RECRUITER_PORTAL_SENTRY_DSN}}
+  RECRUITER_PORTAL_UI_SENTRY_DSN: ${{secrets.RECRUITER_PORTAL_UI_SENTRY_DSN}}
   ACCOUNTS_UI_SENTRY_DSN:  ${{secrets.ACCOUNTS_SENTRY_DSN}}
   SERVER_SENTRY_DSN: ${{secrets.SERVER_SENTRY_DSN}}
   # repo-level and non-env-specific secrets/vars
   AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
+
 concurrency:
   group: e2e-tests-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
   cancel-in-progress: true
 
 jobs:
-  test-e2e:
+  setup-aws-infrastructure:
     environment: staging
-    name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
-    strategy:
-      fail-fast: false
-      matrix:
-        project: [chromium, firefox, webkit]
-        shard: [1, 2, 3, 4]
+    name: Setup AWS Infrastructure
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
 
       # Configure AWS CLI
       - name: Configure AWS credentials
@@ -65,6 +53,27 @@ jobs:
           aws ecs wait services-stable \
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --services ${{ vars.AWS_BACKEND_ECS_SERVICE }}
+
+  test-e2e:
+    environment: staging
+    name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
+    needs: setup-aws-infrastructure
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, firefox, webkit]
+        shard: [1, 2, 3, 4]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm --filter e2e install --frozen-lockfile
@@ -95,9 +104,35 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
 
+      - name: Upload Playwright Report and Traces
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ matrix.project }}-${{ matrix.shard }}
+          path: |
+            e2e/playwright-report/
+            e2e/test-results/**/*.zip
+          retention-days: 30
+
+  cleanup-aws-infrastructure:
+    environment: staging
+    name: Cleanup AWS Infrastructure
+    needs: test-e2e
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+
+      # Configure AWS CLI
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
       # Always scale ECS + ASG down after tests
       - name: Scale down ECS service and ASG
-        if: always()
         run: |
           echo "Scaling down ECS service..."
           aws ecs update-service \
@@ -110,13 +145,3 @@ jobs:
             --auto-scaling-group-name ${{ vars.AWS_ASG_NAME }} \
             --min-size 0 \
             --desired-capacity 0
-
-      - name: Upload Playwright Report and Traces
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: playwright-report-${{ matrix.project }}-${{ matrix.shard }}
-          path: |
-            e2e/playwright-report/
-            e2e/test-results/**/*.zip
-          retention-days: 30
