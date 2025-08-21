@@ -813,12 +813,11 @@ class AuthService:
         account = await self._account_repo.get_by_email(email=user_info["email"])
         if account is None:
             is_signup = True
-            # TODO: uncomment after google auth app is verified
-            # phone_number = await self._get_google_phone_number(access_token)
+            phone_number = await self._get_google_phone_number(access_token)
             account = await self._account_repo.create(
                 email=user_info["email"],
                 full_name=user_info["name"],
-                # phone_number=phone_number, # TODO: uncomment after google auth app is verified
+                phone_number=phone_number,
                 # set initial password to None for the user
                 password=None,
                 auth_providers=["oauth_google"],
@@ -830,6 +829,12 @@ class AuthService:
                 account_id=account.id,
                 provider="google",
                 provider_user_id=user_info["sub"],
+            )
+        elif account.phone_number is None:
+            phone_number = await self._get_google_phone_number(access_token)
+            await self._account_repo.update(
+                account=account,
+                phone_number=phone_number,
             )
 
         if "oauth_google" not in account.auth_providers:
