@@ -33,6 +33,16 @@ export async function registerNewEmail({
 }
 
 /**
+ * Generate a unique email label by appending a timestamp to prevent conflicts.
+ * Useful for e2e tests where the same email might be used multiple times.
+ */
+export function generateUniqueEmailLabel(baseLabel: string): string {
+	const timestamp = Date.now();
+	const randomSuffix = Math.random().toString(36).substring(2, 8);
+	return `${baseLabel}_${timestamp}_${randomSuffix}`;
+}
+
+/**
  * Find the last email using the appropriate method based on environment.
  * This is the only public API - works identically in both testing and staging environments.
  * Returns a unified Email type regardless of the underlying email service.

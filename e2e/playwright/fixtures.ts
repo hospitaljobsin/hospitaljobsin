@@ -3,7 +3,10 @@ import {
 	createTestAccount,
 } from "@/tests/utils/authentication";
 import { TOTP_USER_SECRET } from "@/tests/utils/constants";
-import { registerNewEmail } from "@/tests/utils/emails";
+import {
+	generateUniqueEmailLabel,
+	registerNewEmail,
+} from "@/tests/utils/emails";
 import {
 	type BrowserContext,
 	test as baseTest,
@@ -75,7 +78,9 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await registerNewEmail({ label: `tester-${id}` }),
+					email: await registerNewEmail({
+						label: generateUniqueEmailLabel(`tester-${id}`),
+					}),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -105,7 +110,9 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await registerNewEmail({ label: `tester-webauthn-${id}` }),
+					email: await registerNewEmail({
+						label: generateUniqueEmailLabel(`tester-webauthn-${id}`),
+					}),
 					password: null,
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -135,7 +142,9 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await registerNewEmail({ label: `two-factor-${id}` }),
+					email: await registerNewEmail({
+						label: generateUniqueEmailLabel(`two-factor-${id}`),
+					}),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: TOTP_USER_SECRET,
@@ -165,7 +174,9 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await registerNewEmail({ label: `tester-sudo-${id}` }),
+					email: await registerNewEmail({
+						label: generateUniqueEmailLabel(`tester-sudo-${id}`),
+					}),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -196,7 +207,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 			const account = await createUserContext(
 				{
 					email: await registerNewEmail({
-						label: `tester-webauthn-sudo-${id}`,
+						label: generateUniqueEmailLabel(`tester-webauthn-sudo-${id}`),
 					}),
 					password: null,
 					fullName: `Tester ${id}`,
@@ -228,7 +239,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 			const account = await createUserContext(
 				{
 					email: await registerNewEmail({
-						label: `two-factor-sudo-${id}`,
+						label: generateUniqueEmailLabel(`two-factor-sudo-${id}`),
 					}),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
