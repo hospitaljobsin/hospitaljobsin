@@ -3,6 +3,8 @@
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 [![check-runs](https://img.shields.io/github/check-runs/hospitaljobsin/hospitaljobsin/main?logo=ticktick&logoColor=yellow)](https://github.com/hospitaljobsin/hospitaljobsin/actions)
+[![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/hospital-jobs/hospital-jobs)
+
 
 ## Codebase Structure
 
