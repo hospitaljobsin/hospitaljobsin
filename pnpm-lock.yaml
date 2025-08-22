@@ -836,6 +836,9 @@ importers:
       '@aws-sdk/client-lambda':
         specifier: ^3.828.0
         version: 3.828.0
+      '@cemalgnlts/mailjs':
+        specifier: ^3.1.1
+        version: 3.1.1
       '@heroui/react':
         specifier: 2.8.2
         version: 2.8.2(@types/react@19.1.8)(framer-motion@12.18.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.10)
@@ -872,9 +875,6 @@ importers:
       next:
         specifier: ^15.4.5
         version: 15.5.0(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.53.0)(babel-plugin-react-compiler@19.1.0-rc.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      nodemailer:
-        specifier: ^6.9.12
-        version: 6.10.1
       otplib:
         specifier: ^12.0.1
         version: 12.0.1
@@ -897,9 +897,6 @@ importers:
       '@types/node':
         specifier: ^24.0.1
         version: 24.0.1
-      '@types/nodemailer':
-        specifier: ^6.4.14
-        version: 6.4.19
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -1102,10 +1099,6 @@ packages:
 
   '@aws-sdk/client-s3@3.828.0':
     resolution: {integrity: sha512-TvFyrEfJkf9NN3cq5mXCgFv/sPaA8Rm5tEPgV5emuLedeGsORlWmVpdSKqfZ4lSoED1tMfNM6LY4uA9D8/RS5g==}
-    engines: {node: '>=18.0.0'}
-
-  '@aws-sdk/client-ses@3.873.0':
-    resolution: {integrity: sha512-m133jrCWPtMLSRYadK5gc6B4HqSP9EKZjCyq+sTlerN0vUBI/Uf5eA+6ZG3/04lIA7nOje+wCB8dTSZmiId55w==}
     engines: {node: '>=18.0.0'}
 
   '@aws-sdk/client-sqs@3.828.0':
@@ -1656,6 +1649,9 @@ packages:
 
   '@bufbuild/protobuf@2.5.2':
     resolution: {integrity: sha512-foZ7qr0IsUBjzWIq+SuBLfdQCpJ1j8cTuNNT4owngTHoN5KsJb8L9t65fzz7SCeSWzescoOil/0ldqiL041ABg==}
+
+  '@cemalgnlts/mailjs@3.1.1':
+    resolution: {integrity: sha512-95xsrupi1M3vbWqsaLS3IQNbRSF9n2Zeh2UN2JxZq49b7wvdUoPeAeu51scTMXv+z5C6lUb7ae4uOQY826f5kw==}
 
   '@cfworker/json-schema@4.1.1':
     resolution: {integrity: sha512-gAmrUZSGtKc3AiBL71iNWxDsyUC5uMaKKGdvzYsBoTW/xi42JQHl7eKV2OYzCUqvc+D2RCcf7EXY2iCyFIk6og==}
@@ -5285,10 +5281,6 @@ packages:
     resolution: {integrity: sha512-4QvC49HTteI1gfemu0I1syWovJgPvGn7CVUoN9ZFkdvr/cCFkrEL7qNCdx/2eICqDWEGnnr68oMdSIPCLAriSQ==}
     engines: {node: '>=18.0.0'}
 
-  '@smithy/util-waiter@4.0.7':
-    resolution: {integrity: sha512-mYqtQXPmrwvUljaHyGxYUIIRI3qjBTEb/f5QFi3A6VlxhpmZd5mWXn9W+qUkf2pVE1Hv3SqxefiZOPGdxmO64A==}
-    engines: {node: '>=18.0.0'}
-
   '@splinetool/runtime@0.9.526':
     resolution: {integrity: sha512-qznHbXA5aKwDbCgESAothCNm1IeEZcmNWG145p5aXj4w5uoqR1TZ9qkTHTKLTsUbHeitCwdhzmRqan1kxboLgQ==}
 
@@ -5926,9 +5918,6 @@ packages:
 
   '@types/node@24.0.1':
     resolution: {integrity: sha512-MX4Zioh39chHlDJbKmEgydJDS3tspMP/lnQC67G3SWsTnb9NeYVWOjkxpOSy4oMfPs4StcWHwBrvUb4ybfnuaw==}
-
-  '@types/nodemailer@6.4.19':
-    resolution: {integrity: sha512-Fi8DwmuAduTk1/1MpkR9EwS0SsDvYXx5RxivAVII1InDCIxmhj/iQm3W8S3EVb/0arnblr6PK0FK4wYa7bwdLg==}
 
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
@@ -7403,6 +7392,10 @@ packages:
   eventsource-parser@3.0.2:
     resolution: {integrity: sha512-6RxOBZ/cYgd8usLwsEl+EC09Au/9BcmCKYF2/xbml6DNczf7nv0MQb+7BA2F+li6//I+28VNlQR37XfQtcAJuA==}
     engines: {node: '>=18.0.0'}
+
+  eventsource@2.0.2:
+    resolution: {integrity: sha512-IzUmBGPR3+oUG9dUeXynyNmf91/3zUSJg1lCktzKw47OXuhco54U3r9B7O4XX+Rb1Itm9OZ2b0RkTs10bICOxA==}
+    engines: {node: '>=12.0.0'}
 
   eventsource@3.0.7:
     resolution: {integrity: sha512-CRT1WTyuQoD771GW56XEZFQ/ZoSfWid1alKGDYMmkt2yl8UXrVR4pspqWNEcqKvVIzg6PAltWjxcSSPrboA4iA==}
@@ -9137,10 +9130,6 @@ packages:
 
   node-releases@2.0.19:
     resolution: {integrity: sha512-xxOWJsBKtzAq7DY0J+DTzuz58K8e7sJbdgwkbMWQe8UYB6ekmsQ45q0M/tJDsGaZmbC+l7n57UV8Hl5tHxO9uw==}
-
-  nodemailer@6.10.1:
-    resolution: {integrity: sha512-Z+iLaBGVaSjbIzQ4pX6XV41HrooLsQ10ZWPUehGmuantvzWoDVBnmsdUcOIDM1t+yPor5pDhVlDESgOMEGxhHA==}
-    engines: {node: '>=6.0.0'}
 
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -11899,51 +11888,6 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/client-ses@3.873.0':
-    dependencies:
-      '@aws-crypto/sha256-browser': 5.2.0
-      '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/core': 3.873.0
-      '@aws-sdk/credential-provider-node': 3.873.0
-      '@aws-sdk/middleware-host-header': 3.873.0
-      '@aws-sdk/middleware-logger': 3.873.0
-      '@aws-sdk/middleware-recursion-detection': 3.873.0
-      '@aws-sdk/middleware-user-agent': 3.873.0
-      '@aws-sdk/region-config-resolver': 3.873.0
-      '@aws-sdk/types': 3.862.0
-      '@aws-sdk/util-endpoints': 3.873.0
-      '@aws-sdk/util-user-agent-browser': 3.873.0
-      '@aws-sdk/util-user-agent-node': 3.873.0
-      '@smithy/config-resolver': 4.1.5
-      '@smithy/core': 3.8.0
-      '@smithy/fetch-http-handler': 5.1.1
-      '@smithy/hash-node': 4.0.5
-      '@smithy/invalid-dependency': 4.0.5
-      '@smithy/middleware-content-length': 4.0.5
-      '@smithy/middleware-endpoint': 4.1.18
-      '@smithy/middleware-retry': 4.1.19
-      '@smithy/middleware-serde': 4.0.9
-      '@smithy/middleware-stack': 4.0.5
-      '@smithy/node-config-provider': 4.1.4
-      '@smithy/node-http-handler': 4.1.1
-      '@smithy/protocol-http': 5.1.3
-      '@smithy/smithy-client': 4.4.10
-      '@smithy/types': 4.3.2
-      '@smithy/url-parser': 4.0.5
-      '@smithy/util-base64': 4.0.0
-      '@smithy/util-body-length-browser': 4.0.0
-      '@smithy/util-body-length-node': 4.0.0
-      '@smithy/util-defaults-mode-browser': 4.0.26
-      '@smithy/util-defaults-mode-node': 4.0.26
-      '@smithy/util-endpoints': 3.0.7
-      '@smithy/util-middleware': 4.0.5
-      '@smithy/util-retry': 4.0.7
-      '@smithy/util-utf8': 4.0.0
-      '@smithy/util-waiter': 4.0.7
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - aws-crt
-
   '@aws-sdk/client-sqs@3.828.0':
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
@@ -12156,6 +12100,7 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - aws-crt
+    optional: true
 
   '@aws-sdk/client-sts@3.398.0':
     dependencies:
@@ -12252,6 +12197,7 @@ snapshots:
       '@smithy/util-utf8': 4.0.0
       fast-xml-parser: 5.2.5
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/credential-provider-env@3.398.0':
     dependencies:
@@ -12283,6 +12229,7 @@ snapshots:
       '@smithy/property-provider': 4.0.5
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/credential-provider-http@3.826.0':
     dependencies:
@@ -12322,6 +12269,7 @@ snapshots:
       '@smithy/types': 4.3.2
       '@smithy/util-stream': 4.2.4
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/credential-provider-ini@3.398.0':
     dependencies:
@@ -12391,6 +12339,7 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - aws-crt
+    optional: true
 
   '@aws-sdk/credential-provider-node@3.398.0':
     dependencies:
@@ -12458,6 +12407,7 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - aws-crt
+    optional: true
 
   '@aws-sdk/credential-provider-process@3.398.0':
     dependencies:
@@ -12493,6 +12443,7 @@ snapshots:
       '@smithy/shared-ini-file-loader': 4.0.5
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/credential-provider-sso@3.398.0':
     dependencies:
@@ -12544,6 +12495,7 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - aws-crt
+    optional: true
 
   '@aws-sdk/credential-provider-web-identity@3.398.0':
     dependencies:
@@ -12584,6 +12536,7 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - aws-crt
+    optional: true
 
   '@aws-sdk/endpoint-cache@3.804.0':
     dependencies:
@@ -12666,6 +12619,7 @@ snapshots:
       '@smithy/protocol-http': 5.1.3
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/middleware-location-constraint@3.821.0':
     dependencies:
@@ -12690,6 +12644,7 @@ snapshots:
       '@aws-sdk/types': 3.862.0
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/middleware-recursion-detection@3.398.0':
     dependencies:
@@ -12711,6 +12666,7 @@ snapshots:
       '@smithy/protocol-http': 5.1.3
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/middleware-sdk-s3@3.826.0':
     dependencies:
@@ -12798,6 +12754,7 @@ snapshots:
       '@smithy/protocol-http': 5.1.3
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/nested-clients@3.828.0':
     dependencies:
@@ -12927,6 +12884,7 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - aws-crt
+    optional: true
 
   '@aws-sdk/region-config-resolver@3.821.0':
     dependencies:
@@ -12945,6 +12903,7 @@ snapshots:
       '@smithy/util-config-provider': 4.0.0
       '@smithy/util-middleware': 4.0.5
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/signature-v4-multi-region@3.826.0':
     dependencies:
@@ -13030,6 +12989,7 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - aws-crt
+    optional: true
 
   '@aws-sdk/types@3.398.0':
     dependencies:
@@ -13045,6 +13005,7 @@ snapshots:
     dependencies:
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/util-arn-parser@3.804.0':
     dependencies:
@@ -13069,6 +13030,7 @@ snapshots:
       '@smithy/url-parser': 4.0.5
       '@smithy/util-endpoints': 3.0.7
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/util-locate-window@3.804.0':
     dependencies:
@@ -13094,6 +13056,7 @@ snapshots:
       '@smithy/types': 4.3.2
       bowser: 2.11.0
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/util-user-agent-node@3.398.0':
     dependencies:
@@ -13125,6 +13088,7 @@ snapshots:
       '@smithy/node-config-provider': 4.1.4
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/util-utf8-browser@3.259.0':
     dependencies:
@@ -13143,6 +13107,7 @@ snapshots:
     dependencies:
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@babel/code-frame@7.27.1':
     dependencies:
@@ -13359,6 +13324,10 @@ snapshots:
       - utf-8-validate
 
   '@bufbuild/protobuf@2.5.2': {}
+
+  '@cemalgnlts/mailjs@3.1.1':
+    dependencies:
+      eventsource: 2.0.2
 
   '@cfworker/json-schema@4.1.1': {}
 
@@ -17618,6 +17587,7 @@ snapshots:
     dependencies:
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/chunked-blob-reader-native@4.0.0':
     dependencies:
@@ -17651,6 +17621,7 @@ snapshots:
       '@smithy/util-config-provider': 4.0.0
       '@smithy/util-middleware': 4.0.5
       tslib: 2.8.1
+    optional: true
 
   '@smithy/core@3.5.3':
     dependencies:
@@ -17677,6 +17648,7 @@ snapshots:
       '@types/uuid': 9.0.8
       tslib: 2.8.1
       uuid: 9.0.1
+    optional: true
 
   '@smithy/credential-provider-imds@2.3.0':
     dependencies:
@@ -17701,6 +17673,7 @@ snapshots:
       '@smithy/types': 4.3.2
       '@smithy/url-parser': 4.0.5
       tslib: 2.8.1
+    optional: true
 
   '@smithy/eventstream-codec@4.0.4':
     dependencies:
@@ -17755,6 +17728,7 @@ snapshots:
       '@smithy/types': 4.3.2
       '@smithy/util-base64': 4.0.0
       tslib: 2.8.1
+    optional: true
 
   '@smithy/hash-blob-browser@4.0.4':
     dependencies:
@@ -17783,6 +17757,7 @@ snapshots:
       '@smithy/util-buffer-from': 4.0.0
       '@smithy/util-utf8': 4.0.0
       tslib: 2.8.1
+    optional: true
 
   '@smithy/hash-stream-node@4.0.4':
     dependencies:
@@ -17804,6 +17779,7 @@ snapshots:
     dependencies:
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/is-array-buffer@2.2.0':
     dependencies:
@@ -17836,6 +17812,7 @@ snapshots:
       '@smithy/protocol-http': 5.1.3
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/middleware-endpoint@2.5.1':
     dependencies:
@@ -17868,6 +17845,7 @@ snapshots:
       '@smithy/url-parser': 4.0.5
       '@smithy/util-middleware': 4.0.5
       tslib: 2.8.1
+    optional: true
 
   '@smithy/middleware-retry@2.3.1':
     dependencies:
@@ -17905,6 +17883,7 @@ snapshots:
       '@types/uuid': 9.0.8
       tslib: 2.8.1
       uuid: 9.0.1
+    optional: true
 
   '@smithy/middleware-serde@2.3.0':
     dependencies:
@@ -17922,6 +17901,7 @@ snapshots:
       '@smithy/protocol-http': 5.1.3
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/middleware-stack@2.2.0':
     dependencies:
@@ -17937,6 +17917,7 @@ snapshots:
     dependencies:
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/node-config-provider@2.3.0':
     dependencies:
@@ -17958,6 +17939,7 @@ snapshots:
       '@smithy/shared-ini-file-loader': 4.0.5
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/node-http-handler@2.5.0':
     dependencies:
@@ -17982,6 +17964,7 @@ snapshots:
       '@smithy/querystring-builder': 4.0.5
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/property-provider@2.2.0':
     dependencies:
@@ -17997,6 +17980,7 @@ snapshots:
     dependencies:
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/protocol-http@2.0.5':
     dependencies:
@@ -18017,6 +18001,7 @@ snapshots:
     dependencies:
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/querystring-builder@2.2.0':
     dependencies:
@@ -18035,6 +18020,7 @@ snapshots:
       '@smithy/types': 4.3.2
       '@smithy/util-uri-escape': 4.0.0
       tslib: 2.8.1
+    optional: true
 
   '@smithy/querystring-parser@2.2.0':
     dependencies:
@@ -18050,6 +18036,7 @@ snapshots:
     dependencies:
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/service-error-classification@2.1.5':
     dependencies:
@@ -18062,6 +18049,7 @@ snapshots:
   '@smithy/service-error-classification@4.0.7':
     dependencies:
       '@smithy/types': 4.3.2
+    optional: true
 
   '@smithy/shared-ini-file-loader@2.4.0':
     dependencies:
@@ -18077,6 +18065,7 @@ snapshots:
     dependencies:
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/signature-v4@2.3.0':
     dependencies:
@@ -18109,6 +18098,7 @@ snapshots:
       '@smithy/util-uri-escape': 4.0.0
       '@smithy/util-utf8': 4.0.0
       tslib: 2.8.1
+    optional: true
 
   '@smithy/smithy-client@2.5.1':
     dependencies:
@@ -18128,6 +18118,7 @@ snapshots:
       '@smithy/types': 4.3.2
       '@smithy/util-stream': 4.2.4
       tslib: 2.8.1
+    optional: true
 
   '@smithy/smithy-client@4.4.4':
     dependencies:
@@ -18150,6 +18141,7 @@ snapshots:
   '@smithy/types@4.3.2':
     dependencies:
       tslib: 2.8.1
+    optional: true
 
   '@smithy/url-parser@2.2.0':
     dependencies:
@@ -18168,6 +18160,7 @@ snapshots:
       '@smithy/querystring-parser': 4.0.5
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/util-base64@2.3.0':
     dependencies:
@@ -18238,6 +18231,7 @@ snapshots:
       '@smithy/types': 4.3.2
       bowser: 2.11.0
       tslib: 2.8.1
+    optional: true
 
   '@smithy/util-defaults-mode-node@2.3.1':
     dependencies:
@@ -18268,6 +18262,7 @@ snapshots:
       '@smithy/smithy-client': 4.4.10
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/util-endpoints@3.0.6':
     dependencies:
@@ -18280,6 +18275,7 @@ snapshots:
       '@smithy/node-config-provider': 4.1.4
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/util-hex-encoding@2.2.0':
     dependencies:
@@ -18303,6 +18299,7 @@ snapshots:
     dependencies:
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/util-retry@2.2.0':
     dependencies:
@@ -18321,6 +18318,7 @@ snapshots:
       '@smithy/service-error-classification': 4.0.7
       '@smithy/types': 4.3.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/util-stream@2.2.0':
     dependencies:
@@ -18354,6 +18352,7 @@ snapshots:
       '@smithy/util-hex-encoding': 4.0.0
       '@smithy/util-utf8': 4.0.0
       tslib: 2.8.1
+    optional: true
 
   '@smithy/util-uri-escape@2.2.0':
     dependencies:
@@ -18383,12 +18382,6 @@ snapshots:
     dependencies:
       '@smithy/abort-controller': 4.0.4
       '@smithy/types': 4.3.1
-      tslib: 2.8.1
-
-  '@smithy/util-waiter@4.0.7':
-    dependencies:
-      '@smithy/abort-controller': 4.0.5
-      '@smithy/types': 4.3.2
       tslib: 2.8.1
 
   '@splinetool/runtime@0.9.526':
@@ -19101,13 +19094,6 @@ snapshots:
   '@types/node@24.0.1':
     dependencies:
       undici-types: 7.8.0
-
-  '@types/nodemailer@6.4.19':
-    dependencies:
-      '@aws-sdk/client-ses': 3.873.0
-      '@types/node': 24.0.1
-    transitivePeerDependencies:
-      - aws-crt
 
   '@types/parse-json@4.0.2': {}
 
@@ -20886,6 +20872,8 @@ snapshots:
 
   eventsource-parser@3.0.2: {}
 
+  eventsource@2.0.2: {}
+
   eventsource@3.0.7:
     dependencies:
       eventsource-parser: 3.0.2
@@ -21066,6 +21054,7 @@ snapshots:
   fast-xml-parser@5.2.5:
     dependencies:
       strnum: 2.1.1
+    optional: true
 
   fastq@1.19.1:
     dependencies:
@@ -21637,7 +21626,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.2
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.10.0(debug@4.4.1))
+      retry-axios: 2.6.0(axios@1.10.0)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -23204,8 +23193,6 @@ snapshots:
 
   node-releases@2.0.19: {}
 
-  nodemailer@6.10.1: {}
-
   normalize-path@3.0.0: {}
 
   normalize-wheel@1.0.1: {}
@@ -24639,7 +24626,7 @@ snapshots:
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
-  retry-axios@2.6.0(axios@1.10.0(debug@4.4.1)):
+  retry-axios@2.6.0(axios@1.10.0):
     dependencies:
       axios: 1.10.0(debug@4.4.1)
 
@@ -25126,7 +25113,8 @@ snapshots:
 
   strnum@1.1.2: {}
 
-  strnum@2.1.1: {}
+  strnum@2.1.1:
+    optional: true
 
   strtok3@6.3.0:
     dependencies:
