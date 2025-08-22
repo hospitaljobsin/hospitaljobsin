@@ -121,6 +121,19 @@ export default function SearchHeader({
 									Log In
 								</Button>
 							</NavbarItem>
+							<NavbarItem>
+								<Button
+									as={Link}
+									href={links.recruiterLanding}
+									target="_blank"
+									rel="noopener noreferrer"
+									color="default"
+									className="text-base"
+									variant="flat"
+								>
+									For Recruiters
+								</Button>
+							</NavbarItem>
 						</>
 					)}
 				</NavbarContent>
