@@ -44,7 +44,7 @@ async def oauth2_signin_google(
     return await oauth_client.google.authorize_redirect(
         request,
         oauth_redirect_uri,
-        prompt="select_account",
+        prompt="consent select_account",
     )
 
 
