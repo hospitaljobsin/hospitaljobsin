@@ -223,9 +223,6 @@ def register_email_sender(container: aioinject.Container) -> None:
 
 
 def register_location_service(container: aioinject.Container) -> None:
-    container.register(aioinject.Scoped(create_location_service_client))
-    container.register(aioinject.Scoped(AWSLocationService, BaseLocationService))
-    return
     geocoder_settings = get_settings(GeocoderSettings)
 
     match geocoder_settings.geocoding_provider:
