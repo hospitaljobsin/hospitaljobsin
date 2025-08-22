@@ -4,8 +4,11 @@ export const COMPANY_NAME = "Vnadi";
 
 export const SUPPORT_EMAIL = "support@hospitaljobs.in";
 
-export const APP_TAGLINE =
-	"Empowering healthcare professionals to find top job opportunities at hospitals, clinics and nursing homes. Your next role starts here.";
+export const APP_TITLE =
+	"Hospital Jobs in India | Nursing, Doctor & Healthcare Vacancies";
+
+export const APP_DESCRIPTION =
+	"Find the latest hospital jobs in India. Apply for doctor, nurse, paramedical, and healthcare vacancies at top hospitals, clinics, and nursing homes. Updated daily.";
 
 export const FILTER_DEFAULTS = {
 	q: "",

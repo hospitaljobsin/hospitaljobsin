@@ -1,7 +1,7 @@
 import CookieBanner from "@/components/CookieBanner";
 import PostHogIdentifier from "@/components/PostHogIdentifier";
 import Footer from "@/components/layout/Footer";
-import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
+import { APP_DESCRIPTION, APP_TITLE } from "@/lib/constants";
 import { env } from "@/lib/env/client";
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
@@ -18,10 +18,10 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
 	title: {
-		template: `%s | ${APP_NAME}`,
-		default: APP_NAME,
+		template: `%s | ${APP_TITLE}`,
+		default: APP_TITLE,
 	},
-	description: APP_TAGLINE,
+	description: APP_DESCRIPTION,
 	metadataBase: new URL(env.NEXT_PUBLIC_URL),
 };
 
