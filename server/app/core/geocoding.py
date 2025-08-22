@@ -105,6 +105,21 @@ class AWSLocationService(BaseLocationService):
                 )
         return None
 
+    def get_readable_name(self, place: dict) -> str:
+        """Get a readable name for a place."""
+        # Pick the most specific fields available
+        neighborhood = place.get("Neighborhood")
+        municipality = place.get("Municipality")
+        region = place.get("Region")
+
+        if neighborhood and municipality:
+            return f"{neighborhood}, {municipality}"
+        if municipality and region:
+            return f"{municipality}, {region}"
+        if municipality:
+            return municipality
+        return place.get("Label", "")
+
     async def get_locations(self, search_term: str, limit: int) -> list[SearchLocation]:
         """Get relevant search locations for the given search term using AWS LocationServiceClient."""
         response = await self._location_client.search_place_index_for_text(
@@ -116,7 +131,7 @@ class AWSLocationService(BaseLocationService):
         return [
             SearchLocation(
                 place_id=str(item.get("PlaceId", generate(size=10))),
-                display_name=item["Place"].get("Label"),
+                display_name=self.get_readable_name(item["Place"]),
                 coordinates=Coordinates(
                     latitude=item["Place"]["Geometry"]["Point"][1],
                     longitude=item["Place"]["Geometry"]["Point"][0],
