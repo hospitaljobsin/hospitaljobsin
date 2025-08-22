@@ -794,7 +794,7 @@ class AuthService:
         if not phone_number:
             return None
         return phonenumbers.format_number(
-            phone_number, phonenumbers.PhoneNumberFormat.E164
+            phonenumbers.parse(phone_number), phonenumbers.PhoneNumberFormat.E164
         )
 
     async def signin_with_google(
