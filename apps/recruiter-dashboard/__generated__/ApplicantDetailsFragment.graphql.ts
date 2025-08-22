@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1bc8c6f7252d88d1c349b3a58501dfaa>>
+ * @generated SignedSource<<918461801fa93a9f4601751c0836af93>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ export type ApplicantDetailsFragment$data = {
     readonly avatarUrl: string;
     readonly email: string;
     readonly fullName: string;
+    readonly phoneNumber: string | null | undefined;
   };
   readonly applicantFields: ReadonlyArray<{
     readonly fieldName: string;
@@ -127,6 +128,13 @@ const node: ReaderFragment = {
             "kind": "ScalarField",
             "name": "email",
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "phoneNumber",
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -143,6 +151,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "e6547371084ccb57e816537045d58ee1";
+(node as any).hash = "5a55918fb96e490151459912a0d973a4";
 
 export default node;

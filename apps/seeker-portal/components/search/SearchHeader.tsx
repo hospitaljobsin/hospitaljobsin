@@ -12,7 +12,7 @@ import {
 	NavbarContent,
 	NavbarItem,
 } from "@heroui/react";
-import { SearchIcon } from "lucide-react";
+import { ExternalLinkIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -96,9 +96,20 @@ export default function SearchHeader({
 						/>
 					</NavbarItem>
 					{data.viewer.__typename === "Account" ? (
-						<>
+						<div className="flex items-center gap-2">
+							<NavbarItem className="hidden md:block">
+								<Link
+									href={env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}
+									target="_blank"
+									rel="noopener noreferrer"
+									color="foreground"
+									className={"text-foreground flex items-center gap-2"}
+								>
+									For Recruiters <ExternalLinkIcon className="w-4 h-4" />
+								</Link>
+							</NavbarItem>
 							<AuthNavigation rootQuery={data.viewer} />
-						</>
+						</div>
 					) : (
 						<>
 							<NavbarItem>

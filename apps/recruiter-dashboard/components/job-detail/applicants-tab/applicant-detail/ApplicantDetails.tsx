@@ -6,7 +6,7 @@ import {
 	useCopilotReadable,
 } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader, Link } from "@heroui/react";
-import { Mail } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import Image from "next/image";
 import { graphql, useFragment } from "react-relay";
 import ApplicantStatusUpdater from "../shared/ApplicantStatusUpdater";
@@ -26,6 +26,7 @@ const ApplicantDetailsFragment = graphql`
       fullName
       avatarUrl
       email
+	  phoneNumber
     }
 	...ApplicantStatusUpdater_job
   }
@@ -118,7 +119,7 @@ export default function ApplicantDetails({
 						applicant={data}
 					/>
 				</CardHeader>
-				<CardBody>
+				<CardBody className="flex flex-col gap-2">
 					<div className="flex items-center gap-2 text-foreground-600">
 						<Mail size={16} />
 						<Link
@@ -127,6 +128,19 @@ export default function ApplicantDetails({
 						>
 							{data.account.email}
 						</Link>
+					</div>
+					<div className="flex items-center gap-2 text-foreground-600">
+						<Phone size={16} />
+						{data.account.phoneNumber ? (
+							<Link
+								href={`tel:${data.account.phoneNumber}`}
+								className="text-foreground-600 text-sm"
+							>
+								{data.account.phoneNumber}
+							</Link>
+						) : (
+							"Not Provided"
+						)}
 					</div>
 				</CardBody>
 			</Card>

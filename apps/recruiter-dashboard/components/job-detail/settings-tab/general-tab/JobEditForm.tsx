@@ -303,7 +303,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 				description: formData.description,
 				vacancies: formData.vacancies ?? undefined,
 				skills: formData.skills.flatMap((skill) => skill.value),
-				location: formData.location,
+				location: formData.location || null,
 				minSalary: formData.minSalary,
 				maxSalary: formData.maxSalary,
 				minExperience: formData.minExperience,
