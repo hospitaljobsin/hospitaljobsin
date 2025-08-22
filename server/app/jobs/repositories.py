@@ -381,6 +381,7 @@ class JobRepo:
                         "distanceField": "distance",
                         "maxDistance": max_distance_meters,
                         "spherical": True,
+                        "key": "geo",
                     }
                 }
             )
