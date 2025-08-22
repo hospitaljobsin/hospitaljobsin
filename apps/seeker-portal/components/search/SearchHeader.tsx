@@ -111,7 +111,7 @@ export default function SearchHeader({
 							<AuthNavigation rootQuery={data.viewer} />
 						</div>
 					) : (
-						<>
+						<div className="flex items-center gap-2 sm:gap-4">
 							<NavbarItem>
 								<Button
 									as={Link}
@@ -134,7 +134,7 @@ export default function SearchHeader({
 									For Recruiters
 								</Button>
 							</NavbarItem>
-						</>
+						</div>
 					)}
 				</NavbarContent>
 			</Navbar>
