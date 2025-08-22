@@ -1,5 +1,5 @@
 "use client";
-import links from "@/lib/links";
+import type { CookieBannerConsentQuery as CookieBannerConsentQueryType } from "@/__generated__/CookieBannerConsentQuery.graphql";
 import { Button } from "@heroui/react";
 import { usePathname } from "next/navigation";
 import posthog from "posthog-js";
@@ -33,9 +33,8 @@ export default function CookieBanner() {
 	const { isAuthenticated } = useIsAuthenticated();
 	const [consentGiven, setConsentGiven] = useState<string>("undecided");
 	const [isOpen, setIsOpen] = useState(false);
-	const [queryReference, loadQuery, disposeQuery] = useQueryLoader(
-		CookieBannerConsentQuery,
-	);
+	const [queryReference, loadQuery, disposeQuery] =
+		useQueryLoader<CookieBannerConsentQueryType>(CookieBannerConsentQuery);
 
 	// Check browser cookie first - if it exists, use it and skip server request
 	useEffect(() => {
@@ -90,10 +89,6 @@ export default function CookieBanner() {
 		}
 	};
 
-	if (pathname === links.settingsPrivacy) {
-		return null;
-	}
-
 	// For authenticated users with query reference, render the content component
 	if (isAuthenticated && queryReference) {
 		return (
@@ -128,7 +123,7 @@ function CookieBannerContent({
 	handleAcceptCookies,
 	handleDeclineCookies,
 }: {
-	queryReference: PreloadedQuery<any>;
+	queryReference: PreloadedQuery<CookieBannerConsentQueryType>;
 	disposeQuery: () => void;
 	consentGiven: string;
 	setConsentGiven: (consent: string) => void;
