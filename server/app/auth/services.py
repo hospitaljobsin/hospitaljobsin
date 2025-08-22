@@ -786,7 +786,7 @@ class AuthService:
                 # This will likely be empty if the auth app isn't verified by Google.
                 phone_numbers = data.get("phoneNumbers", [])
                 if phone_numbers:
-                    phone_number = phone_numbers[0].get("value")
+                    phone_number = phone_numbers[0].get("canonicalForm")
             else:
                 # Log error but don't fail the signup process
                 print(f"Failed to fetch Google profile: {response.status_code}")
