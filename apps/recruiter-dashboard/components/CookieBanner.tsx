@@ -1,7 +1,6 @@
 "use client";
 import type { CookieBannerConsentQuery as CookieBannerConsentQueryType } from "@/__generated__/CookieBannerConsentQuery.graphql";
 import { Button } from "@heroui/react";
-import { usePathname } from "next/navigation";
 import posthog from "posthog-js";
 import { useEffect, useState } from "react";
 import type { PreloadedQuery } from "react-relay";
@@ -29,7 +28,6 @@ export const CookieBannerConsentQuery = graphql`
 `;
 
 export default function CookieBanner() {
-	const pathname = usePathname();
 	const { isAuthenticated } = useIsAuthenticated();
 	const [consentGiven, setConsentGiven] = useState<string>("undecided");
 	const [isOpen, setIsOpen] = useState(false);
