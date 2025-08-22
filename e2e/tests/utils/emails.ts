@@ -14,22 +14,52 @@ const mailjs = new Mailjs({
 	rateLimitRetries: 5,
 });
 
+// Local record of registered emails to avoid duplicate registrations
+const registeredEmails = new Set<string>();
+
 /**
  * Register an email account using the appropriate method based on environment.
  * This function does nothing in testing environment and registers with mailjs in staging.
+ * Avoids registering the same email twice by maintaining a local record.
  */
-export async function registerNewEmail({
-	label,
+export async function registerEmailAddress({
+	email,
 	password = env.MAILJS_PASSWORD,
 }: {
-	label: string;
+	email: string;
 	password?: string;
-}): Promise<string> {
-	if (env.ENVIRONMENT === "staging") {
-		return await registerEmailStaging({ label, password });
+}): Promise<void> {
+	// Check if email is already registered locally
+	if (registeredEmails.has(email)) {
+		console.log(`Email ${email} already registered, skipping registration`);
+		return;
 	}
-	// Do nothing in testing environment
-	return `${label}@outlook.com`;
+
+	if (env.ENVIRONMENT === "staging") {
+		await registerEmailStaging({ email, password });
+		// Add to local record only after successful registration
+		registeredEmails.add(email);
+		return;
+	}
+
+	// Do nothing in testing environment, but still track locally
+	registeredEmails.add(email);
+}
+
+/**
+ * Clear the local record of registered emails.
+ * Useful for test cleanup or when starting fresh.
+ */
+export function clearRegisteredEmails(): void {
+	registeredEmails.clear();
+}
+
+/**
+ * Get the current list of registered emails.
+ * Useful for debugging or verification purposes.
+ */
+export function getRegisteredEmails(): string[] {
+	return Array.from(registeredEmails);
 }
 
 /**
@@ -40,6 +70,16 @@ export function generateUniqueEmailLabel(baseLabel: string): string {
 	const timestamp = Date.now();
 	const randomSuffix = Math.random().toString(36).substring(2, 8);
 	return `${baseLabel}_${timestamp}_${randomSuffix}`;
+}
+
+export async function generateUniqueEmail(baseLabel: string): Promise<string> {
+	const label = generateUniqueEmailLabel(baseLabel);
+	const domains = await mailjs.getDomains();
+	if (!domains.data.length) {
+		throw new Error("No domains available");
+	}
+	const domain = domains.data[0].domain;
+	return `${label}@${domain}`;
 }
 
 /**
@@ -117,18 +157,12 @@ export async function getEmailHtml({
  * Register email using mailjs for staging environment.
  */
 async function registerEmailStaging({
-	label,
+	email,
 	password,
 }: {
-	label: string;
+	email: string;
 	password: string;
-}): Promise<string> {
-	const domains = await mailjs.getDomains();
-	if (!domains.data.length) {
-		throw new Error("No domains available");
-	}
-	const domain = domains.data[0].domain;
-	const email = `${label}@${domain}`;
+}): Promise<void> {
 	const registerResponse = await mailjs.register(email, password);
 
 	if (!registerResponse.status) {
@@ -147,7 +181,6 @@ async function registerEmailStaging({
 	}
 
 	console.log(`Successfully registered email: ${email}`);
-	return email;
 }
 
 /**

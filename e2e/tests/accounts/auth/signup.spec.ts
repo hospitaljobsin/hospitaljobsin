@@ -5,8 +5,8 @@ import { EMAIL_VERIFICATION_TOKEN_COOLDOWN } from "@/tests/utils/constants";
 import type { Email } from "@/tests/utils/emails";
 import {
 	findLastEmail,
-	generateUniqueEmailLabel,
-	registerNewEmail,
+	generateUniqueEmail,
+	registerEmailAddress,
 } from "@/tests/utils/emails";
 import type { PlaywrightTestArgs } from "@playwright/test";
 
@@ -139,9 +139,8 @@ test.describe("Sign Up Page", () => {
 	});
 
 	test("should validate invalid email verification token", async ({ page }) => {
-		const emailAddress = await registerNewEmail({
-			label: generateUniqueEmailLabel("new-tester"),
-		});
+		const emailAddress = await generateUniqueEmail("new-tester");
+		await registerEmailAddress({ email: emailAddress });
 		await test.step("Step 1: Enter email address", async () => {
 			await page.getByLabel("Email Address").fill(emailAddress);
 
@@ -469,9 +468,8 @@ test.describe("Sign Up Page", () => {
 	}) => {
 		// increase timeout to incorporate cooldown
 		test.setTimeout(45_000);
-		const emailAddress = await registerNewEmail({
-			label: generateUniqueEmailLabel("new-tester2"),
-		});
+		const emailAddress = await generateUniqueEmail("new-tester2");
+		await registerEmailAddress({ email: emailAddress });
 
 		// First email verification request
 

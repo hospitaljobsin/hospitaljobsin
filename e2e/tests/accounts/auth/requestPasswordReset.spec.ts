@@ -1,11 +1,12 @@
 import { env } from "@/lib/env";
 import { authTest, expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
+import { PASSWORD_RESET_TOKEN_COOLDOWN } from "@/tests/utils/constants";
 import {
-	NONEXISTENT_TESTER_EMAIL,
-	PASSWORD_RESET_TOKEN_COOLDOWN,
-} from "@/tests/utils/constants";
-import { findLastEmail } from "@/tests/utils/emails";
+	findLastEmail,
+	generateUniqueEmail,
+	registerEmailAddress,
+} from "@/tests/utils/emails";
 
 test.describe("Request Password Reset Page", () => {
 	test.beforeEach(async ({ page }) => {
@@ -72,6 +73,7 @@ test.describe("Request Password Reset Page", () => {
 		passwordAuth,
 	}) => {
 		const emailAddress = passwordAuth.account.email;
+		await registerEmailAddress({ email: emailAddress });
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
@@ -99,7 +101,8 @@ test.describe("Request Password Reset Page", () => {
 		page,
 		request,
 	}) => {
-		const emailAddress = NONEXISTENT_TESTER_EMAIL;
+		const emailAddress = await generateUniqueEmail("non-existent-tester");
+		await registerEmailAddress({ email: emailAddress });
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
@@ -150,6 +153,7 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		// increase timeout to incorporate cooldown
 		test.setTimeout(45_000);
 		const emailAddress = passwordAuth.account.email;
+		await registerEmailAddress({ email: emailAddress });
 
 		// First password reset request
 
