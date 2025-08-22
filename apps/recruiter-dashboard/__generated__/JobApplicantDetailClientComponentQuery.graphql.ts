@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<f6c7248c4a0fd1fd60d9c98bd4dc4ff0>>
- * @relayHash c1859b8adf1ef80a626800914ad8d2c5
+ * @generated SignedSource<<4b3dc5c2217fe5e6e0f569f91126f7dc>>
+ * @relayHash e9a67ba6527c2712d1217b4bef297909
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c1859b8adf1ef80a626800914ad8d2c5
+// @relayRequestID e9a67ba6527c2712d1217b4bef297909
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -582,6 +582,13 @@ return {
                                     "name": "email",
                                     "storageKey": null
                                   },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "phoneNumber",
+                                    "storageKey": null
+                                  },
                                   (v5/*: any*/)
                                 ],
                                 "storageKey": null
@@ -817,7 +824,7 @@ return {
     ]
   },
   "params": {
-    "id": "c1859b8adf1ef80a626800914ad8d2c5",
+    "id": "e9a67ba6527c2712d1217b4bef297909",
     "metadata": {},
     "name": "JobApplicantDetailClientComponentQuery",
     "operationKind": "query",

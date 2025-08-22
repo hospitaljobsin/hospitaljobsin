@@ -3,6 +3,7 @@ import asyncio
 from app.config import DatabaseSettings, get_settings
 from app.database import initialize_database
 from app.jobs.documents import Job
+from app.organizations.documents import Organization
 
 
 def shorten_location(location: str) -> str | None:
@@ -44,6 +45,26 @@ async def shorten_location_strings():
         str(get_settings(DatabaseSettings).database_url),
         get_settings(DatabaseSettings).default_database_name,
     )
+
+    organizations = await Organization.find().to_list()
+
+    for organization in organizations:
+        if organization.location is not None:
+            original_location = organization.location
+            organization.location = shorten_location(organization.location)
+
+            # Only save if location actually changed
+            if original_location != organization.location:
+                await organization.save()
+                print(
+                    f"Updated organization {organization.id}: '{original_location}' -> '{organization.location}'"
+                )
+            else:
+                print(
+                    f"No change for organization {organization.id}: '{organization.location}'"
+                )
+        else:
+            print(f"Organization {organization.id} has no location")
 
     jobs = await Job.find().to_list()
 
