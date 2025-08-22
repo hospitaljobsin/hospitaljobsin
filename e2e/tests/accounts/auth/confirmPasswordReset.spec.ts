@@ -3,7 +3,7 @@ import { authTest, expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import { TOTP_USER_SECRET } from "@/tests/utils/constants";
-import { findLastEmail } from "@/tests/utils/emails";
+import { findLastEmail, registerEmailAddress } from "@/tests/utils/emails";
 import type { PlaywrightTestArgs } from "@playwright/test";
 
 // TODO: increase test timeout here. the delay is happening because of cloudflare errors
@@ -34,6 +34,7 @@ test.describe("Confirm Password Reset Page", () => {
 		await waitForCaptcha({ page });
 
 		const emailAddress = passwordAuth.account.email;
+		await registerEmailAddress({ email: emailAddress });
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
@@ -203,6 +204,7 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		await waitForCaptcha({ page });
 
 		const emailAddress = twoFactorAuth.account.email;
+		await registerEmailAddress({ email: emailAddress });
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
@@ -409,6 +411,7 @@ authTest.describe(
 				await waitForCaptcha({ page });
 
 				const emailAddress = passwordAuth.account.email;
+				await registerEmailAddress({ email: emailAddress });
 				await page.getByLabel("Email Address").fill(emailAddress);
 				await page
 					.getByRole("button", { name: "Request Password Reset" })

@@ -1,12 +1,7 @@
 "use client";
-import {
-	Button,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-} from "@heroui/react";
+import type { CookieBannerConsentQuery as CookieBannerConsentQueryType } from "@/__generated__/CookieBannerConsentQuery.graphql";
+import { Button } from "@heroui/react";
+import { usePathname } from "next/navigation";
 import posthog from "posthog-js";
 import { useEffect, useState } from "react";
 import type { PreloadedQuery } from "react-relay";
@@ -34,12 +29,12 @@ export const CookieBannerConsentQuery = graphql`
 `;
 
 export default function CookieBanner() {
+	const pathname = usePathname();
 	const { isAuthenticated } = useIsAuthenticated();
 	const [consentGiven, setConsentGiven] = useState<string>("undecided");
 	const [isOpen, setIsOpen] = useState(false);
-	const [queryReference, loadQuery, disposeQuery] = useQueryLoader(
-		CookieBannerConsentQuery,
-	);
+	const [queryReference, loadQuery, disposeQuery] =
+		useQueryLoader<CookieBannerConsentQueryType>(CookieBannerConsentQuery);
 
 	// Check browser cookie first - if it exists, use it and skip server request
 	useEffect(() => {
@@ -128,7 +123,7 @@ function CookieBannerContent({
 	handleAcceptCookies,
 	handleDeclineCookies,
 }: {
-	queryReference: PreloadedQuery<any>;
+	queryReference: PreloadedQuery<CookieBannerConsentQueryType>;
 	disposeQuery: () => void;
 	consentGiven: string;
 	setConsentGiven: (consent: string) => void;
@@ -178,53 +173,36 @@ function CookieBannerModal({
 	handleAcceptCookies: () => Promise<void>;
 	handleDeclineCookies: () => Promise<void>;
 }) {
+	if (!isOpen) return null;
+
 	return (
-		<Modal
-			isOpen={isOpen}
-			onClose={() => {}}
-			isDismissable={false}
-			hideCloseButton
-			shouldBlockScroll={false}
-			classNames={{
-				base: "fixed bottom-4 sm:right-4 m-0 max-w-sm",
-				backdrop: "bg-transparent pointer-events-none",
-				wrapper: "items-end justify-end pointer-events-none",
-			}}
-			placement="bottom"
-			size="md"
-		>
-			<ModalContent className="bg-white border border-gray-200 shadow-lg rounded-lg pointer-events-auto">
-				<ModalHeader className="pb-2">
-					<h3 className="text-sm font-medium text-gray-900">
-						Help us improve your experience
-					</h3>
-				</ModalHeader>
-				<ModalBody className="pb-3">
-					<p className="text-xs text-gray-600">
-						We use cookies and similar technologies to make our site work,
-						remember your preferences, and measure traffic.
-					</p>
-				</ModalBody>
-				<ModalFooter className="gap-2">
-					<Button
-						size="sm"
-						color="default"
-						variant="light"
-						onPress={handleDeclineCookies}
-						className="text-xs"
-					>
-						Reject all
-					</Button>
-					<Button
-						size="sm"
-						color="primary"
-						onPress={handleAcceptCookies}
-						className="text-xs"
-					>
-						Accept all
-					</Button>
-				</ModalFooter>
-			</ModalContent>
-		</Modal>
+		<div className="fixed bottom-8 right-4 max-w-md bg-white border border-gray-200 shadow-lg rounded-lg px-6 py-4 z-50">
+			<h3 className="text-sm font-medium text-gray-900 pb-2">
+				Help us improve your experience
+			</h3>
+			<p className="text-xs text-gray-600 pb-3">
+				We use cookies and similar technologies to make our site work, remember
+				your preferences, and measure traffic.
+			</p>
+			<div className="flex gap-2 justify-end">
+				<Button
+					size="sm"
+					color="default"
+					variant="light"
+					onPress={handleDeclineCookies}
+					className="text-xs"
+				>
+					Reject all
+				</Button>
+				<Button
+					size="sm"
+					color="primary"
+					onPress={handleAcceptCookies}
+					className="text-xs"
+				>
+					Accept all
+				</Button>
+			</div>
+		</div>
 	);
 }
