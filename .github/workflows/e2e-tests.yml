@@ -63,7 +63,8 @@ jobs:
               --function-name ${{ vars.STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN }} \
               --payload '{}' \
               --cli-binary-format raw-in-base64-out \
-              --invocation-type RequestResponse
+              --invocation-type RequestResponse \
+              --outfile response.json
 
   test-e2e:
     environment: staging
@@ -149,7 +150,8 @@ jobs:
                 --function-name ${{ vars.STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN }} \
                 --payload '{}' \
                 --cli-binary-format raw-in-base64-out \
-                --invocation-type RequestResponse
+                --invocation-type RequestResponse \
+                --outfile response.json
 
       # Always scale ECS + ASG down after tests
       - name: Scale down ECS service and ASG
