@@ -103,6 +103,8 @@ jobs:
           STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN: ${{ vars.STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+          MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
+          MAILINATOR_PRIVATE_DOMAIN: ${{ secrets.MAILINATOR_PRIVATE_DOMAIN }}
 
       - name: Upload Playwright Report and Traces
         uses: actions/upload-artifact@v4
