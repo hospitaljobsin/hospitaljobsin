@@ -35,7 +35,14 @@ jobs:
           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
-
+      - name: Invoke Staging Setup Lambda
+        if: ${{ github.ref_name == 'staging' }}
+        run: |
+            aws lambda invoke \
+              --function-name ${{ vars.STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN }} \
+              --payload '{}' \
+              --cli-binary-format raw-in-base64-out \
+              response.json
       # Scale ECS + ASG up
       - name: Scale up ECS service and ASG
         run: |
@@ -55,15 +62,6 @@ jobs:
           aws ecs wait services-stable \
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --services ${{ vars.AWS_BACKEND_ECS_SERVICE }}
-
-      - name: Invoke Staging Setup Lambda
-        if: ${{ github.ref_name == 'staging' }}
-        run: |
-            aws lambda invoke \
-              --function-name ${{ vars.STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN }} \
-              --payload '{}' \
-              --cli-binary-format raw-in-base64-out \
-              response.json
 
   test-e2e:
     environment: staging
