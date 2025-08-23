@@ -138,8 +138,10 @@ test.describe("Sign Up Page", () => {
 		await page.waitForURL("https://accounts.google.com/**");
 	});
 
-	test("should validate invalid email verification token", async ({ page }) => {
-		const emailAddress = await generateUniqueEmail("new-tester");
+	test("should validate invalid email verification token", async ({ page }, {
+		project,
+	}) => {
+		const emailAddress = await generateUniqueEmail("new-tester", project.name);
 		await registerEmailAddress({ email: emailAddress });
 		await test.step("Step 1: Enter email address", async () => {
 			await page.getByLabel("Email Address").fill(emailAddress);
@@ -465,10 +467,10 @@ test.describe("Sign Up Page", () => {
 	test("should handle cooldown on multiple email verification requests", async ({
 		page,
 		request,
-	}) => {
+	}, { project }) => {
 		// increase timeout to incorporate cooldown
 		test.setTimeout(45_000);
-		const emailAddress = await generateUniqueEmail("new-tester2");
+		const emailAddress = await generateUniqueEmail("new-tester2", project.name);
 		await registerEmailAddress({ email: emailAddress });
 
 		// First email verification request

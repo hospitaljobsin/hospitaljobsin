@@ -83,7 +83,10 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await generateUniqueEmail(`tester-${id}`),
+					email: await generateUniqueEmail(
+						`tester-${id}`,
+						test.info().project.name,
+					),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -113,7 +116,10 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await generateUniqueEmail(`tester-webauthn-${id}`),
+					email: await generateUniqueEmail(
+						`tester-webauthn-${id}`,
+						test.info().project.name,
+					),
 					password: null,
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -143,7 +149,10 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await generateUniqueEmail(`two-factor-${id}`),
+					email: await generateUniqueEmail(
+						`two-factor-${id}`,
+						test.info().project.name,
+					),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: TOTP_USER_SECRET,
@@ -173,7 +182,10 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await generateUniqueEmail(`tester-sudo-${id}`),
+					email: await generateUniqueEmail(
+						`tester-sudo-${id}`,
+						test.info().project.name,
+					),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -203,7 +215,10 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await generateUniqueEmail(`tester-webauthn-sudo-${id}`),
+					email: await generateUniqueEmail(
+						`tester-webauthn-sudo-${id}`,
+						test.info().project.name,
+					),
 					password: null,
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -233,7 +248,10 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await generateUniqueEmail(`two-factor-sudo-${id}`),
+					email: await generateUniqueEmail(
+						`two-factor-sudo-${id}`,
+						test.info().project.name,
+					),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: TOTP_USER_SECRET,

@@ -97,11 +97,13 @@ test.describe("Request Password Reset Page", () => {
 		await page.waitForURL(/\/auth\/login/);
 	});
 
-	test("should handle invalid password reset email", async ({
-		page,
-		request,
+	test("should handle invalid password reset email", async ({ page, request }, {
+		project,
 	}) => {
-		const emailAddress = await generateUniqueEmail("non-existent-tester");
+		const emailAddress = await generateUniqueEmail(
+			"non-existent-tester",
+			project.name,
+		);
 		await registerEmailAddress({ email: emailAddress });
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
