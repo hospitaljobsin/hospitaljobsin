@@ -56,7 +56,7 @@ jobs:
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --services ${{ vars.AWS_BACKEND_ECS_SERVICE }}
 
-      - name: Invoke Staging DB Setup Lambda
+      - name: Invoke Staging Setup Lambda
         if: ${{ github.ref_name == 'staging' }}
         run: |
             aws lambda invoke \
@@ -143,7 +143,7 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Invoke Staging DB Teardown Lambda
+      - name: Invoke Staging Teardown Lambda
         if: ${{ github.ref_name == 'staging' }}
         run: |
               aws lambda invoke \

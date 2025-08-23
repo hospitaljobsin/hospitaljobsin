@@ -10,11 +10,11 @@ locals {
   staging_env_vars = var.environment_name == "staging" ? [
     {
       name  = "SERVER_EMAIL_VERIFICATION_TOKEN_COOLDOWN"
-      value = 20
+      value = "20"
     },
     {
       name  = "SERVER_PASSWORD_RESET_TOKEN_COOLDOWN"
-      value = 20
+      value = "20"
     }
   ] : []
 }
