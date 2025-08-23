@@ -29,7 +29,6 @@ const registeredEmails = new Set<string>();
  */
 export async function registerEmailAddress({
 	email,
-	password = env.MAILJS_PASSWORD,
 }: {
 	email: string;
 	password?: string;
@@ -173,13 +172,26 @@ async function getTestingEmailHtml({
 	}
 }
 
-function getStagingEmailHtml({
-	message,
+async function getStagingEmailHtml({
+	email,
 }: {
-	message: Message;
-}): string | undefined {
+	email: Email;
+}): Promise<string | undefined> {
+	if (!env.MAILINATOR_PRIVATE_DOMAIN) {
+		throw new Error(
+			"MAILINATOR_PRIVATE_DOMAIN environment variable is required for staging environment",
+		);
+	}
+
 	try {
 		// Extract HTML content from message parts
+		const resp: IRestResponse<Message> = await mailinatorClient.request(
+			new GetMessageRequest(env.MAILINATOR_PRIVATE_DOMAIN, email.id),
+		);
+		const message = resp.result;
+		if (!message) {
+			return undefined;
+		}
 		let html = "";
 
 		// Look for HTML content in the parts array
@@ -203,7 +215,7 @@ function getStagingEmailHtml({
 
 		return html || undefined;
 	} catch (error) {
-		console.warn(`Failed to fetch HTML for email ${message.id}:`, error);
+		console.warn(`Failed to fetch HTML for email ${email.id}:`, error);
 		return undefined;
 	}
 }
@@ -249,14 +261,13 @@ async function findLastEmailTesting({
 
 				const email = filteredEmails[filteredEmails.length - 1];
 				if (email) {
-					// Fetch HTML content for the email
-					const htmlContent = await getTestingEmailHtml({
-						request,
-						messageId: String(email.id),
-					});
 					return {
 						...email,
-						html: htmlContent || undefined,
+						html: await getTestingEmailHtml({
+							request,
+							// Fetch HTML content for the email
+							messageId: String(email.id),
+						}),
 					};
 				}
 
@@ -308,7 +319,10 @@ async function findLastEmailStaging({
 
 				if (filteredEmails.length > 0) {
 					const lastEmail = filteredEmails[filteredEmails.length - 1];
-					return lastEmail;
+					return {
+						...lastEmail,
+						html: await getStagingEmailHtml({ email: lastEmail }),
+					};
 				}
 
 				// Wait for 100ms before checking again
@@ -364,7 +378,7 @@ async function getMailbox(
 				id: message.id,
 				recipients: [message.to],
 				subject: message.subject,
-				html: getStagingEmailHtml({ message }),
+				html: undefined,
 			})),
 		};
 	} catch (error) {
