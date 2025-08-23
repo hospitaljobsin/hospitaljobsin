@@ -16,7 +16,6 @@
 		"typescript": "^5.8.3"
 	},
 	"dependencies": {
-		"@aws-sdk/client-lambda": "^3.828.0",
 		"@playwright/test": "^1.53.0",
 		"@t3-oss/env-core": "^0.13.8",
 		"dotenv": "^16.5.0",

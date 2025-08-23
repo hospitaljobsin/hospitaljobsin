@@ -69,11 +69,19 @@ async def create_search_indexes(
     client: AsyncIOMotorClient, default_database_name: str
 ) -> None:
     """Create search indexes for the database."""
-    # TODO: only create indexes if they don't exist
-    await (
-        client.get_default_database(default=default_database_name)
-        .get_collection(str(Job.get_settings().name))
-        .create_search_index(
+    database = client.get_default_database(default=default_database_name)
+
+    # Check and create Job embedding index if it doesn't exist
+    job_collection = database.get_collection(str(Job.get_settings().name))
+    existing_job_indexes = await job_collection.list_search_indexes().to_list(
+        length=None
+    )
+    job_index_exists = any(
+        index.get("name") == JOB_EMBEDDING_INDEX_NAME for index in existing_job_indexes
+    )
+
+    if not job_index_exists:
+        await job_collection.create_search_index(
             model=SearchIndexModel(
                 definition={
                     "fields": [
@@ -89,11 +97,29 @@ async def create_search_indexes(
                 type="vectorSearch",
             )
         )
+        logger.info(
+            "Created Job embedding search index", index_name=JOB_EMBEDDING_INDEX_NAME
+        )
+    else:
+        logger.info(
+            "Job embedding search index already exists",
+            index_name=JOB_EMBEDDING_INDEX_NAME,
+        )
+
+    # Check and create JobApplicant embedding index if it doesn't exist
+    job_applicant_collection = database.get_collection(
+        str(JobApplicant.get_settings().name)
     )
-    await (
-        client.get_default_database(default=default_database_name)
-        .get_collection(str(JobApplicant.get_settings().name))
-        .create_search_index(
+    existing_job_applicant_indexes = (
+        await job_applicant_collection.list_search_indexes().to_list(length=None)
+    )
+    job_applicant_index_exists = any(
+        index.get("name") == JOB_APPLICANT_EMBEDDING_INDEX_NAME
+        for index in existing_job_applicant_indexes
+    )
+
+    if not job_applicant_index_exists:
+        await job_applicant_collection.create_search_index(
             model=SearchIndexModel(
                 definition={
                     "fields": [
@@ -109,7 +135,15 @@ async def create_search_indexes(
                 type="vectorSearch",
             )
         )
-    )
+        logger.info(
+            "Created JobApplicant embedding search index",
+            index_name=JOB_APPLICANT_EMBEDDING_INDEX_NAME,
+        )
+    else:
+        logger.info(
+            "JobApplicant embedding search index already exists",
+            index_name=JOB_APPLICANT_EMBEDDING_INDEX_NAME,
+        )
 
 
 async def initialize_database(database_url: str, default_database_name: str) -> None:
