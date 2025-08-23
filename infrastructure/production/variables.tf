@@ -96,3 +96,14 @@ variable "posthog_api_host" {
   type        = string
   description = "PostHog API host."
 }
+
+variable "mailinator_private_domain" {
+  type        = string
+  description = "Mailinator private domain."
+}
+
+variable "mailinator_api_key" {
+  type        = string
+  description = "Mailinator API key."
+  sensitive   = true
+}

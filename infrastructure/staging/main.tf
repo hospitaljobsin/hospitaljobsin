@@ -98,6 +98,8 @@ module "core" {
   hosted_zone_id                    = data.terraform_remote_state.shared.outputs.hosted_zone_id
   aws_lambda_worker_repository_url  = data.terraform_remote_state.shared.outputs.aws_lambda_worker_repository_url
   aws_lambda_backend_repository_url = data.terraform_remote_state.shared.outputs.aws_lambda_backend_repository_url
+  mailinator_private_domain         = var.mailinator_private_domain
+  mailinator_api_key                = var.mailinator_api_key
 }
 
 module "mongodb" {

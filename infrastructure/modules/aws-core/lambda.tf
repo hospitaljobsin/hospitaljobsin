@@ -432,6 +432,7 @@ resource "aws_security_group" "lambda" {
 }
 
 
+# TODO: rename this to staging_environment_setup
 
 resource "aws_lambda_function" "staging_database_setup" {
   # depends_on    = [docker_registry_image.backend]
@@ -447,7 +448,7 @@ resource "aws_lambda_function" "staging_database_setup" {
   image_uri    = "${var.aws_lambda_worker_repository_url}:${var.environment_name}-latest"
 
   image_config {
-    command = ["lambda_handlers.setup_staging_database.lambda_handler"]
+    command = ["lambda_handlers.setup_staging_environment.lambda_handler"]
   }
 
   publish = true
@@ -460,9 +461,11 @@ resource "aws_lambda_function" "staging_database_setup" {
 
   environment {
     variables = {
-      SERVER_DATABASE_URL          = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
-      SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
-      SERVER_LOG_LEVEL             = "DEBUG"
+      SERVER_DATABASE_URL              = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DEFAULT_DATABASE_NAME     = var.mongodb_database_name
+      SERVER_LOG_LEVEL                 = "DEBUG"
+      SERVER_MAILINATOR_PRIVATE_DOMAIN = var.mailinator_private_domain
+      SERVER_MAILINATOR_API_KEY        = var.mailinator_api_key
     }
   }
 
@@ -470,6 +473,7 @@ resource "aws_lambda_function" "staging_database_setup" {
   timeout     = 60
 }
 
+# TODO: rename this to staging_environment_teardown
 
 resource "aws_lambda_function" "staging_database_teardown" {
   # depends_on    = [docker_registry_image.backend]
@@ -485,7 +489,7 @@ resource "aws_lambda_function" "staging_database_teardown" {
   image_uri    = "${var.aws_lambda_worker_repository_url}:${var.environment_name}-latest"
 
   image_config {
-    command = ["lambda_handlers.teardown_staging_database.lambda_handler"]
+    command = ["lambda_handlers.teardown_staging_environment.lambda_handler"]
   }
 
   publish = true
@@ -498,9 +502,11 @@ resource "aws_lambda_function" "staging_database_teardown" {
 
   environment {
     variables = {
-      SERVER_DATABASE_URL          = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
-      SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
-      SERVER_LOG_LEVEL             = "DEBUG"
+      SERVER_DATABASE_URL              = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DEFAULT_DATABASE_NAME     = var.mongodb_database_name
+      SERVER_LOG_LEVEL                 = "DEBUG"
+      SERVER_MAILINATOR_PRIVATE_DOMAIN = var.mailinator_private_domain
+      SERVER_MAILINATOR_API_KEY        = var.mailinator_api_key
     }
   }
 

@@ -15,6 +15,8 @@ import { getBasicAuthHeaders, isBasicAuthConfigured } from "./lib/basic-auth";
 const IS_CI = process.env.CI;
 
 export default defineConfig({
+	/* Fail the build if a test fails- save CI resources */
+	maxFailures: IS_CI ? 1 : undefined,
 	testDir: "./tests/",
 	/* Run tests in files in parallel */
 	fullyParallel: true,
