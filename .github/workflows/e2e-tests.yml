@@ -13,13 +13,15 @@ env:
   # repo-level and non-env-specific secrets/vars
   AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
+  MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
+  MAILINATOR_PRIVATE_DOMAIN: ${{ vars.MAILINATOR_PRIVATE_DOMAIN }}
 
 concurrency:
   group: e2e-tests-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
   cancel-in-progress: true
 
 jobs:
-  setup-aws-infrastructure:
+  setup-infrastructure:
     environment: staging
     name: Wake up Infrastructure
     runs-on: ubuntu-latest
@@ -54,10 +56,19 @@ jobs:
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --services ${{ vars.AWS_BACKEND_ECS_SERVICE }}
 
+      - name: Invoke Staging DB Setup Lambda
+        if: ${{ github.ref_name == 'staging' }}
+        run: |
+            aws lambda invoke \
+              --function-name ${{ vars.STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN }} \
+              --payload '{}' \
+              --cli-binary-format raw-in-base64-out \
+              response.json
+
   test-e2e:
     environment: staging
     name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
-    needs: setup-aws-infrastructure
+    needs: setup-infrastructure
     strategy:
       fail-fast: false
       matrix:
@@ -99,10 +110,11 @@ jobs:
           ACCOUNTS_UI_BASE_URL: ${{ vars.SST_ACCOUNTS_BASE_URL }}
           SEEKER_PORTAL_BASE_URL: ${{ vars.SST_SEEKER_PORTAL_BASE_URL }}
           ENVIRONMENT: staging
-          STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN: ${{ vars.STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN }}
-          STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN: ${{ vars.STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+          MAILINATOR_API_KEY: ${{ env.MAILINATOR_API_KEY }}
+          MAILINATOR_PRIVATE_DOMAIN: ${{ env.MAILINATOR_PRIVATE_DOMAIN }}
+          PLAYWRIGHT_SHARD: ${{ matrix.shard }}
 
       - name: Upload Playwright Report and Traces
         uses: actions/upload-artifact@v4
@@ -114,7 +126,7 @@ jobs:
             e2e/test-results/**/*.zip
           retention-days: 30
 
-  cleanup-aws-infrastructure:
+  cleanup-infrastructure:
     environment: staging
     name: Cleanup Infrastructure
     needs: test-e2e
@@ -130,6 +142,15 @@ jobs:
           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Invoke Staging DB Teardown Lambda
+        if: ${{ github.ref_name == 'staging' }}
+        run: |
+              aws lambda invoke \
+                --function-name ${{ vars.STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN }} \
+                --payload '{}' \
+                --cli-binary-format raw-in-base64-out \
+                response.json
 
       # Always scale ECS + ASG down after tests
       - name: Scale down ECS service and ASG

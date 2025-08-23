@@ -9,14 +9,13 @@ export const env = createEnv({
 		SEEKER_PORTAL_BASE_URL: z.string().url(),
 		MAILCATCHER_BASE_URL: z.string().url().default("http://localhost:1080"),
 		ENVIRONMENT: z.enum(["staging", "testing"]),
-		// AWS Lambda configuration for test database setup
-		STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN: z.string().optional(),
-		STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN: z.string().optional(),
-		AWS_REGION: z.string().default("us-east-1"),
-		// Mailjs configuration for staging environment (optional password override)
-		MAILJS_PASSWORD: z.string().default("Pass@123"),
+		// Mailinator configuration for staging environment (free tier public inboxes)
+		MAILINATOR_API_KEY: z.string().optional(),
+		MAILINATOR_PRIVATE_DOMAIN: z.string().optional(),
+		MAILINATOR_BASE_URL: z.string().url().default("https://api.mailinator.com"),
 		BASIC_AUTH_USERNAME: z.string().optional(),
 		BASIC_AUTH_PASSWORD: z.string().optional(),
+		PLAYWRIGHT_SHARD: z.string().default("1"),
 	},
 
 	/**
@@ -29,13 +28,11 @@ export const env = createEnv({
 		SEEKER_PORTAL_BASE_URL: process.env.SEEKER_PORTAL_BASE_URL,
 		MAILCATCHER_BASE_URL: process.env.MAILCATCHER_BASE_URL,
 		ENVIRONMENT: process.env.ENVIRONMENT,
-		STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN:
-			process.env.STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN,
-		STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN:
-			process.env.STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN,
-		AWS_REGION: process.env.AWS_REGION,
-		MAILJS_PASSWORD: process.env.MAILJS_PASSWORD,
+		MAILINATOR_API_KEY: process.env.MAILINATOR_API_KEY,
+		MAILINATOR_PRIVATE_DOMAIN: process.env.MAILINATOR_PRIVATE_DOMAIN,
+		MAILINATOR_BASE_URL: process.env.MAILINATOR_BASE_URL,
 		BASIC_AUTH_USERNAME: process.env.BASIC_AUTH_USERNAME,
 		BASIC_AUTH_PASSWORD: process.env.BASIC_AUTH_PASSWORD,
+		PLAYWRIGHT_SHARD: process.env.PLAYWRIGHT_SHARD,
 	},
 });

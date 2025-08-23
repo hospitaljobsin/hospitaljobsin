@@ -1,25 +1,30 @@
 import { env } from "@/lib/env";
-import Mailjs from "@cemalgnlts/mailjs";
 import type { APIRequestContext } from "@playwright/test";
+import {
+	GetInboxRequest,
+	GetMessageRequest,
+	type Inbox,
+	MailinatorClient,
+	type Message,
+} from "mailinator-client";
+import type { IRestResponse } from "typed-rest-client";
 
 export type Email = {
-	id: number;
+	id: string;
 	recipients: string[];
 	subject: string;
 	html: string | undefined;
 };
 
-// Initialize mailjs instance for staging environment
-const mailjs = new Mailjs({
-	rateLimitRetries: 5,
-});
+// Initialize mailinator client for staging environment
+const mailinatorClient = new MailinatorClient(env.MAILINATOR_API_KEY);
 
 // Local record of registered emails to avoid duplicate registrations
 const registeredEmails = new Set<string>();
 
 /**
  * Register an email account using the appropriate method based on environment.
- * This function does nothing in testing environment and registers with mailjs in staging.
+ * This function does nothing in testing environment and registers with mailinator in staging.
  * Avoids registering the same email twice by maintaining a local record.
  */
 export async function registerEmailAddress({
@@ -32,13 +37,6 @@ export async function registerEmailAddress({
 	// Check if email is already registered locally
 	if (registeredEmails.has(email)) {
 		console.log(`Email ${email} already registered, skipping registration`);
-		return;
-	}
-
-	if (env.ENVIRONMENT === "staging") {
-		await registerEmailStaging({ email, password });
-		// Add to local record only after successful registration
-		registeredEmails.add(email);
 		return;
 	}
 
@@ -62,24 +60,20 @@ export function getRegisteredEmails(): string[] {
 	return Array.from(registeredEmails);
 }
 
-/**
- * Generate a unique email label by appending a timestamp to prevent conflicts.
- * Useful for e2e tests where the same email might be used multiple times.
- */
-export function generateUniqueEmailLabel(baseLabel: string): string {
-	const timestamp = Date.now();
-	const randomSuffix = Math.random().toString(36).substring(2, 8);
-	return `${baseLabel}_${timestamp}_${randomSuffix}`;
-}
-
-export async function generateUniqueEmail(baseLabel: string): Promise<string> {
-	const label = generateUniqueEmailLabel(baseLabel);
-	const domains = await mailjs.getDomains();
-	if (!domains.data.length) {
-		throw new Error("No domains available");
+export async function generateUniqueEmail(
+	baseLabel: string,
+	projectName: string,
+): Promise<string> {
+	if (env.ENVIRONMENT === "staging") {
+		if (!env.MAILINATOR_PRIVATE_DOMAIN) {
+			throw new Error(
+				"MAILINATOR_PRIVATE_DOMAIN environment variable is required for staging environment",
+			);
+		}
+		return `${baseLabel}-${projectName}@${env.MAILINATOR_PRIVATE_DOMAIN}`;
 	}
-	const domain = domains.data[0].domain;
-	return `${label}@${domain}`;
+
+	return `${baseLabel}-${projectName}@outlook.com`;
 }
 
 /**
@@ -105,33 +99,61 @@ export async function findLastEmail({
 	return findLastEmailTesting({ request, filter, inboxAddress, timeout });
 }
 
-/**
- * Get the HTML content of an email by its ID.
- * This function works in both testing and staging environments.
- */
-export async function getEmailHtml({
+async function getTestingEmailHtml({
 	request,
 	messageId,
 }: {
-	request: APIRequestContext;
+	request?: APIRequestContext;
 	messageId: string;
 }): Promise<string | undefined> {
 	if (env.ENVIRONMENT === "staging") {
-		const message = await mailjs.getMessage(messageId);
-
-		if (!message.status || !message.data) {
+		if (!env.MAILINATOR_API_KEY || !env.MAILINATOR_PRIVATE_DOMAIN) {
+			console.warn("Mailinator configuration missing for staging environment");
 			return undefined;
 		}
 
-		// Handle html content - it can be a string or array of strings
-		let html = "";
-		if (typeof message.data.html === "string") {
-			html = message.data.html;
-		} else if (Array.isArray(message.data.html)) {
-			html = message.data.html.join("");
-		}
+		try {
+			const response: IRestResponse<Message> = await mailinatorClient.request(
+				new GetMessageRequest(env.MAILINATOR_PRIVATE_DOMAIN, messageId),
+			);
 
-		return html || undefined;
+			if (!response.result) {
+				return undefined;
+			}
+
+			const messageData = response.result;
+
+			// Extract HTML content from message parts
+			let html = "";
+
+			// Look for HTML content in the parts array
+			if (messageData.parts && Array.isArray(messageData.parts)) {
+				for (const part of messageData.parts) {
+					// Check if this part contains HTML content
+					if (part.headers && typeof part.headers === "object") {
+						const headers = part.headers as Record<string, string>;
+						const contentType =
+							headers["content-type"] ||
+							headers["Content-Type"] ||
+							headers["CONTENT-TYPE"];
+
+						if (contentType?.includes("text/html")) {
+							html = part.body || "";
+							break;
+						}
+					}
+				}
+			}
+
+			return html || undefined;
+		} catch (error) {
+			console.warn(`Failed to fetch HTML for email ${messageId}:`, error);
+			return undefined;
+		}
+	}
+
+	if (!request) {
+		throw new Error("request is required for testing environment");
 	}
 
 	// For testing environment, fetch HTML from mailcatcher
@@ -151,38 +173,40 @@ export async function getEmailHtml({
 	}
 }
 
-// Internal implementation functions below
-
-/**
- * Register email using mailjs for staging environment.
- */
-async function registerEmailStaging({
-	email,
-	password,
+function getStagingEmailHtml({
+	message,
 }: {
-	email: string;
-	password: string;
-}): Promise<void> {
-	const registerResponse = await mailjs.register(email, password);
+	message: Message;
+}): string | undefined {
+	try {
+		// Extract HTML content from message parts
+		let html = "";
 
-	if (!registerResponse.status) {
-		console.error("Email registration failed:", {
-			status: registerResponse.status,
-			message: registerResponse.message,
-			response: registerResponse,
-		});
-		throw new Error(
-			`Failed to register email: ${JSON.stringify({
-				status: registerResponse.status,
-				message: registerResponse.message,
-				response: registerResponse,
-			})}`,
-		);
+		// Look for HTML content in the parts array
+		if (message.parts && Array.isArray(message.parts)) {
+			for (const part of message.parts) {
+				// Check if this part contains HTML content
+				if (part.headers && typeof part.headers === "object") {
+					const headers = part.headers as Record<string, string>;
+					const contentType =
+						headers["content-type"] ||
+						headers["Content-Type"] ||
+						headers["CONTENT-TYPE"];
+
+					if (contentType?.includes("text/html")) {
+						html = part.body || "";
+						break;
+					}
+				}
+			}
+		}
+
+		return html || undefined;
+	} catch (error) {
+		console.warn(`Failed to fetch HTML for email ${message.id}:`, error);
+		return undefined;
 	}
-
-	console.log(`Successfully registered email: ${email}`);
 }
-
 /**
  * Find last email using mailcatcher for testing environment.
  */
@@ -226,7 +250,7 @@ async function findLastEmailTesting({
 				const email = filteredEmails[filteredEmails.length - 1];
 				if (email) {
 					// Fetch HTML content for the email
-					const htmlContent = await getEmailHtml({
+					const htmlContent = await getTestingEmailHtml({
 						request,
 						messageId: String(email.id),
 					});
@@ -249,7 +273,7 @@ async function findLastEmailTesting({
 }
 
 /**
- * Find last email using mailjs for staging environment.
+ * Find last email using mailinator for staging environment.
  */
 async function findLastEmailStaging({
 	filter,
@@ -284,13 +308,7 @@ async function findLastEmailStaging({
 
 				if (filteredEmails.length > 0) {
 					const lastEmail = filteredEmails[filteredEmails.length - 1];
-					return {
-						...lastEmail,
-						html: await getEmailHtml({
-							request,
-							messageId: String(lastEmail.id),
-						}),
-					};
+					return lastEmail;
 				}
 
 				// Wait for 100ms before checking again
@@ -304,36 +322,31 @@ async function findLastEmailStaging({
 
 	return Promise.race([timeoutPromise, checkEmails()]);
 }
-
 /**
- * Internal function to get mailbox contents using mailjs for staging environment.
+ * Internal function to get mailbox contents using mailinator for staging environment.
  */
 async function getMailbox(
 	email: string,
-): Promise<{ address: string; messageCount: number; messages: Email[] }> {
+): Promise<{ address: string; messageCount: number; messages: Array<Email> }> {
+	if (!env.MAILINATOR_API_KEY || !env.MAILINATOR_PRIVATE_DOMAIN) {
+		throw new Error("Mailinator configuration missing for staging environment");
+	}
+
 	try {
-		const password = env.MAILJS_PASSWORD;
+		// Extract inbox name from email address
+		const inboxName = email.split("@")[0];
 
-		// Login to mailjs
-		const loginResponse = await mailjs.login(email, password);
-		if (!loginResponse.status) {
-			console.error("Mailjs login failed:", {
-				status: loginResponse.status,
-				message: loginResponse.message,
-				response: loginResponse,
-			});
-			throw new Error(
-				`Failed to login to mailjs: ${JSON.stringify({
-					status: loginResponse.status,
-					message: loginResponse.message,
-					response: loginResponse,
-				})}`,
-			);
-		}
+		// Get inbox from mailinator
+		const response: IRestResponse<Inbox> = await mailinatorClient.request(
+			new GetInboxRequest(
+				env.MAILINATOR_PRIVATE_DOMAIN,
+				inboxName,
+				undefined,
+				100,
+			),
+		);
 
-		// Get messages
-		const messagesResponse = await mailjs.getMessages();
-		if (!messagesResponse.status || !messagesResponse.data) {
+		if (!response.result) {
 			return {
 				address: email,
 				messageCount: 0,
@@ -341,76 +354,18 @@ async function getMailbox(
 			};
 		}
 
-		// Fetch message details in parallel
-		const messages = await Promise.all(
-			messagesResponse.data.map(async (message, index) => {
-				try {
-					const messageDetail = await mailjs.getMessage(message.id);
-
-					if (!messageDetail.status || !messageDetail.data) {
-						const errorMessage =
-							messageDetail.message ||
-							"Unknown error occurred while fetching message details";
-						console.error("Message detail fetch failed:", {
-							status: messageDetail.status,
-							message: messageDetail.message,
-							response: messageDetail,
-						});
-						throw new Error(`Failed to fetch message details: ${errorMessage}`);
-					}
-
-					// Extract data with safe fallbacks
-					const subject = messageDetail.data.subject || "No Subject";
-					let html = "";
-					let to = "";
-
-					// Handle html content
-					if (typeof messageDetail.data.html === "string") {
-						html = messageDetail.data.html;
-					} else if (Array.isArray(messageDetail.data.html)) {
-						html = messageDetail.data.html.join("");
-					}
-
-					// Handle to field
-					if (typeof messageDetail.data.to === "string") {
-						to = messageDetail.data.to;
-					} else if (Array.isArray(messageDetail.data.to)) {
-						to = messageDetail.data.to
-							.map((recipient) =>
-								typeof recipient === "string"
-									? recipient
-									: recipient.address || "",
-							)
-							.join(", ");
-					} else if (
-						messageDetail.data.to &&
-						typeof messageDetail.data.to === "object"
-					) {
-						to = (messageDetail.data.to as { address: string }).address || "";
-					}
-
-					return {
-						id: index + 1, // Use sequential index as ID
-						recipients: [to],
-						subject,
-						html,
-					};
-				} catch (error) {
-					console.warn(`Failed to fetch message ${message.id}:`, error);
-					return {
-						id: index + 1,
-						recipients: [""],
-						subject: "Error fetching message",
-						html: "",
-					};
-				}
-			}),
-		);
+		const inboxData = response.result;
+		const messages = inboxData.msgs || [];
 
 		return {
 			address: email,
 			messageCount: messages.length,
-			messages,
+			messages: messages.map((message) => ({
+				id: message.id,
+				recipients: [message.to],
+				subject: message.subject,
+				html: getStagingEmailHtml({ message }),
+			})),
 		};
 	} catch (error) {
 		console.error("Error getting mailbox:", error);

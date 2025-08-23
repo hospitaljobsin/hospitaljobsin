@@ -30,11 +30,10 @@ from app.testing.routes import test_setup_router
 
 def add_routes(
     app: FastAPI,
-    app_settings: AppSettings,
     env_settings: EnvironmentSettings,
 ) -> None:
     """Register routes for the app."""
-    if env_settings.is_testing:
+    if env_settings.is_testing or env_settings.is_staging:
         # add E2E Setup API routes during testing
         app.include_router(test_setup_router)
 
@@ -112,7 +111,7 @@ def create_app() -> FastAPI:
         root_path=app_settings.root_path,
         lifespan=app_lifespan,
     )
-    add_routes(app, app_settings=app_settings, env_settings=env_settings)
+    add_routes(app, env_settings=env_settings)
     add_middleware(
         app,
         app_settings=app_settings,

@@ -1,3 +1,4 @@
+import { env } from "@/lib/env";
 import {
 	type TestAccount,
 	createTestAccount,
@@ -62,10 +63,17 @@ type WorkerFixtures = {
 	};
 };
 
+// generate unique id across shards and workers
+function generateGlobalId(workerIndex: number): string {
+	// Create a unique ID that combines shard and worker information
+	// This ensures uniqueness across all shards and workers
+	return `${env.PLAYWRIGHT_SHARD}-${workerIndex}`;
+}
+
 export const test = baseTest.extend<{}, WorkerFixtures>({
 	passwordAuth: [
 		async ({ browser }, use) => {
-			const id = test.info().workerIndex;
+			const id = generateGlobalId(test.info().workerIndex);
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
@@ -75,7 +83,10 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await generateUniqueEmail(`tester-${id}`),
+					email: await generateUniqueEmail(
+						`tester-${id}`,
+						test.info().project.name,
+					),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -95,7 +106,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 	],
 	webauthnAuth: [
 		async ({ browser }, use) => {
-			const id = test.info().workerIndex;
+			const id = generateGlobalId(test.info().workerIndex);
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
@@ -105,7 +116,10 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await generateUniqueEmail(`tester-webauthn-${id}`),
+					email: await generateUniqueEmail(
+						`tester-webauthn-${id}`,
+						test.info().project.name,
+					),
 					password: null,
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -125,7 +139,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 	],
 	twoFactorAuth: [
 		async ({ browser }, use) => {
-			const id = test.info().workerIndex;
+			const id = generateGlobalId(test.info().workerIndex);
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
@@ -135,7 +149,10 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await generateUniqueEmail(`two-factor-${id}`),
+					email: await generateUniqueEmail(
+						`two-factor-${id}`,
+						test.info().project.name,
+					),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: TOTP_USER_SECRET,
@@ -155,7 +172,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 	],
 	passwordAuthSudoMode: [
 		async ({ browser }, use) => {
-			const id = test.info().workerIndex;
+			const id = generateGlobalId(test.info().workerIndex);
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
@@ -165,7 +182,10 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await generateUniqueEmail(`tester-sudo-${id}`),
+					email: await generateUniqueEmail(
+						`tester-sudo-${id}`,
+						test.info().project.name,
+					),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -185,7 +205,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 	],
 	webauthnAuthSudoMode: [
 		async ({ browser }, use) => {
-			const id = test.info().workerIndex;
+			const id = generateGlobalId(test.info().workerIndex);
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
@@ -195,7 +215,10 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await generateUniqueEmail(`tester-webauthn-sudo-${id}`),
+					email: await generateUniqueEmail(
+						`tester-webauthn-sudo-${id}`,
+						test.info().project.name,
+					),
 					password: null,
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
@@ -215,7 +238,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 	],
 	twoFactorAuthSudoMode: [
 		async ({ browser }, use) => {
-			const id = test.info().workerIndex;
+			const id = generateGlobalId(test.info().workerIndex);
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
@@ -225,7 +248,10 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 
 			const account = await createUserContext(
 				{
-					email: await generateUniqueEmail(`two-factor-sudo-${id}`),
+					email: await generateUniqueEmail(
+						`two-factor-sudo-${id}`,
+						test.info().project.name,
+					),
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: TOTP_USER_SECRET,

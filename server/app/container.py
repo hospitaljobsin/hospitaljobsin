@@ -242,7 +242,7 @@ def register_location_service(container: aioinject.Container) -> None:
 
 def register_ocr_client(container: aioinject.Container) -> None:
     env_settings = get_settings(EnvironmentSettings)
-    if env_settings.is_production:
+    if env_settings.is_production or env_settings.is_staging:
         container.register(aioinject.Scoped(create_textract_client))
         container.register(aioinject.Scoped(TextractOCRClient, BaseOCRClient))
     else:
@@ -251,7 +251,7 @@ def register_ocr_client(container: aioinject.Container) -> None:
 
 def register_message_sender(container: aioinject.Container) -> None:
     env_settings = get_settings(EnvironmentSettings)
-    if env_settings.is_production:
+    if env_settings.is_production or env_settings.is_staging:
         container.register(
             aioinject.Scoped(TwoFactorINSMSMessageSender, BaseMessageSender)
         )
@@ -278,7 +278,7 @@ def create_container() -> aioinject.Container:
     register_ocr_client(container)
     register_message_sender(container)
     env_settings = get_settings(EnvironmentSettings)
-    if env_settings.is_testing:
+    if env_settings.is_testing or env_settings.is_staging:
         container.register(aioinject.Scoped(TestSetupService))
     container.register(aioinject.Singleton(create_posthog_client))
     container.register(aioinject.Singleton(create_aioboto3_session))
