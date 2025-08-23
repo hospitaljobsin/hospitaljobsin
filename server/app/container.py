@@ -278,7 +278,7 @@ def create_container() -> aioinject.Container:
     register_ocr_client(container)
     register_message_sender(container)
     env_settings = get_settings(EnvironmentSettings)
-    if env_settings.is_testing:
+    if env_settings.is_testing or env_settings.is_staging:
         container.register(aioinject.Scoped(TestSetupService))
     container.register(aioinject.Singleton(create_posthog_client))
     container.register(aioinject.Singleton(create_aioboto3_session))
