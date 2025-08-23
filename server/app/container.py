@@ -53,6 +53,7 @@ from app.config import (
     MailinatorSettings,
     Oauth2Settings,
     PosthogSettings,
+    ProviderSettings,
     RedisSettings,
     SecretSettings,
     TesseractSettings,
@@ -147,6 +148,7 @@ settings_classes: list[type[BaseSettings]] = [
     DatabaseSettings,
     SecretSettings,
     EmailSettings,
+    ProviderSettings,
     AWSSettings,
     AuthSettings,
     GeocoderSettings,
@@ -212,9 +214,9 @@ class SentryInstrumentation(OnResolveContextExtension):
 
 
 def register_email_sender(container: aioinject.Container) -> None:
-    email_settings = get_settings(EmailSettings)
+    provider_settings = get_settings(ProviderSettings)
 
-    match email_settings.email_provider:
+    match provider_settings.email_provider:
         case "smtp":
             container.register(aioinject.Scoped(create_smtp_client))
             container.register(aioinject.Scoped(SMTPEmailSender, BaseEmailSender))
@@ -226,9 +228,9 @@ def register_email_sender(container: aioinject.Container) -> None:
 
 
 def register_location_service(container: aioinject.Container) -> None:
-    geocoder_settings = get_settings(GeocoderSettings)
+    provider_settings = get_settings(ProviderSettings)
 
-    match geocoder_settings.geocoding_provider:
+    match provider_settings.geocoding_provider:
         case "nominatim":
             container.register(aioinject.Singleton(create_nominatim_geocoder))
             container.register(
