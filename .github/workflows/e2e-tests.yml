@@ -23,7 +23,7 @@ concurrency:
 jobs:
   setup-infrastructure:
     environment: staging
-    name: Wake up Infrastructure
+    name: Set up Infrastructure
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
