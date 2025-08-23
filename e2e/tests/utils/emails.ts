@@ -96,11 +96,7 @@ export async function findLastEmail({
 	return findLastEmailTesting({ request, filter, inboxAddress, timeout });
 }
 
-/**
- * Get the HTML content of an email by its ID.
- * This function works in both testing and staging environments.
- */
-export async function getEmailHtml({
+async function getTestingEmailHtml({
 	request,
 	messageId,
 }: {
@@ -174,6 +170,40 @@ export async function getEmailHtml({
 	}
 }
 
+function getStagingEmailHtml({
+	message,
+}: {
+	message: Message;
+}): string | undefined {
+	try {
+		// Extract HTML content from message parts
+		let html = "";
+
+		// Look for HTML content in the parts array
+		if (message.parts && Array.isArray(message.parts)) {
+			for (const part of message.parts) {
+				// Check if this part contains HTML content
+				if (part.headers && typeof part.headers === "object") {
+					const headers = part.headers as Record<string, string>;
+					const contentType =
+						headers["content-type"] ||
+						headers["Content-Type"] ||
+						headers["CONTENT-TYPE"];
+
+					if (contentType?.includes("text/html")) {
+						html = part.body || "";
+						break;
+					}
+				}
+			}
+		}
+
+		return html || undefined;
+	} catch (error) {
+		console.warn(`Failed to fetch HTML for email ${message.id}:`, error);
+		return undefined;
+	}
+}
 /**
  * Find last email using mailcatcher for testing environment.
  */
@@ -217,7 +247,7 @@ async function findLastEmailTesting({
 				const email = filteredEmails[filteredEmails.length - 1];
 				if (email) {
 					// Fetch HTML content for the email
-					const htmlContent = await getEmailHtml({
+					const htmlContent = await getTestingEmailHtml({
 						request,
 						messageId: String(email.id),
 					});
@@ -275,13 +305,7 @@ async function findLastEmailStaging({
 
 				if (filteredEmails.length > 0) {
 					const lastEmail = filteredEmails[filteredEmails.length - 1];
-					return {
-						...lastEmail,
-						html: await getEmailHtml({
-							request,
-							messageId: String(lastEmail.id),
-						}),
-					};
+					return lastEmail;
 				}
 
 				// Wait for 100ms before checking again
@@ -337,7 +361,7 @@ async function getMailbox(
 				id: message.id,
 				recipients: [message.to],
 				subject: message.subject,
-				html: undefined,
+				html: getStagingEmailHtml({ message }),
 			})),
 		};
 	} catch (error) {
