@@ -13,6 +13,8 @@ env:
   # repo-level and non-env-specific secrets/vars
   AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
+  MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
+  MAILINATOR_PRIVATE_DOMAIN: ${{ vars.MAILINATOR_PRIVATE_DOMAIN }}
 
 concurrency:
   group: e2e-tests-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
@@ -103,8 +105,8 @@ jobs:
           STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN: ${{ vars.STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-          MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
-          MAILINATOR_PRIVATE_DOMAIN: ${{ secrets.MAILINATOR_PRIVATE_DOMAIN }}
+          MAILINATOR_API_KEY: ${{ env.MAILINATOR_API_KEY }}
+          MAILINATOR_PRIVATE_DOMAIN: ${{ env.MAILINATOR_PRIVATE_DOMAIN }}
 
       - name: Upload Playwright Report and Traces
         uses: actions/upload-artifact@v4
