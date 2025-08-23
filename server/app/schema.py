@@ -64,7 +64,7 @@ def create_schema(
         ValidationCache(maxsize=128),
     ]
 
-    if env_settings.is_production:
+    if env_settings.is_production or env_settings.is_staging:
         extensions.append(
             AddValidationRules([NoSchemaIntrospectionCustomRule]),
         )

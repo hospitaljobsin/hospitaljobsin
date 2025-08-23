@@ -501,7 +501,7 @@ resource "aws_ecs_task_definition" "app" {
         },
         {
           name  = "SERVER_ENVIRONMENT"
-          value = "production"
+          value = var.environment_name
         },
         {
           name  = "SERVER_DATABASE_URL"
