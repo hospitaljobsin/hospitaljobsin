@@ -30,7 +30,6 @@ export default defineConfig({
 		/* Base URL to use in actions like `await page.goto('/')`. */
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: "on",
-
 		// Add basic auth headers to all requests if configured
 		...(isBasicAuthConfigured() && {
 			extraHTTPHeaders: getBasicAuthHeaders(),
