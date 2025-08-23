@@ -226,7 +226,7 @@ async function findLastEmailTesting({
 	request,
 	filter,
 	inboxAddress,
-	timeout = 10_000,
+	timeout,
 }: {
 	request: APIRequestContext;
 	filter?: (email: Email) => boolean;
@@ -290,7 +290,7 @@ async function findLastEmailStaging({
 	filter,
 	request,
 	inboxAddress,
-	timeout = 10_000,
+	timeout,
 }: {
 	request: APIRequestContext;
 	filter?: (email: Email) => boolean;
