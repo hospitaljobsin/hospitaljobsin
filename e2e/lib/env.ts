@@ -15,6 +15,7 @@ export const env = createEnv({
 		MAILINATOR_BASE_URL: z.string().url().default("https://api.mailinator.com"),
 		BASIC_AUTH_USERNAME: z.string().optional(),
 		BASIC_AUTH_PASSWORD: z.string().optional(),
+		PLAYWRIGHT_SHARD: z.string().default("1"),
 	},
 
 	/**
@@ -32,5 +33,6 @@ export const env = createEnv({
 		MAILINATOR_BASE_URL: process.env.MAILINATOR_BASE_URL,
 		BASIC_AUTH_USERNAME: process.env.BASIC_AUTH_USERNAME,
 		BASIC_AUTH_PASSWORD: process.env.BASIC_AUTH_PASSWORD,
+		PLAYWRIGHT_SHARD: process.env.PLAYWRIGHT_SHARD,
 	},
 });

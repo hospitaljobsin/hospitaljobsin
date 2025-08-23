@@ -1,3 +1,4 @@
+import { env } from "@/lib/env";
 import {
 	type TestAccount,
 	createTestAccount,
@@ -62,10 +63,17 @@ type WorkerFixtures = {
 	};
 };
 
+// generate unique id across shards and workers
+function generateGlobalId(workerIndex: number): string {
+	// Create a unique ID that combines shard and worker information
+	// This ensures uniqueness across all shards and workers
+	return `${env.PLAYWRIGHT_SHARD}-${workerIndex}`;
+}
+
 export const test = baseTest.extend<{}, WorkerFixtures>({
 	passwordAuth: [
 		async ({ browser }, use) => {
-			const id = test.info().workerIndex;
+			const id = generateGlobalId(test.info().workerIndex);
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
@@ -95,7 +103,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 	],
 	webauthnAuth: [
 		async ({ browser }, use) => {
-			const id = test.info().workerIndex;
+			const id = generateGlobalId(test.info().workerIndex);
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
@@ -125,7 +133,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 	],
 	twoFactorAuth: [
 		async ({ browser }, use) => {
-			const id = test.info().workerIndex;
+			const id = generateGlobalId(test.info().workerIndex);
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
@@ -155,7 +163,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 	],
 	passwordAuthSudoMode: [
 		async ({ browser }, use) => {
-			const id = test.info().workerIndex;
+			const id = generateGlobalId(test.info().workerIndex);
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
@@ -185,7 +193,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 	],
 	webauthnAuthSudoMode: [
 		async ({ browser }, use) => {
-			const id = test.info().workerIndex;
+			const id = generateGlobalId(test.info().workerIndex);
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
@@ -215,7 +223,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 	],
 	twoFactorAuthSudoMode: [
 		async ({ browser }, use) => {
-			const id = test.info().workerIndex;
+			const id = generateGlobalId(test.info().workerIndex);
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
