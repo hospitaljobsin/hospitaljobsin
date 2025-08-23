@@ -342,7 +342,7 @@ async function getMailbox(
 				env.MAILINATOR_PRIVATE_DOMAIN,
 				inboxName,
 				undefined,
-				100,
+				50, // max limit is 99
 			),
 		);
 
