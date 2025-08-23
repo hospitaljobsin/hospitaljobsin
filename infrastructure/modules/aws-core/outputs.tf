@@ -160,12 +160,12 @@ output "basic_auth_password" {
   sensitive = true
 }
 
-output "staging_db_setup_lambda_function_arn" {
+output "staging_environment_setup_lambda_function_arn" {
 
-  value = try(aws_lambda_function.staging_database_setup[0].arn, null)
+  value = try(aws_lambda_function.staging_environment_setup[0].arn, null)
 }
 
-output "staging_db_teardown_lambda_function_arn" {
+output "staging_environment_teardown_lambda_function_arn" {
 
-  value = try(aws_lambda_function.staging_database_teardown[0].arn, null)
+  value = try(aws_lambda_function.staging_environment_teardown[0].arn, null)
 }

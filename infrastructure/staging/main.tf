@@ -66,8 +66,8 @@ module "github" {
   basic_auth_username                               = module.core.basic_auth_username
   basic_auth_password                               = module.core.basic_auth_password
   aws_asg_name                                      = module.core.aws_asg_name
-  staging_db_setup_lambda_function_arn              = module.core.staging_db_setup_lambda_function_arn
-  staging_db_teardown_lambda_function_arn           = module.core.staging_db_teardown_lambda_function_arn
+  staging_environment_setup_lambda_function_arn     = module.core.staging_environment_setup_lambda_function_arn
+  staging_environment_teardown_lambda_function_arn  = module.core.staging_environment_teardown_lambda_function_arn
 }
 
 

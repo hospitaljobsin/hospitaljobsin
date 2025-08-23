@@ -209,18 +209,18 @@ resource "github_actions_environment_variable" "public_root_domain" {
 }
 
 
-resource "github_actions_environment_variable" "staging_db_setup_lambda_function_arn" {
+resource "github_actions_environment_variable" "staging_environment_setup_lambda_function_arn" {
   count         = var.environment_name == "staging" ? 1 : 0
   repository    = data.github_repository.this.name
   environment   = github_repository_environment.this.environment
-  variable_name = "STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN"
-  value         = var.staging_db_setup_lambda_function_arn
+  variable_name = "STAGING_ENVIRONMENT_SETUP_LAMBDA_FUNCTION_ARN"
+  value         = var.staging_environment_setup_lambda_function_arn
 }
 
-resource "github_actions_environment_variable" "staging_db_teardown_lambda_function_arn" {
+resource "github_actions_environment_variable" "staging_environment_teardown_lambda_function_arn" {
   count         = var.environment_name == "staging" ? 1 : 0
   repository    = data.github_repository.this.name
   environment   = github_repository_environment.this.environment
-  variable_name = "STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN"
-  value         = var.staging_db_teardown_lambda_function_arn
+  variable_name = "STAGING_ENVIRONMENT_TEARDOWN_LAMBDA_FUNCTION_ARN"
+  value         = var.staging_environment_teardown_lambda_function_arn
 }

@@ -432,12 +432,11 @@ resource "aws_security_group" "lambda" {
 }
 
 
-# TODO: rename this to staging_environment_setup
 
-resource "aws_lambda_function" "staging_database_setup" {
+resource "aws_lambda_function" "staging_environment_setup" {
   # depends_on    = [docker_registry_image.backend]
   count         = var.environment_name == "staging" ? 1 : 0
-  function_name = "${var.resource_prefix}-staging-database-setup-lambda"
+  function_name = "${var.resource_prefix}-staging-environment-setup-lambda"
 
   tags = {
     Environment = var.environment_name
@@ -475,12 +474,10 @@ resource "aws_lambda_function" "staging_database_setup" {
   timeout     = 60
 }
 
-# TODO: rename this to staging_environment_teardown
-
-resource "aws_lambda_function" "staging_database_teardown" {
+resource "aws_lambda_function" "staging_environment_teardown" {
   # depends_on    = [docker_registry_image.backend]
   count         = var.environment_name == "staging" ? 1 : 0
-  function_name = "${var.resource_prefix}-staging-database-teardown-lambda"
+  function_name = "${var.resource_prefix}-staging-environment-teardown-lambda"
 
   tags = {
     Environment = var.environment_name

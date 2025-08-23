@@ -39,7 +39,7 @@ jobs:
         if: ${{ github.ref_name == 'staging' }}
         run: |
             aws lambda invoke \
-              --function-name ${{ vars.STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN }} \
+              --function-name ${{ vars.STAGING_ENVIRONMENT_SETUP_LAMBDA_FUNCTION_ARN }} \
               --payload '{}' \
               --cli-binary-format raw-in-base64-out \
               response.json
@@ -145,7 +145,7 @@ jobs:
         if: ${{ github.ref_name == 'staging' }}
         run: |
               aws lambda invoke \
-                --function-name ${{ vars.STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN }} \
+                --function-name ${{ vars.STAGING_ENVIRONMENT_TEARDOWN_LAMBDA_FUNCTION_ARN }} \
                 --payload '{}' \
                 --cli-binary-format raw-in-base64-out \
                 response.json

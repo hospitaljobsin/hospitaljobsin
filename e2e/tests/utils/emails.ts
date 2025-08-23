@@ -59,20 +59,17 @@ export function getRegisteredEmails(): string[] {
 	return Array.from(registeredEmails);
 }
 
-export async function generateUniqueEmail(
-	baseLabel: string,
-	projectName: string,
-): Promise<string> {
+export async function generateUniqueEmail(baseLabel: string): Promise<string> {
 	if (env.ENVIRONMENT === "staging") {
 		if (!env.MAILINATOR_PRIVATE_DOMAIN) {
 			throw new Error(
 				"MAILINATOR_PRIVATE_DOMAIN environment variable is required for staging environment",
 			);
 		}
-		return `${baseLabel}-${projectName}@${env.MAILINATOR_PRIVATE_DOMAIN}`;
+		return `${baseLabel}@${env.MAILINATOR_PRIVATE_DOMAIN}`;
 	}
 
-	return `${baseLabel}-${projectName}@outlook.com`;
+	return `${baseLabel}@outlook.com`;
 }
 
 /**

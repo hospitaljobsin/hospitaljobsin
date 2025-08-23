@@ -8,6 +8,7 @@ import {
 	generateUniqueEmail,
 	registerEmailAddress,
 } from "@/tests/utils/emails";
+import { generateGlobalId } from "@/tests/utils/id";
 import type { PlaywrightTestArgs } from "@playwright/test";
 
 async function findVerificationCode({
@@ -140,8 +141,11 @@ test.describe("Sign Up Page", () => {
 
 	test("should validate invalid email verification token", async ({ page }, {
 		project,
+		workerIndex,
 	}) => {
-		const emailAddress = await generateUniqueEmail("new-tester", project.name);
+		const emailAddress = await generateUniqueEmail(
+			`new-tester-${generateGlobalId(workerIndex, project.name)}`,
+		);
 		await registerEmailAddress({ email: emailAddress });
 		await test.step("Step 1: Enter email address", async () => {
 			await page.getByLabel("Email Address").fill(emailAddress);
@@ -467,10 +471,12 @@ test.describe("Sign Up Page", () => {
 	test("should handle cooldown on multiple email verification requests", async ({
 		page,
 		request,
-	}, { project }) => {
+	}, { project, workerIndex }) => {
 		// increase timeout to incorporate cooldown
 		test.setTimeout(45_000);
-		const emailAddress = await generateUniqueEmail("new-tester2", project.name);
+		const emailAddress = await generateUniqueEmail(
+			`new-tester2-${generateGlobalId(workerIndex, project.name)}`,
+		);
 		await registerEmailAddress({ email: emailAddress });
 
 		// First email verification request

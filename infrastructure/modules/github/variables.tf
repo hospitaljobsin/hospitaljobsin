@@ -236,13 +236,13 @@ variable "basic_auth_password" {
   sensitive = true
 }
 
-variable "staging_db_setup_lambda_function_arn" {
+variable "staging_environment_setup_lambda_function_arn" {
   type     = string
   nullable = true
   default  = null
 }
 
-variable "staging_db_teardown_lambda_function_arn" {
+variable "staging_environment_teardown_lambda_function_arn" {
   type     = string
   nullable = true
   default  = null

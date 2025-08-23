@@ -7,6 +7,7 @@ import {
 	generateUniqueEmail,
 	registerEmailAddress,
 } from "@/tests/utils/emails";
+import { generateGlobalId } from "@/tests/utils/id";
 
 test.describe("Request Password Reset Page", () => {
 	test.beforeEach(async ({ page }) => {
@@ -99,10 +100,10 @@ test.describe("Request Password Reset Page", () => {
 
 	test("should handle invalid password reset email", async ({ page, request }, {
 		project,
+		workerIndex,
 	}) => {
 		const emailAddress = await generateUniqueEmail(
-			"non-existent-tester",
-			project.name,
+			`non-existent-tester-${generateGlobalId(workerIndex, project.name)}`,
 		);
 		await registerEmailAddress({ email: emailAddress });
 		await page.getByLabel("Email Address").fill(emailAddress);
