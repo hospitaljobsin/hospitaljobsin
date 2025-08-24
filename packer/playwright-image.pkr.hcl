@@ -5,6 +5,10 @@ packer {
       source  = "github.com/hashicorp/amazon"
       version = ">= 1.1.0"
     }
+    amazon-ami-management = {
+      version = ">= 1.0.0"
+      source = "github.com/wata727/amazon-ami-management"
+    }
   }
 }
 
@@ -49,6 +53,7 @@ source "amazon-ebs" "playwright" {
   tags = {
     Name        = var.ami_name
     Environment = "staging"
+    Amazon_AMI_Management_Identifier = var.ami_name
   }
 }
 
@@ -61,4 +66,10 @@ build {
   }
 
   post-processor "manifest" {}
+
+  post-processor "amazon-ami-management" {
+    regions       = [var.aws_region]
+    identifier    = var.ami_name
+    keep_releases = 1
+  }
 }

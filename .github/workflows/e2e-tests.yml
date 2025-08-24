@@ -72,7 +72,7 @@ jobs:
         with:
           mode: start
           github-token: ${{ secrets.PA_TOKEN_GITHUB }}
-          ec2-image-id: ${{ vars.ACTIONS_RUNNER_AMI_ID }}
+          ec2-image-id: ${{ vars.AWS_PLAYWRIGHT_AMI_ID }}
           ec2-instance-type: ${{ vars.ACTIONS_RUNNER_INSTANCE_TYPE }}
           subnet-id: ${{ vars.ACTIONS_RUNNER_SUBNET_ID }}
           security-group-id: ${{ vars.ACTIONS_RUNNER_SECURITY_GROUP_ID }}

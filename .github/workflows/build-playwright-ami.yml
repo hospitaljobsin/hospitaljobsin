@@ -8,8 +8,11 @@ on:
   push:
     paths:
       - "packer/**"
-      - ".github/workflows/build-ami.yml"
+      - ".github/workflows/build-playwright-ami.yml"
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 env:
   PACKER_LOG: 1
   PACKER_LOG_PATH: packer.log
