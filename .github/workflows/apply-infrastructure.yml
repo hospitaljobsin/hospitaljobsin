@@ -50,7 +50,7 @@ jobs:
     steps:
       - name: Checkout code
         if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set env
         if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}
