@@ -85,7 +85,6 @@ test.describe("Request Password Reset Page", () => {
 		).toBeVisible();
 
 		const emailMessage = await findLastEmail({
-			request,
 			timeout: 10_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Password Reset Request"),
@@ -116,7 +115,6 @@ test.describe("Request Password Reset Page", () => {
 		).toBeVisible();
 
 		const emailMessage = await findLastEmail({
-			request,
 			timeout: 2_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Password Reset Request"),
@@ -168,7 +166,6 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		).toBeVisible();
 
 		const firstEmail = await findLastEmail({
-			request,
 			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Password Reset Request"),
@@ -194,7 +191,6 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		).toBeVisible();
 
 		const secondEmail = await findLastEmail({
-			request,
 			timeout: 3_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Password Reset Request"),
@@ -225,7 +221,6 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		).toBeVisible();
 
 		const thirdEmail = await findLastEmail({
-			request,
 			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Password Reset Request"),

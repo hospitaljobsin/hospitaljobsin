@@ -45,7 +45,6 @@ test.describe("Confirm Password Reset Page", () => {
 		).toBeVisible();
 
 		const emailMessage = await findLastEmail({
-			request,
 			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Password Reset Request"),
@@ -215,7 +214,6 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		).toBeVisible();
 
 		const emailMessage = await findLastEmail({
-			request,
 			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Password Reset Request"),

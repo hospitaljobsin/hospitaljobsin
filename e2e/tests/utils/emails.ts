@@ -1,5 +1,12 @@
 import { env } from "@/lib/env";
-import type { APIRequestContext } from "@playwright/test";
+
+/**
+ * Email utility functions for end-to-end testing.
+ *
+ * These functions handle email operations in both testing and staging environments.
+ * The findLastEmail function now uses native fetch API instead of Playwright request context
+ * to avoid "Target page, context or browser has been closed" errors.
+ */
 
 export type Email = {
 	id: string;
@@ -26,12 +33,12 @@ const registeredEmails = new Set<string>();
  * This function does nothing in testing environment and registers with mailinator in staging.
  * Avoids registering the same email twice by maintaining a local record.
  */
-export async function registerEmailAddress({
+export function registerEmailAddress({
 	email,
 }: {
 	email: string;
 	password?: string;
-}): Promise<void> {
+}): void {
 	// Check if email is already registered locally
 	if (registeredEmails.has(email)) {
 		console.log(`Email ${email} already registered, skipping registration`);
@@ -58,7 +65,7 @@ export function getRegisteredEmails(): string[] {
 	return Array.from(registeredEmails);
 }
 
-export async function generateUniqueEmail(baseLabel: string): Promise<string> {
+export function generateUniqueEmail(baseLabel: string): string {
 	return `${baseLabel}@outlook.com`;
 }
 
@@ -66,30 +73,29 @@ export async function generateUniqueEmail(baseLabel: string): Promise<string> {
  * Find the last email using the appropriate method based on environment.
  * This is the only public API - works identically in both testing and staging environments.
  * Returns a unified Email type regardless of the underlying email service.
+ * Now uses native fetch API instead of Playwright request context.
  */
 export async function findLastEmail({
-	request,
 	filter,
 	inboxAddress,
 	timeout = 10_000,
 }: {
-	request: APIRequestContext;
 	filter?: (email: Email) => boolean;
 	inboxAddress: string;
 	timeout?: number;
 }): Promise<Email | null> {
-	return findLastEmailTesting({ request, filter, inboxAddress, timeout });
+	return findLastEmailTesting({ filter, inboxAddress, timeout });
 }
+
 /**
  * Find last email using mailcatcher for testing environment.
+ * Now uses native fetch API instead of Playwright request context.
  */
 async function findLastEmailTesting({
-	request,
 	filter,
 	inboxAddress,
-	timeout,
+	timeout = 10_000,
 }: {
-	request: APIRequestContext;
 	filter?: (email: Email) => boolean;
 	inboxAddress: string;
 	timeout?: number;
@@ -99,11 +105,25 @@ async function findLastEmailTesting({
 	);
 
 	const checkEmails = async () => {
-		while (true) {
+		const startTime = Date.now();
+		const maxAttempts = Math.ceil(timeout / 100); // Calculate max attempts based on timeout
+		let attempts = 0;
+
+		while (attempts < maxAttempts) {
 			try {
-				const response = await request.get(
-					`${env.API_BASE_URL}/mailbox/messages`,
-				);
+				attempts++;
+
+				// Check if we've exceeded the timeout before making the request
+				if (Date.now() - startTime >= timeout) {
+					return null;
+				}
+
+				const response = await fetch(`${env.API_BASE_URL}/mailbox/messages`);
+
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+
 				const resp: MailboxMessage[] = await response.json();
 
 				const emails: Email[] = resp.map((m) => ({
@@ -136,10 +156,20 @@ async function findLastEmailTesting({
 				// Wait for 100ms before checking again
 				await new Promise((resolve) => setTimeout(resolve, 100));
 			} catch (error) {
-				console.warn("Error checking emails:", error);
-				await new Promise((resolve) => setTimeout(resolve, 100));
+				attempts++;
+
+				// For fetch errors, log and continue if we haven't exceeded max attempts
+				if (attempts < maxAttempts) {
+					console.warn("Error checking emails:", error);
+					await new Promise((resolve) => setTimeout(resolve, 100));
+				} else {
+					console.warn("Max attempts reached, stopping email check");
+					return null;
+				}
 			}
 		}
+
+		return null;
 	};
 
 	return Promise.race([timeoutPromise, checkEmails()]);
