@@ -13,10 +13,10 @@ curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Install pnpm
-npm install -g pnpm
+sudo npm install -g pnpm
 
 # Install Playwright and browsers
-npm install -g playwright
-npx playwright install --with-deps
+sudo npm install -g playwright
+sudo npx playwright install --with-deps
 
 echo "AMI build complete!"
