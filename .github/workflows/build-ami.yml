@@ -1,0 +1,78 @@
+name: Build Playwright Test AMI
+
+on:
+  schedule:
+    # Run every 3 weeks on Sunday at 2 AM UTC
+    - cron: '0 2 * * 0/3'
+  workflow_dispatch: # Allow manual triggering
+
+env:
+  PACKER_LOG: 1
+  PACKER_LOG_PATH: packer.log
+
+jobs:
+  build-ami:
+    name: Build Playwright Test AMI
+    environment: staging
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Setup packer
+        uses: hashicorp/setup-packer@main
+        id: setup
+        with:
+          version: latest
+
+      - name: Run `packer init`
+        working-directory: ./packer
+        id: init
+        run: |
+          packer init image.pkr.hcl
+
+      - name: Validate Packer template
+        working-directory: ./packer
+        run: |
+          packer validate image.pkr.hcl
+
+      - name: Build AMI
+        working-directory: ./packer
+        run: |
+          packer build -machine-readable image.pkr.hcl | tee build.log
+
+      - name: Extract AMI ID
+        id: extract-ami
+        run: |
+          AMI_ID=$(grep "artifact,0,id" build.log | cut -d, -f6 | cut -d: -f2)
+          echo "ami_id=$AMI_ID" >> $GITHUB_OUTPUT
+          echo "Built AMI: $AMI_ID"
+
+      - name: Set GitHub Actions variable
+        run: |
+          echo "AWS_PLAYWRIGHT_AMI_ID=${{ steps.extract-ami.outputs.ami_id }}" >> $GITHUB_ENV
+          echo "Set AWS_PLAYWRIGHT_AMI_ID=${{ steps.extract-ami.outputs.ami_id }}"
+
+      - name: Upload Packer logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: packer-logs
+          path: |
+            packer/packer.log
+            packer/build.log
+          retention-days: 30
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "AMI build failed. Check the logs for details."
+          echo "Latest AMI ID: ${{ steps.extract-ami.outputs.ami_id }}"
