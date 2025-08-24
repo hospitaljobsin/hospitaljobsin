@@ -68,8 +68,9 @@ module "github" {
   aws_asg_name                                      = module.core.aws_asg_name
   actions_runner_security_group_id                  = module.core.actions_runner_security_group_id
   actions_runner_subnet_id                          = module.core.actions_runner_subnet_id
-  actions_runner_iam_role_name                      = module.core.actions_runner_iam_role_name
   actions_runner_instance_profile_name              = module.core.actions_runner_instance_profile_name
+  actions_runner_instance_type                      = module.core.actions_runner_instance_type
+  actions_runner_ami_id                             = module.core.actions_runner_ami_id
 }
 
 

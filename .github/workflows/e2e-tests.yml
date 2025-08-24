@@ -68,12 +68,12 @@ jobs:
 
       - name: Start EC2 runner
         id: start-ec2-runner
-        uses: machulav/ec2-github-runner@v2
+        uses: machulav/ec2-github-runner@v2.4.0
         with:
           mode: start
           github-token: ${{ secrets.PA_TOKEN_GITHUB }}
-          ec2-image-id: ami-0360c520857e3138f # ubuntu 24.04
-          ec2-instance-type: t3a.medium
+          ec2-image-id: ${{ vars.ACTIONS_RUNNER_AMI_ID }}
+          ec2-instance-type: ${{ vars.ACTIONS_RUNNER_INSTANCE_TYPE }}
           subnet-id: ${{ vars.ACTIONS_RUNNER_SUBNET_ID }}
           security-group-id: ${{ vars.ACTIONS_RUNNER_SECURITY_GROUP_ID }}
           iam-role-name: ${{ vars.ACTIONS_RUNNER_INSTANCE_PROFILE_NAME }}
@@ -168,7 +168,7 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Stop EC2 runner
-        uses: machulav/ec2-github-runner@v2
+        uses: machulav/ec2-github-runner@v2.4.0
         with:
           mode: stop
           github-token: ${{ secrets.PA_TOKEN_GITHUB }}

@@ -181,12 +181,17 @@ output "actions_runner_subnet_id" {
   description = "Subnet ID for GitHub Actions runner"
 }
 
-output "actions_runner_iam_role_name" {
-  value       = aws_iam_role.actions_runner.name
-  description = "IAM Role name for GitHub Actions runner"
-}
-
 output "actions_runner_instance_profile_name" {
   value       = aws_iam_instance_profile.actions_runner.name
   description = "Instance Profile name for GitHub Actions runner"
+}
+
+output "actions_runner_instance_type" {
+  value       = local.actions_runner_instance_type
+  description = "Instance type for GitHub Actions runner"
+}
+
+output "actions_runner_ami_id" {
+  value       = data.aws_ami.ubuntu.id
+  description = "AMI ID for GitHub Actions runner"
 }

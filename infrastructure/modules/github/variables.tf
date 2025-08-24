@@ -254,10 +254,6 @@ variable "actions_runner_security_group_id" {
 }
 
 
-variable "actions_runner_iam_role_name" {
-  type        = string
-  description = "The IAM role name for the actions runner."
-}
 
 variable "actions_runner_instance_profile_name" {
   type        = string
@@ -267,4 +263,14 @@ variable "actions_runner_instance_profile_name" {
 variable "actions_runner_subnet_id" {
   type        = string
   description = "The subnet ID for the actions runner."
+}
+
+variable "actions_runner_instance_type" {
+  type        = string
+  description = "The instance type for the actions runner."
+}
+
+variable "actions_runner_ami_id" {
+  type        = string
+  description = "The AMI ID for the actions runner."
 }

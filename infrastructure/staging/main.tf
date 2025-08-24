@@ -70,8 +70,9 @@ module "github" {
   staging_environment_teardown_lambda_function_arn  = module.core.staging_environment_teardown_lambda_function_arn
   actions_runner_security_group_id                  = module.core.actions_runner_security_group_id
   actions_runner_subnet_id                          = module.core.actions_runner_subnet_id
-  actions_runner_iam_role_name                      = module.core.actions_runner_iam_role_name
   actions_runner_instance_profile_name              = module.core.actions_runner_instance_profile_name
+  actions_runner_instance_type                      = module.core.actions_runner_instance_type
+  actions_runner_ami_id                             = module.core.actions_runner_ami_id
 }
 
 

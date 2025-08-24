@@ -239,16 +239,24 @@ resource "github_actions_environment_variable" "actions_runner_subnet_id" {
   value         = var.actions_runner_subnet_id
 }
 
-resource "github_actions_environment_variable" "actions_runner_iam_role_name" {
-  repository    = data.github_repository.this.name
-  environment   = github_repository_environment.this.environment
-  variable_name = "ACTIONS_RUNNER_IAM_ROLE_NAME"
-  value         = var.actions_runner_iam_role_name
-}
 
 resource "github_actions_environment_variable" "actions_runner_instance_profile_name" {
   repository    = data.github_repository.this.name
   environment   = github_repository_environment.this.environment
   variable_name = "ACTIONS_RUNNER_INSTANCE_PROFILE_NAME"
   value         = var.actions_runner_instance_profile_name
+}
+
+resource "github_actions_environment_variable" "actions_runner_instance_type" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "ACTIONS_RUNNER_INSTANCE_TYPE"
+  value         = var.actions_runner_instance_type
+}
+
+resource "github_actions_environment_variable" "actions_runner_ami_id" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "ACTIONS_RUNNER_AMI_ID"
+  value         = var.actions_runner_ami_id
 }

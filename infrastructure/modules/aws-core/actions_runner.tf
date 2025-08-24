@@ -1,3 +1,23 @@
+locals {
+  actions_runner_instance_type = "t3a.medium"
+}
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  # owners      = ["xxxxxx"]  # Canonical's AWS account ID
+  owners = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
 # Security Group for GitHub Actions Runner
 resource "aws_security_group" "actions_runner" {
   name_prefix = "${var.resource_prefix}-actions-runner-"
