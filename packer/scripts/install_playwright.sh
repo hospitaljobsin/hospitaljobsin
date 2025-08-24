@@ -18,7 +18,7 @@ sudo apt-get install -y nodejs
 sudo npm install -g pnpm
 
 # Install Playwright and browsers
-sudo npm install -g playwright
+sudo npm install -g playwright@1.55.0
 
 # Prepare global browsers directory (owned by root is fine)
 sudo mkdir -p /usr/local/share/pw-browsers
