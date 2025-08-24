@@ -99,8 +99,6 @@ jobs:
     runs-on: ${{ needs.setup-infrastructure.outputs.label }}
     steps:
       - uses: actions/checkout@v4
-
-
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -110,19 +108,8 @@ jobs:
       - name: Install dependencies
         run: pnpm --filter e2e install --frozen-lockfile
 
-      # - name: Install Playwright
-      #   id: install-playwright
-      #   uses: ./.github/actions/playwright
-      #   with:
-      #     working-directory: e2e
-
-      # - name: Debug Playwright cache
-      #   run: |
-      #     echo "Playwright version – ${{ steps.install-playwright.outputs.version }}"
-      #     echo "Playwright cached – ${{ steps.install-playwright.outputs.cache-hit }}"
-
       - name: Run Playwright tests
-        run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
+        run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4 --workers=2
         working-directory: e2e
         env:
           CI: true
