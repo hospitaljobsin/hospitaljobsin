@@ -5,6 +5,10 @@ on:
     # Run every 3 weeks on Sunday at 2 AM UTC
     - cron: '0 2 * * 0/3'
   workflow_dispatch: # Allow manual triggering
+  push:
+    paths:
+      - "packer/**"
+      - ".github/workflows/build-ami.yml"
 
 env:
   PACKER_LOG: 1
