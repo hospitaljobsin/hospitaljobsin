@@ -39,7 +39,6 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
       - name: Invoke Staging Setup Lambda
-        if: ${{ github.ref_name == 'staging' }}
         run: |
             aws lambda invoke \
               --function-name ${{ vars.STAGING_ENVIRONMENT_SETUP_LAMBDA_FUNCTION_ARN }} \
@@ -177,7 +176,6 @@ jobs:
           ec2-instance-id: ${{ needs.setup-infrastructure.outputs.ec2-instance-id }}
 
       - name: Invoke Staging Teardown Lambda
-        if: ${{ github.ref_name == 'staging' }}
         run: |
               aws lambda invoke \
                 --function-name ${{ vars.STAGING_ENVIRONMENT_TEARDOWN_LAMBDA_FUNCTION_ARN }} \

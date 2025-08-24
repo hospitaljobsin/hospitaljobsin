@@ -54,6 +54,7 @@ jobs:
       - name: Build AMI
         working-directory: ./packer
         run: |
+          set -o pipefail
           packer build -machine-readable playwright-image.pkr.hcl | tee build.log
 
       - name: Extract AMI ID from manifest
