@@ -196,7 +196,6 @@ test.describe("Sign Up Page", () => {
 
 		// Step 2: Get verification code from email
 		const emailMessage = await findLastEmail({
-			request,
 			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Email Verification Request"),
@@ -486,7 +485,6 @@ test.describe("Sign Up Page", () => {
 		await expect(page.getByLabel("Email Verification Token")).toBeVisible();
 
 		const firstEmail = await findLastEmail({
-			request,
 			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Email Verification Request"),
@@ -510,7 +508,6 @@ test.describe("Sign Up Page", () => {
 		await expect(page.getByLabel("Email Verification Token")).toBeVisible();
 
 		const secondEmail = await findLastEmail({
-			request,
 			timeout: 3_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Email Verification Request"),
@@ -539,7 +536,6 @@ test.describe("Sign Up Page", () => {
 		await expect(page.getByLabel("Email Verification Token")).toBeVisible();
 
 		const thirdEmail = await findLastEmail({
-			request,
 			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Email Verification Request"),

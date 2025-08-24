@@ -422,7 +422,6 @@ authTest.describe(
 				).toBeVisible();
 
 				const emailMessage = await findLastEmail({
-					request,
 					timeout: 15_000,
 					inboxAddress: emailAddress,
 					filter: (e) => e.subject.includes("Password Reset Request"),
