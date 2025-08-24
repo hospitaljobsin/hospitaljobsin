@@ -59,4 +59,6 @@ build {
   provisioner "shell" {
     script = "scripts/install_playwright.sh"
   }
+
+  post-processor "manifest" {}
 }

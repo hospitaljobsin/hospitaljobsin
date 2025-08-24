@@ -53,10 +53,11 @@ jobs:
         run: |
           packer build -machine-readable playwright-image.pkr.hcl | tee build.log
 
-      - name: Extract AMI ID
+      - name: Extract AMI ID from manifest
         id: extract-ami
+        working-directory: ./packer
         run: |
-          AMI_ID=$(grep "artifact,0,id" build.log | cut -d, -f6 | cut -d: -f2)
+          AMI_ID=$(jq -r '.builds[-1].artifact_id' packer-manifest.json | cut -d ":" -f2)
           echo "ami_id=$AMI_ID" >> $GITHUB_OUTPUT
           echo "Built AMI: $AMI_ID"
 
@@ -73,6 +74,7 @@ jobs:
           path: |
             packer/packer.log
             packer/build.log
+            packer/packer-manifest.json
           retention-days: 30
 
       - name: Notify on failure
