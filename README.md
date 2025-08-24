@@ -250,6 +250,7 @@ Follow these steps to deploy the project to the cloud:
 - Create a new GitHub access token with permissions for the current repository:
 	- *secrets: read and write*
 	- *variables: read and write*
+	- *administration: read and write*
 
 ### 6. Sentry Setup
 - Create a new organization

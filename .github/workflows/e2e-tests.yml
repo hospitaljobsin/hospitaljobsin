@@ -23,8 +23,11 @@ concurrency:
 jobs:
   setup-infrastructure:
     environment: staging
-    name: Wake up Infrastructure
+    name: Set up Infrastructure
     runs-on: ubuntu-latest
+    outputs:
+      label: ${{ steps.start-ec2-runner.outputs.label }}
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
     steps:
       - uses: actions/checkout@v4
 
@@ -35,7 +38,13 @@ jobs:
           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
-
+      - name: Invoke Staging Setup Lambda
+        run: |
+            aws lambda invoke \
+              --function-name ${{ vars.STAGING_ENVIRONMENT_SETUP_LAMBDA_FUNCTION_ARN }} \
+              --payload '{}' \
+              --cli-binary-format raw-in-base64-out \
+              response.json
       # Scale ECS + ASG up
       - name: Scale up ECS service and ASG
         run: |
@@ -56,14 +65,26 @@ jobs:
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --services ${{ vars.AWS_BACKEND_ECS_SERVICE }}
 
-      - name: Invoke Staging DB Setup Lambda
-        if: ${{ github.ref_name == 'staging' }}
-        run: |
-            aws lambda invoke \
-              --function-name ${{ vars.STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN }} \
-              --payload '{}' \
-              --cli-binary-format raw-in-base64-out \
-              response.json
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        uses: machulav/ec2-github-runner@v2.4.0
+        with:
+          mode: start
+          github-token: ${{ secrets.PA_TOKEN_GITHUB }}
+          ec2-image-id: ${{ vars.AWS_PLAYWRIGHT_AMI_ID }}
+          ec2-instance-type: ${{ vars.ACTIONS_RUNNER_INSTANCE_TYPE }}
+          subnet-id: ${{ vars.ACTIONS_RUNNER_SUBNET_ID }}
+          security-group-id: ${{ vars.ACTIONS_RUNNER_SECURITY_GROUP_ID }}
+          iam-role-name: ${{ vars.ACTIONS_RUNNER_INSTANCE_PROFILE_NAME }}
+          aws-resource-tags: > # optional, requires additional permissions
+            [
+              {"Key": "Name", "Value": "ec2-github-runner"},
+              {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
+            ]
+          block-device-mappings: > # optional, to customize EBS volumes
+            [
+              {"DeviceName": "/dev/sda1", "Ebs": {"VolumeSize": 50, "VolumeType": "gp3"}}
+            ]
 
   test-e2e:
     environment: staging
@@ -72,14 +93,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [chromium, firefox, webkit]
-        shard: [1, 2, 3, 4]
-    runs-on: ubuntu-latest
+        project: [chromium]
+        # project: [chromium, firefox, webkit]
+        # shard: [1, 2, 3, 4]
+    runs-on: ${{ needs.setup-infrastructure.outputs.label }}
     steps:
       - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -89,19 +108,9 @@ jobs:
       - name: Install dependencies
         run: pnpm --filter e2e install --frozen-lockfile
 
-      - name: Install Playwright
-        id: install-playwright
-        uses: ./.github/actions/playwright
-        with:
-          working-directory: e2e
-
-      - name: Debug Playwright cache
-        run: |
-          echo "Playwright version – ${{ steps.install-playwright.outputs.version }}"
-          echo "Playwright cached – ${{ steps.install-playwright.outputs.cache-hit }}"
-
       - name: Run Playwright tests
-        run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
+        run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --workers=2
+        # run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4 --workers=2
         working-directory: e2e
         env:
           CI: true
@@ -115,6 +124,7 @@ jobs:
           MAILINATOR_API_KEY: ${{ env.MAILINATOR_API_KEY }}
           MAILINATOR_PRIVATE_DOMAIN: ${{ env.MAILINATOR_PRIVATE_DOMAIN }}
           PLAYWRIGHT_SHARD: ${{ matrix.shard }}
+          PLAYWRIGHT_BROWSERS_PATH: /usr/local/share/pw-browsers
 
       - name: Upload Playwright Report and Traces
         uses: actions/upload-artifact@v4
@@ -129,7 +139,9 @@ jobs:
   cleanup-infrastructure:
     environment: staging
     name: Cleanup Infrastructure
-    needs: test-e2e
+    needs:
+      - test-e2e
+      - setup-infrastructure
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -143,11 +155,18 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Invoke Staging DB Teardown Lambda
-        if: ${{ github.ref_name == 'staging' }}
+      - name: Stop EC2 runner
+        uses: machulav/ec2-github-runner@v2.4.0
+        with:
+          mode: stop
+          github-token: ${{ secrets.PA_TOKEN_GITHUB }}
+          label: ${{ needs.setup-infrastructure.outputs.label }}
+          ec2-instance-id: ${{ needs.setup-infrastructure.outputs.ec2-instance-id }}
+
+      - name: Invoke Staging Teardown Lambda
         run: |
               aws lambda invoke \
-                --function-name ${{ vars.STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN }} \
+                --function-name ${{ vars.STAGING_ENVIRONMENT_TEARDOWN_LAMBDA_FUNCTION_ARN }} \
                 --payload '{}' \
                 --cli-binary-format raw-in-base64-out \
                 response.json

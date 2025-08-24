@@ -7,6 +7,7 @@ import {
 	generateUniqueEmail,
 	registerEmailAddress,
 } from "@/tests/utils/emails";
+import { generateGlobalId } from "@/tests/utils/id";
 
 test.describe("Request Password Reset Page", () => {
 	test.beforeEach(async ({ page }) => {
@@ -99,10 +100,10 @@ test.describe("Request Password Reset Page", () => {
 
 	test("should handle invalid password reset email", async ({ page, request }, {
 		project,
+		workerIndex,
 	}) => {
 		const emailAddress = await generateUniqueEmail(
-			"non-existent-tester",
-			project.name,
+			`non-existent-tester-${generateGlobalId(workerIndex, project.name)}`,
 		);
 		await registerEmailAddress({ email: emailAddress });
 		await page.getByLabel("Email Address").fill(emailAddress);
@@ -152,8 +153,6 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		request,
 		passwordAuth,
 	}) => {
-		// increase timeout to incorporate cooldown
-		test.setTimeout(45_000);
 		const emailAddress = passwordAuth.account.email;
 		await registerEmailAddress({ email: emailAddress });
 
@@ -170,7 +169,7 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 
 		const firstEmail = await findLastEmail({
 			request,
-			timeout: 10_000,
+			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Password Reset Request"),
 		});
@@ -227,7 +226,7 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 
 		const thirdEmail = await findLastEmail({
 			request,
-			timeout: 10_000,
+			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Password Reset Request"),
 		});

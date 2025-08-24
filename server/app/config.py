@@ -149,6 +149,11 @@ class EnvironmentSettings(CoreSettings):
         return self._is_environment(Environment.staging)
 
 
+class MailinatorSettings(CoreSettings):
+    mailinator_private_domain: str
+    mailinator_api_key: SecretStr
+
+
 class AppSettings(CoreSettings):
     host: Annotated[
         str,
@@ -277,10 +282,13 @@ class WhatsappSettings(CoreSettings):
     whatsapp_phone_number_id: str
 
 
+class ProviderSettings(CoreSettings):
+    email_provider: Literal["smtp", "aws_ses"] = "smtp"
+    geocoding_provider: Literal["nominatim", "aws_location"] = "nominatim"
+
+
 class EmailSettings(CoreSettings):
     # email config
-
-    email_provider: Literal["smtp", "aws_ses"] = "smtp"
 
     email_port: Annotated[
         int | None,
@@ -313,44 +321,44 @@ class EmailSettings(CoreSettings):
         ),
     ]
 
-    @classmethod
-    def model_validate(cls, values):
-        # Pydantic v2+ custom validation
-        email_provider = values.get("email_provider")
-        environment = values.get("environment")
-        email_port = values.get("email_port")
-        email_host = values.get("email_host")
-        email_username = values.get("email_username")
-        email_password = values.get("email_password")
+    # @classmethod
+    # def model_validate(cls, values):
+    #     # Pydantic v2+ custom validation
+    #     email_provider = values.get("email_provider")
+    #     environment = values.get("environment")
+    #     email_port = values.get("email_port")
+    #     email_host = values.get("email_host")
+    #     email_username = values.get("email_username")
+    #     email_password = values.get("email_password")
 
-        if email_provider == "smtp":
-            if email_port is None:
-                raise ValueError("email_port is required when email_provider is smtp")
-            if email_host is None:
-                raise ValueError("email_host is required when email_provider is smtp")
-            if environment == "production":
-                if email_username is None:
-                    raise ValueError(
-                        "email_username is required when email_provider is smtp and environment is production"
-                    )
-                if email_password is None:
-                    raise ValueError(
-                        "email_password is required when email_provider is smtp and environment is production"
-                    )
-        elif email_provider == "aws_ses":
-            if email_port is not None:
-                raise ValueError("email_port must be None when email_provider is ses")
-            if email_host is not None:
-                raise ValueError("email_host must be None when email_provider is ses")
-            if email_username is not None:
-                raise ValueError(
-                    "email_username must be None when email_provider is ses"
-                )
-            if email_password is not None:
-                raise ValueError(
-                    "email_password must be None when email_provider is ses"
-                )
-        return values
+    #     if email_provider == "smtp":
+    #         if email_port is None:
+    #             raise ValueError("email_port is required when email_provider is smtp")
+    #         if email_host is None:
+    #             raise ValueError("email_host is required when email_provider is smtp")
+    #         if environment == "production":
+    #             if email_username is None:
+    #                 raise ValueError(
+    #                     "email_username is required when email_provider is smtp and environment is production"
+    #                 )
+    #             if email_password is None:
+    #                 raise ValueError(
+    #                     "email_password is required when email_provider is smtp and environment is production"
+    #                 )
+    #     elif email_provider == "aws_ses":
+    #         if email_port is not None:
+    #             raise ValueError("email_port must be None when email_provider is ses")
+    #         if email_host is not None:
+    #             raise ValueError("email_host must be None when email_provider is ses")
+    #         if email_username is not None:
+    #             raise ValueError(
+    #                 "email_username must be None when email_provider is ses"
+    #             )
+    #         if email_password is not None:
+    #             raise ValueError(
+    #                 "email_password must be None when email_provider is ses"
+    #             )
+    #     return values
 
 
 class AWSSettings(CoreSettings):
@@ -413,9 +421,6 @@ class AuthSettings(CoreSettings):
 
 
 class GeocoderSettings(CoreSettings):
-    # geocoder config
-    geocoding_provider: Literal["nominatim", "aws_location"] = "nominatim"
-
     single_use_location_place_index_name: str | None = None
 
     storage_location_place_index_name: str | None = None
@@ -426,28 +431,28 @@ class GeocoderSettings(CoreSettings):
 
     geocoder_scheme: str = "http"
 
-    @classmethod
-    def model_validate(cls, values):
-        geocoding_provider = values.get("geocoding_provider")
-        if geocoding_provider == "nominatim":
-            if not values.get("geocoder_domain"):
-                raise ValueError(
-                    "geocoder_domain is required when geocoding_provider is nominatim"
-                )
-            if not values.get("geocoder_user_agent"):
-                raise ValueError(
-                    "geocoder_user_agent is required when geocoding_provider is nominatim"
-                )
-        elif geocoding_provider == "aws_location":
-            if not values.get("single_use_location_place_index_name"):
-                raise ValueError(
-                    "single_use_location_place_index_name is required when geocoding_provider is aws_location"
-                )
-            if not values.get("storage_location_place_index_name"):
-                raise ValueError(
-                    "storage_location_place_index_name is required when geocoding_provider is aws_location"
-                )
-        return values
+    # @classmethod
+    # def model_validate(cls, values):
+    #     geocoding_provider = values.get("geocoding_provider")
+    #     if geocoding_provider == "nominatim":
+    #         if not values.get("geocoder_domain"):
+    #             raise ValueError(
+    #                 "geocoder_domain is required when geocoding_provider is nominatim"
+    #             )
+    #         if not values.get("geocoder_user_agent"):
+    #             raise ValueError(
+    #                 "geocoder_user_agent is required when geocoding_provider is nominatim"
+    #             )
+    #     elif geocoding_provider == "aws_location":
+    #         if not values.get("single_use_location_place_index_name"):
+    #             raise ValueError(
+    #                 "single_use_location_place_index_name is required when geocoding_provider is aws_location"
+    #             )
+    #         if not values.get("storage_location_place_index_name"):
+    #             raise ValueError(
+    #                 "storage_location_place_index_name is required when geocoding_provider is aws_location"
+    #             )
+    #     return values
 
 
 TSettings = TypeVar("TSettings", bound=BaseSettings)

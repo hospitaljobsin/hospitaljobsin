@@ -1,0 +1,93 @@
+name: Build Playwright Test AMI
+
+on:
+  schedule:
+    # Run every 2 weeks on Sunday at 00:00 UTC
+    - cron: '0 0 * * 0/2'
+  workflow_dispatch: # Allow manual triggering
+  push:
+    branches:
+      - staging
+      - production
+    paths:
+      - "packer/**"
+      - ".github/workflows/build-playwright-ami.yml"
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+env:
+  PACKER_LOG: 1
+  PACKER_LOG_PATH: packer.log
+
+jobs:
+  build-ami:
+    name: Build Playwright Test AMI
+    environment: staging
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Setup packer
+        uses: hashicorp/setup-packer@main
+        id: setup
+        with:
+          version: latest
+
+      - name: Run `packer init`
+        working-directory: ./packer
+        id: init
+        run: |
+          packer init playwright-image.pkr.hcl
+
+      - name: Validate Packer template
+        working-directory: ./packer
+        run: |
+          packer validate playwright-image.pkr.hcl
+
+      - name: Build AMI
+        working-directory: ./packer
+        run: |
+          set -o pipefail
+          packer build -machine-readable playwright-image.pkr.hcl | tee build.log
+
+      - name: Extract AMI ID from manifest
+        id: extract-ami
+        working-directory: ./packer
+        run: |
+          AMI_ID=$(jq -r '.builds[-1].artifact_id' packer-manifest.json | cut -d ":" -f2)
+          echo "ami_id=$AMI_ID" >> $GITHUB_OUTPUT
+          echo "Built AMI: $AMI_ID"
+
+      - name: Set GitHub Actions variable
+        run: |
+          gh variable set AWS_PLAYWRIGHT_AMI_ID --body ${{ steps.extract-ami.outputs.ami_id }} --env staging
+          echo "Set AWS_PLAYWRIGHT_AMI_ID=${{ steps.extract-ami.outputs.ami_id }}"
+        env:
+          GH_TOKEN: ${{ secrets.PA_TOKEN_GITHUB }}
+
+      - name: Upload Packer logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: packer-logs
+          path: |
+            packer/packer.log
+            packer/build.log
+            packer/packer-manifest.json
+          retention-days: 30
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "AMI build failed. Check the logs for details."
+          echo "Latest AMI ID: ${{ steps.extract-ami.outputs.ami_id }}"

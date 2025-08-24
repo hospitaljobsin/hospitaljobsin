@@ -66,8 +66,13 @@ module "github" {
   basic_auth_username                               = module.core.basic_auth_username
   basic_auth_password                               = module.core.basic_auth_password
   aws_asg_name                                      = module.core.aws_asg_name
-  staging_db_setup_lambda_function_arn              = module.core.staging_db_setup_lambda_function_arn
-  staging_db_teardown_lambda_function_arn           = module.core.staging_db_teardown_lambda_function_arn
+  staging_environment_setup_lambda_function_arn     = module.core.staging_environment_setup_lambda_function_arn
+  staging_environment_teardown_lambda_function_arn  = module.core.staging_environment_teardown_lambda_function_arn
+  actions_runner_security_group_id                  = module.core.actions_runner_security_group_id
+  actions_runner_subnet_id                          = module.core.actions_runner_subnet_id
+  actions_runner_instance_profile_name              = module.core.actions_runner_instance_profile_name
+  actions_runner_instance_type                      = module.core.actions_runner_instance_type
+  actions_runner_ami_id                             = module.core.actions_runner_ami_id
 }
 
 
@@ -98,6 +103,8 @@ module "core" {
   hosted_zone_id                    = data.terraform_remote_state.shared.outputs.hosted_zone_id
   aws_lambda_worker_repository_url  = data.terraform_remote_state.shared.outputs.aws_lambda_worker_repository_url
   aws_lambda_backend_repository_url = data.terraform_remote_state.shared.outputs.aws_lambda_backend_repository_url
+  mailinator_private_domain         = var.mailinator_private_domain
+  mailinator_api_key                = var.mailinator_api_key
 }
 
 module "mongodb" {

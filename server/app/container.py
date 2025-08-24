@@ -50,8 +50,10 @@ from app.config import (
     EnvironmentSettings,
     FrontendSettings,
     GeocoderSettings,
+    MailinatorSettings,
     Oauth2Settings,
     PosthogSettings,
+    ProviderSettings,
     RedisSettings,
     SecretSettings,
     TesseractSettings,
@@ -83,6 +85,7 @@ from app.core.geocoding import (
     NominatimLocationService,
     create_nominatim_geocoder,
 )
+from app.core.mailinator_client import create_mailinator_client
 from app.core.messages import (
     BaseMessageSender,
     DummyMessageSender,
@@ -145,6 +148,7 @@ settings_classes: list[type[BaseSettings]] = [
     DatabaseSettings,
     SecretSettings,
     EmailSettings,
+    ProviderSettings,
     AWSSettings,
     AuthSettings,
     GeocoderSettings,
@@ -156,6 +160,7 @@ settings_classes: list[type[BaseSettings]] = [
     FrontendSettings,
     TwoFactorINSettings,
     Oauth2Settings,
+    MailinatorSettings,
 ]
 
 
@@ -209,9 +214,9 @@ class SentryInstrumentation(OnResolveContextExtension):
 
 
 def register_email_sender(container: aioinject.Container) -> None:
-    email_settings = get_settings(EmailSettings)
+    provider_settings = get_settings(ProviderSettings)
 
-    match email_settings.email_provider:
+    match provider_settings.email_provider:
         case "smtp":
             container.register(aioinject.Scoped(create_smtp_client))
             container.register(aioinject.Scoped(SMTPEmailSender, BaseEmailSender))
@@ -223,9 +228,9 @@ def register_email_sender(container: aioinject.Container) -> None:
 
 
 def register_location_service(container: aioinject.Container) -> None:
-    geocoder_settings = get_settings(GeocoderSettings)
+    provider_settings = get_settings(ProviderSettings)
 
-    match geocoder_settings.geocoding_provider:
+    match provider_settings.geocoding_provider:
         case "nominatim":
             container.register(aioinject.Singleton(create_nominatim_geocoder))
             container.register(
@@ -271,7 +276,6 @@ def create_container() -> aioinject.Container:
     )
     for settings_cls in settings_classes:
         container.register(SettingsProvider(settings_cls))
-    print("registered settings")
     container.register(aioinject.Singleton(create_jinja2_environment))
     register_email_sender(container)
     register_location_service(container)
@@ -280,6 +284,8 @@ def create_container() -> aioinject.Container:
     env_settings = get_settings(EnvironmentSettings)
     if env_settings.is_testing or env_settings.is_staging:
         container.register(aioinject.Scoped(TestSetupService))
+    if env_settings.is_staging:
+        container.register(aioinject.Singleton(create_mailinator_client))
     container.register(aioinject.Singleton(create_posthog_client))
     container.register(aioinject.Singleton(create_aioboto3_session))
     container.register(aioinject.Scoped(create_s3_client))

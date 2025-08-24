@@ -53,6 +53,7 @@ dependencies = [
     "posthog==6.3.3",
     "beautifulsoup4>=4.13.4",
     "markdown>=3.8.2",
+    "mailinator-python-client-2>=0.0.8",
 ]
 
 

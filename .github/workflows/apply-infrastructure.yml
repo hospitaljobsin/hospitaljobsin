@@ -36,6 +36,8 @@ env:
   TF_VAR_two_factor_in_api_key: ${{ secrets.TWO_FACTOR_IN_API_KEY }}
   TF_VAR_posthog_api_key: ${{ secrets.POSTHOG_API_KEY }}
   TF_VAR_posthog_api_host: ${{ vars.POSTHOG_API_HOST }}
+  TF_VAR_mailinator_api_key: ${{ secrets.MAILINATOR_API_KEY }}
+  TF_VAR_mailinator_private_domain: ${{ vars.MAILINATOR_PRIVATE_DOMAIN }}
 
 concurrency:
   group: deploy-infrastructure-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
@@ -48,7 +50,7 @@ jobs:
     steps:
       - name: Checkout code
         if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set env
         if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}

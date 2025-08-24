@@ -209,18 +209,54 @@ resource "github_actions_environment_variable" "public_root_domain" {
 }
 
 
-resource "github_actions_environment_variable" "staging_db_setup_lambda_function_arn" {
+resource "github_actions_environment_variable" "staging_environment_setup_lambda_function_arn" {
   count         = var.environment_name == "staging" ? 1 : 0
   repository    = data.github_repository.this.name
   environment   = github_repository_environment.this.environment
-  variable_name = "STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN"
-  value         = var.staging_db_setup_lambda_function_arn
+  variable_name = "STAGING_ENVIRONMENT_SETUP_LAMBDA_FUNCTION_ARN"
+  value         = var.staging_environment_setup_lambda_function_arn
 }
 
-resource "github_actions_environment_variable" "staging_db_teardown_lambda_function_arn" {
+resource "github_actions_environment_variable" "staging_environment_teardown_lambda_function_arn" {
   count         = var.environment_name == "staging" ? 1 : 0
   repository    = data.github_repository.this.name
   environment   = github_repository_environment.this.environment
-  variable_name = "STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN"
-  value         = var.staging_db_teardown_lambda_function_arn
+  variable_name = "STAGING_ENVIRONMENT_TEARDOWN_LAMBDA_FUNCTION_ARN"
+  value         = var.staging_environment_teardown_lambda_function_arn
+}
+
+resource "github_actions_environment_variable" "actions_runner_security_group_id" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "ACTIONS_RUNNER_SECURITY_GROUP_ID"
+  value         = var.actions_runner_security_group_id
+}
+
+resource "github_actions_environment_variable" "actions_runner_subnet_id" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "ACTIONS_RUNNER_SUBNET_ID"
+  value         = var.actions_runner_subnet_id
+}
+
+
+resource "github_actions_environment_variable" "actions_runner_instance_profile_name" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "ACTIONS_RUNNER_INSTANCE_PROFILE_NAME"
+  value         = var.actions_runner_instance_profile_name
+}
+
+resource "github_actions_environment_variable" "actions_runner_instance_type" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "ACTIONS_RUNNER_INSTANCE_TYPE"
+  value         = var.actions_runner_instance_type
+}
+
+resource "github_actions_environment_variable" "actions_runner_ami_id" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "ACTIONS_RUNNER_AMI_ID"
+  value         = var.actions_runner_ami_id
 }

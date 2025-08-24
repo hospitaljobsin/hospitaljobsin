@@ -236,14 +236,41 @@ variable "basic_auth_password" {
   sensitive = true
 }
 
-variable "staging_db_setup_lambda_function_arn" {
+variable "staging_environment_setup_lambda_function_arn" {
   type     = string
   nullable = true
   default  = null
 }
 
-variable "staging_db_teardown_lambda_function_arn" {
+variable "staging_environment_teardown_lambda_function_arn" {
   type     = string
   nullable = true
   default  = null
+}
+
+variable "actions_runner_security_group_id" {
+  type        = string
+  description = "The security group ID for the actions runner."
+}
+
+
+
+variable "actions_runner_instance_profile_name" {
+  type        = string
+  description = "The instance profile name for the actions runner."
+}
+
+variable "actions_runner_subnet_id" {
+  type        = string
+  description = "The subnet ID for the actions runner."
+}
+
+variable "actions_runner_instance_type" {
+  type        = string
+  description = "The instance type for the actions runner."
+}
+
+variable "actions_runner_ami_id" {
+  type        = string
+  description = "The AMI ID for the actions runner."
 }

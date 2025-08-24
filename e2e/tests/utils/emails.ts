@@ -29,7 +29,6 @@ const registeredEmails = new Set<string>();
  */
 export async function registerEmailAddress({
 	email,
-	password = env.MAILJS_PASSWORD,
 }: {
 	email: string;
 	password?: string;
@@ -60,20 +59,17 @@ export function getRegisteredEmails(): string[] {
 	return Array.from(registeredEmails);
 }
 
-export async function generateUniqueEmail(
-	baseLabel: string,
-	projectName: string,
-): Promise<string> {
+export async function generateUniqueEmail(baseLabel: string): Promise<string> {
 	if (env.ENVIRONMENT === "staging") {
 		if (!env.MAILINATOR_PRIVATE_DOMAIN) {
 			throw new Error(
 				"MAILINATOR_PRIVATE_DOMAIN environment variable is required for staging environment",
 			);
 		}
-		return `${baseLabel}-${projectName}@${env.MAILINATOR_PRIVATE_DOMAIN}`;
+		return `${baseLabel}@${env.MAILINATOR_PRIVATE_DOMAIN}`;
 	}
 
-	return `${baseLabel}-${projectName}@outlook.com`;
+	return `${baseLabel}@outlook.com`;
 }
 
 /**
@@ -85,7 +81,7 @@ export async function findLastEmail({
 	request,
 	filter,
 	inboxAddress,
-	timeout = 5000,
+	timeout = 10_000,
 }: {
 	request: APIRequestContext;
 	filter?: (email: Email) => boolean;
@@ -173,13 +169,26 @@ async function getTestingEmailHtml({
 	}
 }
 
-function getStagingEmailHtml({
-	message,
+async function getStagingEmailHtml({
+	email,
 }: {
-	message: Message;
-}): string | undefined {
+	email: Email;
+}): Promise<string | undefined> {
+	if (!env.MAILINATOR_PRIVATE_DOMAIN) {
+		throw new Error(
+			"MAILINATOR_PRIVATE_DOMAIN environment variable is required for staging environment",
+		);
+	}
+
 	try {
 		// Extract HTML content from message parts
+		const resp: IRestResponse<Message> = await mailinatorClient.request(
+			new GetMessageRequest(env.MAILINATOR_PRIVATE_DOMAIN, email.id),
+		);
+		const message = resp.result;
+		if (!message) {
+			return undefined;
+		}
 		let html = "";
 
 		// Look for HTML content in the parts array
@@ -203,7 +212,7 @@ function getStagingEmailHtml({
 
 		return html || undefined;
 	} catch (error) {
-		console.warn(`Failed to fetch HTML for email ${message.id}:`, error);
+		console.warn(`Failed to fetch HTML for email ${email.id}:`, error);
 		return undefined;
 	}
 }
@@ -214,7 +223,7 @@ async function findLastEmailTesting({
 	request,
 	filter,
 	inboxAddress,
-	timeout = 5000,
+	timeout,
 }: {
 	request: APIRequestContext;
 	filter?: (email: Email) => boolean;
@@ -249,14 +258,13 @@ async function findLastEmailTesting({
 
 				const email = filteredEmails[filteredEmails.length - 1];
 				if (email) {
-					// Fetch HTML content for the email
-					const htmlContent = await getTestingEmailHtml({
-						request,
-						messageId: String(email.id),
-					});
 					return {
 						...email,
-						html: htmlContent || undefined,
+						html: await getTestingEmailHtml({
+							request,
+							// Fetch HTML content for the email
+							messageId: String(email.id),
+						}),
 					};
 				}
 
@@ -279,7 +287,7 @@ async function findLastEmailStaging({
 	filter,
 	request,
 	inboxAddress,
-	timeout = 5000,
+	timeout,
 }: {
 	request: APIRequestContext;
 	filter?: (email: Email) => boolean;
@@ -301,14 +309,23 @@ async function findLastEmailStaging({
 					continue;
 				}
 
-				let filteredEmails = mailbox.messages;
+				let filteredEmails = mailbox.messages.filter((e) =>
+					e.recipients.some(
+						(recipient) =>
+							recipient.includes(`<${inboxAddress}>`) ||
+							recipient === inboxAddress,
+					),
+				);
 				if (filter) {
 					filteredEmails = mailbox.messages.filter(filter);
 				}
 
 				if (filteredEmails.length > 0) {
 					const lastEmail = filteredEmails[filteredEmails.length - 1];
-					return lastEmail;
+					return {
+						...lastEmail,
+						html: await getStagingEmailHtml({ email: lastEmail }),
+					};
 				}
 
 				// Wait for 100ms before checking again
@@ -342,7 +359,7 @@ async function getMailbox(
 				env.MAILINATOR_PRIVATE_DOMAIN,
 				inboxName,
 				undefined,
-				100,
+				50, // max limit is 99
 			),
 		);
 
@@ -362,9 +379,9 @@ async function getMailbox(
 			messageCount: messages.length,
 			messages: messages.map((message) => ({
 				id: message.id,
-				recipients: [message.to],
+				recipients: [`${message.to}@${env.MAILINATOR_PRIVATE_DOMAIN}`],
 				subject: message.subject,
-				html: getStagingEmailHtml({ message }),
+				html: undefined,
 			})),
 		};
 	} catch (error) {

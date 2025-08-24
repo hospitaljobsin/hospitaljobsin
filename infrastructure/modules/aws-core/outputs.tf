@@ -160,12 +160,38 @@ output "basic_auth_password" {
   sensitive = true
 }
 
-output "staging_db_setup_lambda_function_arn" {
+output "staging_environment_setup_lambda_function_arn" {
 
-  value = try(aws_lambda_function.staging_database_setup[0].arn, null)
+  value = try(aws_lambda_function.staging_environment_setup[0].arn, null)
 }
 
-output "staging_db_teardown_lambda_function_arn" {
+output "staging_environment_teardown_lambda_function_arn" {
 
-  value = try(aws_lambda_function.staging_database_teardown[0].arn, null)
+  value = try(aws_lambda_function.staging_environment_teardown[0].arn, null)
+}
+
+# GitHub Actions Runner Outputs
+output "actions_runner_security_group_id" {
+  value       = aws_security_group.actions_runner.id
+  description = "Security Group ID for GitHub Actions runner"
+}
+
+output "actions_runner_subnet_id" {
+  value       = data.aws_subnets.t3a_compatible_public.ids[0]
+  description = "Subnet ID for GitHub Actions runner"
+}
+
+output "actions_runner_instance_profile_name" {
+  value       = aws_iam_instance_profile.actions_runner.name
+  description = "Instance Profile name for GitHub Actions runner"
+}
+
+output "actions_runner_instance_type" {
+  value       = local.actions_runner_instance_type
+  description = "Instance type for GitHub Actions runner"
+}
+
+output "actions_runner_ami_id" {
+  value       = data.aws_ami.ubuntu.id
+  description = "AMI ID for GitHub Actions runner"
 }

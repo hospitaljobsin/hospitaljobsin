@@ -5,6 +5,18 @@ locals {
   redis_parts    = split(":", var.redis_endpoint)
   redis_host     = element(local.redis_parts, 0)
   redis_port     = tonumber(element(local.redis_parts, 1))
+
+  # Staging-specific environment variables
+  staging_env_vars = var.environment_name == "staging" ? [
+    {
+      name  = "SERVER_EMAIL_VERIFICATION_TOKEN_COOLDOWN"
+      value = "20"
+    },
+    {
+      name  = "SERVER_PASSWORD_RESET_TOKEN_COOLDOWN"
+      value = "20"
+    }
+  ] : []
 }
 
 # Use the provided VPC ID instead of default VPC
@@ -157,6 +169,7 @@ resource "aws_security_group" "alb_sg" {
     create_before_destroy = true
   }
 
+  # TODO: allow this only from subnet IP in staging env
   ingress {
     description      = "Allow HTTPS traffic from the internet"
     from_port        = 443
@@ -490,7 +503,8 @@ resource "aws_ecs_task_definition" "app" {
           awslogs-stream-prefix = "ecs"
         }
       },
-      environment = [
+
+      environment = concat([
         {
           name  = "AWS_DEFAULT_REGION",
           value = var.aws_region
@@ -627,7 +641,7 @@ resource "aws_ecs_task_definition" "app" {
           name  = "SERVER_POSTHOG_API_HOST"
           value = var.posthog_api_host
         }
-      ]
+      ], local.staging_env_vars)
     }
   ])
 }

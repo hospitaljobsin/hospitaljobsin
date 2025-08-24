@@ -8,6 +8,7 @@ import {
 	generateUniqueEmail,
 	registerEmailAddress,
 } from "@/tests/utils/emails";
+import { generateGlobalId } from "@/tests/utils/id";
 import type { PlaywrightTestArgs } from "@playwright/test";
 
 async function findVerificationCode({
@@ -140,8 +141,11 @@ test.describe("Sign Up Page", () => {
 
 	test("should validate invalid email verification token", async ({ page }, {
 		project,
+		workerIndex,
 	}) => {
-		const emailAddress = await generateUniqueEmail("new-tester", project.name);
+		const emailAddress = await generateUniqueEmail(
+			`new-tester-${generateGlobalId(workerIndex, project.name)}`,
+		);
 		await registerEmailAddress({ email: emailAddress });
 		await test.step("Step 1: Enter email address", async () => {
 			await page.getByLabel("Email Address").fill(emailAddress);
@@ -193,7 +197,7 @@ test.describe("Sign Up Page", () => {
 		// Step 2: Get verification code from email
 		const emailMessage = await findLastEmail({
 			request,
-			timeout: 10_000,
+			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Email Verification Request"),
 		});
@@ -467,10 +471,10 @@ test.describe("Sign Up Page", () => {
 	test("should handle cooldown on multiple email verification requests", async ({
 		page,
 		request,
-	}, { project }) => {
-		// increase timeout to incorporate cooldown
-		test.setTimeout(45_000);
-		const emailAddress = await generateUniqueEmail("new-tester2", project.name);
+	}, { project, workerIndex }) => {
+		const emailAddress = await generateUniqueEmail(
+			`new-tester2-${generateGlobalId(workerIndex, project.name)}`,
+		);
 		await registerEmailAddress({ email: emailAddress });
 
 		// First email verification request
@@ -483,7 +487,7 @@ test.describe("Sign Up Page", () => {
 
 		const firstEmail = await findLastEmail({
 			request,
-			timeout: 10_000,
+			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Email Verification Request"),
 		});
@@ -536,7 +540,7 @@ test.describe("Sign Up Page", () => {
 
 		const thirdEmail = await findLastEmail({
 			request,
-			timeout: 10_000,
+			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Email Verification Request"),
 		});

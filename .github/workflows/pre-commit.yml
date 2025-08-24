@@ -9,8 +9,8 @@ jobs:
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v3
+    - uses: actions/checkout@v5
+    - uses: actions/setup-python@v5
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v3
       with:
