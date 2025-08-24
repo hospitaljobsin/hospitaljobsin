@@ -24,6 +24,14 @@ locals {
       name  = "SERVER_EMAIL_USERNAME"
       value = ""
     },
+    {
+      name  = "SERVER_EMAIL_PASSWORD"
+      value = ""
+    },
+    {
+      name  = "SERVER_EMAIL_HOST"
+      value = "localhost"
+    }
   ] : []
 }
 
