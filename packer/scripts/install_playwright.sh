@@ -17,7 +17,8 @@ sudo npm install -g pnpm
 
 # Install Playwright and browsers
 sudo npm install -g playwright
-PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/pw-browsers npx playwright install --with-deps
+PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/pw-browsers
+sudo npx playwright install --with-deps
 
 # Make it accessible to everyone
 chmod -R 755 /usr/local/share/pw-browsers
