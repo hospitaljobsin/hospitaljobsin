@@ -68,6 +68,9 @@ module "github" {
   aws_asg_name                                      = module.core.aws_asg_name
   staging_environment_setup_lambda_function_arn     = module.core.staging_environment_setup_lambda_function_arn
   staging_environment_teardown_lambda_function_arn  = module.core.staging_environment_teardown_lambda_function_arn
+  actions_runner_security_group_id                  = module.core.actions_runner_security_group_id
+  actions_runner_subnet_id                          = module.core.actions_runner_subnet_id
+  actions_runner_iam_role_name                      = module.core.actions_runner_iam_role_name
 }
 
 

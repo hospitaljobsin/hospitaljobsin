@@ -247,3 +247,19 @@ variable "staging_environment_teardown_lambda_function_arn" {
   nullable = true
   default  = null
 }
+
+variable "actions_runner_security_group_id" {
+  type        = string
+  description = "The security group ID for the actions runner."
+}
+
+
+variable "actions_runner_iam_role_name" {
+  type        = string
+  description = "The IAM role name for the actions runner."
+}
+
+variable "actions_runner_subnet_id" {
+  type        = string
+  description = "The subnet ID for the actions runner."
+}

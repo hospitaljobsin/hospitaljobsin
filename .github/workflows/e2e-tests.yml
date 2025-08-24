@@ -25,6 +25,9 @@ jobs:
     environment: staging
     name: Set up Infrastructure
     runs-on: ubuntu-latest
+    outputs:
+      label: ${{ steps.start-ec2-runner.outputs.label }}
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
     steps:
       - uses: actions/checkout@v4
 
@@ -63,6 +66,18 @@ jobs:
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --services ${{ vars.AWS_BACKEND_ECS_SERVICE }}
 
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: start
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          ec2-image-id: ami-0360c520857e3138f # ubuntu 24.04
+          ec2-instance-type: t3a.medium
+          subnet-id: ${{ vars.ACTIONS_RUNNER_SUBNET_ID }}
+          security-group-id: ${{ vars.ACTIONS_RUNNER_SECURITY_GROUP_ID }}
+          iam-role-name: ${{ vars.ACTIONS_RUNNER_IAM_ROLE_NAME }}
+
   test-e2e:
     environment: staging
     name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
@@ -72,7 +87,7 @@ jobs:
       matrix:
         project: [chromium, firefox, webkit]
         shard: [1, 2, 3, 4]
-    runs-on: ubuntu-latest
+    runs-on: ${{ needs.setup-infrastructure.outputs.label }}
     steps:
       - uses: actions/checkout@v4
 
@@ -127,7 +142,9 @@ jobs:
   cleanup-infrastructure:
     environment: staging
     name: Cleanup Infrastructure
-    needs: test-e2e
+    needs:
+      - test-e2e
+      - setup-infrastructure
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -140,6 +157,14 @@ jobs:
           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Stop EC2 runner
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: stop
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          label: ${{ needs.setup-infrastructure.outputs.label }}
+          ec2-instance-id: ${{ needs.setup-infrastructure.outputs.ec2-instance-id }}
 
       - name: Invoke Staging Teardown Lambda
         if: ${{ github.ref_name == 'staging' }}

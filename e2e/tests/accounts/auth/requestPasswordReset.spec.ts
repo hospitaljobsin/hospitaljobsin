@@ -73,7 +73,6 @@ test.describe("Request Password Reset Page", () => {
 		request,
 		passwordAuth,
 	}) => {
-		test.setTimeout(45_000);
 		const emailAddress = passwordAuth.account.email;
 		await registerEmailAddress({ email: emailAddress });
 		await page.getByLabel("Email Address").fill(emailAddress);
@@ -154,8 +153,6 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		request,
 		passwordAuth,
 	}) => {
-		// increase timeout to incorporate cooldown
-		test.setTimeout(45_000);
 		const emailAddress = passwordAuth.account.email;
 		await registerEmailAddress({ email: emailAddress });
 

@@ -169,3 +169,19 @@ output "staging_environment_teardown_lambda_function_arn" {
 
   value = try(aws_lambda_function.staging_environment_teardown[0].arn, null)
 }
+
+# GitHub Actions Runner Outputs
+output "actions_runner_security_group_id" {
+  value       = aws_security_group.actions_runner.id
+  description = "Security Group ID for GitHub Actions runner"
+}
+
+output "actions_runner_subnet_id" {
+  value       = data.aws_subnets.t3a_compatible_public.ids[0]
+  description = "Subnet ID for GitHub Actions runner"
+}
+
+output "actions_runner_iam_role_name" {
+  value       = aws_iam_role.actions_runner.name
+  description = "IAM Role name for GitHub Actions runner"
+}

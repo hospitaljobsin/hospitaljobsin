@@ -169,6 +169,7 @@ resource "aws_security_group" "alb_sg" {
     create_before_destroy = true
   }
 
+  # TODO: allow this only from subnet IP in staging env
   ingress {
     description      = "Allow HTTPS traffic from the internet"
     from_port        = 443

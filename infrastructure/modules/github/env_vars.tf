@@ -224,3 +224,24 @@ resource "github_actions_environment_variable" "staging_environment_teardown_lam
   variable_name = "STAGING_ENVIRONMENT_TEARDOWN_LAMBDA_FUNCTION_ARN"
   value         = var.staging_environment_teardown_lambda_function_arn
 }
+
+resource "github_actions_environment_variable" "actions_runner_security_group_id" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "ACTIONS_RUNNER_SECURITY_GROUP_ID"
+  value         = var.actions_runner_security_group_id
+}
+
+resource "github_actions_environment_variable" "actions_runner_subnet_id" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "ACTIONS_RUNNER_SUBNET_ID"
+  value         = var.actions_runner_subnet_id
+}
+
+resource "github_actions_environment_variable" "actions_runner_iam_role_name" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "ACTIONS_RUNNER_IAM_ROLE_NAME"
+  value         = var.actions_runner_iam_role_name
+}
