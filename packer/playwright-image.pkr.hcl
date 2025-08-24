@@ -19,7 +19,7 @@ variable "aws_region" {
 
 variable "ami_base" {
   type    = string
-  default = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
+  default = "ubuntu/images/hvm-ssd/ubuntu-noble-24.04-amd64-server-*"
 }
 
 variable "instance_type" {
@@ -35,9 +35,10 @@ variable "ami_name" {
 source "amazon-ebs" "playwright" {
   region                  = var.aws_region
   instance_type           = var.instance_type
-  ami_name                = "${var.ami_name}-${formatdate("YYYYMMDD-hhmmss", timestamp())}"
+  ami_name                = "${var.ami_name} ${formatdate("YYYYMMDD-hhmmss", timestamp())}"
   ami_description         = "Ubuntu with Node.js, pnpm, and Playwright installed"
-  ssh_username            = "ubuntu"
+  ssh_username  = "ubuntu"
+  ssh_pty       = true
   associate_public_ip_address = true
 
   source_ami_filter {
