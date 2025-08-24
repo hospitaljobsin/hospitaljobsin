@@ -95,7 +95,7 @@ jobs:
       matrix:
         project: [chromium]
         # project: [chromium, firefox, webkit]
-        shard: [1, 2, 3, 4]
+        # shard: [1, 2, 3, 4]
     runs-on: ${{ needs.setup-infrastructure.outputs.label }}
     steps:
       - uses: actions/checkout@v4
@@ -109,7 +109,8 @@ jobs:
         run: pnpm --filter e2e install --frozen-lockfile
 
       - name: Run Playwright tests
-        run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4 --workers=2
+        run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --workers=2
+        # run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4 --workers=2
         working-directory: e2e
         env:
           CI: true
