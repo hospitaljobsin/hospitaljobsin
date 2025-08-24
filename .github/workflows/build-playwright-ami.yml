@@ -41,17 +41,17 @@ jobs:
         working-directory: ./packer
         id: init
         run: |
-          packer init image.pkr.hcl
+          packer init playwright-image.pkr.hcl
 
       - name: Validate Packer template
         working-directory: ./packer
         run: |
-          packer validate image.pkr.hcl
+          packer validate playwright-image.pkr.hcl
 
       - name: Build AMI
         working-directory: ./packer
         run: |
-          packer build -machine-readable image.pkr.hcl | tee build.log
+          packer build -machine-readable playwright-image.pkr.hcl | tee build.log
 
       - name: Extract AMI ID
         id: extract-ami
