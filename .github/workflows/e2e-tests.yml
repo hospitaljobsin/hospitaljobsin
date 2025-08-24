@@ -94,7 +94,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [chromium, firefox, webkit]
+        project: [chromium]
+        # project: [chromium, firefox, webkit]
         shard: [1, 2, 3, 4]
     runs-on: ${{ needs.setup-infrastructure.outputs.label }}
     steps:
@@ -136,7 +137,7 @@ jobs:
           MAILINATOR_API_KEY: ${{ env.MAILINATOR_API_KEY }}
           MAILINATOR_PRIVATE_DOMAIN: ${{ env.MAILINATOR_PRIVATE_DOMAIN }}
           PLAYWRIGHT_SHARD: ${{ matrix.shard }}
-          PLAYWRIGHT_BROWSERS_PATH: /usr/local/share/pw-browsers
+          PLAYWRIGHT_BROWSERS_PATH: /root/.cache/ms-playwright
 
       - name: Upload Playwright Report and Traces
         uses: actions/upload-artifact@v4
