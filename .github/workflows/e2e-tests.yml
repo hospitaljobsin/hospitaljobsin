@@ -76,7 +76,7 @@ jobs:
           ec2-instance-type: t3a.medium
           subnet-id: ${{ vars.ACTIONS_RUNNER_SUBNET_ID }}
           security-group-id: ${{ vars.ACTIONS_RUNNER_SECURITY_GROUP_ID }}
-          iam-role-name: ${{ vars.ACTIONS_RUNNER_IAM_ROLE_NAME }}
+          iam-role-name: ${{ vars.ACTIONS_RUNNER_INSTANCE_PROFILE_NAME }}
 
   test-e2e:
     environment: staging

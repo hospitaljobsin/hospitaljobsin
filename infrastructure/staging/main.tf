@@ -71,6 +71,7 @@ module "github" {
   actions_runner_security_group_id                  = module.core.actions_runner_security_group_id
   actions_runner_subnet_id                          = module.core.actions_runner_subnet_id
   actions_runner_iam_role_name                      = module.core.actions_runner_iam_role_name
+  actions_runner_instance_profile_name              = module.core.actions_runner_instance_profile_name
 }
 
 

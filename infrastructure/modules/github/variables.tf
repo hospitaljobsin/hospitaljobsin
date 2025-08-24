@@ -259,6 +259,11 @@ variable "actions_runner_iam_role_name" {
   description = "The IAM role name for the actions runner."
 }
 
+variable "actions_runner_instance_profile_name" {
+  type        = string
+  description = "The instance profile name for the actions runner."
+}
+
 variable "actions_runner_subnet_id" {
   type        = string
   description = "The subnet ID for the actions runner."

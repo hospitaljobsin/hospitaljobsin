@@ -185,3 +185,8 @@ output "actions_runner_iam_role_name" {
   value       = aws_iam_role.actions_runner.name
   description = "IAM Role name for GitHub Actions runner"
 }
+
+output "actions_runner_instance_profile_name" {
+  value       = aws_iam_instance_profile.actions_runner.name
+  description = "Instance Profile name for GitHub Actions runner"
+}
