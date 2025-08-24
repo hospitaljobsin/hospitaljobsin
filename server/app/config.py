@@ -149,11 +149,6 @@ class EnvironmentSettings(CoreSettings):
         return self._is_environment(Environment.staging)
 
 
-class MailinatorSettings(CoreSettings):
-    mailinator_private_domain: str
-    mailinator_api_key: SecretStr
-
-
 class AppSettings(CoreSettings):
     host: Annotated[
         str,

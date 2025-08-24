@@ -877,18 +877,6 @@ wheels = [
 ]
 
 [[package]]
-name = "mailinator-python-client-2"
-version = "0.0.8"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "requests" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/fd/6f/ce628e653526fdcbda44e4b3be6b4b781692735f04ab604cb0c1a8c5a8a3/mailinator_python_client_2-0.0.8.tar.gz", hash = "sha256:07a955ba1cec5013ac2f68cc6d685b7e3ba286c240ebc68c2257af448c9ba4c8", size = 11426, upload-time = "2025-03-10T06:29:32.938Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9a/14/b55c72f33c65486db69fa5263461db943ce24c9c08d927e503940052a807/mailinator_python_client_2-0.0.8-py3-none-any.whl", hash = "sha256:6ee97b06a6c5562213ef6ec92ab678952ed52ed0d2f0c7c6357981e548525aad", size = 13076, upload-time = "2025-03-10T06:29:31.817Z" },
-]
-
-[[package]]
 name = "markdown"
 version = "3.8.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1631,7 +1619,6 @@ dependencies = [
     { name = "humanize" },
     { name = "itsdangerous" },
     { name = "jinja2" },
-    { name = "mailinator-python-client-2" },
     { name = "markdown" },
     { name = "motor" },
     { name = "nanoid" },
@@ -1700,7 +1687,6 @@ requires-dist = [
     { name = "humanize", specifier = "==4.12.3" },
     { name = "itsdangerous", specifier = "==2.2.0" },
     { name = "jinja2", specifier = "==3.1.6" },
-    { name = "mailinator-python-client-2", specifier = ">=0.0.8" },
     { name = "markdown", specifier = ">=3.8.2" },
     { name = "motor", specifier = "==3.7.1" },
     { name = "nanoid", specifier = "==2.0.0" },
