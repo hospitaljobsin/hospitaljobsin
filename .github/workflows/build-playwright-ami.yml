@@ -66,8 +66,10 @@ jobs:
 
       - name: Set GitHub Actions variable
         run: |
-          echo "AWS_PLAYWRIGHT_AMI_ID=${{ steps.extract-ami.outputs.ami_id }}" >> $GITHUB_ENV
+          gh variable set AWS_PLAYWRIGHT_AMI_ID --body ${{ steps.extract-ami.outputs.ami_id }} --env staging
           echo "Set AWS_PLAYWRIGHT_AMI_ID=${{ steps.extract-ami.outputs.ami_id }}"
+        env:
+          GH_TOKEN: ${{ secrets.PA_TOKEN_GITHUB }}
 
       - name: Upload Packer logs
         uses: actions/upload-artifact@v4
