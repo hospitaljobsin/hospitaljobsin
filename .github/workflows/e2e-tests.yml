@@ -84,7 +84,7 @@ jobs:
             ]
           block-device-mappings: > # optional, to customize EBS volumes
             [
-              {"DeviceName": "/dev/sda1", "Ebs": {"VolumeSize": 20, "VolumeType": "gp3"}}
+              {"DeviceName": "/dev/sda1", "Ebs": {"VolumeSize": 50, "VolumeType": "gp3"}}
             ]
 
   test-e2e:
