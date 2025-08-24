@@ -138,7 +138,7 @@ async function findLastEmailTesting({
 				let filteredEmails = emails.filter((e) =>
 					e.recipients.some(
 						(recipient) =>
-							recipient.includes(`<${inboxAddress}>`) ||
+							recipient.includes(`${inboxAddress}`) ||
 							recipient === inboxAddress,
 					),
 				);
