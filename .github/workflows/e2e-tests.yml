@@ -77,6 +77,15 @@ jobs:
           subnet-id: ${{ vars.ACTIONS_RUNNER_SUBNET_ID }}
           security-group-id: ${{ vars.ACTIONS_RUNNER_SECURITY_GROUP_ID }}
           iam-role-name: ${{ vars.ACTIONS_RUNNER_INSTANCE_PROFILE_NAME }}
+          aws-resource-tags: > # optional, requires additional permissions
+            [
+              {"Key": "Name", "Value": "ec2-github-runner"},
+              {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
+            ]
+          block-device-mappings: > # optional, to customize EBS volumes
+            [
+              {"DeviceName": "/dev/sda1", "Ebs": {"VolumeSize": 20, "VolumeType": "gp3"}}
+            ]
 
   test-e2e:
     environment: staging
