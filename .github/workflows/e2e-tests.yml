@@ -26,6 +26,7 @@ jobs:
     outputs:
       label: ${{ steps.start-ec2-runner.outputs.label }}
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+      mailcatcher-ip: ${{ steps.get-mailcatcher-ip.outputs.mailcatcher_ip }}
     steps:
       - uses: actions/checkout@v4
 
@@ -89,10 +90,52 @@ jobs:
             [
               {"DeviceName": "/dev/sda1", "Ebs": {"VolumeSize": 50, "VolumeType": "gp3"}}
             ]
+      - name: Get Mailcatcher ECS task IP address
+        id: get-mailcatcher-ip
+        run: |
+            echo "Getting Mailcatcher ECS task IP address..."
+            echo "Mailcatcher service: ${{ vars.AWS_BACKEND_ECS_MAILCATCHER_SERVICE }}"
 
+            # Get the task ARN for the Mailcatcher service
+            TASK_ARN=$(aws ecs list-tasks \
+              --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+              --service-name ${{ vars.AWS_BACKEND_ECS_MAILCATCHER_SERVICE }} \
+              --query 'taskArns[0]' \
+              --output text)
+
+            echo "Task ARN: $TASK_ARN"
+
+            if [ "$TASK_ARN" != "None" ] && [ -n "$TASK_ARN" ]; then
+              echo "Found Mailcatcher task: $TASK_ARN"
+
+              # Get the task details including network interface
+              TASK_DETAILS=$(aws ecs describe-tasks \
+                --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+                --tasks $TASK_ARN)
+
+              echo "Task details: $TASK_DETAILS"
+
+              # Extract the private IP address from the task details
+              PRIVATE_IP=$(echo "$TASK_DETAILS" | jq -r '.tasks[0].attachments[0].details[] | select(.name=="privateIPv4Address").value')
+
+              echo "Extracted private IP: $PRIVATE_IP"
+
+              if [ "$PRIVATE_IP" != "null" ] && [ -n "$PRIVATE_IP" ]; then
+                echo "Mailcatcher private IP: $PRIVATE_IP"
+                echo "mailcatcher_ip=$PRIVATE_IP" >> $GITHUB_OUTPUT
+              else
+                echo "Could not extract private IP from task details"
+                echo "Task details: $TASK_DETAILS"
+                exit 1
+              fi
+            else
+              echo "No running Mailcatcher tasks found"
+              exit 1
+            fi
   test-e2e:
     environment: staging
-    name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
+    name: 'Test on ${{ matrix.project }}'
+    # name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
     needs: setup-infrastructure
     strategy:
       fail-fast: false
@@ -113,56 +156,7 @@ jobs:
         run: pnpm --filter e2e install --frozen-lockfile
 
 
-      - name: Get Mailcatcher ECS task IP address
-        id: get-mailcatcher-ip
-        run: |
-          echo "Getting Mailcatcher ECS task IP address..."
 
-          # Configure AWS CLI for the test environment
-          aws configure set aws_access_key_id ${{ env.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ env.AWS_SECRET_ACCESS_KEY }}
-          aws configure set region ${{ vars.AWS_REGION }}
-
-          echo "AWS region: ${{ vars.AWS_REGION }}"
-          echo "ECS cluster: ${{ vars.AWS_BACKEND_ECS_CLUSTER }}"
-          echo "Mailcatcher service: ${{ vars.AWS_BACKEND_ECS_MAILCATCHER_SERVICE }}"
-
-          # Get the task ARN for the Mailcatcher service
-          TASK_ARN=$(aws ecs list-tasks \
-            --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
-            --service-name ${{ vars.AWS_BACKEND_ECS_MAILCATCHER_SERVICE }} \
-            --query 'taskArns[0]' \
-            --output text)
-
-          echo "Task ARN: $TASK_ARN"
-
-          if [ "$TASK_ARN" != "None" ] && [ -n "$TASK_ARN" ]; then
-            echo "Found Mailcatcher task: $TASK_ARN"
-
-            # Get the task details including network interface
-            TASK_DETAILS=$(aws ecs describe-tasks \
-              --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
-              --tasks $TASK_ARN)
-
-            echo "Task details: $TASK_DETAILS"
-
-            # Extract the private IP address from the task details
-            PRIVATE_IP=$(echo "$TASK_DETAILS" | jq -r '.tasks[0].attachments[0].details[] | select(.name=="privateIPv4Address").value')
-
-            echo "Extracted private IP: $PRIVATE_IP"
-
-            if [ "$PRIVATE_IP" != "null" ] && [ -n "$PRIVATE_IP" ]; then
-              echo "Mailcatcher private IP: $PRIVATE_IP"
-              echo "mailcatcher_ip=$PRIVATE_IP" >> $GITHUB_OUTPUT
-            else
-              echo "Could not extract private IP from task details"
-              echo "Task details: $TASK_DETAILS"
-              exit 1
-            fi
-          else
-            echo "No running Mailcatcher tasks found"
-            exit 1
-          fi
 
       - name: Run Playwright tests
         run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --workers=2
@@ -174,7 +168,7 @@ jobs:
           API_BASE_URL: ${{ vars.SST_API_URL }}
           ACCOUNTS_UI_BASE_URL: ${{ vars.SST_ACCOUNTS_BASE_URL }}
           SEEKER_PORTAL_BASE_URL: ${{ vars.SST_SEEKER_PORTAL_BASE_URL }}
-          MAILCATCHER_BASE_URL: "http://${{ steps.get-mailcatcher-ip.outputs.mailcatcher_ip }}:1080"
+          MAILCATCHER_BASE_URL: "http://${{ needs.setup-infrastructure.outputs.mailcatcher-ip }}:1080"
           ENVIRONMENT: staging
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
