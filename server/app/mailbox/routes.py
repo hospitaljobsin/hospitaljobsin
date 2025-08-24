@@ -9,7 +9,7 @@ mailbox_router = APIRouter(prefix="/mailbox")
 
 
 @mailbox_router.get("/messages")
-async def get_messages() -> dict[str, list[dict[str, Any]]]:
+async def get_messages() -> list[dict[str, Any]]:
     """Get all messages in JSON format with key details."""
     message_list = messages.get_messages()
 
@@ -79,4 +79,4 @@ async def get_messages() -> dict[str, list[dict[str, Any]]]:
 
         json_messages.append(json_message)
 
-    return {"messages": json_messages}
+    return json_messages
