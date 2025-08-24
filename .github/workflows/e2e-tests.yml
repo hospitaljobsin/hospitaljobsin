@@ -70,26 +70,6 @@ jobs:
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --services ${{ vars.AWS_BACKEND_ECS_SERVICE }} ${{ vars.AWS_BACKEND_ECS_MAILCATCHER_SERVICE }}
 
-      - name: Start EC2 runner
-        id: start-ec2-runner
-        uses: machulav/ec2-github-runner@v2.4.0
-        with:
-          mode: start
-          github-token: ${{ secrets.PA_TOKEN_GITHUB }}
-          ec2-image-id: ${{ vars.AWS_PLAYWRIGHT_AMI_ID }}
-          ec2-instance-type: ${{ vars.ACTIONS_RUNNER_INSTANCE_TYPE }}
-          subnet-id: ${{ vars.ACTIONS_RUNNER_SUBNET_ID }}
-          security-group-id: ${{ vars.ACTIONS_RUNNER_SECURITY_GROUP_ID }}
-          iam-role-name: ${{ vars.ACTIONS_RUNNER_INSTANCE_PROFILE_NAME }}
-          aws-resource-tags: > # optional, requires additional permissions
-            [
-              {"Key": "Name", "Value": "ec2-github-runner"},
-              {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
-            ]
-          block-device-mappings: > # optional, to customize EBS volumes
-            [
-              {"DeviceName": "/dev/sda1", "Ebs": {"VolumeSize": 50, "VolumeType": "gp3"}}
-            ]
       - name: Get Mailcatcher ECS task IP address
         id: get-mailcatcher-ip
         run: |
@@ -115,43 +95,40 @@ jobs:
 
               echo "Task details: $TASK_DETAILS"
 
-              # Extract the private IP address from the task details
-              # Try Fargate launch type first (attachments)
-              PRIVATE_IP=$(echo "$TASK_DETAILS" | jq -r '.tasks[0].attachments[0].details[] | select(.name=="privateIPv4Address").value // empty')
+              # Get the container instance ARN from the task
+              CONTAINER_INSTANCE_ARN=$(echo "$TASK_DETAILS" | jq -r '.tasks[0].containerInstanceArn')
+              echo "Container instance ARN: $CONTAINER_INSTANCE_ARN"
 
-              # If no IP found in attachments, try EC2 launch type (networkInterfaces)
-              if [ -z "$PRIVATE_IP" ] || [ "$PRIVATE_IP" = "null" ]; then
-                echo "No IP found in attachments, trying networkInterfaces..."
-                PRIVATE_IP=$(echo "$TASK_DETAILS" | jq -r '.tasks[0].networkInterfaces[0].privateIpv4Address // empty')
-              fi
+              # Get the EC2 instance ID directly from the container instance
+              EC2_INSTANCE_ID=$(aws ecs describe-container-instances \
+                --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+                --container-instances $CONTAINER_INSTANCE_ARN \
+                --query 'containerInstances[0].ec2InstanceId' \
+                --output text)
+              echo "EC2 instance ID: $EC2_INSTANCE_ID"
 
-              # If still no IP, try to get it from the container instance
-              if [ -z "$PRIVATE_IP" ] || [ "$PRIVATE_IP" = "null" ]; then
-                echo "No IP found in networkInterfaces, trying container instance..."
-                CONTAINER_INSTANCE_ARN=$(echo "$TASK_DETAILS" | jq -r '.tasks[0].containerInstanceArn // empty')
-                if [ -n "$CONTAINER_INSTANCE_ARN" ]; then
-                  echo "Getting container instance details: $CONTAINER_INSTANCE_ARN"
-                  INSTANCE_DETAILS=$(aws ecs describe-container-instances \
-                    --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
-                    --container-instances $CONTAINER_INSTANCE_ARN)
-                  echo "Container instance details: $INSTANCE_DETAILS"
+              # Check the task's network mode and configuration
+              NETWORK_MODE=$(echo "$TASK_DETAILS" | jq -r '.tasks[0].overrides.containerOverrides[0].networkMode // "default"')
+              echo "Task network mode: $NETWORK_MODE"
 
-                  # Extract EC2 instance ID from container instance
-                  EC2_INSTANCE_ID=$(echo "$INSTANCE_DETAILS" | jq -r '.containerInstances[0].ec2InstanceId // empty')
-                  if [ -n "$EC2_INSTANCE_ID" ]; then
-                    echo "EC2 instance ID: $EC2_INSTANCE_ID"
+              # Get the EC2 instance details to understand the network configuration
+              EC2_DETAILS=$(aws ec2 describe-instances --instance-ids $EC2_INSTANCE_ID)
+              echo "EC2 instance details: $EC2_DETAILS"
 
-                    # Get EC2 instance details to extract private IP
-                    EC2_DETAILS=$(aws ec2 describe-instances --instance-ids $EC2_INSTANCE_ID)
-                    echo "EC2 instance details: $EC2_DETAILS"
+              # Try to get the private IP from the EC2 instance
+              PRIVATE_IP=$(aws ec2 describe-instances \
+                --instance-ids $EC2_INSTANCE_ID \
+                --query 'Reservations[0].Instances[0].PrivateIpAddress' \
+                --output text)
+              echo "EC2 instance private IP: $PRIVATE_IP"
 
-                    PRIVATE_IP=$(echo "$EC2_DETAILS" | jq -r '.Reservations[0].Instances[0].PrivateIpAddress // empty')
-                    echo "Extracted private IP from EC2 instance: $PRIVATE_IP"
-                  fi
-                fi
-              fi
+              # If the task is using bridge/host network mode, the container ports are mapped to the EC2 instance
+              # Check what ports the task is exposing
+              TASK_PORTS=$(echo "$TASK_DETAILS" | jq -r '.tasks[0].containers[0].networkBindings[] | "\(.hostPort):\(.containerPort)"' | tr '\n' ' ')
+              echo "Task port mappings: $TASK_PORTS"
 
-              echo "Final extracted private IP: $PRIVATE_IP"
+              # For bridge/host mode, we can use the EC2 instance's private IP
+              # The container will be accessible on the EC2 instance's private IP on the mapped ports
 
               if [ "$PRIVATE_IP" != "null" ] && [ -n "$PRIVATE_IP" ]; then
                 echo "Mailcatcher private IP: $PRIVATE_IP"
@@ -165,6 +142,27 @@ jobs:
               echo "No running Mailcatcher tasks found"
               exit 1
             fi
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        uses: machulav/ec2-github-runner@v2.4.0
+        with:
+          mode: start
+          github-token: ${{ secrets.PA_TOKEN_GITHUB }}
+          ec2-image-id: ${{ vars.AWS_PLAYWRIGHT_AMI_ID }}
+          ec2-instance-type: ${{ vars.ACTIONS_RUNNER_INSTANCE_TYPE }}
+          subnet-id: ${{ vars.ACTIONS_RUNNER_SUBNET_ID }}
+          security-group-id: ${{ vars.ACTIONS_RUNNER_SECURITY_GROUP_ID }}
+          iam-role-name: ${{ vars.ACTIONS_RUNNER_INSTANCE_PROFILE_NAME }}
+          aws-resource-tags: > # optional, requires additional permissions
+            [
+              {"Key": "Name", "Value": "ec2-github-runner"},
+              {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
+            ]
+          block-device-mappings: > # optional, to customize EBS volumes
+            [
+              {"DeviceName": "/dev/sda1", "Ebs": {"VolumeSize": 50, "VolumeType": "gp3"}}
+            ]
+
   test-e2e:
     environment: staging
     name: 'Test on ${{ matrix.project }}'
