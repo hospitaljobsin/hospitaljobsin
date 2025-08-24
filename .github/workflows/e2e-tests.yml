@@ -100,16 +100,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # - uses: pnpm/action-setup@v4
 
-      # - uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 24
-      #     cache: pnpm
-      #     cache-dependency-path: pnpm-lock.yaml
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
-      # - name: Install dependencies
-      #   run: pnpm --filter e2e install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm --filter e2e install --frozen-lockfile
 
       # - name: Install Playwright
       #   id: install-playwright
