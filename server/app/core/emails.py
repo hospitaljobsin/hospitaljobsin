@@ -12,6 +12,7 @@ from jinja2 import Environment
 from types_aiobotocore_ses import SESClient
 
 from app.config import EmailSettings
+from app.mailbox.messages import add_message
 
 
 @asynccontextmanager
@@ -86,6 +87,47 @@ class BaseEmailSender:
     ) -> None:
         """Send an email via SMTP."""
         raise NotImplementedError
+
+
+class DummyEmailSender(BaseEmailSender):
+    """Dummy email sender class."""
+
+    async def send_email(
+        self,
+        sender: str,
+        receiver: str,
+        subject: str,
+        text: str,
+        html: str,
+        attachments: list[tuple[str, bytes, str]] | None = None,
+    ) -> None:
+        """Send an email."""
+        message = MIMEMultipart("alternative")
+        message["From"] = sender
+        message["To"] = receiver
+        message["Subject"] = subject
+
+        # Properly handle Unicode text with explicit charset
+        text_part = MIMEText(text, "plain", "utf-8")
+        html_part = MIMEText(html, "html", "utf-8")
+        message.attach(text_part)
+        message.attach(html_part)
+
+        # Add attachments if provided
+        if attachments:
+            for filename, content, content_type in attachments:
+                attachment = MIMEBase(*content_type.split("/", 1))
+                attachment.set_payload(content)
+                encoders.encode_base64(attachment)  # ensures safe transport
+                # Encode filename correctly
+                attachment.add_header(
+                    "Content-Disposition",
+                    "attachment",
+                    filename=(Header(filename, "utf-8").encode()),
+                )
+                message.attach(attachment)
+
+        add_message(message)
 
 
 class SMTPEmailSender(BaseEmailSender):

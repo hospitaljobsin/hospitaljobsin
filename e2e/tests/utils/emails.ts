@@ -5,7 +5,17 @@ export type Email = {
 	id: string;
 	recipients: string[];
 	subject: string;
+	text: string | undefined;
 	html: string | undefined;
+};
+
+export type MailboxMessage = {
+	id: string;
+	sender: string;
+	recipients: string[];
+	subject: string;
+	html_body: string;
+	text_body: string;
 };
 
 // Local record of registered emails to avoid duplicate registrations
@@ -70,30 +80,6 @@ export async function findLastEmail({
 }): Promise<Email | null> {
 	return findLastEmailTesting({ request, filter, inboxAddress, timeout });
 }
-
-async function getTestingEmailHtml({
-	request,
-	messageId,
-}: {
-	request: APIRequestContext;
-	messageId: string;
-}): Promise<string | undefined> {
-	// For testing environment, fetch HTML from mailcatcher
-	try {
-		const response = await request.get(
-			`${env.MAILCATCHER_BASE_URL}/messages/${messageId}.html`,
-		);
-
-		if (response.ok()) {
-			return await response.text();
-		}
-
-		return undefined;
-	} catch (error) {
-		console.warn(`Failed to fetch HTML for email ${messageId}:`, error);
-		return undefined;
-	}
-}
 /**
  * Find last email using mailcatcher for testing environment.
  */
@@ -116,9 +102,17 @@ async function findLastEmailTesting({
 		while (true) {
 			try {
 				const response = await request.get(
-					`${env.MAILCATCHER_BASE_URL}/messages`,
+					`${env.API_BASE_URL}/mailbox/messages`,
 				);
-				const emails: Email[] = await response.json();
+				const resp: MailboxMessage[] = await response.json();
+
+				const emails: Email[] = resp.map((m) => ({
+					id: m.id,
+					recipients: m.recipients,
+					subject: m.subject,
+					text: m.text_body,
+					html: m.html_body,
+				}));
 
 				// Apply default filter to ensure emails are sent to the specified inbox
 				let filteredEmails = emails.filter((e) =>
@@ -136,14 +130,7 @@ async function findLastEmailTesting({
 
 				const email = filteredEmails[filteredEmails.length - 1];
 				if (email) {
-					return {
-						...email,
-						html: await getTestingEmailHtml({
-							request,
-							// Fetch HTML content for the email
-							messageId: String(email.id),
-						}),
-					};
+					return email;
 				}
 
 				// Wait for 100ms before checking again

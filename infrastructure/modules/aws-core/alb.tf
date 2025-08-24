@@ -66,6 +66,8 @@ resource "aws_lb_target_group" "ecs_new_tg" {
   vpc_id      = var.vpc_id
   target_type = "instance" # instead of "ip"
 
+  deregistration_delay = "30"
+
   tags = {
     Environment = var.environment_name
   }

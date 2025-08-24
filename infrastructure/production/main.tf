@@ -71,7 +71,6 @@ module "github" {
   actions_runner_instance_profile_name              = module.core.actions_runner_instance_profile_name
   actions_runner_instance_type                      = module.core.actions_runner_instance_type
   actions_runner_ami_id                             = module.core.actions_runner_ami_id
-  aws_ecs_mailcatcher_service_name                  = module.core.aws_ecs_mailcatcher_service_name
 }
 
 

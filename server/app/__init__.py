@@ -23,6 +23,7 @@ from app.container import create_container
 from app.database import initialize_database
 from app.graphql_app import create_graphql_router
 from app.health.routes import health_router
+from app.mailbox.routes import mailbox_router
 from app.middleware import SessionMiddleware
 from app.middleware.fingerprints import FingerprintMiddleware
 from app.testing.routes import test_setup_router
@@ -33,9 +34,14 @@ def add_routes(
     env_settings: EnvironmentSettings,
 ) -> None:
     """Register routes for the app."""
-    if env_settings.is_testing or env_settings.is_staging:
+    if (
+        env_settings.is_testing
+        or env_settings.is_staging
+        or env_settings.is_development
+    ):
         # add E2E Setup API routes during testing
         app.include_router(test_setup_router)
+        app.include_router(mailbox_router)
 
     app.include_router(
         create_graphql_router(env_settings=env_settings),

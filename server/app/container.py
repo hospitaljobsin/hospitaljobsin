@@ -74,6 +74,7 @@ from app.core.aws_sdk import (
 from app.core.captcha import create_captcha_verifier
 from app.core.emails import (
     BaseEmailSender,
+    DummyEmailSender,
     SESEmailSender,
     SMTPEmailSender,
     create_smtp_client,
@@ -220,6 +221,8 @@ def register_email_sender(container: aioinject.Container) -> None:
         case "aws_ses":
             container.register(aioinject.Scoped(create_ses_client))
             container.register(aioinject.Scoped(SESEmailSender, BaseEmailSender))
+        case "dummy":
+            container.register(aioinject.Scoped(DummyEmailSender, BaseEmailSender))
         case _ as unreachable:
             assert_never(unreachable)
 

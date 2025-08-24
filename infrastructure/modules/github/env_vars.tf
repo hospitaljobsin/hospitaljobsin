@@ -35,14 +35,6 @@ resource "github_actions_environment_variable" "aws_backend_ecs_service" {
   value         = var.aws_ecs_service_name
 }
 
-resource "github_actions_environment_variable" "aws_backend_ecs_mailcatcher_service" {
-  count         = var.aws_ecs_mailcatcher_service_name != null ? 1 : 0
-  repository    = data.github_repository.this.name
-  environment   = github_repository_environment.this.environment
-  variable_name = "AWS_BACKEND_ECS_MAILCATCHER_SERVICE"
-  value         = var.aws_ecs_mailcatcher_service_name
-}
-
 
 resource "github_actions_environment_variable" "aws_backend_ecs_task_family" {
   repository    = data.github_repository.this.name

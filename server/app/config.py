@@ -278,7 +278,7 @@ class WhatsappSettings(CoreSettings):
 
 
 class ProviderSettings(CoreSettings):
-    email_provider: Literal["smtp", "aws_ses"] = "smtp"
+    email_provider: Literal["smtp", "aws_ses", "dummy"] = "smtp"
     geocoding_provider: Literal["nominatim", "aws_location"] = "nominatim"
 
 
