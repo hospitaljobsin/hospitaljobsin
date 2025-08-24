@@ -17,6 +17,7 @@ sudo npm install -g pnpm
 
 # Install Playwright and browsers
 sudo npm install -g playwright
-sudo npx playwright install --with-deps
+export PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/pw-browsers
+sudo -E npx playwright install --with-deps
 
 echo "AMI build complete!"

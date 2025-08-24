@@ -137,7 +137,7 @@ jobs:
           MAILINATOR_API_KEY: ${{ env.MAILINATOR_API_KEY }}
           MAILINATOR_PRIVATE_DOMAIN: ${{ env.MAILINATOR_PRIVATE_DOMAIN }}
           PLAYWRIGHT_SHARD: ${{ matrix.shard }}
-          PLAYWRIGHT_BROWSERS_PATH: /root/.cache/ms-playwright
+          PLAYWRIGHT_BROWSERS_PATH: /usr/local/share/pw-browsers
 
       - name: Upload Playwright Report and Traces
         uses: actions/upload-artifact@v4
