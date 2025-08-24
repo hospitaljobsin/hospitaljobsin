@@ -71,7 +71,7 @@ jobs:
         uses: machulav/ec2-github-runner@v2
         with:
           mode: start
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PA_TOKEN_GITHUB }}
           ec2-image-id: ami-0360c520857e3138f # ubuntu 24.04
           ec2-instance-type: t3a.medium
           subnet-id: ${{ vars.ACTIONS_RUNNER_SUBNET_ID }}
@@ -162,7 +162,7 @@ jobs:
         uses: machulav/ec2-github-runner@v2
         with:
           mode: stop
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PA_TOKEN_GITHUB }}
           label: ${{ needs.setup-infrastructure.outputs.label }}
           ec2-instance-id: ${{ needs.setup-infrastructure.outputs.ec2-instance-id }}
 
