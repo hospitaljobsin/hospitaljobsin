@@ -15,7 +15,15 @@ locals {
     {
       name  = "SERVER_PASSWORD_RESET_TOKEN_COOLDOWN"
       value = "20"
-    }
+    },
+    {
+      name  = "SERVER_EMAIL_PORT"
+      value = "1025"
+    },
+    {
+      name  = "SERVER_EMAIL_USERNAME"
+      value = ""
+    },
   ] : []
 }
 
@@ -315,6 +323,38 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv6" {
   ip_protocol       = "-1" # semantically equivalent to all ports
 }
 
+# Allow backend service to send emails to Mailcatcher SMTP (staging only)
+resource "aws_vpc_security_group_ingress_rule" "allow_mailcatcher_smtp_from_backend" {
+  count                        = var.environment_name == "staging" ? 1 : 0
+  security_group_id            = aws_security_group.ecs_sg.id
+  referenced_security_group_id = aws_security_group.ecs_sg.id
+  from_port                    = 1025
+  ip_protocol                  = "tcp"
+  to_port                      = 1025
+  description                  = "Allow backend service to send emails to Mailcatcher SMTP"
+}
+
+# Allow EC2 instances in the same VPC to access Mailcatcher web interface (staging only)
+resource "aws_vpc_security_group_ingress_rule" "allow_mailcatcher_web_from_subnet" {
+  count             = var.environment_name == "staging" ? 1 : 0
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv4         = data.aws_vpc.main.cidr_block
+  from_port         = 1080
+  ip_protocol       = "tcp"
+  to_port           = 1080
+  description       = "Allow EC2 instances in the same VPC to access Mailcatcher web interface"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_mailcatcher_web_from_subnet_ipv6" {
+  count             = var.environment_name == "staging" ? 1 : 0
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv6         = data.aws_vpc.main.ipv6_cidr_block
+  from_port         = 1080
+  ip_protocol       = "tcp"
+  to_port           = 1080
+  description       = "Allow EC2 instances in the same VPC to access Mailcatcher web interface (IPv6)"
+}
+
 
 # Removed capacity reservation to avoid AZ mismatch issues
 # resource "aws_ec2_capacity_reservation" "ecs" {
@@ -555,8 +595,9 @@ resource "aws_ecs_task_definition" "app" {
         },
         {
           name  = "SERVER_EMAIl_PROVIDER"
-          value = "aws_ses"
+          value = var.environment_name == "staging" ? "smtp" : "aws_ses"
         },
+
         {
           name  = "SERVER_EMAIL_FROM"
           value = aws_ses_email_identity.this.email
@@ -681,4 +722,93 @@ resource "aws_ecs_service" "app" {
   }
 
   depends_on = [aws_lb_listener.https, aws_lb_target_group.ecs_new_tg]
+}
+
+
+resource "aws_ecs_task_definition" "mailcatcher" {
+  count                    = var.environment_name == "staging" ? 1 : 0
+  family                   = "${var.resource_prefix}-mailcatcher-task"
+  requires_compatibilities = ["EC2"]
+  network_mode             = "bridge"
+  cpu                      = "256"
+  memory                   = "512"
+
+  task_role_arn      = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+  container_definitions = jsonencode([
+    {
+      name      = "mailcatcher"
+      image     = "schickling/mailcatcher:latest"
+      cpu       = 256
+      memory    = 512
+      essential = true
+      portMappings = [
+        {
+          containerPort = 1080
+          hostPort      = 1080
+          protocol      = "tcp"
+        },
+        {
+          containerPort = 1025
+          hostPort      = 1025
+          protocol      = "tcp"
+        }
+      ],
+      logConfiguration = {
+        logDriver = "awslogs",
+        options = {
+          awslogs-group         = "/ecs/${var.resource_prefix}-mailcatcher"
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "ecs"
+        }
+      },
+      environment = [
+        {
+          name  = "MHC_HOST"
+          value = "0.0.0.0"
+        },
+        {
+          name  = "MHC_PORT"
+          value = tostring(1080)
+        },
+        {
+          name  = "MHC_SMTP_PORT"
+          value = tostring(1025)
+        }
+      ]
+    }
+  ])
+}
+
+resource "aws_ecs_service" "mailcatcher" {
+  count                              = var.environment_name == "staging" ? 1 : 0
+  name                               = "${var.resource_prefix}-mailcatcher-service"
+  cluster                            = aws_ecs_cluster.ecs.id
+  task_definition                    = aws_ecs_task_definition.mailcatcher[0].arn
+  desired_count                      = 0
+  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent         = 200
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+  capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.asg_capacity_provider.name
+    weight            = 1
+  }
+
+  deployment_controller {
+    type = "ECS"
+  }
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
 }

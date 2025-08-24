@@ -13,8 +13,6 @@ env:
   # repo-level and non-env-specific secrets/vars
   AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
-  MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
-  MAILINATOR_PRIVATE_DOMAIN: ${{ vars.MAILINATOR_PRIVATE_DOMAIN }}
 
 concurrency:
   group: e2e-tests-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
@@ -54,16 +52,22 @@ jobs:
             --min-size 1 \
             --desired-capacity 1
 
-          echo "Scaling up ECS service..."
+          echo "Scaling up ECS Backend service..."
           aws ecs update-service \
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --service ${{ vars.AWS_BACKEND_ECS_SERVICE }} \
             --desired-count 1
 
+          echo "Scaling up ECS Mailcatcher service..."
+          aws ecs update-service \
+            --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+            --service ${{ vars.AWS_BACKEND_ECS_MAILCATCHER_SERVICE }} \
+            --desired-count 1
+
           echo "Waiting for ECS service to stabilize..."
           aws ecs wait services-stable \
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
-            --services ${{ vars.AWS_BACKEND_ECS_SERVICE }}
+            --services ${{ vars.AWS_BACKEND_ECS_SERVICE }} ${{ vars.AWS_BACKEND_ECS_MAILCATCHER_SERVICE }}
 
       - name: Start EC2 runner
         id: start-ec2-runner
@@ -108,6 +112,58 @@ jobs:
       - name: Install dependencies
         run: pnpm --filter e2e install --frozen-lockfile
 
+
+      - name: Get Mailcatcher ECS task IP address
+        id: get-mailcatcher-ip
+        run: |
+          echo "Getting Mailcatcher ECS task IP address..."
+
+          # Configure AWS CLI for the test environment
+          aws configure set aws_access_key_id ${{ env.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region ${{ vars.AWS_REGION }}
+
+          echo "AWS region: ${{ vars.AWS_REGION }}"
+          echo "ECS cluster: ${{ vars.AWS_BACKEND_ECS_CLUSTER }}"
+          echo "Mailcatcher service: ${{ vars.AWS_BACKEND_ECS_MAILCATCHER_SERVICE }}"
+
+          # Get the task ARN for the Mailcatcher service
+          TASK_ARN=$(aws ecs list-tasks \
+            --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+            --service-name ${{ vars.AWS_BACKEND_ECS_MAILCATCHER_SERVICE }} \
+            --query 'taskArns[0]' \
+            --output text)
+
+          echo "Task ARN: $TASK_ARN"
+
+          if [ "$TASK_ARN" != "None" ] && [ -n "$TASK_ARN" ]; then
+            echo "Found Mailcatcher task: $TASK_ARN"
+
+            # Get the task details including network interface
+            TASK_DETAILS=$(aws ecs describe-tasks \
+              --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+              --tasks $TASK_ARN)
+
+            echo "Task details: $TASK_DETAILS"
+
+            # Extract the private IP address from the task details
+            PRIVATE_IP=$(echo "$TASK_DETAILS" | jq -r '.tasks[0].attachments[0].details[] | select(.name=="privateIPv4Address").value')
+
+            echo "Extracted private IP: $PRIVATE_IP"
+
+            if [ "$PRIVATE_IP" != "null" ] && [ -n "$PRIVATE_IP" ]; then
+              echo "Mailcatcher private IP: $PRIVATE_IP"
+              echo "mailcatcher_ip=$PRIVATE_IP" >> $GITHUB_OUTPUT
+            else
+              echo "Could not extract private IP from task details"
+              echo "Task details: $TASK_DETAILS"
+              exit 1
+            fi
+          else
+            echo "No running Mailcatcher tasks found"
+            exit 1
+          fi
+
       - name: Run Playwright tests
         run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --workers=2
         # run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4 --workers=2
@@ -118,19 +174,19 @@ jobs:
           API_BASE_URL: ${{ vars.SST_API_URL }}
           ACCOUNTS_UI_BASE_URL: ${{ vars.SST_ACCOUNTS_BASE_URL }}
           SEEKER_PORTAL_BASE_URL: ${{ vars.SST_SEEKER_PORTAL_BASE_URL }}
+          MAILCATCHER_BASE_URL: "http://${{ steps.get-mailcatcher-ip.outputs.mailcatcher_ip }}:1080"
           ENVIRONMENT: staging
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-          MAILINATOR_API_KEY: ${{ env.MAILINATOR_API_KEY }}
-          MAILINATOR_PRIVATE_DOMAIN: ${{ env.MAILINATOR_PRIVATE_DOMAIN }}
-          PLAYWRIGHT_SHARD: ${{ matrix.shard }}
+          # PLAYWRIGHT_SHARD: ${{ matrix.shard }}
           PLAYWRIGHT_BROWSERS_PATH: /usr/local/share/pw-browsers
 
       - name: Upload Playwright Report and Traces
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report-${{ matrix.project }}-${{ matrix.shard }}
+          name: playwright-report-${{ matrix.project }}
+          # name: playwright-report-${{ matrix.project }}-${{ matrix.shard }}
           path: |
             e2e/playwright-report/
             e2e/test-results/**/*.zip
@@ -174,10 +230,17 @@ jobs:
       # Always scale ECS + ASG down after tests
       - name: Scale down ECS service and ASG
         run: |
-          echo "Scaling down ECS service..."
+          echo "Scaling down ECS Backend service..."
           aws ecs update-service \
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --service ${{ vars.AWS_BACKEND_ECS_SERVICE }} \
+            --desired-count 0
+
+          echo "Scaling down ECS Mailcatcher service..."
+
+          aws ecs update-service \
+            --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+            --service ${{ vars.AWS_BACKEND_ECS_MAILCATCHER_SERVICE }} \
             --desired-count 0
 
           echo "Scaling down ASG..."

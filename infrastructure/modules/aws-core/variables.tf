@@ -139,15 +139,3 @@ variable "aws_lambda_backend_repository_url" {
   type        = string
   description = "AWS Lambda backend repository URL."
 }
-
-
-variable "mailinator_private_domain" {
-  type        = string
-  description = "Mailinator private domain."
-}
-
-variable "mailinator_api_key" {
-  type        = string
-  description = "Mailinator API key."
-  sensitive   = true
-}

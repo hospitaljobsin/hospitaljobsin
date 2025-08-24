@@ -214,6 +214,11 @@ variable "aws_ecs_service_name" {
   type = string
 }
 
+variable "aws_ecs_mailcatcher_service_name" {
+  type     = string
+  nullable = true
+}
+
 
 variable "aws_asg_name" {
   type = string

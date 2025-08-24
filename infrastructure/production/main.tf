@@ -71,6 +71,7 @@ module "github" {
   actions_runner_instance_profile_name              = module.core.actions_runner_instance_profile_name
   actions_runner_instance_type                      = module.core.actions_runner_instance_type
   actions_runner_ami_id                             = module.core.actions_runner_ami_id
+  aws_ecs_mailcatcher_service_name                  = module.core.aws_ecs_mailcatcher_service_name
 }
 
 
@@ -101,8 +102,6 @@ module "core" {
   hosted_zone_id                    = data.terraform_remote_state.shared.outputs.hosted_zone_id
   aws_lambda_worker_repository_url  = data.terraform_remote_state.shared.outputs.aws_lambda_worker_repository_url
   aws_lambda_backend_repository_url = data.terraform_remote_state.shared.outputs.aws_lambda_backend_repository_url
-  mailinator_private_domain         = var.mailinator_private_domain
-  mailinator_api_key                = var.mailinator_api_key
 
 }
 
