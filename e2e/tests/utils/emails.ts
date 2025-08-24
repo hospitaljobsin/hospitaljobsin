@@ -134,14 +134,17 @@ async function findLastEmailTesting({
 					html: m.html_body,
 				}));
 
+				console.log("emails", emails);
+
 				// Apply default filter to ensure emails are sent to the specified inbox
 				let filteredEmails = emails.filter((e) =>
 					e.recipients.some(
 						(recipient) =>
-							recipient.includes(`${inboxAddress}`) ||
-							recipient === inboxAddress,
+							recipient.includes(inboxAddress) || recipient === inboxAddress,
 					),
 				);
+
+				console.log("filteredEmails", filteredEmails);
 
 				// Apply additional custom filter if provided
 				if (filter) {
