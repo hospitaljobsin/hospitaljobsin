@@ -116,9 +116,42 @@ jobs:
               echo "Task details: $TASK_DETAILS"
 
               # Extract the private IP address from the task details
-              PRIVATE_IP=$(echo "$TASK_DETAILS" | jq -r '.tasks[0].attachments[0].details[] | select(.name=="privateIPv4Address").value')
+              # Try Fargate launch type first (attachments)
+              PRIVATE_IP=$(echo "$TASK_DETAILS" | jq -r '.tasks[0].attachments[0].details[] | select(.name=="privateIPv4Address").value // empty')
 
-              echo "Extracted private IP: $PRIVATE_IP"
+              # If no IP found in attachments, try EC2 launch type (networkInterfaces)
+              if [ -z "$PRIVATE_IP" ] || [ "$PRIVATE_IP" = "null" ]; then
+                echo "No IP found in attachments, trying networkInterfaces..."
+                PRIVATE_IP=$(echo "$TASK_DETAILS" | jq -r '.tasks[0].networkInterfaces[0].privateIpv4Address // empty')
+              fi
+
+              # If still no IP, try to get it from the container instance
+              if [ -z "$PRIVATE_IP" ] || [ "$PRIVATE_IP" = "null" ]; then
+                echo "No IP found in networkInterfaces, trying container instance..."
+                CONTAINER_INSTANCE_ARN=$(echo "$TASK_DETAILS" | jq -r '.tasks[0].containerInstanceArn // empty')
+                if [ -n "$CONTAINER_INSTANCE_ARN" ]; then
+                  echo "Getting container instance details: $CONTAINER_INSTANCE_ARN"
+                  INSTANCE_DETAILS=$(aws ecs describe-container-instances \
+                    --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+                    --container-instances $CONTAINER_INSTANCE_ARN)
+                  echo "Container instance details: $INSTANCE_DETAILS"
+
+                  # Extract EC2 instance ID from container instance
+                  EC2_INSTANCE_ID=$(echo "$INSTANCE_DETAILS" | jq -r '.containerInstances[0].ec2InstanceId // empty')
+                  if [ -n "$EC2_INSTANCE_ID" ]; then
+                    echo "EC2 instance ID: $EC2_INSTANCE_ID"
+
+                    # Get EC2 instance details to extract private IP
+                    EC2_DETAILS=$(aws ec2 describe-instances --instance-ids $EC2_INSTANCE_ID)
+                    echo "EC2 instance details: $EC2_DETAILS"
+
+                    PRIVATE_IP=$(echo "$EC2_DETAILS" | jq -r '.Reservations[0].Instances[0].PrivateIpAddress // empty')
+                    echo "Extracted private IP from EC2 instance: $PRIVATE_IP"
+                  fi
+                fi
+              fi
+
+              echo "Final extracted private IP: $PRIVATE_IP"
 
               if [ "$PRIVATE_IP" != "null" ] && [ -n "$PRIVATE_IP" ]; then
                 echo "Mailcatcher private IP: $PRIVATE_IP"
