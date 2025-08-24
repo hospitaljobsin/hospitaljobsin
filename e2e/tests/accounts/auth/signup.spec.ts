@@ -197,7 +197,7 @@ test.describe("Sign Up Page", () => {
 		// Step 2: Get verification code from email
 		const emailMessage = await findLastEmail({
 			request,
-			timeout: 10_000,
+			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Email Verification Request"),
 		});
@@ -472,8 +472,6 @@ test.describe("Sign Up Page", () => {
 		page,
 		request,
 	}, { project, workerIndex }) => {
-		// increase timeout to incorporate cooldown
-		test.setTimeout(45_000);
 		const emailAddress = await generateUniqueEmail(
 			`new-tester2-${generateGlobalId(workerIndex, project.name)}`,
 		);
@@ -489,7 +487,7 @@ test.describe("Sign Up Page", () => {
 
 		const firstEmail = await findLastEmail({
 			request,
-			timeout: 10_000,
+			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Email Verification Request"),
 		});
@@ -542,7 +540,7 @@ test.describe("Sign Up Page", () => {
 
 		const thirdEmail = await findLastEmail({
 			request,
-			timeout: 10_000,
+			timeout: 15_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Email Verification Request"),
 		});

@@ -309,7 +309,13 @@ async function findLastEmailStaging({
 					continue;
 				}
 
-				let filteredEmails = mailbox.messages;
+				let filteredEmails = mailbox.messages.filter((e) =>
+					e.recipients.some(
+						(recipient) =>
+							recipient.includes(`<${inboxAddress}>`) ||
+							recipient === inboxAddress,
+					),
+				);
 				if (filter) {
 					filteredEmails = mailbox.messages.filter(filter);
 				}
@@ -373,7 +379,7 @@ async function getMailbox(
 			messageCount: messages.length,
 			messages: messages.map((message) => ({
 				id: message.id,
-				recipients: [message.to],
+				recipients: [`${message.to}@${env.MAILINATOR_PRIVATE_DOMAIN}`],
 				subject: message.subject,
 				html: undefined,
 			})),
