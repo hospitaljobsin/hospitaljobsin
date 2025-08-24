@@ -8,6 +8,21 @@ from app.mailbox import messages
 mailbox_router = APIRouter(prefix="/mailbox")
 
 
+def _parse_recipients(recipients_str: str) -> list[str]:
+    """Parse recipients string into a list, handling various email formats."""
+    if not recipients_str:
+        return []
+
+    # Split by comma and clean up each recipient
+    recipients = []
+    for recipient in recipients_str.split(","):
+        recipient = recipient.strip()
+        if recipient:
+            recipients.append(recipient)
+
+    return recipients
+
+
 @mailbox_router.get("/messages")
 async def get_messages() -> list[dict[str, Any]]:
     """Get all messages in JSON format with key details."""
@@ -19,7 +34,7 @@ async def get_messages() -> list[dict[str, Any]]:
         json_message = {
             "id": i,  # Using index as ID since messages don't have built-in IDs
             "sender": message.get("from", ""),
-            "recipients": message.get("to", ""),
+            "recipients": _parse_recipients(message.get("to", "")),
             "subject": message.get("subject", ""),
             "text_body": "",
             "html_body": "",
