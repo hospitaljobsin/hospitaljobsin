@@ -129,7 +129,7 @@ test.describe("Request Password Reset Page", () => {
 
 	test("should navigate to login page", async ({ page }) => {
 		// increase timeout to incorporate navigation
-		test.setTimeout(30_000);
+
 		// Click on login link
 		await page.getByRole("link", { name: /Back to login/ }).click();
 

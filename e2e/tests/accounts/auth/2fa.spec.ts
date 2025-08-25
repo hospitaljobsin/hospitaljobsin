@@ -49,7 +49,7 @@ test.describe("2FA Page", () => {
 
 	test("should navigate to 2FA recovery page", async ({ page }) => {
 		// increase timeout to incorporate navigation
-		test.setTimeout(30_000);
+
 		// Click on 2fa recovery link
 		await page.getByRole("link", { name: /Use a recovery code/ }).click();
 

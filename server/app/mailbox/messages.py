@@ -111,14 +111,14 @@ class DummyMailbox:
         with self.lock:
             self.path.write_text("[]")
 
-    async def add_message(self, message: Message):
+    async def add_message(self, message: Message) -> None:
         async with self._async_lock:
             await asyncio.to_thread(self.add_message_sync, message)
 
-    async def get_messages(self):
+    async def get_messages(self) -> list[dict[str, Any]]:
         async with self._async_lock:
             return await asyncio.to_thread(self.get_messages_sync)
 
-    async def clear_messages(self):
+    async def clear_messages(self) -> None:
         async with self._async_lock:
             await asyncio.to_thread(self.clear_messages_sync)

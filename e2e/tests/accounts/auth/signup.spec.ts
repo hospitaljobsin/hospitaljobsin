@@ -335,7 +335,6 @@ test.describe("Sign Up Page", () => {
 		await completeSteps1To3({ page, request, context, emailAddress });
 
 		await test.step("Step 4: Enter valid passkey", async () => {
-			test.setTimeout(30_000);
 			// Set up Chrome DevTools Protocol session
 			const client = await context.newCDPSession(page);
 			await client.send("WebAuthn.enable");
@@ -406,7 +405,6 @@ test.describe("Sign Up Page", () => {
 		await completeSteps1To3({ page, request, context, emailAddress });
 
 		await test.step("Step 4: Enter invalid passkey", async () => {
-			test.setTimeout(30_000);
 			// Set up Chrome DevTools Protocol session
 			const client = await context.newCDPSession(page);
 			await client.send("WebAuthn.enable");
