@@ -1,5 +1,5 @@
 import type { sitemapJobsQuery as sitemapJobsType } from "@/__generated__/sitemapJobsQuery.graphql";
-import type { sitemapOrganizationQuery as SiteMapOrganizationQueryType } from "@/__generated__/sitemapOrganizationQuery.graphql";
+import type { sitemapOrganizationsQuery as SiteMapOrganizationQueryType } from "@/__generated__/sitemapOrganizationsQuery.graphql";
 import { env } from "@/lib/env/client";
 import { getCurrentEnvironment } from "@/lib/relay/environments";
 import type { MetadataRoute } from "next";
@@ -31,7 +31,7 @@ export const SitemapJobsQuery = graphql`
 `;
 
 export const SiteMapOrganizationQuery = graphql`
-  query sitemapOrganizationQuery($cursor: ID, $count: Int!) {
+  query sitemapOrganizationsQuery($cursor: ID, $count: Int!) {
     organizations(after: $cursor, first: $count) {
       edges {
         node {
@@ -51,16 +51,17 @@ export const SiteMapOrganizationQuery = graphql`
 `;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+	console.log("sitemap");
 	const staticPages: MetadataRoute.Sitemap = [
 		{
 			url: `${env.NEXT_PUBLIC_URL}/`,
-			lastModified: new Date().toISOString(),
+			lastModified: new Date(),
 			changeFrequency: "daily",
 			priority: 1.0,
 		},
 		{
 			url: `${env.NEXT_PUBLIC_URL}/search`,
-			lastModified: new Date().toISOString(),
+			lastModified: new Date(),
 			changeFrequency: "daily",
 			priority: 1.0,
 		},
@@ -68,6 +69,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	];
 	const jobs = await genJobsSitemap();
 	const organizations = await genOrganizationsSitemap();
+
+	console.log("jobs", jobs);
+	console.log("organizations", organizations);
 
 	return [...staticPages, ...jobs, ...organizations];
 }
@@ -81,31 +85,37 @@ async function genJobsSitemap(): Promise<MetadataRoute.Sitemap> {
 
 	// Fetch all jobs using cursor-based pagination
 	while (hasNextPage) {
-		const data = await fetchQuery<sitemapJobsType>(
-			environment,
-			SitemapJobsQuery,
-			{
-				cursor,
-				count: batchSize,
-			},
-		).toPromise();
+		console.log("fetching jobs", cursor);
+		try {
+			const data = await fetchQuery<sitemapJobsType>(
+				environment,
+				SitemapJobsQuery,
+				{
+					cursor: cursor ?? undefined,
+					count: batchSize,
+				},
+			).toPromise();
 
-		if (!data?.jobs) {
+			if (!data?.jobs) {
+				break;
+			}
+
+			// Add jobs from this batch
+			const jobs = data.jobs.edges.map((edge) => edge.node);
+			allJobs.push(...jobs);
+
+			// Update pagination state
+			hasNextPage = data.jobs.pageInfo.hasNextPage;
+			cursor = data.jobs.pageInfo.endCursor ?? null;
+		} catch (error) {
+			console.error("error fetching jobs", error);
 			break;
 		}
-
-		// Add jobs from this batch
-		const jobs = data.jobs.edges.map((edge) => edge.node);
-		allJobs.push(...jobs);
-
-		// Update pagination state
-		hasNextPage = data.jobs.pageInfo.hasNextPage;
-		cursor = data.jobs.pageInfo.endCursor ?? null;
 	}
 
 	return allJobs.map((job) => ({
 		url: `${env.NEXT_PUBLIC_URL}/organizations/${job.organization.slug}/jobs/${job.slug}`,
-		lastModified: job.updatedAt,
+		lastModified: new Date(job.updatedAt),
 		changeFrequency: "weekly",
 		priority: 0.8,
 		images: [job.organization.bannerUrl],
@@ -125,7 +135,7 @@ async function genOrganizationsSitemap(): Promise<MetadataRoute.Sitemap> {
 			environment,
 			SiteMapOrganizationQuery,
 			{
-				cursor,
+				cursor: cursor ?? undefined,
 				count: batchSize,
 			},
 		).toPromise();
@@ -145,7 +155,7 @@ async function genOrganizationsSitemap(): Promise<MetadataRoute.Sitemap> {
 
 	return allOrganizations.map((organization) => ({
 		url: `${env.NEXT_PUBLIC_URL}/organizations/${organization.slug}`,
-		lastModified: organization.createdAt,
+		lastModified: new Date(organization.createdAt),
 		changeFrequency: "weekly",
 		priority: 0.7,
 		images: [organization.bannerUrl],
