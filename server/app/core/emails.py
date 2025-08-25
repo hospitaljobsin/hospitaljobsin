@@ -139,7 +139,7 @@ class DummyEmailSender(BaseEmailSender):
                 )
                 message.attach(attachment)
 
-        self._dummy_mailbox.add_message(message)
+        await self._dummy_mailbox.add_message(message)
 
 
 class SMTPEmailSender(BaseEmailSender):

@@ -29,7 +29,7 @@ def _parse_recipients(recipients_str: str) -> list[str]:
 @inject
 async def get_messages(mailbox: Injected[DummyMailbox]) -> list[dict[str, Any]]:
     """Get all messages in JSON format with key details."""
-    message_list = mailbox.get_messages()
+    message_list = await mailbox.get_messages()
 
     json_messages = []
     for i, message in enumerate(message_list):
