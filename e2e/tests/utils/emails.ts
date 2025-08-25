@@ -134,6 +134,7 @@ async function findLastEmailTesting({
 					html: m.html_body,
 				}));
 
+				console.log("inbox address to search", inboxAddress);
 				console.log("emails", emails);
 
 				// Apply default filter to ensure emails are sent to the specified inbox
