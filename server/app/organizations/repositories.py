@@ -134,6 +134,28 @@ class OrganizationRepo:
         ).delete()
         await organization.delete()
 
+    async def get_all(
+        self,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[Organization, ObjectId]:
+        """Get all organizations."""
+        paginator: Paginator[Organization, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=Organization,
+            paginate_by="id",
+        )
+
+        return await paginator.paginate(
+            search_criteria=Organization.find(),
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
+
     async def get_all_by_account_id(
         self,
         account_id: ObjectId,

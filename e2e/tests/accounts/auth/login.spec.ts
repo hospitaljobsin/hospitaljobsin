@@ -196,7 +196,7 @@ test.describe("Login Page", () => {
 					hasResidentKey: true,
 					hasUserVerification: true,
 					isUserVerified: true,
-					automaticPresenceSimulation: false,
+					automaticPresenceSimulation: true, // start true
 				},
 			},
 		);
@@ -211,7 +211,7 @@ test.describe("Login Page", () => {
 				isResidentCredential: true,
 				privateKey:
 					"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgaXHR/cXGj5XEgk3jpoqK50mry/3gOFAyQwgXRNSz+ZyhRANCAAR9WkpjDhNVmt1JxiXmdtXFV9X46pefmf2zU5AzFPczSLtppVXd9i2gzKClvkenoESvvdOaF299W1Gp8TESeQpx", // Base64-encoded mock private key (COSE later if needed)
-				rpId: "localtest.me",
+				rpId: "accounts.localtest.me",
 				userHandle: "YPG5s7Ozs7Ozs7Oz", // Ensure it's 16 bytes (padded)
 				signCount: 0,
 			},

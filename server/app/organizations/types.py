@@ -280,6 +280,9 @@ class OrganizationType(BaseNodeType[Organization]):
     banner_url: str = strawberry.field(
         description="The banner URL of the organization.",
     )
+    created_at: datetime = strawberry.field(
+        description="When the organization was created.",
+    )
     verification_request: Private[OrganizationVerificationRequest | None]
 
     @strawberry.field(
@@ -358,6 +361,7 @@ class OrganizationType(BaseNodeType[Organization]):
             logo_url=organization.logo_url,
             verification_request=organization.verification_request,
             banner_url=organization.banner_url,
+            created_at=organization.id.generation_time,
         )
 
     @classmethod
