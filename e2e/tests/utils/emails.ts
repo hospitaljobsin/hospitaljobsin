@@ -118,7 +118,9 @@ async function findLastEmailTesting({
 					return null;
 				}
 
-				const response = await fetch(`${env.API_BASE_URL}/mailbox/messages`);
+				const response = await fetch(`${env.API_BASE_URL}/mailbox/messages`, {
+					cache: "no-store",
+				});
 
 				if (!response.ok) {
 					throw new Error(`HTTP error! status: ${response.status}`);
