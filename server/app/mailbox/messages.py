@@ -1,6 +1,7 @@
 import asyncio
 import base64
 import json
+import uuid
 from email.message import Message
 from pathlib import Path
 from typing import Any
@@ -21,12 +22,12 @@ class DummyMailbox:
     def add_message_sync(self, message: Message) -> None:
         with self.lock:
             messages = self.get_messages_sync()  # read current messages
-            messages.append(self._format_message(message, len(messages) + 1))
+            messages.append(self._format_message(message))
             self.path.write_text(json.dumps(messages))
 
-    def _format_message(self, message: Message, message_id: int) -> dict[str, Any]:
+    def _format_message(self, message: Message) -> dict[str, Any]:
         json_message = {
-            "id": message_id,
+            "id": str(uuid.uuid4()),
             "sender": message.get("from", ""),
             "recipients": self._parse_recipients(message.get("to", "")),
             "subject": message.get("subject", ""),
