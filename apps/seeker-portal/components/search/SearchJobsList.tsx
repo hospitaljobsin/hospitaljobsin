@@ -240,7 +240,15 @@ export default function SearchJobsList({
 	}
 
 	return (
-		<div ref={parentRef} className="w-full h-full overflow-auto">
+		<div
+			ref={parentRef}
+			className="w-full h-full overflow-auto"
+			style={{
+				scrollbarWidth: "none", // Firefox
+				msOverflowStyle: "none", // IE/Edge
+				scrollBehavior: "smooth", // Enable smooth scrolling
+			}}
+		>
 			<div
 				style={{
 					height: `${rowVirtualizer.getTotalSize()}px`,
