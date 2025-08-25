@@ -3191,6 +3191,11 @@ type Organization implements Node {
 	bannerUrl: String!
 
 	"""
+	When the organization was created.
+	"""
+	createdAt: DateTime!
+
+	"""
 	The verification status of the organization.
 	"""
 	verificationStatus: VerificationStatus!
@@ -4080,6 +4085,31 @@ type Query {
 		"""
 		last: Int = null
 	): JobApplicantConnection! @isAuthenticated
+
+	"""
+	Get all organizations available.
+	"""
+	organizations(
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
+
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
+
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
+
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): OrganizationConnection!
 
 	"""
 	Get organization by slug.

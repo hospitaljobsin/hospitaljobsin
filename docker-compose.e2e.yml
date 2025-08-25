@@ -48,7 +48,7 @@ services:
       SERVER_CORS_ALLOW_ORIGIN_REGEX: 'https://.*\.localtest\.me'
       SERVER_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       SERVER_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      SERVER_EMAIL_HOST: 'mailcatcher'
+      SERVER_EMAIL_HOST: 'dummy'
       SERVER_EMAIL_PORT: '1025'
       SERVER_EMAIL_USERNAME: ''
       SERVER_EMAIL_PASSWORD: ''
@@ -74,6 +74,12 @@ services:
       SERVER_REDIS_PORT: 6379
       SERVER_REDIS_SSL: false
       SERVER_SQS_QUEUE_URL: ""
+      SERVER_TESSERACT_DATA_PATH: "/usr/share/tesseract-ocr/5/tessdata"
+      SERVER_WHATSAPP_ACCESS_TOKEN: ""
+      SERVER_WHATSAPP_PHONE_NUMBER_ID: ""
+      SERVER_TWO_FACTOR_IN_API_KEY: ""
+      SERVER_POSTHOG_API_HOST: ""
+      SERVER_POSTHOG_API_KEY: ""
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8000/health/"]
       interval: 10s
@@ -146,12 +152,6 @@ services:
     depends_on:
       test-server:
         condition: service_healthy
-
-  mailcatcher:
-    image: schickling/mailcatcher:latest
-    ports:
-      - "1080:1080"
-      - "1025:1025"
 
   test-mongodb:
     image: mongodb/mongodb-atlas-local:8.0.1

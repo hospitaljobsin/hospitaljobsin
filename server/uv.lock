@@ -562,6 +562,15 @@ wheels = [
 ]
 
 [[package]]
+name = "filelock"
+version = "3.19.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/40/bb/0ab3e58d22305b6f5440629d20683af28959bf793d98d11950e305c1c326/filelock-3.19.1.tar.gz", hash = "sha256:66eda1888b0171c998b35be2bcc0f6d75c388a7ce20c3f3f37aa8e96c2dddf58", size = 17687, upload-time = "2025-08-14T16:56:03.016Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/42/14/42b2651a2f46b022ccd948bca9f2d5af0fd8929c4eec235b8d6d844fbe67/filelock-3.19.1-py3-none-any.whl", hash = "sha256:d38e30481def20772f5baf097c122c3babc4fcdb7e14e57049eb9d88c6dc017d", size = 15988, upload-time = "2025-08-14T16:56:01.633Z" },
+]
+
+[[package]]
 name = "frozenlist"
 version = "1.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -874,18 +883,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f3/e9/98a32001589dcd427e3be2ef1ed8dc3935f2542ecd387427b06e97539cae/logfire_api-3.25.0.tar.gz", hash = "sha256:d6aeeeb246cc8d7aeb14a503523422292047db5e7be35d47c8979f70b0962bb0", size = 52123, upload-time = "2025-07-18T18:19:36.237Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7b/91/68835bbe068d1042799821c147a24fb550b708b64b63117a8020778181ef/logfire_api-3.25.0-py3-none-any.whl", hash = "sha256:cc1c2482d6a738e15cd165c483577f8ef7a8a4c462eafa0f6129aa9077676a8d", size = 87459, upload-time = "2025-07-18T18:19:33.512Z" },
-]
-
-[[package]]
-name = "mailinator-python-client-2"
-version = "0.0.8"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "requests" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/fd/6f/ce628e653526fdcbda44e4b3be6b4b781692735f04ab604cb0c1a8c5a8a3/mailinator_python_client_2-0.0.8.tar.gz", hash = "sha256:07a955ba1cec5013ac2f68cc6d685b7e3ba286c240ebc68c2257af448c9ba4c8", size = 11426, upload-time = "2025-03-10T06:29:32.938Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9a/14/b55c72f33c65486db69fa5263461db943ce24c9c08d927e503940052a807/mailinator_python_client_2-0.0.8-py3-none-any.whl", hash = "sha256:6ee97b06a6c5562213ef6ec92ab678952ed52ed0d2f0c7c6357981e548525aad", size = 13076, upload-time = "2025-03-10T06:29:31.817Z" },
 ]
 
 [[package]]
@@ -1625,13 +1622,13 @@ dependencies = [
     { name = "beautifulsoup4" },
     { name = "email-validator" },
     { name = "fastapi" },
+    { name = "filelock" },
     { name = "geopy" },
     { name = "granian", extra = ["pname", "uvloop"] },
     { name = "httpx" },
     { name = "humanize" },
     { name = "itsdangerous" },
     { name = "jinja2" },
-    { name = "mailinator-python-client-2" },
     { name = "markdown" },
     { name = "motor" },
     { name = "nanoid" },
@@ -1694,13 +1691,13 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.13.4" },
     { name = "email-validator", specifier = "==2.2.0" },
     { name = "fastapi", specifier = "==0.116.0" },
+    { name = "filelock", specifier = ">=3.19.1" },
     { name = "geopy", specifier = "==2.4.1" },
     { name = "granian", extras = ["pname", "uvloop"], specifier = "==2.4.2" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "humanize", specifier = "==4.12.3" },
     { name = "itsdangerous", specifier = "==2.2.0" },
     { name = "jinja2", specifier = "==3.1.6" },
-    { name = "mailinator-python-client-2", specifier = ">=0.0.8" },
     { name = "markdown", specifier = ">=3.8.2" },
     { name = "motor", specifier = "==3.7.1" },
     { name = "nanoid", specifier = "==2.0.0" },

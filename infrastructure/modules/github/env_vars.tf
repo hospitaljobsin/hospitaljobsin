@@ -36,8 +36,6 @@ resource "github_actions_environment_variable" "aws_backend_ecs_service" {
 }
 
 
-
-
 resource "github_actions_environment_variable" "aws_backend_ecs_task_family" {
   repository    = data.github_repository.this.name
   environment   = github_repository_environment.this.environment

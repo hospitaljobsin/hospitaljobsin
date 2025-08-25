@@ -460,13 +460,11 @@ resource "aws_lambda_function" "staging_environment_setup" {
 
   environment {
     variables = {
-      SERVER_DATABASE_URL              = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
-      SERVER_DEFAULT_DATABASE_NAME     = var.mongodb_database_name
-      SERVER_LOG_LEVEL                 = "DEBUG"
-      SERVER_ENVIRONMENT               = "staging"
-      SERVER_DEBUG                     = "True"
-      SERVER_MAILINATOR_PRIVATE_DOMAIN = var.mailinator_private_domain
-      SERVER_MAILINATOR_API_KEY        = var.mailinator_api_key
+      SERVER_DATABASE_URL          = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
+      SERVER_LOG_LEVEL             = "DEBUG"
+      SERVER_ENVIRONMENT           = "staging"
+      SERVER_DEBUG                 = "True"
     }
   }
 
@@ -501,13 +499,11 @@ resource "aws_lambda_function" "staging_environment_teardown" {
 
   environment {
     variables = {
-      SERVER_DATABASE_URL              = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
-      SERVER_DEFAULT_DATABASE_NAME     = var.mongodb_database_name
-      SERVER_LOG_LEVEL                 = "DEBUG"
-      SERVER_ENVIRONMENT               = "staging"
-      SERVER_DEBUG                     = "True"
-      SERVER_MAILINATOR_PRIVATE_DOMAIN = var.mailinator_private_domain
-      SERVER_MAILINATOR_API_KEY        = var.mailinator_api_key
+      SERVER_DATABASE_URL          = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
+      SERVER_LOG_LEVEL             = "DEBUG"
+      SERVER_ENVIRONMENT           = "staging"
+      SERVER_DEBUG                 = "True"
     }
   }
 

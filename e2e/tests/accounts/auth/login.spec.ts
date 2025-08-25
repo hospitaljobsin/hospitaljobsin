@@ -131,7 +131,7 @@ test.describe("Login Page", () => {
 
 	test("should navigate to sign up page", async ({ page }) => {
 		// increase timeout to incorporate navigation
-		test.setTimeout(30_000);
+
 		// Click on sign up link
 		await page.getByRole("link", { name: /Sign up/ }).click();
 
@@ -141,7 +141,7 @@ test.describe("Login Page", () => {
 
 	test("should navigate to forgot password page", async ({ page }) => {
 		// increase timeout to incorporate navigation
-		test.setTimeout(30_000);
+
 		// Click on forgot password link
 		await page.getByRole("link", { name: "Forgot password?" }).click();
 
@@ -181,7 +181,7 @@ test.describe("Login Page", () => {
 		webauthnAuth,
 	}) => {
 		test.skip(browserName !== "chromium", "Only supported in Chromium");
-		test.setTimeout(30_000);
+
 		// Set up Chrome DevTools Protocol session
 		const client = await context.newCDPSession(page);
 		await client.send("WebAuthn.enable");
@@ -196,7 +196,7 @@ test.describe("Login Page", () => {
 					hasResidentKey: true,
 					hasUserVerification: true,
 					isUserVerified: true,
-					automaticPresenceSimulation: false,
+					automaticPresenceSimulation: true, // start true
 				},
 			},
 		);
@@ -211,7 +211,7 @@ test.describe("Login Page", () => {
 				isResidentCredential: true,
 				privateKey:
 					"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgaXHR/cXGj5XEgk3jpoqK50mry/3gOFAyQwgXRNSz+ZyhRANCAAR9WkpjDhNVmt1JxiXmdtXFV9X46pefmf2zU5AzFPczSLtppVXd9i2gzKClvkenoESvvdOaF299W1Gp8TESeQpx", // Base64-encoded mock private key (COSE later if needed)
-				rpId: "localtest.me",
+				rpId: "accounts.localtest.me",
 				userHandle: "YPG5s7Ozs7Ozs7Oz", // Ensure it's 16 bytes (padded)
 				signCount: 0,
 			},
@@ -266,7 +266,7 @@ test.describe("Login Page", () => {
 		browserName,
 	}) => {
 		test.skip(browserName !== "chromium", "Only supported in Chromium");
-		test.setTimeout(30_000);
+
 		// Set up Chrome DevTools Protocol session
 		const client = await context.newCDPSession(page);
 		await client.send("WebAuthn.enable");
@@ -324,7 +324,7 @@ test.describe("Login Page", () => {
 
 	test("should handle OAuth2 error from URL parameter", async ({ page }) => {
 		// increase timeout to incorporate navigation
-		test.setTimeout(30_000);
+
 		// Navigate to login page with OAuth2 error
 		await page.goto(
 			`${env.ACCOUNTS_UI_BASE_URL}/auth/login?oauth2_error=unverified_email`,

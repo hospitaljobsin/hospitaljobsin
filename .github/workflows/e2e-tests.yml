@@ -13,8 +13,6 @@ env:
   # repo-level and non-env-specific secrets/vars
   AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
-  MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
-  MAILINATOR_PRIVATE_DOMAIN: ${{ vars.MAILINATOR_PRIVATE_DOMAIN }}
 
 concurrency:
   group: e2e-tests-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
@@ -54,11 +52,12 @@ jobs:
             --min-size 1 \
             --desired-capacity 1
 
-          echo "Scaling up ECS service..."
+          echo "Scaling up ECS Backend service..."
           aws ecs update-service \
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --service ${{ vars.AWS_BACKEND_ECS_SERVICE }} \
             --desired-count 1
+
 
           echo "Waiting for ECS service to stabilize..."
           aws ecs wait services-stable \
@@ -88,7 +87,8 @@ jobs:
 
   test-e2e:
     environment: staging
-    name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
+    name: 'Test on ${{ matrix.project }}'
+    # name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
     needs: setup-infrastructure
     strategy:
       fail-fast: false
@@ -121,16 +121,15 @@ jobs:
           ENVIRONMENT: staging
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-          MAILINATOR_API_KEY: ${{ env.MAILINATOR_API_KEY }}
-          MAILINATOR_PRIVATE_DOMAIN: ${{ env.MAILINATOR_PRIVATE_DOMAIN }}
-          PLAYWRIGHT_SHARD: ${{ matrix.shard }}
+          # PLAYWRIGHT_SHARD: ${{ matrix.shard }}
           PLAYWRIGHT_BROWSERS_PATH: /usr/local/share/pw-browsers
 
       - name: Upload Playwright Report and Traces
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report-${{ matrix.project }}-${{ matrix.shard }}
+          name: playwright-report-${{ matrix.project }}
+          # name: playwright-report-${{ matrix.project }}-${{ matrix.shard }}
           path: |
             e2e/playwright-report/
             e2e/test-results/**/*.zip
@@ -174,7 +173,7 @@ jobs:
       # Always scale ECS + ASG down after tests
       - name: Scale down ECS service and ASG
         run: |
-          echo "Scaling down ECS service..."
+          echo "Scaling down ECS Backend service..."
           aws ecs update-service \
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --service ${{ vars.AWS_BACKEND_ECS_SERVICE }} \

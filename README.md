@@ -285,16 +285,10 @@ Follow these steps to deploy the project to the cloud:
 - Create a new account
 - Copy the API key
 
-### 11. Mailinator Setup
-- Go to the [Mailinator Console](https://mailinator.com)
-- Create a new account
-- Verify for a free PRO account
-- Copy the API key and private domain
 
+### 11. Terraform Setup
 
-### 12. Terraform Setup
-
-#### 12.1 Prerequisites:
+#### 11.1 Prerequisites:
 - Create an S3 bucket that will act as the terraform state backend
 
 Terraform deployments are automated via GitHub Actions CI/CD.
@@ -307,7 +301,6 @@ GitHub Actions Variables:
 - `MONGODB_ATLAS_ORG_ID`
 - `WHATSAPP_PHONE_NUMBER_ID`
 - `POSTHOG_API_HOST`
-- `MAILINATOR_PRIVATE_DOMAIN`
 
 GitHub Actions Secrets:
 - `TERRAFORM_AWS_ACCESS_KEY_ID`
@@ -324,7 +317,6 @@ GitHub Actions Secrets:
 - `WHATSAPP_ACCESS_TOKEN`
 - `TWO_FACTOR_IN_API_KEY`
 - `POSTHOG_API_KEY`
-- `MAILINATOR_API_KEY`
 
 
 During the initial terraform deployment:

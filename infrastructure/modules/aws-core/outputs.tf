@@ -17,6 +17,7 @@ output "aws_ecs_service_name" {
   value = aws_ecs_service.app.name
 }
 
+
 output "aws_ecs_task_family" {
   value = "${var.resource_prefix}-app-task"
 }

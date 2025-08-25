@@ -495,6 +495,7 @@ resource "aws_ecs_task_definition" "app" {
           protocol      = "tcp"
         }
       ],
+      stopTimeout = 10,
       logConfiguration = {
         logDriver = "awslogs",
         options = {
@@ -555,8 +556,9 @@ resource "aws_ecs_task_definition" "app" {
         },
         {
           name  = "SERVER_EMAIl_PROVIDER"
-          value = "aws_ses"
+          value = var.environment_name == "staging" ? "dummy" : "aws_ses"
         },
+
         {
           name  = "SERVER_EMAIL_FROM"
           value = aws_ses_email_identity.this.email
@@ -579,7 +581,7 @@ resource "aws_ecs_task_definition" "app" {
         },
         {
           name  = "SERVER_RP_ID"
-          value = var.domain_name
+          value = var.environment_name == "staging" ? "accounts.${var.domain_name}" : var.domain_name
         },
         {
           name  = "SERVER_RP_NAME"

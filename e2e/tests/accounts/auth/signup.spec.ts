@@ -5,7 +5,7 @@ import { EMAIL_VERIFICATION_TOKEN_COOLDOWN } from "@/tests/utils/constants";
 import type { Email } from "@/tests/utils/emails";
 import {
 	findLastEmail,
-	generateUniqueEmail,
+	generateEmail,
 	registerEmailAddress,
 } from "@/tests/utils/emails";
 import { generateGlobalId } from "@/tests/utils/id";
@@ -142,9 +142,10 @@ test.describe("Sign Up Page", () => {
 	test("should validate invalid email verification token", async ({ page }, {
 		project,
 		workerIndex,
+		config,
 	}) => {
-		const emailAddress = await generateUniqueEmail(
-			`new-tester-${generateGlobalId(workerIndex, project.name)}`,
+		const emailAddress = generateEmail(
+			`new-tester-${generateGlobalId(workerIndex, project.name, config.shard?.current ?? 0)}`,
 		);
 		await registerEmailAddress({ email: emailAddress });
 		await test.step("Step 1: Enter email address", async () => {
@@ -196,8 +197,7 @@ test.describe("Sign Up Page", () => {
 
 		// Step 2: Get verification code from email
 		const emailMessage = await findLastEmail({
-			request,
-			timeout: 15_000,
+			timeout: 10_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Email Verification Request"),
 		});
@@ -336,7 +336,6 @@ test.describe("Sign Up Page", () => {
 		await completeSteps1To3({ page, request, context, emailAddress });
 
 		await test.step("Step 4: Enter valid passkey", async () => {
-			test.setTimeout(30_000);
 			// Set up Chrome DevTools Protocol session
 			const client = await context.newCDPSession(page);
 			await client.send("WebAuthn.enable");
@@ -407,7 +406,6 @@ test.describe("Sign Up Page", () => {
 		await completeSteps1To3({ page, request, context, emailAddress });
 
 		await test.step("Step 4: Enter invalid passkey", async () => {
-			test.setTimeout(30_000);
 			// Set up Chrome DevTools Protocol session
 			const client = await context.newCDPSession(page);
 			await client.send("WebAuthn.enable");
@@ -471,9 +469,9 @@ test.describe("Sign Up Page", () => {
 	test("should handle cooldown on multiple email verification requests", async ({
 		page,
 		request,
-	}, { project, workerIndex }) => {
-		const emailAddress = await generateUniqueEmail(
-			`new-tester2-${generateGlobalId(workerIndex, project.name)}`,
+	}, { project, workerIndex, config }) => {
+		const emailAddress = generateEmail(
+			`new-tester2-${generateGlobalId(workerIndex, project.name, config.shard?.current ?? 0)}`,
 		);
 		await registerEmailAddress({ email: emailAddress });
 
@@ -486,8 +484,7 @@ test.describe("Sign Up Page", () => {
 		await expect(page.getByLabel("Email Verification Token")).toBeVisible();
 
 		const firstEmail = await findLastEmail({
-			request,
-			timeout: 15_000,
+			timeout: 10_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Email Verification Request"),
 		});
@@ -510,8 +507,7 @@ test.describe("Sign Up Page", () => {
 		await expect(page.getByLabel("Email Verification Token")).toBeVisible();
 
 		const secondEmail = await findLastEmail({
-			request,
-			timeout: 3_000,
+			timeout: 2_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Email Verification Request"),
 		});
@@ -539,8 +535,7 @@ test.describe("Sign Up Page", () => {
 		await expect(page.getByLabel("Email Verification Token")).toBeVisible();
 
 		const thirdEmail = await findLastEmail({
-			request,
-			timeout: 15_000,
+			timeout: 10_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Email Verification Request"),
 		});
