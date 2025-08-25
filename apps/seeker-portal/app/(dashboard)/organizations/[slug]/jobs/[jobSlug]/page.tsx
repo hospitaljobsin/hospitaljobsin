@@ -37,6 +37,7 @@ const PageJobDetailMetadataFragment = graphql`
 			... on Job {
 				title
 				descriptionCleaned
+				descriptionHtml
 				isVisible
 				createdAt
 				workMode
@@ -139,7 +140,7 @@ export default async function JobDetailPage({
 		image: data.organization.bannerUrl,
 		title: data.organization.job.title,
 		url: `${env.NEXT_PUBLIC_URL}${links.jobDetailApply(slug, jobSlug)}`,
-		description: data.organization.job.descriptionCleaned, // TODO: make this an HTML description
+		description: data.organization.job.descriptionHtml,
 		jobLocation: {
 			"@type": "Place",
 			address: data.organization.job.location || undefined,

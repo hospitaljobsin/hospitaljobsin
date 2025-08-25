@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<337fc420784a8d2124ac4c23182aedb0>>
- * @relayHash a834e993a45d45ff1def7b3002c4ff45
+ * @generated SignedSource<<3b990e66ffdbda332f63d589caf5105d>>
+ * @relayHash 08df7990604916de560744dc37cb1d97
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID a834e993a45d45ff1def7b3002c4ff45
+// @relayRequestID 08df7990604916de560744dc37cb1d97
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -287,6 +287,13 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
+                        "name": "descriptionHtml",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
                         "name": "type",
                         "storageKey": null
                       },
@@ -397,7 +404,7 @@ return {
     ]
   },
   "params": {
-    "id": "a834e993a45d45ff1def7b3002c4ff45",
+    "id": "08df7990604916de560744dc37cb1d97",
     "metadata": {},
     "name": "JobControlsUnsaveMutation",
     "operationKind": "mutation",
