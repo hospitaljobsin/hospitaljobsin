@@ -18,7 +18,7 @@ jobs:
         shared_infra: ${{ steps.filter.outputs.shared_infra }}
         e2e_tests: ${{ steps.filter.outputs.e2e_tests }}
       steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           # This may save additional git fetch roundtrip if
           # merge-base is found within latest 20 commits
