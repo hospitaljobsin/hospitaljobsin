@@ -135,7 +135,10 @@ async function findLastEmailTesting({
 				}));
 
 				console.log("inbox address to search", inboxAddress);
-				console.log("emails", emails);
+				console.log(
+					"emails",
+					emails.map((e) => e.recipients),
+				);
 
 				// Apply default filter to ensure emails are sent to the specified inbox
 				let filteredEmails = emails.filter((e) =>
@@ -145,7 +148,10 @@ async function findLastEmailTesting({
 					),
 				);
 
-				console.log("filteredEmails", filteredEmails);
+				console.log(
+					"filteredEmails",
+					filteredEmails.map((e) => e.recipients),
+				);
 
 				// Apply additional custom filter if provided
 				if (filter) {
