@@ -1,3 +1,4 @@
+import hashlib
 from collections.abc import Iterable
 from datetime import date, datetime
 from enum import Enum
@@ -545,7 +546,8 @@ class AccountType(BaseNodeType[Account]):
         if self.uploaded_avatar_url:
             return self.uploaded_avatar_url
 
-        return f"https://api.dicebear.com/9.x/shapes/png?seed={self.full_name}"
+        seed_hash = hashlib.md5(self.full_name.encode()).hexdigest()
+        return f"https://api.dicebear.com/9.x/shapes/png?seed={seed_hash}"
 
     @strawberry.field(  # type: ignore[misc]
         description="When the user's sudo mode grant expires at.",

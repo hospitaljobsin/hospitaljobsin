@@ -40,7 +40,7 @@ const nextConfig: NextConfig = {
 		remotePatterns: [
 			{
 				protocol: "https",
-				hostname: "api.dicebear.com",
+				hostname: "**",
 			},
 			// TODO: allow this only in dev/testing mode
 			{
