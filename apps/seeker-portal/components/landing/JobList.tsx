@@ -3,9 +3,10 @@ import type { JobListInternalFragment$key } from "@/__generated__/JobListInterna
 import type { LandingClientComponentQuery } from "@/__generated__/LandingClientComponentQuery.graphql";
 import { Card, CardBody } from "@heroui/react";
 import { Search } from "lucide-react";
-import { useEffect, useRef, useTransition } from "react";
+import { useTransition } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import { WindowVirtualizer } from "virtua";
 import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
 
@@ -48,35 +49,18 @@ type Props = {
 export default function JobList({ rootQuery }: Props) {
 	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(JobListFragment, rootQuery);
-	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
+	const { data, loadNext, isLoadingNext } = usePaginationFragment<
 		LandingClientComponentQuery,
 		JobListInternalFragment$key
 	>(JobListInternalFragment, root);
 
-	const observerRef = useRef<HTMLDivElement | null>(null);
-
-	const hasMountedRef = useRef(false);
-
-	useEffect(() => {
-		if (!observerRef.current) return;
-
-		const observer = new IntersectionObserver(
-			(entries) => {
-				const entry = entries[0];
-				if (
-					entry.isIntersecting &&
-					data.trendingJobs.pageInfo.hasNextPage &&
-					!isLoadingNext
-				) {
-					loadNext(25);
-				}
-			},
-			{ threshold: 1.0 },
-		);
-
-		observer.observe(observerRef.current);
-		return () => observer.disconnect();
-	}, [data.trendingJobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
+	const handleScrollEnd = () => {
+		if (data.trendingJobs.pageInfo.hasNextPage && !isLoadingNext) {
+			startTransition(() => {
+				loadNext(25);
+			});
+		}
+	};
 
 	if (
 		data.trendingJobs.edges.length === 0 &&
@@ -108,16 +92,27 @@ export default function JobList({ rootQuery }: Props) {
 	}
 
 	return (
-		<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
-			{data.trendingJobs.edges.map((jobEdge) => (
-				<Job
-					job={jobEdge.node}
-					key={jobEdge.node.id}
-					authQueryRef={root.viewer}
-				/>
-			))}
-			<div ref={observerRef} className="h-10" />
-			{isLoadingNext && <JobListSkeleton />}
+		<div
+			style={{
+				height: "100%",
+				width: "100%",
+				scrollbarWidth: "none",
+				msOverflowStyle: "none",
+				scrollBehavior: "smooth",
+			}}
+		>
+			<WindowVirtualizer onScrollEnd={handleScrollEnd}>
+				{data.trendingJobs.edges.map((jobEdge) => (
+					<div key={jobEdge.node.id} className="pb-4 sm:pb-6">
+						<Job job={jobEdge.node} authQueryRef={root.viewer} />
+					</div>
+				))}
+				{data.trendingJobs.pageInfo.hasNextPage && (
+					<div className="pb-4 sm:pb-6">
+						<JobListSkeleton />
+					</div>
+				)}
+			</WindowVirtualizer>
 		</div>
 	);
 }

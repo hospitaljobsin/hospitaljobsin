@@ -104,29 +104,12 @@ export default function SearchJobsList({
 	const allJobEdges = data.jobs.edges;
 	const hasNextPage = data.jobs.pageInfo.hasNextPage;
 
-	// Infinite scroll effect
-	useEffect(() => {
-		if (allJobEdges.length === 0) return;
-
-		const handleScroll = () => {
-			const scrollElement = document.querySelector("[data-virtua-scroller]");
-			if (!scrollElement) return;
-
-			const { scrollTop, scrollHeight, clientHeight } =
-				scrollElement as HTMLElement;
-			const isNearBottom = scrollTop + clientHeight >= scrollHeight - 100;
-
-			if (isNearBottom && hasNextPage && !isLoadingNext) {
-				loadNext(25);
-			}
-		};
-
-		const scrollElement = document.querySelector("[data-virtua-scroller]");
-		if (scrollElement) {
-			scrollElement.addEventListener("scroll", handleScroll);
-			return () => scrollElement.removeEventListener("scroll", handleScroll);
+	// Handle infinite scroll when reaching the end
+	const handleScrollEnd = () => {
+		if (hasNextPage && !isLoadingNext) {
+			loadNext(25);
 		}
-	}, [hasNextPage, loadNext, allJobEdges.length, isLoadingNext]);
+	};
 
 	// Debounced filter refetch for all filters
 	useEffect(() => {
@@ -201,7 +184,7 @@ export default function SearchJobsList({
 				scrollBehavior: "smooth",
 			}}
 		>
-			<WindowVirtualizer>
+			<WindowVirtualizer onScrollEnd={handleScrollEnd}>
 				{allJobEdges.map((jobEdge, index) => (
 					<div key={jobEdge.node.id} className="pb-4 sm:pb-6">
 						<Job job={jobEdge.node} authQueryRef={root.viewer} />

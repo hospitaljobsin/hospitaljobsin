@@ -39,6 +39,7 @@ export default function LandingView({
 				<LandingHeader rootQuery={data} />
 				{/* Background SVG or Image Placeholder */}
 				<div className="absolute inset-0 w-full h-full opacity-20 pointer-events-none select-none z-0">
+					{/* biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
 					<svg
 						viewBox="0 0 1440 320"
 						fill="none"
@@ -113,7 +114,7 @@ export default function LandingView({
 				</div>
 				<Link
 					href={links.search}
-					className="flex items-center gap-2 text-lg text-foreground-600 font-medium -mt-16"
+					className="flex items-center gap-2 text-lg text-foreground-600 font-medium -mt-6"
 				>
 					View all jobs <ArrowRight className="w-4 h-4" strokeWidth={3} />
 				</Link>
