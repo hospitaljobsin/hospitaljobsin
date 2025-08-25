@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<3827b07e87f32153a36e8c4c22095168>>
- * @relayHash bb1fd9a239e098fb8f1e6f04242bf120
+ * @generated SignedSource<<1980dbb02de182baa28b2c0d42755435>>
+ * @relayHash 1b9df5b959b88ce92a24fb44a4cee8ff
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID bb1fd9a239e098fb8f1e6f04242bf120
+// @relayRequestID 1b9df5b959b88ce92a24fb44a4cee8ff
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -48,7 +48,7 @@ var v0 = [
     "name": "coordinates"
   },
   {
-    "defaultValue": 10,
+    "defaultValue": 25,
     "kind": "LocalArgument",
     "name": "count"
   },
@@ -489,7 +489,7 @@ return {
     ]
   },
   "params": {
-    "id": "bb1fd9a239e098fb8f1e6f04242bf120",
+    "id": "1b9df5b959b88ce92a24fb44a4cee8ff",
     "metadata": {},
     "name": "SearchJobsListRefetchQuery",
     "operationKind": "query",
@@ -498,6 +498,6 @@ return {
 };
 })();
 
-(node as any).hash = "42789323062456a04081500fc107e782";
+(node as any).hash = "50021b69a5ecbba5bae4c0b1a5157b7b";
 
 export default node;
