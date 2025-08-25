@@ -139,7 +139,7 @@ export default async function JobDetailPage({
 		"@type": "JobPosting",
 		image: data.organization.bannerUrl,
 		title: data.organization.job.title,
-		url: `${env.NEXT_PUBLIC_URL}${links.jobDetailApply(slug, jobSlug)}`,
+		url: `${env.NEXT_PUBLIC_URL}${links.jobDetail(slug, jobSlug)}`,
 		description: data.organization.job.descriptionHtml,
 		jobLocation: {
 			"@type": "Place",
