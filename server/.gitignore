@@ -166,3 +166,4 @@ secrets/
 # LangGraph API
 .langgraph_api
 whatsapp_job_tracking.json
+shared_mailbox.json

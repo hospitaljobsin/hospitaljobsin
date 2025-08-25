@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<312adeee8dd7907c77326e531094c634>>
+ * @generated SignedSource<<d5bd77a64d415fabb4368bc9072f2413>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -20,6 +20,7 @@ export type pageJobDetailMetadataFragment$data = {
       readonly __typename: "Job";
       readonly createdAt: any;
       readonly descriptionCleaned: string;
+      readonly descriptionHtml: string;
       readonly expiresAt: any | null | undefined;
       readonly isVisible: boolean;
       readonly location: string | null | undefined;
@@ -55,6 +56,6 @@ const node: ReaderInlineDataFragment = {
   "name": "pageJobDetailMetadataFragment"
 };
 
-(node as any).hash = "145552521724fb975a6079600563b00a";
+(node as any).hash = "75a9ec11f2853fcd100670403eb85b4a";
 
 export default node;

@@ -1156,6 +1156,11 @@ type Job implements Node {
 	descriptionCleaned: String!
 
 	"""
+	The HTML description of the job.
+	"""
+	descriptionHtml: String!
+
+	"""
 	The number of vacancies for the job.
 	"""
 	vacancies: Int

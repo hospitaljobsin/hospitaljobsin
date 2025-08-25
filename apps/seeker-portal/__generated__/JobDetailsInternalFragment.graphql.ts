@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<aa9dca71e881991d58b4c153f37c41f8>>
+ * @generated SignedSource<<50aa2e3e7a594220a93b1df15274b300>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,6 +17,7 @@ export type JobDetailsInternalFragment$data = {
   readonly createdAt: any;
   readonly currency: Currency;
   readonly description: string;
+  readonly descriptionHtml: string;
   readonly externalApplicationUrl: string | null | undefined;
   readonly isApplied: boolean;
   readonly isSalaryNegotiable: boolean;
@@ -89,6 +90,13 @@ return {
     },
     (v0/*: any*/),
     (v1/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "descriptionHtml",
+      "storageKey": null
+    },
     {
       "alias": null,
       "args": null,
@@ -302,6 +310,6 @@ return {
 };
 })();
 
-(node as any).hash = "19ab62c977ad9d826fde8d3352f5dcc6";
+(node as any).hash = "eacc5e8ecb308ba0d2517ca530a86023";
 
 export default node;

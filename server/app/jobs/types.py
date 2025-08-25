@@ -763,6 +763,9 @@ class JobType(BaseNodeType[Job]):
     description_cleaned: str = strawberry.field(
         description="The cleaned description of the job.",
     )
+    description_html: str = strawberry.field(
+        description="The HTML description of the job.",
+    )
     vacancies: int | None = strawberry.field(
         description="The number of vacancies for the job.",
     )
@@ -840,6 +843,7 @@ class JobType(BaseNodeType[Job]):
             title=job.title,
             description=job.description,
             description_cleaned=job.description_cleaned,
+            description_html=job.description_html,
             vacancies=job.vacancies,
             type=JobTypeEnum[job.type.upper()] if job.type else None,
             work_mode=WorkModeEnum[job.work_mode.upper()] if job.work_mode else None,
