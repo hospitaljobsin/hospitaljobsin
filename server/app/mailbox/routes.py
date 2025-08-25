@@ -1,9 +1,11 @@
 import base64
 from typing import Any
 
+from aioinject import Injected
+from aioinject.ext.fastapi import inject
 from fastapi import APIRouter
 
-from app.mailbox import messages
+from app.mailbox.messages import DummyMailbox
 
 mailbox_router = APIRouter(prefix="/mailbox")
 
@@ -24,9 +26,10 @@ def _parse_recipients(recipients_str: str) -> list[str]:
 
 
 @mailbox_router.get("/messages")
-async def get_messages() -> list[dict[str, Any]]:
+@inject
+async def get_messages(mailbox: Injected[DummyMailbox]) -> list[dict[str, Any]]:
     """Get all messages in JSON format with key details."""
-    message_list = messages.get_messages()
+    message_list = mailbox.get_messages()
 
     json_messages = []
     for i, message in enumerate(message_list):

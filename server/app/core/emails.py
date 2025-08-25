@@ -12,7 +12,7 @@ from jinja2 import Environment
 from types_aiobotocore_ses import SESClient
 
 from app.config import EmailSettings
-from app.mailbox.messages import add_message
+from app.mailbox.messages import DummyMailbox
 
 
 @asynccontextmanager
@@ -92,6 +92,18 @@ class BaseEmailSender:
 class DummyEmailSender(BaseEmailSender):
     """Dummy email sender class."""
 
+    def __init__(
+        self,
+        environment: Environment,
+        settings: EmailSettings,
+        dummy_mailbox: DummyMailbox,
+    ) -> None:
+        super().__init__(
+            environment=environment,
+            settings=settings,
+        )
+        self._dummy_mailbox = dummy_mailbox
+
     async def send_email(
         self,
         sender: str,
@@ -127,7 +139,7 @@ class DummyEmailSender(BaseEmailSender):
                 )
                 message.attach(attachment)
 
-        add_message(message)
+        self._dummy_mailbox.add_message(message)
 
 
 class SMTPEmailSender(BaseEmailSender):

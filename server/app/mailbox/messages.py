@@ -1,15 +1,15 @@
 from email.message import Message
 
-messages: list[Message] = []
 
+class DummyMailbox:
+    def __init__(self) -> None:
+        self._messages: list[Message] = []
 
-def add_message(message: Message) -> None:
-    messages.append(message)
+    def add_message(self, message: Message) -> None:
+        self._messages.append(message)
 
+    def get_messages(self) -> list[Message]:
+        return self._messages
 
-def get_messages() -> list[Message]:
-    return messages
-
-
-def clear_messages() -> None:
-    messages.clear()
+    def clear_messages(self) -> None:
+        self._messages.clear()

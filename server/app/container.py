@@ -124,6 +124,7 @@ from app.jobs.services import (
     JobService,
     SavedJobService,
 )
+from app.mailbox.messages import DummyMailbox
 from app.organizations.dataloaders import (
     create_organization_by_id_dataloader,
     create_organization_by_slug_dataloader,
@@ -222,6 +223,7 @@ def register_email_sender(container: aioinject.Container) -> None:
             container.register(aioinject.Scoped(create_ses_client))
             container.register(aioinject.Scoped(SESEmailSender, BaseEmailSender))
         case "dummy":
+            container.register(aioinject.Singleton(DummyMailbox))
             container.register(aioinject.Scoped(DummyEmailSender, BaseEmailSender))
         case _ as unreachable:
             assert_never(unreachable)
