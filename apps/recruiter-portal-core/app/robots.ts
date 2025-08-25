@@ -1,3 +1,4 @@
+import { env } from "@/lib/env/client";
 import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
@@ -7,5 +8,6 @@ export default function robots(): MetadataRoute.Robots {
 			allow: ["/"],
 			disallow: ["/new", "/select", "/api/health"],
 		},
+		sitemap: `${env.NEXT_PUBLIC_URL}/sitemap.xml`,
 	};
 }

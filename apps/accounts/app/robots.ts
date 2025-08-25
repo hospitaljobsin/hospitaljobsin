@@ -4,8 +4,19 @@ export default function robots(): MetadataRoute.Robots {
 	return {
 		rules: {
 			userAgent: "*",
-			allow: ["/", "/auth/signup", "/auth/login", "/auth/reset-password"],
-			disallow: ["/api/health", "/settings", "/settings/*", "/2fa"],
+			allow: ["/"],
+			disallow: [
+				"/auth/signup",
+				"/auth/login",
+				"/auth/reset-password",
+				"/auth/reset-password/*",
+				"/auth/2fa",
+				"/auth/2fa/*",
+				"/settings",
+				"/settings/*",
+				"/request-sudo",
+				"/api/health",
+			],
 		},
 	};
 }
