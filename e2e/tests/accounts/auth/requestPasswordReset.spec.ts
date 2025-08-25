@@ -4,7 +4,7 @@ import { waitForCaptcha } from "@/tests/utils/captcha";
 import { PASSWORD_RESET_TOKEN_COOLDOWN } from "@/tests/utils/constants";
 import {
 	findLastEmail,
-	generateUniqueEmail,
+	generateEmail,
 	registerEmailAddress,
 } from "@/tests/utils/emails";
 import { generateGlobalId } from "@/tests/utils/id";
@@ -100,9 +100,10 @@ test.describe("Request Password Reset Page", () => {
 	test("should handle invalid password reset email", async ({ page, request }, {
 		project,
 		workerIndex,
+		config,
 	}) => {
-		const emailAddress = await generateUniqueEmail(
-			`non-existent-tester-${generateGlobalId(workerIndex, project.name)}`,
+		const emailAddress = generateEmail(
+			`non-existent-tester-${generateGlobalId(workerIndex, project.name, config.shard?.current ?? 0)}`,
 		);
 		await registerEmailAddress({ email: emailAddress });
 		await page.getByLabel("Email Address").fill(emailAddress);
@@ -166,7 +167,7 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		).toBeVisible();
 
 		const firstEmail = await findLastEmail({
-			timeout: 15_000,
+			timeout: 10_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Password Reset Request"),
 		});
@@ -191,7 +192,7 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		).toBeVisible();
 
 		const secondEmail = await findLastEmail({
-			timeout: 3_000,
+			timeout: 2_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Password Reset Request"),
 		});
@@ -221,7 +222,7 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		).toBeVisible();
 
 		const thirdEmail = await findLastEmail({
-			timeout: 15_000,
+			timeout: 10_000,
 			inboxAddress: emailAddress,
 			filter: (e) => e.subject.includes("Password Reset Request"),
 		});

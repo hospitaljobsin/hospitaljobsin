@@ -65,7 +65,7 @@ export function getRegisteredEmails(): string[] {
 	return Array.from(registeredEmails);
 }
 
-export function generateUniqueEmail(baseLabel: string): string {
+export function generateEmail(baseLabel: string): string {
 	return `${baseLabel}@outlook.com`;
 }
 
