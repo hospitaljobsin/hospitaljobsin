@@ -1,11 +1,15 @@
 import type { pageJobDetailMetadataFragment$key } from "@/__generated__/pageJobDetailMetadataFragment.graphql";
 import type JobDetailViewQueryNode from "@/__generated__/pageJobDetailViewQuery.graphql";
 import type { pageJobDetailViewQuery } from "@/__generated__/pageJobDetailViewQuery.graphql";
+import { env } from "@/lib/env/client";
+import { getEmploymentType } from "@/lib/jsonLd";
+import links from "@/lib/links";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
+import type { JobPosting, WithContext } from "schema-dts";
 import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
 
 export const PageJobDetailViewQuery = graphql`
@@ -24,12 +28,24 @@ const PageJobDetailMetadataFragment = graphql`
 			__typename
 			... on Organization {
 			bannerUrl
+			logoUrl
+			name
+			location
+			website
 			job(slug: $jobSlug) {
 			__typename
 			... on Job {
 				title
 				descriptionCleaned
 				isVisible
+				createdAt
+				workMode
+				type
+				expiresAt
+				location
+				minSalary
+				maxSalary
+				slug
 			}
 			}
 		}
@@ -117,5 +133,67 @@ export default async function JobDetailPage({
 		notFound();
 	}
 
-	return <JobDetailViewClientComponent preloadedQuery={preloadedQuery} />;
+	const jsonLd: WithContext<JobPosting> = {
+		"@context": "https://schema.org",
+		"@type": "JobPosting",
+		image: data.organization.bannerUrl,
+		title: data.organization.job.title,
+		url: `${env.NEXT_PUBLIC_URL}${links.jobDetailApply(slug, jobSlug)}`,
+		description: data.organization.job.descriptionCleaned, // TODO: make this an HTML description
+		jobLocation: {
+			"@type": "Place",
+			address: data.organization.job.location || undefined,
+		},
+		datePosted: new Date(data.organization.job.createdAt).toISOString(),
+		validThrough: new Date(data.organization.job.expiresAt).toISOString(),
+		employmentType: data.organization.job.type
+			? getEmploymentType(data.organization.job.type)
+			: undefined,
+		jobLocationType:
+			data.organization.job.workMode === "REMOTE" ? "TELECOMMUTE" : "ONSITE",
+		// TODO: avoid hardcoding this
+		applicantLocationRequirements: {
+			"@type": "Country",
+			name: "India",
+		},
+		directApply: true,
+		hiringOrganization: {
+			"@type": "Organization",
+			name: data.organization.name,
+			description: data.organization.job.descriptionCleaned,
+			image: data.organization.logoUrl,
+			sameAs: data.organization.website || undefined,
+		},
+		baseSalary:
+			data.organization.job.minSalary || data.organization.job.maxSalary
+				? {
+						"@type": "MonetaryAmount",
+						currency: "INR",
+						value: {
+							"@type": "QuantitativeValue",
+							unitText: "MONTH",
+							minValue: data.organization.job.minSalary || undefined,
+							maxValue: data.organization.job.maxSalary || undefined,
+						},
+					}
+				: undefined,
+		identifier: {
+			"@type": "PropertyValue",
+			name: "Job Slug",
+			value: data.organization.job.slug,
+		},
+	};
+
+	return (
+		<>
+			<script
+				type="application/ld+json"
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+				}}
+			/>
+			<JobDetailViewClientComponent preloadedQuery={preloadedQuery} />
+		</>
+	);
 }

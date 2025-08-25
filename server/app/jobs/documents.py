@@ -34,6 +34,7 @@ class Job(Document):
     slug: Annotated[str, Indexed()]
     description: str
     description_cleaned: str
+    description_html: str | None = None
     # the vector embedding search index is created separately (in the initialize_database function)
     # as Beanie doesn't directly support it
     embedding: list[float]

@@ -2,6 +2,7 @@ import re
 import unicodedata
 from datetime import UTC, datetime
 
+import bleach
 from bs4 import BeautifulSoup
 from markdown import markdown
 
@@ -34,3 +35,39 @@ def clean_markdown_text(text: str) -> str:
     html = markdown(text)
     soup = BeautifulSoup(html, "html.parser")
     return soup.get_text()
+
+
+def markdown_to_clean_html(md_text: str) -> str:
+    # Convert Markdown → raw HTML
+    raw_html = markdown(md_text, extensions=["extra", "sane_lists"])
+    # Whitelist safe tags and attributes
+    allowed_tags = [
+        "a",
+        "abbr",
+        "acronym",
+        "b",
+        "blockquote",
+        "code",
+        "em",
+        "i",
+        "li",
+        "ol",
+        "strong",
+        "ul",
+        "p",
+        "pre",
+        "br",
+        "hr",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+    ]
+    allowed_attrs = {"a": ["href", "title"], "img": ["src", "alt", "title"]}
+
+    # Clean HTML to remove scripts, styles, etc.
+    return bleach.clean(
+        raw_html, tags=allowed_tags, attributes=allowed_attrs, strip=True
+    )

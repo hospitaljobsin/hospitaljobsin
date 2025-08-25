@@ -54,7 +54,6 @@ test.describe("2FA Recovery Page", () => {
 
 	test("should navigate to 2FA page", async ({ page }) => {
 		// increase timeout to incorporate navigation
-		test.setTimeout(30_000);
 		// Click on 2fa link
 		await page
 			.getByRole("link", { name: /Use your authenticator app instead/ })
