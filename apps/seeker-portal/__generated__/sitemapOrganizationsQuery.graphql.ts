@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<537b1d632a1ee549ab14a75287b9c56a>>
- * @relayHash 0395abbca0503c0fd96de90d3ad32891
+ * @generated SignedSource<<bf0c758eb2da2dcb885d08ecd74d7ee1>>
+ * @relayHash e75b9f6ad7e7b1ba5e69b0fb00c1579d
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,14 +9,14 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 0395abbca0503c0fd96de90d3ad32891
+// @relayRequestID e75b9f6ad7e7b1ba5e69b0fb00c1579d
 
 import type { ConcreteRequest } from 'relay-runtime';
-export type sitemapOrganizationQuery$variables = {
+export type sitemapOrganizationsQuery$variables = {
   count: number;
   cursor?: string | null | undefined;
 };
-export type sitemapOrganizationQuery$data = {
+export type sitemapOrganizationsQuery$data = {
   readonly organizations: {
     readonly edges: ReadonlyArray<{
       readonly cursor: string;
@@ -33,9 +33,9 @@ export type sitemapOrganizationQuery$data = {
     };
   };
 };
-export type sitemapOrganizationQuery = {
-  response: sitemapOrganizationQuery$data;
-  variables: sitemapOrganizationQuery$variables;
+export type sitemapOrganizationsQuery = {
+  response: sitemapOrganizationsQuery$data;
+  variables: sitemapOrganizationsQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -129,7 +129,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "sitemapOrganizationQuery",
+    "name": "sitemapOrganizationsQuery",
     "selections": [
       {
         "alias": null,
@@ -181,7 +181,7 @@ return {
       (v0/*: any*/)
     ],
     "kind": "Operation",
-    "name": "sitemapOrganizationQuery",
+    "name": "sitemapOrganizationsQuery",
     "selections": [
       {
         "alias": null,
@@ -232,15 +232,15 @@ return {
     ]
   },
   "params": {
-    "id": "0395abbca0503c0fd96de90d3ad32891",
+    "id": "e75b9f6ad7e7b1ba5e69b0fb00c1579d",
     "metadata": {},
-    "name": "sitemapOrganizationQuery",
+    "name": "sitemapOrganizationsQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "5f7255aed2a269418eb291dd343a0bdd";
+(node as any).hash = "c619ee8d3c8d8bf06c05a7b92f110bdb";
 
 export default node;

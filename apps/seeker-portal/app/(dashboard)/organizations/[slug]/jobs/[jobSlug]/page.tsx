@@ -139,20 +139,29 @@ export default async function JobDetailPage({
 		"@type": "JobPosting",
 		image: data.organization.bannerUrl,
 		title: data.organization.job.title,
-		url: `${env.NEXT_PUBLIC_URL}${links.jobDetailApply(slug, jobSlug)}`,
+		url: `${env.NEXT_PUBLIC_URL}${links.jobDetail(slug, jobSlug)}`,
 		description: data.organization.job.descriptionHtml,
-		jobLocation: {
-			"@type": "Place",
-			address: data.organization.job.location || undefined,
-		},
+		jobLocation: data.organization.job.location
+			? {
+					"@type": "Place",
+					address: data.organization.job.location,
+				}
+			: {
+					"@type": "Place",
+					address: {
+						"@type": "PostalAddress",
+						addressCountry: "IN",
+					},
+				}, // TODO: avoid hardcoding this- job location must be made mandatory for users
+		// TODO: add address locality, region, postal code, etc. separately- this ensures we are a high quality site ranked higher by google
 		datePosted: new Date(data.organization.job.createdAt).toISOString(),
 		validThrough: new Date(data.organization.job.expiresAt).toISOString(),
 		employmentType: data.organization.job.type
 			? getEmploymentType(data.organization.job.type)
 			: undefined,
 		jobLocationType:
-			data.organization.job.workMode === "REMOTE" ? "TELECOMMUTE" : "ONSITE",
-		// TODO: avoid hardcoding this
+			data.organization.job.workMode === "REMOTE" ? "TELECOMMUTE" : undefined,
+		// TODO: avoid hardcoding this- should be collected from the user
 		applicantLocationRequirements: {
 			"@type": "Country",
 			name: "India",
