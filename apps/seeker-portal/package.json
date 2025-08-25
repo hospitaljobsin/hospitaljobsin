@@ -31,7 +31,6 @@
 		"@sentry/node": "^9.33.0",
 		"@sentry/profiling-node": "^9.33.0",
 		"@t3-oss/env-nextjs": "^0.13.8",
-		"@tanstack/react-virtual": "^3.13.12",
 		"@tiptap/extension-heading": "^3.0.1",
 		"@tiptap/react": "^3.0.1",
 		"@tiptap/starter-kit": "^3.0.1",
@@ -61,6 +60,7 @@
 		"tiptap-markdown": "^0.8.10",
 		"use-debounce": "^10.0.5",
 		"uuid": "^11.1.0",
+		"virtua": "^0.41.5",
 		"zod": "^3.25.64"
 	},
 	"devDependencies": {
