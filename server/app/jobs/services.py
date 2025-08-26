@@ -14,7 +14,7 @@ from types_aiobotocore_sqs import SQSClient
 
 from app.accounts.documents import Account
 from app.accounts.exceptions import AccountProfileIncompleteError
-from app.base.models import GeoObject
+from app.base.models import Address, GeoObject
 from app.config import AppSettings, AWSSettings, EnvironmentSettings
 from app.core.constants import (
     ImpressionJobMetricEventType,
@@ -255,6 +255,15 @@ class JobService:
             coordinates=(result.longitude, result.latitude),
         )
 
+        address = Address(
+            display_name=location,
+            street_address=result.street_address,
+            address_locality=result.address_locality,
+            address_region=result.address_region,
+            postal_code=result.postal_code,
+            country=result.country,
+        )
+
         if work_mode == "remote" and len(applicant_locations) == 0:
             return Err(InvalidApplicantLocationsError())
 
@@ -282,6 +291,7 @@ class JobService:
             currency=currency,
             external_application_url=external_application_url,
             geo=geo,
+            address=address,
         )
 
         return Ok(job)
@@ -337,6 +347,15 @@ class JobService:
             coordinates=(result.longitude, result.latitude),
         )
 
+        address = Address(
+            display_name=location,
+            street_address=result.street_address,
+            address_locality=result.address_locality,
+            address_region=result.address_region,
+            postal_code=result.postal_code,
+            country=result.country,
+        )
+
         if work_mode == "remote" and len(applicant_locations) == 0:
             return Err(InvalidApplicantLocationsError())
 
@@ -358,6 +377,7 @@ class JobService:
             location=location,
             applicant_locations=applicant_locations,
             geo=geo,
+            address=address,
             min_salary=min_salary,
             max_salary=max_salary,
             is_salary_negotiable=is_salary_negotiable,

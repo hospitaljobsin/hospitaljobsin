@@ -9,13 +9,13 @@ from nanoid import generate
 from types_aiobotocore_location import LocationServiceClient
 
 from app.config import GeocoderSettings
-from app.geocoding.models import Coordinates, SearchLocation
+from app.geocoding.models import GeocodeResult, SearchLocation
 
 
 class BaseLocationService:
     """Base geocoder class."""
 
-    async def geocode(self, query: str) -> Coordinates | None:
+    async def geocode(self, query: str) -> GeocodeResult | None:
         """Geocode a query."""
         raise NotImplementedError
 
@@ -46,11 +46,11 @@ class NominatimLocationService(BaseLocationService):
     async def geocode(
         self,
         query: str,
-    ) -> Coordinates | None:
+    ) -> GeocodeResult | None:
         """Geocode a query."""
         location = await self._geocoder.geocode(query)
         if location:
-            return Coordinates(
+            return GeocodeResult(
                 latitude=location.latitude,
                 longitude=location.longitude,
             )
@@ -67,7 +67,7 @@ class NominatimLocationService(BaseLocationService):
                     SearchLocation(
                         place_id=str(item.get("place_id", generate(size=10))),
                         display_name=item.get("display_name"),
-                        coordinates=Coordinates(
+                        coordinates=GeocodeResult(
                             latitude=item.get("lat"),
                             longitude=item.get("lon"),
                         ),
@@ -87,7 +87,7 @@ class AWSLocationService(BaseLocationService):
     async def geocode(
         self,
         query: str,
-    ) -> Coordinates | None:
+    ) -> GeocodeResult | None:
         """Geocode a query using AWS LocationServiceClient."""
         # The operation is search_place_index_for_text for geocoding
         response = await self._location_client.search_place_index_for_text(
@@ -98,10 +98,24 @@ class AWSLocationService(BaseLocationService):
         results = response.get("Results", [])
         if results:
             point = results[0]["Place"]["Geometry"].get("Point")
+            address = results[0]["Place"].get("AddressNumber", "")
+            street = results[0]["Place"].get("Street", "")
+            street_address = (
+                f"{address} {street}".strip() if address or street else None
+            )
             if point:
-                return Coordinates(
+                return GeocodeResult(
                     latitude=point[1],
                     longitude=point[0],
+                    postal_code=results[0]["Place"].get("PostalCode"),
+                    address_region=results[0]["Place"].get("Region"),
+                    address_locality=(
+                        results[0]["Place"].get("Municipality")
+                        or results[0]["Place"].get("Neighborhood")
+                        or results[0]["Place"].get("SubRegion")
+                    ),
+                    street_address=street_address,
+                    country=results[0]["Place"].get("Country"),
                 )
         return None
 
@@ -132,9 +146,24 @@ class AWSLocationService(BaseLocationService):
             SearchLocation(
                 place_id=str(item.get("PlaceId", generate(size=10))),
                 display_name=self.get_readable_name(item["Place"]),
-                coordinates=Coordinates(
+                coordinates=GeocodeResult(
                     latitude=item["Place"]["Geometry"]["Point"][1],
                     longitude=item["Place"]["Geometry"]["Point"][0],
+                    postal_code=item["Place"].get("PostalCode")
+                    or item["Place"].get("PostalCode"),
+                    address_region=item["Place"].get("Region"),
+                    address_locality=(
+                        item["Place"].get("Municipality")
+                        or item["Place"].get("Neighborhood")
+                        or item["Place"].get("SubRegion")
+                    ),
+                    street_address=(
+                        f"{item['Place'].get('AddressNumber')} {item['Place'].get('Street')}".strip()
+                        if item["Place"].get("AddressNumber")
+                        or item["Place"].get("Street")
+                        else None
+                    ),
+                    country=item["Place"].get("Country"),
                 ),
             )
             for item in results
