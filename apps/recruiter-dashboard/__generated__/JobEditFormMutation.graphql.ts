@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9cadad7f73e7d2d4f77e2c2ad49bf48b>>
+ * @generated SignedSource<<e201fdf3c9daf1999677822776632392>>
  * @relayHash e9480e1677350f40e2122570d8268373
  * @lightSyntaxTransform
  * @nogrep
@@ -57,7 +57,7 @@ export type JobEditFormMutation$data = {
       readonly id: string;
       readonly isActive: boolean;
       readonly isSalaryNegotiable: boolean;
-      readonly location: string | null | undefined;
+      readonly location: string;
       readonly maxExperience: number | null | undefined;
       readonly maxSalary: number | null | undefined;
       readonly minExperience: number | null | undefined;

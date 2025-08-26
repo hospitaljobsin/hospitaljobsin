@@ -27,6 +27,7 @@ from app.accounts.types import (
 )
 from app.auth.permissions import IsAuthenticated
 from app.base.types import (
+    AddressType,
     BaseConnectionType,
     BaseEdgeType,
     BaseErrorType,
@@ -776,8 +777,11 @@ class JobType(BaseNodeType[Job]):
         description="The work mode of the job.",
     )
 
-    location: str | None = strawberry.field(
+    location: str = strawberry.field(
         description="The location of the job.",
+    )
+    address: AddressType = strawberry.field(
+        description="The address of the job.",
     )
     applicant_locations: list[str] = strawberry.field(
         description="The locations where applicants can be located.",
@@ -851,6 +855,7 @@ class JobType(BaseNodeType[Job]):
             type=JobTypeEnum[job.type.upper()] if job.type else None,
             work_mode=WorkModeEnum[job.work_mode.upper()] if job.work_mode else None,
             location=job.location,
+            address=AddressType.marshal(job.address),
             applicant_locations=job.applicant_locations,
             skills=job.skills,
             currency=CurrencyEnum[job.currency.upper()],

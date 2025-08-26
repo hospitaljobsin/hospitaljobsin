@@ -115,7 +115,9 @@ class AWSLocationService(BaseLocationService):
                         or results[0]["Place"].get("SubRegion")
                     ),
                     street_address=street_address,
-                    country=results[0]["Place"].get("Country"),
+                    country=results[0]["Place"].get(
+                        "Country"
+                    ),  # TODO: change alpha-3 codes here to alpha-2 for google compliance
                 )
         return None
 
@@ -163,7 +165,9 @@ class AWSLocationService(BaseLocationService):
                         or item["Place"].get("Street")
                         else None
                     ),
-                    country=item["Place"].get("Country"),
+                    country=item["Place"].get(
+                        "Country"
+                    ),  # TODO: change alpha-3 codes here to alpha-2 for google compliance
                 ),
             )
             for item in results
