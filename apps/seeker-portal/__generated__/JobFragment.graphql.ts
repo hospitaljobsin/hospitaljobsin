@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b1848dac6c58c55fa4b02e17a0f40c65>>
+ * @generated SignedSource<<aa73fd048457ad9dafa9f4d9e321a521>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,7 +16,7 @@ import type { FragmentRefs } from "relay-runtime";
 export type JobFragment$data = {
   readonly createdAt: any;
   readonly currency: Currency;
-  readonly location: string | null | undefined;
+  readonly location: string;
   readonly maxExperience: number | null | undefined;
   readonly maxSalary: number | null | undefined;
   readonly minExperience: number | null | undefined;

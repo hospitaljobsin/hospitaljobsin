@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<905f864615377e122d5284c6425b221a>>
+ * @generated SignedSource<<133aa831caa42f55c4076f889938dc08>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -28,7 +28,7 @@ export type JobFragment$data = {
   readonly currency: Currency;
   readonly expiresAt: any | null | undefined;
   readonly isActive: boolean;
-  readonly location: string | null | undefined;
+  readonly location: string;
   readonly maxExperience: number | null | undefined;
   readonly maxSalary: number | null | undefined;
   readonly minExperience: number | null | undefined;

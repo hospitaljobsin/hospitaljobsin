@@ -44,6 +44,13 @@ const PageJobDetailMetadataFragment = graphql`
 				type
 				expiresAt
 				location
+				address {
+					addressLocality
+					addressRegion
+					country
+					postalCode
+					streetAddress
+				}
 				applicantLocations
 				minSalary
 				maxSalary
@@ -142,19 +149,17 @@ export default async function JobDetailPage({
 		title: data.organization.job.title,
 		url: `${env.NEXT_PUBLIC_URL}${links.jobDetail(slug, jobSlug)}`,
 		description: data.organization.job.descriptionHtml,
-		jobLocation: data.organization.job.location
-			? {
-					"@type": "Place",
-					address: data.organization.job.location,
-				}
-			: {
-					"@type": "Place",
-					address: {
-						"@type": "PostalAddress",
-						addressCountry: "IN",
-					},
-				}, // TODO: avoid hardcoding this- job location must be made mandatory for users
-		// TODO: add address locality, region, postal code, etc. separately- this ensures we are a high quality site ranked higher by google
+		jobLocation: {
+			"@type": "Place",
+			address: {
+				"@type": "PostalAddress",
+				addressLocality:
+					data.organization.job.address.addressLocality || undefined,
+				addressRegion: data.organization.job.address.addressRegion || undefined,
+				postalCode: data.organization.job.address.postalCode || undefined,
+				addressCountry: data.organization.job.address.country || "IN", // TODO: avoid hardcoding IN here
+			},
+		},
 		datePosted: new Date(data.organization.job.createdAt).toISOString(),
 		validThrough: new Date(data.organization.job.expiresAt).toISOString(),
 		employmentType: data.organization.job.type
@@ -166,7 +171,7 @@ export default async function JobDetailPage({
 		applicantLocationRequirements: data.organization.job.applicantLocations.map(
 			(location) => ({
 				"@type": "Country",
-				name: location,
+				name: location, // TODO: use alpha-2 codes here (as provided by countries-list library), for consistency
 			}),
 		),
 		directApply: true,

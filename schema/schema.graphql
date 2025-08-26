@@ -184,6 +184,33 @@ type AccountProfileNotFoundError implements Error {
 	message: String!
 }
 
+type Address {
+	"""
+	Street address.
+	"""
+	streetAddress: String
+
+	"""
+	Address locality.
+	"""
+	addressLocality: String
+
+	"""
+	Address region.
+	"""
+	addressRegion: String
+
+	"""
+	Country.
+	"""
+	country: String
+
+	"""
+	Postal code.
+	"""
+	postalCode: String
+}
+
 input AddressInput {
 	"""
 	Address line 2.
@@ -1195,7 +1222,12 @@ type Job implements Node {
 	"""
 	The location of the job.
 	"""
-	location: String
+	location: String!
+
+	"""
+	The address of the job.
+	"""
+	address: Address!
 
 	"""
 	The locations where applicants can be located.

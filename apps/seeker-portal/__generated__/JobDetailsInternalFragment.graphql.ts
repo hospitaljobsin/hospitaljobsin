@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<50aa2e3e7a594220a93b1df15274b300>>
+ * @generated SignedSource<<0496984adb2dab99a0751f6c3b0c464e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,7 +21,7 @@ export type JobDetailsInternalFragment$data = {
   readonly externalApplicationUrl: string | null | undefined;
   readonly isApplied: boolean;
   readonly isSalaryNegotiable: boolean;
-  readonly location: string | null | undefined;
+  readonly location: string;
   readonly maxExperience: number | null | undefined;
   readonly maxSalary: number | null | undefined;
   readonly minExperience: number | null | undefined;
