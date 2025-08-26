@@ -112,26 +112,23 @@ const verificationFormSchema = z.object({
 		.min(1, "Phone number is required")
 		.length(10, "Invalid phone number"),
 	address: z.object({
-		line1: z
+		streetAddress: z
 			.string()
-			.min(5, "Line 1 must be at least 5 characters")
-			.max(200, "Line 1 must be less than 200 characters"),
-		line2: z
+			.min(5, "Street address must be at least 5 characters")
+			.max(200, "Street address must be less than 200 characters"),
+		addressLocality: z
 			.string()
-			.min(5, "Line 2 must be at least 5 characters")
-			.max(200, "Line 2 must be less than 200 characters")
+			.min(5, "Address locality must be at least 5 characters")
+			.max(200, "Address locality must be less than 200 characters")
 			.optional(),
-		city: z
+		addressRegion: z
 			.string()
-			.min(2, "City must be at least 2 characters")
-			.max(50, "City must be less than 50 characters"),
-		state: z
+			.min(2, "Address region must be at least 2 characters")
+			.max(50, "Address region must be less than 50 characters"),
+		postalCode: z
 			.string()
-			.min(2, "State must be at least 2 characters")
-			.max(50, "State must be less than 50 characters"),
-		pincode: z
-			.string()
-			.regex(/^\d{6}$/, "Please enter a valid 6-digit postal code"),
+			.min(2, "Postal code must be at least 2 characters")
+			.max(50, "Postal code must be less than 50 characters"),
 		country: z
 			.string()
 			.min(2, "Country must be at least 2 characters")
@@ -228,11 +225,10 @@ export default function RequestVerificationForm({
 			contactEmail: "",
 			phoneNumber: "",
 			address: {
-				line1: "",
-				line2: "",
-				city: "",
-				state: "",
-				pincode: "",
+				streetAddress: "",
+				addressLocality: "",
+				addressRegion: "",
+				postalCode: "",
 				country: "India",
 			},
 			businessProofType: "SHOP_LICENSE",
@@ -315,11 +311,10 @@ export default function RequestVerificationForm({
 					contactEmail: formData.contactEmail,
 					phoneNumber: `+91${formData.phoneNumber}`,
 					address: {
-						line1: formData.address.line1,
-						line2: formData.address.line2 || null,
-						city: formData.address.city,
-						state: formData.address.state,
-						pincode: formData.address.pincode,
+						streetAddress: formData.address.streetAddress,
+						addressLocality: formData.address.addressLocality || null,
+						addressRegion: formData.address.addressRegion,
+						postalCode: formData.address.postalCode,
 						country: formData.address.country,
 					},
 					businessProofType: formData.businessProofType,
@@ -472,52 +467,44 @@ export default function RequestVerificationForm({
 					</CardHeader>
 					<CardBody className="space-y-6">
 						<Input
-							{...register("address.line1")}
+							{...register("address.streetAddress")}
 							label="Street Address"
 							placeholder="Enter Street Address 1"
-							isInvalid={!!errors.address?.line1}
-							errorMessage={errors.address?.line1?.message}
+							isInvalid={!!errors.address?.streetAddress}
+							errorMessage={errors.address?.streetAddress?.message}
 						/>
 						<Input
-							{...register("address.line2")}
+							{...register("address.addressLocality")}
 							label="Street Address"
 							placeholder="Enter Street Address 2 (Optional)"
-							isInvalid={!!errors.address?.line2}
-							errorMessage={errors.address?.line2?.message}
+							isInvalid={!!errors.address?.addressLocality}
+							errorMessage={errors.address?.addressLocality?.message}
 						/>
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<Input
-								{...register("address.city")}
+								{...register("address.addressLocality")}
 								label="City"
 								placeholder="Enter city"
-								isInvalid={!!errors.address?.city}
-								errorMessage={errors.address?.city?.message}
+								isInvalid={!!errors.address?.addressLocality}
+								errorMessage={errors.address?.addressLocality?.message}
 							/>
 
 							<Input
-								{...register("address.state")}
+								{...register("address.addressRegion")}
 								label="State"
 								placeholder="Enter state"
-								isInvalid={!!errors.address?.state}
-								errorMessage={errors.address?.state?.message}
+								isInvalid={!!errors.address?.addressRegion}
+								errorMessage={errors.address?.addressRegion?.message}
 							/>
 						</div>
 
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<Input
-								{...register("address.pincode")}
+								{...register("address.postalCode")}
 								label="Postal Code"
 								placeholder="Enter 6-digit postal code"
-								isInvalid={!!errors.address?.pincode}
-								errorMessage={errors.address?.pincode?.message}
-							/>
-
-							<Input
-								{...register("address.country")}
-								label="Country"
-								placeholder="Enter country"
-								isInvalid={!!errors.address?.country}
-								errorMessage={errors.address?.country?.message}
+								isInvalid={!!errors.address?.postalCode}
+								errorMessage={errors.address?.postalCode?.message}
 							/>
 						</div>
 					</CardBody>

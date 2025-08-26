@@ -186,24 +186,19 @@ type AccountProfileNotFoundError implements Error {
 
 input AddressInput {
 	"""
-	Address line 1.
-	"""
-	line1: String
-
-	"""
 	Address line 2.
 	"""
-	line2: String
+	streetAddress: String
 
 	"""
 	City.
 	"""
-	city: String
+	addressLocality: String
 
 	"""
-	State.
+	Address region.
 	"""
-	state: String
+	addressRegion: String
 
 	"""
 	Country.
@@ -211,9 +206,9 @@ input AddressInput {
 	country: String
 
 	"""
-	Pincode.
+	Postal code.
 	"""
-	pincode: String
+	postalCode: String
 }
 
 """

@@ -110,68 +110,60 @@ class NotAuthenticatedErrorType(BaseErrorType):
 
 @strawberry.type(name="Address")
 class AddressType:
-    line1: str | None = field(
-        description="Address line 1.",
+    street_address: str | None = field(
+        description="Street address.",
     )
-    line2: str | None = field(
-        description="Address line 2.",
+    address_locality: str | None = field(
+        description="Address locality.",
     )
-    city: str | None = field(
-        description="City.",
-    )
-    state: str | None = field(
-        description="State.",
+    address_region: str | None = field(
+        description="Address region.",
     )
     country: str | None = field(
         description="Country.",
     )
-    pincode: str | None = field(
-        description="Pincode.",
+    postal_code: str | None = field(
+        description="Postal code.",
     )
 
     @classmethod
     def marshal(cls, address: Address) -> Self:
         """Marshal into a node instance."""
         return cls(
-            line1=address.line1,
-            line2=address.line2,
-            city=address.city,
-            state=address.state,
+            street_address=address.street_address,
+            address_locality=address.address_locality,
+            address_region=address.address_region,
+            postal_code=address.postal_code,
             country=address.country,
-            pincode=address.pincode,
         )
 
 
 @strawberry.input(name="AddressInput")
 class AddressInputType:
-    line1: str | None = field(
-        description="Address line 1.",
-    )
-    line2: str | None = field(
+    street_address: str | None = field(
         description="Address line 2.",
     )
-    city: str | None = field(
+    address_locality: str | None = field(
         description="City.",
     )
-    state: str | None = field(
-        description="State.",
+    address_region: str | None = field(
+        description="Address region.",
     )
     country: str | None = field(
         description="Country.",
     )
-    pincode: str | None = field(
-        description="Pincode.",
+    postal_code: str | None = field(
+        description="Postal code.",
     )
 
     def to_document(self) -> Address:
         """Marshal into a document instance."""
         return Address(
-            line1=self.line1,
-            line2=self.line2,
-            city=self.city,
-            state=self.state,
+            street_address=self.street_address,
+            address_locality=self.address_locality,
+            address_region=self.address_region,
             country=self.country,
-            pincode=self.pincode,
+            postal_code=self.postal_code,
         )
 
 
