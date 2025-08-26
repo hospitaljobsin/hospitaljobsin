@@ -577,6 +577,7 @@ union CreateJobPayload =
 	| CreateJobSuccess
 	| OrganizationNotFoundError
 	| OrganizationAuthorizationError
+	| InvalidLocationError
 
 """
 Used when the job is created successfully.
@@ -1047,6 +1048,16 @@ type InvalidEmailError implements Error {
 Used when an invalid email verification token is provided.
 """
 type InvalidEmailVerificationTokenError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
+}
+
+"""
+Used when the location is invalid.
+"""
+type InvalidLocationError implements Error {
 	"""
 	Human readable error message.
 	"""
@@ -2390,14 +2401,14 @@ type Mutation {
 		skills: [String!]!
 
 		"""
+		The location of the job.
+		"""
+		location: String!
+
+		"""
 		The external application URL for the job.
 		"""
 		externalApplicationUrl: String = null
-
-		"""
-		The location of the job.
-		"""
-		location: String = null
 
 		"""
 		The number of vacancies for the job.
@@ -2470,14 +2481,14 @@ type Mutation {
 		description: String!
 
 		"""
+		The location of the job.
+		"""
+		location: String!
+
+		"""
 		The skills required for the job.
 		"""
 		skills: [String!]!
-
-		"""
-		The location of the job.
-		"""
-		location: String = null
 
 		"""
 		The number of vacancies for the job.
@@ -4656,6 +4667,7 @@ union UpdateJobPayload =
 	| UpdateJobSuccess
 	| JobNotFoundError
 	| OrganizationAuthorizationError
+	| InvalidLocationError
 
 """
 Used when the job is updated successfully.

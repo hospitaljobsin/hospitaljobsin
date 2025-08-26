@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<224e8ab8c58cf7f86b92167de363c7b3>>
- * @relayHash cf2b7da4fd21130fc452995826332965
+ * @generated SignedSource<<332a3b79248d0a8207384db9a6131eef>>
+ * @relayHash 6628ca807a16696a5683f6369dc66a06
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID cf2b7da4fd21130fc452995826332965
+// @relayRequestID 6628ca807a16696a5683f6369dc66a06
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -20,7 +20,7 @@ export type JobCreationFormMutation$variables = {
   expiresAt?: any | null | undefined;
   isSalaryNegotiable: boolean;
   jobType?: JobType | null | undefined;
-  location?: string | null | undefined;
+  location: string;
   maxExperience?: number | null | undefined;
   maxSalary?: number | null | undefined;
   minExperience?: number | null | undefined;
@@ -541,7 +541,7 @@ return {
     ]
   },
   "params": {
-    "id": "cf2b7da4fd21130fc452995826332965",
+    "id": "6628ca807a16696a5683f6369dc66a06",
     "metadata": {},
     "name": "JobCreationFormMutation",
     "operationKind": "mutation",
@@ -550,6 +550,6 @@ return {
 };
 })();
 
-(node as any).hash = "4d14a279319782cd5f109fd8e54cf78b";
+(node as any).hash = "fc1e240470e54af9bffe9b87743808b4";
 
 export default node;

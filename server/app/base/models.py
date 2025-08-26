@@ -7,9 +7,9 @@ class GeoObject(BaseModel):
 
 
 class Address(BaseModel):
-    line1: str | None = None
-    line2: str | None = None
-    city: str | None = None
-    state: str | None = None
+    display_name: str | None = None
+    street_address: str | None = None
+    address_locality: str | None = None
+    address_region: str | None = None
+    postal_code: str | None = None
     country: str | None = None
-    pincode: str | None = None

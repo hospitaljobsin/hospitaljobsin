@@ -39,6 +39,7 @@ from app.jobs.documents import (
 from app.jobs.exceptions import (
     AccountProfileNotFoundError,
     InsufficientActiveVacanciesError,
+    InvalidLocationError,
     JobApplicantAlreadyExistsError,
     JobApplicantCountNotFoundError,
     JobApplicantNotFoundError,
@@ -210,8 +211,8 @@ class JobService:
         organization_id: str,
         title: str,
         description: str,
+        location: str,
         external_application_url: str | None = None,
-        location: str | None = None,
         vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
@@ -223,7 +224,12 @@ class JobService:
         work_mode: Literal["hybrid", "remote", "office"] | None = None,
         skills: list[str] = [],
         currency: Literal["INR"] = "INR",
-    ) -> Result[Job, OrganizationNotFoundError | OrganizationAuthorizationError]:
+    ) -> Result[
+        Job,
+        OrganizationNotFoundError
+        | OrganizationAuthorizationError
+        | InvalidLocationError,
+    ]:
         """Create a new job."""
         try:
             organization_id = ObjectId(organization_id)
@@ -239,13 +245,12 @@ class JobService:
         ):
             return Err(OrganizationAuthorizationError())
 
-        geo = None
-        if location:
-            result = await self._location_service.geocode(location)
-            if result is not None:
-                geo = GeoObject(
-                    coordinates=(result.longitude, result.latitude),
-                )
+        result = await self._location_service.geocode(location)
+        if result is None:
+            return Err(InvalidLocationError())
+        geo = GeoObject(
+            coordinates=(result.longitude, result.latitude),
+        )
 
         job = await self._job_repo.create(
             organization=existing_organization,
@@ -276,7 +281,7 @@ class JobService:
         job_id: str,
         title: str,
         description: str,
-        location: str | None = None,
+        location: str,
         vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
@@ -288,7 +293,10 @@ class JobService:
         work_mode: Literal["hybrid", "remote", "office"] | None = None,
         skills: list[str] = [],
         currency: Literal["INR"] = "INR",
-    ) -> Result[Job, JobNotFoundError | OrganizationAuthorizationError]:
+    ) -> Result[
+        Job,
+        JobNotFoundError | OrganizationAuthorizationError | InvalidLocationError,
+    ]:
         """Update a job."""
         try:
             job_id = ObjectId(job_id)
@@ -304,13 +312,14 @@ class JobService:
         ):
             return Err(OrganizationAuthorizationError())
 
-        geo = None
-        if location is not None:
-            result = await self._location_service.geocode(location)
-            if result is not None:
-                geo = GeoObject(
-                    coordinates=(result.longitude, result.latitude),
-                )
+        # TODO: avoid recalculating this unnecessarily. use UNSET here and only pass in dirty values from frontend
+
+        result = await self._location_service.geocode(location)
+        if result is None:
+            return Err(InvalidLocationError())
+        geo = GeoObject(
+            coordinates=(result.longitude, result.latitude),
+        )
 
         is_active = existing_job.is_active
         if vacancies is not None and vacancies == 0:

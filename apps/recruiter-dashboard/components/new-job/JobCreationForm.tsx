@@ -28,12 +28,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { CalendarIdentifier } from "@internationalized/date";
 import { CalendarDateTime, createCalendar } from "@internationalized/date";
 import type { Key } from "@react-types/shared";
-import {
-	BriefcaseBusiness,
-	IndianRupee,
-	MapPin,
-	TimerIcon,
-} from "lucide-react";
+import { BriefcaseBusiness, IndianRupee, TimerIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
@@ -44,7 +39,7 @@ const jobFormSchema = z.object({
 	description: z.string().min(1, "This field is required").max(4000),
 	vacancies: z.number().positive().nullable().optional(),
 	skills: z.array(z.object({ value: z.string() })),
-	location: z.string().nullable(),
+	location: z.string().min(1, "This field is required"),
 	minSalary: z.number().positive().nullable(),
 	maxSalary: z.number().positive().nullable(),
 	minExperience: z.number().nonnegative().nullable(),
@@ -77,7 +72,7 @@ const CreateJobMutation = graphql`
     $title: String!,
     $description: String!,
     $skills: [String!]!,
-    $location: String,
+    $location: String!,
     $minSalary: Int,
     $maxSalary: Int,
     $minExperience: Int,
@@ -175,9 +170,6 @@ export default function JobCreationForm({
 	useEffect(() => {
 		const newOpenAccordions = new Set<Key>([...accordionSelectedKeys]);
 
-		if (errors.location) {
-			newOpenAccordions.add("address");
-		}
 		if (errors.minSalary || errors.maxSalary) {
 			newOpenAccordions.add("salary-range");
 		}
@@ -190,7 +182,6 @@ export default function JobCreationForm({
 
 		setAccordionSelectedKeys(newOpenAccordions);
 	}, [
-		errors.location,
 		errors.minSalary,
 		errors.maxSalary,
 		errors.minExperience,
@@ -230,7 +221,7 @@ export default function JobCreationForm({
 				description: formData.description,
 				vacancies: formData.vacancies ?? undefined,
 				skills: formData.skills.map((s) => s.value),
-				location: formData.location || null,
+				location: formData.location,
 				minSalary: formData.minSalary || null,
 				maxSalary: formData.maxSalary || null,
 				minExperience: formData.minExperience || null,
@@ -351,6 +342,24 @@ export default function JobCreationForm({
 									</p>
 								),
 							}}
+						/>
+						<Controller
+							name="location"
+							control={control}
+							render={({ field }) => (
+								<LocationAutocomplete
+									label="Job Location"
+									labelPlacement="outside"
+									placeholder="Enter job location"
+									value={field.value ?? ""}
+									onChange={(value) => field.onChange(value.displayName)}
+									onValueChange={field.onChange}
+									errorMessage={errors.location?.message}
+									isInvalid={!!errors.location}
+									isRequired
+									validationBehavior="aria"
+								/>
+							)}
 						/>
 						<Controller
 							control={control}
@@ -662,30 +671,6 @@ export default function JobCreationForm({
 										/>
 									)}
 								/>
-							</AccordionItem>
-							<AccordionItem
-								key="address"
-								aria-label="Address"
-								title="Address"
-								startContent={<MapPin size={20} />}
-							>
-								<div className="flex flex-col gap-4">
-									<Controller
-										name="location"
-										control={control}
-										render={({ field }) => (
-											<LocationAutocomplete
-												label="Location"
-												placeholder="Add job location"
-												value={field.value ?? ""}
-												onChange={(value) => field.onChange(value.displayName)}
-												onValueChange={field.onChange}
-												errorMessage={errors.location?.message}
-												isInvalid={!!errors.location}
-											/>
-										)}
-									/>
-								</div>
 							</AccordionItem>
 						</Accordion>
 					</CardBody>

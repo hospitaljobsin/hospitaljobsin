@@ -38,12 +38,7 @@ import {
 	toCalendarDateTime,
 } from "@internationalized/date";
 import type { Key } from "@react-types/shared";
-import {
-	BriefcaseBusiness,
-	IndianRupee,
-	MapPin,
-	TimerIcon,
-} from "lucide-react";
+import { BriefcaseBusiness, IndianRupee, TimerIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { Controller, useForm } from "react-hook-form";
@@ -77,7 +72,7 @@ mutation JobEditFormMutation(
     $title: String!,
     $description: String!,
     $skills: [String!]!,
-    $location: String,
+    $location: String!,
     $jobId: ID!,
     $minSalary: Int,
     $maxSalary: Int,
@@ -148,7 +143,7 @@ const formSchema = z.object({
 	description: z.string().min(1, "This field is required").max(4000),
 	vacancies: z.number().nonnegative().nullable(),
 	skills: z.array(z.object({ value: z.string() })),
-	location: z.string().nullable(),
+	location: z.string().min(1, "Job location is required"),
 	minSalary: z.number().positive().nullable().optional(),
 	maxSalary: z.number().positive().nullable().optional(),
 	minExperience: z.number().nonnegative().nullable().optional(),
@@ -216,7 +211,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 			skills: jobData.skills.map((skill) => ({
 				value: skill,
 			})),
-			location: jobData.location,
+			location: jobData.location ?? "",
 			minSalary: jobData.minSalary ?? null,
 			maxSalary: jobData.maxSalary ?? null,
 			minExperience: jobData.minExperience ?? null,
@@ -303,7 +298,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 				description: formData.description,
 				vacancies: formData.vacancies ?? undefined,
 				skills: formData.skills.flatMap((skill) => skill.value),
-				location: formData.location || null,
+				location: formData.location,
 				minSalary: formData.minSalary,
 				maxSalary: formData.maxSalary,
 				minExperience: formData.minExperience,
@@ -330,7 +325,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 						skills: response.updateJob.job.skills.map((skill) => ({
 							value: skill,
 						})),
-						location: response.updateJob.job.location,
+						location: response.updateJob.job.location ?? "",
 						minSalary: response.updateJob.job.minSalary,
 						maxSalary: response.updateJob.job.maxSalary,
 						minExperience: response.updateJob.job.minExperience,
@@ -486,6 +481,26 @@ export default function JobEditForm({ rootQuery }: Props) {
 									</p>
 								),
 							}}
+						/>
+						<Controller
+							name="location"
+							control={control}
+							render={({ field }) => (
+								<LocationAutocomplete
+									label="Job Location"
+									placeholder="Add job location"
+									value={field.value ?? ""}
+									onChange={(value) => {
+										field.onChange(value.displayName);
+									}}
+									onValueChange={(value) => {
+										field.onChange(value);
+									}}
+									errorMessage={errors.location?.message}
+									isInvalid={!!errors.location}
+									isRequired
+								/>
+							)}
 						/>
 						<Controller
 							control={control}
@@ -762,34 +777,6 @@ export default function JobEditForm({ rootQuery }: Props) {
 										);
 									}}
 								/>
-							</AccordionItem>
-							<AccordionItem
-								key="address"
-								aria-label="Address"
-								title="Address"
-								startContent={<MapPin size={20} />}
-							>
-								<div className="flex flex-col gap-4">
-									<Controller
-										name="location"
-										control={control}
-										render={({ field }) => (
-											<LocationAutocomplete
-												label="Location"
-												placeholder="Add job location"
-												value={field.value ?? ""}
-												onChange={(value) => {
-													field.onChange(value.displayName);
-												}}
-												onValueChange={(value) => {
-													field.onChange(value);
-												}}
-												errorMessage={errors.location?.message}
-												isInvalid={!!errors.location}
-											/>
-										)}
-									/>
-								</div>
 							</AccordionItem>
 						</Accordion>
 					</CardBody>

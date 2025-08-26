@@ -171,7 +171,7 @@ export default async function JobDetailPage({
 			"@type": "Organization",
 			name: data.organization.name,
 			description: data.organization.job.descriptionCleaned,
-			image: data.organization.logoUrl,
+			logo: data.organization.logoUrl,
 			sameAs: data.organization.website || undefined,
 		},
 		baseSalary:

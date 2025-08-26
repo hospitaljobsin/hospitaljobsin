@@ -1338,6 +1338,17 @@ class CreateJobSuccessType:
     )
 
 
+@strawberry.type(
+    name="InvalidLocationError",
+    description="Used when the location is invalid.",
+)
+class InvalidLocationErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Location is invalid!",
+    )
+
+
 CreateJobPayload = Annotated[
     CreateJobSuccessType
     | Annotated[
@@ -1345,7 +1356,8 @@ CreateJobPayload = Annotated[
     ]
     | Annotated[
         "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
-    ],
+    ]
+    | InvalidLocationErrorType,
     strawberry.union(
         name="CreateJobPayload",
         description="The create job payload.",
@@ -1464,7 +1476,8 @@ UpdateJobPayload = Annotated[
     | JobNotFoundErrorType
     | Annotated[
         "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
-    ],
+    ]
+    | InvalidLocationErrorType,
     strawberry.union(
         name="UpdateJobPayload",
         description="The update job payload.",
