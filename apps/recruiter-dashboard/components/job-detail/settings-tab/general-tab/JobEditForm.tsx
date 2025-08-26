@@ -362,7 +362,9 @@ export default function JobEditForm({ rootQuery }: Props) {
 							value: skill,
 						})),
 						location: response.updateJob.job.location ?? "",
-						applicantLocations: response.updateJob.job.applicantLocations ?? [],
+						applicantLocations: response.updateJob.job.applicantLocations.map(
+							(location) => location,
+						),
 						minSalary: response.updateJob.job.minSalary,
 						maxSalary: response.updateJob.job.maxSalary,
 						minExperience: response.updateJob.job.minExperience,
@@ -642,7 +644,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 										description="Select countries where remote applicants can be located. This helps with job visibility in search results and ensures compliance with local employment laws."
 									>
 										{Object.entries(countries).map(([code, country]) => (
-											<SelectItem key={code}>{country.name}</SelectItem>
+											<SelectItem key={country.name}>{country.name}</SelectItem>
 										))}
 									</Select>
 								)}
