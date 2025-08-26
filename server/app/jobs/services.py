@@ -39,6 +39,7 @@ from app.jobs.documents import (
 from app.jobs.exceptions import (
     AccountProfileNotFoundError,
     InsufficientActiveVacanciesError,
+    InvalidApplicantLocationsError,
     InvalidLocationError,
     JobApplicantAlreadyExistsError,
     JobApplicantCountNotFoundError,
@@ -212,6 +213,7 @@ class JobService:
         title: str,
         description: str,
         location: str,
+        applicant_locations: list[str] = [],
         external_application_url: str | None = None,
         vacancies: int | None = None,
         min_salary: int | None = None,
@@ -228,7 +230,8 @@ class JobService:
         Job,
         OrganizationNotFoundError
         | OrganizationAuthorizationError
-        | InvalidLocationError,
+        | InvalidLocationError
+        | InvalidApplicantLocationsError,
     ]:
         """Create a new job."""
         try:
@@ -252,12 +255,21 @@ class JobService:
             coordinates=(result.longitude, result.latitude),
         )
 
+        if work_mode == "remote" and len(applicant_locations) == 0:
+            return Err(InvalidApplicantLocationsError())
+
+        for applicant_location in applicant_locations:
+            result = await self._location_service.geocode(applicant_location)
+            if result is None:
+                return Err(InvalidApplicantLocationsError())
+
         job = await self._job_repo.create(
             organization=existing_organization,
             title=title,
             description=description,
             vacancies=vacancies,
             location=location,
+            applicant_locations=applicant_locations,
             min_salary=min_salary,
             max_salary=max_salary,
             is_salary_negotiable=is_salary_negotiable,
@@ -282,6 +294,7 @@ class JobService:
         title: str,
         description: str,
         location: str,
+        applicant_locations: list[str] = [],
         vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
@@ -295,7 +308,10 @@ class JobService:
         currency: Literal["INR"] = "INR",
     ) -> Result[
         Job,
-        JobNotFoundError | OrganizationAuthorizationError | InvalidLocationError,
+        JobNotFoundError
+        | OrganizationAuthorizationError
+        | InvalidLocationError
+        | InvalidApplicantLocationsError,
     ]:
         """Update a job."""
         try:
@@ -321,6 +337,14 @@ class JobService:
             coordinates=(result.longitude, result.latitude),
         )
 
+        if work_mode == "remote" and len(applicant_locations) == 0:
+            return Err(InvalidApplicantLocationsError())
+
+        for applicant_location in applicant_locations:
+            result = await self._location_service.geocode(applicant_location)
+            if result is None:
+                return Err(InvalidApplicantLocationsError())
+
         is_active = existing_job.is_active
         if vacancies is not None and vacancies == 0:
             # unpublish job automatically if no vacancies are present
@@ -332,6 +356,7 @@ class JobService:
             description=description,
             vacancies=vacancies,
             location=location,
+            applicant_locations=applicant_locations,
             geo=geo,
             min_salary=min_salary,
             max_salary=max_salary,

@@ -15,6 +15,7 @@ from app.context import AuthInfo, Info
 from app.jobs.exceptions import (
     AccountProfileNotFoundError,
     InsufficientActiveVacanciesError,
+    InvalidApplicantLocationsError,
     InvalidLocationError,
     JobApplicantAlreadyExistsError,
     JobApplicantsNotFoundError,
@@ -50,6 +51,7 @@ from .types import (
     CreateJobSuccessType,
     DeleteJobPayload,
     InsufficientActiveVacanciesErrorType,
+    InvalidApplicantLocationsErrorType,
     InvalidLocationErrorType,
     JobApplicantAlreadyExistsErrorType,
     JobApplicantsNotFoundErrorType,
@@ -214,6 +216,12 @@ class JobMutation:
                 description="The location of the job.",
             ),
         ],
+        applicant_locations: Annotated[
+            list[str],
+            strawberry.argument(
+                description="The applicant locations for the job.",
+            ),
+        ],
         external_application_url: Annotated[
             str | None,
             strawberry.argument(
@@ -287,8 +295,9 @@ class JobMutation:
             organization_id=organization_id.node_id,
             title=title,
             description=description,
-            vacancies=vacancies,
             location=location,
+            applicant_locations=applicant_locations,
+            vacancies=vacancies,
             min_salary=min_salary,
             max_salary=max_salary,
             is_salary_negotiable=is_salary_negotiable,
@@ -309,6 +318,8 @@ class JobMutation:
                         return OrganizationAuthorizationErrorType()
                     case InvalidLocationError():
                         return InvalidLocationErrorType()
+                    case InvalidApplicantLocationsError():
+                        return InvalidApplicantLocationsErrorType()
             case Ok(job):
                 return CreateJobSuccessType(
                     job_edge=JobEdgeType.marshal(job),
@@ -361,6 +372,12 @@ class JobMutation:
             list[str],
             strawberry.argument(
                 description="The skills required for the job.",
+            ),
+        ],
+        applicant_locations: Annotated[
+            list[str],
+            strawberry.argument(
+                description="The applicant locations for the job.",
             ),
         ],
         vacancies: Annotated[
@@ -430,8 +447,9 @@ class JobMutation:
             job_id=job_id.node_id,
             title=title,
             description=description,
-            vacancies=vacancies,
             location=location,
+            applicant_locations=applicant_locations,
+            vacancies=vacancies,
             min_salary=min_salary,
             max_salary=max_salary,
             is_salary_negotiable=is_salary_negotiable,
@@ -451,6 +469,8 @@ class JobMutation:
                         return OrganizationAuthorizationErrorType()
                     case InvalidLocationError():
                         return InvalidLocationErrorType()
+                    case InvalidApplicantLocationsError():
+                        return InvalidApplicantLocationsErrorType()
             case Ok(job):
                 return UpdateJobSuccessType(
                     job=JobType.marshal(job),

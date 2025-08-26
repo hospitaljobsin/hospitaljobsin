@@ -21,6 +21,8 @@ import {
 	NumberInput,
 	Radio,
 	RadioGroup,
+	Select,
+	SelectItem,
 	Switch,
 	addToast,
 } from "@heroui/react";
@@ -28,36 +30,54 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { CalendarIdentifier } from "@internationalized/date";
 import { CalendarDateTime, createCalendar } from "@internationalized/date";
 import type { Key } from "@react-types/shared";
+import { countries } from "countries-list";
 import { BriefcaseBusiness, IndianRupee, TimerIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod";
 
-const jobFormSchema = z.object({
-	title: z.string().min(1, "This field is required").max(75),
-	description: z.string().min(1, "This field is required").max(4000),
-	vacancies: z.number().positive().nullable().optional(),
-	skills: z.array(z.object({ value: z.string() })),
-	location: z.string().min(1, "This field is required"),
-	minSalary: z.number().positive().nullable(),
-	maxSalary: z.number().positive().nullable(),
-	minExperience: z.number().nonnegative().nullable(),
-	maxExperience: z.number().positive().nullable(),
-	expiresAt: z.instanceof(CalendarDateTime).nullable(),
-	jobType: z
-		.enum([
-			"CONTRACT",
-			"FULL_TIME",
-			"INTERNSHIP",
-			"PART_TIME",
-			"LOCUM",
-			"UNSPECIFIED",
-		])
-		.nullable(),
-	workMode: z.enum(["HYBRID", "OFFICE", "REMOTE", "UNSPECIFIED"]).nullable(),
-	isSalaryNegotiable: z.boolean(),
-});
+const jobFormSchema = z
+	.object({
+		title: z.string().min(1, "This field is required").max(75),
+		description: z.string().min(1, "This field is required").max(4000),
+		vacancies: z.number().positive().nullable().optional(),
+		skills: z.array(z.object({ value: z.string() })),
+		location: z.string().min(1, "This field is required"),
+		applicantLocations: z.array(z.string()),
+		minSalary: z.number().positive().nullable(),
+		maxSalary: z.number().positive().nullable(),
+		minExperience: z.number().nonnegative().nullable(),
+		maxExperience: z.number().positive().nullable(),
+		expiresAt: z.instanceof(CalendarDateTime).nullable(),
+		jobType: z
+			.enum([
+				"CONTRACT",
+				"FULL_TIME",
+				"INTERNSHIP",
+				"PART_TIME",
+				"LOCUM",
+				"UNSPECIFIED",
+			])
+			.nullable(),
+		workMode: z.enum(["HYBRID", "OFFICE", "REMOTE", "UNSPECIFIED"]).nullable(),
+		isSalaryNegotiable: z.boolean(),
+	})
+	.refine(
+		(data) => {
+			// If work mode is REMOTE, applicantLocations must have at least one non-empty location
+			if (data.workMode === "REMOTE") {
+				return data.applicantLocations.some(
+					(location) => location.trim().length > 0,
+				);
+			}
+			return true;
+		},
+		{
+			message: "At least one eligible country is required for remote jobs",
+			path: ["applicantLocations"],
+		},
+	);
 
 type JobFormValues = z.infer<typeof jobFormSchema>;
 
@@ -73,6 +93,7 @@ const CreateJobMutation = graphql`
     $description: String!,
     $skills: [String!]!,
     $location: String!,
+    $applicantLocations: [String!]!,
     $minSalary: Int,
     $maxSalary: Int,
     $minExperience: Int,
@@ -89,6 +110,7 @@ const CreateJobMutation = graphql`
       description: $description,
       skills: $skills,
       location: $location,
+      applicantLocations: $applicantLocations,
       minSalary: $minSalary,
       maxSalary: $maxSalary,
       minExperience: $minExperience,
@@ -115,6 +137,14 @@ const CreateJobMutation = graphql`
       ... on OrganizationNotFoundError {
         __typename
       }
+	  ... on InvalidLocationError {
+		__typename
+		message
+	  }
+	  ... on InvalidApplicantLocationsError {
+		__typename
+		message
+	  }
     }
   }
 `;
@@ -146,11 +176,19 @@ export default function JobCreationForm({
 			minExperience: null,
 			maxExperience: null,
 			location: "",
+			applicantLocations: ["IN"],
 			skills: [],
 			title: "",
 			vacancies: null,
 			isSalaryNegotiable: false,
 		},
+	});
+
+	// Watch workMode for conditional rendering
+	const workMode = useWatch({
+		control,
+		name: "workMode",
+		exact: true,
 	});
 
 	const allowNavigation = useRef(false);
@@ -222,6 +260,7 @@ export default function JobCreationForm({
 				vacancies: formData.vacancies ?? undefined,
 				skills: formData.skills.map((s) => s.value),
 				location: formData.location,
+				applicantLocations: formData.applicantLocations,
 				minSalary: formData.minSalary || null,
 				maxSalary: formData.maxSalary || null,
 				minExperience: formData.minExperience || null,
@@ -263,6 +302,18 @@ export default function JobCreationForm({
 					router.push(
 						links.jobDetailApplicants(response.createJob.jobEdge.node.slug),
 					);
+				} else if (response.createJob.__typename === "InvalidLocationError") {
+					setError("location", {
+						message: response.createJob.message,
+						type: "manual",
+					});
+				} else if (
+					response.createJob.__typename === "InvalidApplicantLocationsError"
+				) {
+					setError("applicantLocations", {
+						message: response.createJob.message,
+						type: "manual",
+					});
 				} else {
 					addToast({
 						title: "An Unexpected Error Occurred",
@@ -324,6 +375,24 @@ export default function JobCreationForm({
 								</div>
 							)}
 						/>
+						<Controller
+							name="location"
+							control={control}
+							render={({ field }) => (
+								<LocationAutocomplete
+									label="Job Location"
+									labelPlacement="outside"
+									placeholder="Enter job location"
+									value={field.value ?? ""}
+									onChange={(value) => field.onChange(value.displayName)}
+									onValueChange={field.onChange}
+									errorMessage={errors.location?.message}
+									isInvalid={!!errors.location}
+									isRequired
+									validationBehavior="aria"
+								/>
+							)}
+						/>
 						<ChipsInput<JobFormValues, "skills">
 							name="skills"
 							label="Job Skills"
@@ -343,24 +412,7 @@ export default function JobCreationForm({
 								),
 							}}
 						/>
-						<Controller
-							name="location"
-							control={control}
-							render={({ field }) => (
-								<LocationAutocomplete
-									label="Job Location"
-									labelPlacement="outside"
-									placeholder="Enter job location"
-									value={field.value ?? ""}
-									onChange={(value) => field.onChange(value.displayName)}
-									onValueChange={field.onChange}
-									errorMessage={errors.location?.message}
-									isInvalid={!!errors.location}
-									isRequired
-									validationBehavior="aria"
-								/>
-							)}
-						/>
+
 						<Controller
 							control={control}
 							name="vacancies"
@@ -431,6 +483,36 @@ export default function JobCreationForm({
 								)}
 							/>
 						</div>
+
+						{workMode === "REMOTE" && (
+							<Controller
+								name="applicantLocations"
+								control={control}
+								render={({ field }) => (
+									<Select
+										label="Eligible Countries"
+										labelPlacement="outside"
+										placeholder="Select countries"
+										selectionMode="multiple"
+										selectedKeys={new Set(field.value)}
+										onSelectionChange={(keys) => {
+											const selectedCountries = Array.from(keys as Set<string>);
+											field.onChange(selectedCountries);
+										}}
+										className="w-full"
+										errorMessage={errors.applicantLocations?.message}
+										isInvalid={!!errors.applicantLocations}
+										isRequired
+										validationBehavior="aria"
+										description="Select countries where remote applicants can be located. This helps with job visibility in search results and ensures compliance with local employment laws."
+									>
+										{Object.entries(countries).map(([code, country]) => (
+											<SelectItem key={code}>{country.name}</SelectItem>
+										))}
+									</Select>
+								)}
+							/>
+						)}
 						<Accordion
 							selectionMode="multiple"
 							variant="light"

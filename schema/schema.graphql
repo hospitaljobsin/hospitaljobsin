@@ -578,6 +578,7 @@ union CreateJobPayload =
 	| OrganizationNotFoundError
 	| OrganizationAuthorizationError
 	| InvalidLocationError
+	| InvalidApplicantLocationsError
 
 """
 Used when the job is created successfully.
@@ -1000,6 +1001,16 @@ type InsufficientOrganizationAdminsError implements Error {
 }
 
 """
+Used when the applicant locations are invalid.
+"""
+type InvalidApplicantLocationsError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
+}
+
+"""
 Used when an invalid authentication provider is used.
 """
 type InvalidAuthenticationProviderError implements Error {
@@ -1190,6 +1201,11 @@ type Job implements Node {
 	The location of the job.
 	"""
 	location: String
+
+	"""
+	The locations where applicants can be located.
+	"""
+	applicantLocations: [String!]!
 
 	"""
 	The skills required for the job.
@@ -2406,6 +2422,11 @@ type Mutation {
 		location: String!
 
 		"""
+		The applicant locations for the job.
+		"""
+		applicantLocations: [String!]!
+
+		"""
 		The external application URL for the job.
 		"""
 		externalApplicationUrl: String = null
@@ -2489,6 +2510,11 @@ type Mutation {
 		The skills required for the job.
 		"""
 		skills: [String!]!
+
+		"""
+		The applicant locations for the job.
+		"""
+		applicantLocations: [String!]!
 
 		"""
 		The number of vacancies for the job.
@@ -4668,6 +4694,7 @@ union UpdateJobPayload =
 	| JobNotFoundError
 	| OrganizationAuthorizationError
 	| InvalidLocationError
+	| InvalidApplicantLocationsError
 
 """
 Used when the job is updated successfully.

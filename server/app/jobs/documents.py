@@ -42,6 +42,7 @@ class Job(Document):
     work_mode: Literal["remote", "hybrid", "office"] | None = None
 
     location: str | None = None
+    applicant_locations: list[str] = []
     geo: GeoObject | None = None
     skills: list[str]
 

@@ -26,6 +26,8 @@ import {
 	NumberInput,
 	Radio,
 	RadioGroup,
+	Select,
+	SelectItem,
 	Switch,
 	addToast,
 	cn,
@@ -38,6 +40,7 @@ import {
 	toCalendarDateTime,
 } from "@internationalized/date";
 import type { Key } from "@react-types/shared";
+import { countries } from "countries-list";
 import { BriefcaseBusiness, IndianRupee, TimerIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
@@ -65,6 +68,7 @@ const JobEditFormFragment = graphql`
 	expiresAt
 	isActive
 	location
+	applicantLocations
 }`;
 
 const UpdateJobMutation = graphql`
@@ -82,7 +86,8 @@ mutation JobEditFormMutation(
     $workMode: WorkMode,
     $jobType: JobType,
     $vacancies: Int,
-    $isSalaryNegotiable: Boolean!
+    $isSalaryNegotiable: Boolean!,
+	$applicantLocations: [String!]!
 ) {
     updateJob(
         title: $title,
@@ -98,7 +103,8 @@ mutation JobEditFormMutation(
         workMode: $workMode,
         jobType: $jobType,
         vacancies: $vacancies,
-        isSalaryNegotiable: $isSalaryNegotiable
+        isSalaryNegotiable: $isSalaryNegotiable,
+		applicantLocations: $applicantLocations
     ) {
         __typename
         ...on UpdateJobSuccess {
@@ -120,6 +126,7 @@ mutation JobEditFormMutation(
 				expiresAt
 				isActive
 				location
+				applicantLocations
 				...JobTabsFragment
 				...JobControlsFragment
 				...JobFragment
@@ -134,40 +141,65 @@ mutation JobEditFormMutation(
         ... on OrganizationAuthorizationError {
             __typename
         }
+		... on InvalidLocationError {
+			message
+			__typename
+		}
+		... on InvalidApplicantLocationsError {
+			message
+			__typename
+		}
     }
 }
 `;
 
-const formSchema = z.object({
-	title: z.string().min(1, "This field is required").max(75),
-	description: z.string().min(1, "This field is required").max(4000),
-	vacancies: z.number().nonnegative().nullable(),
-	skills: z.array(z.object({ value: z.string() })),
-	location: z.string().min(1, "Job location is required"),
-	minSalary: z.number().positive().nullable().optional(),
-	maxSalary: z.number().positive().nullable().optional(),
-	minExperience: z.number().nonnegative().nullable().optional(),
-	maxExperience: z.number().positive().nullable().optional(),
-	expiresAt: z
-		.custom<CalendarDateTime>((data) => {
-			console.log(data);
-			console.log(typeof data, data instanceof CalendarDateTime);
-			return data instanceof CalendarDateTime;
-		})
-		.nullable(),
-	jobType: z
-		.enum([
-			"CONTRACT",
-			"FULL_TIME",
-			"INTERNSHIP",
-			"PART_TIME",
-			"LOCUM",
-			"UNSPECIFIED",
-		])
-		.nullable(),
-	workMode: z.enum(["HYBRID", "OFFICE", "REMOTE", "UNSPECIFIED"]).nullable(),
-	isSalaryNegotiable: z.boolean(),
-});
+const formSchema = z
+	.object({
+		title: z.string().min(1, "This field is required").max(75),
+		description: z.string().min(1, "This field is required").max(4000),
+		vacancies: z.number().nonnegative().nullable(),
+		skills: z.array(z.object({ value: z.string() })),
+		location: z.string().min(1, "Job location is required"),
+		applicantLocations: z.array(z.string().min(1, "This field is required")),
+		minSalary: z.number().positive().nullable().optional(),
+		maxSalary: z.number().positive().nullable().optional(),
+		minExperience: z.number().nonnegative().nullable().optional(),
+		maxExperience: z.number().positive().nullable().optional(),
+		expiresAt: z
+			.custom<CalendarDateTime>((data) => {
+				console.log(data);
+				console.log(typeof data, data instanceof CalendarDateTime);
+				return data instanceof CalendarDateTime;
+			})
+			.nullable(),
+		jobType: z
+			.enum([
+				"CONTRACT",
+				"FULL_TIME",
+				"INTERNSHIP",
+				"PART_TIME",
+				"LOCUM",
+				"UNSPECIFIED",
+			])
+			.nullable(),
+		workMode: z.enum(["HYBRID", "OFFICE", "REMOTE", "UNSPECIFIED"]).nullable(),
+		isSalaryNegotiable: z.boolean(),
+	})
+	.refine(
+		(data) => {
+			// If work mode is REMOTE, applicantLocations must have at least one non-empty location
+			if (data.workMode === "REMOTE") {
+				return data.applicantLocations.some(
+					(location) => location.trim().length > 0,
+				);
+			}
+			return true;
+		},
+		{
+			message: "At least one eligible country is required for remote jobs",
+			path: ["applicantLocations"],
+		},
+	);
 
 type Props = {
 	rootQuery: JobEditFormFragment$key;
@@ -194,43 +226,34 @@ export default function JobEditForm({ rootQuery }: Props) {
 		useMutation<JobEditFormMutation>(UpdateJobMutation);
 
 	const {
-		handleSubmit,
-		register,
 		control,
-		setError,
-		reset,
+		handleSubmit,
 		formState: { errors, isSubmitting, isDirty },
+		watch,
+		reset,
+		setError,
+		register,
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
-		mode: "onChange",
-		reValidateMode: "onChange",
 		defaultValues: {
-			title: jobData.title,
+			title: jobData.title ?? "",
 			description: jobData.description ?? "",
 			vacancies: jobData.vacancies ?? null,
-			skills: jobData.skills.map((skill) => ({
-				value: skill,
-			})),
+			skills:
+				jobData.skills?.map((skill) => ({
+					value: skill,
+				})) ?? [],
 			location: jobData.location ?? "",
+			applicantLocations: jobData.applicantLocations.map(
+				(location) => location,
+			),
 			minSalary: jobData.minSalary ?? null,
 			maxSalary: jobData.maxSalary ?? null,
 			minExperience: jobData.minExperience ?? null,
 			maxExperience: jobData.maxExperience ?? null,
-			expiresAt: jobData.expiresAt
-				? toCalendarDateTime(parseAbsoluteToLocal(jobData.expiresAt))
-				: null,
-			jobType:
-				jobData.type &&
-				["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME", "LOCUM"].includes(
-					jobData.type,
-				)
-					? (jobData.type as JobType)
-					: "UNSPECIFIED",
-			workMode:
-				jobData.workMode &&
-				["HYBRID", "OFFICE", "REMOTE"].includes(jobData.workMode)
-					? (jobData.workMode as WorkMode)
-					: "UNSPECIFIED",
+			expiresAt: jobData.expiresAt ?? null,
+			jobType: jobData.jobType ?? null,
+			workMode: jobData.workMode ?? null,
 			isSalaryNegotiable: jobData.isSalaryNegotiable ?? false,
 		},
 	});
@@ -308,12 +331,25 @@ export default function JobEditForm({ rootQuery }: Props) {
 				workMode:
 					formData.workMode === "UNSPECIFIED" ? null : formData.workMode,
 				isSalaryNegotiable: !!formData.isSalaryNegotiable,
+				applicantLocations: formData.applicantLocations,
 			},
 			onCompleted(response) {
 				if (response.updateJob.__typename === "JobNotFoundError") {
 					addToast({
 						color: "danger",
 						title: "An unexpected error occurred. Please try again.",
+					});
+				} else if (response.updateJob.__typename === "InvalidLocationError") {
+					setError("location", {
+						message: response.updateJob.message,
+						type: "manual",
+					});
+				} else if (
+					response.updateJob.__typename === "InvalidApplicantLocationsError"
+				) {
+					setError("applicantLocations", {
+						message: response.updateJob.message,
+						type: "manual",
 					});
 				} else if (response.updateJob.__typename === "UpdateJobSuccess") {
 					// handle success
@@ -326,6 +362,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 							value: skill,
 						})),
 						location: response.updateJob.job.location ?? "",
+						applicantLocations: response.updateJob.job.applicantLocations ?? [],
 						minSalary: response.updateJob.job.minSalary,
 						maxSalary: response.updateJob.job.maxSalary,
 						minExperience: response.updateJob.job.minExperience,
@@ -460,6 +497,28 @@ export default function JobEditForm({ rootQuery }: Props) {
 								</div>
 							)}
 						/>
+						<Controller
+							name="location"
+							control={control}
+							render={({ field }) => (
+								<LocationAutocomplete
+									label="Job Location"
+									labelPlacement="outside"
+									placeholder="Add job location"
+									value={field.value ?? ""}
+									onChange={(value) => {
+										field.onChange(value.displayName);
+									}}
+									onValueChange={(value) => {
+										field.onChange(value);
+									}}
+									errorMessage={errors.location?.message}
+									isInvalid={!!errors.location}
+									isRequired
+									validationBehavior="aria"
+								/>
+							)}
+						/>
 
 						<ChipsInput<z.infer<typeof formSchema>, "skills">
 							name="skills"
@@ -482,26 +541,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 								),
 							}}
 						/>
-						<Controller
-							name="location"
-							control={control}
-							render={({ field }) => (
-								<LocationAutocomplete
-									label="Job Location"
-									placeholder="Add job location"
-									value={field.value ?? ""}
-									onChange={(value) => {
-										field.onChange(value.displayName);
-									}}
-									onValueChange={(value) => {
-										field.onChange(value);
-									}}
-									errorMessage={errors.location?.message}
-									isInvalid={!!errors.location}
-									isRequired
-								/>
-							)}
-						/>
+
 						<Controller
 							control={control}
 							name="vacancies"
@@ -579,6 +619,35 @@ export default function JobEditForm({ rootQuery }: Props) {
 								}}
 							/>
 						</div>
+						{watch("workMode") === "REMOTE" && (
+							<Controller
+								name="applicantLocations"
+								control={control}
+								render={({ field }) => (
+									<Select
+										label="Eligible Countries"
+										labelPlacement="outside"
+										placeholder="Select countries"
+										selectionMode="multiple"
+										selectedKeys={new Set(field.value)}
+										onSelectionChange={(keys) => {
+											const selectedCountries = Array.from(keys as Set<string>);
+											field.onChange(selectedCountries);
+										}}
+										className="w-full"
+										errorMessage={errors.applicantLocations?.message}
+										isInvalid={!!errors.applicantLocations}
+										isRequired
+										validationBehavior="aria"
+										description="Select countries where remote applicants can be located. This helps with job visibility in search results and ensures compliance with local employment laws."
+									>
+										{Object.entries(countries).map(([code, country]) => (
+											<SelectItem key={code}>{country.name}</SelectItem>
+										))}
+									</Select>
+								)}
+							/>
+						)}
 						<Accordion
 							selectionMode="multiple"
 							variant="light"

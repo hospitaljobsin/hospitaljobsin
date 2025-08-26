@@ -143,8 +143,9 @@ class JobRepo:
         organization: Organization,
         title: str,
         description: str,
+        location: str,
+        applicant_locations: list[str] = [],
         external_application_url: str | None = None,
-        location: str | None = None,
         geo: GeoObject | None = None,
         vacancies: int | None = None,
         min_salary: int | None = None,
@@ -184,6 +185,7 @@ class JobRepo:
             embedding=embedding,
             vacancies=vacancies,
             location=location,
+            applicant_locations=applicant_locations,
             geo=geo,
             min_salary=min_salary,
             max_salary=max_salary,
@@ -212,7 +214,8 @@ class JobRepo:
         title: str,
         description: str,
         is_active: bool,
-        location: str | None = None,
+        location: str,
+        applicant_locations: list[str] = [],
         geo: GeoObject | None = None,
         vacancies: int | None = None,
         min_salary: int | None = None,
@@ -252,6 +255,7 @@ class JobRepo:
         job.description_html = markdown_to_clean_html(description)
         job.vacancies = vacancies
         job.location = location
+        job.applicant_locations = applicant_locations
         job.geo = geo
         job.min_salary = min_salary
         job.max_salary = max_salary

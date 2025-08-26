@@ -55,3 +55,7 @@ class InsufficientActiveVacanciesError:
 
 class InvalidLocationError:
     """Raised when a location is invalid."""
+
+
+class InvalidApplicantLocationsError:
+    """Raised when applicant locations are invalid."""

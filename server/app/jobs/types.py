@@ -779,6 +779,9 @@ class JobType(BaseNodeType[Job]):
     location: str | None = strawberry.field(
         description="The location of the job.",
     )
+    applicant_locations: list[str] = strawberry.field(
+        description="The locations where applicants can be located.",
+    )
 
     skills: list[str] = strawberry.field(
         description="The skills required for the job.",
@@ -848,6 +851,7 @@ class JobType(BaseNodeType[Job]):
             type=JobTypeEnum[job.type.upper()] if job.type else None,
             work_mode=WorkModeEnum[job.work_mode.upper()] if job.work_mode else None,
             location=job.location,
+            applicant_locations=job.applicant_locations,
             skills=job.skills,
             currency=CurrencyEnum[job.currency.upper()],
             min_salary=job.min_salary,
@@ -1349,6 +1353,17 @@ class InvalidLocationErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="InvalidApplicantLocationsError",
+    description="Used when the applicant locations are invalid.",
+)
+class InvalidApplicantLocationsErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Applicant locations are invalid!",
+    )
+
+
 CreateJobPayload = Annotated[
     CreateJobSuccessType
     | Annotated[
@@ -1357,7 +1372,8 @@ CreateJobPayload = Annotated[
     | Annotated[
         "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
     ]
-    | InvalidLocationErrorType,
+    | InvalidLocationErrorType
+    | InvalidApplicantLocationsErrorType,
     strawberry.union(
         name="CreateJobPayload",
         description="The create job payload.",
@@ -1477,7 +1493,8 @@ UpdateJobPayload = Annotated[
     | Annotated[
         "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
     ]
-    | InvalidLocationErrorType,
+    | InvalidLocationErrorType
+    | InvalidApplicantLocationsErrorType,
     strawberry.union(
         name="UpdateJobPayload",
         description="The update job payload.",
