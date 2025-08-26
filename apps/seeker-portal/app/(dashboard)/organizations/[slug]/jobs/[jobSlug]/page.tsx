@@ -44,6 +44,7 @@ const PageJobDetailMetadataFragment = graphql`
 				type
 				expiresAt
 				location
+				applicantLocations
 				minSalary
 				maxSalary
 				slug
@@ -161,11 +162,13 @@ export default async function JobDetailPage({
 			: undefined,
 		jobLocationType:
 			data.organization.job.workMode === "REMOTE" ? "TELECOMMUTE" : undefined,
-		// TODO: avoid hardcoding this- should be collected from the user
-		applicantLocationRequirements: {
-			"@type": "Country",
-			name: "India",
-		},
+
+		applicantLocationRequirements: data.organization.job.applicantLocations.map(
+			(location) => ({
+				"@type": "Country",
+				name: location,
+			}),
+		),
 		directApply: true,
 		hiringOrganization: {
 			"@type": "Organization",
