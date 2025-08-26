@@ -14,7 +14,7 @@ from types_aiobotocore_sqs import SQSClient
 
 from app.accounts.documents import Account
 from app.accounts.exceptions import AccountProfileIncompleteError
-from app.base.models import GeoObject
+from app.base.models import Address, GeoObject
 from app.config import AppSettings, AWSSettings, EnvironmentSettings
 from app.core.constants import (
     ImpressionJobMetricEventType,
@@ -39,6 +39,8 @@ from app.jobs.documents import (
 from app.jobs.exceptions import (
     AccountProfileNotFoundError,
     InsufficientActiveVacanciesError,
+    InvalidApplicantLocationsError,
+    InvalidLocationError,
     JobApplicantAlreadyExistsError,
     JobApplicantCountNotFoundError,
     JobApplicantNotFoundError,
@@ -210,8 +212,9 @@ class JobService:
         organization_id: str,
         title: str,
         description: str,
+        location: str,
+        applicant_locations: list[str] = [],
         external_application_url: str | None = None,
-        location: str | None = None,
         vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
@@ -223,7 +226,13 @@ class JobService:
         work_mode: Literal["hybrid", "remote", "office"] | None = None,
         skills: list[str] = [],
         currency: Literal["INR"] = "INR",
-    ) -> Result[Job, OrganizationNotFoundError | OrganizationAuthorizationError]:
+    ) -> Result[
+        Job,
+        OrganizationNotFoundError
+        | OrganizationAuthorizationError
+        | InvalidLocationError
+        | InvalidApplicantLocationsError,
+    ]:
         """Create a new job."""
         try:
             organization_id = ObjectId(organization_id)
@@ -239,13 +248,29 @@ class JobService:
         ):
             return Err(OrganizationAuthorizationError())
 
-        geo = None
-        if location:
-            result = await self._location_service.geocode(location)
-            if result is not None:
-                geo = GeoObject(
-                    coordinates=(result.longitude, result.latitude),
-                )
+        result = await self._location_service.geocode(location)
+        if result is None:
+            return Err(InvalidLocationError())
+        geo = GeoObject(
+            coordinates=(result.longitude, result.latitude),
+        )
+
+        address = Address(
+            display_name=location,
+            street_address=result.street_address,
+            address_locality=result.address_locality,
+            address_region=result.address_region,
+            postal_code=result.postal_code,
+            country=result.country,
+        )
+
+        if work_mode == "remote" and len(applicant_locations) == 0:
+            return Err(InvalidApplicantLocationsError())
+
+        for applicant_location in applicant_locations:
+            result = await self._location_service.geocode(applicant_location)
+            if result is None:
+                return Err(InvalidApplicantLocationsError())
 
         job = await self._job_repo.create(
             organization=existing_organization,
@@ -253,6 +278,7 @@ class JobService:
             description=description,
             vacancies=vacancies,
             location=location,
+            applicant_locations=applicant_locations,
             min_salary=min_salary,
             max_salary=max_salary,
             is_salary_negotiable=is_salary_negotiable,
@@ -265,6 +291,7 @@ class JobService:
             currency=currency,
             external_application_url=external_application_url,
             geo=geo,
+            address=address,
         )
 
         return Ok(job)
@@ -276,7 +303,8 @@ class JobService:
         job_id: str,
         title: str,
         description: str,
-        location: str | None = None,
+        location: str,
+        applicant_locations: list[str] = [],
         vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
@@ -288,7 +316,13 @@ class JobService:
         work_mode: Literal["hybrid", "remote", "office"] | None = None,
         skills: list[str] = [],
         currency: Literal["INR"] = "INR",
-    ) -> Result[Job, JobNotFoundError | OrganizationAuthorizationError]:
+    ) -> Result[
+        Job,
+        JobNotFoundError
+        | OrganizationAuthorizationError
+        | InvalidLocationError
+        | InvalidApplicantLocationsError,
+    ]:
         """Update a job."""
         try:
             job_id = ObjectId(job_id)
@@ -304,13 +338,31 @@ class JobService:
         ):
             return Err(OrganizationAuthorizationError())
 
-        geo = None
-        if location is not None:
-            result = await self._location_service.geocode(location)
-            if result is not None:
-                geo = GeoObject(
-                    coordinates=(result.longitude, result.latitude),
-                )
+        # TODO: avoid recalculating this unnecessarily. use UNSET here and only pass in dirty values from frontend
+
+        result = await self._location_service.geocode(location)
+        if result is None:
+            return Err(InvalidLocationError())
+        geo = GeoObject(
+            coordinates=(result.longitude, result.latitude),
+        )
+
+        address = Address(
+            display_name=location,
+            street_address=result.street_address,
+            address_locality=result.address_locality,
+            address_region=result.address_region,
+            postal_code=result.postal_code,
+            country=result.country,
+        )
+
+        if work_mode == "remote" and len(applicant_locations) == 0:
+            return Err(InvalidApplicantLocationsError())
+
+        for applicant_location in applicant_locations:
+            result = await self._location_service.geocode(applicant_location)
+            if result is None:
+                return Err(InvalidApplicantLocationsError())
 
         is_active = existing_job.is_active
         if vacancies is not None and vacancies == 0:
@@ -323,7 +375,9 @@ class JobService:
             description=description,
             vacancies=vacancies,
             location=location,
+            applicant_locations=applicant_locations,
             geo=geo,
+            address=address,
             min_salary=min_salary,
             max_salary=max_salary,
             is_salary_negotiable=is_salary_negotiable,

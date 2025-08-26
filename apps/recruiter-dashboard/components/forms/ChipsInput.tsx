@@ -109,13 +109,15 @@ export function ChipsInput<
 				onPaste={handlePaste}
 				{...inputProps}
 			/>
-			<div className="flex flex-wrap gap-2 mb-2">
-				{fields.map((field, index) => (
-					<Chip key={field.id} {...chipProps} onClose={() => remove(index)}>
-						{field.value}
-					</Chip>
-				))}
-			</div>
+			{fields.length > 0 && (
+				<div className="flex flex-wrap gap-2">
+					{fields.map((field, index) => (
+						<Chip key={field.id} {...chipProps} onClose={() => remove(index)}>
+							{field.value}
+						</Chip>
+					))}
+				</div>
+			)}
 		</div>
 	);
 }

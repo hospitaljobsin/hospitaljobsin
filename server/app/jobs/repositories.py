@@ -15,7 +15,7 @@ from pydantic import ValidationError
 from redis.asyncio import Redis
 
 from app.accounts.documents import Account, BaseProfile, SalaryExpectations
-from app.base.models import GeoObject
+from app.base.models import Address, GeoObject
 from app.core.constants import (
     JOB_APPLICANT_EMBEDDING_DIMENSIONS,
     JOB_APPLICANT_EMBEDDING_INDEX_NAME,
@@ -33,7 +33,7 @@ from app.core.formatting import clean_markdown_text, markdown_to_clean_html, slu
 from app.core.geocoding import BaseLocationService
 from app.database.paginator import PaginatedResult, Paginator
 from app.embeddings.services import EmbeddingsService
-from app.geocoding.models import Coordinates
+from app.geocoding.models import GeocodeResult
 from app.jobs.agents.applicant_analysis import JobApplicantAnalysisOutput
 from app.jobs.agents.applicant_query_parser import (
     ApplicantQueryFilters,
@@ -143,9 +143,11 @@ class JobRepo:
         organization: Organization,
         title: str,
         description: str,
+        location: str,
+        geo: GeoObject,
+        address: Address,
+        applicant_locations: list[str] = [],
         external_application_url: str | None = None,
-        location: str | None = None,
-        geo: GeoObject | None = None,
         vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
@@ -184,7 +186,9 @@ class JobRepo:
             embedding=embedding,
             vacancies=vacancies,
             location=location,
+            applicant_locations=applicant_locations,
             geo=geo,
+            address=address,
             min_salary=min_salary,
             max_salary=max_salary,
             is_salary_negotiable=is_salary_negotiable,
@@ -212,8 +216,10 @@ class JobRepo:
         title: str,
         description: str,
         is_active: bool,
-        location: str | None = None,
-        geo: GeoObject | None = None,
+        location: str,
+        address: Address,
+        geo: GeoObject,
+        applicant_locations: list[str] = [],
         vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
@@ -252,7 +258,9 @@ class JobRepo:
         job.description_html = markdown_to_clean_html(description)
         job.vacancies = vacancies
         job.location = location
+        job.applicant_locations = applicant_locations
         job.geo = geo
+        job.address = address
         job.min_salary = min_salary
         job.max_salary = max_salary
         job.is_salary_negotiable = is_salary_negotiable
@@ -347,7 +355,7 @@ class JobRepo:
         work_mode: JobWorkMode,
         job_type: JobType,
         search_term: str | None = None,
-        coordinates: Coordinates | None = None,
+        coordinates: GeocodeResult | None = None,
         proximity_km: float | None = None,
         min_experience: int | None = None,
         max_experience: int | None = None,

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<2cb5fa20506abacefc9117fbc6a660ee>>
- * @relayHash eb74d1957af0a1547d67487a4a81e54b
+ * @generated SignedSource<<9cadad7f73e7d2d4f77e2c2ad49bf48b>>
+ * @relayHash e9480e1677350f40e2122570d8268373
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,19 +9,20 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID eb74d1957af0a1547d67487a4a81e54b
+// @relayRequestID e9480e1677350f40e2122570d8268373
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 export type JobEditFormMutation$variables = {
+  applicantLocations: ReadonlyArray<string>;
   description: string;
   expiresAt?: any | null | undefined;
   isSalaryNegotiable: boolean;
   jobId: string;
   jobType?: JobType | null | undefined;
-  location?: string | null | undefined;
+  location: string;
   maxExperience?: number | null | undefined;
   maxSalary?: number | null | undefined;
   minExperience?: number | null | undefined;
@@ -33,6 +34,14 @@ export type JobEditFormMutation$variables = {
 };
 export type JobEditFormMutation$data = {
   readonly updateJob: {
+    readonly __typename: "InvalidApplicantLocationsError";
+    readonly __typename: "InvalidApplicantLocationsError";
+    readonly message: string;
+  } | {
+    readonly __typename: "InvalidLocationError";
+    readonly __typename: "InvalidLocationError";
+    readonly message: string;
+  } | {
     readonly __typename: "JobNotFoundError";
     readonly __typename: "JobNotFoundError";
   } | {
@@ -42,6 +51,7 @@ export type JobEditFormMutation$data = {
     readonly __typename: "UpdateJobSuccess";
     readonly __typename: "UpdateJobSuccess";
     readonly job: {
+      readonly applicantLocations: ReadonlyArray<string>;
       readonly description: string;
       readonly expiresAt: any | null | undefined;
       readonly id: string;
@@ -75,74 +85,84 @@ const node: ConcreteRequest = (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "description"
+  "name": "applicantLocations"
 },
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "expiresAt"
+  "name": "description"
 },
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "isSalaryNegotiable"
+  "name": "expiresAt"
 },
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "jobId"
+  "name": "isSalaryNegotiable"
 },
 v4 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "jobType"
+  "name": "jobId"
 },
 v5 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "location"
+  "name": "jobType"
 },
 v6 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "maxExperience"
+  "name": "location"
 },
 v7 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "maxSalary"
+  "name": "maxExperience"
 },
 v8 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minExperience"
+  "name": "maxSalary"
 },
 v9 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minSalary"
+  "name": "minExperience"
 },
 v10 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "skills"
+  "name": "minSalary"
 },
 v11 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "title"
+  "name": "skills"
 },
 v12 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "vacancies"
+  "name": "title"
 },
 v13 = {
   "defaultValue": null,
   "kind": "LocalArgument",
+  "name": "vacancies"
+},
+v14 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
   "name": "workMode"
 },
-v14 = [
+v15 = [
+  {
+    "kind": "Variable",
+    "name": "applicantLocations",
+    "variableName": "applicantLocations"
+  },
   {
     "kind": "Variable",
     "name": "description",
@@ -214,124 +234,152 @@ v14 = [
     "variableName": "workMode"
   }
 ],
-v15 = {
+v16 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v16 = {
+v17 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v17 = {
+v18 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "slug",
   "storageKey": null
 },
-v18 = {
+v19 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "title",
   "storageKey": null
 },
-v19 = {
+v20 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "description",
   "storageKey": null
 },
-v20 = {
+v21 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "minExperience",
   "storageKey": null
 },
-v21 = {
+v22 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "maxExperience",
   "storageKey": null
 },
-v22 = {
+v23 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "minSalary",
   "storageKey": null
 },
-v23 = {
+v24 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "maxSalary",
   "storageKey": null
 },
-v24 = {
+v25 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "isSalaryNegotiable",
   "storageKey": null
 },
-v25 = {
+v26 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "vacancies",
   "storageKey": null
 },
-v26 = {
+v27 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "skills",
   "storageKey": null
 },
-v27 = {
+v28 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "type",
   "storageKey": null
 },
-v28 = {
+v29 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "workMode",
   "storageKey": null
 },
-v29 = {
+v30 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "expiresAt",
   "storageKey": null
 },
-v30 = {
+v31 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "isActive",
   "storageKey": null
 },
-v31 = {
+v32 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "location",
   "storageKey": null
+},
+v33 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "applicantLocations",
+  "storageKey": null
+},
+v34 = [
+  {
+    "alias": null,
+    "args": null,
+    "kind": "ScalarField",
+    "name": "message",
+    "storageKey": null
+  }
+],
+v35 = {
+  "kind": "InlineFragment",
+  "selections": (v34/*: any*/),
+  "type": "InvalidLocationError",
+  "abstractKey": null
+},
+v36 = {
+  "kind": "InlineFragment",
+  "selections": (v34/*: any*/),
+  "type": "InvalidApplicantLocationsError",
+  "abstractKey": null
 };
 return {
   "fragment": {
@@ -349,7 +397,8 @@ return {
       (v10/*: any*/),
       (v11/*: any*/),
       (v12/*: any*/),
-      (v13/*: any*/)
+      (v13/*: any*/),
+      (v14/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -357,13 +406,13 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v14/*: any*/),
+        "args": (v15/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateJob",
         "plural": false,
         "selections": [
-          (v15/*: any*/),
+          (v16/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -375,7 +424,6 @@ return {
                 "name": "job",
                 "plural": false,
                 "selections": [
-                  (v16/*: any*/),
                   (v17/*: any*/),
                   (v18/*: any*/),
                   (v19/*: any*/),
@@ -391,6 +439,8 @@ return {
                   (v29/*: any*/),
                   (v30/*: any*/),
                   (v31/*: any*/),
+                  (v32/*: any*/),
+                  (v33/*: any*/),
                   {
                     "args": null,
                     "kind": "FragmentSpread",
@@ -417,7 +467,9 @@ return {
             ],
             "type": "UpdateJobSuccess",
             "abstractKey": null
-          }
+          },
+          (v35/*: any*/),
+          (v36/*: any*/)
         ],
         "storageKey": null
       }
@@ -428,33 +480,34 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
+      (v12/*: any*/),
+      (v1/*: any*/),
       (v11/*: any*/),
-      (v0/*: any*/),
+      (v6/*: any*/),
+      (v4/*: any*/),
       (v10/*: any*/),
-      (v5/*: any*/),
-      (v3/*: any*/),
+      (v8/*: any*/),
       (v9/*: any*/),
       (v7/*: any*/),
-      (v8/*: any*/),
-      (v6/*: any*/),
-      (v1/*: any*/),
+      (v2/*: any*/),
+      (v14/*: any*/),
+      (v5/*: any*/),
       (v13/*: any*/),
-      (v4/*: any*/),
-      (v12/*: any*/),
-      (v2/*: any*/)
+      (v3/*: any*/),
+      (v0/*: any*/)
     ],
     "kind": "Operation",
     "name": "JobEditFormMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v14/*: any*/),
+        "args": (v15/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateJob",
         "plural": false,
         "selections": [
-          (v15/*: any*/),
+          (v16/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -466,7 +519,6 @@ return {
                 "name": "job",
                 "plural": false,
                 "selections": [
-                  (v16/*: any*/),
                   (v17/*: any*/),
                   (v18/*: any*/),
                   (v19/*: any*/),
@@ -482,6 +534,8 @@ return {
                   (v29/*: any*/),
                   (v30/*: any*/),
                   (v31/*: any*/),
+                  (v32/*: any*/),
+                  (v33/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -522,7 +576,7 @@ return {
                         ],
                         "storageKey": null
                       },
-                      (v16/*: any*/)
+                      (v17/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -534,7 +588,7 @@ return {
                     "name": "viewCount",
                     "plural": false,
                     "selections": [
-                      (v15/*: any*/),
+                      (v16/*: any*/),
                       {
                         "kind": "InlineFragment",
                         "selections": [
@@ -574,7 +628,7 @@ return {
                     "name": "applicantCount",
                     "plural": false,
                     "selections": [
-                      (v15/*: any*/),
+                      (v16/*: any*/),
                       {
                         "kind": "InlineFragment",
                         "selections": [
@@ -626,14 +680,16 @@ return {
             ],
             "type": "UpdateJobSuccess",
             "abstractKey": null
-          }
+          },
+          (v35/*: any*/),
+          (v36/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "eb74d1957af0a1547d67487a4a81e54b",
+    "id": "e9480e1677350f40e2122570d8268373",
     "metadata": {},
     "name": "JobEditFormMutation",
     "operationKind": "mutation",
@@ -642,6 +698,6 @@ return {
 };
 })();
 
-(node as any).hash = "4ae1cdd3d42e14852a52004c80f288f9";
+(node as any).hash = "1adef3472c25987f99249ae3fc23043c";
 
 export default node;

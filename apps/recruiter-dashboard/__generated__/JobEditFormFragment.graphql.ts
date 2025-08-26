@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<94481674d74e1923d554d970041241f1>>
+ * @generated SignedSource<<80bf06949c1a5af472bf529140e9d030>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type JobEditFormFragment$data = {
+  readonly applicantLocations: ReadonlyArray<string>;
   readonly description: string;
   readonly expiresAt: any | null | undefined;
   readonly id: string;
@@ -153,12 +154,19 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "location",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "applicantLocations",
+      "storageKey": null
     }
   ],
   "type": "Job",
   "abstractKey": null
 };
 
-(node as any).hash = "d1c8fec964a3adf5cbb2a02a6f5214a7";
+(node as any).hash = "99e23719a3727417899b7c9137c2134b";
 
 export default node;

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<1550e962d913c3658fd36770bbe5219a>>
- * @relayHash 2cb9d5a768f86887e06f9bdec226df4e
+ * @generated SignedSource<<0d11ffe6b5408b2d5477b4c37a20a9fd>>
+ * @relayHash bb287fa0812f74339eae690002561387
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 2cb9d5a768f86887e06f9bdec226df4e
+// @relayRequestID bb287fa0812f74339eae690002561387
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -157,24 +157,31 @@ v20 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "minSalary",
+  "name": "applicantLocations",
   "storageKey": null
 },
 v21 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "maxSalary",
+  "name": "minSalary",
   "storageKey": null
 },
 v22 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "maxSalary",
+  "storageKey": null
+},
+v23 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "slug",
   "storageKey": null
 },
-v23 = [
+v24 = [
   {
     "kind": "Variable",
     "name": "jobSlug",
@@ -182,66 +189,66 @@ v23 = [
   },
   (v3/*: any*/)
 ],
-v24 = {
+v25 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v25 = {
+v26 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "isSaved",
   "storageKey": null
 },
-v26 = {
+v27 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "description",
   "storageKey": null
 },
-v27 = {
+v28 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "skills",
   "storageKey": null
 },
-v28 = {
+v29 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "currency",
   "storageKey": null
 },
-v29 = {
+v30 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "minExperience",
   "storageKey": null
 },
-v30 = {
+v31 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "maxExperience",
   "storageKey": null
 },
-v31 = [
+v32 = [
   {
     "kind": "Literal",
     "name": "first",
     "value": 10
   }
 ],
-v32 = {
+v33 = {
   "kind": "InlineFragment",
   "selections": [
-    (v24/*: any*/)
+    (v25/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -297,7 +304,8 @@ return {
                           (v9/*: any*/),
                           (v20/*: any*/),
                           (v21/*: any*/),
-                          (v22/*: any*/)
+                          (v22/*: any*/),
+                          (v23/*: any*/)
                         ],
                         "type": "Job",
                         "abstractKey": null
@@ -313,11 +321,11 @@ return {
             "storageKey": null
           }
         ],
-        "args": (v23/*: any*/),
+        "args": (v24/*: any*/),
         "argumentDefinitions": (v2/*: any*/)
       },
       {
-        "args": (v23/*: any*/),
+        "args": (v24/*: any*/),
         "kind": "FragmentSpread",
         "name": "JobDetailViewClientComponentFragment"
       }
@@ -375,9 +383,10 @@ return {
                       (v20/*: any*/),
                       (v21/*: any*/),
                       (v22/*: any*/),
-                      (v24/*: any*/),
+                      (v23/*: any*/),
                       (v25/*: any*/),
                       (v26/*: any*/),
+                      (v27/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -388,9 +397,9 @@ return {
                         "selections": [
                           (v8/*: any*/),
                           (v7/*: any*/),
-                          (v22/*: any*/),
-                          (v24/*: any*/),
-                          (v26/*: any*/),
+                          (v23/*: any*/),
+                          (v25/*: any*/),
+                          (v27/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -462,10 +471,10 @@ return {
                         ],
                         "storageKey": null
                       },
-                      (v27/*: any*/),
                       (v28/*: any*/),
                       (v29/*: any*/),
                       (v30/*: any*/),
+                      (v31/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -496,7 +505,7 @@ return {
                       },
                       {
                         "alias": null,
-                        "args": (v31/*: any*/),
+                        "args": (v32/*: any*/),
                         "concreteType": "JobConnection",
                         "kind": "LinkedField",
                         "name": "relatedJobs",
@@ -518,11 +527,11 @@ return {
                                 "name": "node",
                                 "plural": false,
                                 "selections": [
-                                  (v24/*: any*/),
                                   (v25/*: any*/),
-                                  (v22/*: any*/),
-                                  (v12/*: any*/),
                                   (v26/*: any*/),
+                                  (v23/*: any*/),
+                                  (v12/*: any*/),
+                                  (v27/*: any*/),
                                   {
                                     "alias": null,
                                     "args": null,
@@ -533,20 +542,20 @@ return {
                                     "selections": [
                                       (v8/*: any*/),
                                       (v7/*: any*/),
-                                      (v22/*: any*/),
-                                      (v24/*: any*/)
+                                      (v23/*: any*/),
+                                      (v25/*: any*/)
                                     ],
                                     "storageKey": null
                                   },
                                   (v18/*: any*/),
                                   (v17/*: any*/),
                                   (v9/*: any*/),
-                                  (v27/*: any*/),
                                   (v28/*: any*/),
-                                  (v20/*: any*/),
-                                  (v21/*: any*/),
                                   (v29/*: any*/),
+                                  (v21/*: any*/),
+                                  (v22/*: any*/),
                                   (v30/*: any*/),
+                                  (v31/*: any*/),
                                   (v5/*: any*/)
                                 ],
                                 "storageKey": null
@@ -591,7 +600,7 @@ return {
                       },
                       {
                         "alias": null,
-                        "args": (v31/*: any*/),
+                        "args": (v32/*: any*/),
                         "filters": null,
                         "handle": "connection",
                         "key": "RelatedJobsListFragment_relatedJobs",
@@ -602,7 +611,7 @@ return {
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v32/*: any*/)
+                  (v33/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -610,7 +619,7 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v32/*: any*/)
+          (v33/*: any*/)
         ],
         "storageKey": null
       },
@@ -645,7 +654,7 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v24/*: any*/)
+                  (v25/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -653,14 +662,14 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v32/*: any*/)
+          (v33/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "2cb9d5a768f86887e06f9bdec226df4e",
+    "id": "bb287fa0812f74339eae690002561387",
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",

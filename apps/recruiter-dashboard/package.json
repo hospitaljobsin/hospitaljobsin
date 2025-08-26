@@ -37,6 +37,7 @@
 		"acorn": "^8.15.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
+		"countries-list": "^3.1.1",
 		"date-fns": "^4.1.0",
 		"graphql": "^16.11.0",
 		"import-in-the-middle": "^1.14.2",

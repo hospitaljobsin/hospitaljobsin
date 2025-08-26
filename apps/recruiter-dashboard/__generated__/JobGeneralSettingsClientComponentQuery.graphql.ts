@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<24e5dae15021472698d160d7f2dfa442>>
- * @relayHash 5234ded601aa13fab8f75ce9d402c008
+ * @generated SignedSource<<0622eb28df098a80afb7547b3e8ede8b>>
+ * @relayHash 0cec0fde960ed483f877c10f9b80b50d
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 5234ded601aa13fab8f75ce9d402c008
+// @relayRequestID 0cec0fde960ed483f877c10f9b80b50d
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -247,6 +247,13 @@ return {
                       {
                         "alias": null,
                         "args": null,
+                        "kind": "ScalarField",
+                        "name": "applicantLocations",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
                         "concreteType": "Organization",
                         "kind": "LinkedField",
                         "name": "organization",
@@ -300,7 +307,7 @@ return {
     ]
   },
   "params": {
-    "id": "5234ded601aa13fab8f75ce9d402c008",
+    "id": "0cec0fde960ed483f877c10f9b80b50d",
     "metadata": {},
     "name": "JobGeneralSettingsClientComponentQuery",
     "operationKind": "query",

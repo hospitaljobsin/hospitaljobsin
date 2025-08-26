@@ -51,3 +51,11 @@ class JobApplicantsNotFoundError:
 
 class InsufficientActiveVacanciesError:
     """Raised when a job has insufficient active vacancies."""
+
+
+class InvalidLocationError:
+    """Raised when a location is invalid."""
+
+
+class InvalidApplicantLocationsError:
+    """Raised when applicant locations are invalid."""

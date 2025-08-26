@@ -186,24 +186,19 @@ type AccountProfileNotFoundError implements Error {
 
 input AddressInput {
 	"""
-	Address line 1.
-	"""
-	line1: String
-
-	"""
 	Address line 2.
 	"""
-	line2: String
+	streetAddress: String
 
 	"""
 	City.
 	"""
-	city: String
+	addressLocality: String
 
 	"""
-	State.
+	Address region.
 	"""
-	state: String
+	addressRegion: String
 
 	"""
 	Country.
@@ -211,9 +206,9 @@ input AddressInput {
 	country: String
 
 	"""
-	Pincode.
+	Postal code.
 	"""
-	pincode: String
+	postalCode: String
 }
 
 """
@@ -577,6 +572,8 @@ union CreateJobPayload =
 	| CreateJobSuccess
 	| OrganizationNotFoundError
 	| OrganizationAuthorizationError
+	| InvalidLocationError
+	| InvalidApplicantLocationsError
 
 """
 Used when the job is created successfully.
@@ -999,6 +996,16 @@ type InsufficientOrganizationAdminsError implements Error {
 }
 
 """
+Used when the applicant locations are invalid.
+"""
+type InvalidApplicantLocationsError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
+}
+
+"""
 Used when an invalid authentication provider is used.
 """
 type InvalidAuthenticationProviderError implements Error {
@@ -1047,6 +1054,16 @@ type InvalidEmailError implements Error {
 Used when an invalid email verification token is provided.
 """
 type InvalidEmailVerificationTokenError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
+}
+
+"""
+Used when the location is invalid.
+"""
+type InvalidLocationError implements Error {
 	"""
 	Human readable error message.
 	"""
@@ -1179,6 +1196,11 @@ type Job implements Node {
 	The location of the job.
 	"""
 	location: String
+
+	"""
+	The locations where applicants can be located.
+	"""
+	applicantLocations: [String!]!
 
 	"""
 	The skills required for the job.
@@ -2390,14 +2412,19 @@ type Mutation {
 		skills: [String!]!
 
 		"""
+		The location of the job.
+		"""
+		location: String!
+
+		"""
+		The applicant locations for the job.
+		"""
+		applicantLocations: [String!]!
+
+		"""
 		The external application URL for the job.
 		"""
 		externalApplicationUrl: String = null
-
-		"""
-		The location of the job.
-		"""
-		location: String = null
 
 		"""
 		The number of vacancies for the job.
@@ -2470,14 +2497,19 @@ type Mutation {
 		description: String!
 
 		"""
+		The location of the job.
+		"""
+		location: String!
+
+		"""
 		The skills required for the job.
 		"""
 		skills: [String!]!
 
 		"""
-		The location of the job.
+		The applicant locations for the job.
 		"""
-		location: String = null
+		applicantLocations: [String!]!
 
 		"""
 		The number of vacancies for the job.
@@ -4656,6 +4688,8 @@ union UpdateJobPayload =
 	| UpdateJobSuccess
 	| JobNotFoundError
 	| OrganizationAuthorizationError
+	| InvalidLocationError
+	| InvalidApplicantLocationsError
 
 """
 Used when the job is updated successfully.

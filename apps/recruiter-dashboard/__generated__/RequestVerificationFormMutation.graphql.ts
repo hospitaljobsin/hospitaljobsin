@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a75c4e232b2c0dd4f083df81cdda7e5e>>
+ * @generated SignedSource<<afada61642a39f4e28f7b8cbde9c9a16>>
  * @relayHash ea637c4d94715001de71d53b6c6f9887
  * @lightSyntaxTransform
  * @nogrep
@@ -15,12 +15,11 @@ import type { ConcreteRequest } from 'relay-runtime';
 export type AddressProof = "BANK_STATEMENT" | "OTHER" | "RENTAL_AGREEMENT" | "UTILITY_BILL" | "%future added value";
 export type BusinessProof = "CLINIC_REGISTRATION" | "GST_CERTIFICATE" | "MEDICAL_COUNCIL_REGISTRATION" | "MSME_REGISTRATION" | "OTHER" | "SHOP_LICENSE" | "%future added value";
 export type AddressInput = {
-  city?: string | null | undefined;
+  addressLocality?: string | null | undefined;
+  addressRegion?: string | null | undefined;
   country?: string | null | undefined;
-  line1?: string | null | undefined;
-  line2?: string | null | undefined;
-  pincode?: string | null | undefined;
-  state?: string | null | undefined;
+  postalCode?: string | null | undefined;
+  streetAddress?: string | null | undefined;
 };
 export type RequestVerificationFormMutation$variables = {
   address: AddressInput;
