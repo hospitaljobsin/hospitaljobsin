@@ -1,6 +1,7 @@
 import { env } from "@/lib/env";
 import { authTest, expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
+import { WEBAUTHN_PRIVATE_KEY } from "@/tests/utils/constants";
 
 test.describe("Login Page", () => {
 	test.beforeEach(async ({ page }) => {
@@ -202,14 +203,14 @@ test.describe("Login Page", () => {
 		);
 
 		const webauthnCredential = webauthnAuth.account.webauthnCredentials[0];
+
 		// Register a mock credential
 		await client.send("WebAuthn.addCredential", {
 			authenticatorId,
 			credential: {
 				credentialId: webauthnCredential.credentialId,
 				isResidentCredential: true,
-				privateKey:
-					"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgaXHR/cXGj5XEgk3jpoqK50mry/3gOFAyQwgXRNSz+ZyhRANCAAR9WkpjDhNVmt1JxiXmdtXFV9X46pefmf2zU5AzFPczSLtppVXd9i2gzKClvkenoESvvdOaF299W1Gp8TESeQpx",
+				privateKey: WEBAUTHN_PRIVATE_KEY,
 				rpId: "localtest.me",
 				userHandle: "YPG5s7Ozs7Ozs7Oz",
 				signCount: 0,
@@ -310,6 +311,11 @@ test.describe("Login Page", () => {
 		await client.send("WebAuthn.setAutomaticPresenceSimulation", {
 			authenticatorId,
 			enabled: false,
+		});
+
+		// Clean up by removing the virtual authenticator
+		await client.send("WebAuthn.removeVirtualAuthenticator", {
+			authenticatorId,
 		});
 	});
 

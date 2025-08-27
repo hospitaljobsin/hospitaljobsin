@@ -14,6 +14,8 @@ from app.auth.repositories import (
     SessionRepo,
     WebAuthnCredentialRepo,
 )
+from app.auth.utils import get_analytics_preference
+from app.config import AuthSettings
 from app.core.constants import SUDO_MODE_EXPIRES_IN
 from app.core.formatting import format_datetime
 from app.testing.schemas import (
@@ -21,8 +23,6 @@ from app.testing.schemas import (
     TestUserSchema,
     WebAuthnCredentialSchema,
 )
-from app.auth.utils import get_analytics_preference
-from app.config import AuthSettings
 
 
 class TestSetupService:
@@ -70,7 +70,7 @@ class TestSetupService:
             webauthn_credential = await self._webauthn_credential_repo.create(
                 account_id=account.id,
                 credential_id=secrets.token_bytes(16),
-                credential_public_key=b"\x04}ZJc\x0e\x13U\x9a\xddI\xc6%\xe6v\xd5\xc5W\xd5\xf8\xea\x97\x9f\x99\xfd\xb3S\x903\x14\xf73H\xbbi\xa5U\xdd\xf6-\xa0\xcc\xa0\xa5\xbeG\xa7\xa0D\xaf\xbd\xd3\x9a\x17o}[Q\xa9\xf11\x12y\nq",
+                credential_public_key=b"\x04\x03O\xc0QU\xac-\xfdJ[O\xa8t&\xe30X#\r\x19\x9e\xa3W\x14\x08SM\xbf\x9b\x11\x16\x9e\x89\xb9j\xe4\xe2\x17\x9a\xe0Z\xc5\xcf\xc9\xfb/\x96B{\xed\x13\x84G\xca\xb6\xf9\xb9V\xff\xd1\x1f\x00\xb3l",
                 sign_count=0,
                 backed_up=False,
                 device_type="platform",
