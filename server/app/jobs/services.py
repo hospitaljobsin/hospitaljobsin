@@ -7,6 +7,7 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from fastapi import Request
 from posthog import Posthog
+from pydantic_extra_types.country import CountryAlpha2
 from result import Err, Ok, Result
 from strawberry import relay
 from types_aiobotocore_s3 import S3Client
@@ -254,9 +255,10 @@ class JobService:
             return Err(InvalidLocationError())
 
         for applicant_location in applicant_locations:
-            # TODO: check alpha2 country codes alone here
-            result = await self._location_service.geocode(applicant_location)
-            if result is None:
+            # check alpha2 country codes alone here
+            try:
+                CountryAlpha2(applicant_location)
+            except ValueError:
                 return Err(InvalidApplicantLocationsError())
 
         geo, address = None, None
@@ -368,9 +370,10 @@ class JobService:
             address = existing_job.address
 
         for applicant_location in applicant_locations:
-            # TODO: check alpha2 country codes alone here
-            result = await self._location_service.geocode(applicant_location)
-            if result is None:
+            # check alpha2 country codes alone here
+            try:
+                CountryAlpha2(applicant_location)
+            except ValueError:
                 return Err(InvalidApplicantLocationsError())
 
         is_active = existing_job.is_active

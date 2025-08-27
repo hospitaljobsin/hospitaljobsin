@@ -33,7 +33,7 @@ from app.core.formatting import clean_markdown_text, markdown_to_clean_html, slu
 from app.core.geocoding import BaseLocationService
 from app.database.paginator import PaginatedResult, Paginator
 from app.embeddings.services import EmbeddingsService
-from app.geocoding.models import GeocodeResult
+from app.geocoding.models import Coordinates
 from app.jobs.agents.applicant_analysis import JobApplicantAnalysisOutput
 from app.jobs.agents.applicant_query_parser import (
     ApplicantQueryFilters,
@@ -355,7 +355,7 @@ class JobRepo:
         work_mode: JobWorkMode,
         job_type: JobType,
         search_term: str | None = None,
-        coordinates: GeocodeResult | None = None,
+        coordinates: Coordinates | None = None,
         proximity_km: float | None = None,
         min_experience: int | None = None,
         max_experience: int | None = None,

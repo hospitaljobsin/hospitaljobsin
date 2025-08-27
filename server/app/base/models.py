@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from pydantic_extra_types.country import CountryAlpha2
 
 
 class GeoObject(BaseModel):
@@ -12,4 +13,4 @@ class Address(BaseModel):
     address_locality: str | None = None
     address_region: str | None = None
     postal_code: str | None = None
-    country: str | None = None
+    country: CountryAlpha2 | None = None

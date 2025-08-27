@@ -2,7 +2,7 @@ from typing import Self
 
 import strawberry
 
-from .models import GeocodeResult, SearchLocation
+from .models import Coordinates, GeocodeResult, SearchLocation
 
 
 @strawberry.type(
@@ -38,11 +38,8 @@ class CoordinatesInputType:
     )
 
     @classmethod
-    def to_document(cls, data: Self) -> GeocodeResult:
-        return GeocodeResult(
-            longitude=data.longitude,
-            latitude=data.latitude,
-        )
+    def to_document(cls, data: Self) -> Coordinates:
+        return Coordinates(longitude=data.longitude, latitude=data.latitude)
 
 
 @strawberry.type(

@@ -1,8 +1,13 @@
 from pydantic import BaseModel
 
 
+class Coordinates(BaseModel):
+    latitude: float
+    longitude: float
+
+
 class GeocodeResult(BaseModel):
-    display_name: str
+    display_name: str | None = None
     latitude: float
     longitude: float
     postal_code: str | None = None
