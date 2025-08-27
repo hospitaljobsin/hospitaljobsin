@@ -157,9 +157,9 @@ export default async function JobDetailPage({
 					data.organization.job.address.addressLocality || undefined,
 				addressRegion: data.organization.job.address.addressRegion || undefined,
 				postalCode: data.organization.job.address.postalCode || undefined,
-				addressCountry: data.organization.job.address.country || "IN", // TODO: avoid hardcoding IN here
+				addressCountry: data.organization.job.address.country || "IN",
 			},
-		},
+		}, // TODO: focus on edge case: location is undefined (for remote jobs)
 		datePosted: new Date(data.organization.job.createdAt).toISOString(),
 		validThrough: new Date(data.organization.job.expiresAt).toISOString(),
 		employmentType: data.organization.job.type
@@ -171,7 +171,7 @@ export default async function JobDetailPage({
 		applicantLocationRequirements: data.organization.job.applicantLocations.map(
 			(location) => ({
 				"@type": "Country",
-				name: location, // TODO: use alpha-2 codes here (as provided by countries-list library), for consistency
+				name: location,
 			}),
 		),
 		directApply: true,

@@ -1667,6 +1667,7 @@ dependencies = [
     { name = "tesserocr" },
     { name = "types-aioboto3", extra = ["essential"] },
     { name = "types-aiobotocore-bedrock-runtime" },
+    { name = "types-aiobotocore-geo-places" },
     { name = "types-aiobotocore-location" },
     { name = "types-aiobotocore-ses" },
     { name = "types-aiobotocore-textract" },
@@ -1737,6 +1738,7 @@ requires-dist = [
     { name = "tesserocr", specifier = "==2.8.0" },
     { name = "types-aioboto3", extras = ["essential"], specifier = "==15.0.0" },
     { name = "types-aiobotocore-bedrock-runtime", specifier = "==2.23.0" },
+    { name = "types-aiobotocore-geo-places", specifier = ">=2.24.1" },
     { name = "types-aiobotocore-location", specifier = "==2.23.0" },
     { name = "types-aiobotocore-ses", specifier = "==2.23.0" },
     { name = "types-aiobotocore-textract", specifier = "==2.23.0" },
@@ -2017,6 +2019,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/a2/2d/7e17ec62705429de08033651180555419acf46a7dde401e36114cd4d7aa3/types_aiobotocore_ec2-2.23.1.tar.gz", hash = "sha256:e731711c864bdbce4f24b484f6c090803d4df73c630bf112f6c1934eceade4f3", size = 402543, upload-time = "2025-07-18T01:54:54.134Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d5/15/aceb1127680500bfe28f11ff38b1451c43f29cd30877de526112ea47b0f4/types_aiobotocore_ec2-2.23.1-py3-none-any.whl", hash = "sha256:12326742c876ebebc948cdc38d6c21f21017e4b5919ed79fa1b5f872021b6ce8", size = 392397, upload-time = "2025-07-18T01:54:52.599Z" },
+]
+
+[[package]]
+name = "types-aiobotocore-geo-places"
+version = "2.24.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ca/97/42d1a593225035a6b11b3b3b98e9768a5bba6583a7f43c34e39b02566e9b/types_aiobotocore_geo_places-2.24.1.tar.gz", hash = "sha256:271211fea19555bba4a3dc3a7a41a0e89c7f5eff3d96da3eec5b1b11729e6746", size = 19560, upload-time = "2025-08-16T01:45:50.216Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4f/5e/1667c04c69cddf390e90025a0763ab1c46f86d60a72d4894948825baaefa/types_aiobotocore_geo_places-2.24.1-py3-none-any.whl", hash = "sha256:3b42dab468047d2ef0626b0961127d11d0ac05335b3921a1e4df33efb1c593d4", size = 25693, upload-time = "2025-08-16T01:45:49.399Z" },
 ]
 
 [[package]]

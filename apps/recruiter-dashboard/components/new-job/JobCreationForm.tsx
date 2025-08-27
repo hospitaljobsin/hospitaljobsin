@@ -507,7 +507,7 @@ export default function JobCreationForm({
 										description="Select countries where remote applicants can be located. This helps with job visibility in search results and ensures compliance with local employment laws."
 									>
 										{Object.entries(countries).map(([code, country]) => (
-											<SelectItem key={country.name}>{country.name}</SelectItem>
+											<SelectItem key={code}>{country.name}</SelectItem>
 										))}
 									</Select>
 								)}

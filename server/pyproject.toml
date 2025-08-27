@@ -55,6 +55,7 @@ dependencies = [
     "markdown>=3.8.2",
     "filelock>=3.19.1",
     "bleach>=6.2.0",
+    "types-aiobotocore-geo-places>=2.24.1",
 ]
 
 
