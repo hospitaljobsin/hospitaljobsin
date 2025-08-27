@@ -149,17 +149,20 @@ export default async function JobDetailPage({
 		title: data.organization.job.title,
 		url: `${env.NEXT_PUBLIC_URL}${links.jobDetail(slug, jobSlug)}`,
 		description: data.organization.job.descriptionHtml,
-		jobLocation: {
-			"@type": "Place",
-			address: {
-				"@type": "PostalAddress",
-				addressLocality:
-					data.organization.job.address.addressLocality || undefined,
-				addressRegion: data.organization.job.address.addressRegion || undefined,
-				postalCode: data.organization.job.address.postalCode || undefined,
-				addressCountry: data.organization.job.address.country || "IN",
-			},
-		}, // TODO: focus on edge case: location is undefined (for remote jobs)
+		jobLocation: !data.organization.job.address
+			? undefined
+			: {
+					"@type": "Place",
+					address: {
+						"@type": "PostalAddress",
+						addressLocality:
+							data.organization.job.address.addressLocality || undefined,
+						addressRegion:
+							data.organization.job.address.addressRegion || undefined,
+						postalCode: data.organization.job.address.postalCode || undefined,
+						addressCountry: data.organization.job.address.country || "IN",
+					},
+				},
 		datePosted: new Date(data.organization.job.createdAt).toISOString(),
 		validThrough: new Date(data.organization.job.expiresAt).toISOString(),
 		employmentType: data.organization.job.type

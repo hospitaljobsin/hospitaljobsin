@@ -41,9 +41,9 @@ class Job(Document):
     type: JobKindType | None = None
     work_mode: Literal["remote", "hybrid", "office"] | None = None
 
-    location: str
-    address: Address
-    geo: GeoObject
+    location: str | None = None
+    address: Address | None = None
+    geo: GeoObject | None = None
     applicant_locations: list[str] = []
     skills: list[str]
 

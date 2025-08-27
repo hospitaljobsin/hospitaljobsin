@@ -1222,12 +1222,12 @@ type Job implements Node {
 	"""
 	The location of the job.
 	"""
-	location: String!
+	location: String
 
 	"""
 	The address of the job.
 	"""
-	address: Address!
+	address: Address
 
 	"""
 	The locations where applicants can be located.
@@ -2446,7 +2446,7 @@ type Mutation {
 		"""
 		The location of the job.
 		"""
-		location: String!
+		location: String
 
 		"""
 		The applicant locations for the job.
@@ -2531,7 +2531,7 @@ type Mutation {
 		"""
 		The location of the job.
 		"""
-		location: String!
+		location: String
 
 		"""
 		The skills required for the job.

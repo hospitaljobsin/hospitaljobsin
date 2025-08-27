@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b6893324303ed135d67ff5110f703a1e>>
+ * @generated SignedSource<<59d79db8fdf4ce4baa93edd1e993ab53>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,7 @@ export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type RelatedJobFragment$data = {
   readonly currency: Currency;
-  readonly location: string;
+  readonly location: string | null | undefined;
   readonly maxExperience: number | null | undefined;
   readonly maxSalary: number | null | undefined;
   readonly minExperience: number | null | undefined;

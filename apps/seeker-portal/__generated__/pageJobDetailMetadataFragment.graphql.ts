@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c2ce787e9959b31790476541a5b66183>>
+ * @generated SignedSource<<88bba4d30285b93b8436d036820b4726>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -24,14 +24,14 @@ export type pageJobDetailMetadataFragment$data = {
         readonly country: string | null | undefined;
         readonly postalCode: string | null | undefined;
         readonly streetAddress: string | null | undefined;
-      };
+      } | null | undefined;
       readonly applicantLocations: ReadonlyArray<string>;
       readonly createdAt: any;
       readonly descriptionCleaned: string;
       readonly descriptionHtml: string;
       readonly expiresAt: any | null | undefined;
       readonly isVisible: boolean;
-      readonly location: string;
+      readonly location: string | null | undefined;
       readonly maxSalary: number | null | undefined;
       readonly minSalary: number | null | undefined;
       readonly slug: string;

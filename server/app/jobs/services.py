@@ -212,7 +212,7 @@ class JobService:
         organization_id: str,
         title: str,
         description: str,
-        location: str,
+        location: str | None = None,
         applicant_locations: list[str] = [],
         external_application_url: str | None = None,
         vacancies: int | None = None,
@@ -248,29 +248,34 @@ class JobService:
         ):
             return Err(OrganizationAuthorizationError())
 
-        result = await self._location_service.geocode(location)
-        if result is None:
-            return Err(InvalidLocationError())
-        geo = GeoObject(
-            coordinates=(result.longitude, result.latitude),
-        )
-
-        address = Address(
-            display_name=location,
-            street_address=result.street_address,
-            address_locality=result.address_locality,
-            address_region=result.address_region,
-            postal_code=result.postal_code,
-            country=result.country,
-        )
-
         if work_mode == "remote" and len(applicant_locations) == 0:
             return Err(InvalidApplicantLocationsError())
+        if work_mode != "remote" and location is None:
+            return Err(InvalidLocationError())
 
         for applicant_location in applicant_locations:
+            # TODO: check alpha2 country codes alone here
             result = await self._location_service.geocode(applicant_location)
             if result is None:
                 return Err(InvalidApplicantLocationsError())
+
+        geo, address = None, None
+        if location is not None:
+            result = await self._location_service.geocode(location)
+            if result is None:
+                return Err(InvalidLocationError())
+            geo = GeoObject(
+                coordinates=(result.longitude, result.latitude),
+            )
+
+            address = Address(
+                display_name=location,
+                street_address=result.street_address,
+                address_locality=result.address_locality,
+                address_region=result.address_region,
+                postal_code=result.postal_code,
+                country=result.country,
+            )
 
         job = await self._job_repo.create(
             organization=existing_organization,
@@ -303,7 +308,7 @@ class JobService:
         job_id: str,
         title: str,
         description: str,
-        location: str,
+        location: str | None = None,
         applicant_locations: list[str] = [],
         vacancies: int | None = None,
         min_salary: int | None = None,
@@ -338,6 +343,11 @@ class JobService:
         ):
             return Err(OrganizationAuthorizationError())
 
+        if work_mode == "remote" and len(applicant_locations) == 0:
+            return Err(InvalidApplicantLocationsError())
+        if work_mode != "remote" and location is None:
+            return Err(InvalidLocationError())
+
         if location is not None and location != existing_job.location:
             result = await self._location_service.geocode(location)
             if result is None:
@@ -357,10 +367,8 @@ class JobService:
             geo = existing_job.geo
             address = existing_job.address
 
-        if work_mode == "remote" and len(applicant_locations) == 0:
-            return Err(InvalidApplicantLocationsError())
-
         for applicant_location in applicant_locations:
+            # TODO: check alpha2 country codes alone here
             result = await self._location_service.geocode(applicant_location)
             if result is None:
                 return Err(InvalidApplicantLocationsError())
