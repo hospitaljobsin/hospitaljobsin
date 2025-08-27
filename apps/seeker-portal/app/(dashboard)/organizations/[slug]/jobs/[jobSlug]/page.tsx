@@ -32,6 +32,7 @@ const PageJobDetailMetadataFragment = graphql`
 			name
 			location
 			website
+			description
 			job(slug: $jobSlug) {
 			__typename
 			... on Job {
@@ -181,7 +182,7 @@ export default async function JobDetailPage({
 		hiringOrganization: {
 			"@type": "Organization",
 			name: data.organization.name,
-			description: data.organization.job.descriptionCleaned,
+			description: data.organization.description || undefined,
 			logo: data.organization.logoUrl,
 			sameAs: data.organization.website || undefined,
 		},
