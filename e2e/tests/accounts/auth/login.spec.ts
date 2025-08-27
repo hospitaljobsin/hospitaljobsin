@@ -182,6 +182,7 @@ test.describe("Login Page", () => {
 		webauthnAuth,
 	}) => {
 		test.skip(browserName !== "chromium", "Only supported in Chromium");
+		test.setTimeout(100_000); // increase timeout to allow for passkey prompt
 
 		// Set up Chrome DevTools Protocol session
 		const client = await context.newCDPSession(page);
