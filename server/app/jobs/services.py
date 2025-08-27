@@ -338,23 +338,24 @@ class JobService:
         ):
             return Err(OrganizationAuthorizationError())
 
-        # TODO: avoid recalculating this unnecessarily. use UNSET here and only pass in dirty values from frontend
-
-        result = await self._location_service.geocode(location)
-        if result is None:
-            return Err(InvalidLocationError())
-        geo = GeoObject(
-            coordinates=(result.longitude, result.latitude),
-        )
-
-        address = Address(
-            display_name=location,
-            street_address=result.street_address,
-            address_locality=result.address_locality,
-            address_region=result.address_region,
-            postal_code=result.postal_code,
-            country=result.country,
-        )
+        if location is not None and location != existing_job.location:
+            result = await self._location_service.geocode(location)
+            if result is None:
+                return Err(InvalidLocationError())
+            geo = GeoObject(
+                coordinates=(result.longitude, result.latitude),
+            )
+            address = Address(
+                display_name=location,
+                street_address=result.street_address,
+                address_locality=result.address_locality,
+                address_region=result.address_region,
+                postal_code=result.postal_code,
+                country=result.country,
+            )
+        else:
+            geo = existing_job.geo
+            address = existing_job.address
 
         if work_mode == "remote" and len(applicant_locations) == 0:
             return Err(InvalidApplicantLocationsError())
