@@ -12,6 +12,7 @@ from beanie import (
     UnionDoc,
 )
 from pydantic import BaseModel, Field
+from pydantic_extra_types.country import CountryAlpha2
 from pymongo import IndexModel
 from pymongo.operations import SearchIndexModel
 
@@ -41,10 +42,10 @@ class Job(Document):
     type: JobKindType | None = None
     work_mode: Literal["remote", "hybrid", "office"] | None = None
 
-    location: str
-    address: Address
-    geo: GeoObject
-    applicant_locations: list[str] = []
+    location: str | None = None
+    address: Address | None = None
+    geo: GeoObject | None = None
+    applicant_locations: list[CountryAlpha2] = []
     skills: list[str]
 
     currency: Literal["INR"] = "INR"

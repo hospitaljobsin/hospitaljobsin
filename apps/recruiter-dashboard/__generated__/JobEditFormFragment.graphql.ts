@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5bb8faab333a014b8b2baf21ed9f1dad>>
+ * @generated SignedSource<<80bf06949c1a5af472bf529140e9d030>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,7 +19,7 @@ export type JobEditFormFragment$data = {
   readonly id: string;
   readonly isActive: boolean;
   readonly isSalaryNegotiable: boolean;
-  readonly location: string;
+  readonly location: string | null | undefined;
   readonly maxExperience: number | null | undefined;
   readonly maxSalary: number | null | undefined;
   readonly minExperience: number | null | undefined;

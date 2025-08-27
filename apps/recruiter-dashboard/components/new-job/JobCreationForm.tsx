@@ -43,7 +43,7 @@ const jobFormSchema = z
 		description: z.string().min(1, "This field is required").max(4000),
 		vacancies: z.number().positive().nullable().optional(),
 		skills: z.array(z.object({ value: z.string() })),
-		location: z.string().min(1, "This field is required"),
+		location: z.string().optional(),
 		applicantLocations: z.array(z.string()),
 		minSalary: z.number().positive().nullable(),
 		maxSalary: z.number().positive().nullable(),
@@ -77,6 +77,18 @@ const jobFormSchema = z
 			message: "At least one eligible country is required for remote jobs",
 			path: ["applicantLocations"],
 		},
+	)
+	.refine(
+		(data) => {
+			if (data.workMode !== "REMOTE" && !data.location) {
+				return false;
+			}
+			return true;
+		},
+		{
+			message: "Location is required",
+			path: ["location"],
+		},
 	);
 
 type JobFormValues = z.infer<typeof jobFormSchema>;
@@ -92,7 +104,7 @@ const CreateJobMutation = graphql`
     $title: String!,
     $description: String!,
     $skills: [String!]!,
-    $location: String!,
+    $location: String,
     $applicantLocations: [String!]!,
     $minSalary: Int,
     $maxSalary: Int,
@@ -259,8 +271,9 @@ export default function JobCreationForm({
 				description: formData.description,
 				vacancies: formData.vacancies ?? undefined,
 				skills: formData.skills.map((s) => s.value),
-				location: formData.location,
-				applicantLocations: formData.applicantLocations,
+				location: formData.workMode === "REMOTE" ? null : formData.location,
+				applicantLocations:
+					formData.workMode === "REMOTE" ? formData.applicantLocations : [],
 				minSalary: formData.minSalary || null,
 				maxSalary: formData.maxSalary || null,
 				minExperience: formData.minExperience || null,
@@ -375,24 +388,7 @@ export default function JobCreationForm({
 								</div>
 							)}
 						/>
-						<Controller
-							name="location"
-							control={control}
-							render={({ field }) => (
-								<LocationAutocomplete
-									label="Job Location"
-									labelPlacement="outside"
-									placeholder="Enter job location"
-									value={field.value ?? ""}
-									onChange={(value) => field.onChange(value.displayName)}
-									onValueChange={field.onChange}
-									errorMessage={errors.location?.message}
-									isInvalid={!!errors.location}
-									isRequired
-									validationBehavior="aria"
-								/>
-							)}
-						/>
+
 						<ChipsInput<JobFormValues, "skills">
 							name="skills"
 							label="Job Skills"
@@ -510,6 +506,26 @@ export default function JobCreationForm({
 											<SelectItem key={code}>{country.name}</SelectItem>
 										))}
 									</Select>
+								)}
+							/>
+						)}
+						{workMode !== "REMOTE" && (
+							<Controller
+								name="location"
+								control={control}
+								render={({ field }) => (
+									<LocationAutocomplete
+										label="Job Location"
+										labelPlacement="outside"
+										placeholder="Enter job location"
+										value={field.value ?? ""}
+										onChange={(value) => field.onChange(value.displayName)}
+										onValueChange={field.onChange}
+										errorMessage={errors.location?.message}
+										isInvalid={!!errors.location}
+										isRequired
+										validationBehavior="aria"
+									/>
 								)}
 							/>
 						)}

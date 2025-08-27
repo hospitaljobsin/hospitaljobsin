@@ -76,7 +76,7 @@ mutation JobEditFormMutation(
     $title: String!,
     $description: String!,
     $skills: [String!]!,
-    $location: String!,
+    $location: String,
     $jobId: ID!,
     $minSalary: Int,
     $maxSalary: Int,
@@ -159,7 +159,7 @@ const formSchema = z
 		description: z.string().min(1, "This field is required").max(4000),
 		vacancies: z.number().nonnegative().nullable(),
 		skills: z.array(z.object({ value: z.string() })),
-		location: z.string().min(1, "Job location is required"),
+		location: z.string().optional(),
 		applicantLocations: z.array(z.string().min(1, "This field is required")),
 		minSalary: z.number().positive().nullable().optional(),
 		maxSalary: z.number().positive().nullable().optional(),
@@ -198,6 +198,18 @@ const formSchema = z
 		{
 			message: "At least one eligible country is required for remote jobs",
 			path: ["applicantLocations"],
+		},
+	)
+	.refine(
+		(data) => {
+			if (data.workMode !== "REMOTE" && !data.location) {
+				return false;
+			}
+			return true;
+		},
+		{
+			message: "Location is required",
+			path: ["location"],
 		},
 	);
 
@@ -243,7 +255,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 				jobData.skills?.map((skill) => ({
 					value: skill,
 				})) ?? [],
-			location: jobData.location ?? "",
+			location: jobData.location || undefined,
 			applicantLocations: jobData.applicantLocations.map(
 				(location) => location,
 			),
@@ -321,7 +333,10 @@ export default function JobEditForm({ rootQuery }: Props) {
 				description: formData.description,
 				vacancies: formData.vacancies ?? undefined,
 				skills: formData.skills.flatMap((skill) => skill.value),
-				location: formData.location,
+				location:
+					formData.workMode === "REMOTE" ? undefined : formData.location,
+				applicantLocations:
+					formData.workMode === "REMOTE" ? formData.applicantLocations : [],
 				minSalary: formData.minSalary,
 				maxSalary: formData.maxSalary,
 				minExperience: formData.minExperience,
@@ -331,7 +346,6 @@ export default function JobEditForm({ rootQuery }: Props) {
 				workMode:
 					formData.workMode === "UNSPECIFIED" ? null : formData.workMode,
 				isSalaryNegotiable: !!formData.isSalaryNegotiable,
-				applicantLocations: formData.applicantLocations,
 			},
 			onCompleted(response) {
 				if (response.updateJob.__typename === "JobNotFoundError") {
@@ -499,28 +513,6 @@ export default function JobEditForm({ rootQuery }: Props) {
 								</div>
 							)}
 						/>
-						<Controller
-							name="location"
-							control={control}
-							render={({ field }) => (
-								<LocationAutocomplete
-									label="Job Location"
-									labelPlacement="outside"
-									placeholder="Add job location"
-									value={field.value ?? ""}
-									onChange={(value) => {
-										field.onChange(value.displayName);
-									}}
-									onValueChange={(value) => {
-										field.onChange(value);
-									}}
-									errorMessage={errors.location?.message}
-									isInvalid={!!errors.location}
-									isRequired
-									validationBehavior="aria"
-								/>
-							)}
-						/>
 
 						<ChipsInput<z.infer<typeof formSchema>, "skills">
 							name="skills"
@@ -647,6 +639,30 @@ export default function JobEditForm({ rootQuery }: Props) {
 											<SelectItem key={code}>{country.name}</SelectItem>
 										))}
 									</Select>
+								)}
+							/>
+						)}
+						{watch("workMode") !== "REMOTE" && (
+							<Controller
+								name="location"
+								control={control}
+								render={({ field }) => (
+									<LocationAutocomplete
+										label="Job Location"
+										labelPlacement="outside"
+										placeholder="Add job location"
+										value={field.value ?? ""}
+										onChange={(value) => {
+											field.onChange(value.displayName);
+										}}
+										onValueChange={(value) => {
+											field.onChange(value);
+										}}
+										errorMessage={errors.location?.message}
+										isInvalid={!!errors.location}
+										isRequired
+										validationBehavior="aria"
+									/>
 								)}
 							/>
 						)}

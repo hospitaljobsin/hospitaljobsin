@@ -211,7 +211,7 @@ class JobMutation:
             ),
         ],
         location: Annotated[
-            str,
+            str | None,
             strawberry.argument(
                 description="The location of the job.",
             ),
@@ -363,7 +363,7 @@ class JobMutation:
             ),
         ],
         location: Annotated[
-            str,
+            str | None,
             strawberry.argument(
                 description="The location of the job.",
             ),

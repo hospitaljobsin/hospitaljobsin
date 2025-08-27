@@ -56,6 +56,8 @@ dependencies = [
     "filelock>=3.19.1",
     "bleach>=6.2.0",
     "types-aiobotocore-geo-places>=2.24.1",
+    "pydantic-extra-types>=2.10.5",
+    "pycountry>=24.6.1",
 ]
 
 

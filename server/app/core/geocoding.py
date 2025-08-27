@@ -51,6 +51,7 @@ class NominatimLocationService(BaseLocationService):
         location = await self._geocoder.geocode(query)
         if location:
             return GeocodeResult(
+                display_name=location.display_name,
                 latitude=location.latitude,
                 longitude=location.longitude,
             )
@@ -68,6 +69,7 @@ class NominatimLocationService(BaseLocationService):
                         place_id=str(item.get("place_id", generate(size=10))),
                         display_name=item.get("display_name"),
                         coordinates=GeocodeResult(
+                            display_name=item.get("display_name"),
                             latitude=item.get("lat"),
                             longitude=item.get("lon"),
                         ),
@@ -112,6 +114,7 @@ class AWSLocationService(BaseLocationService):
                 )
 
                 return GeocodeResult(
+                    display_name=results[0].get("Title"),
                     latitude=position[1],
                     longitude=position[0],
                     postal_code=address.get("PostalCode"),
@@ -125,28 +128,6 @@ class AWSLocationService(BaseLocationService):
                     else None,
                 )
         return None
-
-    def get_readable_name(self, place: dict) -> str:
-        """Get a readable name for a place from HERE API response."""
-        # Pick the most specific fields available from HERE API response structure
-        address = place.get("Address", {})
-        locality = address.get("Locality")
-        sub_region = (
-            address.get("SubRegion", {}).get("Name")
-            if address.get("SubRegion")
-            else None
-        )
-        region = (
-            address.get("Region", {}).get("Name") if address.get("Region") else None
-        )
-
-        if locality and sub_region:
-            return f"{locality}, {sub_region}"
-        if locality and region:
-            return f"{locality}, {region}"
-        if locality:
-            return locality
-        return address.get("Label", "")
 
     async def get_locations(self, search_term: str, limit: int) -> list[SearchLocation]:
         """Get relevant search locations for the given search term using AWS LocationServiceClient."""
