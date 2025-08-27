@@ -104,9 +104,8 @@ resource "aws_iam_policy" "lambda_custom_policy" {
       {
         Effect = "Allow",
         Action = [
-          "geo:Geocode",
-          "geo:SearchText",
-          "geo:Suggest"
+          "geo-places:Geocode",
+          "geo-places:Suggest"
         ],
         Resource = "*"
       },
