@@ -78,11 +78,8 @@ class NominatimLocationService(BaseLocationService):
 
 
 class AWSLocationService(BaseLocationService):
-    def __init__(
-        self, location_client: LocationServicePlacesV2Client, settings: GeocoderSettings
-    ) -> None:
+    def __init__(self, location_client: LocationServicePlacesV2Client) -> None:
         self._location_client = location_client
-        self._settings = settings
 
     async def geocode(
         self,
@@ -153,45 +150,62 @@ class AWSLocationService(BaseLocationService):
 
     async def get_locations(self, search_term: str, limit: int) -> list[SearchLocation]:
         """Get relevant search locations for the given search term using AWS LocationServiceClient."""
+        # Use suggest to get place suggestions without expensive geocoding
         response = await self._location_client.suggest(
             QueryText=search_term,
             MaxResults=limit,
             IntendedUse="SingleUse",
+            BiasPosition=[
+                0.0,
+                0.0,
+            ],  # Default bias position to satisfy validation requirement
+            AdditionalFeatures=["Core"],
         )
         results = response.get("ResultItems", [])
-        return [
-            SearchLocation(
-                place_id=str(item.get("PlaceId", generate(size=10))),
-                display_name=self.get_readable_name(item["Place"]),
-                coordinates=GeocodeResult(
-                    latitude=item["Place"]["Position"][1],
-                    longitude=item["Place"]["Position"][0],
-                    postal_code=item["Place"]["Address"].get("PostalCode"),
-                    address_region=item["Place"]["Address"]
-                    .get("Region", {})
-                    .get("Name")
-                    if item["Place"]["Address"].get("Region")
-                    else None,
-                    address_locality=(
-                        item["Place"]["Address"].get("Locality")
-                        or item["Place"]["Address"].get("SubRegion", {}).get("Name")
-                        if item["Place"]["Address"].get("SubRegion")
-                        else None
-                    ),
-                    street_address=(
-                        f"{item['Place']['Address'].get('AddressNumber', '')} {item['Place']['Address'].get('Street', '')}".strip()
-                        if item["Place"]["Address"].get("AddressNumber")
-                        or item["Place"]["Address"].get("Street")
-                        else None
-                    ),
-                    country=item["Place"]["Address"].get("Country", {}).get("Code2")
-                    if item["Place"]["Address"].get("Country")
-                    else None,
-                ),
-            )
-            for item in results
-            if item.get("Place") is not None
-            and item["Place"].get("Position") is not None
-            and item["Place"].get("Address") is not None
-            and item["Place"]["Address"].get("Label") is not None
-        ]
+
+        search_locations = []
+        for item in results:
+            if (
+                item.get("Place") is not None
+                and item["Place"].get("Address") is not None
+                and item["Place"].get("Position") is not None
+                and item["Place"]["Address"].get("Label") is not None
+            ):
+                # TODO: filter through item["Place"]["PlaceType"]
+                search_locations.append(
+                    SearchLocation(
+                        place_id=str(item.get("PlaceId", generate(size=10))),
+                        display_name=item["Title"],
+                        coordinates=GeocodeResult(
+                            latitude=item["Place"]["Position"][1],
+                            longitude=item["Place"]["Position"][0],
+                            postal_code=item["Place"]["Address"].get("PostalCode"),
+                            address_region=item["Place"]["Address"]
+                            .get("Region", {})
+                            .get("Name")
+                            if item["Place"]["Address"].get("Region")
+                            else None,
+                            address_locality=(
+                                item["Place"]["Address"].get("Locality")
+                                or item["Place"]["Address"]
+                                .get("SubRegion", {})
+                                .get("Name")
+                                if item["Place"]["Address"].get("SubRegion")
+                                else None
+                            ),
+                            street_address=(
+                                f"{item['Place']['Address'].get('AddressNumber', '')} {item['Place']['Address'].get('Street', '')}".strip()
+                                if item["Place"]["Address"].get("AddressNumber")
+                                or item["Place"]["Address"].get("Street")
+                                else None
+                            ),
+                            country=item["Place"]["Address"]
+                            .get("Country", {})
+                            .get("Code2")
+                            if item["Place"]["Address"].get("Country")
+                            else None,
+                        ),
+                    )
+                )
+
+        return search_locations
