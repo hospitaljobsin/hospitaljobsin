@@ -212,7 +212,7 @@ test.describe("Login Page", () => {
 				credentialId: webauthnCredential.credentialId,
 				isResidentCredential: true,
 				privateKey: WEBAUTHN_PRIVATE_KEY,
-				rpId: "localtest.me",
+				rpId: env.RP_ID,
 				userHandle: "YPG5s7Ozs7Ozs7Oz",
 				signCount: 0,
 			},
