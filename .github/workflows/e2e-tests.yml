@@ -118,7 +118,7 @@ jobs:
           API_BASE_URL: ${{ vars.SST_API_URL }}
           ACCOUNTS_UI_BASE_URL: ${{ vars.SST_ACCOUNTS_BASE_URL }}
           SEEKER_PORTAL_BASE_URL: ${{ vars.SST_SEEKER_PORTAL_BASE_URL }}
-          RP_ID: hospitaljobs.in # TODO: avoid hardcoding this
+          RP_ID: ${{ vars.PUBLIC_ROOT_DOMAIN }}
           ENVIRONMENT: staging
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}

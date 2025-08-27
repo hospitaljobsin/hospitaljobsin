@@ -581,7 +581,7 @@ resource "aws_ecs_task_definition" "app" {
         },
         {
           name  = "SERVER_RP_ID"
-          value = var.environment_name == "staging" ? "hospitaljobs.in" : var.domain_name # TODO: avoid hardcoding this
+          value = var.domain_name
         },
         {
           name  = "SERVER_RP_NAME"
