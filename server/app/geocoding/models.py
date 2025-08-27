@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 
 class GeocodeResult(BaseModel):
+    display_name: str
     latitude: float
     longitude: float
     postal_code: str | None = None
