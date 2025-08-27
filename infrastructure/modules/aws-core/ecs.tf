@@ -596,14 +596,6 @@ resource "aws_ecs_task_definition" "app" {
           value = "aws_location"
         },
         {
-          name  = "SERVER_SINGLE_USE_LOCATION_PLACE_INDEX_NAME"
-          value = aws_location_place_index.single_use.index_name
-        },
-        {
-          name  = "SERVER_STORAGE_LOCATION_PLACE_INDEX_NAME"
-          value = aws_location_place_index.storage.index_name
-        },
-        {
           name  = "SERVER_SENTRY_DSN"
           value = var.sentry_backend_dsn
         },
