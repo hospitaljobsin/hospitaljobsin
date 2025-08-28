@@ -308,6 +308,7 @@ class JobRepo:
                 dimensions=JOB_EMBEDDING_DIMENSIONS,
             )
         # else: keep the existing embedding
+        job.updated_at = datetime.now(UTC)
 
         return await job.save(link_rule=WriteRules.DO_NOTHING)
 
