@@ -494,24 +494,31 @@ class JobRepo:
 
         # Add salary filters
         if min_salary is not None:
-            # Job's max_salary should be >= provided min_salary
+            # Job should either:
+            # 1. Have max_salary >= min_salary, OR
+            # 2. Have min_salary >= min_salary (if max_salary is not set)
             search_query["compound"]["must"].append(
                 {
-                    "range": {
-                        "path": "max_salary",
-                        "gte": min_salary,
-                        "score": {"boost": {"value": 1}},
+                    "compound": {
+                        "should": [
+                            {"range": {"path": "max_salary", "gte": min_salary}},
+                            {"range": {"path": "min_salary", "gte": min_salary}},
+                        ]
                     }
                 }
             )
+
         if max_salary is not None:
-            # Job's min_salary should be <= provided max_salary
+            # Job should either:
+            # 1. Have min_salary <= max_salary, OR
+            # 2. Have max_salary <= max_salary (if min_salary is not set)
             search_query["compound"]["must"].append(
                 {
-                    "range": {
-                        "path": "min_salary",
-                        "lte": max_salary,
-                        "score": {"boost": {"value": 1}},
+                    "compound": {
+                        "should": [
+                            {"range": {"path": "min_salary", "lte": max_salary}},
+                            {"range": {"path": "max_salary", "lte": max_salary}},
+                        ]
                     }
                 }
             )
@@ -533,8 +540,10 @@ class JobRepo:
             proximity_km = proximity_km or 1.0
             max_distance_meters = proximity_km * 1000.0
 
+            print("MAX DISTANCE METERS", max_distance_meters)
+
             # Use near for proximity search with Point coordinates
-            search_query["compound"]["filter"].append(
+            search_query["compound"]["must"].append(
                 {
                     "near": {
                         "path": "geo",
@@ -573,13 +582,6 @@ class JobRepo:
             {"$search": search_query},
             {"$sort": {"updated_at": -1}},  # Sort by most recent
         ]
-
-        print(
-            await Job.aggregate(
-                aggregation_pipeline=pipeline,
-                projection_model=Job,
-            ).to_list(),
-        )
 
         # Use aggregation with paginator
         search_criteria = Job.aggregate(
