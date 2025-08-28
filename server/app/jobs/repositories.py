@@ -392,7 +392,8 @@ class JobRepo:
                                         "gt": datetime.now(UTC),
                                     }
                                 },
-                            ]
+                            ],
+                            "minimumShouldMatch": 1,
                         }
                     },
                 ],
