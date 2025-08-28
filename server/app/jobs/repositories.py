@@ -540,39 +540,21 @@ class JobRepo:
             proximity_km = proximity_km or 1.0
             max_distance_meters = proximity_km * 1000.0
 
-            print("MAX DISTANCE METERS", max_distance_meters)
-
-            # Use near for proximity search with Point coordinates
+            # Use geoWithin for strict distance filtering
             search_query["compound"]["must"].append(
                 {
-                    "near": {
-                        "path": "geo",
-                        "origin": {
-                            "type": "Point",
-                            "coordinates": [
-                                coordinates.longitude,
-                                coordinates.latitude,
-                            ],
+                    "geoWithin": {
+                        "circle": {
+                            "center": {
+                                "type": "Point",
+                                "coordinates": [
+                                    coordinates.longitude,
+                                    coordinates.latitude,
+                                ],
+                            },
+                            "radius": max_distance_meters,
                         },
-                        "pivot": max_distance_meters,
-                    }
-                }
-            )
-
-            # Add distance scoring for relevance
-            search_query["compound"]["should"].append(
-                {
-                    "near": {
                         "path": "geo",
-                        "origin": {
-                            "type": "Point",
-                            "coordinates": [
-                                coordinates.longitude,
-                                coordinates.latitude,
-                            ],
-                        },
-                        "pivot": max_distance_meters,
-                        "score": {"boost": {"value": 2}},
                     }
                 }
             )
