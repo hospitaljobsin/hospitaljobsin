@@ -198,7 +198,7 @@ test.describe("Login Page", () => {
 					hasResidentKey: true,
 					hasUserVerification: true,
 					isUserVerified: true,
-					automaticPresenceSimulation: false,
+					automaticPresenceSimulation: true, // 👈 auto-simulate user presence
 				},
 			},
 		);
