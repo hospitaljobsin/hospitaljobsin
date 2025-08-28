@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<be95cc49528c79c12e85cf8ea60b333b>>
- * @relayHash 1428f8008d729862ece17e9e484daa9a
+ * @generated SignedSource<<9343fd0144eb97ec545d0ebda0b46634>>
+ * @relayHash 18c6a5cabfcf22f60dc391ce5debde22
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 1428f8008d729862ece17e9e484daa9a
+// @relayRequestID 18c6a5cabfcf22f60dc391ce5debde22
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type layoutDashboardQuery$variables = Record<PropertyKey, never>;
-export type layoutDashboardQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderClientComponentFragment">;
+export type notFoundDashboardQuery$variables = Record<PropertyKey, never>;
+export type notFoundDashboardQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderFragment">;
 };
-export type layoutDashboardQuery = {
-  response: layoutDashboardQuery$data;
-  variables: layoutDashboardQuery$variables;
+export type notFoundDashboardQuery = {
+  response: notFoundDashboardQuery$data;
+  variables: notFoundDashboardQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -35,12 +35,12 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "layoutDashboardQuery",
+    "name": "notFoundDashboardQuery",
     "selections": [
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "DashboardHeaderClientComponentFragment"
+        "name": "DashboardHeaderFragment"
       }
     ],
     "type": "Query",
@@ -50,7 +50,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "layoutDashboardQuery",
+    "name": "notFoundDashboardQuery",
     "selections": [
       {
         "alias": null,
@@ -122,15 +122,15 @@ return {
     ]
   },
   "params": {
-    "id": "1428f8008d729862ece17e9e484daa9a",
+    "id": "18c6a5cabfcf22f60dc391ce5debde22",
     "metadata": {},
-    "name": "layoutDashboardQuery",
+    "name": "notFoundDashboardQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "ccf90de596d6bf84392328d71873456b";
+(node as any).hash = "10758d2a7ea17fd42ebb8be4fa3f0303";
 
 export default node;

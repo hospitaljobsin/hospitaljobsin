@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cc81b7c74559cd62eaa5191f732d1d83>>
+ * @generated SignedSource<<f5c30a350f3b969c7521ee04f790ee39>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type OrganizationOverviewTabFragment$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"OrganizationDetailsFragment" | "OrganizationJobsListFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"OrgDetailHeaderFragment" | "OrganizationDetailsFragment" | "OrganizationJobsListFragment">;
   readonly " $fragmentType": "OrganizationOverviewTabFragment";
 };
 export type OrganizationOverviewTabFragment$key = {
@@ -42,6 +42,11 @@ return {
     {
       "args": (v0/*: any*/),
       "kind": "FragmentSpread",
+      "name": "OrgDetailHeaderFragment"
+    },
+    {
+      "args": (v0/*: any*/),
+      "kind": "FragmentSpread",
       "name": "OrganizationDetailsFragment"
     },
     {
@@ -55,6 +60,6 @@ return {
 };
 })();
 
-(node as any).hash = "a382471a36f8b099b7515b39be0c2d62";
+(node as any).hash = "336ef86cc80d64b573bb90e47f7f11c9";
 
 export default node;

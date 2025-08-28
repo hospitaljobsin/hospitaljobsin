@@ -581,7 +581,7 @@ resource "aws_ecs_task_definition" "app" {
         },
         {
           name  = "SERVER_RP_ID"
-          value = var.environment_name == "staging" ? "accounts.${var.domain_name}" : var.domain_name
+          value = var.domain_name
         },
         {
           name  = "SERVER_RP_NAME"

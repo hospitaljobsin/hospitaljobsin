@@ -1,6 +1,7 @@
 import { env } from "@/lib/env";
 import { authTest, expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
+import { WEBAUTHN_PRIVATE_KEY } from "@/tests/utils/constants";
 
 test.describe("Login Page", () => {
 	test.beforeEach(async ({ page }) => {
@@ -196,23 +197,22 @@ test.describe("Login Page", () => {
 					hasResidentKey: true,
 					hasUserVerification: true,
 					isUserVerified: true,
-					automaticPresenceSimulation: true, // start true
+					automaticPresenceSimulation: true, // 👈 auto-simulate user presence
 				},
 			},
 		);
 
 		const webauthnCredential = webauthnAuth.account.webauthnCredentials[0];
+
 		// Register a mock credential
 		await client.send("WebAuthn.addCredential", {
 			authenticatorId,
 			credential: {
-				// credentialId: 'tayIRz9g9a2wEQEmc8zk+g==',
-				credentialId: webauthnCredential.credentialId, // Base64-encoded mock credential ID
+				credentialId: webauthnCredential.credentialId,
 				isResidentCredential: true,
-				privateKey:
-					"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgaXHR/cXGj5XEgk3jpoqK50mry/3gOFAyQwgXRNSz+ZyhRANCAAR9WkpjDhNVmt1JxiXmdtXFV9X46pefmf2zU5AzFPczSLtppVXd9i2gzKClvkenoESvvdOaF299W1Gp8TESeQpx", // Base64-encoded mock private key (COSE later if needed)
-				rpId: "accounts.localtest.me",
-				userHandle: "YPG5s7Ozs7Ozs7Oz", // Ensure it's 16 bytes (padded)
+				privateKey: WEBAUTHN_PRIVATE_KEY,
+				rpId: env.RP_ID,
+				userHandle: "YPG5s7Ozs7Ozs7Oz",
 				signCount: 0,
 			},
 		});
@@ -224,40 +224,32 @@ test.describe("Login Page", () => {
 		// Ensure the credential was added successfully
 		expect(credentials.credentials).toHaveLength(1);
 
-		// initialize event listeners to wait for a successful passkey input event
+		// Before clicking, listen for the `WebAuthn.credentialAsserted` event.
+		// This ensures that the test waits for the assertion to complete.
 		const operationCompleted = new Promise<void>((resolve) => {
-			client.on("WebAuthn.credentialAdded", () => resolve());
 			client.on("WebAuthn.credentialAsserted", () => resolve());
 		});
 
 		// set isUserVerified option to true
-		// (so that subsequent passkey operations will be successful)
 		await client.send("WebAuthn.setUserVerified", {
 			authenticatorId: authenticatorId,
 			isUserVerified: true,
 		});
 
-		// set automaticPresenceSimulation option to true
-		// (so that the virtual authenticator will respond to the next passkey prompt)
-		await client.send("WebAuthn.setAutomaticPresenceSimulation", {
-			authenticatorId: authenticatorId,
-			enabled: true,
-		});
-
 		// Click passkey button to trigger authentication
 		await page.getByRole("button", { name: "Sign in with passkey" }).click();
 
-		// wait to receive the event that the passkey was successfully registered or verified
+		// Wait for the passkey assertion event to be emitted.
+		// The client will respond to the `get` request from the browser.
 		await operationCompleted;
-
-		// set automaticPresenceSimulation option back to false
-		await client.send("WebAuthn.setAutomaticPresenceSimulation", {
-			authenticatorId,
-			enabled: false,
-		});
 
 		// Ensure redirection happens after successful authentication
 		await page.waitForURL(`${env.SEEKER_PORTAL_BASE_URL}/`);
+
+		// Clean up by removing the virtual authenticator
+		await client.send("WebAuthn.removeVirtualAuthenticator", {
+			authenticatorId,
+		});
 	});
 
 	test("should handle invalid passkey login", async ({
@@ -319,6 +311,11 @@ test.describe("Login Page", () => {
 		await client.send("WebAuthn.setAutomaticPresenceSimulation", {
 			authenticatorId,
 			enabled: false,
+		});
+
+		// Clean up by removing the virtual authenticator
+		await client.send("WebAuthn.removeVirtualAuthenticator", {
+			authenticatorId,
 		});
 	});
 

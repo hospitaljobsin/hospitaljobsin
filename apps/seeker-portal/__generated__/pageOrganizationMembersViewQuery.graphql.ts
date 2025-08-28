@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<3a19ecfd937635b6a34912eca32e44fe>>
- * @relayHash 5493ffcd074fc1b582c0881f804b0a1b
+ * @generated SignedSource<<a1f495c8be8031763f6a6d0f595a04c7>>
+ * @relayHash c9c5c2c84fea55c5530db01162564b28
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 5493ffcd074fc1b582c0881f804b0a1b
+// @relayRequestID c9c5c2c84fea55c5530db01162564b28
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -80,6 +80,28 @@ v7 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
+},
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "fullName",
+  "storageKey": null
+},
+v9 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "avatarUrl",
+  "storageKey": null
+},
+v10 = {
+  "kind": "InlineFragment",
+  "selections": [
+    (v7/*: any*/)
+  ],
+  "type": "Node",
+  "abstractKey": "__isNode"
 };
 return {
   "fragment": {
@@ -150,6 +172,13 @@ return {
               (v5/*: any*/),
               {
                 "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "slug",
+                "storageKey": null
+              },
+              {
+                "alias": null,
                 "args": (v6/*: any*/),
                 "concreteType": "OrganizationMemberConnection",
                 "kind": "LinkedField",
@@ -173,20 +202,8 @@ return {
                         "plural": false,
                         "selections": [
                           (v7/*: any*/),
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "fullName",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "avatarUrl",
-                            "storageKey": null
-                          },
+                          (v8/*: any*/),
+                          (v9/*: any*/),
                           (v2/*: any*/)
                         ],
                         "storageKey": null
@@ -250,21 +267,56 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
+          (v10/*: any*/)
+        ],
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "viewer",
+        "plural": false,
+        "selections": [
+          (v2/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              (v7/*: any*/)
+              (v8/*: any*/),
+              (v9/*: any*/),
+              (v7/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  },
+                  (v7/*: any*/)
+                ],
+                "storageKey": null
+              }
             ],
-            "type": "Node",
-            "abstractKey": "__isNode"
-          }
+            "type": "Account",
+            "abstractKey": null
+          },
+          (v10/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "5493ffcd074fc1b582c0881f804b0a1b",
+    "id": "c9c5c2c84fea55c5530db01162564b28",
     "metadata": {},
     "name": "pageOrganizationMembersViewQuery",
     "operationKind": "query",

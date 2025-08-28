@@ -2,6 +2,7 @@ import type { JobDetailViewFragment$key } from "@/__generated__/JobDetailViewFra
 import useJobImpressionTracker from "@/lib/hooks/useJobImpressionTracker";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import DashboardHeader from "../layout/DashboardHeader";
 import JobDetails from "./JobDetails";
 import RelatedJobsList from "./RelatedJobsList";
 
@@ -10,6 +11,7 @@ const JobDetailViewFragment = graphql`
 	slug: { type: "String!"}
 	jobSlug: { type: "String!"}
     ) {
+		...DashboardHeaderFragment
 		...JobDetailsFragment @arguments(slug: $slug, jobSlug: $jobSlug)
 		organization(slug: $slug) {
 		__typename
@@ -43,9 +45,16 @@ export default function JobDetailView(props: {
 	useJobImpressionTracker(query.organization.job.id);
 
 	return (
-		<div className="py-8 w-full h-full flex flex-col lg:flex-row items-start gap-6">
-			<JobDetails rootQuery={query} />
-			<RelatedJobsList job={query.organization.job} />
+		<div className="w-full flex flex-col flex-1 h-full">
+			<DashboardHeader query={query} animate={false} />
+			<div className="w-full mx-auto bg-background-600">
+				<div className="w-full px-5 max-w-7xl mx-auto">
+					<div className="py-8 w-full h-full flex flex-col lg:flex-row items-start gap-6">
+						<JobDetails rootQuery={query} />
+						<RelatedJobsList job={query.organization.job} />
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 }

@@ -1,6 +1,7 @@
 import type { JobApplyViewFragment$key } from "@/__generated__/JobApplyViewFragment.graphql";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import DashboardHeader from "../layout/DashboardHeader";
 import JobApplicationDetails from "./JobApplicationDetails";
 import JobApplyForm from "./JobApplyForm";
 import ProfilePreview from "./ProfileReview";
@@ -10,6 +11,7 @@ const JobApplyViewFragment = graphql`
       slug: { type: "String!"}
       jobSlug: { type: "String!"}
     ) {
+      ...DashboardHeaderFragment
       organization(slug: $slug) {
         __typename
         ... on Organization {
@@ -51,10 +53,17 @@ export default function JobApplyView(props: {
 	invariant(query.viewer.__typename === "Account", "Viewer must be an Account");
 
 	return (
-		<div className="py-8 w-full h-full flex flex-col items-center gap-6">
-			<JobApplicationDetails job={query.organization.job} />
-			<ProfilePreview account={query.viewer} />
-			<JobApplyForm rootQuery={query.organization.job} />
+		<div className="w-full flex flex-col flex-1 h-full">
+			<DashboardHeader query={query} animate={false} />
+			<div className="w-full mx-auto bg-background-600">
+				<div className="w-full px-5 max-w-7xl mx-auto">
+					<div className="py-8 w-full h-full flex flex-col items-center gap-6">
+						<JobApplicationDetails job={query.organization.job} />
+						<ProfilePreview account={query.viewer} />
+						<JobApplyForm rootQuery={query.organization.job} />
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 }

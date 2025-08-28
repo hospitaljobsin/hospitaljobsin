@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<368437224ae382a7d924fd1e2664168e>>
- * @relayHash 03ffab2fde6749f5f6960440ad11e7c5
+ * @generated SignedSource<<e3c2301cfffacbfbce46b44568e077a9>>
+ * @relayHash 5849b0fb6b1279c9c3dea169371e76d5
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 03ffab2fde6749f5f6960440ad11e7c5
+// @relayRequestID 5849b0fb6b1279c9c3dea169371e76d5
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -273,7 +273,22 @@ return {
                   (v15/*: any*/)
                 ],
                 "storageKey": null
-              }
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              (v15/*: any*/)
             ],
             "type": "Account",
             "abstractKey": null
@@ -571,7 +586,7 @@ return {
     ]
   },
   "params": {
-    "id": "03ffab2fde6749f5f6960440ad11e7c5",
+    "id": "5849b0fb6b1279c9c3dea169371e76d5",
     "metadata": {},
     "name": "pageJobApplyViewQuery",
     "operationKind": "query",
