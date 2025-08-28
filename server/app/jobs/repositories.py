@@ -21,6 +21,7 @@ from app.core.constants import (
     JOB_APPLICANT_EMBEDDING_INDEX_NAME,
     JOB_EMBEDDING_DIMENSIONS,
     JOB_EMBEDDING_INDEX_NAME,
+    JOB_SEARCH_INDEX_NAME,
     RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD,
     RELATED_JOBS_SIMILARITY_THRESHOLD,
     TRENDING_JOBS_LIMIT,
@@ -366,150 +367,209 @@ class JobRepo:
         before: str | None = None,
         after: str | None = None,
     ) -> PaginatedResult[Job, ObjectId]:
-        """Get a paginated result of active jobs with additional filters."""
+        """Get a paginated result of active jobs with advanced search capabilities."""
         paginator: Paginator[Job, ObjectId] = Paginator(
             reverse=True,
             document_cls=Job,
             paginate_by="id",
         )
 
-        # If coordinates are provided, use aggregation pipeline
-        if coordinates is not None:
-            filters = []
-            proximity_km = proximity_km or 1.0  # Default to 1 km if not provided
-            max_distance_meters = proximity_km * 1000.0
-            filters.append(
+        # Build Atlas Search query
+        search_query = {
+            "index": JOB_SEARCH_INDEX_NAME,
+            "compound": {
+                "must": [
+                    # Always filter for active jobs
+                    {"equals": {"value": True, "path": "is_active"}},
+                    # Filter for non-expired jobs (either null or greater than current date)
+                    {
+                        "compound": {
+                            "should": [
+                                {"equals": {"value": None, "path": "expires_at"}},
+                                {
+                                    "range": {
+                                        "path": "expires_at",
+                                        "gt": datetime.now(UTC),
+                                    }
+                                },
+                            ]
+                        }
+                    },
+                ],
+                "should": [],
+                "filter": [],
+            },
+            "sort": {"score": {"order": -1}, "updated_at": {"order": -1}},
+        }
+
+        # Add text search if provided
+        if search_term:
+            search_query["compound"]["must"].append(
                 {
-                    "$geoNear": {
-                        "near": {
-                            "type": "Point",
-                            "coordinates": [
-                                coordinates.longitude,
-                                coordinates.latitude,
-                            ],
-                        },
-                        "distanceField": "distance",
-                        "maxDistance": max_distance_meters,
-                        "spherical": True,
-                        "key": "geo",
+                    "compound": {
+                        "should": [
+                            {
+                                "text": {
+                                    "query": search_term,
+                                    "path": "title",
+                                    "score": {"boost": {"value": 10}},
+                                }
+                            },
+                            {
+                                "text": {
+                                    "query": search_term,
+                                    "path": "description_cleaned",
+                                    "score": {"boost": {"value": 5}},
+                                }
+                            },
+                            {
+                                "text": {
+                                    "query": search_term,
+                                    "path": "skills",
+                                    "score": {"boost": {"value": 8}},
+                                }
+                            },
+                            {
+                                "text": {
+                                    "query": search_term,
+                                    "path": "location",
+                                    "score": {"boost": {"value": 3}},
+                                }
+                            },
+                        ]
                     }
                 }
             )
 
-            filters.extend(
-                [
-                    {"$match": {"is_active": True}},
-                    {
-                        "$match": {
-                            "$or": [
-                                {"expires_at": None},
-                                {"expires_at": {"$gt": datetime.now(UTC)}},
-                            ]
-                        }
-                    },
-                ]
+        # Add experience filters
+        if min_experience is not None:
+            # Job should either:
+            # 1. Have max_experience >= min_experience, OR
+            # 2. Have min_experience >= min_experience (if max_experience is not set)
+            search_query["compound"]["must"].append(
+                {
+                    "compound": {
+                        "should": [
+                            {
+                                "range": {
+                                    "path": "max_experience",
+                                    "gte": min_experience,
+                                }
+                            },
+                            {
+                                "range": {
+                                    "path": "min_experience",
+                                    "gte": min_experience,
+                                }
+                            },
+                        ]
+                    }
+                }
             )
 
-            if search_term:
-                filters.append({"$match": {"$text": {"$search": search_term}}})
-            if min_experience is not None:
-                filters.append({"$match": {"min_experience": {"$gte": min_experience}}})
-            if max_experience is not None:
-                filters.append({"$match": {"max_experience": {"$lte": max_experience}}})
-            if min_salary is not None:
-                filters.append({"$match": {"min_salary": {"$gte": min_salary}}})
-            if max_salary is not None:
-                filters.append({"$match": {"max_salary": {"$lte": max_salary}}})
-
-            match work_mode:
-                case JobWorkMode.REMOTE:
-                    filters.append({"$match": {"work_mode": JobWorkMode.REMOTE}})
-                case JobWorkMode.HYBRID:
-                    filters.append({"$match": {"work_mode": JobWorkMode.HYBRID}})
-                case JobWorkMode.OFFICE:
-                    filters.append({"$match": {"work_mode": JobWorkMode.OFFICE}})
-                case JobWorkMode.ANY:
-                    pass
-
-            match job_type:
-                case JobType.FULL_TIME:
-                    filters.append({"$match": {"type": JobType.FULL_TIME}})
-                case JobType.PART_TIME:
-                    filters.append({"$match": {"type": JobType.PART_TIME}})
-                case JobType.INTERNSHIP:
-                    filters.append({"$match": {"type": JobType.INTERNSHIP}})
-                case JobType.CONTRACT:
-                    filters.append({"$match": {"type": JobType.CONTRACT}})
-                case JobType.LOCUM:
-                    filters.append({"$match": {"type": JobType.LOCUM}})
-                case JobType.ANY:
-                    pass
-
-            search_criteria = Job.aggregate(
-                aggregation_pipeline=filters,
-                projection_model=Job,
-            )
-        else:
-            # Use regular find() when no coordinates are provided
-            search_criteria = Job.find(Job.is_active == True)
-
-            # Add expiration filter
-            search_criteria = search_criteria.find(
-                Or(Job.expires_at == None, Job.expires_at > datetime.now(UTC))
+        if max_experience is not None:
+            # Job should either:
+            # 1. Have min_experience <= max_experience, OR
+            # 2. Have max_experience <= max_experience (if min_experience is not set)
+            search_query["compound"]["must"].append(
+                {
+                    "compound": {
+                        "should": [
+                            {
+                                "range": {
+                                    "path": "min_experience",
+                                    "lte": max_experience,
+                                }
+                            },
+                            {
+                                "range": {
+                                    "path": "max_experience",
+                                    "lte": max_experience,
+                                }
+                            },
+                        ]
+                    }
+                }
             )
 
-            if search_term:
-                search_criteria = search_criteria.find(
-                    {"$text": {"$search": search_term}}
-                )
-            if min_experience is not None:
-                search_criteria = search_criteria.find(
-                    Job.min_experience >= min_experience
-                )
-            if max_experience is not None:
-                search_criteria = search_criteria.find(
-                    Job.max_experience <= max_experience
-                )
-            if min_salary is not None:
-                search_criteria = search_criteria.find(Job.min_salary >= min_salary)
-            if max_salary is not None:
-                search_criteria = search_criteria.find(Job.max_salary <= max_salary)
+        # Add salary filters
+        if min_salary is not None:
+            # Job should either:
+            # 1. Have max_salary >= min_salary, OR
+            # 2. Have min_salary >= min_salary (if max_salary is not set)
+            search_query["compound"]["must"].append(
+                {
+                    "compound": {
+                        "should": [
+                            {"range": {"path": "max_salary", "gte": min_salary}},
+                            {"range": {"path": "min_salary", "gte": min_salary}},
+                        ]
+                    }
+                }
+            )
 
-            match work_mode:
-                case JobWorkMode.REMOTE:
-                    search_criteria = search_criteria.find(
-                        Job.work_mode == JobWorkMode.REMOTE
-                    )
-                case JobWorkMode.HYBRID:
-                    search_criteria = search_criteria.find(
-                        Job.work_mode == JobWorkMode.HYBRID
-                    )
-                case JobWorkMode.OFFICE:
-                    search_criteria = search_criteria.find(
-                        Job.work_mode == JobWorkMode.OFFICE
-                    )
-                case JobWorkMode.ANY:
-                    pass
+        if max_salary is not None:
+            # Job should either:
+            # 1. Have min_salary <= max_salary, OR
+            # 2. Have max_salary <= max_salary (if min_salary is not set)
+            search_query["compound"]["must"].append(
+                {
+                    "compound": {
+                        "should": [
+                            {"range": {"path": "min_salary", "lte": max_salary}},
+                            {"range": {"path": "max_salary", "lte": max_salary}},
+                        ]
+                    }
+                }
+            )
 
-            match job_type:
-                case JobType.FULL_TIME:
-                    search_criteria = search_criteria.find(
-                        Job.type == JobType.FULL_TIME
-                    )
-                case JobType.PART_TIME:
-                    search_criteria = search_criteria.find(
-                        Job.type == JobType.PART_TIME
-                    )
-                case JobType.INTERNSHIP:
-                    search_criteria = search_criteria.find(
-                        Job.type == JobType.INTERNSHIP
-                    )
-                case JobType.CONTRACT:
-                    search_criteria = search_criteria.find(Job.type == JobType.CONTRACT)
-                case JobType.LOCUM:
-                    search_criteria = search_criteria.find(Job.type == JobType.LOCUM)
-                case JobType.ANY:
-                    pass
+        # Add work mode filter
+        if work_mode != JobWorkMode.ANY:
+            search_query["compound"]["filter"].append(
+                {"text": {"query": work_mode.value, "path": "work_mode"}}
+            )
+
+        # Add job type filter
+        if job_type != JobType.ANY:
+            search_query["compound"]["filter"].append(
+                {"text": {"query": job_type.value, "path": "type"}}
+            )
+
+        # Add geospatial search if coordinates provided
+        if coordinates is not None:
+            proximity_km = proximity_km or 1.0
+            max_distance_meters = proximity_km * 1000.0
+
+            # Use geoWithin for strict distance filtering
+            search_query["compound"]["must"].append(
+                {
+                    "geoWithin": {
+                        "circle": {
+                            "center": {
+                                "type": "Point",
+                                "coordinates": [
+                                    coordinates.longitude,
+                                    coordinates.latitude,
+                                ],
+                            },
+                            "radius": max_distance_meters,
+                        },
+                        "path": "geo",
+                    }
+                }
+            )
+
+        # Build aggregation pipeline
+        pipeline = [
+            {"$search": search_query},
+            {"$sort": {"updated_at": -1}},  # Sort by most recent
+        ]
+
+        # Use aggregation with paginator
+        search_criteria = Job.aggregate(
+            aggregation_pipeline=pipeline,
+            projection_model=Job,
+        )
 
         return await paginator.paginate(
             search_criteria=search_criteria,

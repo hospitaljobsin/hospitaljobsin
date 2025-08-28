@@ -25,6 +25,7 @@ from app.core.constants import (
     JOB_APPLICANT_EMBEDDING_INDEX_NAME,
     JOB_EMBEDDING_DIMENSIONS,
     JOB_EMBEDDING_INDEX_NAME,
+    JOB_SEARCH_INDEX_NAME,
 )
 from app.jobs.documents import (
     BaseJobMetric,
@@ -74,8 +75,9 @@ async def create_search_indexes(
     # Check and create Job embedding index if it doesn't exist
     job_collection = database.get_collection(str(Job.get_settings().name))
     existing_job_indexes = await job_collection.list_search_indexes().to_list(
-        length=None
+        length=None,
     )
+    print("existing_job_indexes", existing_job_indexes)
     job_index_exists = any(
         index.get("name") == JOB_EMBEDDING_INDEX_NAME for index in existing_job_indexes
     )
@@ -144,6 +146,85 @@ async def create_search_indexes(
             "JobApplicant embedding search index already exists",
             index_name=JOB_APPLICANT_EMBEDDING_INDEX_NAME,
         )
+    # Check and create Job Atlas Search index if it doesn't exist
+    job_atlas_search_exists = any(
+        index.get("name") == JOB_SEARCH_INDEX_NAME for index in existing_job_indexes
+    )
+
+    if not job_atlas_search_exists:
+        await job_collection.create_search_index(
+            model=SearchIndexModel(
+                definition={
+                    "mappings": {
+                        "dynamic": True,
+                        "fields": {
+                            "title": {
+                                "type": "string",
+                                "analyzer": "lucene.english",
+                                "searchAnalyzer": "lucene.english",
+                            },
+                            "description_cleaned": {
+                                "type": "string",
+                                "analyzer": "lucene.english",
+                                "searchAnalyzer": "lucene.english",
+                            },
+                            "skills": {
+                                "type": "string",
+                                "analyzer": "lucene.english",
+                                "searchAnalyzer": "lucene.english",
+                            },
+                            "location": {
+                                "type": "string",
+                                "analyzer": "lucene.english",
+                                "searchAnalyzer": "lucene.english",
+                            },
+                            "min_experience": {
+                                "type": "number",
+                            },
+                            "max_experience": {
+                                "type": "number",
+                            },
+                            "min_salary": {
+                                "type": "number",
+                            },
+                            "max_salary": {
+                                "type": "number",
+                            },
+                            "work_mode": {
+                                "type": "string",
+                                "analyzer": "lucene.english",
+                            },
+                            "type": {
+                                "type": "string",
+                                "analyzer": "lucene.english",
+                            },
+                            "updated_at": {
+                                "type": "date",
+                            },
+                            "expires_at": {
+                                "type": "date",
+                            },
+                            "is_active": {
+                                "type": "boolean",
+                            },
+                            "geo": {
+                                "type": "geo",
+                            },
+                            "embedding": {
+                                "type": "knnVector",
+                                "similarity": "dotProduct",
+                                "dimensions": JOB_EMBEDDING_DIMENSIONS,
+                            },
+                        },
+                    }
+                },
+                name=JOB_SEARCH_INDEX_NAME,
+                type="search",
+            )
+        )
+        logger.info("Created Job Atlas Search index")
+    else:
+        logger.info("Job Atlas Search index already exists")
 
 
 async def initialize_database(database_url: str, default_database_name: str) -> None:
