@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<72b282514ee8951fffe8ba3361cf927f>>
- * @relayHash 9c51d46368bb0eeeeec402a024473794
+ * @generated SignedSource<<4b707dd47aee2bea8dd79265223028d5>>
+ * @relayHash e585ce58f2c4bd9123590343581b9b55
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 9c51d46368bb0eeeeec402a024473794
+// @relayRequestID e585ce58f2c4bd9123590343581b9b55
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -692,6 +692,21 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              (v27/*: any*/),
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
@@ -719,7 +734,7 @@ return {
     ]
   },
   "params": {
-    "id": "9c51d46368bb0eeeeec402a024473794",
+    "id": "e585ce58f2c4bd9123590343581b9b55",
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",

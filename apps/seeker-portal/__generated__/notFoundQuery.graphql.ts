@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<ff15c5e2e2896f13491f78792b1699bd>>
- * @relayHash 93a9f09b37d98121fcf88f5fca580eba
+ * @generated SignedSource<<5ca6fcd00c0ae6c262b0652198c854b8>>
+ * @relayHash 98d35dc91828edcf4759e1c8c6c89b6a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,69 +9,38 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 93a9f09b37d98121fcf88f5fca580eba
+// @relayRequestID 98d35dc91828edcf4759e1c8c6c89b6a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type layoutOrgDetailQuery$variables = {
-  slug: string;
+export type notFoundQuery$variables = Record<PropertyKey, never>;
+export type notFoundQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderFragment">;
 };
-export type layoutOrgDetailQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"OrgDetailHeaderClientComponentFragment">;
-};
-export type layoutOrgDetailQuery = {
-  response: layoutOrgDetailQuery$data;
-  variables: layoutOrgDetailQuery$variables;
+export type notFoundQuery = {
+  response: notFoundQuery$data;
+  variables: notFoundQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "slug"
-  }
-],
-v1 = [
-  {
-    "kind": "Variable",
-    "name": "slug",
-    "variableName": "slug"
-  }
-],
-v2 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "__typename",
-  "storageKey": null
-},
-v3 = {
+var v0 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-},
-v4 = {
-  "kind": "InlineFragment",
-  "selections": [
-    (v3/*: any*/)
-  ],
-  "type": "Node",
-  "abstractKey": "__isNode"
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "layoutOrgDetailQuery",
+    "name": "notFoundQuery",
     "selections": [
       {
-        "args": (v1/*: any*/),
+        "args": null,
         "kind": "FragmentSpread",
-        "name": "OrgDetailHeaderClientComponentFragment"
+        "name": "DashboardHeaderFragment"
       }
     ],
     "type": "Query",
@@ -79,9 +48,9 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "layoutOrgDetailQuery",
+    "name": "notFoundQuery",
     "selections": [
       {
         "alias": null,
@@ -91,7 +60,13 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "__typename",
+            "storageKey": null
+          },
           {
             "kind": "InlineFragment",
             "selections": [
@@ -109,7 +84,7 @@ return {
                 "name": "avatarUrl",
                 "storageKey": null
               },
-              (v3/*: any*/),
+              (v0/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -125,7 +100,7 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v3/*: any*/)
+                  (v0/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -133,56 +108,29 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v4/*: any*/)
-        ],
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": (v1/*: any*/),
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "organization",
-        "plural": false,
-        "selections": [
-          (v2/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "name",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "slug",
-                "storageKey": null
-              }
+              (v0/*: any*/)
             ],
-            "type": "Organization",
-            "abstractKey": null
-          },
-          (v4/*: any*/)
+            "type": "Node",
+            "abstractKey": "__isNode"
+          }
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "93a9f09b37d98121fcf88f5fca580eba",
+    "id": "98d35dc91828edcf4759e1c8c6c89b6a",
     "metadata": {},
-    "name": "layoutOrgDetailQuery",
+    "name": "notFoundQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "591e0dc0d846be83a72407563234037d";
+(node as any).hash = "dc56afe9535cbab7489681edbcd97a18";
 
 export default node;

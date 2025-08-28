@@ -44,9 +44,5 @@ export default function OrganizationDetailViewClientComponent(props: {
 			data,
 		);
 
-	return (
-		<div className="py-4 w-full h-full flex flex-col items-center gap-2">
-			<OrganizationOverviewTab rootQuery={rootQuery} />
-		</div>
-	);
+	return <OrganizationOverviewTab rootQuery={rootQuery} />;
 }
