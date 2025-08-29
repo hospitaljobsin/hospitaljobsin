@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cc71deee9ee285e70ea1414922d45a0b>>
+ * @generated SignedSource<<7801c4745697d2f68a9a77a1f959fba1>>
  * @relayHash d8accac9cd7ba6cfdbf8ef51c83462cb
  * @lightSyntaxTransform
  * @nogrep
@@ -494,7 +494,7 @@ return {
           "coordinates",
           "proximityKm",
           "minExperience",
-          "maxExperience",
+          "minExperience",
           "minSalary",
           "maxSalary",
           "workMode",

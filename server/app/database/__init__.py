@@ -77,7 +77,6 @@ async def create_search_indexes(
     existing_job_indexes = await job_collection.list_search_indexes().to_list(
         length=None,
     )
-    print("existing_job_indexes", existing_job_indexes)
     job_index_exists = any(
         index.get("name") == JOB_EMBEDDING_INDEX_NAME for index in existing_job_indexes
     )

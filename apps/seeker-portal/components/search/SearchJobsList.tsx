@@ -44,13 +44,12 @@ const SearchJobsListInternalFragment = graphql`
 	coordinates: { type: "CoordinatesInput", defaultValue: null }
     count: { type: "Int", defaultValue: 25 }
 	minExperience: { type: "Int", defaultValue: null }
-	minExperience: { type: "Int", defaultValue: null }
 	minSalary: { type: "Int", defaultValue: null }
 	maxSalary: { type: "Int", defaultValue: null }
 	workMode: { type: "JobWorkModeFilter", defaultValue: ANY }
 	jobType: { type: "JobTypeFilter", defaultValue: ANY }
   ){
-    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
+    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
       @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm", "minExperience", "minExperience", "minSalary", "maxSalary", "workMode", "jobType"]) {
       edges {
         node {

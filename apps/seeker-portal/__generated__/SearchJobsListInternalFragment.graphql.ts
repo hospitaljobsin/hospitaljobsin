@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f8fb9055f54462b549a273f19281355a>>
+ * @generated SignedSource<<4ace6c4dbb2a373fb605666b271bf0dd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -56,11 +56,6 @@ return {
       "defaultValue": "ANY",
       "kind": "LocalArgument",
       "name": "jobType"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "maxExperience"
     },
     {
       "defaultValue": null,
@@ -130,11 +125,6 @@ return {
           "kind": "Variable",
           "name": "jobType",
           "variableName": "jobType"
-        },
-        {
-          "kind": "Variable",
-          "name": "maxExperience",
-          "variableName": "maxExperience"
         },
         {
           "kind": "Variable",
@@ -259,6 +249,6 @@ return {
 };
 })();
 
-(node as any).hash = "50021b69a5ecbba5bae4c0b1a5157b7b";
+(node as any).hash = "35aafc54a4a3a2144f3768cca00571a1";
 
 export default node;
