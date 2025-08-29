@@ -7,7 +7,7 @@ import { fetchQuery, graphql } from "relay-runtime";
 
 export const SitemapJobsQuery = graphql`
   query sitemapJobsQuery($cursor: ID, $count: Int!) {
-    jobs(after: $cursor, first: $count) {
+    jobs(after: $cursor, first: $count, workMode: [], jobType: []) {
       edges {
         node {
           id

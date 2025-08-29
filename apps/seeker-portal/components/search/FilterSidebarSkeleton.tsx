@@ -2,9 +2,9 @@ import {
 	Button,
 	Card,
 	CardBody,
+	Checkbox,
+	CheckboxGroup,
 	Input,
-	Radio,
-	RadioGroup,
 	Slider,
 } from "@heroui/react";
 import { EraserIcon } from "lucide-react";
@@ -33,6 +33,9 @@ export default function FilterSidebarSkeleton() {
 					placeholder="Location"
 					variant="bordered"
 					fullWidth
+					value={""}
+					onChange={() => {}}
+					onValueChange={() => {}}
 				/>
 				<Slider
 					id="proximityKm"
@@ -97,30 +100,28 @@ export default function FilterSidebarSkeleton() {
 					</Button>
 				</div>
 
-				<RadioGroup
+				<CheckboxGroup
 					label="Work Mode"
 					isDisabled
 					className="w-full"
 					orientation="horizontal"
 				>
-					<Radio value="ANY">Any</Radio>
-					<Radio value="REMOTE">Remote</Radio>
-					<Radio value="HYBRID">Hybrid</Radio>
-					<Radio value="OFFICE">Office</Radio>
-				</RadioGroup>
-				<RadioGroup
+					<Checkbox value="REMOTE">Remote</Checkbox>
+					<Checkbox value="HYBRID">Hybrid</Checkbox>
+					<Checkbox value="OFFICE">Office</Checkbox>
+				</CheckboxGroup>
+				<CheckboxGroup
 					label="Job Type"
 					isDisabled
 					className="w-full"
 					orientation="horizontal"
 				>
-					<Radio value="ANY">Any</Radio>
-					<Radio value="FULL_TIME">Full Time</Radio>
-					<Radio value="PART_TIME">Part Time</Radio>
-					<Radio value="INTERNSHIP">Internship</Radio>
-					<Radio value="CONTRACT">Contract</Radio>
-					<Radio value="LOCUM">Locum</Radio>
-				</RadioGroup>
+					<Checkbox value="FULL_TIME">Full Time</Checkbox>
+					<Checkbox value="PART_TIME">Part Time</Checkbox>
+					<Checkbox value="INTERNSHIP">Internship</Checkbox>
+					<Checkbox value="CONTRACT">Contract</Checkbox>
+					<Checkbox value="LOCUM">Locum</Checkbox>
+				</CheckboxGroup>
 
 				<Button
 					className="w-full mt-2"

@@ -76,6 +76,15 @@ class JobApplicantsSortByEnum(Enum):
 
 
 @strawberry.enum(
+    name="JobSearchSortBy",
+    description="The type of job search sort by.",
+)
+class JobSearchSortByEnum(Enum):
+    RELEVANCE = "relevance"
+    UPDATED_AT = "updated_at"
+
+
+@strawberry.enum(
     name="JobSortBy",
     description="The type of job sort by.",
 )
@@ -94,7 +103,6 @@ class JobWorkModeFilterEnum(Enum):
     REMOTE = "remote"
     HYBRID = "hybrid"
     OFFICE = "office"
-    ANY = "any"
 
 
 @strawberry.enum(
@@ -107,7 +115,6 @@ class JobTypeFilterEnum(Enum):
     INTERNSHIP = "internship"
     CONTRACT = "contract"
     LOCUM = "locum"
-    ANY = "any"
 
 
 @strawberry.enum(

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1ba29b98235309fbde6ff5b3ee021bc3>>
+ * @generated SignedSource<<d5c3a500a7c6ce5b49e857685d4eda76>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -29,6 +29,11 @@ const node: ReaderFragment = {
     {
       "defaultValue": null,
       "kind": "LocalArgument",
+      "name": "jobType"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "maxSalary"
     },
     {
@@ -50,6 +55,16 @@ const node: ReaderFragment = {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "searchTerm"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "sortBy"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "workMode"
     }
   ],
   "kind": "Fragment",
@@ -67,6 +82,11 @@ const node: ReaderFragment = {
           "kind": "Variable",
           "name": "coordinates",
           "variableName": "coordinates"
+        },
+        {
+          "kind": "Variable",
+          "name": "jobType",
+          "variableName": "jobType"
         },
         {
           "kind": "Variable",
@@ -92,6 +112,16 @@ const node: ReaderFragment = {
           "kind": "Variable",
           "name": "searchTerm",
           "variableName": "searchTerm"
+        },
+        {
+          "kind": "Variable",
+          "name": "sortBy",
+          "variableName": "sortBy"
+        },
+        {
+          "kind": "Variable",
+          "name": "workMode",
+          "variableName": "workMode"
         }
       ],
       "kind": "FragmentSpread",
@@ -102,6 +132,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "4df3e80f274215d700059c3557456903";
+(node as any).hash = "5129bdc5f04acc67bd65681694c31b7b";
 
 export default node;

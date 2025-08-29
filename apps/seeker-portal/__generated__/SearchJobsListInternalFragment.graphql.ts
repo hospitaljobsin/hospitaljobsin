@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4ace6c4dbb2a373fb605666b271bf0dd>>
+ * @generated SignedSource<<87c8ccaa0916c7c278a52d0fb95ada12>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,6 +21,7 @@ export type SearchJobsListInternalFragment$data = {
     readonly pageInfo: {
       readonly hasNextPage: boolean;
     };
+    readonly totalCount: number;
   };
   readonly " $fragmentType": "SearchJobsListInternalFragment";
 };
@@ -53,7 +54,7 @@ return {
       "name": "cursor"
     },
     {
-      "defaultValue": "ANY",
+      "defaultValue": null,
       "kind": "LocalArgument",
       "name": "jobType"
     },
@@ -83,7 +84,12 @@ return {
       "name": "searchTerm"
     },
     {
-      "defaultValue": "ANY",
+      "defaultValue": "RELEVANCE",
+      "kind": "LocalArgument",
+      "name": "sortBy"
+    },
+    {
+      "defaultValue": null,
       "kind": "LocalArgument",
       "name": "workMode"
     }
@@ -153,6 +159,11 @@ return {
         },
         {
           "kind": "Variable",
+          "name": "sortBy",
+          "variableName": "sortBy"
+        },
+        {
+          "kind": "Variable",
           "name": "workMode",
           "variableName": "workMode"
         }
@@ -162,6 +173,17 @@ return {
       "name": "__JobListFragment_jobs_connection",
       "plural": false,
       "selections": [
+        {
+          "kind": "RequiredField",
+          "field": {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "totalCount",
+            "storageKey": null
+          },
+          "action": "THROW"
+        },
         {
           "alias": null,
           "args": null,
@@ -249,6 +271,6 @@ return {
 };
 })();
 
-(node as any).hash = "35aafc54a4a3a2144f3768cca00571a1";
+(node as any).hash = "4860a0c241c1cb76c1ee283c5d4c3db5";
 
 export default node;

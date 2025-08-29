@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a975ce7265be55c58c2a8d07d78666f8>>
- * @relayHash c4eaf0546a3e0257faaf5ba590dc02b4
+ * @generated SignedSource<<18e39d7b023922681ac9b14bf249236f>>
+ * @relayHash 0e6ed639ca57938182b92670d7b8ee9e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,12 +9,13 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c4eaf0546a3e0257faaf5ba590dc02b4
+// @relayRequestID 0e6ed639ca57938182b92670d7b8ee9e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type JobTypeFilter = "ANY" | "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
-export type JobWorkModeFilter = "ANY" | "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
+export type JobSearchSortBy = "RELEVANCE" | "UPDATED_AT" | "%future added value";
+export type JobTypeFilter = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
+export type JobWorkModeFilter = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 export type CoordinatesInput = {
   latitude: number;
   longitude: number;
@@ -23,13 +24,14 @@ export type SearchJobsListRefetchQuery$variables = {
   coordinates?: CoordinatesInput | null | undefined;
   count?: number | null | undefined;
   cursor?: string | null | undefined;
-  jobType?: JobTypeFilter | null | undefined;
+  jobType: ReadonlyArray<JobTypeFilter>;
   maxSalary?: number | null | undefined;
   minExperience?: number | null | undefined;
   minSalary?: number | null | undefined;
   proximityKm?: number | null | undefined;
   searchTerm?: string | null | undefined;
-  workMode?: JobWorkModeFilter | null | undefined;
+  sortBy?: JobSearchSortBy | null | undefined;
+  workMode: ReadonlyArray<JobWorkModeFilter>;
 };
 export type SearchJobsListRefetchQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"SearchJobsListInternalFragment">;
@@ -57,7 +59,7 @@ var v0 = [
     "name": "cursor"
   },
   {
-    "defaultValue": "ANY",
+    "defaultValue": null,
     "kind": "LocalArgument",
     "name": "jobType"
   },
@@ -87,7 +89,12 @@ var v0 = [
     "name": "searchTerm"
   },
   {
-    "defaultValue": "ANY",
+    "defaultValue": "RELEVANCE",
+    "kind": "LocalArgument",
+    "name": "sortBy"
+  },
+  {
+    "defaultValue": null,
     "kind": "LocalArgument",
     "name": "workMode"
   }
@@ -129,10 +136,15 @@ v7 = {
 },
 v8 = {
   "kind": "Variable",
+  "name": "sortBy",
+  "variableName": "sortBy"
+},
+v9 = {
+  "kind": "Variable",
   "name": "workMode",
   "variableName": "workMode"
 },
-v9 = [
+v10 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -150,23 +162,24 @@ v9 = [
   (v5/*: any*/),
   (v6/*: any*/),
   (v7/*: any*/),
-  (v8/*: any*/)
+  (v8/*: any*/),
+  (v9/*: any*/)
 ],
-v10 = {
+v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v11 = {
+v12 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "slug",
   "storageKey": null
 },
-v12 = {
+v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -199,7 +212,8 @@ return {
           (v5/*: any*/),
           (v6/*: any*/),
           (v7/*: any*/),
-          (v8/*: any*/)
+          (v8/*: any*/),
+          (v9/*: any*/)
         ],
         "kind": "FragmentSpread",
         "name": "SearchJobsListInternalFragment"
@@ -216,12 +230,19 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v9/*: any*/),
+        "args": (v10/*: any*/),
         "concreteType": "JobConnection",
         "kind": "LinkedField",
         "name": "jobs",
         "plural": false,
         "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "totalCount",
+            "storageKey": null
+          },
           {
             "alias": null,
             "args": null,
@@ -238,7 +259,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v10/*: any*/),
+                  (v11/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -246,7 +267,7 @@ return {
                     "name": "isSaved",
                     "storageKey": null
                   },
-                  (v11/*: any*/),
+                  (v12/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -283,8 +304,8 @@ return {
                         "name": "logoUrl",
                         "storageKey": null
                       },
+                      (v12/*: any*/),
                       (v11/*: any*/),
-                      (v10/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -293,7 +314,7 @@ return {
                         "name": "verificationStatus",
                         "plural": false,
                         "selections": [
-                          (v12/*: any*/),
+                          (v13/*: any*/),
                           {
                             "kind": "InlineFragment",
                             "selections": [
@@ -412,7 +433,7 @@ return {
                     "name": "createdAt",
                     "storageKey": null
                   },
-                  (v12/*: any*/)
+                  (v13/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -456,7 +477,7 @@ return {
       },
       {
         "alias": null,
-        "args": (v9/*: any*/),
+        "args": (v10/*: any*/),
         "filters": [
           "searchTerm",
           "coordinates",
@@ -466,7 +487,8 @@ return {
           "minSalary",
           "maxSalary",
           "workMode",
-          "jobType"
+          "jobType",
+          "sortBy"
         ],
         "handle": "connection",
         "key": "JobListFragment_jobs",
@@ -476,7 +498,7 @@ return {
     ]
   },
   "params": {
-    "id": "c4eaf0546a3e0257faaf5ba590dc02b4",
+    "id": "0e6ed639ca57938182b92670d7b8ee9e",
     "metadata": {},
     "name": "SearchJobsListRefetchQuery",
     "operationKind": "query",
@@ -485,6 +507,6 @@ return {
 };
 })();
 
-(node as any).hash = "35aafc54a4a3a2144f3768cca00571a1";
+(node as any).hash = "4860a0c241c1cb76c1ee283c5d4c3db5";
 
 export default node;

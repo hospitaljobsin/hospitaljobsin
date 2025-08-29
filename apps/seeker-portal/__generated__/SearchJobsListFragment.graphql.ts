@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a123bb4614b4444ec3705bd5cfbbb7e8>>
+ * @generated SignedSource<<e3e48c6faf6966474a81d57a3e16f8ec>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -30,7 +30,7 @@ const node: ReaderFragment = {
       "name": "coordinates"
     },
     {
-      "defaultValue": "ANY",
+      "defaultValue": null,
       "kind": "LocalArgument",
       "name": "jobType"
     },
@@ -60,7 +60,12 @@ const node: ReaderFragment = {
       "name": "searchTerm"
     },
     {
-      "defaultValue": "ANY",
+      "defaultValue": "RELEVANCE",
+      "kind": "LocalArgument",
+      "name": "sortBy"
+    },
+    {
+      "defaultValue": null,
       "kind": "LocalArgument",
       "name": "workMode"
     }
@@ -108,6 +113,11 @@ const node: ReaderFragment = {
         },
         {
           "kind": "Variable",
+          "name": "sortBy",
+          "variableName": "sortBy"
+        },
+        {
+          "kind": "Variable",
           "name": "workMode",
           "variableName": "workMode"
         }
@@ -136,6 +146,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "b6100766b5e9be0d4c32fc0f4d4e14d8";
+(node as any).hash = "56bdfed89bfff8c9e95b7813d9e723de";
 
 export default node;

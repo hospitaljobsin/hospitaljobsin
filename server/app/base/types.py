@@ -44,6 +44,10 @@ class BaseConnectionType(Generic[NodeType, EdgeType]):
         description="A list of edges.",
     )
 
+    total_count: int | None = field(
+        description="The total number of items in the connection.",
+    )
+
     @classmethod
     def _extract_generic_arg(cls, index: int, error_message: str) -> type:
         """Simpler helper to extract a generic argument from BaseConnectionType."""
@@ -90,6 +94,7 @@ class BaseConnectionType(Generic[NodeType, EdgeType]):
                 cls.get_edge_type().marshal(entity)
                 for entity in paginated_result.entities
             ],
+            total_count=paginated_result.page_info.total_count,
         )
 
 

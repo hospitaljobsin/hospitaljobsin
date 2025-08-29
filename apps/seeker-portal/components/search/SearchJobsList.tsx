@@ -7,9 +7,10 @@ import type {
 	JobWorkModeFilter,
 	SearchJobsListRefetchQuery$variables,
 } from "@/__generated__/SearchJobsListRefetchQuery.graphql";
+import type { Filters } from "@/app/search/SearchClientComponent";
 import Job from "@/components/landing/Job";
 import JobListSkeleton from "@/components/landing/JobListSkeleton";
-import { Card, CardBody } from "@heroui/react";
+import { Card, CardBody, Select, SelectItem } from "@heroui/react";
 import { Search } from "lucide-react";
 import { useEffect, useRef, useTransition } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
@@ -24,10 +25,11 @@ fragment SearchJobsListFragment on Query @argumentDefinitions(
 	minExperience: { type: "Int", defaultValue: null }
 	minSalary: { type: "Int", defaultValue: null }
 	maxSalary: { type: "Int", defaultValue: null }
-	workMode: { type: "JobWorkModeFilter", defaultValue: ANY }
-	jobType: { type: "JobTypeFilter", defaultValue: ANY }
+	workMode: { type: "[JobWorkModeFilter!]!" }
+	jobType: { type: "[JobTypeFilter!]!" }
+	sortBy: { type: "JobSearchSortBy", defaultValue: RELEVANCE }
 ) {
-	...SearchJobsListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
+	...SearchJobsListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType, sortBy: $sortBy)
 	viewer {
 		...JobControlsAuthFragment
 	}
@@ -46,12 +48,14 @@ const SearchJobsListInternalFragment = graphql`
 	minExperience: { type: "Int", defaultValue: null }
 	minSalary: { type: "Int", defaultValue: null }
 	maxSalary: { type: "Int", defaultValue: null }
-	workMode: { type: "JobWorkModeFilter", defaultValue: ANY }
-	jobType: { type: "JobTypeFilter", defaultValue: ANY }
+	workMode: { type: "[JobWorkModeFilter!]!" }
+	jobType: { type: "[JobTypeFilter!]!" }
+    sortBy: { type: "JobSearchSortBy", defaultValue: RELEVANCE }
   ){
-    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
-      @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm", "minExperience", "minExperience", "minSalary", "maxSalary", "workMode", "jobType"]) {
-      edges {
+    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType, sortBy: $sortBy)
+      @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm", "minExperience", "minExperience", "minSalary", "maxSalary", "workMode", "jobType", "sortBy"]) {
+      totalCount @required(action: THROW)
+	  edges {
         node {
           id
           ...JobFragment
@@ -73,8 +77,10 @@ type Props = {
 	minExperience?: number | null;
 	minSalary?: number | null;
 	maxSalary?: number | null;
-	workMode?: string;
-	jobType?: string;
+	workMode?: string[];
+	jobType?: string[];
+	sortBy?: string;
+	setFilters: (filters: Filters | ((prevFilters: Filters) => Filters)) => void;
 };
 
 export default function SearchJobsList({
@@ -87,6 +93,8 @@ export default function SearchJobsList({
 	maxSalary,
 	workMode,
 	jobType,
+	sortBy,
+	setFilters,
 }: Props) {
 	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(SearchJobsListFragment, rootQuery);
@@ -123,15 +131,13 @@ export default function SearchJobsList({
 					searchTerm,
 					coordinates,
 					proximityKm,
+					workMode: (workMode || []) as readonly JobWorkModeFilter[],
+					jobType: (jobType || []) as readonly JobTypeFilter[],
 				};
 				if (typeof minExperience !== "undefined")
 					refetchVars.minExperience = minExperience;
 				if (typeof minSalary !== "undefined") refetchVars.minSalary = minSalary;
 				if (typeof maxSalary !== "undefined") refetchVars.maxSalary = maxSalary;
-				if (typeof workMode !== "undefined")
-					refetchVars.workMode = workMode as JobWorkModeFilter;
-				if (typeof jobType !== "undefined")
-					refetchVars.jobType = jobType as JobTypeFilter;
 				refetch(refetchVars, { fetchPolicy: "network-only" });
 			});
 		}, 300);
@@ -175,14 +181,40 @@ export default function SearchJobsList({
 
 	return (
 		<div
+			className="h-full w-full scroll-smooth overflow-none"
 			style={{
-				height: "100%",
-				width: "100%",
 				scrollbarWidth: "none",
-				msOverflowStyle: "none",
-				scrollBehavior: "smooth",
 			}}
 		>
+			<div className="w-full flex gap-12 justify-between items-center mb-6 sm:mb-8">
+				<h2 className="text-base sm:text-lg text-foreground-600 whitespace-nowrap">
+					<span className="font-medium">{data.jobs.totalCount}</span> healthcare
+					jobs found
+				</h2>
+				<div className="flex gap-2 w-full sm:max-w-xs">
+					<Select
+						label="Sort by"
+						placeholder="Select sorting option"
+						selectedKeys={[sortBy || "RELEVANCE"]}
+						onSelectionChange={(keys) => {
+							const selectedKey = Array.from(keys)[0] as string;
+							if (selectedKey) {
+								startTransition(() => {
+									setFilters((prevFilters) => ({
+										...prevFilters,
+										sortBy: selectedKey,
+									}));
+								});
+							}
+						}}
+						variant="faded"
+						size="sm"
+					>
+						<SelectItem key="RELEVANCE">Relevance</SelectItem>
+						<SelectItem key="UPDATED_AT">Date Posted</SelectItem>
+					</Select>
+				</div>
+			</div>
 			<WindowVirtualizer onScrollEnd={handleScrollEnd}>
 				{allJobEdges.map((jobEdge, index) => (
 					<div key={jobEdge.node.id} className="pb-4 sm:pb-6">

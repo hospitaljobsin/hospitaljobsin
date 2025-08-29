@@ -59,6 +59,11 @@ from .documents import (
 )
 
 
+class JobSearchSortBy(Enum):
+    RELEVANCE = "relevance"
+    UPDATED_AT = "updated_at"
+
+
 class JobSortBy(Enum):
     CREATED_AT = "created_at"
     UPDATED_AT = "updated_at"
@@ -70,7 +75,6 @@ class JobWorkMode(Enum):
     REMOTE = "remote"
     HYBRID = "hybrid"
     OFFICE = "office"
-    ANY = "any"
 
 
 class JobType(Enum):
@@ -79,7 +83,6 @@ class JobType(Enum):
     INTERNSHIP = "internship"
     CONTRACT = "contract"
     LOCUM = "locum"
-    ANY = "any"
 
 
 class JobRepo:
@@ -355,8 +358,8 @@ class JobRepo:
 
     async def get_all_active(
         self,
-        work_mode: JobWorkMode,
-        job_type: JobType,
+        work_mode: list[JobWorkMode],
+        job_type: list[JobType],
         search_term: str | None = None,
         coordinates: Coordinates | None = None,
         proximity_km: float | None = None,
@@ -368,13 +371,14 @@ class JobRepo:
         last: int | None = None,
         before: str | None = None,
         after: str | None = None,
-    ) -> PaginatedResult[Job, str]:
+        sort_by: JobSearchSortBy = JobSearchSortBy.RELEVANCE,
+    ) -> PaginatedResult[SearchableJob, str]:
         """Get a paginated result of active jobs with advanced search capabilities."""
         paginator: SearchPaginator[Job, SearchableJob] = SearchPaginator(
             document_cls=Job,
             projection_model=SearchableJob,
             search_index_name=JOB_SEARCH_INDEX_NAME,
-            calculate_total_count=False,  # Disable for now to debug
+            calculate_total_count=True,  # Disable for now to debug
         )
 
         # Build Atlas Search query
@@ -402,8 +406,13 @@ class JobRepo:
                 "should": [],
                 "filter": [],
             },
-            "sort": {"updated_at": {"order": -1}},
         }
+
+        match sort_by:
+            case JobSearchSortBy.RELEVANCE:
+                search_query["sort"] = {"score": {"order": -1}}
+            case JobSearchSortBy.UPDATED_AT:
+                search_query["sort"] = {"updated_at": {"order": -1}}
 
         # Add text search if provided
         if search_term:
@@ -527,15 +536,32 @@ class JobRepo:
             )
 
         # Add work mode filter
-        if work_mode != JobWorkMode.ANY:
+        if work_mode and len(work_mode) > 0:
+            # Use multiple values
             search_query["compound"]["filter"].append(
-                {"text": {"query": work_mode.value, "path": "work_mode"}}
+                {
+                    "compound": {
+                        "should": [
+                            {"text": {"query": mode.value, "path": "work_mode"}}
+                            for mode in work_mode
+                        ],
+                        "minimumShouldMatch": 1,
+                    }
+                }
             )
 
         # Add job type filter
-        if job_type != JobType.ANY:
+        if job_type and len(job_type) > 0:
             search_query["compound"]["filter"].append(
-                {"text": {"query": job_type.value, "path": "type"}}
+                {
+                    "compound": {
+                        "should": [
+                            {"text": {"query": given_type.value, "path": "type"}}
+                            for given_type in job_type
+                        ],
+                        "minimumShouldMatch": 1,
+                    }
+                }
             )
 
         # Add geospatial search if coordinates provided

@@ -10,10 +10,18 @@ from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo
 from app.geocoding.types import CoordinatesInputType
 
-from .repositories import JobApplicantRepo, JobRepo, JobType, JobWorkMode, SavedJobRepo
+from .repositories import (
+    JobApplicantRepo,
+    JobRepo,
+    JobSearchSortBy,
+    JobType,
+    JobWorkMode,
+    SavedJobRepo,
+)
 from .types import (
     JobApplicantConnectionType,
     JobConnectionType,
+    JobSearchSortByEnum,
     JobTypeFilterEnum,
     JobWorkModeFilterEnum,
     SavedJobConnectionType,
@@ -30,6 +38,24 @@ class JobQuery:
     async def jobs(
         self,
         job_repo: Annotated[JobRepo, Inject],
+        work_mode: Annotated[
+            list[JobWorkModeFilterEnum],
+            strawberry.argument(
+                description="The work mode to filter jobs by.",
+            ),
+        ],
+        job_type: Annotated[
+            list[JobTypeFilterEnum],
+            strawberry.argument(
+                description="The type of job to filter jobs by.",
+            ),
+        ],
+        sort_by: Annotated[
+            JobSearchSortByEnum,
+            strawberry.argument(
+                description="The type of job search sort by.",
+            ),
+        ] = JobSearchSortByEnum.RELEVANCE,
         proximity_km: Annotated[
             float | None,
             strawberry.argument(
@@ -96,18 +122,6 @@ class JobQuery:
                 description="How many items to return before the cursor?",
             ),
         ] = None,
-        work_mode: Annotated[
-            JobWorkModeFilterEnum,
-            strawberry.argument(
-                description="The work mode to filter jobs by.",
-            ),
-        ] = JobWorkModeFilterEnum.ANY,
-        job_type: Annotated[
-            JobTypeFilterEnum,
-            strawberry.argument(
-                description="The type of job to filter jobs by.",
-            ),
-        ] = JobTypeFilterEnum.ANY,
     ) -> JobConnectionType:
         paginated_result = await job_repo.get_all_active(
             search_term=search_term,
@@ -123,8 +137,9 @@ class JobQuery:
             last=last,
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),
-            work_mode=JobWorkMode(work_mode.value.lower()),
-            job_type=JobType(job_type.value.lower()),
+            work_mode=[JobWorkMode(mode.value.lower()) for mode in work_mode],
+            job_type=[JobType(given_type.value.lower()) for given_type in job_type],
+            sort_by=JobSearchSortBy(sort_by.value.lower()),
         )
 
         return JobConnectionType.marshal(

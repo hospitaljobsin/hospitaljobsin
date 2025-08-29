@@ -1,8 +1,8 @@
 import { Button } from "@heroui/react";
 import { FilterIcon } from "lucide-react";
-import JobListSkeleton from "../landing/JobListSkeleton";
 import FilterSidebarSkeleton from "./FilterSidebarSkeleton";
 import SearchHeaderSkeleton from "./SearchHeaderSkeleton";
+import SearchJobsListSkeleton from "./SearchJobsListSkeleton";
 
 export default function SearchViewSkeleton() {
 	return (
@@ -25,7 +25,7 @@ export default function SearchViewSkeleton() {
 					<FilterSidebarSkeleton />
 				</div>
 				<div className="flex-1">
-					<JobListSkeleton />
+					<SearchJobsListSkeleton />
 				</div>
 			</div>
 		</div>

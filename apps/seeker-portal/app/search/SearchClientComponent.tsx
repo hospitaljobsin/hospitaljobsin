@@ -1,10 +1,19 @@
 "use client";
 
-import type { SearchClientComponentQuery as SearchClientComponentQueryType } from "@/__generated__/SearchClientComponentQuery.graphql";
+import type {
+	JobTypeFilter,
+	JobWorkModeFilter,
+	SearchClientComponentQuery as SearchClientComponentQueryType,
+} from "@/__generated__/SearchClientComponentQuery.graphql";
 import SearchView from "@/components/search/SearchView";
 import SearchViewSkeleton from "@/components/search/SearchViewSkeleton";
 import { FILTER_DEFAULTS } from "@/lib/constants";
-import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
+import {
+	parseAsArrayOf,
+	parseAsInteger,
+	parseAsString,
+	useQueryStates,
+} from "nuqs";
 import { Suspense } from "react";
 import { graphql, loadQuery, useRelayEnvironment } from "react-relay";
 
@@ -16,6 +25,9 @@ export const SearchClientComponentQuery = graphql`
 		$maxSalary: Int
 		$coordinates: CoordinatesInput
 		$proximityKm: Float
+		$workMode: [JobWorkModeFilter!]!
+		$jobType: [JobTypeFilter!]!
+		$sortBy: JobSearchSortBy!
 	) {
 		...SearchView_query @arguments(
 			searchTerm: $searchTerm
@@ -24,6 +36,9 @@ export const SearchClientComponentQuery = graphql`
 			maxSalary: $maxSalary
 			coordinates: $coordinates
 			proximityKm: $proximityKm
+			workMode: $workMode
+			jobType: $jobType
+			sortBy: $sortBy
 		)
 	}
 `;
@@ -37,8 +52,9 @@ export type Filters = {
 	locationName: string;
 	coordinates: string;
 	proximityKm: number;
-	workMode: string;
-	jobType: string;
+	workMode: string[];
+	jobType: string[];
+	sortBy: string;
 };
 
 export default function SearchClientComponent() {
@@ -53,8 +69,13 @@ export default function SearchClientComponent() {
 			locationName: parseAsString.withDefault(FILTER_DEFAULTS.locationName),
 			coordinates: parseAsString.withDefault(FILTER_DEFAULTS.coordinates),
 			proximityKm: parseAsInteger.withDefault(FILTER_DEFAULTS.proximityKm),
-			workMode: parseAsString.withDefault(FILTER_DEFAULTS.workMode),
-			jobType: parseAsString.withDefault(FILTER_DEFAULTS.jobType),
+			workMode: parseAsArrayOf(parseAsString).withDefault(
+				FILTER_DEFAULTS.workMode,
+			),
+			jobType: parseAsArrayOf(parseAsString).withDefault(
+				FILTER_DEFAULTS.jobType,
+			),
+			sortBy: parseAsString.withDefault("RELEVANCE"),
 		},
 		{ shallow: true },
 	);
@@ -93,8 +114,9 @@ export default function SearchClientComponent() {
 		maxSalary: filters.maxSalary,
 		coordinates: parseCoordinates(filters.coordinates),
 		proximityKm: filters.proximityKm,
-		workMode: filters.workMode,
-		jobType: filters.jobType,
+		workMode: filters.workMode as readonly JobWorkModeFilter[],
+		jobType: filters.jobType as readonly JobTypeFilter[],
+		sortBy: filters.sortBy as "RELEVANCE" | "UPDATED_AT",
 	};
 
 	const preloadedQuery = loadQuery<SearchClientComponentQueryType>(
