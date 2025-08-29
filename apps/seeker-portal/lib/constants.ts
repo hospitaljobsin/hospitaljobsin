@@ -19,8 +19,8 @@ export const FILTER_DEFAULTS = {
 	locationName: "",
 	coordinates: "",
 	proximityKm: 50,
-	workMode: "ANY",
-	jobType: "ANY",
+	workMode: [],
+	jobType: [],
 };
 
 export const COOKIE_ANALYTICS_PREFERENCE = "analytics_preference";

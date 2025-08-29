@@ -34,6 +34,8 @@ export const SearchPageContentFragment = graphql`
     maxSalary: { type: "Int" }
     coordinates: { type: "CoordinatesInput" }
     proximityKm: { type: "Float" }
+    workMode: { type: "[JobWorkModeFilter!]!" }
+    jobType: { type: "[JobTypeFilter!]!" }
   ) {
 	...SearchHeaderFragment
     ...SearchJobsListFragment @arguments(
@@ -43,14 +45,15 @@ export const SearchPageContentFragment = graphql`
       minExperience: $minExperience
       minSalary: $minSalary
       maxSalary: $maxSalary
+	  jobType: $jobType
+	  workMode: $workMode
     )
   }
 `;
 
 // Valid enum values for validation
-const VALID_WORK_MODES = ["ANY", "HYBRID", "OFFICE", "REMOTE"] as const;
+const VALID_WORK_MODES = ["HYBRID", "OFFICE", "REMOTE"] as const;
 const VALID_JOB_TYPES = [
-	"ANY",
 	"CONTRACT",
 	"FULL_TIME",
 	"INTERNSHIP",
@@ -58,13 +61,13 @@ const VALID_JOB_TYPES = [
 	"PART_TIME",
 ] as const;
 
-// Function to validate enum values and return null if invalid
-const validateEnum = <T extends string>(
-	value: string | null | undefined,
+// Function to validate enum arrays and return empty array if invalid
+const validateEnumArray = <T extends string>(
+	values: string[] | null | undefined,
 	validValues: readonly T[],
-): T | null => {
-	if (!value) return null;
-	return validValues.includes(value as T) ? (value as T) : null;
+): T[] => {
+	if (!values || !Array.isArray(values)) return [];
+	return values.filter((value) => validValues.includes(value as T)) as T[];
 };
 
 export default function SearchView({
@@ -86,21 +89,30 @@ export default function SearchView({
 	const { workMode, jobType } = filters;
 
 	useEffect(() => {
-		const validatedWorkMode = validateEnum(workMode, VALID_WORK_MODES);
-		const validatedJobType = validateEnum(jobType, VALID_JOB_TYPES);
+		const validatedWorkMode = validateEnumArray(workMode, VALID_WORK_MODES);
+		const validatedJobType = validateEnumArray(jobType, VALID_JOB_TYPES);
 
-		if (validatedWorkMode !== workMode || validatedJobType !== jobType) {
+		if (
+			JSON.stringify(validatedWorkMode) !== JSON.stringify(workMode) ||
+			JSON.stringify(validatedJobType) !== JSON.stringify(jobType)
+		) {
 			setFilters({
 				...filters,
-				workMode: validatedWorkMode || FILTER_DEFAULTS.workMode,
-				jobType: validatedJobType || FILTER_DEFAULTS.jobType,
+				workMode:
+					validatedWorkMode.length > 0
+						? validatedWorkMode
+						: FILTER_DEFAULTS.workMode,
+				jobType:
+					validatedJobType.length > 0
+						? validatedJobType
+						: FILTER_DEFAULTS.jobType,
 			});
 		}
-	}, [workMode, jobType, setFilters]);
+	}, [workMode, jobType, setFilters, filters]);
 
 	// Get validated values for use in render
-	const validatedWorkMode = validateEnum(workMode, VALID_WORK_MODES);
-	const validatedJobType = validateEnum(jobType, VALID_JOB_TYPES);
+	const validatedWorkMode = validateEnumArray(workMode, VALID_WORK_MODES);
+	const validatedJobType = validateEnumArray(jobType, VALID_JOB_TYPES);
 
 	// When passing to FilterSidebar and JobList, treat undefined as null
 	const sidebarFilters = {
@@ -187,8 +199,8 @@ export default function SearchView({
 							minExperience={filters.minExperience ?? null}
 							minSalary={filters.minSalary ?? null}
 							maxSalary={filters.maxSalary ?? null}
-							workMode={validatedWorkMode || FILTER_DEFAULTS.workMode}
-							jobType={validatedJobType || FILTER_DEFAULTS.jobType}
+							workMode={validatedWorkMode}
+							jobType={validatedJobType}
 						/>
 					</Suspense>
 				</div>

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8b3aa8658366302eb770fccb3519296e>>
+ * @generated SignedSource<<063b1af684dcf9141c7cab2dbf3ab2da>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -54,7 +54,7 @@ return {
       "name": "cursor"
     },
     {
-      "defaultValue": "ANY",
+      "defaultValue": null,
       "kind": "LocalArgument",
       "name": "jobType"
     },
@@ -84,7 +84,7 @@ return {
       "name": "searchTerm"
     },
     {
-      "defaultValue": "ANY",
+      "defaultValue": null,
       "kind": "LocalArgument",
       "name": "workMode"
     }
@@ -261,6 +261,6 @@ return {
 };
 })();
 
-(node as any).hash = "0103466069157a7ed60f7749737252c1";
+(node as any).hash = "349bb04d3167add3460c28962784244a";
 
 export default node;

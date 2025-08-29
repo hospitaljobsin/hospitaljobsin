@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<92105e46da4d53bfbb82bce460b05868>>
- * @relayHash bb7d4e5a70524ce8f3d0ea9f57ec5227
+ * @generated SignedSource<<f88abf6e08095d8c0b66c706cf89c696>>
+ * @relayHash 4e444a96d19b80f36fdf6b4e913196db
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,12 +9,12 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID bb7d4e5a70524ce8f3d0ea9f57ec5227
+// @relayRequestID 4e444a96d19b80f36fdf6b4e913196db
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type JobTypeFilter = "ANY" | "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
-export type JobWorkModeFilter = "ANY" | "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
+export type JobTypeFilter = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
+export type JobWorkModeFilter = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 export type CoordinatesInput = {
   latitude: number;
   longitude: number;
@@ -23,13 +23,13 @@ export type SearchJobsListRefetchQuery$variables = {
   coordinates?: CoordinatesInput | null | undefined;
   count?: number | null | undefined;
   cursor?: string | null | undefined;
-  jobType?: JobTypeFilter | null | undefined;
+  jobType: ReadonlyArray<JobTypeFilter>;
   maxSalary?: number | null | undefined;
   minExperience?: number | null | undefined;
   minSalary?: number | null | undefined;
   proximityKm?: number | null | undefined;
   searchTerm?: string | null | undefined;
-  workMode?: JobWorkModeFilter | null | undefined;
+  workMode: ReadonlyArray<JobWorkModeFilter>;
 };
 export type SearchJobsListRefetchQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"SearchJobsListInternalFragment">;
@@ -57,7 +57,7 @@ var v0 = [
     "name": "cursor"
   },
   {
-    "defaultValue": "ANY",
+    "defaultValue": null,
     "kind": "LocalArgument",
     "name": "jobType"
   },
@@ -87,7 +87,7 @@ var v0 = [
     "name": "searchTerm"
   },
   {
-    "defaultValue": "ANY",
+    "defaultValue": null,
     "kind": "LocalArgument",
     "name": "workMode"
   }
@@ -483,7 +483,7 @@ return {
     ]
   },
   "params": {
-    "id": "bb7d4e5a70524ce8f3d0ea9f57ec5227",
+    "id": "4e444a96d19b80f36fdf6b4e913196db",
     "metadata": {},
     "name": "SearchJobsListRefetchQuery",
     "operationKind": "query",
@@ -492,6 +492,6 @@ return {
 };
 })();
 
-(node as any).hash = "0103466069157a7ed60f7749737252c1";
+(node as any).hash = "349bb04d3167add3460c28962784244a";
 
 export default node;

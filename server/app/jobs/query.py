@@ -30,6 +30,18 @@ class JobQuery:
     async def jobs(
         self,
         job_repo: Annotated[JobRepo, Inject],
+        work_mode: Annotated[
+            list[JobWorkModeFilterEnum],
+            strawberry.argument(
+                description="The work mode to filter jobs by.",
+            ),
+        ],
+        job_type: Annotated[
+            list[JobTypeFilterEnum],
+            strawberry.argument(
+                description="The type of job to filter jobs by.",
+            ),
+        ],
         proximity_km: Annotated[
             float | None,
             strawberry.argument(
@@ -96,18 +108,6 @@ class JobQuery:
                 description="How many items to return before the cursor?",
             ),
         ] = None,
-        work_mode: Annotated[
-            JobWorkModeFilterEnum,
-            strawberry.argument(
-                description="The work mode to filter jobs by.",
-            ),
-        ] = JobWorkModeFilterEnum.ANY,
-        job_type: Annotated[
-            JobTypeFilterEnum,
-            strawberry.argument(
-                description="The type of job to filter jobs by.",
-            ),
-        ] = JobTypeFilterEnum.ANY,
     ) -> JobConnectionType:
         paginated_result = await job_repo.get_all_active(
             search_term=search_term,
@@ -123,8 +123,8 @@ class JobQuery:
             last=last,
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),
-            work_mode=JobWorkMode(work_mode.value.lower()),
-            job_type=JobType(job_type.value.lower()),
+            work_mode=[JobWorkMode(mode.value.lower()) for mode in work_mode],
+            job_type=[JobType(type.given_type.lower()) for given_type in job_type],
         )
 
         return JobConnectionType.marshal(

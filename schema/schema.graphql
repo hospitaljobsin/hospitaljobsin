@@ -1779,7 +1779,6 @@ enum JobTypeFilter {
 	INTERNSHIP
 	CONTRACT
 	LOCUM
-	ANY
 }
 
 """
@@ -1821,7 +1820,6 @@ enum JobWorkModeFilter {
 	REMOTE
 	HYBRID
 	OFFICE
-	ANY
 }
 
 """
@@ -4040,6 +4038,16 @@ type Query {
 	"""
 	jobs(
 		"""
+		The work mode to filter jobs by.
+		"""
+		workMode: [JobWorkModeFilter!]!
+
+		"""
+		The type of job to filter jobs by.
+		"""
+		jobType: [JobTypeFilter!]!
+
+		"""
 		The proximity in km to search for jobs
 		"""
 		proximityKm: Float = null
@@ -4093,16 +4101,6 @@ type Query {
 		How many items to return before the cursor?
 		"""
 		last: Int = null
-
-		"""
-		The work mode to filter jobs by.
-		"""
-		workMode: JobWorkModeFilter! = ANY
-
-		"""
-		The type of job to filter jobs by.
-		"""
-		jobType: JobTypeFilter! = ANY
 	): JobConnection!
 
 	"""

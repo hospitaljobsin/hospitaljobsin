@@ -70,7 +70,6 @@ class JobWorkMode(Enum):
     REMOTE = "remote"
     HYBRID = "hybrid"
     OFFICE = "office"
-    ANY = "any"
 
 
 class JobType(Enum):
@@ -79,7 +78,6 @@ class JobType(Enum):
     INTERNSHIP = "internship"
     CONTRACT = "contract"
     LOCUM = "locum"
-    ANY = "any"
 
 
 class JobRepo:
@@ -355,8 +353,8 @@ class JobRepo:
 
     async def get_all_active(
         self,
-        work_mode: JobWorkMode,
-        job_type: JobType,
+        work_mode: list[JobWorkMode],
+        job_type: list[JobType],
         search_term: str | None = None,
         coordinates: Coordinates | None = None,
         proximity_km: float | None = None,
@@ -527,15 +525,32 @@ class JobRepo:
             )
 
         # Add work mode filter
-        if work_mode != JobWorkMode.ANY:
+        if work_mode and len(work_mode) > 0:
+            # Use multiple values
             search_query["compound"]["filter"].append(
-                {"text": {"query": work_mode.value, "path": "work_mode"}}
+                {
+                    "compound": {
+                        "should": [
+                            {"text": {"query": mode.value, "path": "work_mode"}}
+                            for mode in work_mode
+                        ],
+                        "minimumShouldMatch": 1,
+                    }
+                }
             )
 
         # Add job type filter
-        if job_type != JobType.ANY:
+        if job_type and len(job_type) > 0:
             search_query["compound"]["filter"].append(
-                {"text": {"query": job_type.value, "path": "type"}}
+                {
+                    "compound": {
+                        "should": [
+                            {"text": {"query": given_type.value, "path": "type"}}
+                            for given_type in job_type
+                        ],
+                        "minimumShouldMatch": 1,
+                    }
+                }
             )
 
         # Add geospatial search if coordinates provided

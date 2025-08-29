@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1ba29b98235309fbde6ff5b3ee021bc3>>
+ * @generated SignedSource<<02cf47e38c5aa3b638d725988e4cff74>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -29,6 +29,11 @@ const node: ReaderFragment = {
     {
       "defaultValue": null,
       "kind": "LocalArgument",
+      "name": "jobType"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "maxSalary"
     },
     {
@@ -50,6 +55,11 @@ const node: ReaderFragment = {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "searchTerm"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "workMode"
     }
   ],
   "kind": "Fragment",
@@ -67,6 +77,11 @@ const node: ReaderFragment = {
           "kind": "Variable",
           "name": "coordinates",
           "variableName": "coordinates"
+        },
+        {
+          "kind": "Variable",
+          "name": "jobType",
+          "variableName": "jobType"
         },
         {
           "kind": "Variable",
@@ -92,6 +107,11 @@ const node: ReaderFragment = {
           "kind": "Variable",
           "name": "searchTerm",
           "variableName": "searchTerm"
+        },
+        {
+          "kind": "Variable",
+          "name": "workMode",
+          "variableName": "workMode"
         }
       ],
       "kind": "FragmentSpread",
@@ -102,6 +122,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "4df3e80f274215d700059c3557456903";
+(node as any).hash = "5769d7f2523c9ccd9dce6f03a48909b2";
 
 export default node;

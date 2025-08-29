@@ -373,7 +373,10 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
         ).to_list()
 
         if self._calculate_total_count:
-            total_count = results[0]["meta"][0]["count"]["total"]
+            if len(results[0]["meta"]) > 0:
+                total_count = results[0]["meta"][0]["count"]["total"]
+            else:
+                total_count = 0
             results = results[0]["data"]
 
         # Results are raw documents with pagination_token

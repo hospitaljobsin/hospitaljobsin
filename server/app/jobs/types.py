@@ -94,7 +94,6 @@ class JobWorkModeFilterEnum(Enum):
     REMOTE = "remote"
     HYBRID = "hybrid"
     OFFICE = "office"
-    ANY = "any"
 
 
 @strawberry.enum(
@@ -107,7 +106,6 @@ class JobTypeFilterEnum(Enum):
     INTERNSHIP = "internship"
     CONTRACT = "contract"
     LOCUM = "locum"
-    ANY = "any"
 
 
 @strawberry.enum(

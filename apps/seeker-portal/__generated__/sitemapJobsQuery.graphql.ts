@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<8da5154eb5793e06c49a6ab32845e3d6>>
- * @relayHash 70205e3e541623c13235ddad303f7f7e
+ * @generated SignedSource<<b82b7864716112216d09495bfbe33abe>>
+ * @relayHash e0025bd3aeb7b783415fab9b8782eeec
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 70205e3e541623c13235ddad303f7f7e
+// @relayRequestID e0025bd3aeb7b783415fab9b8782eeec
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type sitemapJobsQuery$variables = {
@@ -64,6 +64,16 @@ v2 = [
     "kind": "Variable",
     "name": "first",
     "variableName": "count"
+  },
+  {
+    "kind": "Literal",
+    "name": "jobType",
+    "value": ([]/*: any*/)
+  },
+  {
+    "kind": "Literal",
+    "name": "workMode",
+    "value": ([]/*: any*/)
   }
 ],
 v3 = {
@@ -277,7 +287,7 @@ return {
     ]
   },
   "params": {
-    "id": "70205e3e541623c13235ddad303f7f7e",
+    "id": "e0025bd3aeb7b783415fab9b8782eeec",
     "metadata": {},
     "name": "sitemapJobsQuery",
     "operationKind": "query",
@@ -286,6 +296,6 @@ return {
 };
 })();
 
-(node as any).hash = "dff721a2871e35ba1dbce2da91380927";
+(node as any).hash = "671b667a92360bf0b82a4be0e017a65e";
 
 export default node;

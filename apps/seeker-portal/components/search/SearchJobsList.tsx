@@ -24,8 +24,8 @@ fragment SearchJobsListFragment on Query @argumentDefinitions(
 	minExperience: { type: "Int", defaultValue: null }
 	minSalary: { type: "Int", defaultValue: null }
 	maxSalary: { type: "Int", defaultValue: null }
-	workMode: { type: "JobWorkModeFilter", defaultValue: ANY }
-	jobType: { type: "JobTypeFilter", defaultValue: ANY }
+	workMode: { type: "[JobWorkModeFilter!]!" }
+	jobType: { type: "[JobTypeFilter!]!" }
 ) {
 	...SearchJobsListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
 	viewer {
@@ -46,8 +46,8 @@ const SearchJobsListInternalFragment = graphql`
 	minExperience: { type: "Int", defaultValue: null }
 	minSalary: { type: "Int", defaultValue: null }
 	maxSalary: { type: "Int", defaultValue: null }
-	workMode: { type: "JobWorkModeFilter", defaultValue: ANY }
-	jobType: { type: "JobTypeFilter", defaultValue: ANY }
+	workMode: { type: "[JobWorkModeFilter!]!" }
+	jobType: { type: "[JobTypeFilter!]!" }
   ){
     jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
       @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm", "minExperience", "minExperience", "minSalary", "maxSalary", "workMode", "jobType"]) {
@@ -74,8 +74,8 @@ type Props = {
 	minExperience?: number | null;
 	minSalary?: number | null;
 	maxSalary?: number | null;
-	workMode?: string;
-	jobType?: string;
+	workMode?: string[];
+	jobType?: string[];
 };
 
 export default function SearchJobsList({
@@ -124,15 +124,13 @@ export default function SearchJobsList({
 					searchTerm,
 					coordinates,
 					proximityKm,
+					workMode: (workMode || []) as readonly JobWorkModeFilter[],
+					jobType: (jobType || []) as readonly JobTypeFilter[],
 				};
 				if (typeof minExperience !== "undefined")
 					refetchVars.minExperience = minExperience;
 				if (typeof minSalary !== "undefined") refetchVars.minSalary = minSalary;
 				if (typeof maxSalary !== "undefined") refetchVars.maxSalary = maxSalary;
-				if (typeof workMode !== "undefined")
-					refetchVars.workMode = workMode as JobWorkModeFilter;
-				if (typeof jobType !== "undefined")
-					refetchVars.jobType = jobType as JobTypeFilter;
 				refetch(refetchVars, { fetchPolicy: "network-only" });
 			});
 		}, 300);
@@ -181,7 +179,7 @@ export default function SearchJobsList({
 				scrollbarWidth: "none",
 			}}
 		>
-			<h2 className="text-lg text-foreground-600 mb-4">
+			<h2 className="text-lg text-foreground-600 mb-6 sm:mb-8">
 				<span className="font-medium">{data.jobs.totalCount}</span> healthcare
 				jobs found
 			</h2>
