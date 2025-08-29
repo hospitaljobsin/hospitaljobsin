@@ -42,7 +42,7 @@ const SearchJobsListInternalFragment = graphql`
 	proximityKm: { type: "Float", defaultValue: null }
     searchTerm: { type: "String", defaultValue: null }
 	coordinates: { type: "CoordinatesInput", defaultValue: null }
-    count: { type: "Int", defaultValue: 5 }
+    count: { type: "Int", defaultValue: 25 }
 	minExperience: { type: "Int", defaultValue: null }
 	minSalary: { type: "Int", defaultValue: null }
 	maxSalary: { type: "Int", defaultValue: null }
@@ -106,7 +106,7 @@ export default function SearchJobsList({
 	// Handle infinite scroll when reaching the end
 	const handleScrollEnd = () => {
 		if (hasNextPage && !isLoadingNext) {
-			loadNext(5);
+			loadNext(25);
 		}
 	};
 
