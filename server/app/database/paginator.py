@@ -353,8 +353,6 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
 
         entities = []
 
-        # Debug: Print the pipeline for troubleshooting
-        # print(f"DEBUG: SearchPaginator pipeline: {pipeline}")
         results = await self._document_cls.aggregate(
             pipeline, projection_model=None
         ).to_list()
@@ -387,12 +385,8 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
             has_next_page = has_more_results
             has_previous_page = after is not None
 
-        start_cursor = (
-            operator.attrgetter("pagination_token")(entities[0]) if entities else None
-        )
-        end_cursor = (
-            operator.attrgetter("pagination_token")(entities[-1]) if entities else None
-        )
+        start_cursor = entities[0].pagination_token if entities else None
+        end_cursor = entities[-1].pagination_token if entities else None
 
         return PaginatedResult(
             entities=entities,
