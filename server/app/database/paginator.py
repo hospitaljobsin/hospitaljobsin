@@ -37,24 +37,9 @@ class PaginatedResult(Generic[ModelType, CursorType]):
     page_info: PageInfo[CursorType]
 
 
-class Paginator(Generic[ModelType, CursorType, ProjectionModelType]):
-    def __init__(
-        self,
-        *,
-        document_cls: type[ModelType],
-        paginate_by: str,
-        reverse: bool = False,
-        apply_ordering: bool = True,
-        calculate_total_count: bool = False,
-    ) -> None:
-        self._document_cls = document_cls
-        self._reverse = reverse
-        self._paginate_by = paginate_by
-        self._apply_ordering = apply_ordering
-        self._calculate_total_count = calculate_total_count
-
+class BasePaginator:
     @staticmethod
-    def __validate_arguments(  # noqa: C901
+    def validate_arguments(  # noqa: C901
         *,
         first: int | None,
         last: int | None,
@@ -100,6 +85,23 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType]):
             "You must provide either `first` or `last` to paginate"
         )
         raise ValueError(no_first_and_last_error)
+
+
+class Paginator(Generic[ModelType, CursorType, ProjectionModelType], BasePaginator):
+    def __init__(
+        self,
+        *,
+        document_cls: type[ModelType],
+        paginate_by: str,
+        reverse: bool = False,
+        apply_ordering: bool = True,
+        calculate_total_count: bool = False,
+    ) -> None:
+        self._document_cls = document_cls
+        self._reverse = reverse
+        self._paginate_by = paginate_by
+        self._apply_ordering = apply_ordering
+        self._calculate_total_count = calculate_total_count
 
     def __apply_ordering(
         self,
@@ -162,7 +164,7 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType]):
         after: CursorType | None = None,
     ) -> PaginatedResult[ProjectionModelType, CursorType]:
         """Paginate the given search criteria."""
-        pagination_limit = self.__validate_arguments(
+        pagination_limit = self.validate_arguments(
             first=first,
             last=last,
             before=before,
@@ -244,9 +246,6 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType]):
             operator.attrgetter(self._paginate_by)(entities[-1]) if entities else None
         )
 
-        print(f"DEBUG: Final entities count: {len(entities)}")
-        print(f"DEBUG: Final entities: {entities}")
-
         return PaginatedResult(
             entities=entities,
             page_info=PageInfo(
@@ -259,7 +258,7 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType]):
         )
 
 
-class SearchPaginator(Generic[ModelType, SearchProjectionModelType]):
+class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginator):
     """
     Paginator for MongoDB Atlas Search queries using searchSequenceToken.
 
@@ -279,54 +278,6 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType]):
         self._projection_model = projection_model
         self._search_index_name = search_index_name
         self._calculate_total_count = calculate_total_count
-
-    @staticmethod
-    def __validate_arguments(
-        *,
-        first: int | None,
-        last: int | None,
-        before: str | None,
-        after: str | None,
-    ) -> int:
-        """Validate pagination arguments for Atlas Search."""
-        if first is not None and last is not None:
-            first_and_last_error = "Cannot provide both `first` and `last`"
-            raise ValueError(first_and_last_error)
-
-        if after is not None and before is not None:
-            after_and_before_error = "Cannot provide both `after` and `before`"
-            raise ValueError(after_and_before_error)
-
-        if first is not None:
-            if first < 0:
-                first_not_positive_error = "`first` must be a positive integer"
-                raise ValueError(first_not_positive_error)
-            if first > MAX_PAGINATION_LIMIT:
-                max_pagination_limit_error = f"`first` exceeds pagination limit of {MAX_PAGINATION_LIMIT} records"
-                raise ValueError(max_pagination_limit_error)
-            if before is not None:
-                first_and_before_error = "`first` cannot be provided with `before`"
-                raise ValueError(first_and_before_error)
-            return first
-
-        if last is not None:
-            if last < 0:
-                last_not_positive_error = "`last` must be a positive integer"
-                raise ValueError(last_not_positive_error)
-            if last > MAX_PAGINATION_LIMIT:
-                max_pagination_limit_error = (
-                    f"`last` exceeds pagination limit of {MAX_PAGINATION_LIMIT} records"
-                )
-                raise ValueError(max_pagination_limit_error)
-            if after is not None:
-                last_and_after_error = "`last` cannot be provided with `after`"
-                raise ValueError(last_and_after_error)
-            return last
-
-        no_first_and_last_error = (
-            "You must provide either `first` or `last` to paginate"
-        )
-        raise ValueError(no_first_and_last_error)
 
     def __build_search_pipeline(
         self,
@@ -380,7 +331,7 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType]):
         after: str | None = None,
     ) -> PaginatedResult[SearchProjectionModelType, str]:
         """Paginate Atlas Search results using searchSequenceToken."""
-        pagination_limit = self.__validate_arguments(
+        pagination_limit = self.validate_arguments(
             first=first,
             last=last,
             before=before,
@@ -397,9 +348,6 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType]):
 
         # Execute the search aggregation
         total_count = None
-
-        start_cursor = None
-        end_cursor = None
 
         has_more_results = False
 
@@ -424,24 +372,6 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType]):
                 if isinstance(entity, dict)
             ]
 
-            # Extract pagination tokens
-            if first is not None:
-                # Forward pagination
-                start_cursor = entities[0].pagination_token
-                end_cursor = (
-                    entities[pagination_limit - 1].pagination_token
-                    if len(entities) >= pagination_limit
-                    else entities[-1].pagination_token
-                )
-            else:
-                # Reverse pagination
-                start_cursor = (
-                    entities[-pagination_limit].pagination_token
-                    if len(entities) >= pagination_limit
-                    else entities[0].pagination_token
-                )
-                end_cursor = entities[-1].pagination_token
-
         print(f"DEBUG: SearchPaginator results: {len(results) if results else 0}")
         print(f"DEBUG: Entities created: {len(entities)}")
         print(f"DEBUG: Has more results: {has_more_results}")
@@ -456,6 +386,13 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType]):
             # Forward pagination (default)
             has_next_page = has_more_results
             has_previous_page = after is not None
+
+        start_cursor = (
+            operator.attrgetter("pagination_token")(entities[0]) if entities else None
+        )
+        end_cursor = (
+            operator.attrgetter("pagination_token")(entities[-1]) if entities else None
+        )
 
         return PaginatedResult(
             entities=entities,
