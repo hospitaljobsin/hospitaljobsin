@@ -124,7 +124,7 @@ class JobQuery:
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),
             work_mode=[JobWorkMode(mode.value.lower()) for mode in work_mode],
-            job_type=[JobType(type.given_type.lower()) for given_type in job_type],
+            job_type=[JobType(given_type.value.lower()) for given_type in job_type],
         )
 
         return JobConnectionType.marshal(
