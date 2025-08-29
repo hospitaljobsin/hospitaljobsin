@@ -368,13 +368,13 @@ class JobRepo:
         last: int | None = None,
         before: str | None = None,
         after: str | None = None,
-    ) -> PaginatedResult[Job, str]:
+    ) -> PaginatedResult[SearchableJob, str]:
         """Get a paginated result of active jobs with advanced search capabilities."""
         paginator: SearchPaginator[Job, SearchableJob] = SearchPaginator(
             document_cls=Job,
             projection_model=SearchableJob,
             search_index_name=JOB_SEARCH_INDEX_NAME,
-            calculate_total_count=False,  # Disable for now to debug
+            calculate_total_count=True,  # Disable for now to debug
         )
 
         # Build Atlas Search query

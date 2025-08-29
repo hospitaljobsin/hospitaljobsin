@@ -293,12 +293,12 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
             "index": self._search_index_name,
         }
 
+        if self._calculate_total_count:
+            search_stage["count"] = {"type": "total"}
+
         # Add search query fields (compound, text, etc.)
         for key, value in search_query.items():
-            if key not in [
-                "sort",
-                "count",
-            ]:  # Exclude sort and count as they're handled separately
+            if key not in ["count"]:  # Exclude count as its handled separately
                 search_stage[str(key)] = value
 
         # Add pagination tokens
@@ -318,6 +318,27 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
 
         # Add limit with +1 to check if there are more results
         base_pipeline.append({"$limit": pagination_limit + 1})
+
+        if self._calculate_total_count:
+            base_pipeline.extend(
+                [
+                    {
+                        "$facet": {
+                            "data": [
+                                # {
+                                #     "$project": {
+                                #         "doc": "$$ROOT",
+                                #     }
+                                # }
+                            ],
+                            "meta": [
+                                {"$replaceWith": "$$SEARCH_META"},
+                                {"$limit": 1},
+                            ],
+                        }
+                    }
+                ]
+            )
 
         return base_pipeline
 
@@ -357,6 +378,10 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
             pipeline, projection_model=None
         ).to_list()
 
+        if self._calculate_total_count:
+            total_count = results[0]["meta"][0]["count"]["total"]
+            results = results[0]["data"]
+
         # Results are raw documents with pagination_token
         if results and len(results) > 0:
             # Check if we have more results than requested (indicating next page exists)
@@ -369,10 +394,6 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
                 for entity in entities_data
                 if isinstance(entity, dict)
             ]
-
-        print(f"DEBUG: SearchPaginator results: {len(results) if results else 0}")
-        print(f"DEBUG: Entities created: {len(entities)}")
-        print(f"DEBUG: Has more results: {has_more_results}")
 
         # Determine pagination info
         if last is not None:
