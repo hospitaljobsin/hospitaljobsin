@@ -165,9 +165,9 @@ class OrganizationRepo:
         after: str | None = None,
     ) -> PaginatedResult[Organization, ObjectId]:
         """Get all organizations by account ID."""
-        paginator: Paginator[Organization, ObjectId] = Paginator(
+        paginator: Paginator[OrganizationMember, ObjectId, Organization] = Paginator(
             reverse=True,
-            document_cls=Organization,
+            document_cls=OrganizationMember,
             paginate_by="id",
         )
 

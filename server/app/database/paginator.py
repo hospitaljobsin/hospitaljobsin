@@ -1,8 +1,8 @@
 import operator
-from collections.abc import Awaitable, Callable, Sequence
+from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass
 from inspect import isawaitable
-from typing import Generic, TypeVar
+from typing import Any, Generic, TypeVar
 
 from beanie import Document
 from beanie.odm.queries.aggregation import AggregationQuery
@@ -13,6 +13,8 @@ from app.core.constants import MAX_PAGINATION_LIMIT
 
 ModelType = TypeVar("ModelType", bound=Document)
 
+ProjectionModelType = TypeVar("ProjectionModelType", bound=Document, default=ModelType)
+
 CursorType = TypeVar("CursorType", str, ObjectId)
 
 
@@ -22,6 +24,7 @@ class PageInfo(Generic[CursorType]):
     has_previous_page: bool
     start_cursor: CursorType | None
     end_cursor: CursorType | None
+    total_count: int | None
 
 
 @dataclass
@@ -30,7 +33,7 @@ class PaginatedResult(Generic[ModelType, CursorType]):
     page_info: PageInfo[CursorType]
 
 
-class Paginator(Generic[ModelType, CursorType]):
+class Paginator(Generic[ModelType, CursorType, ProjectionModelType]):
     def __init__(
         self,
         *,
@@ -38,11 +41,13 @@ class Paginator(Generic[ModelType, CursorType]):
         paginate_by: str,
         reverse: bool = False,
         apply_ordering: bool = True,
+        calculate_total_count: bool = False,
     ) -> None:
         self._document_cls = document_cls
         self._reverse = reverse
         self._paginate_by = paginate_by
         self._apply_ordering = apply_ordering
+        self._calculate_total_count = calculate_total_count
 
     @staticmethod
     def __validate_arguments(  # noqa: C901
@@ -95,89 +100,63 @@ class Paginator(Generic[ModelType, CursorType]):
     def __apply_ordering(
         self,
         *,
-        search_criteria: FindMany[ModelType] | AggregationQuery[ModelType],
+        pipeline: list[Mapping[str, Any]],
         last: int | None,
-    ) -> FindMany[ModelType] | AggregationQuery[ModelType]:
+    ) -> list[Mapping[str, Any]]:
         """Apply ordering on the search criteria."""
         if not self._apply_ordering:
-            return search_criteria
+            return pipeline
 
         if (self._reverse and last is None) or (last is not None and not self._reverse):
-            if isinstance(search_criteria, AggregationQuery):
-                search_criteria.aggregation_pipeline.append(
-                    {"$sort": {self._paginate_by: -1}}
-                )
-                return search_criteria
-            return search_criteria.sort(
-                -operator.attrgetter(self._paginate_by)(self._document_cls)
-            )
+            pipeline.append({"$sort": {self._paginate_by: -1}})
+            return pipeline
 
-        if isinstance(search_criteria, AggregationQuery):
-            search_criteria.aggregation_pipeline.append(
-                {"$sort": {self._paginate_by: 1}}
-            )
-            return search_criteria
-        return search_criteria.sort(
-            +operator.attrgetter(self._paginate_by)(self._document_cls)
-        )
+        pipeline.append({"$sort": {self._paginate_by: 1}})
+        return pipeline
 
     def __apply_filters(
         self,
         *,
-        search_criteria: FindMany[ModelType] | AggregationQuery[ModelType],
+        pipeline: list[Mapping[str, Any]],
         before: CursorType | None,
         after: CursorType | None,
-    ) -> FindMany[ModelType] | AggregationQuery[ModelType]:
+    ) -> list[Mapping[str, Any]]:
         """Apply pagination filters on the search criteria."""
         if after is not None:
-            if isinstance(search_criteria, AggregationQuery):
-                search_filter = (
-                    {"$match": {self._paginate_by: {"$lt": after}}}
-                    if self._reverse
-                    else {"$match": {self._paginate_by: {"$gt": after}}}
-                )
-                search_criteria.aggregation_pipeline.append(search_filter)
-                return search_criteria
-            direction = (
-                operator.attrgetter(self._paginate_by)(self._document_cls) < after
+            search_filter = (
+                {"$match": {self._paginate_by: {"$lt": after}}}
                 if self._reverse
-                else operator.attrgetter(self._paginate_by)(self._document_cls) > after
+                else {"$match": {self._paginate_by: {"$gt": after}}}
             )
-            return search_criteria.find(direction)
+            pipeline.append(search_filter)
+            return pipeline
         if before is not None:
-            if isinstance(search_criteria, AggregationQuery):
-                search_filter = (
-                    {"$match": {self._paginate_by: {"$gt": before}}}
-                    if self._reverse
-                    else {"$match": {self._paginate_by: {"$lt": before}}}
-                )
-                search_criteria.aggregation_pipeline.append(search_filter)
-                return search_criteria
-            direction = (
-                operator.attrgetter(self._paginate_by)(self._document_cls) > before
+            search_filter = (
+                {"$match": {self._paginate_by: {"$gt": before}}}
                 if self._reverse
-                else operator.attrgetter(self._paginate_by)(self._document_cls) < before
+                else {"$match": {self._paginate_by: {"$lt": before}}}
             )
-            return search_criteria.find(direction)
-        return search_criteria
+            pipeline.append(search_filter)
+            return pipeline
+        return pipeline
 
     async def paginate(
         self,
         *,
-        search_criteria: FindMany[ModelType]
-        | AggregationQuery[ModelType]
+        search_criteria: FindMany[ProjectionModelType]
+        | AggregationQuery[ProjectionModelType]
         | Callable[
             [int],
-            FindMany[ModelType]
-            | AggregationQuery[ModelType]
-            | Awaitable[FindMany[ModelType]]
-            | Awaitable[AggregationQuery[ModelType]],
+            FindMany[ProjectionModelType]
+            | AggregationQuery[ProjectionModelType]
+            | Awaitable[FindMany[ProjectionModelType]]
+            | Awaitable[AggregationQuery[ProjectionModelType]],
         ],
         last: int | None = None,
         first: int | None = None,
         before: CursorType | None = None,
         after: CursorType | None = None,
-    ) -> PaginatedResult[ModelType, CursorType]:
+    ) -> PaginatedResult[ProjectionModelType, CursorType]:
         """Paginate the given search criteria."""
         pagination_limit = self.__validate_arguments(
             first=first,
@@ -186,7 +165,9 @@ class Paginator(Generic[ModelType, CursorType]):
             after=after,
         )
 
-        resolved_search_criteria: FindMany[ModelType] | AggregationQuery[ModelType]
+        resolved_search_criteria: (
+            FindMany[ProjectionModelType] | AggregationQuery[ProjectionModelType]
+        )
 
         if callable(search_criteria):
             temp_search_criteria = search_criteria(pagination_limit)
@@ -196,23 +177,51 @@ class Paginator(Generic[ModelType, CursorType]):
         else:
             resolved_search_criteria = search_criteria
 
-        resolved_search_criteria = self.__apply_ordering(
-            search_criteria=resolved_search_criteria, last=last
-        )
-        resolved_search_criteria = self.__apply_filters(
-            search_criteria=resolved_search_criteria, before=before, after=after
-        )
-
-        if isinstance(resolved_search_criteria, AggregationQuery):
-            resolved_search_criteria.aggregation_pipeline.append(
-                {"$limit": pagination_limit + 1}
+        if isinstance(resolved_search_criteria, FindMany):
+            pipeline = resolved_search_criteria.build_aggregation_pipeline()
+            projection_model = (
+                resolved_search_criteria.get_projection_model() or self._document_cls
             )
         else:
-            resolved_search_criteria = resolved_search_criteria.limit(
-                pagination_limit + 1
-            )
+            pipeline = resolved_search_criteria.get_aggregation_pipeline()
+            projection_model = resolved_search_criteria.get_projection_model()
+        pipeline = self.__apply_ordering(pipeline=pipeline, last=last)
+        pipeline = self.__apply_filters(pipeline=pipeline, before=before, after=after)
 
-        results = await resolved_search_criteria.to_list()
+        pipeline.append({"$limit": pagination_limit + 1})
+
+        total_count = None
+
+        if self._calculate_total_count:
+            facet_pipeline = [
+                {
+                    "$facet": {
+                        "data": pipeline,
+                        "totalCount": [{"$count": "count"}],
+                    }
+                },
+                {
+                    "$project": {
+                        "data": 1,
+                        "totalCount": {
+                            "$ifNull": [{"$arrayElemAt": ["$totalCount.count", 0]}, 0]
+                        },
+                    }
+                },
+            ]
+
+            facet_results = await self._document_cls.aggregate(
+                facet_pipeline, projection_model=None
+            ).to_list()
+            results = [
+                projection_model(**result)
+                for result in facet_results[0].get("data", [])
+            ]
+            total_count = facet_results[0]["totalCount"]
+        else:
+            results = await self._document_cls.aggregate(
+                pipeline, projection_model=projection_model
+            ).to_list()
         entities = results[:pagination_limit]
 
         if last is not None:
@@ -238,5 +247,6 @@ class Paginator(Generic[ModelType, CursorType]):
                 has_previous_page=has_previous_page,
                 start_cursor=start_cursor,
                 end_cursor=end_cursor,
+                total_count=total_count,
             ),
         )

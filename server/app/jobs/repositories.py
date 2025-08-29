@@ -589,9 +589,9 @@ class JobRepo:
         after: str | None = None,
     ) -> PaginatedResult[Job, ObjectId]:
         """Get a paginated result of the trending jobs."""
-        paginator: Paginator[Job, ObjectId] = Paginator(
+        paginator: Paginator[ImpressionJobMetric, ObjectId, Job] = Paginator(
             reverse=True,
-            document_cls=Job,
+            document_cls=ImpressionJobMetric,
             paginate_by="id",
             apply_ordering=False,
         )
