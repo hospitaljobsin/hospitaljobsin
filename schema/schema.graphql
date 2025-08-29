@@ -1750,6 +1750,14 @@ The job payload.
 union JobPayload = Job | JobNotFoundError
 
 """
+The type of job search sort by.
+"""
+enum JobSearchSortBy {
+	RELEVANCE
+	UPDATED_AT
+}
+
+"""
 The type of job sort by.
 """
 enum JobSortBy {
@@ -4046,6 +4054,11 @@ type Query {
 		The type of job to filter jobs by.
 		"""
 		jobType: [JobTypeFilter!]!
+
+		"""
+		The type of job search sort by.
+		"""
+		sortBy: JobSearchSortBy! = RELEVANCE
 
 		"""
 		The proximity in km to search for jobs

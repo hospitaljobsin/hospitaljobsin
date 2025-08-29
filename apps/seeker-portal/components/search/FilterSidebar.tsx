@@ -22,6 +22,7 @@ export type FilterValues = {
 	proximityKm: number;
 	workMode: string[];
 	jobType: string[];
+	sortBy: string;
 };
 
 export type FilterSidebarProps = {

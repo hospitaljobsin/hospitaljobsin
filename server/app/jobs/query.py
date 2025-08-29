@@ -10,10 +10,18 @@ from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo
 from app.geocoding.types import CoordinatesInputType
 
-from .repositories import JobApplicantRepo, JobRepo, JobType, JobWorkMode, SavedJobRepo
+from .repositories import (
+    JobApplicantRepo,
+    JobRepo,
+    JobSearchSortBy,
+    JobType,
+    JobWorkMode,
+    SavedJobRepo,
+)
 from .types import (
     JobApplicantConnectionType,
     JobConnectionType,
+    JobSearchSortByEnum,
     JobTypeFilterEnum,
     JobWorkModeFilterEnum,
     SavedJobConnectionType,
@@ -42,6 +50,12 @@ class JobQuery:
                 description="The type of job to filter jobs by.",
             ),
         ],
+        sort_by: Annotated[
+            JobSearchSortByEnum,
+            strawberry.argument(
+                description="The type of job search sort by.",
+            ),
+        ] = JobSearchSortByEnum.RELEVANCE,
         proximity_km: Annotated[
             float | None,
             strawberry.argument(
@@ -125,6 +139,7 @@ class JobQuery:
             before=(before.node_id if before else None),
             work_mode=[JobWorkMode(mode.value.lower()) for mode in work_mode],
             job_type=[JobType(given_type.value.lower()) for given_type in job_type],
+            sort_by=JobSearchSortBy(sort_by.value.lower()),
         )
 
         return JobConnectionType.marshal(

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<02cf47e38c5aa3b638d725988e4cff74>>
+ * @generated SignedSource<<d5c3a500a7c6ce5b49e857685d4eda76>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -59,6 +59,11 @@ const node: ReaderFragment = {
     {
       "defaultValue": null,
       "kind": "LocalArgument",
+      "name": "sortBy"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "workMode"
     }
   ],
@@ -110,6 +115,11 @@ const node: ReaderFragment = {
         },
         {
           "kind": "Variable",
+          "name": "sortBy",
+          "variableName": "sortBy"
+        },
+        {
+          "kind": "Variable",
           "name": "workMode",
           "variableName": "workMode"
         }
@@ -122,6 +132,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "5769d7f2523c9ccd9dce6f03a48909b2";
+(node as any).hash = "5129bdc5f04acc67bd65681694c31b7b";
 
 export default node;

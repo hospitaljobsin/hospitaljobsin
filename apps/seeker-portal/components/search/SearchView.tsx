@@ -20,10 +20,10 @@ import {
 	useFragment,
 	usePreloadedQuery,
 } from "react-relay";
-import JobListSkeleton from "../landing/JobListSkeleton";
 import FilterSidebar from "./FilterSidebar";
 import SearchHeader from "./SearchHeader";
 import SearchJobsList from "./SearchJobsList";
+import SearchJobsListSkeleton from "./SearchJobsListSkeleton";
 
 export const SearchPageContentFragment = graphql`
   fragment SearchView_query on Query
@@ -36,6 +36,7 @@ export const SearchPageContentFragment = graphql`
     proximityKm: { type: "Float" }
     workMode: { type: "[JobWorkModeFilter!]!" }
     jobType: { type: "[JobTypeFilter!]!" }
+    sortBy: { type: "JobSearchSortBy" }
   ) {
 	...SearchHeaderFragment
     ...SearchJobsListFragment @arguments(
@@ -47,6 +48,7 @@ export const SearchPageContentFragment = graphql`
       maxSalary: $maxSalary
 	  jobType: $jobType
 	  workMode: $workMode
+      sortBy: $sortBy
     )
   }
 `;
@@ -190,7 +192,7 @@ export default function SearchView({
 					/>
 				</div>
 				<div className="flex-1">
-					<Suspense fallback={<JobListSkeleton />}>
+					<Suspense fallback={<SearchJobsListSkeleton />}>
 						<SearchJobsList
 							rootQuery={data}
 							searchTerm={filters.q || null}
@@ -201,6 +203,8 @@ export default function SearchView({
 							maxSalary={filters.maxSalary ?? null}
 							workMode={validatedWorkMode}
 							jobType={validatedJobType}
+							sortBy={filters.sortBy}
+							setFilters={setFilters}
 						/>
 					</Suspense>
 				</div>

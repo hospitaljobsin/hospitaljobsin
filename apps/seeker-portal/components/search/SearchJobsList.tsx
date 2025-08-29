@@ -7,9 +7,10 @@ import type {
 	JobWorkModeFilter,
 	SearchJobsListRefetchQuery$variables,
 } from "@/__generated__/SearchJobsListRefetchQuery.graphql";
+import type { Filters } from "@/app/search/SearchClientComponent";
 import Job from "@/components/landing/Job";
 import JobListSkeleton from "@/components/landing/JobListSkeleton";
-import { Card, CardBody } from "@heroui/react";
+import { Card, CardBody, Select, SelectItem } from "@heroui/react";
 import { Search } from "lucide-react";
 import { useEffect, useRef, useTransition } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
@@ -26,8 +27,9 @@ fragment SearchJobsListFragment on Query @argumentDefinitions(
 	maxSalary: { type: "Int", defaultValue: null }
 	workMode: { type: "[JobWorkModeFilter!]!" }
 	jobType: { type: "[JobTypeFilter!]!" }
+	sortBy: { type: "JobSearchSortBy", defaultValue: RELEVANCE }
 ) {
-	...SearchJobsListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
+	...SearchJobsListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType, sortBy: $sortBy)
 	viewer {
 		...JobControlsAuthFragment
 	}
@@ -48,9 +50,10 @@ const SearchJobsListInternalFragment = graphql`
 	maxSalary: { type: "Int", defaultValue: null }
 	workMode: { type: "[JobWorkModeFilter!]!" }
 	jobType: { type: "[JobTypeFilter!]!" }
+    sortBy: { type: "JobSearchSortBy", defaultValue: RELEVANCE }
   ){
-    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
-      @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm", "minExperience", "minExperience", "minSalary", "maxSalary", "workMode", "jobType"]) {
+    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType, sortBy: $sortBy)
+      @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm", "minExperience", "minExperience", "minSalary", "maxSalary", "workMode", "jobType", "sortBy"]) {
       totalCount @required(action: THROW)
 	  edges {
         node {
@@ -76,6 +79,8 @@ type Props = {
 	maxSalary?: number | null;
 	workMode?: string[];
 	jobType?: string[];
+	sortBy?: string;
+	setFilters: (filters: Filters | ((prevFilters: Filters) => Filters)) => void;
 };
 
 export default function SearchJobsList({
@@ -88,6 +93,8 @@ export default function SearchJobsList({
 	maxSalary,
 	workMode,
 	jobType,
+	sortBy,
+	setFilters,
 }: Props) {
 	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(SearchJobsListFragment, rootQuery);
@@ -179,10 +186,33 @@ export default function SearchJobsList({
 				scrollbarWidth: "none",
 			}}
 		>
-			<h2 className="text-lg text-foreground-600 mb-6 sm:mb-8">
-				<span className="font-medium">{data.jobs.totalCount}</span> healthcare
-				jobs found
-			</h2>
+			<div className="w-full flex gap-12 justify-between items-center mb-6 sm:mb-8">
+				<h2 className="text-base sm:text-lg text-foreground-600 whitespace-nowrap">
+					<span className="font-medium">{data.jobs.totalCount}</span> healthcare
+					jobs found
+				</h2>
+				<div className="flex gap-2 w-full sm:max-w-xs">
+					<Select
+						label="Sort by"
+						placeholder="Select sorting option"
+						selectedKeys={[sortBy || "RELEVANCE"]}
+						onSelectionChange={(keys) => {
+							const selectedKey = Array.from(keys)[0] as string;
+							if (selectedKey) {
+								setFilters((prevFilters) => ({
+									...prevFilters,
+									sortBy: selectedKey,
+								}));
+							}
+						}}
+						variant="faded"
+						size="sm"
+					>
+						<SelectItem key="RELEVANCE">Relevance</SelectItem>
+						<SelectItem key="UPDATED_AT">Date Posted</SelectItem>
+					</Select>
+				</div>
+			</div>
 			<WindowVirtualizer onScrollEnd={handleScrollEnd}>
 				{allJobEdges.map((jobEdge, index) => (
 					<div key={jobEdge.node.id} className="pb-4 sm:pb-6">

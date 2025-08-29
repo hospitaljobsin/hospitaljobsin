@@ -27,6 +27,7 @@ export const SearchClientComponentQuery = graphql`
 		$proximityKm: Float
 		$workMode: [JobWorkModeFilter!]!
 		$jobType: [JobTypeFilter!]!
+		$sortBy: JobSearchSortBy!
 	) {
 		...SearchView_query @arguments(
 			searchTerm: $searchTerm
@@ -37,6 +38,7 @@ export const SearchClientComponentQuery = graphql`
 			proximityKm: $proximityKm
 			workMode: $workMode
 			jobType: $jobType
+			sortBy: $sortBy
 		)
 	}
 `;
@@ -52,6 +54,7 @@ export type Filters = {
 	proximityKm: number;
 	workMode: string[];
 	jobType: string[];
+	sortBy: string;
 };
 
 export default function SearchClientComponent() {
@@ -72,6 +75,7 @@ export default function SearchClientComponent() {
 			jobType: parseAsArrayOf(parseAsString).withDefault(
 				FILTER_DEFAULTS.jobType,
 			),
+			sortBy: parseAsString.withDefault("RELEVANCE"),
 		},
 		{ shallow: true },
 	);
@@ -112,6 +116,7 @@ export default function SearchClientComponent() {
 		proximityKm: filters.proximityKm,
 		workMode: filters.workMode as readonly JobWorkModeFilter[],
 		jobType: filters.jobType as readonly JobTypeFilter[],
+		sortBy: filters.sortBy as "RELEVANCE" | "UPDATED_AT",
 	};
 
 	const preloadedQuery = loadQuery<SearchClientComponentQueryType>(

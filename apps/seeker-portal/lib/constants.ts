@@ -21,6 +21,7 @@ export const FILTER_DEFAULTS = {
 	proximityKm: 50,
 	workMode: [],
 	jobType: [],
+	sortBy: "RELEVANCE",
 };
 
 export const COOKIE_ANALYTICS_PREFERENCE = "analytics_preference";

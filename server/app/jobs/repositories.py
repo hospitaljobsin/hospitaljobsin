@@ -59,6 +59,11 @@ from .documents import (
 )
 
 
+class JobSearchSortBy(Enum):
+    RELEVANCE = "relevance"
+    UPDATED_AT = "updated_at"
+
+
 class JobSortBy(Enum):
     CREATED_AT = "created_at"
     UPDATED_AT = "updated_at"
@@ -366,6 +371,7 @@ class JobRepo:
         last: int | None = None,
         before: str | None = None,
         after: str | None = None,
+        sort_by: JobSearchSortBy = JobSearchSortBy.RELEVANCE,
     ) -> PaginatedResult[SearchableJob, str]:
         """Get a paginated result of active jobs with advanced search capabilities."""
         paginator: SearchPaginator[Job, SearchableJob] = SearchPaginator(
@@ -400,8 +406,13 @@ class JobRepo:
                 "should": [],
                 "filter": [],
             },
-            "sort": {"updated_at": {"order": -1}},
         }
+
+        match sort_by:
+            case JobSearchSortBy.RELEVANCE:
+                search_query["sort"] = {"score": {"order": -1}}
+            case JobSearchSortBy.UPDATED_AT:
+                search_query["sort"] = {"updated_at": {"order": -1}}
 
         # Add text search if provided
         if search_term:
