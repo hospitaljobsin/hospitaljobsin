@@ -32,7 +32,7 @@ from app.core.constants import (
 )
 from app.core.formatting import clean_markdown_text, markdown_to_clean_html, slugify
 from app.core.geocoding import BaseLocationService
-from app.database.paginator import PaginatedResult, Paginator
+from app.database.paginator import PaginatedResult, Paginator, SearchPaginator
 from app.embeddings.services import EmbeddingsService
 from app.geocoding.models import Coordinates
 from app.jobs.agents.applicant_analysis import JobApplicantAnalysisOutput
@@ -55,6 +55,7 @@ from .documents import (
     JobApplicantAnalysis,
     JobApplicationForm,
     SavedJob,
+    SearchableJob,
 )
 
 
@@ -367,17 +368,17 @@ class JobRepo:
         last: int | None = None,
         before: str | None = None,
         after: str | None = None,
-    ) -> PaginatedResult[Job, ObjectId]:
+    ) -> PaginatedResult[Job, str]:
         """Get a paginated result of active jobs with advanced search capabilities."""
-        paginator: Paginator[Job, ObjectId] = Paginator(
-            reverse=True,
+        paginator: SearchPaginator[Job, SearchableJob] = SearchPaginator(
             document_cls=Job,
-            paginate_by="id",
+            projection_model=SearchableJob,
+            search_index_name=JOB_SEARCH_INDEX_NAME,
+            calculate_total_count=False,  # Disable for now to debug
         )
 
         # Build Atlas Search query
         search_query = {
-            "index": JOB_SEARCH_INDEX_NAME,
             "compound": {
                 "must": [
                     # Always filter for active jobs
@@ -401,7 +402,7 @@ class JobRepo:
                 "should": [],
                 "filter": [],
             },
-            "sort": {"score": {"order": -1}, "updated_at": {"order": -1}},
+            "sort": {"updated_at": {"order": -1}},
         }
 
         # Add text search if provided
@@ -561,24 +562,12 @@ class JobRepo:
                 }
             )
 
-        # Build aggregation pipeline
-        pipeline = [
-            {"$search": search_query},
-            {"$sort": {"updated_at": -1}},  # Sort by most recent
-        ]
-
-        # Use aggregation with paginator
-        search_criteria = Job.aggregate(
-            aggregation_pipeline=pipeline,
-            projection_model=Job,
-        )
-
         return await paginator.paginate(
-            search_criteria=search_criteria,
+            search_query=search_query,
             first=first,
             last=last,
-            before=ObjectId(before) if before else None,
-            after=ObjectId(after) if after else None,
+            before=before if before else None,
+            after=after if after else None,
         )
 
     async def get_all_trending(

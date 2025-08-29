@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<cc71deee9ee285e70ea1414922d45a0b>>
- * @relayHash d8accac9cd7ba6cfdbf8ef51c83462cb
+ * @generated SignedSource<<8ffe70ecfd1c6bf6e87a40a1254ee1a3>>
+ * @relayHash 1c2bce5f4d8e2a61e8d61f1256548848
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d8accac9cd7ba6cfdbf8ef51c83462cb
+// @relayRequestID 1c2bce5f4d8e2a61e8d61f1256548848
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -113,7 +113,7 @@ v14 = [
   {
     "kind": "Literal",
     "name": "first",
-    "value": 25
+    "value": 5
   },
   {
     "kind": "Literal",
@@ -494,7 +494,7 @@ return {
           "coordinates",
           "proximityKm",
           "minExperience",
-          "maxExperience",
+          "minExperience",
           "minSalary",
           "maxSalary",
           "workMode",
@@ -508,7 +508,7 @@ return {
     ]
   },
   "params": {
-    "id": "d8accac9cd7ba6cfdbf8ef51c83462cb",
+    "id": "1c2bce5f4d8e2a61e8d61f1256548848",
     "metadata": {},
     "name": "SearchClientComponentQuery",
     "operationKind": "query",

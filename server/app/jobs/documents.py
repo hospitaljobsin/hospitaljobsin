@@ -17,7 +17,7 @@ from pymongo import IndexModel
 from pymongo.operations import SearchIndexModel
 
 from app.accounts.documents import Account, BaseProfile
-from app.base.models import Address, GeoObject
+from app.base.models import Address, BaseSearchable, GeoObject
 from app.core.constants import (
     CoreJobMetricEventType,
     ImpressionJobMetricEventType,
@@ -73,6 +73,12 @@ class Job(Document):
 
     organization: Link[Organization]
 
+    @property
+    def is_visible(self) -> bool:
+        """Whether the job is visible for job seekers."""
+        expires_at = ensure_utc(self.expires_at)
+        return self.is_active and (expires_at is None or expires_at > datetime.now(UTC))
+
     class Settings:
         name = "jobs"
         indexes: ClassVar[list[IndexModel | SearchIndexModel]] = [
@@ -104,11 +110,9 @@ class Job(Document):
             exclude={"organization", "embedding", "external_application_url", "slug"}
         )
 
-    @property
-    def is_visible(self) -> bool:
-        """Whether the job is visible for job seekers."""
-        expires_at = ensure_utc(self.expires_at)
-        return self.is_active and (expires_at is None or expires_at > datetime.now(UTC))
+
+class SearchableJob(Job, BaseSearchable):
+    pass
 
 
 class SavedJob(Document):

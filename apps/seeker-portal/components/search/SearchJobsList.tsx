@@ -42,15 +42,14 @@ const SearchJobsListInternalFragment = graphql`
 	proximityKm: { type: "Float", defaultValue: null }
     searchTerm: { type: "String", defaultValue: null }
 	coordinates: { type: "CoordinatesInput", defaultValue: null }
-    count: { type: "Int", defaultValue: 25 }
-	minExperience: { type: "Int", defaultValue: null }
+    count: { type: "Int", defaultValue: 5 }
 	minExperience: { type: "Int", defaultValue: null }
 	minSalary: { type: "Int", defaultValue: null }
 	maxSalary: { type: "Int", defaultValue: null }
 	workMode: { type: "JobWorkModeFilter", defaultValue: ANY }
 	jobType: { type: "JobTypeFilter", defaultValue: ANY }
   ){
-    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
+    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
       @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm", "minExperience", "minExperience", "minSalary", "maxSalary", "workMode", "jobType"]) {
       edges {
         node {
@@ -107,7 +106,7 @@ export default function SearchJobsList({
 	// Handle infinite scroll when reaching the end
 	const handleScrollEnd = () => {
 		if (hasNextPage && !isLoadingNext) {
-			loadNext(25);
+			loadNext(5);
 		}
 	};
 

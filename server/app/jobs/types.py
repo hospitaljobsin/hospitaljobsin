@@ -44,6 +44,7 @@ from app.jobs.documents import (
     JobApplicantAnalysis,
     JobApplicationForm,
     SavedJob,
+    SearchableJob,
 )
 from app.jobs.exceptions import (
     JobApplicantCountNotFoundError,
@@ -1222,13 +1223,15 @@ class JobType(BaseNodeType[Job]):
 
 
 @strawberry.type(name="JobEdge")
-class JobEdgeType(BaseEdgeType[JobType, Job]):
+class JobEdgeType(BaseEdgeType[JobType, Job | SearchableJob]):
     @classmethod
-    def marshal(cls, job: Job) -> Self:
+    def marshal(cls, job: Job | SearchableJob) -> Self:
         """Marshal into a edge instance."""
         return cls(
             node=JobType.marshal(job),
-            cursor=relay.to_base64(JobType, job.id),
+            cursor=relay.to_base64(JobType, job.id)
+            if type(job) is Job
+            else job.pagination_token,
         )
 
 

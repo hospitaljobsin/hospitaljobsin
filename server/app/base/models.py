@@ -14,3 +14,7 @@ class Address(BaseModel):
     address_region: str | None = None
     postal_code: str | None = None
     country: CountryAlpha2 | None = None
+
+
+class BaseSearchable(BaseModel):
+    pagination_token: str

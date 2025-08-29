@@ -8,12 +8,16 @@ from beanie import Document
 from beanie.odm.queries.aggregation import AggregationQuery
 from beanie.odm.queries.find import FindMany
 from bson import ObjectId
+from pydantic import BaseModel
 
+from app.base.models import BaseSearchable
 from app.core.constants import MAX_PAGINATION_LIMIT
 
 ModelType = TypeVar("ModelType", bound=Document)
 
-ProjectionModelType = TypeVar("ProjectionModelType", bound=Document, default=ModelType)
+ProjectionModelType = TypeVar("ProjectionModelType", bound=BaseModel, default=ModelType)
+
+SearchProjectionModelType = TypeVar("SearchProjectionModelType", bound=BaseSearchable)
 
 CursorType = TypeVar("CursorType", str, ObjectId)
 
@@ -239,6 +243,219 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType]):
         end_cursor = (
             operator.attrgetter(self._paginate_by)(entities[-1]) if entities else None
         )
+
+        print(f"DEBUG: Final entities count: {len(entities)}")
+        print(f"DEBUG: Final entities: {entities}")
+
+        return PaginatedResult(
+            entities=entities,
+            page_info=PageInfo(
+                has_next_page=has_next_page,
+                has_previous_page=has_previous_page,
+                start_cursor=start_cursor,
+                end_cursor=end_cursor,
+                total_count=total_count,
+            ),
+        )
+
+
+class SearchPaginator(Generic[ModelType, SearchProjectionModelType]):
+    """
+    Paginator for MongoDB Atlas Search queries using searchSequenceToken.
+
+    This paginator is specifically designed for Atlas Search queries and uses
+    the searchSequenceToken for efficient cursor-based pagination.
+    """
+
+    def __init__(
+        self,
+        *,
+        document_cls: type[ModelType],
+        projection_model: type[SearchProjectionModelType],
+        search_index_name: str,
+        calculate_total_count: bool = False,
+    ) -> None:
+        self._document_cls = document_cls
+        self._projection_model = projection_model
+        self._search_index_name = search_index_name
+        self._calculate_total_count = calculate_total_count
+
+    @staticmethod
+    def __validate_arguments(
+        *,
+        first: int | None,
+        last: int | None,
+        before: str | None,
+        after: str | None,
+    ) -> int:
+        """Validate pagination arguments for Atlas Search."""
+        if first is not None and last is not None:
+            first_and_last_error = "Cannot provide both `first` and `last`"
+            raise ValueError(first_and_last_error)
+
+        if after is not None and before is not None:
+            after_and_before_error = "Cannot provide both `after` and `before`"
+            raise ValueError(after_and_before_error)
+
+        if first is not None:
+            if first < 0:
+                first_not_positive_error = "`first` must be a positive integer"
+                raise ValueError(first_not_positive_error)
+            if first > MAX_PAGINATION_LIMIT:
+                max_pagination_limit_error = f"`first` exceeds pagination limit of {MAX_PAGINATION_LIMIT} records"
+                raise ValueError(max_pagination_limit_error)
+            if before is not None:
+                first_and_before_error = "`first` cannot be provided with `before`"
+                raise ValueError(first_and_before_error)
+            return first
+
+        if last is not None:
+            if last < 0:
+                last_not_positive_error = "`last` must be a positive integer"
+                raise ValueError(last_not_positive_error)
+            if last > MAX_PAGINATION_LIMIT:
+                max_pagination_limit_error = (
+                    f"`last` exceeds pagination limit of {MAX_PAGINATION_LIMIT} records"
+                )
+                raise ValueError(max_pagination_limit_error)
+            if after is not None:
+                last_and_after_error = "`last` cannot be provided with `after`"
+                raise ValueError(last_and_after_error)
+            return last
+
+        no_first_and_last_error = (
+            "You must provide either `first` or `last` to paginate"
+        )
+        raise ValueError(no_first_and_last_error)
+
+    def __build_search_pipeline(
+        self,
+        *,
+        search_query: dict[str, Any],
+        pagination_limit: int,
+        after: str | None = None,
+        before: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """Build the Atlas Search aggregation pipeline with pagination."""
+        # Extract the search query components
+        search_stage: dict[str, Any] = {
+            "index": self._search_index_name,
+        }
+
+        # Add search query fields (compound, text, etc.)
+        for key, value in search_query.items():
+            if key not in [
+                "sort",
+                "count",
+            ]:  # Exclude sort and count as they're handled separately
+                search_stage[str(key)] = value
+
+        # Add pagination tokens
+        if after:
+            search_stage["searchAfter"] = after
+        if before:
+            search_stage["searchBefore"] = before
+
+        base_pipeline = [
+            {"$search": search_stage},
+            {"$addFields": {"pagination_token": {"$meta": "searchSequenceToken"}}},
+        ]
+
+        # Add sort if specified in search_query
+        # Note: Atlas Search handles sorting internally, so we don't add $sort stage
+        # The sort is applied within the $search stage itself
+
+        # Add limit with +1 to check if there are more results
+        base_pipeline.append({"$limit": pagination_limit + 1})
+
+        return base_pipeline
+
+    async def paginate(
+        self,
+        *,
+        search_query: dict[str, Any],
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[SearchProjectionModelType, str]:
+        """Paginate Atlas Search results using searchSequenceToken."""
+        pagination_limit = self.__validate_arguments(
+            first=first,
+            last=last,
+            before=before,
+            after=after,
+        )
+
+        # Build the search pipeline
+        pipeline = self.__build_search_pipeline(
+            search_query=search_query,
+            pagination_limit=pagination_limit,
+            after=after,
+            before=before,
+        )
+
+        # Execute the search aggregation
+        total_count = None
+
+        start_cursor = None
+        end_cursor = None
+
+        has_more_results = False
+
+        entities = []
+
+        # Debug: Print the pipeline for troubleshooting
+        # print(f"DEBUG: SearchPaginator pipeline: {pipeline}")
+        results = await self._document_cls.aggregate(
+            pipeline, projection_model=None
+        ).to_list()
+
+        # Results are raw documents with pagination_token
+        if results and len(results) > 0:
+            # Check if we have more results than requested (indicating next page exists)
+            has_more_results = len(results) > pagination_limit
+
+            entities_data = results[:pagination_limit]
+
+            entities = [
+                self._projection_model(**entity)
+                for entity in entities_data
+                if isinstance(entity, dict)
+            ]
+
+            # Extract pagination tokens
+            if first is not None:
+                # Forward pagination
+                start_cursor = entities[0].pagination_token
+                end_cursor = (
+                    entities[pagination_limit - 1].pagination_token
+                    if len(entities) >= pagination_limit
+                    else entities[-1].pagination_token
+                )
+            else:
+                # Reverse pagination
+                start_cursor = (
+                    entities[-pagination_limit].pagination_token
+                    if len(entities) >= pagination_limit
+                    else entities[0].pagination_token
+                )
+                end_cursor = entities[-1].pagination_token
+
+        print(f"DEBUG: SearchPaginator results: {len(results) if results else 0}")
+        print(f"DEBUG: Entities created: {len(entities)}")
+        print(f"DEBUG: Has more results: {has_more_results}")
+
+        # Determine pagination info
+        if last is not None:
+            # Reverse pagination
+            entities = list(reversed(entities))
+            has_next_page = before is not None
+            has_previous_page = has_more_results
+        else:
+            # Forward pagination (default)
+            has_next_page = has_more_results
+            has_previous_page = after is not None
 
         return PaginatedResult(
             entities=entities,
