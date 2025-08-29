@@ -51,7 +51,8 @@ const SearchJobsListInternalFragment = graphql`
   ){
     jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
       @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm", "minExperience", "minExperience", "minSalary", "maxSalary", "workMode", "jobType"]) {
-      edges {
+      totalCount @required(action: THROW)
+	  edges {
         node {
           id
           ...JobFragment
@@ -175,14 +176,15 @@ export default function SearchJobsList({
 
 	return (
 		<div
+			className="h-full w-full scroll-smooth overflow-none"
 			style={{
-				height: "100%",
-				width: "100%",
 				scrollbarWidth: "none",
-				msOverflowStyle: "none",
-				scrollBehavior: "smooth",
 			}}
 		>
+			<h2 className="text-lg text-foreground-600 mb-4">
+				<span className="font-medium">{data.jobs.totalCount}</span> healthcare
+				jobs found
+			</h2>
 			<WindowVirtualizer onScrollEnd={handleScrollEnd}>
 				{allJobEdges.map((jobEdge, index) => (
 					<div key={jobEdge.node.id} className="pb-4 sm:pb-6">

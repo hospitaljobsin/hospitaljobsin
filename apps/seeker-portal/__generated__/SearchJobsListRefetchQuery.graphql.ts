@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a975ce7265be55c58c2a8d07d78666f8>>
- * @relayHash c4eaf0546a3e0257faaf5ba590dc02b4
+ * @generated SignedSource<<92105e46da4d53bfbb82bce460b05868>>
+ * @relayHash bb7d4e5a70524ce8f3d0ea9f57ec5227
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c4eaf0546a3e0257faaf5ba590dc02b4
+// @relayRequestID bb7d4e5a70524ce8f3d0ea9f57ec5227
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -222,6 +222,13 @@ return {
         "name": "jobs",
         "plural": false,
         "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "totalCount",
+            "storageKey": null
+          },
           {
             "alias": null,
             "args": null,
@@ -476,7 +483,7 @@ return {
     ]
   },
   "params": {
-    "id": "c4eaf0546a3e0257faaf5ba590dc02b4",
+    "id": "bb7d4e5a70524ce8f3d0ea9f57ec5227",
     "metadata": {},
     "name": "SearchJobsListRefetchQuery",
     "operationKind": "query",
@@ -485,6 +492,6 @@ return {
 };
 })();
 
-(node as any).hash = "35aafc54a4a3a2144f3768cca00571a1";
+(node as any).hash = "0103466069157a7ed60f7749737252c1";
 
 export default node;

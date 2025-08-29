@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<7801c4745697d2f68a9a77a1f959fba1>>
- * @relayHash d8accac9cd7ba6cfdbf8ef51c83462cb
+ * @generated SignedSource<<99cad1682ea46823dfb516ccc7b34e51>>
+ * @relayHash 3ce6ccb0f50e5aa9b3e3b57fe465ca56
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d8accac9cd7ba6cfdbf8ef51c83462cb
+// @relayRequestID 3ce6ccb0f50e5aa9b3e3b57fe465ca56
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -254,6 +254,13 @@ return {
         "name": "jobs",
         "plural": false,
         "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "totalCount",
+            "storageKey": null
+          },
           {
             "alias": null,
             "args": null,
@@ -508,7 +515,7 @@ return {
     ]
   },
   "params": {
-    "id": "d8accac9cd7ba6cfdbf8ef51c83462cb",
+    "id": "3ce6ccb0f50e5aa9b3e3b57fe465ca56",
     "metadata": {},
     "name": "SearchClientComponentQuery",
     "operationKind": "query",

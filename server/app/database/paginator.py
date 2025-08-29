@@ -324,13 +324,7 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
                 [
                     {
                         "$facet": {
-                            "data": [
-                                # {
-                                #     "$project": {
-                                #         "doc": "$$ROOT",
-                                #     }
-                                # }
-                            ],
+                            "data": [],
                             "meta": [
                                 {"$replaceWith": "$$SEARCH_META"},
                                 {"$limit": 1},

@@ -1151,6 +1151,11 @@ type InviteConnection {
 	A list of edges.
 	"""
 	edges: [OrganizationInviteEdge!]!
+
+	"""
+	The total number of items in the connection.
+	"""
+	totalCount: Int
 }
 
 """
@@ -1534,6 +1539,11 @@ type JobApplicantConnection {
 	A list of edges.
 	"""
 	edges: [JobApplicantEdge!]!
+
+	"""
+	The total number of items in the connection.
+	"""
+	totalCount: Int
 }
 
 """
@@ -1670,6 +1680,11 @@ type JobConnection {
 	A list of edges.
 	"""
 	edges: [JobEdge!]!
+
+	"""
+	The total number of items in the connection.
+	"""
+	totalCount: Int
 }
 
 type JobEdge {
@@ -3470,6 +3485,11 @@ type OrganizationConnection {
 	A list of edges.
 	"""
 	edges: [OrganizationEdge!]!
+
+	"""
+	The total number of items in the connection.
+	"""
+	totalCount: Int
 }
 
 type OrganizationEdge {
@@ -3563,6 +3583,11 @@ type OrganizationMemberConnection {
 	A list of edges.
 	"""
 	edges: [OrganizationMemberEdge!]!
+
+	"""
+	The total number of items in the connection.
+	"""
+	totalCount: Int
 }
 
 type OrganizationMemberEdge {
@@ -4417,6 +4442,11 @@ type SavedJobConnection {
 	A list of edges.
 	"""
 	edges: [SavedJobEdge!]!
+
+	"""
+	The total number of items in the connection.
+	"""
+	totalCount: Int
 }
 
 type SavedJobEdge {
@@ -4511,6 +4541,11 @@ type SessionConnection {
 	A list of edges.
 	"""
 	edges: [SessionEdge!]!
+
+	"""
+	The total number of items in the connection.
+	"""
+	totalCount: Int
 }
 
 type SessionEdge {
@@ -4884,6 +4919,11 @@ type WebAuthnCredentialConnection {
 	A list of edges.
 	"""
 	edges: [WebAuthnCredentialEdge!]!
+
+	"""
+	The total number of items in the connection.
+	"""
+	totalCount: Int
 }
 
 type WebAuthnCredentialEdge {

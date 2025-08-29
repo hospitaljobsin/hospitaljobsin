@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4ace6c4dbb2a373fb605666b271bf0dd>>
+ * @generated SignedSource<<8b3aa8658366302eb770fccb3519296e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,6 +21,7 @@ export type SearchJobsListInternalFragment$data = {
     readonly pageInfo: {
       readonly hasNextPage: boolean;
     };
+    readonly totalCount: number;
   };
   readonly " $fragmentType": "SearchJobsListInternalFragment";
 };
@@ -163,6 +164,17 @@ return {
       "plural": false,
       "selections": [
         {
+          "kind": "RequiredField",
+          "field": {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "totalCount",
+            "storageKey": null
+          },
+          "action": "THROW"
+        },
+        {
           "alias": null,
           "args": null,
           "concreteType": "JobEdge",
@@ -249,6 +261,6 @@ return {
 };
 })();
 
-(node as any).hash = "35aafc54a4a3a2144f3768cca00571a1";
+(node as any).hash = "0103466069157a7ed60f7749737252c1";
 
 export default node;
