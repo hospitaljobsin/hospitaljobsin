@@ -199,10 +199,12 @@ export default function SearchJobsList({
 						onSelectionChange={(keys) => {
 							const selectedKey = Array.from(keys)[0] as string;
 							if (selectedKey) {
-								setFilters((prevFilters) => ({
-									...prevFilters,
-									sortBy: selectedKey,
-								}));
+								startTransition(() => {
+									setFilters((prevFilters) => ({
+										...prevFilters,
+										sortBy: selectedKey,
+									}));
+								});
 							}
 						}}
 						variant="faded"
