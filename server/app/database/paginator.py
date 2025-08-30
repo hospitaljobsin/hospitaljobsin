@@ -322,7 +322,12 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
         base_pipeline.append({"$limit": pagination_limit + 1})
 
         if self._minimum_score:
-            base_pipeline.append({"$match": {"score": {"$gte": self._minimum_score}}})
+            base_pipeline.append(
+                {"$addFields": {"searchScore": {"$meta": "searchScore"}}}
+            )
+            base_pipeline.append(
+                {"$match": {"searchScore": {"$gte": self._minimum_score}}}
+            )
 
         if self._calculate_total_count:
             base_pipeline.extend(
