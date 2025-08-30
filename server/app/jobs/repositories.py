@@ -22,6 +22,7 @@ from app.core.constants import (
     JOB_EMBEDDING_DIMENSIONS,
     JOB_SEARCH_INDEX_NAME,
     RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD,
+    RELATED_JOBS_SIMILARITY_THRESHOLD,
     TRENDING_JOBS_LIMIT,
     CoreJobMetricEventType,
     ImpressionJobMetricEventType,
@@ -723,7 +724,7 @@ class JobRepo:
             document_cls=Job,
             projection_model=SearchableJob,
             search_index_name=JOB_SEARCH_INDEX_NAME,
-            minimum_score=RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD,
+            minimum_score=RELATED_JOBS_SIMILARITY_THRESHOLD,
         )
 
         search_query = {
