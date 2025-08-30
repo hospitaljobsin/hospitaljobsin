@@ -264,8 +264,8 @@ export default function JobEditForm({ rootQuery }: Props) {
 			minExperience: jobData.minExperience ?? null,
 			maxExperience: jobData.maxExperience ?? null,
 			expiresAt: jobData.expiresAt ?? null,
-			jobType: jobData.jobType ?? null,
-			workMode: jobData.workMode ?? null,
+			jobType: jobData.type === null ? "UNSPECIFIED" : jobData.type,
+			workMode: jobData.workMode === null ? "UNSPECIFIED" : jobData.workMode,
 			isSalaryNegotiable: jobData.isSalaryNegotiable ?? false,
 		},
 	});
