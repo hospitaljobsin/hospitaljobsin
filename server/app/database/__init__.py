@@ -72,41 +72,6 @@ async def create_search_indexes(
     """Create search indexes for the database."""
     database = client.get_default_database(default=default_database_name)
 
-    # Check and create Job embedding index if it doesn't exist
-    job_collection = database.get_collection(str(Job.get_settings().name))
-    existing_job_indexes = await job_collection.list_search_indexes().to_list(
-        length=None,
-    )
-    job_index_exists = any(
-        index.get("name") == JOB_EMBEDDING_INDEX_NAME for index in existing_job_indexes
-    )
-
-    if not job_index_exists:
-        await job_collection.create_search_index(
-            model=SearchIndexModel(
-                definition={
-                    "fields": [
-                        {
-                            "type": "vector",
-                            "path": "embedding",
-                            "similarity": "dotProduct",
-                            "numDimensions": JOB_EMBEDDING_DIMENSIONS,
-                        },
-                    ]
-                },
-                name=JOB_EMBEDDING_INDEX_NAME,
-                type="vectorSearch",
-            )
-        )
-        logger.info(
-            "Created Job embedding search index", index_name=JOB_EMBEDDING_INDEX_NAME
-        )
-    else:
-        logger.info(
-            "Job embedding search index already exists",
-            index_name=JOB_EMBEDDING_INDEX_NAME,
-        )
-
     # Check and create JobApplicant embedding index if it doesn't exist
     job_applicant_collection = database.get_collection(
         str(JobApplicant.get_settings().name)
@@ -145,6 +110,12 @@ async def create_search_indexes(
             "JobApplicant embedding search index already exists",
             index_name=JOB_APPLICANT_EMBEDDING_INDEX_NAME,
         )
+
+    # Check and create Job embedding index if it doesn't exist
+    job_collection = database.get_collection(str(Job.get_settings().name))
+    existing_job_indexes = await job_collection.list_search_indexes().to_list(
+        length=None,
+    )
     # Check and create Job Atlas Search index if it doesn't exist
     job_atlas_search_exists = any(
         index.get("name") == JOB_SEARCH_INDEX_NAME for index in existing_job_indexes

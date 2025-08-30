@@ -20,10 +20,8 @@ from app.core.constants import (
     JOB_APPLICANT_EMBEDDING_DIMENSIONS,
     JOB_APPLICANT_EMBEDDING_INDEX_NAME,
     JOB_EMBEDDING_DIMENSIONS,
-    JOB_EMBEDDING_INDEX_NAME,
     JOB_SEARCH_INDEX_NAME,
     RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD,
-    RELATED_JOBS_SIMILARITY_THRESHOLD,
     TRENDING_JOBS_LIMIT,
     CoreJobMetricEventType,
     ImpressionJobMetricEventType,
@@ -719,49 +717,58 @@ class JobRepo:
         last: int | None = None,
         before: str | None = None,
         after: str | None = None,
-    ) -> PaginatedResult[Job, ObjectId]:
+    ) -> PaginatedResult[SearchableJob, str]:
         """Get a paginated result of all jobs related to a given job."""
-        pipeline = [
-            {
-                "$vectorSearch": {
-                    "index": JOB_EMBEDDING_INDEX_NAME,
-                    "path": "embedding",
-                    "queryVector": job_embedding,
-                    "numCandidates": 100,  # higher is better for quality filtering
-                    "limit": 50,
-                }
-            },
-            {
-                "$match": {
-                    "_id": {"$ne": job_id},
-                    "is_active": True,  # also exclude inactive jobs here
-                    "$or": [
-                        {"expires_at": {"$gt": datetime.now(UTC)}},
-                        {"expires_at": None},
-                    ],
-                }
-            },
-            {"$addFields": {"search_score": {"$meta": "vectorSearchScore"}}},
-            {"$match": {"search_score": {"$gte": RELATED_JOBS_SIMILARITY_THRESHOLD}}},
-            {"$sort": {"search_score": -1}},
-        ]
-        paginator: Paginator[Job, ObjectId] = Paginator(
-            reverse=True,
+        paginator: SearchPaginator[Job, SearchableJob] = SearchPaginator(
             document_cls=Job,
-            paginate_by="id",
+            projection_model=SearchableJob,
+            search_index_name=JOB_SEARCH_INDEX_NAME,
+            minimum_score=RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD,
         )
 
-        search_criteria = Job.aggregate(
-            aggregation_pipeline=pipeline,
-            projection_model=Job,
-        )
+        search_query = {
+            "knnBeta": {
+                "vector": job_embedding,
+                "path": "embedding",
+                "k": 50,
+                "filter": {
+                    "compound": {
+                        "mustNot": [
+                            {"equals": {"value": job_id, "path": "_id"}},
+                        ],
+                        "must": [
+                            {"equals": {"value": True, "path": "is_active"}},
+                            {
+                                "compound": {
+                                    "should": [
+                                        {
+                                            "equals": {
+                                                "value": None,
+                                                "path": "expires_at",
+                                            }
+                                        },
+                                        {
+                                            "range": {
+                                                "path": "expires_at",
+                                                "gt": datetime.now(UTC),
+                                            }
+                                        },
+                                    ],
+                                    "minimumShouldMatch": 1,
+                                }
+                            },
+                        ],
+                    }
+                },
+            }
+        }
 
         return await paginator.paginate(
-            search_criteria=search_criteria,
+            search_query=search_query,
             first=first,
             last=last,
-            before=ObjectId(before) if before else None,
-            after=ObjectId(after) if after else None,
+            before=before if before else None,
+            after=after if after else None,
         )
 
     async def delete(self, job: Job) -> None:

@@ -273,11 +273,13 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
         projection_model: type[SearchProjectionModelType],
         search_index_name: str,
         calculate_total_count: bool = False,
+        minimum_score: float | None = None,
     ) -> None:
         self._document_cls = document_cls
         self._projection_model = projection_model
         self._search_index_name = search_index_name
         self._calculate_total_count = calculate_total_count
+        self._minimum_score = minimum_score
 
     def __build_search_pipeline(
         self,
@@ -318,6 +320,9 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
 
         # Add limit with +1 to check if there are more results
         base_pipeline.append({"$limit": pagination_limit + 1})
+
+        if self._minimum_score:
+            base_pipeline.append({"$match": {"score": {"$gte": self._minimum_score}}})
 
         if self._calculate_total_count:
             base_pipeline.extend(
