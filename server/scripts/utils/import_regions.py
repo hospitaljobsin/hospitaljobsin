@@ -1,5 +1,7 @@
 import asyncio
+import json
 import re
+import time
 import zipfile
 from pathlib import Path
 
@@ -13,18 +15,34 @@ from app.geocoding.documents import Region
 from app.geocoding.models import GeoJSONPoint, GeoJSONPolygon
 from pydantic import TypeAdapter, ValidationError
 from pydantic_extra_types.country import CountryAlpha2
+from pymongo.errors import BulkWriteError
 
 # Fixed issues:
 # - Filter aliases to English/Latin script only
 # - Improved postal code matching
 # - Use admin_name1 instead of admin1 for textual region names
 # - Enhanced geometry processing with validation
+#
+# Production-ready features:
+# - Robust error handling with retry logic
+# - Progress tracking with automatic resume capability
+# - Duplicate detection to avoid re-importing existing data
+# - Graceful handling of interruptions (Ctrl+C, timeouts)
+# - Batch processing with per-batch progress saving
+# - Failed batch logging for manual review
+#
+# Usage:
+#   python import_regions.py           # Normal import (resumes automatically)
+#   python import_regions.py --reset   # Reset progress and start fresh
 
 # -------------------
 # CONFIG
 # -------------------
 DATA_DIR = Path("./data")
 BATCH_SIZE = 100  # adjust as needed
+PROGRESS_FILE = DATA_DIR / "import_progress.json"
+MAX_RETRIES = 3
+RETRY_DELAY = 5  # seconds between retries
 
 # Fixed Natural Earth URLs (CDN)
 NE_COUNTRIES_URL = (
@@ -144,6 +162,66 @@ def safe_geometry_to_geojson(geometry: object) -> dict | None:
         return None
 
 
+class ProgressTracker:
+    """Track import progress to enable resumption after interruptions."""
+
+    def __init__(self, progress_file: Path):
+        self.progress_file = progress_file
+        self.progress = self._load_progress()
+
+    def _load_progress(self) -> dict:
+        """Load existing progress or create new."""
+        if self.progress_file.exists():
+            try:
+                with open(self.progress_file) as f:
+                    return json.load(f)
+            except Exception as e:
+                print(f"Warning: Could not load progress file: {e}")
+
+        return {
+            "countries_completed": False,
+            "states_completed": False,
+            "cities_completed": False,
+            "countries_count": 0,
+            "states_count": 0,
+            "cities_count": 0,
+            "last_update": None,
+            "countries_batches_completed": 0,
+            "states_batches_completed": 0,
+            "cities_batches_completed": 0,
+        }
+
+    def save_progress(self):
+        """Save current progress to file."""
+        try:
+            self.progress_file.parent.mkdir(parents=True, exist_ok=True)
+            self.progress["last_update"] = time.time()
+            with open(self.progress_file, "w") as f:
+                json.dump(self.progress, f, indent=2)
+        except Exception as e:
+            print(f"Warning: Could not save progress: {e}")
+
+    def mark_completed(self, step: str, count: int = 0):
+        """Mark a step as completed."""
+        self.progress[f"{step}_completed"] = True
+        if count > 0:
+            self.progress[f"{step}_count"] = count
+        self.save_progress()
+
+    def is_completed(self, step: str) -> bool:
+        """Check if a step is completed."""
+        return self.progress.get(f"{step}_completed", False)
+
+    def update_batch_progress(self, step: str, batch_num: int):
+        """Update batch progress for a step."""
+        self.progress[f"{step}_batches_completed"] = batch_num
+        self.save_progress()
+
+    def get_batch_progress(self, step: str) -> int:
+        """Get number of completed batches for a step."""
+        return self.progress.get(f"{step}_batches_completed", 0)
+
+
 def download_and_extract(url: str, dest_dir: Path) -> Path:
     print(f"Downloading {url} to {dest_dir}")
     dest_dir.mkdir(parents=True, exist_ok=True)
@@ -172,17 +250,197 @@ def download_and_extract(url: str, dest_dir: Path) -> Path:
     return dest_dir
 
 
-async def insert_in_batches(docs: list, batch_size: int = BATCH_SIZE) -> None:
-    for i in range(0, len(docs), batch_size):
+async def check_existing_documents(docs: list) -> list:
+    """Filter out documents that already exist in the database."""
+    if not docs:
+        return []
+
+    # Get all existing region names for this level
+    existing_names = set()
+    for level in ["country", "state", "locality"]:
+        existing_regions = await Region.find(Region.level == level).to_list()
+        existing_names.update(region.name.lower() for region in existing_regions)
+
+    # Filter out existing documents
+    new_docs = []
+    for doc in docs:
+        if doc.name.lower() not in existing_names:
+            new_docs.append(doc)
+
+    if len(new_docs) < len(docs):
+        print(
+            f"📋 Filtered {len(docs) - len(new_docs)} existing documents, {len(new_docs)} new documents to insert"
+        )
+
+    return new_docs
+
+
+async def insert_in_batches_robust(
+    docs: list,
+    batch_size: int = BATCH_SIZE,
+    progress_tracker: ProgressTracker | None = None,
+    step_name: str = "",
+    skip_batches: int = 0,
+) -> int:
+    """
+    Insert documents in batches with robust error handling and progress tracking.
+    Returns the number of successfully inserted documents.
+    """
+    if not docs:
+        return 0
+
+    # Filter out existing documents to avoid duplicates
+    docs = await check_existing_documents(docs)
+    if not docs:
+        print("📋 No new documents to insert (all already exist)")
+        return 0
+
+    total_batches = (len(docs) + batch_size - 1) // batch_size
+    total_inserted = 0
+
+    for i in range(skip_batches * batch_size, len(docs), batch_size):
+        batch_num = i // batch_size + 1
         batch = docs[i : i + batch_size]
-        try:
-            result = await Region.insert_many(batch, ordered=False)
-            print(
-                f"✅ Inserted batch {i // batch_size + 1}: "
-                f"{len(result.inserted_ids)} docs"
-            )
-        except Exception as e:
-            print(f"❌ Error in batch {i // batch_size + 1}: {e}")
+
+        retry_count = 0
+        while retry_count <= MAX_RETRIES:
+            try:
+                print(
+                    f"🔄 Processing batch {batch_num}/{total_batches} ({len(batch)} docs)..."
+                )
+
+                result = await Region.insert_many(batch, ordered=False)
+                inserted_count = len(result.inserted_ids)
+                total_inserted += inserted_count
+
+                print(
+                    f"✅ Batch {batch_num}/{total_batches}: Inserted {inserted_count} documents"
+                )
+
+                # Update progress
+                if progress_tracker and step_name:
+                    progress_tracker.update_batch_progress(step_name, batch_num)
+
+                break  # Success, exit retry loop
+
+            except BulkWriteError as e:
+                retry_count += 1
+
+                # Handle partial success in bulk writes
+                details = e.details
+                inserted_count = details.get("nInserted", 0)
+                if inserted_count > 0:
+                    total_inserted += inserted_count
+                    print(f"⚠️ Partial success: {inserted_count} documents inserted")
+
+                # Show detailed error information
+                write_errors = details.get("writeErrors", [])
+                if write_errors:
+                    print(f"📋 Batch {batch_num} details:")
+                    error_summary = {}
+                    for error in write_errors[:5]:  # Show first 5 errors
+                        error_code = error.get("code", "unknown")
+                        error_msg = error.get("errmsg", "unknown error")
+                        error_key = f"{error_code}: {error_msg}"
+                        error_summary[error_key] = error_summary.get(error_key, 0) + 1
+
+                    for error_type, count in error_summary.items():
+                        print(f"   • {error_type} ({count} times)")
+
+                    if len(write_errors) > 5:
+                        print(f"   • ... and {len(write_errors) - 5} more errors")
+
+                # Check if all errors are duplicates (code 11000)
+                duplicate_errors = [
+                    err for err in write_errors if err.get("code") == 11000
+                ]
+                validation_errors = [
+                    err for err in write_errors if err.get("code") == 121
+                ]
+                other_errors = [
+                    err for err in write_errors if err.get("code") not in [11000, 121]
+                ]
+
+                # If all errors are duplicates, treat as success
+                if len(duplicate_errors) == len(write_errors) and write_errors:
+                    print(
+                        "📋 All errors are duplicates - this is expected during resume"
+                    )
+                    if progress_tracker and step_name:
+                        progress_tracker.update_batch_progress(step_name, batch_num)
+                    break  # Treat as success and continue
+
+                # If we have validation errors, don't retry (they'll fail again)
+                if validation_errors:
+                    print(
+                        f"⚠️ Skipping retry due to {len(validation_errors)} validation errors"
+                    )
+                    print(
+                        "💡 These documents have data quality issues and need manual review"
+                    )
+                    if progress_tracker and step_name:
+                        progress_tracker.update_batch_progress(step_name, batch_num)
+                    break  # Don't retry validation failures
+
+                # Only retry for temporary/network errors
+                if retry_count <= MAX_RETRIES and not validation_errors:
+                    print(
+                        f"⏳ Retrying batch {batch_num} in {RETRY_DELAY} seconds... (attempt {retry_count + 1})"
+                    )
+                    await asyncio.sleep(RETRY_DELAY)
+                else:
+                    print(
+                        f"💥 Failed batch {batch_num} after {MAX_RETRIES + 1} attempts"
+                    )
+                    # Save failed batch for manual review
+                    failed_batch_file = (
+                        DATA_DIR / f"failed_batch_{step_name}_{batch_num}.json"
+                    )
+                    try:
+                        failed_batch_file.parent.mkdir(parents=True, exist_ok=True)
+                        with open(failed_batch_file, "w") as f:
+                            json.dump(
+                                {
+                                    "error_details": details,
+                                    "batch_documents": [doc.dict() for doc in batch],
+                                },
+                                f,
+                                indent=2,
+                                default=str,
+                            )
+                        print(f"📝 Failed batch details saved to {failed_batch_file}")
+                    except Exception as save_error:
+                        print(f"❌ Could not save failed batch: {save_error}")
+
+            except Exception as e:
+                retry_count += 1
+                print(
+                    f"❌ Error in batch {batch_num} (attempt {retry_count}/{MAX_RETRIES + 1}): {e.__class__.__name__}: {str(e)[:200]}"
+                )
+
+                if retry_count <= MAX_RETRIES:
+                    print(f"⏳ Retrying in {RETRY_DELAY} seconds...")
+                    await asyncio.sleep(RETRY_DELAY)
+                else:
+                    print(
+                        f"💥 Failed to insert batch {batch_num} after {MAX_RETRIES + 1} attempts. Continuing with next batch..."
+                    )
+                    # Log failed batch details for manual review
+                    failed_batch_file = (
+                        DATA_DIR / f"failed_batch_{step_name}_{batch_num}.json"
+                    )
+                    try:
+                        failed_batch_file.parent.mkdir(parents=True, exist_ok=True)
+                        with open(failed_batch_file, "w") as f:
+                            json.dump(
+                                [doc.dict() for doc in batch], f, indent=2, default=str
+                            )
+                        print(f"📝 Failed batch saved to {failed_batch_file}")
+                    except Exception as save_error:
+                        print(f"❌ Could not save failed batch: {save_error}")
+
+    print(f"📊 Total inserted: {total_inserted}/{len(docs)} documents")
+    return total_inserted
 
 
 # -------------------
@@ -190,122 +448,161 @@ async def insert_in_batches(docs: list, batch_size: int = BATCH_SIZE) -> None:
 # -------------------
 
 
-async def import_countries_and_states() -> None:
+async def import_countries_and_states(progress_tracker: ProgressTracker) -> None:
     """Load polygons from Natural Earth (countries + states)."""
-    print("Importing countries...")
-    ne_dir = download_and_extract(
-        NE_COUNTRIES_URL, DATA_DIR / "naturalearth" / "countries"
-    )
-    shp = list(ne_dir.glob("*.shp"))[0]
-    gdf = gpd.read_file(shp)
 
-    docs = []
-    for _, row in gdf.iterrows():
-        # Skip if no valid name
-        name_val = row.get("NAME")
-        if not isinstance(name_val, str) or not name_val.strip():
-            continue
+    # Check if countries are already imported
+    if progress_tracker.is_completed("countries"):
+        print("📋 Countries already imported, skipping...")
+    else:
+        print("🌍 Importing countries...")
+        ne_dir = download_and_extract(
+            NE_COUNTRIES_URL, DATA_DIR / "naturalearth" / "countries"
+        )
+        shp = list(ne_dir.glob("*.shp"))[0]
+        gdf = gpd.read_file(shp)
 
-        # Process geometry safely
-        geom_dict = safe_geometry_to_geojson(row.geometry)
-        if geom_dict is None:
-            print(f"Warning: Skipping country {row['NAME']} - invalid geometry")
-            continue
+        docs = []
+        for _, row in gdf.iterrows():
+            # Skip if no valid name
+            name_val = row.get("NAME")
+            if not isinstance(name_val, str) or not name_val.strip():
+                continue
 
-        # Build aliases list with English names only
-        aliases = []
-        if row.get("NAME_LONG") and row["NAME_LONG"] != row["NAME"]:
-            aliases.append(row["NAME_LONG"])
+            # Process geometry safely
+            geom_dict = safe_geometry_to_geojson(row.geometry)
+            if geom_dict is None:
+                print(f"Warning: Skipping country {row['NAME']} - invalid geometry")
+                continue
 
-        try:
-            country_name = str(name_val).strip()
-            doc = Region(
-                name=country_name,
-                aliases=aliases,
-                level="country",
-                geometry=GeoJSONPolygon(**geom_dict),
-                coordinates=GeoJSONPoint(
-                    type="Point",
-                    coordinates=[row.geometry.centroid.x, row.geometry.centroid.y],
-                ),
-                address=Address(
-                    street_address=None,
-                    address_locality=None,
-                    address_region=None,
-                    postal_code=None,
-                    country=clean_country_code(row.get("ISO_A2", None)),
-                ),
+            # Build aliases list with English names only
+            aliases = []
+            if row.get("NAME_LONG") and row["NAME_LONG"] != row["NAME"]:
+                aliases.append(row["NAME_LONG"])
+
+            try:
+                country_name = str(name_val).strip()
+                doc = Region(
+                    name=country_name,
+                    aliases=aliases,
+                    level="country",
+                    geometry=GeoJSONPolygon(**geom_dict),
+                    coordinates=GeoJSONPoint(
+                        type="Point",
+                        coordinates=[row.geometry.centroid.x, row.geometry.centroid.y],
+                    ),
+                    address=Address(
+                        street_address=None,
+                        address_locality=None,
+                        address_region=None,
+                        postal_code=None,
+                        country=clean_country_code(row.get("ISO_A2", None)),
+                    ),
+                )
+                docs.append(doc)
+            except Exception as e:
+                country_name_safe = str(name_val).strip() if name_val else "Unknown"
+                print(f"Error processing country {country_name_safe}: {e}")
+                continue
+
+        # Insert countries with resume capability
+        skip_batches = progress_tracker.get_batch_progress("countries")
+        inserted_count = await insert_in_batches_robust(
+            docs,
+            progress_tracker=progress_tracker,
+            step_name="countries",
+            skip_batches=skip_batches,
+        )
+
+        if inserted_count > 0:
+            progress_tracker.mark_completed("countries", inserted_count)
+            print(f"✅ Countries import completed: {inserted_count} countries inserted")
+        else:
+            print("📋 No new countries to import")
+
+    # Check if states are already imported
+    if progress_tracker.is_completed("states"):
+        print("📋 States/provinces already imported, skipping...")
+    else:
+        print("🏛️ Importing states/provinces...")
+        ne_dir = download_and_extract(
+            NE_STATES_URL, DATA_DIR / "naturalearth" / "states"
+        )
+        shp = list(ne_dir.glob("*.shp"))[0]
+        gdf = gpd.read_file(shp)
+
+        print(f"Available columns: {list(gdf.columns)}")
+
+        def get_region_name(row) -> str | None:
+            # Try multiple columns in order of preference for English names
+            for col in ["name", "name_en", "gn_name", "woe_name"]:
+                val = row.get(col)
+                if val and isinstance(val, str) and val.strip():
+                    return val.strip()
+            return None
+
+        docs = []
+        skipped_count = 0
+
+        for _, row in gdf.iterrows():
+            region_name = get_region_name(row)
+            if not region_name:
+                skipped_count += 1
+                continue
+
+            # Process geometry safely
+            geom_dict = safe_geometry_to_geojson(row.geometry)
+            if geom_dict is None:
+                print(f"Warning: Skipping state {region_name} - invalid geometry")
+                continue
+
+            # Filter aliases to English only
+            aliases = filter_english_aliases(row.get("name_alt"))
+
+            try:
+                doc = Region(
+                    name=region_name,
+                    aliases=aliases,
+                    level="state",
+                    geometry=GeoJSONPolygon(**geom_dict),
+                    coordinates=GeoJSONPoint(
+                        type="Point",
+                        coordinates=[row.geometry.centroid.x, row.geometry.centroid.y],
+                    ),
+                    address=Address(
+                        street_address=None,
+                        address_locality=region_name,
+                        address_region=safe_str(
+                            row.get("adm0_name")
+                        ),  # parent country name
+                        postal_code=None,  # States don't have postal codes
+                        country=clean_country_code(row.get("iso_a2")),
+                    ),
+                )
+                docs.append(doc)
+            except Exception as e:
+                print(f"Error processing state {region_name}: {e}")
+                continue
+
+        # Insert states with resume capability
+        skip_batches = progress_tracker.get_batch_progress("states")
+        inserted_count = await insert_in_batches_robust(
+            docs,
+            progress_tracker=progress_tracker,
+            step_name="states",
+            skip_batches=skip_batches,
+        )
+
+        if inserted_count > 0:
+            progress_tracker.mark_completed("states", inserted_count)
+            print(
+                f"✅ States/provinces import completed: {inserted_count} states inserted"
             )
-            docs.append(doc)
-        except Exception as e:
-            print(f"Error processing country {country_name}: {e}")
-            continue
+        else:
+            print("📋 No new states/provinces to import")
 
-    await insert_in_batches(docs)
-    print(f"Inserted {len(docs)} countries total.")
-
-    print("Importing states/provinces...")
-    ne_dir = download_and_extract(NE_STATES_URL, DATA_DIR / "naturalearth" / "states")
-    shp = list(ne_dir.glob("*.shp"))[0]
-    gdf = gpd.read_file(shp)
-
-    print(f"Available columns: {list(gdf.columns)}")
-
-    def get_region_name(row) -> str | None:
-        # Try multiple columns in order of preference for English names
-        for col in ["name", "name_en", "gn_name", "woe_name"]:
-            val = row.get(col)
-            if val and isinstance(val, str) and val.strip():
-                return val.strip()
-        return None
-
-    docs = []
-    skipped_count = 0
-
-    for _, row in gdf.iterrows():
-        region_name = get_region_name(row)
-        if not region_name:
-            skipped_count += 1
-            continue
-
-        # Process geometry safely
-        geom_dict = safe_geometry_to_geojson(row.geometry)
-        if geom_dict is None:
-            print(f"Warning: Skipping state {region_name} - invalid geometry")
-            continue
-
-        # Filter aliases to English only
-        aliases = filter_english_aliases(row.get("name_alt"))
-
-        try:
-            doc = Region(
-                name=region_name,
-                aliases=aliases,
-                level="state",
-                geometry=GeoJSONPolygon(**geom_dict),
-                coordinates=GeoJSONPoint(
-                    type="Point",
-                    coordinates=[row.geometry.centroid.x, row.geometry.centroid.y],
-                ),
-                address=Address(
-                    street_address=None,
-                    address_locality=region_name,
-                    address_region=safe_str(
-                        row.get("adm0_name")
-                    ),  # parent country name
-                    postal_code=None,  # States don't have postal codes
-                    country=clean_country_code(row.get("iso_a2")),
-                ),
-            )
-            docs.append(doc)
-        except Exception as e:
-            print(f"Error processing state {region_name}: {e}")
-            continue
-
-    await insert_in_batches(docs)
-    print(
-        f"Inserted {len(docs)} states/provinces total. Skipped {skipped_count} records without names."
-    )
+        if skipped_count > 0:
+            print(f"⚠️ Skipped {skipped_count} records without valid names")
 
 
 def load_global_postal_codes() -> dict:
@@ -519,9 +816,17 @@ def find_postal_code(
     return postal
 
 
-async def import_cities_with_global_postal_codes() -> None:
+async def import_cities_with_global_postal_codes(
+    progress_tracker: ProgressTracker,
+) -> None:
     """Load cities from GeoNames cities500 and merge global postal codes."""
-    print("Importing cities with postal codes...")
+
+    # Check if cities are already imported
+    if progress_tracker.is_completed("cities"):
+        print("📋 Cities already imported, skipping...")
+        return
+
+    print("🏙️ Importing cities with postal codes...")
     gn_dir = download_and_extract(GEONAMES_URL, DATA_DIR / "geonames")
     txtfile = gn_dir / "cities500.txt"
 
@@ -590,7 +895,11 @@ async def import_cities_with_global_postal_codes() -> None:
 
     for _, row in df.iterrows():
         name_val = row.get("name")
-        if pd.isna(name_val) or not name_val:
+        if (
+            name_val is None
+            or (isinstance(name_val, float) and pd.isna(name_val))
+            or not name_val
+        ):
             skipped_count += 1
             continue
 
@@ -670,12 +979,24 @@ async def import_cities_with_global_postal_codes() -> None:
             print(f"Error processing city {city_name}: {e}")
             continue
 
-    await insert_in_batches(docs)
-    print(
-        f"Inserted {len(docs)} cities/localities. "
-        f"Found postal codes for {postal_found_count} cities. "
-        f"Skipped {skipped_count} invalid records."
+    # Insert cities with resume capability
+    skip_batches = progress_tracker.get_batch_progress("cities")
+    inserted_count = await insert_in_batches_robust(
+        docs,
+        progress_tracker=progress_tracker,
+        step_name="cities",
+        skip_batches=skip_batches,
     )
+
+    if inserted_count > 0:
+        progress_tracker.mark_completed("cities", inserted_count)
+        print(f"✅ Cities import completed: {inserted_count} cities inserted")
+        print(f"📊 Found postal codes for {postal_found_count} cities")
+    else:
+        print("📋 No new cities to import")
+
+    if skipped_count > 0:
+        print(f"⚠️ Skipped {skipped_count} invalid records")
 
 
 # -------------------
@@ -684,21 +1005,69 @@ async def import_cities_with_global_postal_codes() -> None:
 
 
 async def main() -> None:
-    await initialize_database(
-        str(get_settings(DatabaseSettings).database_url),
-        get_settings(DatabaseSettings).default_database_name,
-    )
+    try:
+        await initialize_database(
+            str(get_settings(DatabaseSettings).database_url),
+            get_settings(DatabaseSettings).default_database_name,
+        )
 
-    print("Starting regions import process...")
+        print("🚀 Starting robust regions import process...")
 
-    # Import countries and states with geometry
-    await import_countries_and_states()
+        # Initialize progress tracker
+        progress_tracker = ProgressTracker(PROGRESS_FILE)
 
-    # Import cities with postal codes
-    await import_cities_with_global_postal_codes()
+        # Print current progress status
+        if progress_tracker.progress.get("last_update"):
+            last_update = time.ctime(progress_tracker.progress["last_update"])
+            print(f"📋 Resuming from previous session (last update: {last_update})")
+            print(
+                f"   Countries: {'✅' if progress_tracker.is_completed('countries') else '⏳'}"
+            )
+            print(
+                f"   States: {'✅' if progress_tracker.is_completed('states') else '⏳'}"
+            )
+            print(
+                f"   Cities: {'✅' if progress_tracker.is_completed('cities') else '⏳'}"
+            )
+        else:
+            print("📋 Starting fresh import...")
 
-    print("Regions import completed successfully!")
+        # Import countries and states with geometry
+        await import_countries_and_states(progress_tracker)
+
+        # Import cities with postal codes
+        await import_cities_with_global_postal_codes(progress_tracker)
+
+        print("🎉 Regions import completed successfully!")
+        print("📊 Final stats:")
+        print(f"   Countries: {progress_tracker.progress.get('countries_count', 0)}")
+        print(f"   States: {progress_tracker.progress.get('states_count', 0)}")
+        print(f"   Cities: {progress_tracker.progress.get('cities_count', 0)}")
+
+    except KeyboardInterrupt:
+        print("\n⚠️ Import interrupted by user. Progress has been saved.")
+        print("💡 Run the script again to resume from where it left off.")
+    except Exception as e:
+        print(f"💥 Fatal error during import: {e}")
+        print("💡 Check your database connection and try again.")
+        print("📝 Progress has been saved - you can resume the import.")
+        raise
+
+
+def reset_progress() -> None:
+    """Reset import progress to start fresh."""
+    if PROGRESS_FILE.exists():
+        PROGRESS_FILE.unlink()
+        print("🔄 Progress reset. Next run will start fresh.")
+    else:
+        print("📋 No progress file found.")
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    import sys
+
+    # Allow resetting progress via command line argument
+    if len(sys.argv) > 1 and sys.argv[1] == "--reset":
+        reset_progress()
+    else:
+        asyncio.run(main())

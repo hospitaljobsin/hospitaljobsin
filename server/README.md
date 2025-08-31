@@ -77,3 +77,9 @@ After following the setup guide, the server can be run independently locally usi
 ```bash
 uv run scripts/run_server.py
 ```
+
+### 3. Import Regions
+To import geospatial data (regions) into the database, run the following command:
+```bash
+uv run scripts/utils/import_regions.py
+```
