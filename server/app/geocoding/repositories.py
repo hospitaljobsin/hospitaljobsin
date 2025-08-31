@@ -10,6 +10,7 @@ from app.geocoding.models import LocationAutocompleteSuggestion
 
 class RegionRepo:
     async def get_by_name(self, name: str) -> Region | None:
+        # TODO: cache this if needed in the future
         # Use Atlas Search for exact matching and alias searching
         pipeline = [
             {
