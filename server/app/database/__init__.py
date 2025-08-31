@@ -270,9 +270,9 @@ async def initialize_database(database_url: str, default_database_name: str) -> 
     with sentry_sdk.start_span(op="db.init", name="Initialize Database"):
         client: AsyncIOMotorClient = AsyncIOMotorClient(
             database_url,
-            connectTimeoutMS=1000 * 20,
-            socketTimeoutMS=1000 * 20,
-            serverSelectionTimeoutMS=1000 * 10,
+            connectTimeoutMS=1000 * 5,
+            socketTimeoutMS=1000 * 2,
+            serverSelectionTimeoutMS=1000 * 5,
         )
         rebuild_models()
         await init_beanie(
