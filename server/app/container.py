@@ -256,7 +256,6 @@ def create_container() -> aioinject.Container:
         container.register(SettingsProvider(settings_cls))
     container.register(aioinject.Singleton(create_jinja2_environment))
     register_email_sender(container)
-    register_location_service(container)
     register_ocr_client(container)
     register_message_sender(container)
     env_settings = get_settings(EnvironmentSettings)

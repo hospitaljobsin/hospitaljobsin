@@ -10,8 +10,67 @@ from app.geocoding.models import LocationAutocompleteSuggestion
 
 class RegionRepo:
     async def get_by_name(self, name: str) -> Region | None:
-        # TODO: improve this: we must accomodate typos and also search along all the aliases
-        return await Region.find_one(Region.name == name)
+        # Use Atlas Search for fuzzy matching and alias searching
+        pipeline = [
+            {
+                "$search": {
+                    "index": REGION_SEARCH_INDEX_NAME,
+                    "compound": {
+                        "should": [
+                            {
+                                "text": {
+                                    "query": name,
+                                    "path": "name",
+                                    "fuzzy": {
+                                        "maxEdits": 2,
+                                        "prefixLength": 1,
+                                        "maxExpansions": 50,
+                                    },
+                                }
+                            },
+                            {
+                                "text": {
+                                    "query": name,
+                                    "path": "aliases",
+                                    "fuzzy": {
+                                        "maxEdits": 2,
+                                        "prefixLength": 1,
+                                        "maxExpansions": 50,
+                                    },
+                                }
+                            },
+                            {
+                                "autocomplete": {
+                                    "query": name,
+                                    "path": "name",
+                                    "fuzzy": {"maxEdits": 1, "prefixLength": 1},
+                                }
+                            },
+                            {
+                                "autocomplete": {
+                                    "query": name,
+                                    "path": "aliases",
+                                    "fuzzy": {"maxEdits": 1, "prefixLength": 1},
+                                }
+                            },
+                        ],
+                        "minimumShouldMatch": 1,
+                    },
+                }
+            },
+            {"$limit": 1},  # Get the best match
+            {"$addFields": {"searchScore": {"$meta": "searchScore"}}},
+            {"$sort": {"searchScore": -1}},  # Sort by relevance score
+        ]
+
+        results = await Region.aggregate(pipeline).to_list()
+
+        if results:
+            # Convert the raw result back to a Region document
+            region_data = results[0]
+            return Region(**region_data)
+
+        return None
 
     async def get_autocomplete_suggestions(
         self, search_term: str
