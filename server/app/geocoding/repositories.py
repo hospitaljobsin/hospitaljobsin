@@ -10,6 +10,7 @@ from app.geocoding.models import LocationAutocompleteSuggestion
 
 class RegionRepo:
     async def get_by_name(self, name: str) -> Region | None:
+        # TODO: improve this: we must accomodate typos and also search along all the aliases
         return await Region.find_one(Region.name == name)
 
     async def get_autocomplete_suggestions(
