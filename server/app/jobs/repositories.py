@@ -434,6 +434,45 @@ class JobRepo:
             case JobSearchSortBy.UPDATED_AT:
                 search_query["sort"] = {"updated_at": {"order": -1}}
 
+        # Add geospatial search if coordinates provided
+        if location:
+            region = await self._region_repo.get_by_name(location)
+            if region is None:
+                return paginator.empty()
+
+            proximity_km = proximity_km or 1.0
+            max_distance_meters = proximity_km * 1000.0
+
+            if region.geometry is not None:
+                print("region.geometry: ", region.geometry)
+                search_query["compound"]["must"].append(
+                    {
+                        "geoWithin": {
+                            "path": "geo",
+                            "geometry": region.geometry,
+                        }
+                    }
+                )
+            else:
+                # Use geoWithin for strict distance filtering
+                search_query["compound"]["must"].append(
+                    {
+                        "geoWithin": {
+                            "circle": {
+                                "center": {
+                                    "type": "Point",
+                                    "coordinates": [
+                                        region.coordinates.coordinates[0],
+                                        region.coordinates.coordinates[1],
+                                    ],
+                                },
+                                "radius": max_distance_meters,
+                            },
+                            "path": "geo",
+                        }
+                    }
+                )
+
         # Add text search if provided
         if search_term:
             search_query["compound"]["must"].append(
@@ -583,47 +622,6 @@ class JobRepo:
                     }
                 }
             )
-
-        # Add geospatial search if coordinates provided
-        if location:
-            region = await self._region_repo.get_by_name(location)
-            print("region: ", region)
-            if region is None:
-                # TODO: handle invalid location passed
-                raise ValueError(f"Invalid location: {location}")
-
-            proximity_km = proximity_km or 1.0
-            max_distance_meters = proximity_km * 1000.0
-
-            if region.geometry is not None:
-                print("region.geometry: ", region.geometry)
-                search_query["compound"]["must"].append(
-                    {
-                        "geoWithin": {
-                            "path": "geo",
-                            "geometry": region.geometry,
-                        }
-                    }
-                )
-            else:
-                # Use geoWithin for strict distance filtering
-                search_query["compound"]["must"].append(
-                    {
-                        "geoWithin": {
-                            "circle": {
-                                "center": {
-                                    "type": "Point",
-                                    "coordinates": [
-                                        region.coordinates.coordinates[0],
-                                        region.coordinates.coordinates[1],
-                                    ],
-                                },
-                                "radius": max_distance_meters,
-                            },
-                            "path": "geo",
-                        }
-                    }
-                )
 
         return await paginator.paginate(
             search_query=search_query,

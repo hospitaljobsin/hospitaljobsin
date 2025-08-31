@@ -28,16 +28,31 @@ class PageInfo(Generic[CursorType]):
     has_previous_page: bool
     start_cursor: CursorType | None
     end_cursor: CursorType | None
-    total_count: int | None
 
 
 @dataclass
 class PaginatedResult(Generic[ModelType, CursorType]):
     entities: Sequence[ModelType]
     page_info: PageInfo[CursorType]
+    total_count: int | None
 
 
 class BasePaginator:
+    def __init__(self, *, calculate_total_count: bool = False) -> None:
+        self.calculate_total_count = calculate_total_count
+
+    def empty(self) -> PaginatedResult[ModelType, CursorType]:
+        return PaginatedResult(
+            entities=[],
+            page_info=PageInfo(
+                has_next_page=False,
+                has_previous_page=False,
+                start_cursor=None,
+                end_cursor=None,
+            ),
+            total_count=0 if self.calculate_total_count else None,
+        )
+
     @staticmethod
     def validate_arguments(  # noqa: C901
         *,
@@ -97,11 +112,11 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType], BasePaginat
         apply_ordering: bool = True,
         calculate_total_count: bool = False,
     ) -> None:
+        super().__init__(calculate_total_count=calculate_total_count)
         self._document_cls = document_cls
         self._reverse = reverse
         self._paginate_by = paginate_by
         self._apply_ordering = apply_ordering
-        self._calculate_total_count = calculate_total_count
 
     def __apply_ordering(
         self,
@@ -198,7 +213,7 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType], BasePaginat
 
         total_count = None
 
-        if self._calculate_total_count:
+        if self.calculate_total_count:
             facet_pipeline = [
                 {
                     "$facet": {
@@ -275,10 +290,10 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
         calculate_total_count: bool = False,
         minimum_score: float | None = None,
     ) -> None:
+        super().__init__(calculate_total_count=calculate_total_count)
         self._document_cls = document_cls
         self._projection_model = projection_model
         self._search_index_name = search_index_name
-        self._calculate_total_count = calculate_total_count
         self._minimum_score = minimum_score
 
     def __build_search_pipeline(
@@ -295,7 +310,7 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
             "index": self._search_index_name,
         }
 
-        if self._calculate_total_count:
+        if self.calculate_total_count:
             search_stage["count"] = {"type": "total"}
 
         # Add search query fields (compound, text, etc.)
@@ -329,7 +344,7 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
                 {"$match": {"searchScore": {"$gte": self._minimum_score}}}
             )
 
-        if self._calculate_total_count:
+        if self.calculate_total_count:
             base_pipeline.extend(
                 [
                     {
@@ -382,7 +397,7 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
             pipeline, projection_model=None
         ).to_list()
 
-        if self._calculate_total_count:
+        if self.calculate_total_count:
             if len(results[0]["meta"]) > 0:
                 total_count = results[0]["meta"][0]["count"]["total"]
             else:
@@ -417,12 +432,12 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
         end_cursor = entities[-1].pagination_token if entities else None
 
         return PaginatedResult(
+            total_count=total_count,
             entities=entities,
             page_info=PageInfo(
                 has_next_page=has_next_page,
                 has_previous_page=has_previous_page,
                 start_cursor=start_cursor,
                 end_cursor=end_cursor,
-                total_count=total_count,
             ),
         )
