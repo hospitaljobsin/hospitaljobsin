@@ -263,12 +263,12 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType], BasePaginat
 
         return PaginatedResult(
             entities=entities,
+            total_count=total_count,
             page_info=PageInfo(
                 has_next_page=has_next_page,
                 has_previous_page=has_previous_page,
                 start_cursor=start_cursor,
                 end_cursor=end_cursor,
-                total_count=total_count,
             ),
         )
 
