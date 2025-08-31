@@ -12,7 +12,6 @@ from app.geocoding.models import GeoJSONPoint, GeoJSONPolygon
 class Region(Document):
     name: Annotated[str, Indexed()]
     address: Address
-    code: str | None = None  # ISO code for states/countries
     aliases: list[str] = []
     level: Literal["locality", "city", "state", "country"]
 
