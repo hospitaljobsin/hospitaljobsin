@@ -10,49 +10,15 @@ from app.geocoding.models import LocationAutocompleteSuggestion
 
 class RegionRepo:
     async def get_by_name(self, name: str) -> Region | None:
-        # Use Atlas Search for fuzzy matching and alias searching
+        # Use Atlas Search for exact matching and alias searching
         pipeline = [
             {
                 "$search": {
                     "index": REGION_SEARCH_INDEX_NAME,
                     "compound": {
                         "should": [
-                            {
-                                "text": {
-                                    "query": name,
-                                    "path": "name",
-                                    "fuzzy": {
-                                        "maxEdits": 2,
-                                        "prefixLength": 1,
-                                        "maxExpansions": 50,
-                                    },
-                                }
-                            },
-                            {
-                                "text": {
-                                    "query": name,
-                                    "path": "aliases",
-                                    "fuzzy": {
-                                        "maxEdits": 2,
-                                        "prefixLength": 1,
-                                        "maxExpansions": 50,
-                                    },
-                                }
-                            },
-                            {
-                                "autocomplete": {
-                                    "query": name,
-                                    "path": "name",
-                                    "fuzzy": {"maxEdits": 1, "prefixLength": 1},
-                                }
-                            },
-                            {
-                                "autocomplete": {
-                                    "query": name,
-                                    "path": "aliases",
-                                    "fuzzy": {"maxEdits": 1, "prefixLength": 1},
-                                }
-                            },
+                            {"text": {"query": name, "path": "name"}},
+                            {"text": {"query": name, "path": "aliases"}},
                         ],
                         "minimumShouldMatch": 1,
                     },
