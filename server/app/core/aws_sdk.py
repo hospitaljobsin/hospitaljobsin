@@ -3,7 +3,6 @@ from collections.abc import AsyncGenerator
 
 import aioboto3
 from types_aiobotocore_bedrock_runtime.client import BedrockRuntimeClient
-from types_aiobotocore_geo_places.client import LocationServicePlacesV2Client
 from types_aiobotocore_s3 import S3Client
 from types_aiobotocore_ses import SESClient
 from types_aiobotocore_sqs import SQSClient
@@ -40,15 +39,6 @@ async def create_ses_client(
     """Create an SES client."""
     async with session.client("ses") as ses_client:
         yield ses_client
-
-
-@contextlib.asynccontextmanager
-async def create_location_service_client(
-    session: aioboto3.Session,
-) -> AsyncGenerator[LocationServicePlacesV2Client]:
-    """Create a location service client."""
-    async with session.client("geo-places") as location_client:
-        yield location_client
 
 
 @contextlib.asynccontextmanager

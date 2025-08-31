@@ -65,7 +65,6 @@ from app.core.analytics import create_posthog_client
 from app.core.aws_sdk import (
     create_aioboto3_session,
     create_bedrock_runtime_client,
-    create_location_service_client,
     create_s3_client,
     create_ses_client,
     create_sqs_client,
@@ -78,12 +77,6 @@ from app.core.emails import (
     SESEmailSender,
     SMTPEmailSender,
     create_smtp_client,
-)
-from app.core.geocoding import (
-    AWSLocationService,
-    BaseLocationService,
-    NominatimLocationService,
-    create_nominatim_geocoder,
 )
 from app.core.messages import (
     BaseMessageSender,
@@ -226,24 +219,6 @@ def register_email_sender(container: aioinject.Container) -> None:
         case "dummy":
             container.register(aioinject.Singleton(DummyMailbox))
             container.register(aioinject.Scoped(DummyEmailSender, BaseEmailSender))
-        case _ as unreachable:
-            assert_never(unreachable)
-
-
-def register_location_service(container: aioinject.Container) -> None:
-    provider_settings = get_settings(ProviderSettings)
-
-    match provider_settings.geocoding_provider:
-        case "nominatim":
-            container.register(aioinject.Singleton(create_nominatim_geocoder))
-            container.register(
-                aioinject.Scoped(NominatimLocationService, BaseLocationService)
-            )
-        case "aws_location":
-            container.register(aioinject.Scoped(create_location_service_client))
-            container.register(
-                aioinject.Scoped(AWSLocationService, BaseLocationService)
-            )
         case _ as unreachable:
             assert_never(unreachable)
 

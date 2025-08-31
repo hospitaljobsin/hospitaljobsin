@@ -31,7 +31,6 @@ from app.core.constants import (
     JobKindType,
 )
 from app.core.formatting import clean_markdown_text, markdown_to_clean_html, slugify
-from app.core.geocoding import BaseLocationService
 from app.database.paginator import PaginatedResult, Paginator, SearchPaginator
 from app.embeddings.services import EmbeddingsService
 from app.geocoding.repositories import RegionRepo
@@ -908,12 +907,12 @@ class JobApplicantRepo:
         self,
         embeddings_service: EmbeddingsService,
         applicant_query_parser_agent: ApplicantQueryParserAgent,
-        location_service: BaseLocationService,
+        region_repo: RegionRepo,
         redis_client: Redis,
     ) -> None:
         self._embeddings_service = embeddings_service
         self._applicant_query_parser_agent = applicant_query_parser_agent
-        self._location_service = location_service
+        self._region_repo = region_repo
         self._redis_client = redis_client
 
     async def update_all(self, account: Account, full_name: str) -> None:
@@ -1194,15 +1193,15 @@ class JobApplicantRepo:
                 location_names.extend(filters.location)
             if location_names:
                 for name in location_names:
-                    geo_result = await self._location_service.geocode(name.location)
+                    geo_result = await self._region_repo.get_by_name(name.location)
                     if geo_result is not None:
                         geocoded_points.append(
                             (
                                 GeoObject(
                                     type="Point",
                                     coordinates=(
-                                        geo_result.longitude,
-                                        geo_result.latitude,
+                                        geo_result.coordinates.coordinates[0],
+                                        geo_result.coordinates.coordinates[1],
                                     ),
                                 ),
                                 name.radius,
