@@ -17,6 +17,7 @@ from redis.asyncio import Redis
 from app.accounts.documents import Account, BaseProfile, SalaryExpectations
 from app.base.models import Address, GeoObject
 from app.core.constants import (
+    DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT,
     JOB_APPLICANT_EMBEDDING_DIMENSIONS,
     JOB_APPLICANT_EMBEDDING_INDEX_NAME,
     JOB_EMBEDDING_DIMENSIONS,
@@ -33,7 +34,7 @@ from app.core.formatting import clean_markdown_text, markdown_to_clean_html, slu
 from app.core.geocoding import BaseLocationService
 from app.database.paginator import PaginatedResult, Paginator, SearchPaginator
 from app.embeddings.services import EmbeddingsService
-from app.geocoding.models import Coordinates
+from app.geocoding.repositories import RegionRepo
 from app.jobs.agents.applicant_analysis import JobApplicantAnalysisOutput
 from app.jobs.agents.applicant_query_parser import (
     ApplicantQueryFilters,
@@ -85,8 +86,11 @@ class JobType(Enum):
 
 
 class JobRepo:
-    def __init__(self, embeddings_service: EmbeddingsService) -> None:
+    def __init__(
+        self, embeddings_service: EmbeddingsService, region_repo: RegionRepo
+    ) -> None:
         self._embeddings_service = embeddings_service
+        self._region_repo = region_repo
 
     async def generate_slug(self, title: str, organization_id: ObjectId) -> str:
         """Generate a slug from the job title."""
@@ -355,12 +359,30 @@ class JobRepo:
             for organization_id, job_slug in slugs
         ]
 
+    async def get_autocomplete_suggestions(self, search_term: str) -> list[str]:
+        """Get autocomplete suggestions for a search term."""
+        pipeline = [
+            {
+                "$search": {
+                    "index": JOB_SEARCH_INDEX_NAME,
+                    "autocomplete": {
+                        "query": search_term,
+                        "path": "title",
+                    },
+                }
+            },
+            {"$limit": DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT},
+        ]
+
+        results = await Job.aggregate(pipeline, projection_model=None).to_list()
+        return [result["title"] for result in results]
+
     async def get_all_active(
         self,
         work_mode: list[JobWorkMode],
         job_type: list[JobType],
         search_term: str | None = None,
-        coordinates: Coordinates | None = None,
+        location: str | None = None,
         proximity_km: float | None = None,
         min_experience: int | None = None,
         max_experience: int | None = None,
@@ -564,28 +586,45 @@ class JobRepo:
             )
 
         # Add geospatial search if coordinates provided
-        if coordinates is not None:
+        if location:
+            region = await self._region_repo.get_by_name(location)
+            print("region: ", region)
+            if region is None:
+                # TODO: handle invalid location passed
+                raise ValueError(f"Invalid location: {location}")
+
             proximity_km = proximity_km or 1.0
             max_distance_meters = proximity_km * 1000.0
 
-            # Use geoWithin for strict distance filtering
-            search_query["compound"]["must"].append(
-                {
-                    "geoWithin": {
-                        "circle": {
-                            "center": {
-                                "type": "Point",
-                                "coordinates": [
-                                    coordinates.longitude,
-                                    coordinates.latitude,
-                                ],
-                            },
-                            "radius": max_distance_meters,
-                        },
-                        "path": "geo",
+            if region.geometry is not None:
+                print("region.geometry: ", region.geometry)
+                search_query["compound"]["must"].append(
+                    {
+                        "geoWithin": {
+                            "path": "geo",
+                            "geometry": region.geometry,
+                        }
                     }
-                }
-            )
+                )
+            else:
+                # Use geoWithin for strict distance filtering
+                search_query["compound"]["must"].append(
+                    {
+                        "geoWithin": {
+                            "circle": {
+                                "center": {
+                                    "type": "Point",
+                                    "coordinates": [
+                                        region.coordinates.coordinates[0],
+                                        region.coordinates.coordinates[1],
+                                    ],
+                                },
+                                "radius": max_distance_meters,
+                            },
+                            "path": "geo",
+                        }
+                    }
+                )
 
         return await paginator.paginate(
             search_query=search_query,

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<8ae0c190200d9f5d5ba3a9c31c349467>>
- * @relayHash ef71d0385d60d9f7aa7e18c39a03563c
+ * @generated SignedSource<<94463279dd667f22e38f3543e0c9ed48>>
+ * @relayHash cab3bc76b9242900c92260bcb3e8a348
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,20 +9,16 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ef71d0385d60d9f7aa7e18c39a03563c
+// @relayRequestID cab3bc76b9242900c92260bcb3e8a348
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobSearchSortBy = "RELEVANCE" | "UPDATED_AT" | "%future added value";
 export type JobTypeFilter = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
 export type JobWorkModeFilter = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
-export type CoordinatesInput = {
-  latitude: number;
-  longitude: number;
-};
 export type SearchClientComponentQuery$variables = {
-  coordinates?: CoordinatesInput | null | undefined;
   jobType: ReadonlyArray<JobTypeFilter>;
+  location?: string | null | undefined;
   maxSalary?: number | null | undefined;
   minExperience?: number | null | undefined;
   minSalary?: number | null | undefined;
@@ -43,12 +39,12 @@ const node: ConcreteRequest = (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "coordinates"
+  "name": "jobType"
 },
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "jobType"
+  "name": "location"
 },
 v2 = {
   "defaultValue": null,
@@ -87,13 +83,13 @@ v8 = {
 },
 v9 = {
   "kind": "Variable",
-  "name": "coordinates",
-  "variableName": "coordinates"
+  "name": "jobType",
+  "variableName": "jobType"
 },
 v10 = {
   "kind": "Variable",
-  "name": "jobType",
-  "variableName": "jobType"
+  "name": "location",
+  "variableName": "location"
 },
 v11 = {
   "kind": "Variable",
@@ -145,12 +141,12 @@ v19 = {
   "storageKey": null
 },
 v20 = [
-  (v9/*: any*/),
   {
     "kind": "Literal",
     "name": "first",
     "value": 25
   },
+  (v9/*: any*/),
   (v10/*: any*/),
   (v11/*: any*/),
   (v12/*: any*/),
@@ -210,10 +206,10 @@ return {
       (v3/*: any*/),
       (v4/*: any*/),
       (v2/*: any*/),
-      (v0/*: any*/),
       (v5/*: any*/),
-      (v8/*: any*/),
       (v1/*: any*/),
+      (v8/*: any*/),
+      (v0/*: any*/),
       (v7/*: any*/)
     ],
     "kind": "Operation",
@@ -536,7 +532,6 @@ return {
         "args": (v20/*: any*/),
         "filters": [
           "searchTerm",
-          "coordinates",
           "proximityKm",
           "minExperience",
           "minExperience",
@@ -544,7 +539,8 @@ return {
           "maxSalary",
           "workMode",
           "jobType",
-          "sortBy"
+          "sortBy",
+          "location"
         ],
         "handle": "connection",
         "key": "JobListFragment_jobs",
@@ -554,7 +550,7 @@ return {
     ]
   },
   "params": {
-    "id": "ef71d0385d60d9f7aa7e18c39a03563c",
+    "id": "cab3bc76b9242900c92260bcb3e8a348",
     "metadata": {},
     "name": "SearchClientComponentQuery",
     "operationKind": "query",
@@ -563,6 +559,6 @@ return {
 };
 })();
 
-(node as any).hash = "4371807a75dc9be445f922f06d801a2b";
+(node as any).hash = "df0e4a1bcd93300456d7b5575a531571";
 
 export default node;

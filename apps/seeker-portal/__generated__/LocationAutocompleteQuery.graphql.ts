@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<946e5976f4ca6372768d41136368de8c>>
- * @relayHash b998c04df1f01198b85759d753754fad
+ * @generated SignedSource<<f79a7e581b3832e372b9858038a3bddb>>
+ * @relayHash 1353875c508d6a802fe6b161d296a732
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b998c04df1f01198b85759d753754fad
+// @relayRequestID 1353875c508d6a802fe6b161d296a732
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type LocationAutocompleteQuery$variables = {
@@ -18,11 +18,7 @@ export type LocationAutocompleteQuery$variables = {
 export type LocationAutocompleteQuery$data = {
   readonly searchLocations: {
     readonly locations: ReadonlyArray<{
-      readonly __typename: "SearchLocation";
-      readonly coordinates: {
-        readonly latitude: number;
-        readonly longitude: number;
-      };
+      readonly __typename: "LocationAutocompleteSuggestion";
       readonly displayName: string;
       readonly placeId: string;
     }>;
@@ -59,7 +55,7 @@ v1 = [
       {
         "alias": null,
         "args": null,
-        "concreteType": "SearchLocation",
+        "concreteType": "LocationAutocompleteSuggestion",
         "kind": "LinkedField",
         "name": "locations",
         "plural": true,
@@ -83,31 +79,6 @@ v1 = [
             "args": null,
             "kind": "ScalarField",
             "name": "placeId",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "Coordinates",
-            "kind": "LinkedField",
-            "name": "coordinates",
-            "plural": false,
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "latitude",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "longitude",
-                "storageKey": null
-              }
-            ],
             "storageKey": null
           }
         ],
@@ -135,7 +106,7 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "id": "b998c04df1f01198b85759d753754fad",
+    "id": "1353875c508d6a802fe6b161d296a732",
     "metadata": {},
     "name": "LocationAutocompleteQuery",
     "operationKind": "query",
@@ -144,6 +115,6 @@ return {
 };
 })();
 
-(node as any).hash = "3100963f5f1ae2c286d838639a27febc";
+(node as any).hash = "b4d996d68b0bece0d6a6648e5f3b10d1";
 
 export default node;

@@ -4,11 +4,11 @@ import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
 
-from app.core.geocoding import BaseLocationService
+from app.geocoding.repositories import RegionRepo
 
 from .types import (
+    LocationAutocompleteSuggestionType,
     SearchLocationsPayloadType,
-    SearchLocationType,
 )
 
 
@@ -21,25 +21,21 @@ class GeocodingQuery:
     @inject
     async def search_locations(
         self,
-        location_service: Annotated[BaseLocationService, Inject],
+        region_repo: Annotated[RegionRepo, Inject],
         search_term: Annotated[
             str,
             strawberry.argument(
                 description="The search (query) term",
             ),
         ],
-        limit: Annotated[
-            int,
-            strawberry.argument(
-                description="How many items to return",
-            ),
-        ] = 5,
     ) -> SearchLocationsPayloadType:
-        results = await location_service.get_locations(
+        results = await region_repo.get_autocomplete_suggestions(
             search_term=search_term,
-            limit=limit,
         )
 
         return SearchLocationsPayloadType(
-            locations=[SearchLocationType.marshal(location) for location in results],
+            locations=[
+                LocationAutocompleteSuggestionType.marshal(location)
+                for location in results
+            ],
         )

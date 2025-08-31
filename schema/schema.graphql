@@ -531,36 +531,6 @@ type CheckOrganizationSlugAvailabilityPayload {
 }
 
 """
-Geographic coordinates.
-"""
-type Coordinates {
-	"""
-	Longitude of the location.
-	"""
-	longitude: Float!
-
-	"""
-	Latitude of the location.
-	"""
-	latitude: Float!
-}
-
-"""
-Geographic coordinates input.
-"""
-input CoordinatesInput {
-	"""
-	Longitude of the location.
-	"""
-	longitude: Float!
-
-	"""
-	Latitude of the location.
-	"""
-	latitude: Float!
-}
-
-"""
 The create job application payload.
 """
 union CreateJobApplicantPayload =
@@ -1910,6 +1880,21 @@ enum LicenseVerificationStatus {
 	PENDING
 	VERIFIED
 	REJECTED
+}
+
+"""
+Search location entity.
+"""
+type LocationAutocompleteSuggestion {
+	"""
+	Place ID of the location
+	"""
+	placeId: String!
+
+	"""
+	Display name of the location
+	"""
+	displayName: String!
 }
 
 """
@@ -4061,6 +4046,11 @@ type Query {
 		sortBy: JobSearchSortBy! = RELEVANCE
 
 		"""
+		The location to search for jobs
+		"""
+		location: String = null
+
+		"""
 		The proximity in km to search for jobs
 		"""
 		proximityKm: Float = null
@@ -4069,11 +4059,6 @@ type Query {
 		The search (query) term
 		"""
 		searchTerm: String = null
-
-		"""
-		The location coordinates to search for jobs
-		"""
-		coordinates: CoordinatesInput = null
 
 		"""
 		The minimum years of experience required
@@ -4244,11 +4229,6 @@ type Query {
 		The search (query) term
 		"""
 		searchTerm: String!
-
-		"""
-		How many items to return
-		"""
-		limit: Int! = 5
 	): SearchLocationsPayload!
 }
 
@@ -4488,33 +4468,13 @@ type SavedJobNotFoundError implements Error {
 }
 
 """
-Search location entity.
-"""
-type SearchLocation {
-	"""
-	Place ID of the location
-	"""
-	placeId: String!
-
-	"""
-	Display name of the location
-	"""
-	displayName: String!
-
-	"""
-	Coordinates of the location
-	"""
-	coordinates: Coordinates!
-}
-
-"""
 The payload for the search locations query.
 """
 type SearchLocationsPayload {
 	"""
 	List of search locations.
 	"""
-	locations: [SearchLocation!]!
+	locations: [LocationAutocompleteSuggestion!]!
 }
 
 """

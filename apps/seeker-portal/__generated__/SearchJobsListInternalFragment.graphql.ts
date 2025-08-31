@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<87c8ccaa0916c7c278a52d0fb95ada12>>
+ * @generated SignedSource<<1e544afcb4b16b1f3eac15feec0acdbb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -39,11 +39,6 @@ var v0 = [
 return {
   "argumentDefinitions": [
     {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "coordinates"
-    },
-    {
       "defaultValue": 25,
       "kind": "LocalArgument",
       "name": "count"
@@ -57,6 +52,11 @@ return {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "jobType"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "location"
     },
     {
       "defaultValue": null,
@@ -124,13 +124,13 @@ return {
       "args": [
         {
           "kind": "Variable",
-          "name": "coordinates",
-          "variableName": "coordinates"
+          "name": "jobType",
+          "variableName": "jobType"
         },
         {
           "kind": "Variable",
-          "name": "jobType",
-          "variableName": "jobType"
+          "name": "location",
+          "variableName": "location"
         },
         {
           "kind": "Variable",
@@ -271,6 +271,6 @@ return {
 };
 })();
 
-(node as any).hash = "4860a0c241c1cb76c1ee283c5d4c3db5";
+(node as any).hash = "277fdc1cc83a9a046484b60a0006c253";
 
 export default node;

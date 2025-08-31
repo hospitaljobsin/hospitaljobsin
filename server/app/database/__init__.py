@@ -24,9 +24,10 @@ from app.core.constants import (
     JOB_APPLICANT_EMBEDDING_DIMENSIONS,
     JOB_APPLICANT_EMBEDDING_INDEX_NAME,
     JOB_EMBEDDING_DIMENSIONS,
-    JOB_EMBEDDING_INDEX_NAME,
     JOB_SEARCH_INDEX_NAME,
+    REGION_SEARCH_INDEX_NAME,
 )
+from app.geocoding.documents import Region
 from app.jobs.documents import (
     BaseJobMetric,
     CoreJobMetric,
@@ -128,26 +129,42 @@ async def create_search_indexes(
                     "mappings": {
                         "dynamic": True,
                         "fields": {
-                            "title": {
-                                "type": "string",
-                                "analyzer": "lucene.english",
-                                "searchAnalyzer": "lucene.english",
-                            },
+                            "title": [
+                                {"type": "token"},
+                                {"type": "string"},
+                                {
+                                    "type": "autocomplete",
+                                    "tokenization": "edgeGram",
+                                    "minGrams": 3,
+                                    "maxGrams": 7,
+                                    "foldDiacritics": False,
+                                },
+                            ],
                             "description_cleaned": {
                                 "type": "string",
-                                "analyzer": "lucene.english",
-                                "searchAnalyzer": "lucene.english",
                             },
-                            "skills": {
-                                "type": "string",
-                                "analyzer": "lucene.english",
-                                "searchAnalyzer": "lucene.english",
-                            },
-                            "location": {
-                                "type": "string",
-                                "analyzer": "lucene.english",
-                                "searchAnalyzer": "lucene.english",
-                            },
+                            "skills": [
+                                {"type": "token"},
+                                {"type": "string"},
+                                {
+                                    "type": "autocomplete",
+                                    "tokenization": "edgeGram",
+                                    "minGrams": 2,
+                                    "maxGrams": 10,
+                                    "foldDiacritics": True,
+                                },
+                            ],
+                            "organization_name": [
+                                {"type": "token"},
+                                {"type": "string"},
+                                {
+                                    "type": "autocomplete",
+                                    "tokenization": "edgeGram",
+                                    "minGrams": 2,
+                                    "maxGrams": 10,
+                                    "foldDiacritics": True,
+                                },
+                            ],
                             "min_experience": {
                                 "type": "number",
                             },
@@ -162,11 +179,9 @@ async def create_search_indexes(
                             },
                             "work_mode": {
                                 "type": "string",
-                                "analyzer": "lucene.english",
                             },
                             "type": {
                                 "type": "string",
-                                "analyzer": "lucene.english",
                             },
                             "updated_at": {
                                 "type": "date",
@@ -195,6 +210,59 @@ async def create_search_indexes(
         logger.info("Created Job Atlas Search index")
     else:
         logger.info("Job Atlas Search index already exists")
+
+    # Check and create Job embedding index if it doesn't exist
+    region_collection = database.get_collection(str(Region.get_settings().name))
+    existing_region_indexes = await region_collection.list_search_indexes().to_list(
+        length=None,
+    )
+    # Check and create Job Atlas Search index if it doesn't exist
+    region_atlas_search_exists = any(
+        index.get("name") == REGION_SEARCH_INDEX_NAME
+        for index in existing_region_indexes
+    )
+    if not region_atlas_search_exists:
+        await region_collection.create_search_index(
+            model=SearchIndexModel(
+                definition={
+                    "mappings": {
+                        "dynamic": True,
+                        "fields": {
+                            "name": [
+                                {"type": "token"},
+                                {"type": "string"},
+                                {
+                                    "type": "autocomplete",
+                                    "tokenization": "edgeGram",
+                                    "minGrams": 3,
+                                    "maxGrams": 7,
+                                    "foldDiacritics": False,
+                                },
+                            ],
+                            "aliases": [
+                                {"type": "token"},
+                                {"type": "string"},
+                                {
+                                    "type": "autocomplete",
+                                    "tokenization": "edgeGram",
+                                    "minGrams": 3,
+                                    "maxGrams": 7,
+                                    "foldDiacritics": False,
+                                },
+                            ],
+                            "level": {
+                                "type": "string",
+                            },
+                        },
+                    }
+                },
+                name=REGION_SEARCH_INDEX_NAME,
+                type="search",
+            )
+        )
+        logger.info("Created Region Atlas Search index")
+    else:
+        logger.info("Region Atlas Search index already exists")
 
 
 async def initialize_database(database_url: str, default_database_name: str) -> None:
@@ -232,6 +300,7 @@ async def initialize_database(database_url: str, default_database_name: str) -> 
                 RecoveryCode,
                 TemporaryTwoFactorChallenge,
                 OrganizationInvite,
+                Region,
             ],
         )
         await create_search_indexes(client, default_database_name)

@@ -1,12 +1,9 @@
-import type { CoordinatesInput } from "@/__generated__/LandingViewQuery.graphql";
 import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import { Card, CardBody, Input, Slider } from "@heroui/react";
 import { MapPin, Search } from "lucide-react";
 import { type FormEvent, useState } from "react";
 
 interface JobListControllerProps {
-	coordinates: CoordinatesInput | null;
-	setCoordinates: (searchTerm: CoordinatesInput | null) => void;
 	searchTerm: string | null;
 	setSearchTerm: (location: string | null) => void;
 	proximityKm: number | null;
@@ -59,14 +56,12 @@ export default function JobListController(props: JobListControllerProps) {
 								value={location || ""}
 								onChange={(value) => {
 									setLocation(value.displayName);
-									props.setCoordinates(value.coordinates);
 								}}
 								onValueChange={(value) => {
 									setLocation(value);
 								}}
 								onClear={() => {
 									setLocation(null);
-									props.setCoordinates(null);
 								}}
 								fullWidth
 							/>

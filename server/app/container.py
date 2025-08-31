@@ -96,6 +96,7 @@ from app.core.redis_client import create_redis_client
 from app.core.templates import create_jinja2_environment
 from app.dataloaders import create_dataloaders
 from app.embeddings.services import EmbeddingsService
+from app.geocoding.repositories import RegionRepo
 from app.jobs.agents.applicant_analysis import (
     create_job_applicant_analyzer_agent,
 )
@@ -295,6 +296,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(create_captcha_verifier))
     container.register(aioinject.Singleton(create_redis_client))
     container.register(aioinject.Singleton(EmbeddingsService))
+    container.register(aioinject.Singleton(RegionRepo))
     container.register(aioinject.Singleton(JobApplicantRepo))
     container.register(aioinject.Singleton(JobRepo))
     container.register(aioinject.Singleton(SavedJobRepo))

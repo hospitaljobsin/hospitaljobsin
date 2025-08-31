@@ -105,12 +105,16 @@ JOB_APPLICANT_EMBEDDING_DIMENSIONS = 1024
 
 JOB_APPLICANT_EMBEDDING_INDEX_NAME = "job_applicant_titan_embedding_vector_index"
 
-JOB_SEARCH_INDEX_NAME = "job_search_engine_index"
+JOB_SEARCH_INDEX_NAME = "atlas_job_search_engine_index"
+
+REGION_SEARCH_INDEX_NAME = "atlas_region_search_engine_index"
 
 RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD = 0.7
 
 
 TRENDING_JOBS_LIMIT = 7
+
+DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT = 5
 
 
 # terms and policy

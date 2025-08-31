@@ -32,7 +32,7 @@ export const SearchPageContentFragment = graphql`
     minExperience: { type: "Int" }
     minSalary: { type: "Int" }
     maxSalary: { type: "Int" }
-    coordinates: { type: "CoordinatesInput" }
+	location: { type: "String" }
     proximityKm: { type: "Float" }
     workMode: { type: "[JobWorkModeFilter!]!" }
     jobType: { type: "[JobTypeFilter!]!" }
@@ -41,11 +41,11 @@ export const SearchPageContentFragment = graphql`
 	...SearchHeaderFragment
     ...SearchJobsListFragment @arguments(
       searchTerm: $searchTerm
-      coordinates: $coordinates
       proximityKm: $proximityKm
       minExperience: $minExperience
       minSalary: $minSalary
       maxSalary: $maxSalary
+	  location: $location
 	  jobType: $jobType
 	  workMode: $workMode
       sortBy: $sortBy
@@ -124,14 +124,6 @@ export default function SearchView({
 		maxSalary: filters.maxSalary ?? null,
 	};
 
-	// Parse coordinates from the string format "latitude,longitude"
-	const parseCoordinates = (coordinatesString: string) => {
-		if (!coordinatesString) return null;
-		const [latitude, longitude] = coordinatesString.split(",").map(Number);
-		if (Number.isNaN(latitude) || Number.isNaN(longitude)) return null;
-		return { latitude, longitude };
-	};
-
 	// Debounced filter update: update key to force JobList remount/refetch
 	// (Optional: If you want to debounce, you can use a useEffect with a timeout)
 
@@ -196,7 +188,7 @@ export default function SearchView({
 						<SearchJobsList
 							rootQuery={data}
 							searchTerm={filters.q || null}
-							coordinates={parseCoordinates(filters.coordinates)}
+							location={filters.locationName}
 							proximityKm={filters.proximityKm}
 							minExperience={filters.minExperience ?? null}
 							minSalary={filters.minSalary ?? null}

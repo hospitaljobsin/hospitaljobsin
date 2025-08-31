@@ -23,12 +23,6 @@ export function LandingSearchController({
 		if (searchTerm) params.set("q", searchTerm);
 		if (selectedLocation?.displayName) {
 			params.set("locationName", selectedLocation.displayName);
-			if (selectedLocation.coordinates) {
-				params.set(
-					"coordinates",
-					`${selectedLocation.coordinates.latitude},${selectedLocation.coordinates.longitude}`,
-				);
-			}
 		}
 		router.push(`${links.search}?${params.toString()}`);
 	};

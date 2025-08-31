@@ -73,6 +73,8 @@ class Job(Document):
 
     organization: Link[Organization]
 
+    organization_name: str | None = None
+
     @property
     def is_visible(self) -> bool:
         """Whether the job is visible for job seekers."""
