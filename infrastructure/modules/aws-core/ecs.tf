@@ -592,10 +592,6 @@ resource "aws_ecs_task_definition" "app" {
           value = "https://accounts.${var.domain_name}"
         },
         {
-          name  = "SERVER_GEOCODING_PROVIDER"
-          value = "aws_location"
-        },
-        {
           name  = "SERVER_SENTRY_DSN"
           value = var.sentry_backend_dsn
         },

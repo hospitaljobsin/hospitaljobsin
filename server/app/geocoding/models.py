@@ -12,28 +12,6 @@ class LocationAutocompleteSuggestion(BaseModel):
         return hash((self.place_id, self.display_name))
 
 
-class Coordinates(BaseModel):
-    latitude: float
-    longitude: float
-
-
-class GeocodeResult(BaseModel):
-    display_name: str | None = None
-    latitude: float
-    longitude: float
-    postal_code: str | None = None
-    address_region: str | None = None
-    street_address: str | None = None
-    address_locality: str | None = None
-    country: str | None = None
-
-
-class SearchLocation(BaseModel):
-    place_id: str
-    display_name: str
-    coordinates: GeocodeResult
-
-
 # GeoJSON models for spatial data
 class GeoJSONPoint(BaseModel):
     """GeoJSON Point geometry."""
