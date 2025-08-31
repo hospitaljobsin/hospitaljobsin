@@ -152,7 +152,7 @@ services:
         condition: service_healthy
 
   test-mongodb:
-    image: mongodb/mongodb-atlas-local:8.0.1
+    image: mongodb/mongodb-atlas-local:8.0.133
     ports:
       - "27017:27017"
     environment:
