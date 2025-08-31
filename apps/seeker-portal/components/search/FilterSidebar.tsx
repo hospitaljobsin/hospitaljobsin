@@ -18,7 +18,6 @@ export type FilterValues = {
 	minSalary: number | null;
 	maxSalary: number | null;
 	locationName: string;
-	coordinates: string;
 	proximityKm: number;
 	workMode: string[];
 	jobType: string[];
@@ -61,7 +60,7 @@ export default function FilterSidebar({
 					fullWidth
 				/>
 				<LocationAutocomplete
-					id="coordinates"
+					id="location"
 					label="Location"
 					value={locationInput}
 					onChange={(val) => {
@@ -69,7 +68,6 @@ export default function FilterSidebar({
 						onChange({
 							...values,
 							locationName: val.displayName,
-							coordinates: `${val.coordinates.latitude},${val.coordinates.longitude}`,
 						});
 					}}
 					onValueChange={(val) => {
@@ -77,7 +75,7 @@ export default function FilterSidebar({
 					}}
 					onClear={() => {
 						setLocationInput("");
-						onChange({ ...values, locationName: "", coordinates: "" });
+						onChange({ ...values, locationName: "" });
 					}}
 					onBlur={() => {
 						if (locationInput !== values.locationName) {

@@ -21,10 +21,6 @@ interface LocationAutocompleteProps
 type SearchLocation = {
 	displayName: string;
 	placeId: string;
-	coordinates: {
-		latitude: number;
-		longitude: number;
-	};
 };
 
 const SearchLocationsQuery = graphql`
@@ -34,10 +30,6 @@ const SearchLocationsQuery = graphql`
 				__typename
 				displayName
 				placeId
-				coordinates {
-					latitude
-					longitude
-				}
 			}
 		}
 	}
@@ -58,10 +50,6 @@ function LocationResultControls({
 			const mappedLocations = data.searchLocations.locations.map((item) => ({
 				displayName: item.displayName,
 				placeId: item.placeId,
-				coordinates: {
-					latitude: item.coordinates.latitude,
-					longitude: item.coordinates.longitude,
-				},
 			}));
 			onDataLoaded(mappedLocations);
 		} else {

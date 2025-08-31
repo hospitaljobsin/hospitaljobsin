@@ -80,26 +80,11 @@ services:
       start_period: 30s
     restart: unless-stopped
 
-  nominatim:
-    image: mediagis/nominatim:5.1
-    ports:
-        - "8080:8080"
-    environment:
-        # see https://github.com/mediagis/nominatim-docker/tree/master/5.1#configuration for more options
-        PBF_URL: https://download.geofabrik.de/europe/monaco-latest.osm.pbf
-        REPLICATION_URL: https://download.geofabrik.de/europe/monaco-updates/
-        NOMINATIM_PASSWORD: pass
-    volumes:
-        - nominatim_data:/var/lib/postgresql/16/main
-    shm_size: 1gb
-
 
 volumes:
   mongodb_data:
     driver: local
   minio_data:
-    driver: local
-  nominatim_data:
     driver: local
   caddy_data:
     driver: local

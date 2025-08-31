@@ -279,7 +279,6 @@ class WhatsappSettings(CoreSettings):
 
 class ProviderSettings(CoreSettings):
     email_provider: Literal["smtp", "aws_ses", "dummy"] = "smtp"
-    geocoding_provider: Literal["nominatim", "aws_location"] = "nominatim"
 
 
 class EmailSettings(CoreSettings):
@@ -413,28 +412,6 @@ class AuthSettings(CoreSettings):
     phone_number_verification_token_cooldown: int = 60 * 3
 
     password_reset_token_cooldown: int = 60 * 3
-
-
-class GeocoderSettings(CoreSettings):
-    geocoder_domain: str | None = None
-
-    geocoder_user_agent: str | None = None
-
-    geocoder_scheme: str = "http"
-
-    # @classmethod
-    # def model_validate(cls, values):
-    #     geocoding_provider = values.get("geocoding_provider")
-    #     if geocoding_provider == "nominatim":
-    #         if not values.get("geocoder_domain"):
-    #             raise ValueError(
-    #                 "geocoder_domain is required when geocoding_provider is nominatim"
-    #             )
-    #         if not values.get("geocoder_user_agent"):
-    #             raise ValueError(
-    #                 "geocoder_user_agent is required when geocoding_provider is nominatim"
-    #             )
-    #     return values
 
 
 TSettings = TypeVar("TSettings", bound=BaseSettings)

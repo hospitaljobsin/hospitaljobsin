@@ -72,6 +72,8 @@ dev-dependencies = [
     "strawberry-graphql[cli]==0.278.0",
     "watchfiles==1.1.0",
     "granian[pname,reload,uvloop]==2.4.2",
+    "pandas>=2.3.2",
+    "geopandas>=1.1.1",
 ]
 
 [tool.pyright]

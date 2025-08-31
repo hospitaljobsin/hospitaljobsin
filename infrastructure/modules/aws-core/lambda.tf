@@ -103,14 +103,6 @@ resource "aws_iam_policy" "lambda_custom_policy" {
       },
       {
         Effect = "Allow",
-        Action = [
-          "geo-places:Geocode",
-          "geo-places:Suggest"
-        ],
-        Resource = "*"
-      },
-      {
-        Effect = "Allow",
         Action = ["secretsmanager:GetSecretValue"],
         Resource = [
           # aws_secretsmanager_secret.backend.arn,
@@ -359,7 +351,6 @@ resource "aws_lambda_function" "worker" {
       SERVER_RP_ID                     = var.domain_name
       SERVER_RP_NAME                   = var.app_name
       SERVER_RP_EXPECTED_ORIGIN        = "https://accounts.${var.domain_name}"
-      SERVER_GEOCODING_PROVIDER        = "aws_location"
       SERVER_SENTRY_DSN                = var.sentry_backend_dsn
       SERVER_PERSISTED_QUERIES_PATH    = "query_map.json"
       SERVER_REDIS_HOST                = local.redis_host

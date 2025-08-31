@@ -94,7 +94,7 @@ class BaseConnectionType(Generic[NodeType, EdgeType]):
                 cls.get_edge_type().marshal(entity)
                 for entity in paginated_result.entities
             ],
-            total_count=paginated_result.page_info.total_count,
+            total_count=paginated_result.total_count,
         )
 
 

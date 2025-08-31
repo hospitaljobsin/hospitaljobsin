@@ -22,8 +22,8 @@ from app.core.constants import (
     JobApplicantStatus,
     JobKindType,
 )
-from app.core.geocoding import BaseLocationService
 from app.dataloaders import Dataloaders
+from app.geocoding.repositories import RegionRepo
 from app.jobs.agents.applicant_analysis import (
     JobApplicantAnalysisOutput,
     JobApplicantAnalyzerAgent,
@@ -147,14 +147,14 @@ class JobService:
         organization_member_service: OrganizationMemberService,
         job_application_form_repo: JobApplicationFormRepo,
         job_metric_repo: JobMetricRepo,
-        location_service: BaseLocationService,
+        region_repo: RegionRepo,
     ) -> None:
         self._job_repo = job_repo
         self._organization_repo = organization_repo
         self._organization_member_service = organization_member_service
         self._job_application_form_repo = job_application_form_repo
         self._job_metric_repo = job_metric_repo
-        self._location_service = location_service
+        self._region_repo = region_repo
 
     async def log_view_start(
         self,
@@ -263,11 +263,14 @@ class JobService:
 
         geo, address = None, None
         if location is not None:
-            result = await self._location_service.geocode(location)
+            result = await self._region_repo.get_by_name(location)
             if result is None:
                 return Err(InvalidLocationError())
             geo = GeoObject(
-                coordinates=(result.longitude, result.latitude),
+                coordinates=(
+                    result.coordinates.coordinates[0],
+                    result.coordinates.coordinates[1],
+                ),
             )
 
             address = Address(
@@ -351,11 +354,14 @@ class JobService:
             return Err(InvalidLocationError())
 
         if location is not None and location != existing_job.location:
-            result = await self._location_service.geocode(location)
+            result = await self._region_repo.get_by_name(location)
             if result is None:
                 return Err(InvalidLocationError())
             geo = GeoObject(
-                coordinates=(result.longitude, result.latitude),
+                coordinates=(
+                    result.coordinates.coordinates[0],
+                    result.coordinates.coordinates[1],
+                ),
             )
             address = Address(
                 display_name=location,

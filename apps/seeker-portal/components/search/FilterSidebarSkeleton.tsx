@@ -27,7 +27,7 @@ export default function FilterSidebarSkeleton() {
 					fullWidth
 				/>
 				<LocationAutocomplete
-					id="coordinates"
+					id="location"
 					label="Location"
 					isDisabled
 					placeholder="Location"

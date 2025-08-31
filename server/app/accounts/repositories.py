@@ -18,7 +18,7 @@ from app.core.constants import (
     TERMS_AND_POLICY_LATEST_VERSION,
     AuthProvider,
 )
-from app.core.geocoding import BaseLocationService
+from app.geocoding.repositories import RegionRepo
 
 from .documents import (
     Account,
@@ -298,8 +298,8 @@ class EmailVerificationTokenRepo:
 
 
 class ProfileRepo:
-    def __init__(self, location_service: BaseLocationService) -> None:
-        self._location_service = location_service
+    def __init__(self, region_repo: RegionRepo) -> None:
+        self._region_repo = region_repo
 
     async def create(self, account: Account) -> Profile:
         """Create a new profile."""
@@ -389,14 +389,17 @@ class ProfileRepo:
                     updated_locations.append(existing_locations_by_name[location_name])
                 else:
                     # Geocode and add if successful
-                    result = await self._location_service.geocode(location_name)
+                    result = await self._region_repo.get_by_name(location_name)
                     if result is not None:
                         updated_locations.append(
                             Location(
                                 name=location_name,
                                 geo=GeoObject(
                                     type="Point",
-                                    coordinates=(result.longitude, result.latitude),
+                                    coordinates=(
+                                        result.coordinates.coordinates[0],
+                                        result.coordinates.coordinates[1],
+                                    ),
                                 ),
                             )
                         )

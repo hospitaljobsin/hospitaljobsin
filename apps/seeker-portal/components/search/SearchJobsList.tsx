@@ -2,7 +2,6 @@ import type { SearchClientComponentQuery as SearchClientComponentQueryType } fro
 import type { SearchJobsListFragment$key } from "@/__generated__/SearchJobsListFragment.graphql";
 import type { SearchJobsListInternalFragment$key } from "@/__generated__/SearchJobsListInternalFragment.graphql";
 import type {
-	CoordinatesInput,
 	JobTypeFilter,
 	JobWorkModeFilter,
 	SearchJobsListRefetchQuery$variables,
@@ -21,15 +20,15 @@ const SearchJobsListFragment = graphql`
 fragment SearchJobsListFragment on Query @argumentDefinitions(
 	proximityKm: { type: "Float", defaultValue: null }
 	searchTerm: { type: "String", defaultValue: null }
-	coordinates: { type: "CoordinatesInput", defaultValue: null }
 	minExperience: { type: "Int", defaultValue: null }
 	minSalary: { type: "Int", defaultValue: null }
 	maxSalary: { type: "Int", defaultValue: null }
+	location: { type: "String", defaultValue: null }
 	workMode: { type: "[JobWorkModeFilter!]!" }
 	jobType: { type: "[JobTypeFilter!]!" }
 	sortBy: { type: "JobSearchSortBy", defaultValue: RELEVANCE }
 ) {
-	...SearchJobsListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType, sortBy: $sortBy)
+	...SearchJobsListInternalFragment @arguments(searchTerm: $searchTerm, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType, sortBy: $sortBy, location: $location)
 	viewer {
 		...JobControlsAuthFragment
 	}
@@ -43,17 +42,17 @@ const SearchJobsListInternalFragment = graphql`
     cursor: { type: "ID" }
 	proximityKm: { type: "Float", defaultValue: null }
     searchTerm: { type: "String", defaultValue: null }
-	coordinates: { type: "CoordinatesInput", defaultValue: null }
     count: { type: "Int", defaultValue: 25 }
 	minExperience: { type: "Int", defaultValue: null }
 	minSalary: { type: "Int", defaultValue: null }
 	maxSalary: { type: "Int", defaultValue: null }
+	location: { type: "String", defaultValue: null }
 	workMode: { type: "[JobWorkModeFilter!]!" }
 	jobType: { type: "[JobTypeFilter!]!" }
     sortBy: { type: "JobSearchSortBy", defaultValue: RELEVANCE }
   ){
-    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType, sortBy: $sortBy)
-      @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm", "minExperience", "minExperience", "minSalary", "maxSalary", "workMode", "jobType", "sortBy"]) {
+    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType, sortBy: $sortBy, location: $location)
+      @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "proximityKm", "minExperience", "minExperience", "minSalary", "maxSalary", "workMode", "jobType", "sortBy", "location"]) {
       totalCount @required(action: THROW)
 	  edges {
         node {
@@ -72,7 +71,6 @@ const SearchJobsListInternalFragment = graphql`
 type Props = {
 	rootQuery: SearchJobsListFragment$key;
 	searchTerm: string | null;
-	coordinates: CoordinatesInput | null;
 	proximityKm: number | null;
 	minExperience?: number | null;
 	minSalary?: number | null;
@@ -86,7 +84,6 @@ type Props = {
 export default function SearchJobsList({
 	rootQuery,
 	searchTerm,
-	coordinates,
 	proximityKm,
 	minExperience,
 	minSalary,
@@ -129,7 +126,6 @@ export default function SearchJobsList({
 				// Only include defined variables
 				const refetchVars: SearchJobsListRefetchQuery$variables = {
 					searchTerm,
-					coordinates,
 					proximityKm,
 					workMode: (workMode || []) as readonly JobWorkModeFilter[],
 					jobType: (jobType || []) as readonly JobTypeFilter[],
@@ -145,7 +141,6 @@ export default function SearchJobsList({
 	}, [
 		refetch,
 		searchTerm,
-		coordinates,
 		proximityKm,
 		minExperience,
 		minSalary,

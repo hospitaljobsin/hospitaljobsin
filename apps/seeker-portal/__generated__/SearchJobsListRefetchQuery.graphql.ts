@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<18e39d7b023922681ac9b14bf249236f>>
- * @relayHash 0e6ed639ca57938182b92670d7b8ee9e
+ * @generated SignedSource<<8a28cb2f481769111f60c1b4943e080a>>
+ * @relayHash dc4a75be746f7bf3c3f88f7b7e823eaf
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,22 +9,18 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 0e6ed639ca57938182b92670d7b8ee9e
+// @relayRequestID dc4a75be746f7bf3c3f88f7b7e823eaf
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobSearchSortBy = "RELEVANCE" | "UPDATED_AT" | "%future added value";
 export type JobTypeFilter = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
 export type JobWorkModeFilter = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
-export type CoordinatesInput = {
-  latitude: number;
-  longitude: number;
-};
 export type SearchJobsListRefetchQuery$variables = {
-  coordinates?: CoordinatesInput | null | undefined;
   count?: number | null | undefined;
   cursor?: string | null | undefined;
   jobType: ReadonlyArray<JobTypeFilter>;
+  location?: string | null | undefined;
   maxSalary?: number | null | undefined;
   minExperience?: number | null | undefined;
   minSalary?: number | null | undefined;
@@ -44,11 +40,6 @@ export type SearchJobsListRefetchQuery = {
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "coordinates"
-  },
-  {
     "defaultValue": 25,
     "kind": "LocalArgument",
     "name": "count"
@@ -62,6 +53,11 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "jobType"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "location"
   },
   {
     "defaultValue": null,
@@ -101,13 +97,13 @@ var v0 = [
 ],
 v1 = {
   "kind": "Variable",
-  "name": "coordinates",
-  "variableName": "coordinates"
+  "name": "jobType",
+  "variableName": "jobType"
 },
 v2 = {
   "kind": "Variable",
-  "name": "jobType",
-  "variableName": "jobType"
+  "name": "location",
+  "variableName": "location"
 },
 v3 = {
   "kind": "Variable",
@@ -150,12 +146,12 @@ v10 = [
     "name": "after",
     "variableName": "cursor"
   },
-  (v1/*: any*/),
   {
     "kind": "Variable",
     "name": "first",
     "variableName": "count"
   },
+  (v1/*: any*/),
   (v2/*: any*/),
   (v3/*: any*/),
   (v4/*: any*/),
@@ -195,7 +191,6 @@ return {
     "selections": [
       {
         "args": [
-          (v1/*: any*/),
           {
             "kind": "Variable",
             "name": "count",
@@ -206,6 +201,7 @@ return {
             "name": "cursor",
             "variableName": "cursor"
           },
+          (v1/*: any*/),
           (v2/*: any*/),
           (v3/*: any*/),
           (v4/*: any*/),
@@ -480,7 +476,6 @@ return {
         "args": (v10/*: any*/),
         "filters": [
           "searchTerm",
-          "coordinates",
           "proximityKm",
           "minExperience",
           "minExperience",
@@ -488,7 +483,8 @@ return {
           "maxSalary",
           "workMode",
           "jobType",
-          "sortBy"
+          "sortBy",
+          "location"
         ],
         "handle": "connection",
         "key": "JobListFragment_jobs",
@@ -498,7 +494,7 @@ return {
     ]
   },
   "params": {
-    "id": "0e6ed639ca57938182b92670d7b8ee9e",
+    "id": "dc4a75be746f7bf3c3f88f7b7e823eaf",
     "metadata": {},
     "name": "SearchJobsListRefetchQuery",
     "operationKind": "query",
@@ -507,6 +503,6 @@ return {
 };
 })();
 
-(node as any).hash = "4860a0c241c1cb76c1ee283c5d4c3db5";
+(node as any).hash = "277fdc1cc83a9a046484b60a0006c253";
 
 export default node;

@@ -49,7 +49,6 @@ from app.config import (
     EmailSettings,
     EnvironmentSettings,
     FrontendSettings,
-    GeocoderSettings,
     Oauth2Settings,
     PosthogSettings,
     ProviderSettings,
@@ -65,7 +64,6 @@ from app.core.analytics import create_posthog_client
 from app.core.aws_sdk import (
     create_aioboto3_session,
     create_bedrock_runtime_client,
-    create_location_service_client,
     create_s3_client,
     create_ses_client,
     create_sqs_client,
@@ -79,12 +77,6 @@ from app.core.emails import (
     SMTPEmailSender,
     create_smtp_client,
 )
-from app.core.geocoding import (
-    AWSLocationService,
-    BaseLocationService,
-    NominatimLocationService,
-    create_nominatim_geocoder,
-)
 from app.core.messages import (
     BaseMessageSender,
     DummyMessageSender,
@@ -96,6 +88,7 @@ from app.core.redis_client import create_redis_client
 from app.core.templates import create_jinja2_environment
 from app.dataloaders import create_dataloaders
 from app.embeddings.services import EmbeddingsService
+from app.geocoding.repositories import RegionRepo
 from app.jobs.agents.applicant_analysis import (
     create_job_applicant_analyzer_agent,
 )
@@ -151,7 +144,6 @@ settings_classes: list[type[BaseSettings]] = [
     ProviderSettings,
     AWSSettings,
     AuthSettings,
-    GeocoderSettings,
     RedisSettings,
     TesseractSettings,
     WhatsappSettings,
@@ -229,24 +221,6 @@ def register_email_sender(container: aioinject.Container) -> None:
             assert_never(unreachable)
 
 
-def register_location_service(container: aioinject.Container) -> None:
-    provider_settings = get_settings(ProviderSettings)
-
-    match provider_settings.geocoding_provider:
-        case "nominatim":
-            container.register(aioinject.Singleton(create_nominatim_geocoder))
-            container.register(
-                aioinject.Scoped(NominatimLocationService, BaseLocationService)
-            )
-        case "aws_location":
-            container.register(aioinject.Scoped(create_location_service_client))
-            container.register(
-                aioinject.Scoped(AWSLocationService, BaseLocationService)
-            )
-        case _ as unreachable:
-            assert_never(unreachable)
-
-
 def register_ocr_client(container: aioinject.Container) -> None:
     env_settings = get_settings(EnvironmentSettings)
     if env_settings.is_production or env_settings.is_staging:
@@ -280,7 +254,6 @@ def create_container() -> aioinject.Container:
         container.register(SettingsProvider(settings_cls))
     container.register(aioinject.Singleton(create_jinja2_environment))
     register_email_sender(container)
-    register_location_service(container)
     register_ocr_client(container)
     register_message_sender(container)
     env_settings = get_settings(EnvironmentSettings)
@@ -295,6 +268,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(create_captcha_verifier))
     container.register(aioinject.Singleton(create_redis_client))
     container.register(aioinject.Singleton(EmbeddingsService))
+    container.register(aioinject.Singleton(RegionRepo))
     container.register(aioinject.Singleton(JobApplicantRepo))
     container.register(aioinject.Singleton(JobRepo))
     container.register(aioinject.Singleton(SavedJobRepo))
