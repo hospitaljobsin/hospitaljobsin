@@ -449,7 +449,7 @@ class JobRepo:
                     {
                         "geoWithin": {
                             "path": "geo",
-                            "geometry": region.geometry,
+                            "geometry": region.geometry.model_dump(),
                         }
                     }
                 )
