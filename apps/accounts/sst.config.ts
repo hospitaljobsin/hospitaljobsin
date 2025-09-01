@@ -12,7 +12,6 @@ export default $config({
 		};
 	},
 	async run() {
-		const secret = new sst.Secret("JWESecretKey");
 		const enableBasicAuth = $app.stage === "staging";
 
 		// Encode the Basic Auth credentials from process.env
@@ -28,7 +27,6 @@ export default $config({
 		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
 		new sst.aws.Nextjs("accounts-ui", {
 			buildCommand: "pnpm run package",
-			link: [secret],
 			domain: process.env.SST_ACCOUNTS_DOMAIN,
 			environment: {
 				NEXT_PUBLIC_API_URL: env.NEXT_PUBLIC_API_URL,

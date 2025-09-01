@@ -18,18 +18,42 @@ export const networkFetch = cache(
 		const { cookies } = await import("next/headers");
 		const serverCookie = await cookies();
 
-		const resp = await fetch(`${env.NEXT_PUBLIC_INTERNAL_API_URL}/graphql`, {
-			method: "POST",
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Cookie: serverCookie.toString(),
-			},
-			credentials: "include",
-			body: JSON.stringify({
+		let method = "POST";
+		let url = `${env.NEXT_PUBLIC_INTERNAL_API_URL}/graphql`;
+		let body: string | undefined;
+		const headers: Record<string, string> = {
+			Accept: "application/json",
+			Cookie: serverCookie.toString(),
+		};
+
+		if (request.operationKind === "query") {
+			// For GET requests, use query parameters as per GraphQL over HTTP specification
+			method = "GET";
+			const searchParams = new URLSearchParams();
+
+			if (request.id) {
+				searchParams.append("document_id", request.id);
+			}
+
+			if (variables && Object.keys(variables).length > 0) {
+				searchParams.append("variables", JSON.stringify(variables));
+			}
+
+			url = `${url}?${searchParams.toString()}`;
+		} else {
+			// For POST requests (mutations), use request body
+			headers["Content-Type"] = "application/json";
+			body = JSON.stringify({
 				document_id: request.id,
 				variables,
-			}),
+			});
+		}
+
+		const resp = await fetch(url, {
+			method,
+			headers,
+			credentials: "include",
+			body,
 		});
 		const json = await resp.json();
 

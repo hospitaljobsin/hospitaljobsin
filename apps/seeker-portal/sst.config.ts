@@ -13,7 +13,6 @@ export default $config({
 	},
 
 	async run() {
-		const secret = new sst.Secret("JWESecretKey");
 		const enableBasicAuth = $app.stage === "staging";
 
 		// Encode the Basic Auth credentials from process.env
@@ -28,7 +27,6 @@ export default $config({
 
 		new sst.aws.Nextjs("seeker-portal-ui", {
 			buildCommand: "pnpm run package",
-			link: [secret],
 			domain: {
 				name: process.env.SST_SEEKER_PORTAL_DOMAIN,
 				redirects: [`www.${process.env.SST_SEEKER_PORTAL_DOMAIN}`],
