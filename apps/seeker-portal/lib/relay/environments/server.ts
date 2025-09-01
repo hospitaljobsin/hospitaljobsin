@@ -23,6 +23,7 @@ export const networkFetch = cache(
 		let body: string | undefined;
 		const headers: Record<string, string> = {
 			Accept: "application/json",
+			"Accept-Encoding": "gzip",
 			Cookie: serverCookie.toString(),
 		};
 

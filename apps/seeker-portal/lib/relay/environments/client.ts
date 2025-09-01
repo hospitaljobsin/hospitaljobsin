@@ -26,6 +26,7 @@ export async function networkFetch(
 	let body: string | undefined;
 	const headers: Record<string, string> = {
 		Accept: "application/json",
+		"Accept-Encoding": "gzip",
 	};
 
 	if (request.operationKind === "query") {
