@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.13"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -2008,7 +2008,7 @@ requires-dist = [
     { name = "tenacity", specifier = "==9.1.2" },
     { name = "tesserocr", specifier = "==2.8.0" },
     { name = "types-aioboto3", extras = ["essential"], specifier = "==15.0.0" },
-    { name = "types-aiobotocore-bedrock-runtime", specifier = "==2.23.0" },
+    { name = "types-aiobotocore-bedrock-runtime", specifier = "==2.24.1" },
     { name = "types-aiobotocore-geo-places", specifier = ">=2.24.1" },
     { name = "types-aiobotocore-location", specifier = "==2.23.0" },
     { name = "types-aiobotocore-ses", specifier = "==2.23.0" },
@@ -2288,11 +2288,11 @@ wheels = [
 
 [[package]]
 name = "types-aiobotocore-bedrock-runtime"
-version = "2.23.0"
+version = "2.24.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d3/94/c225fedd3e00d49e7b9233580690805870281f11097b2616f992edba3e0b/types_aiobotocore_bedrock_runtime-2.23.0.tar.gz", hash = "sha256:3855314116f7dd6ae556e4373a6b682832de1c0dece7eaae0aa42abd17256c89", size = 26424, upload-time = "2025-06-13T01:45:34.806Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/84/9b/88db259017518867eabf45a9171d0a28250d46a9251614dac15a4aee642f/types_aiobotocore_bedrock_runtime-2.24.1.tar.gz", hash = "sha256:51edd877b087249670bfc3f43cd5f5c1ca3e4b0fdc8f612d26df8ced1d8c4589", size = 27212, upload-time = "2025-08-16T01:42:29.648Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/30/6b/7087d0d50ec4b4465b44f1423aba209569f970057765f5b3ee655c2a88ab/types_aiobotocore_bedrock_runtime-2.23.0-py3-none-any.whl", hash = "sha256:988dbee9559745f356f89d9875e789eb291f43dc82ef1102c2abdef0f5711ab7", size = 32382, upload-time = "2025-06-13T01:45:33.566Z" },
+    { url = "https://files.pythonhosted.org/packages/d2/d9/12441f1df3baf31391f7a967a7495ddf781feff1f2e9a42cae6b5b2b667a/types_aiobotocore_bedrock_runtime-2.24.1-py3-none-any.whl", hash = "sha256:ec709cbf2b0b1e21c689dec74aeb17a49aec829c2a743c512c3dd5ba1e986460", size = 33191, upload-time = "2025-08-16T01:42:28.762Z" },
 ]
 
 [[package]]
