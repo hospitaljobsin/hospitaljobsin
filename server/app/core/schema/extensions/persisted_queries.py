@@ -6,9 +6,9 @@ from pathlib import Path
 
 from fastapi import Request
 from graphql import (
-    ExecutionResult,
     GraphQLError,
 )
+from graphql.execution import ExecutionResult
 from strawberry.extensions import SchemaExtension
 
 
@@ -32,7 +32,9 @@ class PersistedQueriesExtension(SchemaExtension):
             self.execution_context.result = ExecutionResult(
                 data=None,
                 errors=[
-                    GraphQLError("Invalid query provided."),
+                    GraphQLError(
+                        message="Invalid query provided.",
+                    ),
                 ],
             )
         else:

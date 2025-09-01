@@ -6,7 +6,6 @@ from graphql import NoSchemaIntrospectionCustomRule
 from strawberry import Schema
 from strawberry.extensions import (
     AddValidationRules,
-    MaskErrors,
     ParserCache,
     ValidationCache,
 )
@@ -19,7 +18,8 @@ from app.accounts.query import AccountQuery
 from app.auth.mutation import AuthMutation
 from app.auth.query import AuthQuery
 from app.config import AppSettings, EnvironmentSettings, get_settings
-from app.core.schema.extensions import PersistedQueriesExtension
+from app.core.schema.extensions.mask_errors import MaskErrors
+from app.core.schema.extensions.persisted_queries import PersistedQueriesExtension
 from app.geocoding.query import GeocodingQuery
 from app.jobs.mutation import JobMutation
 from app.jobs.query import JobQuery
@@ -78,6 +78,7 @@ def create_schema(
                 ),
             ]
         )
+
     return Schema(
         query=query,
         mutation=mutation,
