@@ -1,7 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./.sst/platform/config.d.ts" />
 const { env } = await import("./lib/env/client");
-const { serverEnv } = await import("./lib/env/server");
 
 export default $config({
 	app(input) {
@@ -33,7 +32,7 @@ export default $config({
 				aliases: [process.env.SST_RECRUITER_DASHBOARD_DOMAIN],
 			},
 			environment: {
-				JWE_SECRET_KEY: serverEnv.JWE_SECRET_KEY,
+				JWE_SECRET_KEY: process.env.JWE_SECRET_KEY,
 				NEXT_PUBLIC_API_URL: env.NEXT_PUBLIC_API_URL,
 				NEXT_PUBLIC_URL: env.NEXT_PUBLIC_URL,
 				// NEXT_PUBLIC_CAPTCHA_SITE_KEY: env.NEXT_PUBLIC_CAPTCHA_SITE_KEY,
