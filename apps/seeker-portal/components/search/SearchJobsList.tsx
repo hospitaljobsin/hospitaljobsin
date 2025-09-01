@@ -120,7 +120,19 @@ export default function SearchJobsList({
 	};
 
 	usePageTitle({
-		title: `${data.jobs.totalCount} Healthcare Jobs | ${APP_TITLE}`,
+		title: (() => {
+			let title = `${data.jobs.totalCount} Hospital Jobs`;
+
+			if (searchTerm) {
+				title = `${data.jobs.totalCount} ${searchTerm} Hospital Jobs`;
+			}
+
+			if (location) {
+				title += ` in ${location}`;
+			}
+
+			return `${title} | ${APP_TITLE}`;
+		})(),
 	});
 
 	// Debounced filter refetch for all filters
