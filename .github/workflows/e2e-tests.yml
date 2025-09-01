@@ -27,7 +27,7 @@ jobs:
       label: ${{ steps.start-ec2-runner.outputs.label }}
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Configure AWS CLI
       - name: Configure AWS credentials
@@ -98,7 +98,7 @@ jobs:
         # shard: [1, 2, 3, 4]
     runs-on: ${{ needs.setup-infrastructure.outputs.label }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -145,7 +145,7 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Configure AWS CLI
       - name: Configure AWS credentials
