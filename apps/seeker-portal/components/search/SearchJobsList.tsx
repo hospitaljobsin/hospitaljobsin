@@ -3,9 +3,9 @@ import type { SearchJobsListInternalFragment$key } from "@/__generated__/SearchJ
 import type {
 	JobTypeFilter,
 	JobWorkModeFilter,
+	SearchJobsListRefetchQuery as SearchClientComponentQueryType,
 	SearchJobsListRefetchQuery$variables,
 } from "@/__generated__/SearchJobsListRefetchQuery.graphql";
-import type { SearchClientComponentQuery as SearchClientComponentQueryType } from "@/__generated__/SearchViewClientComponentQuery.graphql";
 import type { Filters } from "@/app/search/SearchViewClientComponent";
 import Job from "@/components/landing/Job";
 import JobListSkeleton from "@/components/landing/JobListSkeleton";
@@ -73,6 +73,7 @@ const SearchJobsListInternalFragment = graphql`
 type Props = {
 	rootQuery: SearchJobsListFragment$key;
 	searchTerm: string | null;
+	location?: string | null;
 	proximityKm: number | null;
 	minExperience?: number | null;
 	minSalary?: number | null;
@@ -86,6 +87,7 @@ type Props = {
 export default function SearchJobsList({
 	rootQuery,
 	searchTerm,
+	location,
 	proximityKm,
 	minExperience,
 	minSalary,
@@ -132,6 +134,7 @@ export default function SearchJobsList({
 				// Only include defined variables
 				const refetchVars: SearchJobsListRefetchQuery$variables = {
 					searchTerm,
+					location,
 					proximityKm,
 					workMode: (workMode || []) as readonly JobWorkModeFilter[],
 					jobType: (jobType || []) as readonly JobTypeFilter[],
@@ -147,6 +150,7 @@ export default function SearchJobsList({
 	}, [
 		refetch,
 		searchTerm,
+		location,
 		proximityKm,
 		minExperience,
 		minSalary,
@@ -216,7 +220,7 @@ export default function SearchJobsList({
 					</Select>
 				</div>
 			</div>
-			<WindowVirtualizer onScrollEnd={handleScrollEnd} ssrCount={15}>
+			<WindowVirtualizer onScrollEnd={handleScrollEnd} ssrCount={5}>
 				{allJobEdges.map((jobEdge, index) => (
 					<div key={jobEdge.node.id} className="pb-4 sm:pb-6">
 						<Job job={jobEdge.node} authQueryRef={root.viewer} />

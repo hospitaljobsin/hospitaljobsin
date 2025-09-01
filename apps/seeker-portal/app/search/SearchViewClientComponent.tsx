@@ -54,6 +54,19 @@ export const SearchViewClientComponentFragment = graphql`
 	}
 `;
 
+export type Filters = {
+	q: string;
+	minExperience?: number | null;
+	maxExperience?: number | null;
+	minSalary?: number | null;
+	maxSalary?: number | null;
+	locationName: string;
+	proximityKm: number;
+	workMode: string[];
+	jobType: string[];
+	sortBy: string;
+};
+
 export default function SearchViewClientComponent({ preloadedQuery }: Props) {
 	const [filters, setFilters] = useQueryStates(
 		{
