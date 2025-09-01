@@ -7,6 +7,7 @@ from strawberry import Schema
 from strawberry.extensions import (
     AddValidationRules,
     ParserCache,
+    QueryDepthLimiter,
     ValidationCache,
 )
 from strawberry.file_uploads import Upload
@@ -67,6 +68,7 @@ def create_schema(
         ),
         ParserCache(maxsize=128),
         ValidationCache(maxsize=128),
+        QueryDepthLimiter(max_depth=10),
     ]
 
     if env_settings.is_production or env_settings.is_staging:
