@@ -23,6 +23,7 @@ export const networkFetch = cache(
 		let body: string | undefined;
 		const headers: Record<string, string> = {
 			Accept: "application/json",
+			"Accept-Encoding": "gzip",
 			Cookie: serverCookie.toString(),
 		};
 
@@ -97,7 +98,6 @@ function createNetwork() {
 // FIXME: a new server environment is creating for gen metadata and the view hierarchy
 // we need to be able to get a single server environment to optimize queries
 export const createServerEnvironment = cache(() => {
-	console.log("creating a server environment");
 	return new Environment({
 		// log: console.log,
 		network: createNetwork(),

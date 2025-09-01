@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a1f495c8be8031763f6a6d0f595a04c7>>
- * @relayHash c9c5c2c84fea55c5530db01162564b28
+ * @generated SignedSource<<14a96acb48990c6fadf14015ee983fb7>>
+ * @relayHash fb171665565e581652e62ba05419a944
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c9c5c2c84fea55c5530db01162564b28
+// @relayRequestID fb171665565e581652e62ba05419a944
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -17,7 +17,7 @@ export type pageOrganizationMembersViewQuery$variables = {
   slug: string;
 };
 export type pageOrganizationMembersViewQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"OrganizationMembersViewClientComponentFragment" | "pageOrganizationMembersMetadataFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"OrganizationMembersViewClientComponentFragment" | "pageOrganizationMembersServerFragment">;
 };
 export type pageOrganizationMembersViewQuery = {
   response: pageOrganizationMembersViewQuery$data;
@@ -46,59 +46,38 @@ v2 = {
   "name": "__typename",
   "storageKey": null
 },
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "name",
-  "storageKey": null
-},
-v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "description",
-  "storageKey": null
-},
-v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "bannerUrl",
-  "storageKey": null
-},
-v6 = [
+v3 = [
   {
     "kind": "Literal",
     "name": "first",
     "value": 10
   }
 ],
-v7 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v8 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "fullName",
   "storageKey": null
 },
-v9 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "avatarUrl",
   "storageKey": null
 },
-v10 = {
+v7 = {
   "kind": "InlineFragment",
   "selections": [
-    (v7/*: any*/)
+    (v4/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -112,7 +91,7 @@ return {
     "selections": [
       {
         "kind": "InlineDataFragmentSpread",
-        "name": "pageOrganizationMembersMetadataFragment",
+        "name": "pageOrganizationMembersServerFragment",
         "selections": [
           {
             "alias": null,
@@ -122,17 +101,7 @@ return {
             "name": "organization",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
-              {
-                "kind": "InlineFragment",
-                "selections": [
-                  (v3/*: any*/),
-                  (v4/*: any*/),
-                  (v5/*: any*/)
-                ],
-                "type": "Organization",
-                "abstractKey": null
-              }
+              (v2/*: any*/)
             ],
             "storageKey": null
           }
@@ -167,9 +136,13 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v3/*: any*/),
-              (v4/*: any*/),
-              (v5/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "name",
+                "storageKey": null
+              },
               {
                 "alias": null,
                 "args": null,
@@ -179,7 +152,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v6/*: any*/),
+                "args": (v3/*: any*/),
                 "concreteType": "OrganizationMemberConnection",
                 "kind": "LinkedField",
                 "name": "members",
@@ -201,9 +174,9 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v7/*: any*/),
-                          (v8/*: any*/),
-                          (v9/*: any*/),
+                          (v4/*: any*/),
+                          (v5/*: any*/),
+                          (v6/*: any*/),
                           (v2/*: any*/)
                         ],
                         "storageKey": null
@@ -255,19 +228,19 @@ return {
               },
               {
                 "alias": null,
-                "args": (v6/*: any*/),
+                "args": (v3/*: any*/),
                 "filters": null,
                 "handle": "connection",
                 "key": "OrganizationMembersListInternalFragment_members",
                 "kind": "LinkedHandle",
                 "name": "members"
               },
-              (v7/*: any*/)
+              (v4/*: any*/)
             ],
             "type": "Organization",
             "abstractKey": null
           },
-          (v10/*: any*/)
+          (v7/*: any*/)
         ],
         "storageKey": null
       },
@@ -283,9 +256,9 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v8/*: any*/),
-              (v9/*: any*/),
-              (v7/*: any*/),
+              (v5/*: any*/),
+              (v6/*: any*/),
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -301,7 +274,7 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v7/*: any*/)
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -309,14 +282,14 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v10/*: any*/)
+          (v7/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "c9c5c2c84fea55c5530db01162564b28",
+    "id": "fb171665565e581652e62ba05419a944",
     "metadata": {},
     "name": "pageOrganizationMembersViewQuery",
     "operationKind": "query",
@@ -325,6 +298,6 @@ return {
 };
 })();
 
-(node as any).hash = "15a41f7eabd547ac90714eda8743bc4c";
+(node as any).hash = "0b9b8f5871cd4fccd89e7f54462a51ca";
 
 export default node;

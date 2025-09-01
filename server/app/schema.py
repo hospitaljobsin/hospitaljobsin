@@ -4,7 +4,12 @@ from aioinject.ext.strawberry import AioInjectExtension
 from fastapi import UploadFile
 from graphql import NoSchemaIntrospectionCustomRule
 from strawberry import Schema
-from strawberry.extensions import AddValidationRules, ParserCache, ValidationCache
+from strawberry.extensions import (
+    AddValidationRules,
+    MaskErrors,
+    ParserCache,
+    ValidationCache,
+)
 from strawberry.file_uploads import Upload
 from strawberry.schema.config import StrawberryConfig
 from strawberry.tools import merge_types
@@ -65,8 +70,13 @@ def create_schema(
     ]
 
     if env_settings.is_production or env_settings.is_staging:
-        extensions.append(
-            AddValidationRules([NoSchemaIntrospectionCustomRule]),
+        extensions.extend(
+            [
+                AddValidationRules([NoSchemaIntrospectionCustomRule]),
+                MaskErrors(
+                    error_message="An error occurred while processing your request.",
+                ),
+            ]
         )
     return Schema(
         query=query,
