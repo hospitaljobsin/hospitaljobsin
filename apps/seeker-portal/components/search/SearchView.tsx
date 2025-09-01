@@ -65,10 +65,12 @@ const validateEnumArray = <T extends string>(
 };
 
 export default function SearchView({
+	location,
 	fragmentKey,
 	filters,
 	setFilters,
 }: {
+	location: string | null;
 	fragmentKey: SearchView_query$key;
 	filters: Filters;
 	setFilters: (filters: Filters) => void;
@@ -152,6 +154,7 @@ export default function SearchView({
 							<DrawerHeader>Filters</DrawerHeader>
 							<DrawerBody>
 								<FilterSidebar
+									location={location}
 									values={sidebarFilters}
 									onChange={setFilters}
 									open={true}
@@ -167,6 +170,7 @@ export default function SearchView({
 				{/* Desktop sidebar */}
 				<div className="hidden lg:block lg:w-auto lg:sticky lg:top-20 lg:self-start">
 					<FilterSidebar
+						location={location}
 						values={sidebarFilters}
 						onChange={setFilters}
 						open={true}
@@ -179,7 +183,7 @@ export default function SearchView({
 						<SearchJobsList
 							rootQuery={data}
 							searchTerm={filters.q || null}
-							location={filters.locationName}
+							location={location}
 							proximityKm={filters.proximityKm}
 							minExperience={filters.minExperience ?? null}
 							minSalary={filters.minSalary ?? null}

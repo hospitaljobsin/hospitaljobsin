@@ -16,7 +16,6 @@ export const FILTER_DEFAULTS = {
 	maxExperience: null,
 	minSalary: null,
 	maxSalary: null,
-	locationName: "",
 	proximityKm: 50,
 	workMode: [],
 	jobType: [],

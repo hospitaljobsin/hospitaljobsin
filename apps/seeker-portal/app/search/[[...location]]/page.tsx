@@ -154,11 +154,6 @@ function parseSearchParams(
 		minExperience: parseIntParam(searchParams.minExperience),
 		minSalary: parseIntParam(searchParams.minSalary),
 		maxSalary: parseIntParam(searchParams.maxSalary),
-		location:
-			parseStringParam(
-				searchParams.locationName,
-				FILTER_DEFAULTS.locationName,
-			) || null,
 		proximityKm:
 			parseFloatParam(searchParams.proximityKm) ?? FILTER_DEFAULTS.proximityKm,
 		workMode: workModeValues as readonly JobWorkModeFilter[],
@@ -171,11 +166,19 @@ function parseSearchParams(
 
 export async function generateMetadata({
 	searchParams,
+	params,
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
+	params: Promise<{ location: string | string[] | undefined }>;
 }): Promise<Metadata> {
-	const params = await searchParams;
-	const variables = parseSearchParams(params);
+	const filterParams = await searchParams;
+	const locationParam = (await params).location;
+	const location = Array.isArray(locationParam)
+		? locationParam.map((segment) => decodeURIComponent(segment)).join("-")
+		: locationParam
+			? decodeURIComponent(locationParam)
+			: locationParam;
+	const variables = parseSearchParams(filterParams);
 
 	console.log("generating metadata for search", variables);
 
@@ -192,7 +195,6 @@ export async function generateMetadata({
 
 		const jobCount = data.jobs.totalCount;
 		const searchTerm = variables.searchTerm;
-		const location = variables.location;
 
 		let title = `${jobCount} Hospital Jobs`;
 		let description = `Find ${jobCount} healthcare jobs including doctor, nurse, paramedical, and medical positions.`;
@@ -236,16 +238,29 @@ export async function generateMetadata({
 
 export default async function SearchPage({
 	searchParams,
+	params,
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
+	params: Promise<{ location: string | string[] | undefined }>;
 }) {
-	const params = await searchParams;
-	const variables = parseSearchParams(params);
+	const filterParams = await searchParams;
+	const variables = parseSearchParams(filterParams);
+	const locationParam = (await params).location;
+	const location = Array.isArray(locationParam)
+		? locationParam.map((segment) => decodeURIComponent(segment)).join("-")
+		: locationParam
+			? decodeURIComponent(locationParam)
+			: locationParam;
 
 	const preloadedQuery = await loadSerializableQuery<
 		typeof SearchViewQueryNode,
 		pageSearchViewQuery
 	>(PageSearchViewQuery, variables);
 
-	return <SearchViewClientComponent preloadedQuery={preloadedQuery} />;
+	return (
+		<SearchViewClientComponent
+			preloadedQuery={preloadedQuery}
+			location={location}
+		/>
+	);
 }

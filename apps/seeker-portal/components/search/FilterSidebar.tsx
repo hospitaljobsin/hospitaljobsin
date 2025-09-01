@@ -1,4 +1,5 @@
 import { FILTER_DEFAULTS } from "@/lib/constants";
+import links from "@/lib/links";
 import {
 	Button,
 	Card,
@@ -9,6 +10,7 @@ import {
 	Slider,
 } from "@heroui/react";
 import { EraserIcon } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import LocationAutocomplete from "../forms/LocationAutocomplete";
 
@@ -17,7 +19,6 @@ export type FilterValues = {
 	minExperience: number | null;
 	minSalary: number | null;
 	maxSalary: number | null;
-	locationName: string;
 	proximityKm: number;
 	workMode: string[];
 	jobType: string[];
@@ -26,6 +27,7 @@ export type FilterValues = {
 
 export type FilterSidebarProps = {
 	values: FilterValues;
+	location: string | null;
 	onChange: (values: FilterValues) => void;
 	open?: boolean;
 	searchTerm: string;
@@ -34,12 +36,15 @@ export type FilterSidebarProps = {
 
 export default function FilterSidebar({
 	values,
+	location,
 	onChange,
 	open = true,
 	searchTerm,
 	setSearchTerm,
 }: FilterSidebarProps) {
-	const [locationInput, setLocationInput] = useState(values.locationName);
+	const router = useRouter();
+	const params = useSearchParams();
+	const [locationInput, setLocationInput] = useState(location);
 
 	if (!open) return null;
 
@@ -62,28 +67,27 @@ export default function FilterSidebar({
 				<LocationAutocomplete
 					id="location"
 					label="Location"
-					value={locationInput}
+					value={locationInput || ""}
 					onChange={(val) => {
 						setLocationInput(val.displayName);
-						onChange({
-							...values,
-							locationName: val.displayName,
-						});
+						router.push(
+							`${links.search(val.displayName)}?${params.toString()}`,
+						);
 					}}
 					onValueChange={(val) => {
 						setLocationInput(val);
 					}}
 					onClear={() => {
 						setLocationInput("");
-						onChange({ ...values, locationName: "" });
+						router.push(`${links.search()}?${params.toString()}`);
 					}}
 					onBlur={() => {
-						if (locationInput !== values.locationName) {
-							setLocationInput(values.locationName);
+						if (locationInput !== location) {
+							setLocationInput(location);
 						}
 					}}
 				/>
-				{values.locationName && (
+				{location && (
 					<Slider
 						id="proximityKm"
 						label="Proximity"

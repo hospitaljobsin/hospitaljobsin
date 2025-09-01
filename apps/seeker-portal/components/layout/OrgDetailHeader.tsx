@@ -111,7 +111,7 @@ export default function OrgDetailHeader({
 									const params = new URLSearchParams({
 										q: searchTerm.trim(),
 									});
-									router.push(`${links.search}?${params.toString()}`);
+									router.push(`${links.search()}?${params.toString()}`);
 								}
 							}}
 						/>
@@ -137,7 +137,7 @@ export default function OrgDetailHeader({
 									size="sm"
 									className="block sm:hidden mt-2 text-foreground-500"
 									as={Link}
-									href={links.search}
+									href={links.search()}
 								>
 									<SearchIcon />
 								</Button>

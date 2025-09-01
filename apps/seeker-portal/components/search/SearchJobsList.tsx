@@ -220,7 +220,7 @@ export default function SearchJobsList({
 					</Select>
 				</div>
 			</div>
-			<WindowVirtualizer onScrollEnd={handleScrollEnd} ssrCount={5}>
+			<WindowVirtualizer onScrollEnd={handleScrollEnd} ssrCount={10}>
 				{allJobEdges.map((jobEdge, index) => (
 					<div key={jobEdge.node.id} className="pb-4 sm:pb-6">
 						<Job job={jobEdge.node} authQueryRef={root.viewer} />
