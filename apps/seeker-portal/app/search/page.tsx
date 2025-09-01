@@ -87,6 +87,15 @@ const PageSearchMetadataFragment = graphql`
 function parseSearchParams(
 	searchParams: Record<string, string | string[] | undefined>,
 ) {
+	const VALID_WORK_MODES = ["HYBRID", "OFFICE", "REMOTE"] as const;
+	const VALID_JOB_TYPES = [
+		"CONTRACT",
+		"FULL_TIME",
+		"INTERNSHIP",
+		"LOCUM",
+		"PART_TIME",
+	] as const;
+
 	const parseStringParam = (
 		param: string | string[] | undefined,
 		defaultValue: string,
@@ -114,12 +123,31 @@ function parseSearchParams(
 
 	const parseArrayParam = (param: string | string[] | undefined): string[] => {
 		if (Array.isArray(param)) return param;
-		if (typeof param === "string" && param) return [param];
+		if (typeof param === "string" && param) {
+			// Handle comma-separated values
+			return param
+				.split(",")
+				.map((item) => item.trim())
+				.filter((item) => item);
+		}
 		return [];
 	};
 
-	const workModeValues = parseArrayParam(searchParams.workMode);
-	const jobTypeValues = parseArrayParam(searchParams.jobType);
+	const validateEnumArray = <T extends string>(
+		values: string[],
+		validValues: readonly T[],
+	): T[] => {
+		return values.filter((value) => validValues.includes(value as T)) as T[];
+	};
+
+	const workModeValues = validateEnumArray(
+		parseArrayParam(searchParams.workMode),
+		VALID_WORK_MODES,
+	);
+	const jobTypeValues = validateEnumArray(
+		parseArrayParam(searchParams.jobType),
+		VALID_JOB_TYPES,
+	);
 
 	return {
 		searchTerm: parseStringParam(searchParams.q, FILTER_DEFAULTS.q) || null,
@@ -133,14 +161,8 @@ function parseSearchParams(
 			) || null,
 		proximityKm:
 			parseFloatParam(searchParams.proximityKm) ?? FILTER_DEFAULTS.proximityKm,
-		workMode:
-			workModeValues.length > 0
-				? (workModeValues as readonly JobWorkModeFilter[])
-				: [],
-		jobType:
-			jobTypeValues.length > 0
-				? (jobTypeValues as readonly JobTypeFilter[])
-				: [],
+		workMode: workModeValues as readonly JobWorkModeFilter[],
+		jobType: jobTypeValues as readonly JobTypeFilter[],
 		sortBy: parseStringParam(searchParams.sortBy, FILTER_DEFAULTS.sortBy) as
 			| "RELEVANCE"
 			| "UPDATED_AT",
