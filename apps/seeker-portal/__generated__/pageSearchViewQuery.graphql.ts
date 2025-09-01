@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<94463279dd667f22e38f3543e0c9ed48>>
- * @relayHash cab3bc76b9242900c92260bcb3e8a348
+ * @generated SignedSource<<9163ed8950a01eb2f5c2fad78197ecea>>
+ * @relayHash 7d42562e79c70cf8eb4a359a9a15517c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,14 +9,14 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID cab3bc76b9242900c92260bcb3e8a348
+// @relayRequestID 7d42562e79c70cf8eb4a359a9a15517c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobSearchSortBy = "RELEVANCE" | "UPDATED_AT" | "%future added value";
 export type JobTypeFilter = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
 export type JobWorkModeFilter = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
-export type SearchClientComponentQuery$variables = {
+export type pageSearchViewQuery$variables = {
   jobType: ReadonlyArray<JobTypeFilter>;
   location?: string | null | undefined;
   maxSalary?: number | null | undefined;
@@ -27,12 +27,12 @@ export type SearchClientComponentQuery$variables = {
   sortBy: JobSearchSortBy;
   workMode: ReadonlyArray<JobWorkModeFilter>;
 };
-export type SearchClientComponentQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"SearchView_query">;
+export type pageSearchViewQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"SearchViewClientComponentFragment">;
 };
-export type SearchClientComponentQuery = {
-  response: SearchClientComponentQuery$data;
-  variables: SearchClientComponentQuery$variables;
+export type pageSearchViewQuery = {
+  response: pageSearchViewQuery$data;
+  variables: pageSearchViewQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -178,7 +178,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "SearchClientComponentQuery",
+    "name": "pageSearchViewQuery",
     "selections": [
       {
         "args": [
@@ -193,7 +193,7 @@ return {
           (v17/*: any*/)
         ],
         "kind": "FragmentSpread",
-        "name": "SearchView_query"
+        "name": "SearchViewClientComponentFragment"
       }
     ],
     "type": "Query",
@@ -213,7 +213,7 @@ return {
       (v7/*: any*/)
     ],
     "kind": "Operation",
-    "name": "SearchClientComponentQuery",
+    "name": "pageSearchViewQuery",
     "selections": [
       {
         "alias": null,
@@ -550,15 +550,15 @@ return {
     ]
   },
   "params": {
-    "id": "cab3bc76b9242900c92260bcb3e8a348",
+    "id": "7d42562e79c70cf8eb4a359a9a15517c",
     "metadata": {},
-    "name": "SearchClientComponentQuery",
+    "name": "pageSearchViewQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "df0e4a1bcd93300456d7b5575a531571";
+(node as any).hash = "28737466ce920e63d527f30b947a3038";
 
 export default node;

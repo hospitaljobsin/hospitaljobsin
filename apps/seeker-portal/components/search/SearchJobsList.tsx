@@ -1,4 +1,3 @@
-import type { SearchClientComponentQuery as SearchClientComponentQueryType } from "@/__generated__/SearchClientComponentQuery.graphql";
 import type { SearchJobsListFragment$key } from "@/__generated__/SearchJobsListFragment.graphql";
 import type { SearchJobsListInternalFragment$key } from "@/__generated__/SearchJobsListInternalFragment.graphql";
 import type {
@@ -6,9 +5,12 @@ import type {
 	JobWorkModeFilter,
 	SearchJobsListRefetchQuery$variables,
 } from "@/__generated__/SearchJobsListRefetchQuery.graphql";
-import type { Filters } from "@/app/search/SearchClientComponent";
+import type { SearchClientComponentQuery as SearchClientComponentQueryType } from "@/__generated__/SearchViewClientComponentQuery.graphql";
+import type { Filters } from "@/app/search/SearchViewClientComponent";
 import Job from "@/components/landing/Job";
 import JobListSkeleton from "@/components/landing/JobListSkeleton";
+import { APP_TITLE } from "@/lib/constants";
+import usePageTitle from "@/lib/hooks/usePageTitle";
 import { Card, CardBody, Select, SelectItem } from "@heroui/react";
 import { Search } from "lucide-react";
 import { useEffect, useRef, useTransition } from "react";
@@ -115,6 +117,10 @@ export default function SearchJobsList({
 		}
 	};
 
+	usePageTitle({
+		title: `${data.jobs.totalCount} Healthcare Jobs | ${APP_TITLE}`,
+	});
+
 	// Debounced filter refetch for all filters
 	useEffect(() => {
 		if (!hasMountedRef.current) {
@@ -210,7 +216,7 @@ export default function SearchJobsList({
 					</Select>
 				</div>
 			</div>
-			<WindowVirtualizer onScrollEnd={handleScrollEnd}>
+			<WindowVirtualizer onScrollEnd={handleScrollEnd} ssrCount={15}>
 				{allJobEdges.map((jobEdge, index) => (
 					<div key={jobEdge.node.id} className="pb-4 sm:pb-6">
 						<Job job={jobEdge.node} authQueryRef={root.viewer} />

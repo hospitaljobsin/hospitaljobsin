@@ -1,8 +1,5 @@
-import SearchClientComponentQuery, {
-	type SearchClientComponentQuery as SearchClientComponentQueryType,
-} from "@/__generated__/SearchClientComponentQuery.graphql";
 import type { SearchView_query$key } from "@/__generated__/SearchView_query.graphql";
-import type { Filters } from "@/app/search/SearchClientComponent";
+import type { Filters } from "@/app/search/SearchViewClientComponent";
 import { FILTER_DEFAULTS } from "@/lib/constants";
 import {
 	Button,
@@ -14,12 +11,7 @@ import {
 } from "@heroui/react";
 import { FilterIcon } from "lucide-react";
 import { Suspense, useEffect } from "react";
-import {
-	type PreloadedQuery,
-	graphql,
-	useFragment,
-	usePreloadedQuery,
-} from "react-relay";
+import { graphql, useFragment } from "react-relay";
 import FilterSidebar from "./FilterSidebar";
 import SearchHeader from "./SearchHeader";
 import SearchJobsList from "./SearchJobsList";
@@ -73,18 +65,17 @@ const validateEnumArray = <T extends string>(
 };
 
 export default function SearchView({
-	queryRef,
+	fragmentKey,
 	filters,
 	setFilters,
 }: {
-	queryRef: PreloadedQuery<SearchClientComponentQueryType>;
+	fragmentKey: SearchView_query$key;
 	filters: Filters;
 	setFilters: (filters: Filters) => void;
 }) {
-	const query = usePreloadedQuery(SearchClientComponentQuery, queryRef);
 	const data = useFragment<SearchView_query$key>(
 		SearchPageContentFragment,
-		query,
+		fragmentKey,
 	);
 
 	// Fix: Only validate and update workMode/jobType if actually needed, and only depend on those fields
