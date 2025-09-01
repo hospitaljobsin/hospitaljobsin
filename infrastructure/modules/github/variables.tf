@@ -60,6 +60,13 @@ variable "sst_recruiter_dashboard_domain" {
   type        = string
   description = "The domain for the recruiter dashboard."
 }
+
+variable "sst_jwe_secret_key" {
+  type        = string
+  description = "The JWE secret key for the SST application."
+  sensitive   = true
+}
+
 variable "sentry_backend_dsn" {
   type        = string
   description = "The Sentry DSN for the backend."

@@ -88,10 +88,10 @@ jobs:
             NEXT_PUBLIC_SENTRY_ORGANIZATION: ${{ vars.SENTRY_ORGANIZATION }}
             NEXT_PUBLIC_SENTRY_PROJECT: ${{vars.ACCOUNTS_SENTRY_PROJECT}}
             NEXT_PUBLIC_ROOT_DOMAIN: ${{ vars.PUBLIC_ROOT_DOMAIN }}
-            AWS_SECRET_ID: ${{ secrets.SST_ACCOUNTS_SECRET_ID }}
             SKIP_ENV_VALIDATION: true
             NODE_ENV: production
             BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
             BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
             NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.POSTHOG_API_KEY }}
             NEXT_PUBLIC_POSTHOG_HOST: ${{ vars.POSTHOG_API_HOST }}
+            JWE_SECRET_KEY: ${{ secrets.SST_JWE_SECRET_KEY }}

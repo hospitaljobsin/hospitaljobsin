@@ -4,6 +4,7 @@ from collections.abc import AsyncIterator
 # Add import for loading persisted queries
 from pathlib import Path
 
+from fastapi import Request
 from graphql import (
     ExecutionResult,
     GraphQLError,
@@ -19,8 +20,11 @@ class PersistedQueriesExtension(SchemaExtension):
             self.cache = json.load(f)
 
     async def on_operation(self) -> AsyncIterator[None]:
-        body = await self.execution_context.context.get("request").json()
-        document_id = body.get("id") or body.get("document_id")
+        request: Request = self.execution_context.context.get("request")
+        document_id = request.query_params.get("document_id")
+        if document_id is None:
+            body = await request.json()
+            document_id = body.get("document_id")
         persisted_query = self.cache.get(document_id)
         print("document_id", document_id)
         print(f"persisted_query: {persisted_query}")

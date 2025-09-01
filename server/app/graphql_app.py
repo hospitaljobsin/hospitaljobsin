@@ -63,4 +63,5 @@ def create_graphql_router(env_settings: EnvironmentSettings) -> GraphQLRouter:
         if (env_settings.is_production or env_settings.is_staging)
         else "apollo-sandbox",
         include_in_schema=False,
+        allow_queries_via_get=True,
     )

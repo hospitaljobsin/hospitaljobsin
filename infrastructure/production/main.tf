@@ -71,6 +71,7 @@ module "github" {
   actions_runner_instance_profile_name              = module.core.actions_runner_instance_profile_name
   actions_runner_instance_type                      = module.core.actions_runner_instance_type
   actions_runner_ami_id                             = module.core.actions_runner_ami_id
+  sst_jwe_secret_key                                = module.core.sst_jwe_secret_key
 }
 
 
