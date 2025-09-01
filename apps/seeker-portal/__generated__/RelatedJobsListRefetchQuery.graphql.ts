@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<87c1985a873baf2e422cf9fea943acb5>>
- * @relayHash 0278c165b90e0b20f5eaf82eeb9ec711
+ * @generated SignedSource<<ce7a4f44f9aa056b407e96a5dd68fcf6>>
+ * @relayHash 8b3ec976cacf04c28f0ef0b2454faa0f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 0278c165b90e0b20f5eaf82eeb9ec711
+// @relayRequestID 8b3ec976cacf04c28f0ef0b2454faa0f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -213,7 +213,33 @@ return {
                                 "storageKey": null
                               },
                               (v5/*: any*/),
-                              (v3/*: any*/)
+                              (v3/*: any*/),
+                              {
+                                "alias": null,
+                                "args": null,
+                                "concreteType": null,
+                                "kind": "LinkedField",
+                                "name": "verificationStatus",
+                                "plural": false,
+                                "selections": [
+                                  (v2/*: any*/),
+                                  {
+                                    "kind": "InlineFragment",
+                                    "selections": [
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "verifiedAt",
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "type": "Verified",
+                                    "abstractKey": null
+                                  }
+                                ],
+                                "storageKey": null
+                              }
                             ],
                             "storageKey": null
                           },
@@ -341,7 +367,7 @@ return {
     ]
   },
   "params": {
-    "id": "0278c165b90e0b20f5eaf82eeb9ec711",
+    "id": "8b3ec976cacf04c28f0ef0b2454faa0f",
     "metadata": {},
     "name": "RelatedJobsListRefetchQuery",
     "operationKind": "query",

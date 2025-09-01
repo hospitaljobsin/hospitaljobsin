@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<59d79db8fdf4ce4baa93edd1e993ab53>>
+ * @generated SignedSource<<59d61f27d8aef293ac0c93e0f605b35a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -24,6 +24,12 @@ export type RelatedJobFragment$data = {
     readonly logoUrl?: string;
     readonly name?: string;
     readonly slug: string;
+    readonly verificationStatus: {
+      readonly __typename: string;
+      readonly verified: {
+        readonly verifiedAt: any;
+      } | null | undefined;
+    };
   };
   readonly skills: ReadonlyArray<string>;
   readonly slug: string;
@@ -165,7 +171,43 @@ return {
               }
             ]
           },
-          (v0/*: any*/)
+          (v0/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": null,
+            "kind": "LinkedField",
+            "name": "verificationStatus",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "__typename",
+                "storageKey": null
+              },
+              {
+                "fragment": {
+                  "kind": "InlineFragment",
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "verifiedAt",
+                      "storageKey": null
+                    }
+                  ],
+                  "type": "Verified",
+                  "abstractKey": null
+                },
+                "kind": "AliasedInlineFragmentSpread",
+                "name": "verified"
+              }
+            ],
+            "storageKey": null
+          }
         ],
         "storageKey": null
       },
@@ -177,6 +219,6 @@ return {
 };
 })();
 
-(node as any).hash = "37d4df6518a2f7b0517035a055852498";
+(node as any).hash = "0e7f599134654db5cc9649c7ba358705";
 
 export default node;

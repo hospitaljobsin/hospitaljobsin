@@ -7,6 +7,7 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from fastapi import Request
 from posthog import Posthog
+from pydantic import TypeAdapter, ValidationError
 from pydantic_extra_types.country import CountryAlpha2
 from result import Err, Ok, Result
 from strawberry import relay
@@ -254,12 +255,12 @@ class JobService:
         if work_mode != "remote" and location is None:
             return Err(InvalidLocationError())
 
-        for applicant_location in applicant_locations:
-            # check alpha2 country codes alone here
-            try:
-                CountryAlpha2(applicant_location)
-            except ValueError:
-                return Err(InvalidApplicantLocationsError())
+        country_validator = TypeAdapter(list[CountryAlpha2])
+        # check alpha2 country codes alone here
+        try:
+            country_validator.validate_python(applicant_locations)
+        except ValidationError:
+            return Err(InvalidApplicantLocationsError())
 
         geo, address = None, None
         if location is not None:
@@ -375,12 +376,11 @@ class JobService:
             geo = existing_job.geo
             address = existing_job.address
 
-        for applicant_location in applicant_locations:
-            # check alpha2 country codes alone here
-            try:
-                CountryAlpha2(applicant_location)
-            except ValueError:
-                return Err(InvalidApplicantLocationsError())
+        country_validator = TypeAdapter(list[CountryAlpha2])
+        try:
+            country_validator.validate_python(applicant_locations)
+        except ValidationError:
+            return Err(InvalidApplicantLocationsError())
 
         is_active = existing_job.is_active
         if vacancies is not None and vacancies == 0:
