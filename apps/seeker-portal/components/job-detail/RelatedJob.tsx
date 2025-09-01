@@ -5,8 +5,8 @@ import type {
 } from "@/__generated__/RelatedJobFragment.graphql";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
-import { Card, CardBody, CardHeader } from "@heroui/react";
-import { Briefcase, Globe, MapPin } from "lucide-react";
+import { Card, CardBody, CardHeader, Tooltip } from "@heroui/react";
+import { Briefcase, Globe, MapPin, VerifiedIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useFragment } from "react-relay";
@@ -32,6 +32,12 @@ export const RelatedJobFragment = graphql`
       name @include(if: $showOrganization)
       logoUrl @include(if: $showOrganization)
 	  slug
+	  verificationStatus {
+		__typename
+		... on Verified @alias(as: "verified") {
+			verifiedAt
+		}
+	  }
     }
   }
 `;
@@ -122,9 +128,22 @@ export default function RelatedJob({ job }: Props) {
 								{data.title}
 							</h4>
 							{data.organization && (
-								<p className="text-xs sm:text-sm font-normal text-foreground-500">
-									{data.organization.name}
-								</p>
+								<div className="flex flex-row items-center gap-2">
+									<p className="text-xs sm:text-sm font-normal text-foreground-500">
+										{data.organization.name}
+									</p>
+									{data.organization.verificationStatus.verified && (
+										<Tooltip
+											content="This organization is verified"
+											placement="right"
+										>
+											<VerifiedIcon
+												className="w-4 h-4 text-primary"
+												strokeWidth={2.5}
+											/>
+										</Tooltip>
+									)}
+								</div>
 							)}
 						</div>
 					</div>
