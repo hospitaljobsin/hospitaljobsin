@@ -1,4 +1,7 @@
 import type { pageJobDetailMetadataFragment$key } from "@/__generated__/pageJobDetailMetadataFragment.graphql";
+import type JobDetailMetadataQueryNode from "@/__generated__/pageJobDetailMetadataQuery.graphql";
+import type { pageJobDetailMetadataQuery } from "@/__generated__/pageJobDetailMetadataQuery.graphql";
+import type { pageJobDetailServerFragment$key } from "@/__generated__/pageJobDetailServerFragment.graphql";
 import type JobDetailViewQueryNode from "@/__generated__/pageJobDetailViewQuery.graphql";
 import type { pageJobDetailViewQuery } from "@/__generated__/pageJobDetailViewQuery.graphql";
 import { env } from "@/lib/env/client";
@@ -7,15 +10,64 @@ import links from "@/lib/links";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
 import type { JobPosting, WithContext } from "schema-dts";
 import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
 
 export const PageJobDetailViewQuery = graphql`
   query pageJobDetailViewQuery($slug: String!, $jobSlug: String!) {
-	...pageJobDetailMetadataFragment @arguments(slug: $slug, jobSlug: $jobSlug)
+	...pageJobDetailServerFragment @arguments(slug: $slug, jobSlug: $jobSlug)
     ...JobDetailViewClientComponentFragment @arguments(slug: $slug, jobSlug: $jobSlug)
+  }
+`;
+
+const PageJobDetailServerFragment = graphql`
+ fragment pageJobDetailServerFragment on Query @inline @argumentDefinitions(
+      slug: { type: "String!"}
+	  jobSlug: { type: "String!"}
+    ) {
+		organization(slug: $slug) {
+			__typename
+			... on Organization {
+			bannerUrl
+			logoUrl
+			name
+			location
+			website
+			description
+			job(slug: $jobSlug) {
+			__typename
+			... on Job {
+				title
+				descriptionCleaned
+				descriptionHtml
+				isVisible
+				createdAt
+				workMode
+				type
+				expiresAt
+				location
+				address {
+					addressLocality
+					addressRegion
+					country
+					postalCode
+					streetAddress
+				}
+				applicantLocations
+				minSalary
+				maxSalary
+				slug
+			}
+			}
+		}
+	}
+  }
+`;
+
+const PageJobDetailMetadataQuery = graphql`
+  query pageJobDetailMetadataQuery($slug: String!, $jobSlug: String!) {
+	...pageJobDetailMetadataFragment @arguments(slug: $slug, jobSlug: $jobSlug)
   }
 `;
 
@@ -63,18 +115,6 @@ const PageJobDetailMetadataFragment = graphql`
   }
 `;
 
-// FIXME: this won't memoize...
-const loadJob = cache(async (slug: string, jobSlug: string) => {
-	console.log("loading job...");
-	return await loadSerializableQuery<
-		typeof JobDetailViewQueryNode,
-		pageJobDetailViewQuery
-	>(PageJobDetailViewQuery, {
-		slug: slug,
-		jobSlug: jobSlug,
-	});
-});
-
 export async function generateMetadata({
 	params,
 }: {
@@ -85,7 +125,13 @@ export async function generateMetadata({
 	const jobSlug = decodeURIComponent(pathParams.jobSlug);
 
 	console.log("generating metadata for job", slug, jobSlug);
-	const preloadedQuery = await loadJob(slug, jobSlug);
+	const preloadedQuery = await loadSerializableQuery<
+		typeof JobDetailMetadataQueryNode,
+		pageJobDetailMetadataQuery
+	>(PageJobDetailMetadataQuery, {
+		slug: slug,
+		jobSlug: jobSlug,
+	});
 
 	const data = readInlineData<pageJobDetailMetadataFragment$key>(
 		PageJobDetailMetadataFragment,
@@ -127,11 +173,16 @@ export default async function JobDetailPage({
 	const slug = decodeURIComponent(pathParams.slug);
 	const jobSlug = decodeURIComponent(pathParams.jobSlug);
 
-	console.log("rendering page...");
-	const preloadedQuery = await loadJob(slug, jobSlug);
+	const preloadedQuery = await loadSerializableQuery<
+		typeof JobDetailViewQueryNode,
+		pageJobDetailViewQuery
+	>(PageJobDetailViewQuery, {
+		slug: slug,
+		jobSlug: jobSlug,
+	});
 
-	const data = readInlineData<pageJobDetailMetadataFragment$key>(
-		PageJobDetailMetadataFragment,
+	const data = readInlineData<pageJobDetailServerFragment$key>(
+		PageJobDetailServerFragment,
 		preloadedQuery.data,
 	);
 

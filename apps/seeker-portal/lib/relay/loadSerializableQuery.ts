@@ -16,6 +16,7 @@ export default async function loadSerializableQuery<
 	taggedNode: GraphQLTaggedNode,
 	variables: VariablesOf<TQuery>,
 ): Promise<SerializablePreloadedQuery<TRequest, TQuery>> {
+	console.log("loading query called...");
 	const environment = getCurrentEnvironment();
 
 	// Convert params into a valid ConcreteRequest

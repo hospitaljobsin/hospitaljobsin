@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<e3c2301cfffacbfbce46b44568e077a9>>
- * @relayHash 5849b0fb6b1279c9c3dea169371e76d5
+ * @generated SignedSource<<032c1363f0a5d358ddf9d9bba9620849>>
+ * @relayHash f799f8c3d8cf0672b927d5731ec8bd2f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 5849b0fb6b1279c9c3dea169371e76d5
+// @relayRequestID f799f8c3d8cf0672b927d5731ec8bd2f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -18,7 +18,7 @@ export type pageJobApplyViewQuery$variables = {
   slug: string;
 };
 export type pageJobApplyViewQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"JobApplyViewClientComponentFragment" | "pageJobApplyMetadataFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"JobApplyViewClientComponentFragment" | "pageJobApplyServerFragment">;
 };
 export type pageJobApplyViewQuery = {
   response: pageJobApplyViewQuery$data;
@@ -150,7 +150,7 @@ return {
     "selections": [
       {
         "kind": "InlineDataFragmentSpread",
-        "name": "pageJobApplyMetadataFragment",
+        "name": "pageJobApplyServerFragment",
         "selections": [
           {
             "alias": null,
@@ -586,7 +586,7 @@ return {
     ]
   },
   "params": {
-    "id": "5849b0fb6b1279c9c3dea169371e76d5",
+    "id": "f799f8c3d8cf0672b927d5731ec8bd2f",
     "metadata": {},
     "name": "pageJobApplyViewQuery",
     "operationKind": "query",
@@ -595,6 +595,6 @@ return {
 };
 })();
 
-(node as any).hash = "88a1f58d09b6eb8bb5bdd2fa5e11fbb6";
+(node as any).hash = "de426c6e494c974f17e4272f69976d1a";
 
 export default node;

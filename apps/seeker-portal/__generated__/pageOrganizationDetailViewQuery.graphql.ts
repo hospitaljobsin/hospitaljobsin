@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<18251d7f340a438794ca82f50470e7a8>>
- * @relayHash 2bca335947139d340f260c0631c2c78b
+ * @generated SignedSource<<8276e9918ee90b04eec3c558e61eaa82>>
+ * @relayHash c29855b78972c2f4e80dccacebec6ae7
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 2bca335947139d340f260c0631c2c78b
+// @relayRequestID c29855b78972c2f4e80dccacebec6ae7
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -17,7 +17,7 @@ export type pageOrganizationDetailViewQuery$variables = {
   slug: string;
 };
 export type pageOrganizationDetailViewQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"OrganizationDetailViewClientComponentFragment" | "pageOrganizationDetailMetadataFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"OrganizationDetailViewClientComponentFragment" | "pageOrganizationDetailServerFragment">;
 };
 export type pageOrganizationDetailViewQuery = {
   response: pageOrganizationDetailViewQuery$data;
@@ -57,38 +57,31 @@ v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "description",
+  "name": "slug",
   "storageKey": null
 },
 v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "bannerUrl",
+  "name": "logoUrl",
   "storageKey": null
 },
 v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "slug",
+  "name": "description",
   "storageKey": null
 },
 v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "logoUrl",
-  "storageKey": null
-},
-v8 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "location",
   "storageKey": null
 },
-v9 = [
+v8 = [
   {
     "kind": "Literal",
     "name": "first",
@@ -100,17 +93,17 @@ v9 = [
     "value": true
   }
 ],
-v10 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v11 = {
+v10 = {
   "kind": "InlineFragment",
   "selections": [
-    (v10/*: any*/)
+    (v9/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -124,7 +117,7 @@ return {
     "selections": [
       {
         "kind": "InlineDataFragmentSpread",
-        "name": "pageOrganizationDetailMetadataFragment",
+        "name": "pageOrganizationDetailServerFragment",
         "selections": [
           {
             "alias": null,
@@ -134,17 +127,7 @@ return {
             "name": "organization",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
-              {
-                "kind": "InlineFragment",
-                "selections": [
-                  (v3/*: any*/),
-                  (v4/*: any*/),
-                  (v5/*: any*/)
-                ],
-                "type": "Organization",
-                "abstractKey": null
-              }
+              (v2/*: any*/)
             ],
             "storageKey": null
           }
@@ -183,7 +166,6 @@ return {
               (v4/*: any*/),
               (v5/*: any*/),
               (v6/*: any*/),
-              (v7/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -198,7 +180,7 @@ return {
                 "name": "email",
                 "storageKey": null
               },
-              (v8/*: any*/),
+              (v7/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -269,7 +251,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v9/*: any*/),
+                "args": (v8/*: any*/),
                 "concreteType": "JobConnection",
                 "kind": "LinkedField",
                 "name": "jobs",
@@ -291,7 +273,7 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v10/*: any*/),
+                          (v9/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -299,7 +281,7 @@ return {
                             "name": "isSaved",
                             "storageKey": null
                           },
-                          (v6/*: any*/),
+                          (v4/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -307,7 +289,7 @@ return {
                             "name": "title",
                             "storageKey": null
                           },
-                          (v4/*: any*/),
+                          (v6/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -317,9 +299,9 @@ return {
                             "plural": false,
                             "selections": [
                               (v3/*: any*/),
-                              (v7/*: any*/),
-                              (v6/*: any*/),
-                              (v10/*: any*/)
+                              (v5/*: any*/),
+                              (v4/*: any*/),
+                              (v9/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -337,7 +319,7 @@ return {
                             "name": "workMode",
                             "storageKey": null
                           },
-                          (v8/*: any*/),
+                          (v7/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -431,7 +413,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v9/*: any*/),
+                "args": (v8/*: any*/),
                 "filters": [
                   "isActive"
                 ],
@@ -440,12 +422,12 @@ return {
                 "kind": "LinkedHandle",
                 "name": "jobs"
               },
-              (v10/*: any*/)
+              (v9/*: any*/)
             ],
             "type": "Organization",
             "abstractKey": null
           },
-          (v11/*: any*/)
+          (v10/*: any*/)
         ],
         "storageKey": null
       },
@@ -479,7 +461,7 @@ return {
                 "name": "avatarUrl",
                 "storageKey": null
               },
-              (v10/*: any*/),
+              (v9/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -495,7 +477,7 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v10/*: any*/)
+                  (v9/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -503,14 +485,14 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v11/*: any*/)
+          (v10/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "2bca335947139d340f260c0631c2c78b",
+    "id": "c29855b78972c2f4e80dccacebec6ae7",
     "metadata": {},
     "name": "pageOrganizationDetailViewQuery",
     "operationKind": "query",
@@ -519,6 +501,6 @@ return {
 };
 })();
 
-(node as any).hash = "a9b670be49f52c2bb0bcb4385c7a6247";
+(node as any).hash = "5c34a8eebf78be3b4a9ac18b137b4819";
 
 export default node;
