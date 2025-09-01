@@ -196,3 +196,9 @@ output "actions_runner_ami_id" {
   value       = data.aws_ami.ubuntu.id
   description = "AMI ID for GitHub Actions runner"
 }
+
+
+output "sst_jwe_secret_key" {
+  value     = random_bytes.jwe_secret.hex
+  sensitive = true
+}

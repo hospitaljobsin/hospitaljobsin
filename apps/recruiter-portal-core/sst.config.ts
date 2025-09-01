@@ -13,6 +13,7 @@ export default $config({
 	},
 
 	async run() {
+		const secret = new sst.Secret("JWESecretKey");
 		const enableBasicAuth = $app.stage === "staging";
 
 		// Encode the Basic Auth credentials from process.env
@@ -28,6 +29,7 @@ export default $config({
 		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
 		new sst.aws.Nextjs("recruiter-portal-ui", {
 			buildCommand: "pnpm run package",
+			link: [secret],
 			domain: process.env.SST_RECRUITER_PORTAL_DOMAIN,
 			environment: {
 				NEXT_PUBLIC_API_URL: env.NEXT_PUBLIC_API_URL,
@@ -42,7 +44,6 @@ export default $config({
 				NEXT_PUBLIC_SENTRY_PROJECT: env.NEXT_PUBLIC_SENTRY_PROJECT,
 				NEXT_PUBLIC_ENVIRONMENT: env.NEXT_PUBLIC_ENVIRONMENT,
 				NEXT_PUBLIC_ROOT_DOMAIN: env.NEXT_PUBLIC_ROOT_DOMAIN,
-				AWS_SECRET_ID: process.env.AWS_SECRET_ID,
 				NEXT_PUBLIC_INTERNAL_API_URL: env.NEXT_PUBLIC_INTERNAL_API_URL,
 				NEXT_PUBLIC_POSTHOG_KEY: env.NEXT_PUBLIC_POSTHOG_KEY,
 				NEXT_PUBLIC_POSTHOG_HOST: env.NEXT_PUBLIC_POSTHOG_HOST,

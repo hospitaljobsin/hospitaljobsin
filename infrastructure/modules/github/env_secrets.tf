@@ -14,6 +14,13 @@ resource "github_actions_environment_secret" "aws_secret_access_key" {
   plaintext_value = var.deployment_aws_secret_access_key
 }
 
+resource "github_actions_environment_secret" "sst_jwe_secret_key" {
+  repository      = data.github_repository.this.name
+  environment     = github_repository_environment.this.environment
+  secret_name     = "SST_JWE_SECRET_KEY"
+  plaintext_value = var.sst_jwe_secret_key
+}
+
 resource "github_actions_environment_secret" "sst_accounts_secret_id" {
   repository      = data.github_repository.this.name
   environment     = github_repository_environment.this.environment

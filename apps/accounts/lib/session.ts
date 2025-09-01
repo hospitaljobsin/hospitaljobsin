@@ -1,11 +1,10 @@
 import { compactDecrypt } from "jose";
-import { getEnv } from "./env/server";
+import { serverEnv } from "./env/server";
 
 export async function unsign(
 	signedValue: string,
 ): Promise<Record<string, string>> {
-	const env = await getEnv();
-	const secretKey = new TextEncoder().encode(env.JWE_SECRET_KEY);
+	const secretKey = new TextEncoder().encode(serverEnv.JWE_SECRET_KEY);
 	const { plaintext } = await compactDecrypt(signedValue, secretKey);
 
 	// Convert plaintext (Uint8Array) to string and parse JSON
