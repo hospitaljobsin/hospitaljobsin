@@ -5,7 +5,7 @@ import JobListSkeleton from "../landing/JobListSkeleton";
 export default function SearchJobsListSkeleton() {
 	return (
 		<div
-			className="h-full w-full scroll-smooth overflow-y-auto"
+			className="h-full w-full scroll-smooth overflow-y-auto min-h-screen lg:min-h-0"
 			style={{
 				scrollbarWidth: "none",
 			}}

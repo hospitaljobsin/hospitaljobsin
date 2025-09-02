@@ -73,7 +73,7 @@ export default function SearchView({
 	location: string | null;
 	fragmentKey: SearchView_query$key;
 	filters: Filters;
-	setFilters: (filters: Filters) => void;
+	setFilters: (filters: Filters | ((prevFilters: Filters) => Filters)) => void;
 }) {
 	const data = useFragment<SearchView_query$key>(
 		SearchPageContentFragment,
@@ -123,7 +123,7 @@ export default function SearchView({
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	return (
-		<div className="w-full flex flex-col h-full bg-background-600">
+		<div className="w-full flex flex-col h-full min-h-screen lg:min-h-0 bg-background-600">
 			<SearchHeader
 				query={data}
 				searchTerm={filters.q}
