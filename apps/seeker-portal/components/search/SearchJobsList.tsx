@@ -238,6 +238,7 @@ export default function SearchJobsList({
 				count={data.jobs.totalCount}
 				shift={false}
 				item="div"
+				itemSize={350}
 			>
 				{allJobEdges.map((jobEdge, index) => (
 					<div key={jobEdge.node.id} className="pb-4 sm:pb-6">
