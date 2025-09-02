@@ -50,7 +50,7 @@ export default function FilterSidebar({
 
 	return (
 		<Card
-			className="w-full max-w-none lg:max-w-xs p-3 flex flex-col gap-4 lg:sticky lg:top-0"
+			className="w-full max-w-none lg:max-w-xs p-3 flex flex-col gap-4"
 			shadow="none"
 		>
 			<CardBody className="flex flex-col gap-12">
@@ -78,7 +78,6 @@ export default function FilterSidebar({
 						setLocationInput(val);
 					}}
 					onClear={() => {
-						setLocationInput("");
 						router.push(`${links.search()}?${params.toString()}`);
 					}}
 					onBlur={() => {

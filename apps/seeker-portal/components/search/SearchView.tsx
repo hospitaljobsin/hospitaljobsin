@@ -1,5 +1,5 @@
 import type { SearchView_query$key } from "@/__generated__/SearchView_query.graphql";
-import type { Filters } from "@/app/search/SearchViewClientComponent";
+import type { Filters } from "@/app/search/[[...location]]/SearchViewClientComponent";
 import { FILTER_DEFAULTS } from "@/lib/constants";
 import {
 	Button,
@@ -123,13 +123,13 @@ export default function SearchView({
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	return (
-		<div className="w-full flex flex-col bg-background-600">
+		<div className="w-full flex flex-col min-h-screen bg-background-600">
 			<SearchHeader
 				query={data}
 				searchTerm={filters.q}
 				setSearchTerm={(value) => setFilters({ ...filters, q: value })}
 			/>
-			<div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 mx-auto max-w-7xl py-6 px-4 bg-background-600">
+			<div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 mx-auto max-w-7xl py-6 px-4 bg-background-600 flex-1">
 				{/* Mobile filter button */}
 				<div className="block lg:hidden mb-4">
 					<Button
@@ -168,7 +168,7 @@ export default function SearchView({
 					</Drawer>
 				</div>
 				{/* Desktop sidebar */}
-				<div className="hidden lg:block lg:w-auto lg:sticky lg:top-20 lg:self-start">
+				<div className="hidden lg:block lg:w-auto lg:sticky lg:top-0 lg:self-start lg:max-h-screen lg:overflow-y-auto">
 					<FilterSidebar
 						location={location}
 						values={sidebarFilters}
@@ -178,7 +178,7 @@ export default function SearchView({
 						setSearchTerm={(value) => setFilters({ ...filters, q: value })}
 					/>
 				</div>
-				<div className="flex-1">
+				<div className="flex-1 min-w-0">
 					<Suspense fallback={<SearchJobsListSkeleton />}>
 						<SearchJobsList
 							rootQuery={data}

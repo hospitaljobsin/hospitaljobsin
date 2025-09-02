@@ -6,7 +6,7 @@ import type {
 	SearchJobsListRefetchQuery as SearchClientComponentQueryType,
 	SearchJobsListRefetchQuery$variables,
 } from "@/__generated__/SearchJobsListRefetchQuery.graphql";
-import type { Filters } from "@/app/search/SearchViewClientComponent";
+import type { Filters } from "@/app/search/[[...location]]/SearchViewClientComponent";
 import Job from "@/components/landing/Job";
 import JobListSkeleton from "@/components/landing/JobListSkeleton";
 import { APP_TITLE } from "@/lib/constants";
@@ -198,7 +198,7 @@ export default function SearchJobsList({
 
 	return (
 		<div
-			className="h-full w-full scroll-smooth overflow-none"
+			className="w-full scroll-smooth h-full overflow-y-auto"
 			style={{
 				scrollbarWidth: "none",
 			}}
@@ -217,7 +217,7 @@ export default function SearchJobsList({
 							const selectedKey = Array.from(keys)[0] as string;
 							if (selectedKey) {
 								startTransition(() => {
-									setFilters((prevFilters) => ({
+									setFilters((prevFilters: Filters) => ({
 										...prevFilters,
 										sortBy: selectedKey,
 									}));
@@ -232,7 +232,13 @@ export default function SearchJobsList({
 					</Select>
 				</div>
 			</div>
-			<WindowVirtualizer onScrollEnd={handleScrollEnd} ssrCount={10}>
+			<WindowVirtualizer
+				onScrollEnd={handleScrollEnd}
+				ssrCount={10}
+				count={data.jobs.totalCount}
+				shift={false}
+				item="div"
+			>
 				{allJobEdges.map((jobEdge, index) => (
 					<div key={jobEdge.node.id} className="pb-4 sm:pb-6">
 						<Job job={jobEdge.node} authQueryRef={root.viewer} />
