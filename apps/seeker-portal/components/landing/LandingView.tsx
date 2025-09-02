@@ -113,7 +113,7 @@ export default function LandingView({
 					<JobList rootQuery={data} />
 				</div>
 				<Link
-					href={links.search}
+					href={links.search()}
 					className="flex items-center gap-2 text-lg text-foreground-600 font-medium -mt-6"
 				>
 					View all jobs <ArrowRight className="w-4 h-4" strokeWidth={3} />

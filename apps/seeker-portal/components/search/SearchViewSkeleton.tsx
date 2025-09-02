@@ -6,7 +6,7 @@ import SearchJobsListSkeleton from "./SearchJobsListSkeleton";
 
 export default function SearchViewSkeleton() {
 	return (
-		<div className="w-full flex flex-col bg-background-600">
+		<div className="w-full min-h-screen lg:min-h-0 flex flex-col bg-background-600">
 			<SearchHeaderSkeleton />
 			<div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 mx-auto max-w-7xl py-6 px-4 bg-background-600">
 				{/* Mobile filter button */}

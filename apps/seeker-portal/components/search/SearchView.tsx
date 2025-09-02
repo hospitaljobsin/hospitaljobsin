@@ -1,8 +1,5 @@
-import SearchClientComponentQuery, {
-	type SearchClientComponentQuery as SearchClientComponentQueryType,
-} from "@/__generated__/SearchClientComponentQuery.graphql";
 import type { SearchView_query$key } from "@/__generated__/SearchView_query.graphql";
-import type { Filters } from "@/app/search/SearchClientComponent";
+import type { Filters } from "@/app/search/[[...location]]/SearchViewClientComponent";
 import { FILTER_DEFAULTS } from "@/lib/constants";
 import {
 	Button,
@@ -14,12 +11,7 @@ import {
 } from "@heroui/react";
 import { FilterIcon } from "lucide-react";
 import { Suspense, useEffect } from "react";
-import {
-	type PreloadedQuery,
-	graphql,
-	useFragment,
-	usePreloadedQuery,
-} from "react-relay";
+import { graphql, useFragment } from "react-relay";
 import FilterSidebar from "./FilterSidebar";
 import SearchHeader from "./SearchHeader";
 import SearchJobsList from "./SearchJobsList";
@@ -73,18 +65,19 @@ const validateEnumArray = <T extends string>(
 };
 
 export default function SearchView({
-	queryRef,
+	location,
+	fragmentKey,
 	filters,
 	setFilters,
 }: {
-	queryRef: PreloadedQuery<SearchClientComponentQueryType>;
+	location: string | null;
+	fragmentKey: SearchView_query$key;
 	filters: Filters;
-	setFilters: (filters: Filters) => void;
+	setFilters: (filters: Filters | ((prevFilters: Filters) => Filters)) => void;
 }) {
-	const query = usePreloadedQuery(SearchClientComponentQuery, queryRef);
 	const data = useFragment<SearchView_query$key>(
 		SearchPageContentFragment,
-		query,
+		fragmentKey,
 	);
 
 	// Fix: Only validate and update workMode/jobType if actually needed, and only depend on those fields
@@ -130,13 +123,13 @@ export default function SearchView({
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	return (
-		<div className="w-full flex flex-col bg-background-600">
+		<div className="w-full flex flex-col h-full min-h-screen lg:min-h-0 bg-background-600">
 			<SearchHeader
 				query={data}
 				searchTerm={filters.q}
 				setSearchTerm={(value) => setFilters({ ...filters, q: value })}
 			/>
-			<div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 mx-auto max-w-7xl py-6 px-4 bg-background-600">
+			<div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 mx-auto max-w-7xl py-6 px-4 bg-background-600 flex-1 min-h-0">
 				{/* Mobile filter button */}
 				<div className="block lg:hidden mb-4">
 					<Button
@@ -161,6 +154,7 @@ export default function SearchView({
 							<DrawerHeader>Filters</DrawerHeader>
 							<DrawerBody>
 								<FilterSidebar
+									location={location}
 									values={sidebarFilters}
 									onChange={setFilters}
 									open={true}
@@ -174,8 +168,9 @@ export default function SearchView({
 					</Drawer>
 				</div>
 				{/* Desktop sidebar */}
-				<div className="hidden lg:block lg:w-auto lg:sticky lg:top-20 lg:self-start">
+				<div className="hidden lg:block lg:w-auto lg:sticky lg:top-0 lg:self-start lg:max-h-screen lg:overflow-y-auto h-full">
 					<FilterSidebar
+						location={location}
 						values={sidebarFilters}
 						onChange={setFilters}
 						open={true}
@@ -183,12 +178,12 @@ export default function SearchView({
 						setSearchTerm={(value) => setFilters({ ...filters, q: value })}
 					/>
 				</div>
-				<div className="flex-1">
+				<div className="flex-1 min-w-0 min-h-0">
 					<Suspense fallback={<SearchJobsListSkeleton />}>
 						<SearchJobsList
 							rootQuery={data}
 							searchTerm={filters.q || null}
-							location={filters.locationName}
+							location={location}
 							proximityKm={filters.proximityKm}
 							minExperience={filters.minExperience ?? null}
 							minSalary={filters.minSalary ?? null}

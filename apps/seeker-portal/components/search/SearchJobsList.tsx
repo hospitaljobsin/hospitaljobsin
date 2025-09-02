@@ -1,14 +1,16 @@
-import type { SearchClientComponentQuery as SearchClientComponentQueryType } from "@/__generated__/SearchClientComponentQuery.graphql";
 import type { SearchJobsListFragment$key } from "@/__generated__/SearchJobsListFragment.graphql";
 import type { SearchJobsListInternalFragment$key } from "@/__generated__/SearchJobsListInternalFragment.graphql";
 import type {
 	JobTypeFilter,
 	JobWorkModeFilter,
+	SearchJobsListRefetchQuery as SearchClientComponentQueryType,
 	SearchJobsListRefetchQuery$variables,
 } from "@/__generated__/SearchJobsListRefetchQuery.graphql";
-import type { Filters } from "@/app/search/SearchClientComponent";
+import type { Filters } from "@/app/search/[[...location]]/SearchViewClientComponent";
 import Job from "@/components/landing/Job";
 import JobListSkeleton from "@/components/landing/JobListSkeleton";
+import { APP_TITLE } from "@/lib/constants";
+import usePageTitle from "@/lib/hooks/usePageTitle";
 import { Card, CardBody, Select, SelectItem } from "@heroui/react";
 import { Search } from "lucide-react";
 import { useEffect, useRef, useTransition } from "react";
@@ -71,6 +73,7 @@ const SearchJobsListInternalFragment = graphql`
 type Props = {
 	rootQuery: SearchJobsListFragment$key;
 	searchTerm: string | null;
+	location?: string | null;
 	proximityKm: number | null;
 	minExperience?: number | null;
 	minSalary?: number | null;
@@ -84,6 +87,7 @@ type Props = {
 export default function SearchJobsList({
 	rootQuery,
 	searchTerm,
+	location,
 	proximityKm,
 	minExperience,
 	minSalary,
@@ -115,6 +119,22 @@ export default function SearchJobsList({
 		}
 	};
 
+	usePageTitle({
+		title: (() => {
+			let title = `${data.jobs.totalCount} Hospital Jobs`;
+
+			if (searchTerm) {
+				title = `${data.jobs.totalCount} ${searchTerm} Hospital Jobs`;
+			}
+
+			if (location) {
+				title += ` in ${location}`;
+			}
+
+			return `${title} | ${APP_TITLE}`;
+		})(),
+	});
+
 	// Debounced filter refetch for all filters
 	useEffect(() => {
 		if (!hasMountedRef.current) {
@@ -126,6 +146,7 @@ export default function SearchJobsList({
 				// Only include defined variables
 				const refetchVars: SearchJobsListRefetchQuery$variables = {
 					searchTerm,
+					location,
 					proximityKm,
 					workMode: (workMode || []) as readonly JobWorkModeFilter[],
 					jobType: (jobType || []) as readonly JobTypeFilter[],
@@ -141,6 +162,7 @@ export default function SearchJobsList({
 	}, [
 		refetch,
 		searchTerm,
+		location,
 		proximityKm,
 		minExperience,
 		minSalary,
@@ -176,7 +198,7 @@ export default function SearchJobsList({
 
 	return (
 		<div
-			className="h-full w-full scroll-smooth overflow-none"
+			className="w-full scroll-smooth h-full overflow-y-auto"
 			style={{
 				scrollbarWidth: "none",
 			}}
@@ -195,7 +217,7 @@ export default function SearchJobsList({
 							const selectedKey = Array.from(keys)[0] as string;
 							if (selectedKey) {
 								startTransition(() => {
-									setFilters((prevFilters) => ({
+									setFilters((prevFilters: Filters) => ({
 										...prevFilters,
 										sortBy: selectedKey,
 									}));
@@ -210,7 +232,14 @@ export default function SearchJobsList({
 					</Select>
 				</div>
 			</div>
-			<WindowVirtualizer onScrollEnd={handleScrollEnd}>
+			<WindowVirtualizer
+				onScrollEnd={handleScrollEnd}
+				ssrCount={10}
+				count={data.jobs.totalCount}
+				shift={false}
+				item="div"
+				itemSize={350}
+			>
 				{allJobEdges.map((jobEdge, index) => (
 					<div key={jobEdge.node.id} className="pb-4 sm:pb-6">
 						<Job job={jobEdge.node} authQueryRef={root.viewer} />

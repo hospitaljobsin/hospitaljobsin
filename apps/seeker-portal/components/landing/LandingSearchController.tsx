@@ -22,9 +22,12 @@ export function LandingSearchController({
 		const params = new URLSearchParams();
 		if (searchTerm) params.set("q", searchTerm);
 		if (selectedLocation?.displayName) {
-			params.set("locationName", selectedLocation.displayName);
+			router.push(
+				`${links.search(selectedLocation.displayName)}?${params.toString()}`,
+			);
+			return;
 		}
-		router.push(`${links.search}?${params.toString()}`);
+		router.push(`${links.search()}?${params.toString()}`);
 	};
 
 	return (
