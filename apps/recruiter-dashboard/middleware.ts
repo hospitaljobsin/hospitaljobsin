@@ -50,7 +50,7 @@ export async function middleware(request: NextRequest) {
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://*.posthog.com;
     style-src 'self' 'nonce-${nonce}' https://*.posthog.com;
-    img-src 'self' blob: data: https://*.posthog.com;
+    img-src 'self' blob: data: https://*.posthog.com https://*.amazonaws.com https://*.s3.amazonaws.com https://*.s3.*.amazonaws.com;
     font-src 'self' https://*.posthog.com;
     connect-src 'self' https://*.posthog.com;
     worker-src 'self' blob: data:;

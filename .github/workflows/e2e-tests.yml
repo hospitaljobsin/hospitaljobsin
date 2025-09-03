@@ -180,8 +180,20 @@ jobs:
             --service ${{ vars.AWS_BACKEND_ECS_SERVICE }} \
             --desired-count 0
 
+          echo "Waiting for ECS service to drain tasks..."
+          aws ecs wait services-stable \
+            --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+            --services ${{ vars.AWS_BACKEND_ECS_SERVICE }}
+
+          echo "Waiting additional 30 seconds for task cleanup..."
+          sleep 30
+
           echo "Scaling down ASG..."
           aws autoscaling update-auto-scaling-group \
             --auto-scaling-group-name ${{ vars.AWS_ASG_NAME }} \
             --min-size 0 \
             --desired-capacity 0
+
+          echo "Waiting for ASG instances to terminate..."
+          aws autoscaling wait all-instances-in-service \
+            --auto-scaling-group-names ${{ vars.AWS_ASG_NAME }} || true
