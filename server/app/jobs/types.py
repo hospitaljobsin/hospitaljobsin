@@ -1632,3 +1632,27 @@ class LogJobViewPayloadType:
         description="The status of the job view log.",
         default="OK",
     )
+
+
+@strawberry.type(
+    name="JobAutocompleteSuggestion",
+    description="Job search autocomplete suggestion.",
+)
+class JobAutocompleteSuggestionType:
+    title: str = strawberry.field(
+        description="Suggested job title",
+    )
+
+    @classmethod
+    def marshal(cls, title: str) -> Self:
+        return cls(title=title)
+
+
+@strawberry.type(
+    name="SearchJobsAutocompleteSuggestionsPayload",
+    description="The payload for the search jobs autocomplete suggestions query.",
+)
+class SearchJobsAutocompleteSuggestionsPayloadType:
+    suggestions: list[JobAutocompleteSuggestionType] = strawberry.field(
+        description="List of job search autocomplete suggestions.",
+    )
