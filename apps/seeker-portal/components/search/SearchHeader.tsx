@@ -6,7 +6,6 @@ import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import {
 	Button,
-	Input,
 	Navbar,
 	NavbarBrand,
 	NavbarContent,
@@ -16,6 +15,7 @@ import { ExternalLinkIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import JobSearchAutocomplete from "../forms/JobSearchAutocomplete";
 import Logo from "../Logo";
 import AuthNavigation from "../layout/AuthNavigation";
 
@@ -77,21 +77,19 @@ export default function SearchHeader({
 						</Link>
 					</NavbarBrand>
 					<NavbarItem className="w-full">
-						<Input
+						<JobSearchAutocomplete
 							value={searchTerm}
-							onChange={(e) => setSearchTerm(e.target.value)}
+							onChange={(value) => setSearchTerm(value)}
+							onValueChange={(value) => setSearchTerm(value)}
 							placeholder="Search by speciality, keyword or company"
 							startContent={
 								<SearchIcon size={16} className="text-foreground-500" />
 							}
-							fullWidth
-							variant="bordered"
-							className="hidden lg:block"
 							classNames={{
+								base: "hidden lg:block w-full",
 								inputWrapper: "bg-background",
 							}}
 							autoComplete="off"
-							isClearable
 							onClear={() => setSearchTerm("")}
 						/>
 					</NavbarItem>
