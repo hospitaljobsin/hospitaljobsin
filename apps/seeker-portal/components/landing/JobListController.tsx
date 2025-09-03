@@ -1,7 +1,10 @@
+import JobSearchAutocomplete, {
+	type SearchJob,
+} from "@/components/forms/JobSearchAutocomplete";
 import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
-import { Card, CardBody, Input, Slider } from "@heroui/react";
+import { Card, CardBody, Slider } from "@heroui/react";
 import { MapPin, Search } from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 
 interface JobListControllerProps {
 	searchTerm: string | null;
@@ -17,27 +20,43 @@ export default function JobListController(props: JobListControllerProps) {
 	};
 
 	const [location, setLocation] = useState<string | null>(null);
+	const [searchInputValue, setSearchInputValue] = useState(
+		props.searchTerm || "",
+	);
+
+	// Keep input value in sync with search term prop
+	useEffect(() => {
+		setSearchInputValue(props.searchTerm || "");
+	}, [props.searchTerm]);
 
 	return (
 		<form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
-			<Input
+			<JobSearchAutocomplete
 				size="lg"
-				classNames={{
-					inputWrapper: "p-4 sm:p-8 bg-background",
-					mainWrapper: "mt-4 sm:-mt-20",
+				inputProps={{
+					classNames: {
+						base: "p-4 sm:p-8 bg-background",
+					},
 				}}
+				className="mt-4 sm:-mt-20"
 				startContent={
 					<Search
 						size={24}
 						className="text-2xl text-default-400 pointer-events-none flex-shrink-0 mr-4"
 					/>
 				}
-				isClearable
 				placeholder="Search for your next job"
 				variant="bordered"
-				value={props.searchTerm || ""}
-				onValueChange={(value) => props.setSearchTerm(value)}
-				onClear={() => props.setSearchTerm(null)}
+				value={searchInputValue}
+				onChange={(job: SearchJob) => {
+					setSearchInputValue(job.displayName);
+				}}
+				onValueChange={setSearchInputValue}
+				onSearchSubmit={(searchTerm) => props.setSearchTerm(searchTerm)}
+				onClear={() => {
+					setSearchInputValue("");
+					props.setSearchTerm(null);
+				}}
 				fullWidth
 			/>
 

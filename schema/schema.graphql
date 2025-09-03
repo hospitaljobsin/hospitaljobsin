@@ -386,6 +386,26 @@ type AuthenticatorNotEnabledError implements Error {
 }
 
 """
+The payload for the autocomplete jobs query.
+"""
+type AutocompleteJobsPayload {
+	"""
+	List of autocomplete jobs.
+	"""
+	jobs: [JobAutocompleteSuggestion!]!
+}
+
+"""
+The payload for the search locations query.
+"""
+type AutocompleteLocationsPayload {
+	"""
+	List of search locations.
+	"""
+	locations: [LocationAutocompleteSuggestion!]!
+}
+
+"""
 A base profile belonging to a user.
 """
 interface BaseProfile {
@@ -1640,6 +1660,21 @@ type JobApplicationForm implements Node {
 	fields: [ApplicationField!]!
 }
 
+"""
+Job autocomplete suggestion.
+"""
+type JobAutocompleteSuggestion {
+	"""
+	Job ID of the job
+	"""
+	jobId: String!
+
+	"""
+	Display name of the job
+	"""
+	displayName: String!
+}
+
 type JobConnection {
 	"""
 	Information to aid in pagination.
@@ -1883,7 +1918,7 @@ enum LicenseVerificationStatus {
 }
 
 """
-Search location entity.
+Location autocomplete suggestion.
 """
 type LocationAutocompleteSuggestion {
 	"""
@@ -4177,6 +4212,16 @@ type Query {
 	): JobApplicantConnection! @isAuthenticated
 
 	"""
+	Get available autocomplete locations for the given search term.
+	"""
+	autocompleteJobs(
+		"""
+		The search (query) term
+		"""
+		searchTerm: String!
+	): AutocompleteJobsPayload!
+
+	"""
 	Get all organizations available.
 	"""
 	organizations(
@@ -4222,14 +4267,14 @@ type Query {
 	): OrganizationInvitePayload! @isAuthenticated
 
 	"""
-	Get available locations for the given search term.
+	Get available autocomplete locations for the given search term.
 	"""
-	searchLocations(
+	autocompleteLocations(
 		"""
 		The search (query) term
 		"""
 		searchTerm: String!
-	): SearchLocationsPayload!
+	): AutocompleteLocationsPayload!
 }
 
 """
@@ -4465,16 +4510,6 @@ type SavedJobNotFoundError implements Error {
 	Human readable error message.
 	"""
 	message: String!
-}
-
-"""
-The payload for the search locations query.
-"""
-type SearchLocationsPayload {
-	"""
-	List of search locations.
-	"""
-	locations: [LocationAutocompleteSuggestion!]!
 }
 
 """

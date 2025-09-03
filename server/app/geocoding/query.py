@@ -7,19 +7,19 @@ from aioinject.ext.strawberry import inject
 from app.geocoding.repositories import RegionRepo
 
 from .types import (
+    AutocompleteLocationsPayloadType,
     LocationAutocompleteSuggestionType,
-    SearchLocationsPayloadType,
 )
 
 
 @strawberry.type
 class GeocodingQuery:
     @strawberry.field(  # type: ignore[misc]
-        graphql_type=SearchLocationsPayloadType,
-        description="Get available locations for the given search term.",
+        graphql_type=AutocompleteLocationsPayloadType,
+        description="Get available autocomplete locations for the given search term.",
     )
     @inject
-    async def search_locations(
+    async def autocomplete_locations(
         self,
         region_repo: Annotated[RegionRepo, Inject],
         search_term: Annotated[
@@ -28,12 +28,12 @@ class GeocodingQuery:
                 description="The search (query) term",
             ),
         ],
-    ) -> SearchLocationsPayloadType:
+    ) -> AutocompleteLocationsPayloadType:
         results = await region_repo.get_autocomplete_suggestions(
             search_term=search_term,
         )
 
-        return SearchLocationsPayloadType(
+        return AutocompleteLocationsPayloadType(
             locations=[
                 LocationAutocompleteSuggestionType.marshal(location)
                 for location in results

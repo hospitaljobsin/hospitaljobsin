@@ -40,6 +40,7 @@ from app.jobs.agents.applicant_query_parser import (
     ApplicantQueryParserAgent,
     LocationWithRadius,
 )
+from app.jobs.models import JobAutocompleteSuggestion
 from app.organizations.documents import Organization
 
 from .documents import (
@@ -358,15 +359,60 @@ class JobRepo:
             for organization_id, job_slug in slugs
         ]
 
-    async def get_autocomplete_suggestions(self, search_term: str) -> list[str]:
+    async def get_autocomplete_suggestions(
+        self, search_term: str
+    ) -> list[JobAutocompleteSuggestion]:
         """Get autocomplete suggestions for a search term."""
         pipeline = [
             {
                 "$search": {
                     "index": JOB_SEARCH_INDEX_NAME,
-                    "autocomplete": {
-                        "query": search_term,
-                        "path": "title",
+                    "compound": {
+                        "should": [
+                            {
+                                "autocomplete": {
+                                    "query": search_term,
+                                    "path": "title",
+                                }
+                            },
+                            {
+                                "autocomplete": {
+                                    "query": search_term,
+                                    "path": "skills",
+                                }
+                            },
+                            {
+                                "autocomplete": {
+                                    "query": search_term,
+                                    "path": "organization_name",
+                                }
+                            },
+                        ],
+                        "minimumShouldMatch": 2,
+                        "must": [
+                            # Always filter for active jobs
+                            {"equals": {"value": True, "path": "is_active"}},
+                            # Filter for non-expired jobs (either null or greater than current date)
+                            {
+                                "compound": {
+                                    "should": [
+                                        {
+                                            "equals": {
+                                                "value": None,
+                                                "path": "expires_at",
+                                            }
+                                        },
+                                        {
+                                            "range": {
+                                                "path": "expires_at",
+                                                "gt": datetime.now(UTC),
+                                            }
+                                        },
+                                    ],
+                                    "minimumShouldMatch": 1,
+                                }
+                            },
+                        ],
                     },
                 }
             },
@@ -374,7 +420,13 @@ class JobRepo:
         ]
 
         results = await Job.aggregate(pipeline, projection_model=None).to_list()
-        return [result["title"] for result in results]
+        return [
+            JobAutocompleteSuggestion(
+                job_id=str(result["_id"]),
+                display_name=result["title"],
+            )
+            for result in results
+        ]
 
     async def get_all_active(
         self,

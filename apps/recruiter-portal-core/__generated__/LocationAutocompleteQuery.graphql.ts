@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<f79a7e581b3832e372b9858038a3bddb>>
- * @relayHash 1353875c508d6a802fe6b161d296a732
+ * @generated SignedSource<<ea7edadf87712bfcc57d717a2284910c>>
+ * @relayHash ff29daeb71125f936fa144d45905e0e2
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,14 +9,14 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 1353875c508d6a802fe6b161d296a732
+// @relayRequestID ff29daeb71125f936fa144d45905e0e2
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type LocationAutocompleteQuery$variables = {
   searchTerm: string;
 };
 export type LocationAutocompleteQuery$data = {
-  readonly searchLocations: {
+  readonly autocompleteLocations: {
     readonly locations: ReadonlyArray<{
       readonly __typename: "LocationAutocompleteSuggestion";
       readonly displayName: string;
@@ -47,9 +47,9 @@ v1 = [
         "variableName": "searchTerm"
       }
     ],
-    "concreteType": "SearchLocationsPayload",
+    "concreteType": "AutocompleteLocationsPayload",
     "kind": "LinkedField",
-    "name": "searchLocations",
+    "name": "autocompleteLocations",
     "plural": false,
     "selections": [
       {
@@ -106,7 +106,7 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "id": "1353875c508d6a802fe6b161d296a732",
+    "id": "ff29daeb71125f936fa144d45905e0e2",
     "metadata": {},
     "name": "LocationAutocompleteQuery",
     "operationKind": "query",
@@ -115,6 +115,6 @@ return {
 };
 })();
 
-(node as any).hash = "b4d996d68b0bece0d6a6648e5f3b10d1";
+(node as any).hash = "bfb0bc9b7fb85e5e02c3c8f090e7bb47";
 
 export default node;

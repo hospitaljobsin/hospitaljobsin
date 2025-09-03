@@ -6,12 +6,14 @@ import {
 	CardBody,
 	Checkbox,
 	CheckboxGroup,
-	Input,
 	Slider,
 } from "@heroui/react";
 import { EraserIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import JobSearchAutocomplete, {
+	type SearchJob,
+} from "../forms/JobSearchAutocomplete";
 import LocationAutocomplete from "../forms/LocationAutocomplete";
 
 export type FilterValues = {
@@ -45,6 +47,12 @@ export default function FilterSidebar({
 	const router = useRouter();
 	const params = useSearchParams();
 	const [locationInput, setLocationInput] = useState(location);
+	const [searchInputValue, setSearchInputValue] = useState(searchTerm);
+
+	// Keep input value in sync with search term prop
+	useEffect(() => {
+		setSearchInputValue(searchTerm);
+	}, [searchTerm]);
 
 	if (!open) return null;
 
@@ -55,14 +63,28 @@ export default function FilterSidebar({
 		>
 			<CardBody className="flex flex-col gap-12">
 				{/* Speciality input for mobile only */}
-				<Input
+				<JobSearchAutocomplete
 					label="Search"
 					className="block lg:hidden"
-					value={searchTerm}
-					onChange={(e) => setSearchTerm(e.target.value)}
+					value={searchInputValue}
+					onChange={(job: SearchJob) => {
+						setSearchInputValue(job.displayName);
+						setSearchTerm(job.displayName);
+						onChange({ ...values, q: job.displayName });
+					}}
+					onValueChange={setSearchInputValue}
+					onSearchSubmit={(searchTerm) => {
+						setSearchTerm(searchTerm);
+						onChange({ ...values, q: searchTerm });
+					}}
 					placeholder="Search by speciality, keyword or company"
 					variant="bordered"
 					fullWidth
+					onClear={() => {
+						setSearchInputValue("");
+						setSearchTerm("");
+						onChange({ ...values, q: "" });
+					}}
 				/>
 				<LocationAutocomplete
 					id="location"

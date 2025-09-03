@@ -6,7 +6,6 @@ import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import {
 	Button,
-	Input,
 	Navbar,
 	NavbarBrand,
 	NavbarContent,
@@ -14,9 +13,13 @@ import {
 } from "@heroui/react";
 import { ExternalLinkIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Logo from "../Logo";
+import JobSearchAutocomplete, {
+	type SearchJob,
+} from "../forms/JobSearchAutocomplete";
 import AuthNavigation from "../layout/AuthNavigation";
 
 export const SearchHeaderFragment = graphql`
@@ -44,6 +47,12 @@ export default function SearchHeader({
 	setSearchTerm: (value: string) => void;
 }) {
 	const data = useFragment(SearchHeaderFragment, query);
+	const [searchInputValue, setSearchInputValue] = useState(searchTerm);
+
+	// Keep input value in sync with search term prop
+	useEffect(() => {
+		setSearchInputValue(searchTerm);
+	}, [searchTerm]);
 
 	return (
 		<div className={"w-full flex flex-col sticky top-0 z-50"}>
@@ -77,9 +86,13 @@ export default function SearchHeader({
 						</Link>
 					</NavbarBrand>
 					<NavbarItem className="w-full">
-						<Input
-							value={searchTerm}
-							onChange={(e) => setSearchTerm(e.target.value)}
+						<JobSearchAutocomplete
+							value={searchInputValue}
+							onChange={(job: SearchJob) => {
+								setSearchInputValue(job.displayName);
+							}}
+							onValueChange={setSearchInputValue}
+							onSearchSubmit={setSearchTerm}
 							placeholder="Search by speciality, keyword or company"
 							startContent={
 								<SearchIcon size={16} className="text-foreground-500" />
@@ -87,12 +100,16 @@ export default function SearchHeader({
 							fullWidth
 							variant="bordered"
 							className="hidden lg:block"
-							classNames={{
-								inputWrapper: "bg-background",
+							inputProps={{
+								classNames: {
+									base: "bg-background",
+								},
 							}}
 							autoComplete="off"
-							isClearable
-							onClear={() => setSearchTerm("")}
+							onClear={() => {
+								setSearchInputValue("");
+								setSearchTerm("");
+							}}
 						/>
 					</NavbarItem>
 					{data.viewer.__typename === "Account" ? (
