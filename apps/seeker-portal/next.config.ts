@@ -12,6 +12,12 @@ jiti.esmResolve("./lib/env/client");
 
 const nextConfig: NextConfig = {
 	/* config options here */
+	logging: {
+		fetches: {
+			fullUrl: true,
+		},
+	},
+	typedRoutes: true,
 	poweredByHeader: false,
 	pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
 	experimental: {

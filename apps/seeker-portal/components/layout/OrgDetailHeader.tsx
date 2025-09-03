@@ -6,7 +6,6 @@ import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import {
 	Button,
-	Input,
 	Navbar,
 	NavbarBrand,
 	NavbarContent,
@@ -18,6 +17,9 @@ import { useState } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Logo from "../Logo";
+import JobSearchAutocomplete, {
+	type SearchJob,
+} from "../forms/JobSearchAutocomplete";
 import OrganizationTabs from "../organization-detail/OrganizationTabs";
 import AuthDropdown from "./AuthNavigation";
 import IncompleteProfileBanner from "./IncompleteProfileBanner";
@@ -53,9 +55,17 @@ export default function OrgDetailHeader({
 }) {
 	const data = useFragment(OrgDetailHeaderFragment, root);
 
-	const [searchTerm, setSearchTerm] = useState("");
+	const [searchInputValue, setSearchInputValue] = useState("");
 
 	const router = useRouter();
+
+	const handleSearchSubmit = (searchTerm: string) => {
+		// Navigate to search with the search term
+		const params = new URLSearchParams({
+			q: searchTerm.trim(),
+		});
+		router.push(`${links.search()}?${params.toString()}`);
+	};
 
 	return (
 		<div className="w-full flex flex-col bg-background-600 border-b border-foreground-300 sticky top-0 z-50">
@@ -85,9 +95,13 @@ export default function OrgDetailHeader({
 						)}
 					</NavbarBrand>
 					<NavbarItem className="w-full">
-						<Input
-							value={searchTerm}
-							onChange={(e) => setSearchTerm(e.target.value)}
+						<JobSearchAutocomplete
+							value={searchInputValue}
+							onChange={(job: SearchJob) => {
+								setSearchInputValue(job.displayName);
+							}}
+							onValueChange={setSearchInputValue}
+							onSearchSubmit={handleSearchSubmit}
 							placeholder="Search by speciality, keyword or company"
 							startContent={
 								<SearchIcon size={16} className="text-foreground-500" />
@@ -95,24 +109,14 @@ export default function OrgDetailHeader({
 							fullWidth
 							variant="bordered"
 							className="hidden lg:block"
-							classNames={{
-								inputWrapper: "bg-background",
+							inputProps={{
+								classNames: {
+									base: "bg-background",
+								},
 							}}
 							autoComplete="off"
-							isClearable
-							onClear={() => setSearchTerm("")}
-							onKeyDown={(e) => {
-								if (
-									e.key === "Enter" &&
-									!e.nativeEvent.isComposing &&
-									searchTerm.trim() !== ""
-								) {
-									e.preventDefault();
-									const params = new URLSearchParams({
-										q: searchTerm.trim(),
-									});
-									router.push(`${links.search()}?${params.toString()}`);
-								}
+							onClear={() => {
+								setSearchInputValue("");
 							}}
 						/>
 					</NavbarItem>

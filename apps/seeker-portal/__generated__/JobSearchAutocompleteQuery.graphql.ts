@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<ea7edadf87712bfcc57d717a2284910c>>
- * @relayHash ff29daeb71125f936fa144d45905e0e2
+ * @generated SignedSource<<8a39307faee0133b139d7619064de5e5>>
+ * @relayHash 4cf4c328b8cb94228fbcccb333750b87
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,24 +9,24 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ff29daeb71125f936fa144d45905e0e2
+// @relayRequestID 4cf4c328b8cb94228fbcccb333750b87
 
 import type { ConcreteRequest } from 'relay-runtime';
-export type LocationAutocompleteQuery$variables = {
+export type JobSearchAutocompleteQuery$variables = {
   searchTerm: string;
 };
-export type LocationAutocompleteQuery$data = {
-  readonly autocompleteLocations: {
-    readonly locations: ReadonlyArray<{
-      readonly __typename: "LocationAutocompleteSuggestion";
+export type JobSearchAutocompleteQuery$data = {
+  readonly autocompleteJobs: {
+    readonly jobs: ReadonlyArray<{
+      readonly __typename: "JobAutocompleteSuggestion";
       readonly displayName: string;
-      readonly placeId: string;
+      readonly jobId: string;
     }>;
   };
 };
-export type LocationAutocompleteQuery = {
-  response: LocationAutocompleteQuery$data;
-  variables: LocationAutocompleteQuery$variables;
+export type JobSearchAutocompleteQuery = {
+  response: JobSearchAutocompleteQuery$data;
+  variables: JobSearchAutocompleteQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -47,17 +47,17 @@ v1 = [
         "variableName": "searchTerm"
       }
     ],
-    "concreteType": "AutocompleteLocationsPayload",
+    "concreteType": "AutocompleteJobsPayload",
     "kind": "LinkedField",
-    "name": "autocompleteLocations",
+    "name": "autocompleteJobs",
     "plural": false,
     "selections": [
       {
         "alias": null,
         "args": null,
-        "concreteType": "LocationAutocompleteSuggestion",
+        "concreteType": "JobAutocompleteSuggestion",
         "kind": "LinkedField",
-        "name": "locations",
+        "name": "jobs",
         "plural": true,
         "selections": [
           {
@@ -78,7 +78,7 @@ v1 = [
             "alias": null,
             "args": null,
             "kind": "ScalarField",
-            "name": "placeId",
+            "name": "jobId",
             "storageKey": null
           }
         ],
@@ -93,7 +93,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "LocationAutocompleteQuery",
+    "name": "JobSearchAutocompleteQuery",
     "selections": (v1/*: any*/),
     "type": "Query",
     "abstractKey": null
@@ -102,19 +102,19 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "LocationAutocompleteQuery",
+    "name": "JobSearchAutocompleteQuery",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "id": "ff29daeb71125f936fa144d45905e0e2",
+    "id": "4cf4c328b8cb94228fbcccb333750b87",
     "metadata": {},
-    "name": "LocationAutocompleteQuery",
+    "name": "JobSearchAutocompleteQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "bfb0bc9b7fb85e5e02c3c8f090e7bb47";
+(node as any).hash = "f41d6e9b38db9fde485082afd5955566";
 
 export default node;

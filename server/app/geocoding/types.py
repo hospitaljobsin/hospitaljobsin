@@ -9,7 +9,7 @@ from .models import (
 
 @strawberry.type(
     name="LocationAutocompleteSuggestion",
-    description="Search location entity.",
+    description="Location autocomplete suggestion.",
 )
 class LocationAutocompleteSuggestionType:
     place_id: str = strawberry.field(
@@ -28,10 +28,10 @@ class LocationAutocompleteSuggestionType:
 
 
 @strawberry.type(
-    name="SearchLocationsPayload",
+    name="AutocompleteLocationsPayload",
     description="The payload for the search locations query.",
 )
-class SearchLocationsPayloadType:
+class AutocompleteLocationsPayloadType:
     locations: list[LocationAutocompleteSuggestionType] = strawberry.field(
         description="List of search locations.",
     )

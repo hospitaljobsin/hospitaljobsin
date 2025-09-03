@@ -50,6 +50,7 @@ from app.jobs.exceptions import (
     JobApplicantCountNotFoundError,
     JobApplicantNotFoundError,
 )
+from app.jobs.models import JobAutocompleteSuggestion
 from app.jobs.repositories import (
     JobApplicantRepo,
     JobApplicantsSortBy,
@@ -1631,4 +1632,34 @@ class LogJobViewPayloadType:
     status: str = strawberry.field(
         description="The status of the job view log.",
         default="OK",
+    )
+
+
+@strawberry.type(
+    name="JobAutocompleteSuggestion",
+    description="Job autocomplete suggestion.",
+)
+class JobAutocompleteSuggestionType:
+    job_id: str = strawberry.field(
+        description="Job ID of the job",
+    )
+    display_name: str = strawberry.field(
+        description="Display name of the job",
+    )
+
+    @classmethod
+    def marshal(cls, data: JobAutocompleteSuggestion) -> Self:
+        return cls(
+            job_id=data.job_id,
+            display_name=data.display_name,
+        )
+
+
+@strawberry.type(
+    name="AutocompleteJobsPayload",
+    description="The payload for the autocomplete jobs query.",
+)
+class AutocompleteJobsPayloadType:
+    jobs: list[JobAutocompleteSuggestionType] = strawberry.field(
+        description="List of autocomplete jobs.",
     )

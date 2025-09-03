@@ -1,7 +1,7 @@
-import { fileURLToPath } from "node:url";
 import { withSentryConfig } from "@sentry/nextjs";
 import { createJiti } from "jiti";
 import type { NextConfig } from "next";
+import { fileURLToPath } from "node:url";
 import { env } from "./lib/env/client";
 
 const jiti = createJiti(fileURLToPath(import.meta.url));
@@ -11,6 +11,12 @@ jiti.esmResolve("./lib/env/client");
 
 const nextConfig: NextConfig = {
 	/* config options here */
+	logging: {
+		fetches: {
+			fullUrl: true,
+		},
+	},
+	typedRoutes: true,
 	poweredByHeader: false,
 	reactStrictMode: true,
 	experimental: {

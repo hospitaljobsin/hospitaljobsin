@@ -25,7 +25,7 @@ type SearchLocation = {
 
 const SearchLocationsQuery = graphql`
 	query LocationAutocompleteQuery($searchTerm: String!) {
-		searchLocations(searchTerm: $searchTerm) {
+		autocompleteLocations(searchTerm: $searchTerm) {
 			locations {
 				__typename
 				displayName
@@ -46,11 +46,13 @@ function LocationResultControls({
 	const data = usePreloadedQuery(SearchLocationsQuery, queryReference);
 
 	useEffect(() => {
-		if (data?.searchLocations?.locations) {
-			const mappedLocations = data.searchLocations.locations.map((item) => ({
-				displayName: item.displayName,
-				placeId: item.placeId,
-			}));
+		if (data?.autocompleteLocations?.locations) {
+			const mappedLocations = data.autocompleteLocations.locations.map(
+				(item) => ({
+					displayName: item.displayName,
+					placeId: item.placeId,
+				}),
+			);
 			onDataLoaded(mappedLocations);
 		} else {
 			onDataLoaded([]);
