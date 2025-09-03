@@ -24,6 +24,8 @@ from .types import (
     JobTypeFilterEnum,
     JobWorkModeFilterEnum,
     SavedJobConnectionType,
+    SearchJobsAutocompleteSuggestionsPayloadType,
+    JobAutocompleteSuggestionType,
 )
 
 
@@ -286,3 +288,29 @@ class JobQuery:
             last=last,
         )
         return JobApplicantConnectionType.marshal(result)
+
+    @strawberry.field(  # type: ignore[misc]
+        graphql_type=SearchJobsAutocompleteSuggestionsPayloadType,
+        description="Get autocomplete suggestions for job search.",
+    )
+    @inject
+    async def job_search_autocomplete_suggestions(
+        self,
+        job_repo: Annotated[JobRepo, Inject],
+        search_term: Annotated[
+            str,
+            strawberry.argument(
+                description="The search term to get autocomplete suggestions for",
+            ),
+        ],
+    ) -> SearchJobsAutocompleteSuggestionsPayloadType:
+        suggestions = await job_repo.get_autocomplete_suggestions(
+            search_term=search_term
+        )
+
+        return SearchJobsAutocompleteSuggestionsPayloadType(
+            suggestions=[
+                JobAutocompleteSuggestionType.marshal(suggestion)
+                for suggestion in suggestions
+            ],
+        )
