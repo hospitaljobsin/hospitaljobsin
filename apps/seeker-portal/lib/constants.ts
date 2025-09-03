@@ -16,7 +16,7 @@ export const FILTER_DEFAULTS = {
 	maxExperience: null,
 	minSalary: null,
 	maxSalary: null,
-	proximityKm: 50,
+	proximityKm: 50.0,
 	workMode: [],
 	jobType: [],
 	sortBy: "RELEVANCE",
