@@ -98,38 +98,11 @@ const nextConfig: NextConfig = {
 				],
 			},
 			{
-				source: "/_next/image.*url=.*profile-pictures.*",
+				source: "/_next/image:path*",
 				headers: [
 					{
 						key: "Cache-Control",
-						value: "public, max-age=604800", // 7 days for profile-pictures
-					},
-				],
-			},
-			{
-				source: "/_next/image.*url=.*org-logos.*",
-				headers: [
-					{
-						key: "Cache-Control",
-						value: "public, max-age=2592000", // 30 days for org-logos (very stable)
-					},
-				],
-			},
-			{
-				source: "/_next/image(.*)",
-				headers: [
-					{
-						key: "Cache-Control",
-						value: "public, max-age=86400", // 1 day fallback for other images
-					},
-				],
-			},
-			{
-				source: "/_next/image.*url=.*static.*",
-				headers: [
-					{
-						key: "Cache-Control",
-						value: "public, max-age=31536000, immutable", // 1 year for static assets
+						value: "public, max-age=604800", // 7 days for user-generated images
 					},
 				],
 			},
