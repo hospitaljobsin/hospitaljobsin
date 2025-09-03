@@ -12,8 +12,8 @@ from app.geocoding.models import GeoJSONPoint, GeoJSONPolygon
 class Region(Document):
     name: Annotated[str, Indexed()]
     address: Address
-    aliases: list[str] = []
-    level: Literal["locality", "city", "state", "country"]
+    aliases: list[str] = Field(default_factory=list)
+    level: Literal["locality", "city", "state", "country", "neighbourhood"]
 
     geometry: GeoJSONPolygon | None = None
     coordinates: GeoJSONPoint

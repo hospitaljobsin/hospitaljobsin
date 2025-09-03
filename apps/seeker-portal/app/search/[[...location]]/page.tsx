@@ -186,7 +186,7 @@ export async function generateMetadata({
 		const preloadedQuery = await loadSerializableQuery<
 			typeof SearchMetadataQueryNode,
 			pageSearchMetadataQuery
-		>(PageSearchMetadataQuery, variables);
+		>(PageSearchMetadataQuery, { ...variables, location });
 
 		const data = readInlineData<pageSearchMetadataFragment$key>(
 			PageSearchMetadataFragment,
@@ -252,10 +252,12 @@ export default async function SearchPage({
 			? decodeURIComponent(locationParam)
 			: locationParam;
 
+	console.log("location", location);
+
 	const preloadedQuery = await loadSerializableQuery<
 		typeof SearchViewQueryNode,
 		pageSearchViewQuery
-	>(PageSearchViewQuery, variables);
+	>(PageSearchViewQuery, { ...variables, location });
 
 	return (
 		<SearchViewClientComponent
