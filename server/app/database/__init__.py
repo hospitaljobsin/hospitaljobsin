@@ -112,7 +112,7 @@ async def create_search_indexes(
             index_name=JOB_APPLICANT_EMBEDDING_INDEX_NAME,
         )
 
-    # Check and create Job embedding index if it doesn't exist
+    # Check and create Job search index if it doesn't exist
     job_collection = database.get_collection(str(Job.get_settings().name))
     existing_job_indexes = await job_collection.list_search_indexes().to_list(
         length=None,
