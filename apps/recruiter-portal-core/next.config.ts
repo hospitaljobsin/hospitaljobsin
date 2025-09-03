@@ -99,7 +99,7 @@ const nextConfig: NextConfig = {
 				],
 			},
 			{
-				source: "/_next/image:path*",
+				source: "/_next/image(.*)",
 				headers: [
 					{
 						key: "Cache-Control",
