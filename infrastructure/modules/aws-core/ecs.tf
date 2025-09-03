@@ -394,7 +394,8 @@ resource "aws_autoscaling_group" "ecs_asg" {
   min_size                  = var.environment_name == "staging" ? 0 : 1
   vpc_zone_identifier       = data.aws_subnets.t3a_compatible_public.ids
   health_check_type         = "EC2"
-  health_check_grace_period = 45 # Increased to allow ECS agent to start
+  health_check_grace_period = 45                 # Increased to allow ECS agent to start
+  termination_policies      = ["OldestInstance"] # Terminate oldest instances first
 
   launch_template {
     id      = aws_launch_template.ecs_lt.id

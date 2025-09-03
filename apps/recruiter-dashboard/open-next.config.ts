@@ -9,6 +9,11 @@ const config = {
 			wrapper: "aws-lambda",
 		},
 	},
+	imageOptimization: {
+		override: {
+			wrapper: "aws-lambda",
+		},
+	},
 } satisfies OpenNextConfig;
 
 export default config;

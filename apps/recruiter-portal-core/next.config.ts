@@ -48,8 +48,26 @@ const nextConfig: NextConfig = {
 	},
 	images: {
 		loader: "default",
-		unoptimized: true,
+		unoptimized: false,
+		formats: ["image/webp", "image/avif"],
+		deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+		imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+		minimumCacheTTL: 86400, // 1 day (more reasonable for user content)
+		dangerouslyAllowSVG: true,
+		contentDispositionType: "attachment",
 		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "**.amazonaws.com",
+			},
+			{
+				protocol: "https",
+				hostname: "**.s3.*.amazonaws.com",
+			},
+			{
+				protocol: "https",
+				hostname: "**.s3.amazonaws.com",
+			},
 			{
 				protocol: "https",
 				hostname: "api.dicebear.com",
@@ -77,6 +95,42 @@ const nextConfig: NextConfig = {
 					{
 						key: "Referrer-Policy",
 						value: "strict-origin-when-cross-origin",
+					},
+				],
+			},
+			{
+				source: "/_next/image.*url=.*profile-pictures.*",
+				headers: [
+					{
+						key: "Cache-Control",
+						value: "public, max-age=604800", // 7 days for profile-pictures
+					},
+				],
+			},
+			{
+				source: "/_next/image.*url=.*org-logos.*",
+				headers: [
+					{
+						key: "Cache-Control",
+						value: "public, max-age=2592000", // 30 days for org-logos (very stable)
+					},
+				],
+			},
+			{
+				source: "/_next/image(.*)",
+				headers: [
+					{
+						key: "Cache-Control",
+						value: "public, max-age=86400", // 1 day fallback for other images
+					},
+				],
+			},
+			{
+				source: "/_next/static/media/(.*)",
+				headers: [
+					{
+						key: "Cache-Control",
+						value: "public, max-age=31536000, immutable",
 					},
 				],
 			},

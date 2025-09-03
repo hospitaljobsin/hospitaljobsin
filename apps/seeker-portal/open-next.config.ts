@@ -9,6 +9,12 @@ const config = {
 			wrapper: "aws-lambda",
 		},
 	},
+	imageOptimization: {
+		override: {
+			wrapper: "aws-lambda",
+		},
+		loader: "s3-lite",
+	},
 } satisfies OpenNextConfig;
 
 export default config;
