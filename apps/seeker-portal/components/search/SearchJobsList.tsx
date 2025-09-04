@@ -1,6 +1,7 @@
 import type { SearchJobsListFragment$key } from "@/__generated__/SearchJobsListFragment.graphql";
 import type { SearchJobsListInternalFragment$key } from "@/__generated__/SearchJobsListInternalFragment.graphql";
 import type {
+	JobSearchSortBy,
 	JobTypeFilter,
 	JobWorkModeFilter,
 	SearchJobsListRefetchQuery as SearchClientComponentQueryType,
@@ -150,6 +151,7 @@ export default function SearchJobsList({
 					proximityKm,
 					workMode: (workMode || []) as readonly JobWorkModeFilter[],
 					jobType: (jobType || []) as readonly JobTypeFilter[],
+					sortBy: sortBy as JobSearchSortBy,
 				};
 				if (typeof minExperience !== "undefined")
 					refetchVars.minExperience = minExperience;
@@ -169,6 +171,7 @@ export default function SearchJobsList({
 		maxSalary,
 		workMode,
 		jobType,
+		sortBy,
 	]);
 
 	if (allJobEdges.length === 0 && !hasNextPage) {
