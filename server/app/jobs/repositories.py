@@ -492,11 +492,11 @@ class JobRepo:
             if region is None:
                 return paginator.empty()
 
-            proximity_km = proximity_km or 1.0
-            max_distance_meters = proximity_km * 1000.0
+            max_distance_meters = (proximity_km or 1.0) * 1000.0
 
             if region.geometry is not None:
                 print("region.geometry: ", region.geometry)
+                # TODO: we should use proximity-KM here
                 search_query["compound"]["must"].append(
                     {
                         "geoWithin": {
@@ -507,23 +507,25 @@ class JobRepo:
                 )
             else:
                 # Use geoWithin for strict distance filtering
-                search_query["compound"]["must"].append(
-                    {
-                        "geoWithin": {
-                            "circle": {
-                                "center": {
-                                    "type": "Point",
-                                    "coordinates": [
-                                        region.coordinates.coordinates[0],
-                                        region.coordinates.coordinates[1],
-                                    ],
-                                },
-                                "radius": max_distance_meters,
+                geo_query = {
+                    "geoWithin": {
+                        "circle": {
+                            "center": {
+                                "type": "Point",
+                                "coordinates": [
+                                    region.coordinates.coordinates[0],
+                                    region.coordinates.coordinates[1],
+                                ],
                             },
-                            "path": "geo",
-                        }
+                            "radius": max_distance_meters,
+                        },
+                        "path": "geo",
                     }
+                }
+                print(
+                    f"DEBUG: Adding geo query with radius {max_distance_meters} radians ({max_distance_meters}m): {geo_query}"
                 )
+                search_query["compound"]["must"].append(geo_query)
 
         # Add text search if provided
         if search_term:
