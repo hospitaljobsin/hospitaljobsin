@@ -63,11 +63,19 @@ const nextConfig: NextConfig = {
 				protocol: "https",
 				hostname: "api.dicebear.com",
 			},
-			// TODO: allow this only in dev/testing mode
 			{
-				protocol: "http",
-				hostname: "localhost",
+				protocol: "https",
+				hostname: env.NEXT_PUBLIC_ROOT_DOMAIN,
 			},
+			...(env.NEXT_PUBLIC_ENVIRONMENT === "development"
+				? [
+						{
+							protocol: "http" as const,
+							hostname: "localhost",
+							port: "9000",
+						},
+					]
+				: []),
 		],
 	},
 	async redirects() {

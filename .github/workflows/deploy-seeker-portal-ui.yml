@@ -91,4 +91,5 @@ jobs:
             BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
             NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.POSTHOG_API_KEY }}
             NEXT_PUBLIC_POSTHOG_HOST: ${{ vars.POSTHOG_API_HOST }}
+            NEXT_PUBLIC_ROOT_DOMAIN: ${{ vars.PUBLIC_ROOT_DOMAIN }}
             JWE_SECRET_KEY: ${{ secrets.SST_JWE_SECRET_KEY }}

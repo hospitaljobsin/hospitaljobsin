@@ -73,11 +73,19 @@ const nextConfig: NextConfig = {
 				hostname: "api.dicebear.com",
 			},
 			new URL(env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL),
-			// TODO: allow this only in dev/testing mode
 			{
-				protocol: "http",
-				hostname: "localhost",
+				protocol: "https",
+				hostname: env.NEXT_PUBLIC_ROOT_DOMAIN,
 			},
+			...(env.NEXT_PUBLIC_ENVIRONMENT === "development"
+				? [
+						{
+							protocol: "http" as const,
+							hostname: "localhost",
+							port: "9000",
+						},
+					]
+				: []),
 		],
 	},
 	async headers() {
