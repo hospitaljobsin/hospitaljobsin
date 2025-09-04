@@ -142,6 +142,12 @@ export default function LocationAutocomplete({
 		}
 	};
 
+	const onBlur = () => {
+		if (value === "") {
+			onClear?.();
+		}
+	};
+
 	return (
 		<>
 			{queryReference && (
@@ -159,6 +165,7 @@ export default function LocationAutocomplete({
 				onKeyDown={preventFormSubmission}
 				isClearable
 				onClear={onClear}
+				onBlur={onBlur}
 			>
 				{suggestions.map((suggestion) => (
 					<AutocompleteItem key={suggestion.placeId}>

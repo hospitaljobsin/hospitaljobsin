@@ -276,11 +276,11 @@ class JobService:
 
             address = Address(
                 display_name=location,
-                street_address=result.street_address,
-                address_locality=result.address_locality,
-                address_region=result.address_region,
-                postal_code=result.postal_code,
-                country=result.country,
+                street_address=result.address.street_address,
+                address_locality=result.address.address_locality,
+                address_region=result.address.address_region,
+                postal_code=result.address.postal_code,
+                country=result.address.country,
             )
 
         job = await self._job_repo.create(
@@ -366,11 +366,11 @@ class JobService:
             )
             address = Address(
                 display_name=location,
-                street_address=result.street_address,
+                street_address=result.address.street_address,
                 address_locality=result.address_locality,
-                address_region=result.address_region,
-                postal_code=result.postal_code,
-                country=result.country,
+                address_region=result.address.address_region,
+                postal_code=result.address.postal_code,
+                country=result.address.country,
             )
         else:
             geo = existing_job.geo
