@@ -208,8 +208,8 @@ export default function SearchJobsList({
 		>
 			<div className="w-full flex gap-12 justify-between items-center mb-6 sm:mb-8">
 				<h2 className="text-base sm:text-lg text-foreground-600 whitespace-nowrap">
-					<span className="font-medium">{data.jobs.totalCount}</span> healthcare
-					{location ? `jobs found in ${location}` : "jobs found"}
+					<span className="font-medium">{data.jobs.totalCount}</span> hospital
+					{location ? ` jobs found in ${location}` : " jobs found"}
 				</h2>
 				<div className="flex gap-2 w-full sm:max-w-xs">
 					<Select
