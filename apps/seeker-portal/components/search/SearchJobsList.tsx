@@ -1,6 +1,7 @@
 import type { SearchJobsListFragment$key } from "@/__generated__/SearchJobsListFragment.graphql";
 import type { SearchJobsListInternalFragment$key } from "@/__generated__/SearchJobsListInternalFragment.graphql";
 import type {
+	JobSearchSortBy,
 	JobTypeFilter,
 	JobWorkModeFilter,
 	SearchJobsListRefetchQuery as SearchClientComponentQueryType,
@@ -150,6 +151,7 @@ export default function SearchJobsList({
 					proximityKm,
 					workMode: (workMode || []) as readonly JobWorkModeFilter[],
 					jobType: (jobType || []) as readonly JobTypeFilter[],
+					sortBy: sortBy as JobSearchSortBy,
 				};
 				if (typeof minExperience !== "undefined")
 					refetchVars.minExperience = minExperience;
@@ -169,6 +171,7 @@ export default function SearchJobsList({
 		maxSalary,
 		workMode,
 		jobType,
+		sortBy,
 	]);
 
 	if (allJobEdges.length === 0 && !hasNextPage) {
@@ -206,7 +209,7 @@ export default function SearchJobsList({
 			<div className="w-full flex gap-12 justify-between items-center mb-6 sm:mb-8">
 				<h2 className="text-base sm:text-lg text-foreground-600 whitespace-nowrap">
 					<span className="font-medium">{data.jobs.totalCount}</span> healthcare
-					jobs found in {location}
+					{location ? `jobs found in ${location}` : "jobs found"}
 				</h2>
 				<div className="flex gap-2 w-full sm:max-w-xs">
 					<Select
