@@ -1,6 +1,7 @@
 from collections.abc import Callable, Iterator
 from typing import Any
 
+import sentry_sdk
 from graphql.error import GraphQLError
 from graphql.execution.execute import ExecutionResult as GraphQLExecutionResult
 from strawberry.extensions.base_extension import SchemaExtension
@@ -25,6 +26,16 @@ class MaskErrors(SchemaExtension):
         self.error_message = error_message
 
     def anonymise_error(self, error: GraphQLError) -> GraphQLError:
+        # Log the original error to Sentry before masking
+        sentry_sdk.capture_exception(
+            error,
+            extra={
+                "graphql_message": error.message,
+                "graphql_path": error.path,
+                "graphql_positions": error.positions,
+                "graphql_locations": getattr(error, "locations", None),
+            },
+        )
         return GraphQLError(
             message=self.error_message,
             nodes=error.nodes,
