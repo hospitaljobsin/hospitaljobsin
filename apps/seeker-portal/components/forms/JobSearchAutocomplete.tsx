@@ -10,22 +10,31 @@ import { usePreloadedQuery, useQueryLoader } from "react-relay";
 import { graphql } from "relay-runtime";
 import { useDebounce } from "use-debounce";
 
-interface JobSearchAutocompleteProps
-	extends Omit<
-		AutocompleteProps,
-		"children" | "onChange" | "isClearable" | "onClear"
-	> {
-	value: string;
-	onChange: (value: SearchJob) => void;
-	onValueChange: (value: string) => void;
-	onSearchSubmit: (searchTerm: string) => void;
-	onClear?: () => void;
-}
-
 export type SearchJob = {
 	displayName: string;
 	jobId: string;
 };
+
+interface JobSearchAutocompleteProps
+	extends Omit<
+		AutocompleteProps<SearchJob>,
+		| "children"
+		| "items"
+		| "inputValue"
+		| "onInputChange"
+		| "onSelectionChange"
+		| "isLoading"
+		| "allowsCustomValue"
+		| "menuTrigger"
+		| "onSubmit"
+	> {
+	value: string;
+	onValueChange: (value: string) => void;
+	onSubmit?: (searchTerm: string) => void;
+	onClear?: () => void;
+	onJobSelect?: (job: SearchJob) => void;
+	placeholder?: string;
+}
 
 const SearchJobsQuery = graphql`
 	query JobSearchAutocompleteQuery($searchTerm: String!) {
@@ -39,8 +48,7 @@ const SearchJobsQuery = graphql`
 	}
 `;
 
-// Separate component to handle data fetching using the query reference
-function JobResultControls({
+function JobSuggestionsLoader({
 	queryReference,
 	onDataLoaded,
 }: {
@@ -61,44 +69,39 @@ function JobResultControls({
 		}
 	}, [data, onDataLoaded]);
 
-	// This component doesn't render anything visually
 	return null;
 }
 
 export default function JobSearchAutocomplete({
 	value,
-	onChange,
-	onClear,
 	onValueChange,
-	onSearchSubmit,
+	onSubmit,
+	onClear,
+	onJobSelect,
+	placeholder = "Search for healthcare jobs...",
 	...props
 }: JobSearchAutocompleteProps) {
-	const [debouncedSearchTerm] = useDebounce(value, 300);
+	const [debouncedValue] = useDebounce(value, 300);
 	const [suggestions, setSuggestions] = useState<SearchJob[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isPending, startTransition] = useTransition();
+	const [justSubmitted, setJustSubmitted] = useState(false);
+	const inputRef = useRef<HTMLInputElement>(null);
 	const [queryReference, loadQuery, disposeQuery] =
 		useQueryLoader<JobSearchAutocompleteQuery>(SearchJobsQuery);
 
-	const shouldRefetchSuggestions = useRef(true);
-
 	const handleDataLoaded = useCallback((jobs: SearchJob[]) => {
 		setSuggestions(jobs);
-		// Make sure loading state is turned off when data is loaded
 		setIsLoading(false);
 	}, []);
 
+	// Load suggestions when debounced value changes and meets criteria
 	useEffect(() => {
-		if (!shouldRefetchSuggestions.current) {
-			shouldRefetchSuggestions.current = true;
-			return;
-		}
-		// Only fetch suggestions if we have a valid query
-		if (debouncedSearchTerm && debouncedSearchTerm.length >= 3) {
+		if (debouncedValue && debouncedValue.length >= 2 && !justSubmitted) {
 			setIsLoading(true);
 			startTransition(() => {
 				loadQuery(
-					{ searchTerm: debouncedSearchTerm },
+					{ searchTerm: debouncedValue },
 					{
 						fetchPolicy: "store-or-network",
 						networkCacheConfig: { force: false },
@@ -106,79 +109,81 @@ export default function JobSearchAutocomplete({
 				);
 			});
 		} else {
-			// Clear suggestions and loading state for empty or short queries
 			setSuggestions([]);
 			setIsLoading(false);
-			// Make sure to dispose any pending query
-			// disposeQuery();
+			disposeQuery();
 		}
 
 		return () => {
 			disposeQuery();
 		};
-	}, [debouncedSearchTerm, loadQuery, disposeQuery]);
+	}, [debouncedValue, loadQuery, disposeQuery, justSubmitted]);
+
+	const handleInputChange = (inputValue: string) => {
+		// Reset justSubmitted when user starts typing again
+		if (justSubmitted) {
+			setJustSubmitted(false);
+		}
+		onValueChange(inputValue);
+	};
 
 	const handleSelectionChange = (selectedKey: Key | null) => {
-		if (!selectedKey) {
-			// Do nothing on blur or deselection
-			return;
-		}
-		const selected = suggestions.find((item) => item.jobId === selectedKey);
-		if (selected) {
-			shouldRefetchSuggestions.current = false;
-			// Update the input value to show the selected item
-			onValueChange(selected.displayName);
-			onChange(selected);
-			// Trigger search refetch when user selects an item
-			onSearchSubmit(selected.displayName);
-			setIsLoading(false);
-			// Clear query reference to completely stop the loading state
-			disposeQuery();
+		if (!selectedKey) return;
+
+		const selectedJob = suggestions.find((job) => job.jobId === selectedKey);
+		if (selectedJob) {
+			onValueChange(selectedJob.displayName);
+			onJobSelect?.(selectedJob);
 		}
 	};
 
-	const handleInputChange = (value: string) => {
-		onValueChange(value);
-		// Don't call onChange here, only when selection changes
+	const handleKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === "Enter") {
+			e.preventDefault();
+			setJustSubmitted(true);
+			onSubmit?.(value);
+
+			// Blur the input to remove focus
+			inputRef.current?.blur();
+
+			// Reset the flag after a short delay to allow typing again
+			setTimeout(() => {
+				setJustSubmitted(false);
+			}, 500);
+		}
 	};
 
-	// Handle clear action to trigger empty search
 	const handleClear = () => {
+		onValueChange("");
 		onClear?.();
-		// Trigger search refetch with empty term when cleared
-		onSearchSubmit("");
-	};
-
-	const onBlur = () => {
-		if (value === "") {
-			onClear?.();
-			onSearchSubmit("");
-		}
 	};
 
 	return (
 		<>
 			{queryReference && (
-				<JobResultControls
+				<JobSuggestionsLoader
 					queryReference={queryReference}
 					onDataLoaded={handleDataLoaded}
 				/>
 			)}
-			<Autocomplete
+			<Autocomplete<SearchJob>
 				{...props}
+				ref={inputRef}
 				inputValue={value}
 				onInputChange={handleInputChange}
-				isLoading={isLoading || isPending}
 				onSelectionChange={handleSelectionChange}
-				isClearable
+				onKeyDown={handleKeyDown}
 				onClear={handleClear}
-				onBlur={onBlur}
+				isLoading={isLoading || isPending}
+				placeholder={placeholder}
+				allowsCustomValue
+				menuTrigger="input"
+				isClearable
+				items={suggestions}
 			>
-				{suggestions.map((suggestion) => (
-					<AutocompleteItem key={suggestion.jobId}>
-						{suggestion.displayName}
-					</AutocompleteItem>
-				))}
+				{(job: SearchJob) => (
+					<AutocompleteItem key={job.jobId}>{job.displayName}</AutocompleteItem>
+				)}
 			</Autocomplete>
 		</>
 	);

@@ -17,9 +17,7 @@ import { useEffect, useState } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Logo from "../Logo";
-import JobSearchAutocomplete, {
-	type SearchJob,
-} from "../forms/JobSearchAutocomplete";
+import JobSearchAutocomplete from "../forms/JobSearchAutocomplete";
 import AuthNavigation from "../layout/AuthNavigation";
 
 export const SearchHeaderFragment = graphql`
@@ -43,15 +41,17 @@ export default function SearchHeader({
 	setSearchTerm,
 }: {
 	query: SearchHeaderFragment$key;
-	searchTerm: string;
-	setSearchTerm: (value: string) => void;
+	searchTerm: string | null;
+	setSearchTerm: (value: string | null) => void;
 }) {
 	const data = useFragment(SearchHeaderFragment, query);
-	const [searchInputValue, setSearchInputValue] = useState(searchTerm);
 
-	// Keep input value in sync with search term prop
+	// Local state for input value, initialized from nuqs filter
+	const [inputValue, setInputValue] = useState(searchTerm || "");
+
+	// Sync local state when nuqs filter changes externally
 	useEffect(() => {
-		setSearchInputValue(searchTerm);
+		setInputValue(searchTerm || "");
 	}, [searchTerm]);
 
 	return (
@@ -87,28 +87,29 @@ export default function SearchHeader({
 					</NavbarBrand>
 					<NavbarItem className="w-full">
 						<JobSearchAutocomplete
-							value={searchInputValue}
-							onChange={(job: SearchJob) => {
-								setSearchInputValue(job.displayName);
+							value={inputValue}
+							onValueChange={setInputValue}
+							onSubmit={(searchTerm) => {
+								setSearchTerm(searchTerm || null);
 							}}
-							onValueChange={setSearchInputValue}
-							onSearchSubmit={setSearchTerm}
+							onClear={() => {
+								setSearchTerm(null);
+							}}
 							placeholder="Search by speciality, keyword or company"
 							startContent={
 								<SearchIcon size={16} className="text-foreground-500" />
 							}
+							onJobSelect={(job) => {
+								setInputValue(job.displayName);
+								setSearchTerm(job.displayName);
+							}}
 							fullWidth
 							variant="bordered"
 							className="hidden lg:block"
 							inputProps={{
 								classNames: {
-									base: "bg-background",
+									inputWrapper: "bg-background",
 								},
-							}}
-							autoComplete="off"
-							onClear={() => {
-								setSearchInputValue("");
-								setSearchTerm("");
 							}}
 						/>
 					</NavbarItem>

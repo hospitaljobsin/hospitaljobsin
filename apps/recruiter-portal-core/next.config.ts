@@ -1,3 +1,4 @@
+import MillionLint from "@million/lint";
 import createMDX from "@next/mdx";
 import { withSentryConfig } from "@sentry/nextjs";
 import { createJiti } from "jiti";
@@ -155,7 +156,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 
 // Merge MDX config with Next.js config
 export default withBundleAnalyzer(
-	withSentryConfig(withMDX(nextConfig), {
+	withSentryConfig(withMDX(MillionLint.next({ rsc: true })(nextConfig)), {
 		// For all available options, see:
 		// https://www.npmjs.com/package/@sentry/webpack-plugin#options
 

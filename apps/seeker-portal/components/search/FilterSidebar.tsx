@@ -11,13 +11,11 @@ import {
 import { EraserIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import JobSearchAutocomplete, {
-	type SearchJob,
-} from "../forms/JobSearchAutocomplete";
+import JobSearchAutocomplete from "../forms/JobSearchAutocomplete";
 import LocationAutocomplete from "../forms/LocationAutocomplete";
 
 export type FilterValues = {
-	q: string;
+	q: string | null;
 	minExperience: number | null;
 	minSalary: number | null;
 	maxSalary: number | null;
@@ -32,8 +30,8 @@ export type FilterSidebarProps = {
 	location: string | null;
 	onChange: (values: FilterValues) => void;
 	open?: boolean;
-	searchTerm: string;
-	setSearchTerm: (value: string) => void;
+	searchTerm: string | null;
+	setSearchTerm: (value: string | null) => void;
 };
 
 export default function FilterSidebar({
@@ -42,16 +40,15 @@ export default function FilterSidebar({
 	onChange,
 	open = true,
 	searchTerm,
-	setSearchTerm,
 }: FilterSidebarProps) {
 	const router = useRouter();
 	const params = useSearchParams();
 	const [locationInput, setLocationInput] = useState(location);
-	const [searchInputValue, setSearchInputValue] = useState(searchTerm);
+	const [searchInput, setSearchInput] = useState(searchTerm || "");
 
-	// Keep input value in sync with search term prop
+	// Sync local state when searchTerm changes externally
 	useEffect(() => {
-		setSearchInputValue(searchTerm);
+		setSearchInput(searchTerm || "");
 	}, [searchTerm]);
 
 	if (!open) return null;
@@ -62,30 +59,24 @@ export default function FilterSidebar({
 			shadow="none"
 		>
 			<CardBody className="flex flex-col gap-12">
-				{/* Speciality input for mobile only */}
-				<JobSearchAutocomplete
-					label="Search"
-					className="block lg:hidden"
-					value={searchInputValue}
-					onChange={(job: SearchJob) => {
-						setSearchInputValue(job.displayName);
-						setSearchTerm(job.displayName);
-						onChange({ ...values, q: job.displayName });
-					}}
-					onValueChange={setSearchInputValue}
-					onSearchSubmit={(searchTerm) => {
-						setSearchTerm(searchTerm);
-						onChange({ ...values, q: searchTerm });
-					}}
-					placeholder="Search by speciality, keyword or company"
-					variant="bordered"
-					fullWidth
-					onClear={() => {
-						setSearchInputValue("");
-						setSearchTerm("");
-						onChange({ ...values, q: "" });
-					}}
-				/>
+				<div className="block lg:hidden">
+					{/* Speciality input for mobile only */}
+					<JobSearchAutocomplete
+						label="Search"
+						value={searchInput}
+						onValueChange={setSearchInput}
+						onSubmit={(searchTerm: string) => {
+							onChange({ ...values, q: searchTerm });
+						}}
+						onClear={() => {
+							setSearchInput("");
+							onChange({ ...values, q: "" });
+						}}
+						placeholder="Search by speciality, keyword or company"
+						variant="bordered"
+						fullWidth
+					/>
+				</div>
 				<LocationAutocomplete
 					id="location"
 					label="Location"

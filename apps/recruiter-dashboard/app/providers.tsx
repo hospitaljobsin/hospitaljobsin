@@ -12,7 +12,6 @@ import { ThemeProvider } from "next-themes";
 import type { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
 import { use, useMemo } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
-import invariant from "tiny-invariant";
 
 // Only if using TypeScript
 declare module "@react-types/shared" {
@@ -34,7 +33,6 @@ export default function Providers({
 	const headersMap = new Map(headersList);
 
 	const nonce = headersMap.get("x-nonce");
-	invariant(nonce, "Nonce is required");
 
 	return (
 		<ProgressProvider

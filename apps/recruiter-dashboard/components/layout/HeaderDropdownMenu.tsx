@@ -19,6 +19,10 @@ export default function HeaderDropdownMenu({ account }: Props) {
 	const { organizationSlug } = useOrganization();
 
 	return (
-		<OrganizationSwitcherList account={data} currentSlug={organizationSlug} />
+		<OrganizationSwitcherList
+			account={data}
+			currentSlug={organizationSlug}
+			showScrollIndicators={true}
+		/>
 	);
 }

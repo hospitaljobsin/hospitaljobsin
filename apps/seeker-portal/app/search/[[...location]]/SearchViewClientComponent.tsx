@@ -56,7 +56,7 @@ export const SearchViewClientComponentFragment = graphql`
 `;
 
 export type Filters = {
-	q: string;
+	q: string | null;
 	minExperience?: number | null;
 	maxExperience?: number | null;
 	minSalary?: number | null;
@@ -73,7 +73,7 @@ export default function SearchViewClientComponent({
 }: Props) {
 	const [filters, setFilters] = useQueryStates(
 		{
-			q: parseAsString.withDefault(FILTER_DEFAULTS.q),
+			q: parseAsString.withDefault(FILTER_DEFAULTS.q || ""),
 			minExperience: parseAsInteger,
 			maxExperience: parseAsInteger,
 			minSalary: parseAsInteger,

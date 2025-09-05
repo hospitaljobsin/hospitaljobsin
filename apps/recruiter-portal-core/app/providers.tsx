@@ -8,7 +8,6 @@ import type { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapte
 import { useRouter } from "next/navigation";
 import { use, useMemo } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
-import invariant from "tiny-invariant";
 
 export default function Providers({
 	children,
@@ -26,7 +25,6 @@ export default function Providers({
 	const headersMap = new Map(headersList);
 
 	const nonce = headersMap.get("x-nonce");
-	invariant(nonce, "Nonce is required");
 
 	return (
 		<HeroUIProvider navigate={router.push}>

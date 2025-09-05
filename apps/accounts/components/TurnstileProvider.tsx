@@ -18,7 +18,7 @@ export const TurnstileProvider = ({
 	nonce,
 }: {
 	children: ReactNode;
-	nonce: string;
+	nonce: string | undefined;
 }) => {
 	const [token, setToken] = useState<string | null>(null);
 	const [isReady, setIsReady] = useState(false);
