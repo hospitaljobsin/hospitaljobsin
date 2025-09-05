@@ -189,6 +189,7 @@ export default function Sidebar({ queryReference }: Props) {
 							href={item.href}
 							isDisabled={
 								item.href === links.organizationDetailSettings &&
+								data.organization.__typename === "Organization" &&
 								!data.organization.isAdmin
 							}
 							title={
@@ -225,48 +226,58 @@ export default function Sidebar({ queryReference }: Props) {
 							{data.organization.name}
 						</span>
 					</DrawerHeader>
-					<div className="w-full flex items-center gap-2 justify-start px-4 pb-6 text-foreground-500">
-						<ArrowLeftRight size={14} />
-						<p className="text-sm">Switch organization</p>
-					</div>
-					{/* Organization switcher for mobile */}
-					<div className="px-4 pb-2">
-						<OrganizationSwitcherList
-							account={data.viewer}
-							currentSlug={data.organization.slug}
-							onSwitch={() => setMobileOpen(false)}
-						/>
-					</div>
-					<DrawerBody className="flex flex-col gap-8 px-4 py-6 h-full">
-						{/* Navigation links as horizontal tabs for mobile */}
-						<Tabs
-							aria-label="Sidebar Navigation"
-							variant="light"
-							selectedKey={getSelectedKey(pathname)}
-							classNames={{
-								tabWrapper: "w-full",
-								base: "w-full",
-								tabContent: "w-full",
-								tabList: "w-full",
-								panel: "h-full",
-								tab: "py-5",
-								cursor: "shadow-none",
-							}}
-							isVertical
-						>
-							{navItems.map((item) => (
-								<Tab
-									key={item.href}
-									href={item.href}
-									title={
-										<div className="flex items-center gap-2">
-											{item.icon}
-											<span>{item.label}</span>
-										</div>
-									}
-								/>
-							))}
-						</Tabs>
+					<DrawerBody className="flex flex-col h-full px-4 py-0">
+						<div className="w-full flex items-center gap-2 justify-start pb-6 text-foreground-500">
+							<ArrowLeftRight size={14} />
+							<p className="text-sm">Switch organization</p>
+						</div>
+						{/* Organization switcher for mobile - with scroll indicators */}
+						<div className="flex-shrink-0 pb-6">
+							<OrganizationSwitcherList
+								account={data.viewer}
+								currentSlug={data.organization.slug}
+								onSwitch={() => setMobileOpen(false)}
+								showScrollIndicators={true}
+							/>
+						</div>
+						{/* Navigation section - takes remaining space */}
+						<div className="flex-1 min-h-0 flex flex-col gap-8 py-6">
+							{/* Navigation links as horizontal tabs for mobile */}
+							<Tabs
+								aria-label="Sidebar Navigation"
+								variant="light"
+								selectedKey={getSelectedKey(pathname)}
+								classNames={{
+									tabWrapper: "w-full",
+									base: "w-full",
+									tabContent: "w-full",
+									tabList: "w-full",
+									panel: "h-full",
+									tab: "py-5 data-[selected=true]:bg-foreground-200 data-[selected=true]:text-foreground-900 data-[hover=true]:bg-foreground-100",
+									cursor: "bg-foreground-200",
+								}}
+								isVertical
+							>
+								{navItems.map((item) => (
+									<Tab
+										key={item.href}
+										href={item.href}
+										onClick={() => setMobileOpen(false)}
+										isDisabled={
+											item.href === links.organizationDetailSettings &&
+											data.organization.__typename === "Organization" &&
+											!data.organization.isAdmin
+										}
+										title={
+											<div className="flex items-center gap-2">
+												{item.icon}
+												<span>{item.label}</span>
+											</div>
+										}
+									/>
+								))}
+							</Tabs>
+						</div>
 					</DrawerBody>
 				</DrawerContent>
 			</Drawer>
