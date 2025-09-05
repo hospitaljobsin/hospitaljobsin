@@ -18,9 +18,7 @@ import { useState } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Logo from "../Logo";
-import JobSearchAutocomplete, {
-	type SearchJob,
-} from "../forms/JobSearchAutocomplete";
+import JobSearchAutocomplete from "../forms/JobSearchAutocomplete";
 import AuthNavigation from "./AuthNavigation";
 
 export const DashboardHeaderFragment = graphql`
@@ -46,8 +44,8 @@ export default function DashboardHeader({
 	animate?: boolean;
 }) {
 	const data = useFragment(DashboardHeaderFragment, query);
-	const [searchInputValue, setSearchInputValue] = useState("");
 	const router = useRouter();
+	const [searchValue, setSearchValue] = useState("");
 
 	const handleSearchSubmit = (searchTerm: string) => {
 		// Navigate to search with the search term
@@ -90,12 +88,13 @@ export default function DashboardHeader({
 					</NavbarBrand>
 					<NavbarItem className="w-full">
 						<JobSearchAutocomplete
-							value={searchInputValue}
-							onChange={(job: SearchJob) => {
-								setSearchInputValue(job.displayName);
+							value={searchValue}
+							onValueChange={setSearchValue}
+							onSubmit={handleSearchSubmit}
+							onJobSelect={(job) => {
+								setSearchValue(job.displayName);
+								handleSearchSubmit(job.displayName);
 							}}
-							onValueChange={setSearchInputValue}
-							onSearchSubmit={handleSearchSubmit}
 							placeholder="Search by speciality (e.g. Cardiology)"
 							startContent={
 								<SearchIcon size={16} className="text-foreground-500" />
@@ -107,9 +106,6 @@ export default function DashboardHeader({
 								classNames: {
 									base: "bg-background",
 								},
-							}}
-							onClear={() => {
-								setSearchInputValue("");
 							}}
 						/>
 					</NavbarItem>

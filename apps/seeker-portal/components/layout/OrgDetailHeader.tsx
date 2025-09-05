@@ -17,9 +17,7 @@ import { useState } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Logo from "../Logo";
-import JobSearchAutocomplete, {
-	type SearchJob,
-} from "../forms/JobSearchAutocomplete";
+import JobSearchAutocomplete from "../forms/JobSearchAutocomplete";
 import OrganizationTabs from "../organization-detail/OrganizationTabs";
 import AuthDropdown from "./AuthNavigation";
 import IncompleteProfileBanner from "./IncompleteProfileBanner";
@@ -54,10 +52,8 @@ export default function OrgDetailHeader({
 	root: OrgDetailHeaderFragment$key;
 }) {
 	const data = useFragment(OrgDetailHeaderFragment, root);
-
-	const [searchInputValue, setSearchInputValue] = useState("");
-
 	const router = useRouter();
+	const [searchValue, setSearchValue] = useState("");
 
 	const handleSearchSubmit = (searchTerm: string) => {
 		// Navigate to search with the search term
@@ -96,12 +92,13 @@ export default function OrgDetailHeader({
 					</NavbarBrand>
 					<NavbarItem className="w-full">
 						<JobSearchAutocomplete
-							value={searchInputValue}
-							onChange={(job: SearchJob) => {
-								setSearchInputValue(job.displayName);
+							value={searchValue}
+							onValueChange={setSearchValue}
+							onSubmit={handleSearchSubmit}
+							onJobSelect={(job) => {
+								setSearchValue(job.displayName);
+								handleSearchSubmit(job.displayName);
 							}}
-							onValueChange={setSearchInputValue}
-							onSearchSubmit={handleSearchSubmit}
 							placeholder="Search by speciality, keyword or company"
 							startContent={
 								<SearchIcon size={16} className="text-foreground-500" />
@@ -115,9 +112,6 @@ export default function OrgDetailHeader({
 								},
 							}}
 							autoComplete="off"
-							onClear={() => {
-								setSearchInputValue("");
-							}}
 						/>
 					</NavbarItem>
 

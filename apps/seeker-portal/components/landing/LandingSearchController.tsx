@@ -18,19 +18,16 @@ export function LandingSearchController({
 	const [selectedLocation, setSelectedLocation] =
 		useState<SearchLocation | null>(null);
 
-	const handleJobClear = () => {
-		setSearchTerm("");
-	};
-
-	const handleAutocompleteSearchSubmit = () => {
-		// No-op function - don't submit form on autocomplete selection
-		// Form should only submit when Search Jobs button is clicked
-	};
-
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
+	const handleSubmit = (
+		e?: React.FormEvent<HTMLFormElement>,
+		overrideSearchTerm?: string,
+	) => {
+		if (e) {
+			e.preventDefault();
+		}
 		const params = new URLSearchParams();
-		if (searchTerm) params.set("q", searchTerm);
+		const termToUse = overrideSearchTerm || searchTerm;
+		if (termToUse) params.set("q", termToUse);
 		if (selectedLocation?.displayName) {
 			router.push(
 				`${links.search(selectedLocation.displayName)}?${params.toString()}`,
@@ -54,10 +51,10 @@ export function LandingSearchController({
 						placeholder="Speciality, Keyword or Company"
 						value={searchTerm}
 						isDisabled={isDisabled}
-						onChange={() => {}}
 						onValueChange={setSearchTerm}
-						onSearchSubmit={handleAutocompleteSearchSubmit}
-						onClear={handleJobClear}
+						onJobSelect={(job) => {
+							setSearchTerm(job.displayName);
+						}}
 					/>
 					<LocationAutocomplete
 						id="location"

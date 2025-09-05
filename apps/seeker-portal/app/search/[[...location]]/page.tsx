@@ -150,7 +150,8 @@ function parseSearchParams(
 	);
 
 	return {
-		searchTerm: parseStringParam(searchParams.q, FILTER_DEFAULTS.q) || null,
+		searchTerm:
+			parseStringParam(searchParams.q, FILTER_DEFAULTS.q || "") || null,
 		minExperience: parseIntParam(searchParams.minExperience),
 		minSalary: parseIntParam(searchParams.minSalary),
 		maxSalary: parseIntParam(searchParams.maxSalary),
