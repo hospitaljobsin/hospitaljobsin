@@ -174,7 +174,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 			>
 				<CardHeader>
 					<div className="flex flex-col sm:flex-row w-full justify-between gap-4 sm:gap-6 items-start sm:items-center">
-						<div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+						<div className="flex items-center gap-3 sm:gap-4 w-full sm:flex-1 sm:max-w-[60%] min-w-0">
 							{data.organization.logoUrl && (
 								<div className="relative aspect-square h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0">
 									<Image
@@ -185,14 +185,14 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 									/>
 								</div>
 							)}
-							<div className="flex flex-col gap-1 items-start min-w-0">
-								<h4 className="text-base sm:text-xl font-medium truncate max-w-full sm:max-w-none">
+							<div className="flex flex-col gap-1 items-start min-w-0 flex-1">
+								<h4 className="text-base sm:text-xl font-medium truncate w-full">
 									{data.title}
 								</h4>
 								{data.organization.name &&
 								data.organization.verificationStatus ? (
-									<div className="flex flex-row items-center gap-2">
-										<p className="text-xs sm:text-base font-normal text-foreground-500 truncate max-w-[140px] sm:max-w-none">
+									<div className="flex flex-row items-center gap-2 min-w-0">
+										<p className="text-xs sm:text-base font-normal text-foreground-500 truncate">
 											{data.organization.name}
 										</p>
 										{data.organization.verificationStatus.verified && (
@@ -210,7 +210,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 								) : null}
 							</div>
 						</div>
-						<div className="mt-2 sm:mt-0 w-full sm:w-auto flex justify-start sm:justify-end">
+						<div className="mt-2 sm:mt-0 w-full sm:w-auto sm:flex-shrink-0 flex justify-start sm:justify-end">
 							{salaryRange}
 						</div>
 					</div>
