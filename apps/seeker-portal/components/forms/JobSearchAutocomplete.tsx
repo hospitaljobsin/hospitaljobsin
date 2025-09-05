@@ -4,7 +4,7 @@ import type { JobSearchAutocompleteQuery } from "@/__generated__/JobSearchAutoco
 import type { AutocompleteProps } from "@heroui/react";
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import type { Key } from "react";
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery, useQueryLoader } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -17,7 +17,7 @@ export type SearchJob = {
 
 interface JobSearchAutocompleteProps
 	extends Omit<
-		AutocompleteProps,
+		AutocompleteProps<SearchJob>,
 		| "children"
 		| "items"
 		| "inputValue"
@@ -26,6 +26,7 @@ interface JobSearchAutocompleteProps
 		| "isLoading"
 		| "allowsCustomValue"
 		| "menuTrigger"
+		| "onSubmit"
 	> {
 	value: string;
 	onValueChange: (value: string) => void;
@@ -84,6 +85,8 @@ export default function JobSearchAutocomplete({
 	const [suggestions, setSuggestions] = useState<SearchJob[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isPending, startTransition] = useTransition();
+	const [justSubmitted, setJustSubmitted] = useState(false);
+	const inputRef = useRef<HTMLInputElement>(null);
 	const [queryReference, loadQuery, disposeQuery] =
 		useQueryLoader<JobSearchAutocompleteQuery>(SearchJobsQuery);
 
@@ -94,7 +97,7 @@ export default function JobSearchAutocomplete({
 
 	// Load suggestions when debounced value changes and meets criteria
 	useEffect(() => {
-		if (debouncedValue && debouncedValue.length >= 2) {
+		if (debouncedValue && debouncedValue.length >= 2 && !justSubmitted) {
 			setIsLoading(true);
 			startTransition(() => {
 				loadQuery(
@@ -114,9 +117,13 @@ export default function JobSearchAutocomplete({
 		return () => {
 			disposeQuery();
 		};
-	}, [debouncedValue, loadQuery, disposeQuery]);
+	}, [debouncedValue, loadQuery, disposeQuery, justSubmitted]);
 
 	const handleInputChange = (inputValue: string) => {
+		// Reset justSubmitted when user starts typing again
+		if (justSubmitted) {
+			setJustSubmitted(false);
+		}
 		onValueChange(inputValue);
 	};
 
@@ -133,7 +140,16 @@ export default function JobSearchAutocomplete({
 	const handleKeyDown = (e: React.KeyboardEvent) => {
 		if (e.key === "Enter") {
 			e.preventDefault();
+			setJustSubmitted(true);
 			onSubmit?.(value);
+
+			// Blur the input to remove focus
+			inputRef.current?.blur();
+
+			// Reset the flag after a short delay to allow typing again
+			setTimeout(() => {
+				setJustSubmitted(false);
+			}, 500);
 		}
 	};
 
@@ -150,8 +166,9 @@ export default function JobSearchAutocomplete({
 					onDataLoaded={handleDataLoaded}
 				/>
 			)}
-			<Autocomplete
+			<Autocomplete<SearchJob>
 				{...props}
+				ref={inputRef}
 				inputValue={value}
 				onInputChange={handleInputChange}
 				onSelectionChange={handleSelectionChange}
@@ -164,10 +181,8 @@ export default function JobSearchAutocomplete({
 				isClearable
 				items={suggestions}
 			>
-				{(job) => (
-					<AutocompleteItem key={job.jobId} value={job.jobId}>
-						{job.displayName}
-					</AutocompleteItem>
+				{(job: SearchJob) => (
+					<AutocompleteItem key={job.jobId}>{job.displayName}</AutocompleteItem>
 				)}
 			</Autocomplete>
 		</>

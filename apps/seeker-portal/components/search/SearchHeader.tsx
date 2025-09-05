@@ -100,6 +100,10 @@ export default function SearchHeader({
 							startContent={
 								<SearchIcon size={16} className="text-foreground-500" />
 							}
+							onJobSelect={(job) => {
+								setInputValue(job.displayName);
+								setSearchTerm(job.displayName);
+							}}
 							fullWidth
 							variant="bordered"
 							className="hidden lg:block"
