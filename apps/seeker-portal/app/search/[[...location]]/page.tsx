@@ -197,20 +197,31 @@ export async function generateMetadata({
 		const jobCount = data.jobs.totalCount;
 		const searchTerm = variables.searchTerm;
 
-		let title = `${jobCount} Hospital Jobs`;
-		let description = `Find ${jobCount} healthcare jobs including doctor, nurse, paramedical, and medical positions.`;
+		let title = `${jobCount}+ Medical Jobs & Healthcare Careers`;
+		let description = `Discover ${jobCount}+ verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`;
 
 		if (searchTerm) {
-			title = `${jobCount} ${searchTerm} Hospital Jobs`;
-			description = `Find ${jobCount} ${searchTerm} healthcare jobs. Apply for doctor, nurse, paramedical, and medical positions.`;
+			// Enhance search term titles with medical context
+			const medicalTitle =
+				searchTerm.toLowerCase().includes("doctor") ||
+				searchTerm.toLowerCase().includes("physician")
+					? `${jobCount}+ ${searchTerm} Positions & Medical Careers`
+					: searchTerm.toLowerCase().includes("nurse") ||
+							searchTerm.toLowerCase().includes("nursing")
+						? `${jobCount}+ ${searchTerm} Jobs & Healthcare Opportunities`
+						: `${jobCount}+ ${searchTerm} Medical Jobs & Healthcare Careers`;
+
+			title = medicalTitle;
+			description = `Find ${jobCount}+ ${searchTerm} positions at leading healthcare institutions. Join top medical facilities as a ${searchTerm.toLowerCase()} with competitive salaries & benefits.`;
 		}
 
 		if (location) {
 			title += ` in ${location}`;
-			description += ` Browse opportunities in ${location} and apply directly.`;
+			description += ` Explore medical career opportunities in ${location}'s premier hospitals, specialty clinics & healthcare centers.`;
 		} else {
-			// title += " in India";
-			description += " Browse opportunities across India and apply directly.";
+			title += " | India's Medical Job Portal";
+			description +=
+				" Browse nationwide medical career opportunities across India's leading healthcare networks.";
 		}
 
 		return {
@@ -221,13 +232,14 @@ export async function generateMetadata({
 		console.error("Error generating search metadata:", error);
 
 		// Fallback metadata
-		let title = "Hospital Jobs in India";
+		let title =
+			"Medical Jobs & Healthcare Careers in India | Leading Medical Job Portal";
 		let description =
-			"Find the latest healthcare jobs including doctor, nurse, paramedical, and medical positions across India.";
+			"Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities across India.";
 
 		if (variables.searchTerm) {
-			title = `${variables.searchTerm} Hospital Jobs in India`;
-			description = `Find ${variables.searchTerm} healthcare jobs. Apply for doctor, nurse, paramedical, and medical positions.`;
+			title = `${variables.searchTerm} Medical Jobs & Healthcare Careers in India`;
+			description = `Find ${variables.searchTerm} positions at leading healthcare institutions across India. Join premier medical facilities with competitive salaries & comprehensive benefits.`;
 		}
 
 		return {

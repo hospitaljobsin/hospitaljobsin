@@ -104,7 +104,7 @@ export default function DashboardHeader({
 							className="hidden lg:block"
 							inputProps={{
 								classNames: {
-									base: "bg-background",
+									inputWrapper: "bg-background",
 								},
 							}}
 						/>

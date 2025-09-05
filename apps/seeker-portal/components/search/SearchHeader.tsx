@@ -93,7 +93,6 @@ export default function SearchHeader({
 								setSearchTerm(searchTerm || null);
 							}}
 							onClear={() => {
-								setInputValue("");
 								setSearchTerm(null);
 							}}
 							placeholder="Search by speciality, keyword or company"
@@ -109,7 +108,7 @@ export default function SearchHeader({
 							className="hidden lg:block"
 							inputProps={{
 								classNames: {
-									base: "bg-background",
+									inputWrapper: "bg-background",
 								},
 							}}
 						/>

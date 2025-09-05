@@ -108,7 +108,7 @@ export default function OrgDetailHeader({
 							className="hidden lg:block"
 							inputProps={{
 								classNames: {
-									base: "bg-background",
+									inputWrapper: "bg-background",
 								},
 							}}
 							autoComplete="off"
