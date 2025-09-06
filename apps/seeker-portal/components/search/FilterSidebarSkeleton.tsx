@@ -22,7 +22,7 @@ export default function FilterSidebarSkeleton() {
 					label="Search"
 					className="block lg:hidden"
 					isDisabled
-					placeholder="Search by speciality, keyword or company"
+					placeholder="Search by Speciality or keyword"
 					variant="bordered"
 					fullWidth
 				/>

@@ -396,6 +396,7 @@ resource "aws_autoscaling_group" "ecs_asg" {
   health_check_type         = "EC2"
   health_check_grace_period = 45                 # Increased to allow ECS agent to start
   termination_policies      = ["OldestInstance"] # Terminate oldest instances first
+  default_cooldown          = 60
 
   launch_template {
     id      = aws_launch_template.ecs_lt.id
@@ -431,11 +432,11 @@ resource "aws_ecs_capacity_provider" "asg_capacity_provider" {
     # Enable termination protection for production to prevent accidental instance termination
     managed_termination_protection = var.environment_name == "production" ? "ENABLED" : "DISABLED"
     managed_scaling {
-      status                    = "ENABLED"
-      target_capacity           = 100
+      status                    = var.environment_name == "staging" ? "DISABLED" : "ENABLED"
+      target_capacity           = var.environment_name == "staging" ? 1 : 100
       minimum_scaling_step_size = 1
       maximum_scaling_step_size = 1
-      instance_warmup_period    = 300
+      instance_warmup_period    = var.environment_name == "staging" ? 0 : 300
     }
   }
 
@@ -641,7 +642,8 @@ resource "aws_ecs_service" "app" {
   name            = "${var.resource_prefix}-app-service"
   cluster         = aws_ecs_cluster.ecs.id
   task_definition = aws_ecs_task_definition.app.arn
-  #   launch_type                        = "EC2"
+  # uncomment this out while changing the capacity provider
+  # launch_type                        = "EC2"
   desired_count                      = var.environment_name == "staging" ? 0 : 1
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
@@ -650,6 +652,7 @@ resource "aws_ecs_service" "app" {
     Environment = var.environment_name
   }
 
+  # comment this out while changing the capacity provider
   capacity_provider_strategy {
     capacity_provider = aws_ecs_capacity_provider.asg_capacity_provider.name
     weight            = 1

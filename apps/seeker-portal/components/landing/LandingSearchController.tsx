@@ -48,7 +48,7 @@ export function LandingSearchController({
 						name="searchTerm"
 						label="Search by"
 						variant="underlined"
-						placeholder="Speciality, Keyword or Company"
+						placeholder="Speciality or Keyword"
 						value={searchTerm}
 						isDisabled={isDisabled}
 						onValueChange={setSearchTerm}

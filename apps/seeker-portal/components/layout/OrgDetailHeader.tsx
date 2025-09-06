@@ -99,7 +99,7 @@ export default function OrgDetailHeader({
 								setSearchValue(job.displayName);
 								handleSearchSubmit(job.displayName);
 							}}
-							placeholder="Search by speciality, keyword or company"
+							placeholder="Search by Speciality or keyword"
 							startContent={
 								<SearchIcon size={16} className="text-foreground-500" />
 							}
