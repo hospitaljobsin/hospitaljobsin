@@ -432,12 +432,14 @@ resource "aws_ecs_capacity_provider" "asg_capacity_provider" {
     # Enable termination protection for production to prevent accidental instance termination
     managed_termination_protection = var.environment_name == "production" ? "ENABLED" : "DISABLED"
     managed_scaling {
-      status                    = "ENABLED"
+      status                    = var.environment_name == "staging" ? "DISABLED" : "ENABLED"
       target_capacity           = var.environment_name == "staging" ? 1 : 100
       minimum_scaling_step_size = 1
       maximum_scaling_step_size = 1
       instance_warmup_period    = var.environment_name == "staging" ? 0 : 300
     }
+
+    managed_draining = var.environment_name == "staging" ? "DISABLED" : "ENABLED"
   }
 
   lifecycle {
