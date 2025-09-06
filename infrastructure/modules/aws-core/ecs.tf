@@ -390,7 +390,7 @@ resource "aws_autoscaling_group" "ecs_asg" {
   protect_from_scale_in     = var.environment_name == "production" ? true : false
   name                      = "${var.resource_prefix}-backend-asg"
   desired_capacity          = var.environment_name == "staging" ? 0 : 1
-  max_size                  = var.environment_name == "staging" ? 2 : 2
+  max_size                  = var.environment_name == "staging" ? 1 : 2
   min_size                  = var.environment_name == "staging" ? 0 : 1
   vpc_zone_identifier       = data.aws_subnets.t3a_compatible_public.ids
   health_check_type         = "EC2"
@@ -432,7 +432,7 @@ resource "aws_ecs_capacity_provider" "asg_capacity_provider" {
     # Enable termination protection for production to prevent accidental instance termination
     managed_termination_protection = var.environment_name == "production" ? "ENABLED" : "DISABLED"
     managed_scaling {
-      status                    = var.environment_name == "staging" ? "DISABLED" : "ENABLED"
+      status                    = "ENABLED"
       target_capacity           = var.environment_name == "staging" ? 1 : 100
       minimum_scaling_step_size = 1
       maximum_scaling_step_size = 1

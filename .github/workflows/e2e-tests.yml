@@ -171,8 +171,8 @@ jobs:
                 --cli-binary-format raw-in-base64-out \
                 response.json
 
-      # Always scale ECS + ASG down after tests
-      - name: Scale down ECS service and ASG
+      # Always scale ECS + ASG down after tests - ENSURE ZERO INSTANCES
+      - name: Scale down ECS service and ASG to zero instances
         run: |
           echo "Scaling down ECS Backend service..."
           aws ecs update-service \
@@ -185,16 +185,80 @@ jobs:
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --services ${{ vars.AWS_BACKEND_ECS_SERVICE }}
 
-          echo "Waiting additional 30 seconds for task cleanup..."
-          sleep 30
+          echo "Waiting 90 seconds for capacity provider to scale down..."
+          sleep 90
 
-          echo "Scaling down ASG..."
+          echo "Aggressively scaling down ASG to ensure zero instances..."
           aws autoscaling update-auto-scaling-group \
             --auto-scaling-group-name ${{ vars.AWS_ASG_NAME }} \
             --min-size 0 \
-            --max-size 0 \
             --desired-capacity 0
 
-          echo "Waiting for ASG instances to terminate..."
-          aws autoscaling wait all-instances-in-service \
-            --auto-scaling-group-names ${{ vars.AWS_ASG_NAME }} || true
+          echo "Waiting for natural ASG scale down..."
+          for i in {1..20}; do
+            INSTANCES=$(aws autoscaling describe-auto-scaling-groups \
+              --auto-scaling-group-names ${{ vars.AWS_ASG_NAME }} \
+              --query 'AutoScalingGroups[0].Instances[?LifecycleState!=`Terminating`&&LifecycleState!=`Terminated`].InstanceId' \
+              --output text)
+
+            if [ -z "$INSTANCES" ]; then
+              echo "All instances terminated successfully via natural scaling"
+              break
+            fi
+
+            echo "Still have active instances: $INSTANCES (attempt $i/20)"
+            sleep 15
+          done
+
+          # Force terminate any remaining instances
+          REMAINING_INSTANCES=$(aws autoscaling describe-auto-scaling-groups \
+            --auto-scaling-group-names ${{ vars.AWS_ASG_NAME }} \
+            --query 'AutoScalingGroups[0].Instances[?LifecycleState!=`Terminating`&&LifecycleState!=`Terminated`].InstanceId' \
+            --output text)
+
+          if [ ! -z "$REMAINING_INSTANCES" ]; then
+            echo "Force terminating remaining instances: $REMAINING_INSTANCES"
+            for instance in $REMAINING_INSTANCES; do
+              echo "Terminating instance: $instance"
+              aws autoscaling terminate-instance-in-auto-scaling-group \
+                --instance-id $instance \
+                --should-decrement-desired-capacity
+            done
+
+            echo "Waiting for forced termination to complete..."
+            for i in {1..15}; do
+              INSTANCES=$(aws autoscaling describe-auto-scaling-groups \
+                --auto-scaling-group-names ${{ vars.AWS_ASG_NAME }} \
+                --query 'AutoScalingGroups[0].Instances[?LifecycleState!=`Terminating`&&LifecycleState!=`Terminated`].InstanceId' \
+                --output text)
+
+              if [ -z "$INSTANCES" ]; then
+                echo "All instances successfully terminated"
+                break
+              fi
+
+              echo "Still terminating instances... (attempt $i/15)"
+              sleep 10
+            done
+          fi
+
+          echo "Final verification - ASG status:"
+          aws autoscaling describe-auto-scaling-groups \
+            --auto-scaling-group-names ${{ vars.AWS_ASG_NAME }} \
+            --query 'AutoScalingGroups[0].{DesiredCapacity:DesiredCapacity,MinSize:MinSize,CurrentInstances:length(Instances),ActiveInstances:length(Instances[?LifecycleState==`InService`])}'
+
+          # Final check to ensure zero instances
+          FINAL_COUNT=$(aws autoscaling describe-auto-scaling-groups \
+            --auto-scaling-group-names ${{ vars.AWS_ASG_NAME }} \
+            --query 'AutoScalingGroups[0].Instances[?LifecycleState!=`Terminating`&&LifecycleState!=`Terminated`]' \
+            --output text)
+
+          if [ ! -z "$FINAL_COUNT" ]; then
+            echo "ERROR: Still have running instances after cleanup!"
+            aws autoscaling describe-auto-scaling-groups \
+              --auto-scaling-group-names ${{ vars.AWS_ASG_NAME }} \
+              --query 'AutoScalingGroups[0].Instances[].{InstanceId:InstanceId,LifecycleState:LifecycleState,HealthStatus:HealthStatus}'
+            exit 1
+          else
+            echo "SUCCESS: Zero instances running - cleanup complete"
+          fi
