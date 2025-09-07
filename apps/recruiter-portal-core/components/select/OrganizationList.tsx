@@ -67,15 +67,23 @@ export default function OrganizationList({ rootQuery }: Props) {
 		const observer = new IntersectionObserver(
 			(entries) => {
 				const entry = entries[0];
+				console.log("Intersection observer triggered:", {
+					isIntersecting: entry.isIntersecting,
+					hasNextPage: data.organizations.pageInfo.hasNextPage,
+					isLoadingNext,
+					currentCount: data.organizations.edges.length,
+					pageInfo: data.organizations.pageInfo,
+				});
+
 				if (
 					entry.isIntersecting &&
 					data.organizations.pageInfo.hasNextPage &&
 					!isLoadingNext
 				) {
-					loadNext(25);
+					loadNext(10);
 				}
 			},
-			{ threshold: 1.0 },
+			{ threshold: 0.1 },
 		);
 
 		observer.observe(observerRef.current);
@@ -123,7 +131,13 @@ export default function OrganizationList({ rootQuery }: Props) {
 			{data.organizations.edges.map((jobEdge) => (
 				<Organization organization={jobEdge.node} key={jobEdge.node.id} />
 			))}
-			<div ref={observerRef} className="h-10" />
+			<div ref={observerRef} className="h-20 flex items-center justify-center">
+				{data.organizations.pageInfo.hasNextPage && !isLoadingNext && (
+					<div className="text-sm text-foreground-400">
+						Scroll to load more...
+					</div>
+				)}
+			</div>
 			{isLoadingNext && <OrganizationListSkeleton />}
 		</div>
 	);

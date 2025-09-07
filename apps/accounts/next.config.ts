@@ -1,4 +1,3 @@
-import MillionLint from "@million/lint";
 import { withSentryConfig } from "@sentry/nextjs";
 import { createJiti } from "jiti";
 import type { NextConfig } from "next";
@@ -146,7 +145,7 @@ const nextConfig: NextConfig = {
 	},
 };
 
-export default withSentryConfig(MillionLint.next({ rsc: true })(nextConfig), {
+export default withSentryConfig(nextConfig, {
 	// For all available options, see:
 	// https://www.npmjs.com/package/@sentry/webpack-plugin#options
 

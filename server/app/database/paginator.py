@@ -108,6 +108,7 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType], BasePaginat
         *,
         document_cls: type[ModelType],
         paginate_by: str,
+        entity_paginate_by: str | None = None,
         reverse: bool = False,
         apply_ordering: bool = True,
         calculate_total_count: bool = False,
@@ -116,6 +117,7 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType], BasePaginat
         self._document_cls = document_cls
         self._reverse = reverse
         self._paginate_by = paginate_by
+        self._entity_paginate_by = entity_paginate_by or self._paginate_by
         self._apply_ordering = apply_ordering
 
     def __apply_ordering(
@@ -206,11 +208,11 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType], BasePaginat
         else:
             pipeline = resolved_search_criteria.get_aggregation_pipeline()
             projection_model = resolved_search_criteria.get_projection_model()
+
         pipeline = self.__apply_ordering(pipeline=pipeline, last=last)
         pipeline = self.__apply_filters(pipeline=pipeline, before=before, after=after)
 
         pipeline.append({"$limit": pagination_limit + 1})
-
         total_count = None
 
         if self.calculate_total_count:
@@ -255,10 +257,14 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType], BasePaginat
             has_previous_page = after is not None
 
         start_cursor = (
-            operator.attrgetter(self._paginate_by)(entities[0]) if entities else None
+            operator.attrgetter(self._entity_paginate_by)(entities[0])
+            if entities
+            else None
         )
         end_cursor = (
-            operator.attrgetter(self._paginate_by)(entities[-1]) if entities else None
+            operator.attrgetter(self._entity_paginate_by)(entities[-1])
+            if entities
+            else None
         )
 
         return PaginatedResult(
