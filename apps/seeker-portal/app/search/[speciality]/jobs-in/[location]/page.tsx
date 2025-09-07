@@ -209,10 +209,10 @@ export async function generateMetadata({
 		const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT;
 
 		let title = hasReasonableCount
-			? `${jobCount}+ Medical Jobs & Healthcare Careers`
+			? `${jobCount}Medical Jobs & Healthcare Careers`
 			: "Medical Jobs & Healthcare Careers";
 		let description = hasReasonableCount
-			? `Discover ${jobCount}+ verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
+			? `Discover ${jobCount}verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
 			: "Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.";
 
 		if (speciality) {
@@ -221,14 +221,14 @@ export async function generateMetadata({
 				const medicalTitle =
 					speciality.toLowerCase().includes("doctor") ||
 					speciality.toLowerCase().includes("physician")
-						? `${jobCount}+ ${speciality} Positions & Medical Careers`
+						? `${jobCount}${speciality} Positions & Medical Careers`
 						: speciality.toLowerCase().includes("nurse") ||
 								speciality.toLowerCase().includes("nursing")
-							? `${jobCount}+ ${speciality} Jobs & Healthcare Opportunities`
-							: `${jobCount}+ ${speciality} Medical Jobs & Healthcare Careers`;
+							? `${jobCount}${speciality} Jobs & Healthcare Opportunities`
+							: `${jobCount}${speciality} Medical Jobs & Healthcare Careers`;
 
 				title = medicalTitle;
-				description = `Find ${jobCount}+ ${speciality} positions at leading healthcare institutions. Join top medical facilities as a ${speciality.toLowerCase()} with competitive salaries & benefits.`;
+				description = `Find ${jobCount}${speciality} positions at leading healthcare institutions. Join top medical facilities as a ${speciality.toLowerCase()} with competitive salaries & benefits.`;
 			} else {
 				const medicalTitle =
 					speciality.toLowerCase().includes("doctor") ||
