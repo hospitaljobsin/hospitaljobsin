@@ -25,16 +25,20 @@ export function LandingSearchController({
 		if (e) {
 			e.preventDefault();
 		}
-		const params = new URLSearchParams();
 		const termToUse = overrideSearchTerm || searchTerm;
-		if (termToUse) params.set("q", termToUse);
-		if (selectedLocation?.displayName) {
-			router.push(
-				`${links.search(selectedLocation.displayName)}?${params.toString()}`,
-			);
+		if (termToUse && selectedLocation?.displayName) {
+			router.push(links.search(selectedLocation.displayName, termToUse));
 			return;
 		}
-		router.push(`${links.search()}?${params.toString()}`);
+		if (termToUse) {
+			router.push(links.search(undefined, termToUse));
+			return;
+		}
+		if (selectedLocation?.displayName) {
+			router.push(links.search(selectedLocation.displayName));
+			return;
+		}
+		router.push(links.search());
 	};
 
 	return (
