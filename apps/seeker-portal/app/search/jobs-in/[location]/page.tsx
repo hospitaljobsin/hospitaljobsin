@@ -114,10 +114,10 @@ export async function generateMetadata({
 		const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT;
 
 		let title = hasReasonableCount
-			? `${jobCount}Medical Jobs & Healthcare Careers`
+			? `${jobCount} Medical Jobs & Healthcare Careers`
 			: "Medical Jobs & Healthcare Careers";
 		let description = hasReasonableCount
-			? `Discover ${jobCount}verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
+			? `Discover ${jobCount} verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
 			: "Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.";
 
 		if (location) {
