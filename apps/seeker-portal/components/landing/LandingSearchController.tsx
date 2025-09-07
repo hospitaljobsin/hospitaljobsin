@@ -66,6 +66,7 @@ export function LandingSearchController({
 						label="Location"
 						placeholder="e.g. Chennai"
 						variant="underlined"
+						allowsCustomValue
 						value={locationInput}
 						isDisabled={isDisabled}
 						onValueChange={setLocationInput}

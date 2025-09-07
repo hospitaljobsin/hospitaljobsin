@@ -167,5 +167,7 @@ secrets/
 .langgraph_api
 whatsapp_job_tracking.json
 shared_mailbox.json
+import_progress.json
 
 data/
+geo_cache/
