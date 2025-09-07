@@ -95,7 +95,7 @@ export default function SearchHeader({
 							onClear={() => {
 								setSearchTerm(null);
 							}}
-							placeholder="Search by speciality, keyword or company"
+							placeholder="Search by Speciality or keyword"
 							startContent={
 								<SearchIcon size={16} className="text-foreground-500" />
 							}

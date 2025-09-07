@@ -43,23 +43,20 @@ jobs:
               --payload '{}' \
               --cli-binary-format raw-in-base64-out \
               response.json
-      # Scale ECS + ASG up
-      - name: Scale up ECS service and ASG
+      # Start instances for testing
+      - name: Start instances for testing
         run: |
-          echo "Scaling up ASG..."
+          echo "Starting instances..."
           aws autoscaling update-auto-scaling-group \
             --auto-scaling-group-name ${{ vars.AWS_ASG_NAME }} \
-            --min-size 1 \
             --desired-capacity 1
 
-          echo "Scaling up ECS Backend service..."
           aws ecs update-service \
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --service ${{ vars.AWS_BACKEND_ECS_SERVICE }} \
             --desired-count 1
 
-
-          echo "Waiting for ECS service to stabilize..."
+          echo "Waiting for service to be ready..."
           aws ecs wait services-stable \
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --services ${{ vars.AWS_BACKEND_ECS_SERVICE }}
@@ -171,29 +168,18 @@ jobs:
                 --cli-binary-format raw-in-base64-out \
                 response.json
 
-      # Always scale ECS + ASG down after tests
-      - name: Scale down ECS service and ASG
+      # Stop instances after testing
+      - name: Stop instances after testing
         run: |
-          echo "Scaling down ECS Backend service..."
+          echo "Stopping instances..."
+
           aws ecs update-service \
             --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
             --service ${{ vars.AWS_BACKEND_ECS_SERVICE }} \
             --desired-count 0
 
-          echo "Waiting for ECS service to drain tasks..."
-          aws ecs wait services-stable \
-            --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
-            --services ${{ vars.AWS_BACKEND_ECS_SERVICE }}
-
-          echo "Waiting additional 30 seconds for task cleanup..."
-          sleep 30
-
-          echo "Scaling down ASG..."
           aws autoscaling update-auto-scaling-group \
             --auto-scaling-group-name ${{ vars.AWS_ASG_NAME }} \
-            --min-size 0 \
             --desired-capacity 0
 
-          echo "Waiting for ASG instances to terminate..."
-          aws autoscaling wait all-instances-in-service \
-            --auto-scaling-group-names ${{ vars.AWS_ASG_NAME }} || true
+          echo "✅ Cleanup complete - AWS will terminate instances automatically"

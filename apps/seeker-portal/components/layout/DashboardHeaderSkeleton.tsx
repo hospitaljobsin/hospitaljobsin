@@ -37,7 +37,7 @@ export default function DashboardHeaderSkeleton() {
 				<NavbarItem className="w-full">
 					<Input
 						isDisabled
-						placeholder="Search by speciality, keyword or company"
+						placeholder="Search by Speciality or keyword"
 						startContent={
 							<SearchIcon size={16} className="text-foreground-500" />
 						}

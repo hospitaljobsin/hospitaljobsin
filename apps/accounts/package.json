@@ -22,7 +22,6 @@
 		"@internationalized/date": "^3.8.2",
 		"@lobehub/icons": "^2.4.0",
 		"@marsidev/react-turnstile": "^1.1.0",
-		"@million/lint": "^1.0.14",
 		"@next/bundle-analyzer": "^15.3.5",
 		"@opennextjs/aws": "^3.7.4",
 		"@sentry/nextjs": "^9.33.0",

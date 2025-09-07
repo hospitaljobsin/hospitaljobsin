@@ -72,7 +72,7 @@ export default function FilterSidebar({
 							setSearchInput("");
 							onChange({ ...values, q: "" });
 						}}
-						placeholder="Search by speciality, keyword or company"
+						placeholder="Search by Speciality or keyword"
 						variant="bordered"
 						fullWidth
 					/>

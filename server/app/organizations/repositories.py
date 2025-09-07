@@ -168,7 +168,8 @@ class OrganizationRepo:
         paginator: Paginator[OrganizationMember, ObjectId, Organization] = Paginator(
             reverse=True,
             document_cls=OrganizationMember,
-            paginate_by="id",
+            paginate_by="_id",
+            entity_paginate_by="id",
         )
 
         pipeline = [
@@ -183,7 +184,6 @@ class OrganizationRepo:
             },
             {"$unwind": "$organization_data"},
             {"$replaceRoot": {"newRoot": "$organization_data"}},
-            {"$sort": {"_id": -1}},
         ]
 
         return await paginator.paginate(
