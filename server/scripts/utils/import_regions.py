@@ -126,6 +126,16 @@ def filter_english_names(names: list[str]) -> list[str]:
     ]
 
 
+def extract_postal_code(properties: dict, postal_fields: list[str]) -> str | None:
+    """Extract postal code from properties using available fields."""
+    for field in postal_fields:
+        if properties.get(field):
+            postal_code = safe_str(properties[field])
+            if postal_code:
+                return postal_code
+    return None
+
+
 def get_healthcare_aliases(name: str, level: str) -> list[str]:
     """Get healthcare-specific aliases for Indian locations."""
     aliases = []
@@ -436,7 +446,7 @@ async def insert_in_batches(docs: list[Region], step_name: str) -> int:
                     print(f"⏳ Retrying batch {batch_num}...")
                     await asyncio.sleep(RETRY_DELAY)
                 else:
-                    print(f"💥 Failed batch {batch_num} after retries")
+                    print(f"💥 Failed batch {batch_num} after retries: {e}")
 
             except Exception as e:
                 retry_count += 1
@@ -485,8 +495,11 @@ async def import_specifc_data_type(
     skipped_count = 0
 
     # Handle different data sources
-    if wof_type in ["country", "region"]:
-        # Natural Earth data (Shapefiles)
+    if wof_type == "country":
+        # Natural Earth data for countries
+        await process_natural_earth_countries(data_dir, our_level, docs)
+    elif wof_type == "region":
+        # Natural Earth data for states/regions
         await process_natural_earth_data(data_dir, our_level, docs)
     elif wof_type in ["locality", "neighbourhood"]:
         # GeoNames India data (Text files)
@@ -502,10 +515,10 @@ async def import_specifc_data_type(
         print(f"📋 No {step_name} to import")
 
 
-async def process_natural_earth_data(
+async def process_natural_earth_countries(
     data_dir: Path, our_level: str, docs: list
 ) -> None:
-    """Process Natural Earth shapefile data."""
+    """Process Natural Earth shapefile data specifically for countries."""
     try:
         import geopandas as gpd
 
@@ -515,17 +528,62 @@ async def process_natural_earth_data(
             print(f"❌ No shapefile found in {data_dir}")
             return
 
+        print(f"📂 Found shapefile: {shp_files[0]}")
+
         # Read shapefile
         gdf = gpd.read_file(shp_files[0])
+        print(f"📊 Loaded {len(gdf)} country records from shapefile")
+
+        # Country-specific field mappings
+        name_fields = ["NAME_EN", "NAME", "ADMIN", "NAME_LONG", "SOVEREIGNT"]
+        alias_fields = [
+            "NAME_SORT",
+            "NAME_ALT",
+            "ABBREV",
+            "POSTAL",
+            "NAME_LOCAL",
+            "NAME_AR",
+            "NAME_BN",
+            "NAME_DE",
+            "NAME_ES",
+            "NAME_FR",
+            "NAME_EL",
+            "NAME_HI",
+            "NAME_HU",
+            "NAME_ID",
+            "NAME_IT",
+            "NAME_JA",
+            "NAME_KO",
+            "NAME_NL",
+            "NAME_PL",
+            "NAME_PT",
+            "NAME_RU",
+            "NAME_SV",
+            "NAME_TR",
+            "NAME_VI",
+            "NAME_ZH",
+            "ABBREV_LEN",
+            "TINY",
+            "HOMEPART",
+        ]
+        country_code_field = "ISO_A2"
+        postal_code_fields = ["POSTAL", "POSTAL_CODE", "ZIP", "ZIPCODE"]
+        region_fields = ["NAME_EN", "NAME", "ADMIN", "NAME_LONG", "SOVEREIGNT"]
+
+        processed_count = 0
+        skipped_count = 0
+        error_count = 0
 
         for _, row in gdf.iterrows():
             try:
                 properties = row.to_dict()
+                processed_count += 1
+
+                if processed_count % 25 == 0:
+                    print(f"   📊 Processed {processed_count} countries...")
 
                 # Extract names for Natural Earth format
                 primary_name = None
-                name_fields = ["NAME_EN", "NAME", "ADMIN", "NAME_LONG"]
-
                 for field in name_fields:
                     if properties.get(field):
                         primary_name = safe_str(properties[field])
@@ -539,44 +597,13 @@ async def process_natural_earth_data(
                 aliases = []
 
                 # Standard Natural Earth alias fields
-                alias_fields = [
-                    "NAME_SORT",
-                    "NAME_ALT",
-                    "ABBREV",
-                    "POSTAL",
-                    "NAME_LOCAL",
-                    "NAME_AR",
-                    "NAME_BN",
-                    "NAME_DE",
-                    "NAME_ES",
-                    "NAME_FR",
-                    "NAME_EL",
-                    "NAME_HI",
-                    "NAME_HU",
-                    "NAME_ID",
-                    "NAME_IT",
-                    "NAME_JA",
-                    "NAME_KO",
-                    "NAME_NL",
-                    "NAME_PL",
-                    "NAME_PT",
-                    "NAME_RU",
-                    "NAME_SV",
-                    "NAME_TR",
-                    "NAME_VI",
-                    "NAME_ZH",
-                    "ABBREV_LEN",
-                    "TINY",
-                    "HOMEPART",
-                ]
-
                 for field in alias_fields:
                     if properties.get(field):
                         alias = safe_str(properties[field])
                         if alias and alias != primary_name:
                             aliases.append(alias)
 
-                # Add manual healthcare-specific aliases for Indian states/regions
+                # Add manual healthcare-specific aliases for countries
                 aliases.extend(get_healthcare_aliases(primary_name, our_level))
 
                 aliases = filter_english_names(aliases)
@@ -586,11 +613,10 @@ async def process_natural_earth_data(
                 if geometry is None:
                     continue
 
-                # Get centroid for coordinates - fix coordinate handling
+                # Get centroid for coordinates
                 if hasattr(geometry, "centroid"):
                     centroid = geometry.centroid
                     try:
-                        # Ensure coordinates are proper floats, not tuples
                         lon = float(centroid.x)
                         lat = float(centroid.y)
 
@@ -612,6 +638,400 @@ async def process_natural_earth_data(
                         )
                         continue
                 else:
+                    continue
+
+                # Convert geometry to GeoJSON
+                geom_dict = geometry.__geo_interface__
+
+                # Clean up coordinate structure for polygons
+                if geom_dict["type"] in ["Polygon", "MultiPolygon"]:
+                    # Use the same coordinate cleaning functions as the main function
+                    def clean_coordinates(coords):
+                        if not isinstance(coords, (list, tuple)):
+                            return coords
+
+                        if len(coords) == 2 and all(
+                            isinstance(x, (int, float)) for x in coords
+                        ):
+                            try:
+                                lon, lat = float(coords[0]), float(coords[1])
+                                if (-180 <= lon <= 180) and (-90 <= lat <= 90):
+                                    return [lon, lat]
+                                else:
+                                    return []
+                            except (ValueError, TypeError):
+                                return []
+
+                        if len(coords) == 3 and all(
+                            isinstance(x, (int, float)) for x in coords
+                        ):
+                            try:
+                                lon, lat = float(coords[0]), float(coords[1])
+                                if (-180 <= lon <= 180) and (-90 <= lat <= 90):
+                                    return [lon, lat]
+                                else:
+                                    return []
+                            except (ValueError, TypeError):
+                                return []
+
+                        try:
+                            cleaned = []
+                            for item in coords:
+                                if item is not None:
+                                    result = clean_coordinates(item)
+                                    if result:
+                                        cleaned.append(result)
+                            return cleaned
+                        except (TypeError, ValueError):
+                            return []
+
+                    def remove_duplicate_vertices(coords):
+                        if not isinstance(coords, list):
+                            return coords
+
+                        if (
+                            len(coords) > 0
+                            and isinstance(coords[0], list)
+                            and len(coords[0]) == 2
+                        ):
+                            cleaned_ring = []
+                            prev_point = None
+
+                            for point in coords:
+                                if prev_point is None or point != prev_point:
+                                    cleaned_ring.append(point)
+                                    prev_point = point
+
+                            if (
+                                len(cleaned_ring) > 2
+                                and cleaned_ring[0] != cleaned_ring[-1]
+                            ):
+                                cleaned_ring.append(cleaned_ring[0])
+
+                            return cleaned_ring
+                        else:
+                            return [remove_duplicate_vertices(item) for item in coords]
+
+                    try:
+                        geom_dict["coordinates"] = clean_coordinates(
+                            geom_dict["coordinates"]
+                        )
+                        geom_dict["coordinates"] = remove_duplicate_vertices(
+                            geom_dict["coordinates"]
+                        )
+
+                        if not geom_dict["coordinates"]:
+                            print(
+                                f"Warning: Empty coordinates after cleaning for {primary_name}"
+                            )
+                            continue
+
+                    except Exception as clean_error:
+                        print(
+                            f"Warning: Failed to clean coordinates for {primary_name}: {clean_error}"
+                        )
+                        continue
+
+                # Create address with postal code information
+                country_code = clean_country_code(properties.get(country_code_field))
+                postal_code = extract_postal_code(properties, postal_code_fields)
+
+                # For countries, we don't have region/locality info
+                address = Address(
+                    street_address=None,
+                    address_locality=None,
+                    address_region=None,
+                    postal_code=postal_code,
+                    country=country_code,
+                )
+
+                # Create region with proper coordinate handling
+                try:
+                    polygon_geom = None
+
+                    # Validate geometry using Shapely
+                    try:
+                        from shapely.geometry import shape
+                        from shapely.validation import make_valid
+
+                        shapely_geom = shape(geom_dict)
+
+                        if not shapely_geom.is_valid:
+                            print(
+                                f"Warning: Invalid geometry for {primary_name}, attempting to fix..."
+                            )
+                            shapely_geom = make_valid(shapely_geom)
+                            geom_dict = shapely_geom.__geo_interface__
+
+                        if shapely_geom.is_empty:
+                            print(
+                                f"Warning: Empty geometry after fixing for {primary_name}"
+                            )
+                            continue
+
+                    except Exception as shapely_error:
+                        print(
+                            f"Warning: Failed to validate geometry for {primary_name}: {shapely_error}"
+                        )
+                        continue
+
+                    if geom_dict["type"] in ["Polygon"]:
+                        try:
+                            coords = geom_dict["coordinates"]
+                            if coords and len(coords) > 0:
+                                polygon_geom = GeoJSONPolygon(**geom_dict)
+                        except (ValidationError, ValueError, TypeError) as poly_error:
+                            print(
+                                f"Warning: Invalid polygon geometry for {primary_name}: {poly_error}"
+                            )
+                            polygon_geom = None
+                    elif geom_dict["type"] in ["MultiPolygon"]:
+                        try:
+                            coords = geom_dict["coordinates"]
+                            if coords and len(coords) > 0:
+                                polygon_geom = GeoJSONMultiPolygon(**geom_dict)
+                        except (ValidationError, ValueError, TypeError) as poly_error:
+                            print(
+                                f"Warning: Invalid polygon geometry for {primary_name}: {poly_error}"
+                            )
+                            polygon_geom = None
+
+                    # Validate point geometry
+                    try:
+                        coords = point_geom.get("coordinates", [])
+                        if not isinstance(coords, list) or len(coords) != 2:
+                            print(
+                                f"❌ Invalid coordinates structure for {primary_name}: {coords}"
+                            )
+                            continue
+
+                        try:
+                            lon, lat = float(coords[0]), float(coords[1])
+                            if not ((-180 <= lon <= 180) and (-90 <= lat <= 90)):
+                                print(
+                                    f"❌ Coordinates out of valid range for {primary_name}: ({lon}, {lat})"
+                                )
+                                continue
+                            point_geom["coordinates"] = [lon, lat]
+                        except (ValueError, TypeError, IndexError) as coord_err:
+                            print(
+                                f"❌ Cannot convert coordinates to float for {primary_name}: {coord_err}"
+                            )
+                            continue
+
+                        point_obj = GeoJSONPoint(**point_geom)
+                    except (ValidationError, ValueError, TypeError) as point_error:
+                        print(
+                            f"❌ Invalid point geometry for {primary_name}: {point_error}"
+                        )
+                        continue
+
+                    region = Region(
+                        name=primary_name,
+                        aliases=aliases,
+                        level=our_level,  # type: ignore
+                        geometry=polygon_geom,
+                        coordinates=point_obj,
+                        address=address,
+                    )
+                    docs.append(region)
+
+                except Exception as coord_error:
+                    error_count += 1
+                    if error_count <= 5:
+                        print(
+                            f"   ❌ Coordinate error for {primary_name}: {coord_error}"
+                        )
+                    continue
+
+            except Exception as e:
+                error_count += 1
+                if error_count <= 5:
+                    print(f"   ❌ Error processing country: {e}")
+                continue
+
+        print(f"✅ Processed {processed_count} countries, created {len(docs)} regions")
+        print(f"📊 Summary: {skipped_count} skipped, {error_count} errors")
+
+    except ImportError:
+        print("❌ geopandas not installed. Install with: pip install geopandas")
+    except Exception as e:
+        print(f"❌ Error processing Natural Earth countries data: {e}")
+
+
+async def process_natural_earth_data(
+    data_dir: Path, our_level: str, docs: list
+) -> None:
+    """Process Natural Earth shapefile data for states/regions."""
+    try:
+        import geopandas as gpd
+
+        # Find shapefile
+        shp_files = list(data_dir.rglob("*.shp"))
+        if not shp_files:
+            print(f"❌ No shapefile found in {data_dir}")
+            return
+
+        print(f"📂 Found shapefile: {shp_files[0]}")
+
+        # Read shapefile
+        gdf = gpd.read_file(shp_files[0])
+        print(f"📊 Loaded {len(gdf)} records from shapefile")
+
+        # Debug: Print available columns to help with field mapping
+        print(f"🔍 Available columns: {list(gdf.columns)}")
+
+        # Define field mappings for Natural Earth admin-1 states/provinces
+        # Based on actual Natural Earth admin-1 attribute table structure (all lowercase)
+        postal_code_fields = ["postal", "postal_code", "zip", "zipcode", "post"]
+        name_fields = ["name", "name_en", "name_long", "admin", "name_alt", "name_sort"]
+        alias_fields = [
+            "name_sort",
+            "name_alt",
+            "abbrev",
+            "postal",
+            "name_local",
+            "name_ar",
+            "name_bn",
+            "name_de",
+            "name_es",
+            "name_fr",
+            "name_el",
+            "name_hi",
+            "name_hu",
+            "name_id",
+            "name_it",
+            "name_ja",
+            "name_ko",
+            "name_nl",
+            "name_pl",
+            "name_pt",
+            "name_ru",
+            "name_sv",
+            "name_tr",
+            "name_vi",
+            "name_zh",
+            "name_he",
+            "name_uk",
+            "name_ur",
+            "name_fa",
+            "name_zht",
+            "abbrev_len",
+            "tiny",
+            "homepart",
+            "name_ascii",  # Common in Natural Earth
+            "name_abbrev",  # Common in Natural Earth
+        ]
+        country_code_field = "adm0_a3"  # Natural Earth uses adm0_a3 for country codes
+        region_fields = ["name", "name_en", "admin", "name_long", "name_alt"]
+
+        processed_count = 0
+        skipped_count = 0
+        error_count = 0
+
+        for _, row in gdf.iterrows():
+            try:
+                properties = row.to_dict()
+                processed_count += 1
+
+                if processed_count % 50 == 0:
+                    print(
+                        f"   📊 Processed {processed_count} records... (skipped: {skipped_count}, errors: {error_count})"
+                    )
+
+                # Extract names for Natural Earth format
+                primary_name = None
+                for field in name_fields:
+                    if properties.get(field):
+                        primary_name = safe_str(properties[field])
+                        if primary_name:
+                            break
+
+                if not primary_name:
+                    skipped_count += 1
+                    if (
+                        skipped_count <= 5
+                    ):  # Show first few skipped records for debugging
+                        print(
+                            f"   ⚠️  Skipped record {processed_count}: No valid name found in fields {name_fields}"
+                        )
+                    continue
+
+                # Get aliases - Enhanced for healthcare recruitment
+                aliases = []
+
+                # Standard Natural Earth alias fields
+                for field in alias_fields:
+                    if properties.get(field):
+                        alias = safe_str(properties[field])
+                        if alias and alias != primary_name:
+                            aliases.append(alias)
+
+                # Add manual healthcare-specific aliases for Indian states/regions
+                aliases.extend(get_healthcare_aliases(primary_name, our_level))
+
+                aliases = filter_english_names(aliases)
+
+                # Get geometry
+                geometry = row.geometry
+                if geometry is None or geometry.is_empty:
+                    skipped_count += 1
+                    if skipped_count <= 5:
+                        print(f"   ⚠️  Skipped {primary_name}: No valid geometry")
+                    continue
+
+                # Validate geometry before processing
+                try:
+                    from shapely.validation import make_valid
+
+                    if not geometry.is_valid:
+                        print(f"   🔧 Repairing invalid geometry for {primary_name}")
+                        geometry = make_valid(geometry)
+                        if geometry.is_empty:
+                            skipped_count += 1
+                            if skipped_count <= 5:
+                                print(
+                                    f"   ⚠️  Skipped {primary_name}: Geometry became empty after repair"
+                                )
+                            continue
+                except Exception as repair_error:
+                    print(
+                        f"   ⚠️  Failed to repair geometry for {primary_name}: {repair_error}"
+                    )
+                    skipped_count += 1
+                    continue
+
+                # Get centroid for coordinates - fix coordinate handling
+                if hasattr(geometry, "centroid"):
+                    centroid = geometry.centroid
+                    try:
+                        # Ensure coordinates are proper floats, not tuples
+                        lon = float(centroid.x)
+                        lat = float(centroid.y)
+
+                        # Validate coordinate ranges
+                        if not (-180 <= lon <= 180) or not (-90 <= lat <= 90):
+                            print(
+                                f"   ⚠️  Invalid centroid coordinates for {primary_name}: ({lon}, {lat})"
+                            )
+                            skipped_count += 1
+                            continue
+
+                        # Create point geometry with validated coordinates
+                        point_geom = {
+                            "type": "Point",
+                            "coordinates": [float(lon), float(lat)],
+                        }
+                    except (ValueError, TypeError, AttributeError) as centroid_error:
+                        print(
+                            f"   ⚠️  Failed to extract centroid for {primary_name}: {centroid_error}"
+                        )
+                        skipped_count += 1
+                        continue
+                else:
+                    skipped_count += 1
+                    if skipped_count <= 5:
+                        print(f"   ⚠️  Skipped {primary_name}: No centroid available")
                     continue
 
                 # Convert geometry to GeoJSON and fix coordinate structure
@@ -676,8 +1096,46 @@ async def process_natural_earth_data(
                             )
                             return []
 
+                    def remove_duplicate_vertices(coords):
+                        """Remove duplicate consecutive vertices from polygon coordinates"""
+                        if not isinstance(coords, list):
+                            return coords
+
+                        # For polygon rings, remove duplicate consecutive points
+                        if (
+                            len(coords) > 0
+                            and isinstance(coords[0], list)
+                            and len(coords[0]) == 2
+                        ):
+                            # This is a ring of coordinates
+                            cleaned_ring = []
+                            prev_point = None
+
+                            for point in coords:
+                                if prev_point is None or point != prev_point:
+                                    cleaned_ring.append(point)
+                                    prev_point = point
+
+                            # Ensure polygon is closed (first and last points should be the same)
+                            if (
+                                len(cleaned_ring) > 2
+                                and cleaned_ring[0] != cleaned_ring[-1]
+                            ):
+                                cleaned_ring.append(cleaned_ring[0])
+
+                            return cleaned_ring
+                        else:
+                            # Recursively process nested structures
+                            return [remove_duplicate_vertices(item) for item in coords]
+
                     try:
+                        # First clean coordinates
                         geom_dict["coordinates"] = clean_coordinates(
+                            geom_dict["coordinates"]
+                        )
+
+                        # Then remove duplicate vertices
+                        geom_dict["coordinates"] = remove_duplicate_vertices(
                             geom_dict["coordinates"]
                         )
 
@@ -694,19 +1152,54 @@ async def process_natural_earth_data(
                         )
                         continue
 
-                # Create address
-                country_code = clean_country_code(properties.get("ISO_A2"))
+                # Create address with postal code information
+                country_code = clean_country_code(properties.get(country_code_field))
+                postal_code = extract_postal_code(properties, postal_code_fields)
+
+                # For countries, we don't have region/locality info
                 address = Address(
                     street_address=None,
                     address_locality=None,
                     address_region=None,
-                    postal_code=None,
+                    postal_code=postal_code,
                     country=country_code,
                 )
 
                 # Create region with proper coordinate handling
                 try:
                     polygon_geom = None
+
+                    # Validate geometry using Shapely before creating GeoJSON objects
+                    try:
+                        from shapely.geometry import shape
+                        from shapely.validation import make_valid
+
+                        # Create Shapely geometry from the cleaned coordinates
+                        shapely_geom = shape(geom_dict)
+
+                        # Make the geometry valid if it's not
+                        if not shapely_geom.is_valid:
+                            print(
+                                f"Warning: Invalid geometry for {primary_name}, attempting to fix..."
+                            )
+                            shapely_geom = make_valid(shapely_geom)
+
+                            # Update geom_dict with the fixed geometry
+                            geom_dict = shapely_geom.__geo_interface__
+
+                        # Check if geometry is empty after fixing
+                        if shapely_geom.is_empty:
+                            print(
+                                f"Warning: Empty geometry after fixing for {primary_name}"
+                            )
+                            continue
+
+                    except Exception as shapely_error:
+                        print(
+                            f"Warning: Failed to validate geometry for {primary_name}: {shapely_error}"
+                        )
+                        continue
+
                     if geom_dict["type"] in ["Polygon"]:
                         try:
                             # Validate coordinate structure before creating polygon
@@ -722,7 +1215,7 @@ async def process_natural_earth_data(
                                 f"Warning: Invalid polygon geometry for {primary_name}: {poly_error}"
                             )
                             polygon_geom = None
-                    if geom_dict["type"] in ["MultiPolygon"]:
+                    elif geom_dict["type"] in ["MultiPolygon"]:
                         try:
                             # Validate coordinate structure before creating polygon
                             coords = geom_dict["coordinates"]
@@ -781,12 +1274,21 @@ async def process_natural_earth_data(
                     docs.append(region)
 
                 except Exception as coord_error:
-                    print(f"❌ Coordinate error for {primary_name}: {coord_error}")
+                    error_count += 1
+                    if error_count <= 5:
+                        print(
+                            f"   ❌ Coordinate error for {primary_name}: {coord_error}"
+                        )
                     continue
 
             except Exception as e:
-                print(f"❌ Error processing region: {e}")
+                error_count += 1
+                if error_count <= 5:  # Show first few errors for debugging
+                    print(f"   ❌ Error processing record {processed_count}: {e}")
                 continue
+
+        print(f"✅ Processed {processed_count} records, created {len(docs)} regions")
+        print(f"📊 Summary: {skipped_count} skipped, {error_count} errors")
 
     except ImportError:
         print("❌ geopandas not installed. Install with: pip install geopandas")
@@ -868,12 +1370,17 @@ async def process_geonames_india_data(
                     "coordinates": [float(longitude), float(latitude)],
                 }
 
-                # Create address
+                # Create address with postal code and locality information
+                # Note: GeoNames main data does not contain postal codes
+                # Postal codes are stored in separate alternate names file with language code 'post'
+                postal_code = None  # No postal code available in main GeoNames data
+
+                # For Indian localities, use the name as address_locality
                 address = Address(
                     street_address=None,
-                    address_locality=None,
-                    address_region=None,
-                    postal_code=None,
+                    address_locality=name,
+                    address_region=None,  # We'll need to map this from state data
+                    postal_code=postal_code,
                     country=clean_country_code("IN"),
                 )
 
