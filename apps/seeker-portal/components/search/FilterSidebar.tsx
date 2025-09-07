@@ -71,13 +71,22 @@ export default function FilterSidebar({
 		router.push(redirectUrl);
 	};
 
-	const handleLocationChange = (newLocation: { displayName: string }) => {
+	const handleJobSearchClear = () => {
+		let redirectUrl: string;
+		if (location) {
+			redirectUrl = links.search(location);
+		} else {
+			redirectUrl = links.search();
+		}
+	};
+
+	const handleLocationSubmit = (newLocation: string) => {
 		// Build redirect URL based on speciality presence
 		let redirectUrl: string;
 		if (speciality) {
-			redirectUrl = links.search(newLocation.displayName, speciality);
+			redirectUrl = links.search(newLocation, speciality);
 		} else {
-			redirectUrl = links.search(newLocation.displayName);
+			redirectUrl = links.search(newLocation);
 		}
 
 		// Preserve existing query parameters
@@ -121,10 +130,7 @@ export default function FilterSidebar({
 						value={searchInput}
 						onValueChange={setSearchInput}
 						onSubmit={handleJobSearchSubmit}
-						onClear={() => {
-							setSearchInput("");
-							handleJobSearchSubmit("");
-						}}
+						onClear={handleJobSearchClear}
 						onJobSelect={(job) => {
 							setSearchInput(job.displayName);
 							handleJobSearchSubmit(job.displayName);
@@ -138,7 +144,7 @@ export default function FilterSidebar({
 					id="location"
 					label="Location"
 					value={locationInput || ""}
-					onChange={handleLocationChange}
+					onSubmit={handleLocationSubmit}
 					onValueChange={(val) => {
 						setLocationInput(val);
 					}}
@@ -148,6 +154,7 @@ export default function FilterSidebar({
 							setLocationInput(location);
 						}
 					}}
+					allowsCustomValue
 				/>
 				{location && (
 					<Slider
