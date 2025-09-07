@@ -7,7 +7,7 @@ import type {
 } from "@/__generated__/pageSearchMetadataQuery.graphql";
 import type SearchViewQueryNode from "@/__generated__/pageSearchViewQuery.graphql";
 import type { pageSearchViewQuery } from "@/__generated__/pageSearchViewQuery.graphql";
-import { FILTER_DEFAULTS } from "@/lib/constants";
+import { FILTER_DEFAULTS, REASONABLE_JOB_COUNT } from "@/lib/constants";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import type { Metadata } from "next";
 import { graphql, readInlineData } from "relay-runtime";
@@ -185,9 +185,14 @@ export async function generateMetadata({
 		);
 
 		const jobCount = data.jobs.totalCount;
+		const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT; // Only show count if we have 50+ jobs
 
-		let title = `${jobCount}+ Medical Jobs & Healthcare Careers`;
-		let description = `Discover ${jobCount}+ verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`;
+		let title = hasReasonableCount
+			? `${jobCount}+ Medical Jobs & Healthcare Careers`
+			: "Medical Jobs & Healthcare Careers";
+		let description = hasReasonableCount
+			? `Discover ${jobCount}+ verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
+			: "Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.";
 
 		// No search term handling for main search page since we removed 'q' param
 		title += " | India's Medical Job Portal";

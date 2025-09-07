@@ -7,7 +7,7 @@ import type {
 } from "@/__generated__/pageSearchLocationSpecialityMetadataQuery.graphql";
 import type SearchViewLocationQueryNode from "@/__generated__/pageSearchLocationSpecialityViewQuery.graphql";
 import type { pageSearchLocationSpecialityViewQuery } from "@/__generated__/pageSearchLocationSpecialityViewQuery.graphql";
-import { FILTER_DEFAULTS } from "@/lib/constants";
+import { FILTER_DEFAULTS, REASONABLE_JOB_COUNT } from "@/lib/constants";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import type { Metadata } from "next";
 import { graphql, readInlineData } from "relay-runtime";
@@ -206,23 +206,42 @@ export async function generateMetadata({
 			);
 
 		const jobCount = data.jobs.totalCount;
+		const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT;
 
-		let title = `${jobCount}+ Medical Jobs & Healthcare Careers`;
-		let description = `Discover ${jobCount}+ verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`;
+		let title = hasReasonableCount
+			? `${jobCount}+ Medical Jobs & Healthcare Careers`
+			: "Medical Jobs & Healthcare Careers";
+		let description = hasReasonableCount
+			? `Discover ${jobCount}+ verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
+			: "Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.";
 
 		if (speciality) {
 			// Enhance search term titles with medical context
-			const medicalTitle =
-				speciality.toLowerCase().includes("doctor") ||
-				speciality.toLowerCase().includes("physician")
-					? `${jobCount}+ ${speciality} Positions & Medical Careers`
-					: speciality.toLowerCase().includes("nurse") ||
-							speciality.toLowerCase().includes("nursing")
-						? `${jobCount}+ ${speciality} Jobs & Healthcare Opportunities`
-						: `${jobCount}+ ${speciality} Medical Jobs & Healthcare Careers`;
+			if (hasReasonableCount) {
+				const medicalTitle =
+					speciality.toLowerCase().includes("doctor") ||
+					speciality.toLowerCase().includes("physician")
+						? `${jobCount}+ ${speciality} Positions & Medical Careers`
+						: speciality.toLowerCase().includes("nurse") ||
+								speciality.toLowerCase().includes("nursing")
+							? `${jobCount}+ ${speciality} Jobs & Healthcare Opportunities`
+							: `${jobCount}+ ${speciality} Medical Jobs & Healthcare Careers`;
 
-			title = medicalTitle;
-			description = `Find ${jobCount}+ ${speciality} positions at leading healthcare institutions. Join top medical facilities as a ${speciality.toLowerCase()} with competitive salaries & benefits.`;
+				title = medicalTitle;
+				description = `Find ${jobCount}+ ${speciality} positions at leading healthcare institutions. Join top medical facilities as a ${speciality.toLowerCase()} with competitive salaries & benefits.`;
+			} else {
+				const medicalTitle =
+					speciality.toLowerCase().includes("doctor") ||
+					speciality.toLowerCase().includes("physician")
+						? `${speciality} Positions & Medical Careers`
+						: speciality.toLowerCase().includes("nurse") ||
+								speciality.toLowerCase().includes("nursing")
+							? `${speciality} Jobs & Healthcare Opportunities`
+							: `${speciality} Medical Jobs & Healthcare Careers`;
+
+				title = medicalTitle;
+				description = `Find ${speciality} positions at leading healthcare institutions. Join top medical facilities as a ${speciality.toLowerCase()} with competitive salaries & benefits.`;
+			}
 		}
 
 		if (location) {
