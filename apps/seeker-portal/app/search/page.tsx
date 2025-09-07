@@ -7,7 +7,7 @@ import type {
 } from "@/__generated__/pageSearchMetadataQuery.graphql";
 import type SearchViewQueryNode from "@/__generated__/pageSearchViewQuery.graphql";
 import type { pageSearchViewQuery } from "@/__generated__/pageSearchViewQuery.graphql";
-import { FILTER_DEFAULTS } from "@/lib/constants";
+import { FILTER_DEFAULTS, REASONABLE_JOB_COUNT } from "@/lib/constants";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import type { Metadata } from "next";
 import { graphql, readInlineData } from "relay-runtime";
@@ -46,7 +46,6 @@ const PageSearchMetadataQuery = graphql`
 		$minSalary: Int
 		$maxSalary: Int
 		$proximityKm: Float
-		$location: String
 		$workMode: [JobWorkModeFilter!]!
 		$jobType: [JobTypeFilter!]!
 		$sortBy: JobSearchSortBy!
@@ -57,7 +56,6 @@ const PageSearchMetadataQuery = graphql`
 		minSalary: $minSalary
 		maxSalary: $maxSalary
 		proximityKm: $proximityKm
-		location: $location
 		workMode: $workMode
 		jobType: $jobType
 		sortBy: $sortBy
@@ -150,8 +148,7 @@ function parseSearchParams(
 	);
 
 	return {
-		searchTerm:
-			parseStringParam(searchParams.q, FILTER_DEFAULTS.q || "") || null,
+		searchTerm: null, // No longer using searchTerm from query params on main search page
 		minExperience: parseIntParam(searchParams.minExperience),
 		minSalary: parseIntParam(searchParams.minSalary),
 		maxSalary: parseIntParam(searchParams.maxSalary),
@@ -167,18 +164,11 @@ function parseSearchParams(
 
 export async function generateMetadata({
 	searchParams,
-	params,
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
-	params: Promise<{ location: string | string[] | undefined }>;
 }): Promise<Metadata> {
 	const filterParams = await searchParams;
-	const locationParam = (await params).location;
-	const location = Array.isArray(locationParam)
-		? locationParam.map((segment) => decodeURIComponent(segment)).join("-")
-		: locationParam
-			? decodeURIComponent(locationParam)
-			: locationParam;
+
 	const variables = parseSearchParams(filterParams);
 
 	console.log("generating metadata for search", variables);
@@ -187,7 +177,7 @@ export async function generateMetadata({
 		const preloadedQuery = await loadSerializableQuery<
 			typeof SearchMetadataQueryNode,
 			pageSearchMetadataQuery
-		>(PageSearchMetadataQuery, { ...variables, location });
+		>(PageSearchMetadataQuery, { ...variables });
 
 		const data = readInlineData<pageSearchMetadataFragment$key>(
 			PageSearchMetadataFragment,
@@ -195,34 +185,19 @@ export async function generateMetadata({
 		);
 
 		const jobCount = data.jobs.totalCount;
-		const searchTerm = variables.searchTerm;
+		const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT; // Only show count if we have 50+ jobs
 
-		let title = `${jobCount}+ Medical Jobs & Healthcare Careers`;
-		let description = `Discover ${jobCount}+ verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`;
+		let title = hasReasonableCount
+			? `${jobCount}+ Medical Jobs & Healthcare Careers`
+			: "Medical Jobs & Healthcare Careers";
+		let description = hasReasonableCount
+			? `Discover ${jobCount}+ verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
+			: "Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.";
 
-		if (searchTerm) {
-			// Enhance search term titles with medical context
-			const medicalTitle =
-				searchTerm.toLowerCase().includes("doctor") ||
-				searchTerm.toLowerCase().includes("physician")
-					? `${jobCount}+ ${searchTerm} Positions & Medical Careers`
-					: searchTerm.toLowerCase().includes("nurse") ||
-							searchTerm.toLowerCase().includes("nursing")
-						? `${jobCount}+ ${searchTerm} Jobs & Healthcare Opportunities`
-						: `${jobCount}+ ${searchTerm} Medical Jobs & Healthcare Careers`;
-
-			title = medicalTitle;
-			description = `Find ${jobCount}+ ${searchTerm} positions at leading healthcare institutions. Join top medical facilities as a ${searchTerm.toLowerCase()} with competitive salaries & benefits.`;
-		}
-
-		if (location) {
-			title += ` in ${location}`;
-			description += ` Explore medical career opportunities in ${location}'s premier hospitals, specialty clinics & healthcare centers.`;
-		} else {
-			title += " | India's Medical Job Portal";
-			description +=
-				" Browse nationwide medical career opportunities across India's leading healthcare networks.";
-		}
+		// No search term handling for main search page since we removed 'q' param
+		title += " | India's Medical Job Portal";
+		description +=
+			" Browse nationwide medical career opportunities across India's leading healthcare networks.";
 
 		return {
 			title,
@@ -232,15 +207,12 @@ export async function generateMetadata({
 		console.error("Error generating search metadata:", error);
 
 		// Fallback metadata
-		let title =
+		const title =
 			"Medical Jobs & Healthcare Careers in India | Leading Medical Job Portal";
-		let description =
+		const description =
 			"Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities across India.";
 
-		if (variables.searchTerm) {
-			title = `${variables.searchTerm} Medical Jobs & Healthcare Careers in India`;
-			description = `Find ${variables.searchTerm} positions at leading healthcare institutions across India. Join premier medical facilities with competitive salaries & comprehensive benefits.`;
-		}
+		// No search term handling for main search page fallback
 
 		return {
 			title,

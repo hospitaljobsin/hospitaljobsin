@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<da7cf9dc30b69d943e269f64d32caed1>>
- * @relayHash 8e59eda35085fc0114a0356f58ebfa24
+ * @generated SignedSource<<d2deffffec2b81c10211bc1bbf831ba5>>
+ * @relayHash 2500e2e20114f2160cde22a1074b7832
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 8e59eda35085fc0114a0356f58ebfa24
+// @relayRequestID 2500e2e20114f2160cde22a1074b7832
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -18,7 +18,6 @@ export type JobTypeFilter = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | 
 export type JobWorkModeFilter = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 export type pageSearchMetadataQuery$variables = {
   jobType: ReadonlyArray<JobTypeFilter>;
-  location?: string | null | undefined;
   maxSalary?: number | null | undefined;
   minExperience?: number | null | undefined;
   minSalary?: number | null | undefined;
@@ -44,137 +43,104 @@ var v0 = {
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "location"
+  "name": "maxSalary"
 },
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "maxSalary"
+  "name": "minExperience"
 },
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minExperience"
+  "name": "minSalary"
 },
 v4 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minSalary"
+  "name": "proximityKm"
 },
 v5 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "proximityKm"
+  "name": "searchTerm"
 },
 v6 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "searchTerm"
+  "name": "sortBy"
 },
 v7 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "sortBy"
-},
-v8 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
   "name": "workMode"
 },
-v9 = [
-  (v0/*: any*/),
-  (v1/*: any*/),
-  (v2/*: any*/),
-  (v3/*: any*/),
-  (v4/*: any*/),
-  (v5/*: any*/),
-  (v6/*: any*/),
-  (v7/*: any*/),
-  (v8/*: any*/)
-],
-v10 = {
+v8 = {
+  "kind": "Literal",
+  "name": "first",
+  "value": 25
+},
+v9 = {
   "kind": "Variable",
   "name": "jobType",
   "variableName": "jobType"
 },
-v11 = {
-  "kind": "Variable",
-  "name": "location",
-  "variableName": "location"
-},
-v12 = {
+v10 = {
   "kind": "Variable",
   "name": "maxSalary",
   "variableName": "maxSalary"
 },
-v13 = {
+v11 = {
   "kind": "Variable",
   "name": "minExperience",
   "variableName": "minExperience"
 },
-v14 = {
+v12 = {
   "kind": "Variable",
   "name": "minSalary",
   "variableName": "minSalary"
 },
-v15 = {
+v13 = {
   "kind": "Variable",
   "name": "proximityKm",
   "variableName": "proximityKm"
 },
-v16 = {
+v14 = {
   "kind": "Variable",
   "name": "searchTerm",
   "variableName": "searchTerm"
 },
-v17 = {
+v15 = {
   "kind": "Variable",
   "name": "sortBy",
   "variableName": "sortBy"
 },
-v18 = {
+v16 = {
   "kind": "Variable",
   "name": "workMode",
   "variableName": "workMode"
 },
-v19 = [
+v17 = [
   {
     "alias": null,
-    "args": [
-      {
-        "kind": "Literal",
-        "name": "first",
-        "value": 25
-      },
-      (v10/*: any*/),
-      (v11/*: any*/),
-      (v12/*: any*/),
-      (v13/*: any*/),
-      (v14/*: any*/),
-      (v15/*: any*/),
-      (v16/*: any*/),
-      (v17/*: any*/),
-      (v18/*: any*/)
-    ],
-    "concreteType": "JobConnection",
-    "kind": "LinkedField",
-    "name": "jobs",
-    "plural": false,
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "totalCount",
-        "storageKey": null
-      }
-    ],
+    "args": null,
+    "kind": "ScalarField",
+    "name": "totalCount",
     "storageKey": null
   }
 ];
 return {
   "fragment": {
-    "argumentDefinitions": (v9/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/),
+      (v2/*: any*/),
+      (v3/*: any*/),
+      (v4/*: any*/),
+      (v5/*: any*/),
+      (v6/*: any*/),
+      (v7/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "pageSearchMetadataQuery",
@@ -182,19 +148,58 @@ return {
       {
         "kind": "InlineDataFragmentSpread",
         "name": "pageSearchMetadataFragment",
-        "selections": (v19/*: any*/),
+        "selections": [
+          {
+            "alias": null,
+            "args": [
+              (v8/*: any*/),
+              (v9/*: any*/),
+              {
+                "kind": "Variable",
+                "name": "location",
+                "variableName": "location"
+              },
+              (v10/*: any*/),
+              (v11/*: any*/),
+              (v12/*: any*/),
+              (v13/*: any*/),
+              (v14/*: any*/),
+              (v15/*: any*/),
+              (v16/*: any*/)
+            ],
+            "concreteType": "JobConnection",
+            "kind": "LinkedField",
+            "name": "jobs",
+            "plural": false,
+            "selections": (v17/*: any*/),
+            "storageKey": null
+          }
+        ],
         "args": [
+          (v9/*: any*/),
           (v10/*: any*/),
           (v11/*: any*/),
           (v12/*: any*/),
           (v13/*: any*/),
           (v14/*: any*/),
           (v15/*: any*/),
-          (v16/*: any*/),
-          (v17/*: any*/),
-          (v18/*: any*/)
+          (v16/*: any*/)
         ],
-        "argumentDefinitions": (v9/*: any*/)
+        "argumentDefinitions": [
+          (v0/*: any*/),
+          {
+            "defaultValue": null,
+            "kind": "LocalArgument",
+            "name": "location"
+          },
+          (v1/*: any*/),
+          (v2/*: any*/),
+          (v3/*: any*/),
+          (v4/*: any*/),
+          (v5/*: any*/),
+          (v6/*: any*/),
+          (v7/*: any*/)
+        ]
       }
     ],
     "type": "Query",
@@ -203,22 +208,42 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v6/*: any*/),
-      (v3/*: any*/),
-      (v4/*: any*/),
-      (v2/*: any*/),
       (v5/*: any*/),
+      (v2/*: any*/),
+      (v3/*: any*/),
       (v1/*: any*/),
-      (v8/*: any*/),
+      (v4/*: any*/),
+      (v7/*: any*/),
       (v0/*: any*/),
-      (v7/*: any*/)
+      (v6/*: any*/)
     ],
     "kind": "Operation",
     "name": "pageSearchMetadataQuery",
-    "selections": (v19/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": [
+          (v8/*: any*/),
+          (v9/*: any*/),
+          (v10/*: any*/),
+          (v11/*: any*/),
+          (v12/*: any*/),
+          (v13/*: any*/),
+          (v14/*: any*/),
+          (v15/*: any*/),
+          (v16/*: any*/)
+        ],
+        "concreteType": "JobConnection",
+        "kind": "LinkedField",
+        "name": "jobs",
+        "plural": false,
+        "selections": (v17/*: any*/),
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "id": "8e59eda35085fc0114a0356f58ebfa24",
+    "id": "2500e2e20114f2160cde22a1074b7832",
     "metadata": {},
     "name": "pageSearchMetadataQuery",
     "operationKind": "query",
@@ -227,6 +252,6 @@ return {
 };
 })();
 
-(node as any).hash = "8b182e9981e33899e547930f7a99a110";
+(node as any).hash = "9341330d9493187b3dd7b3a10dcaee87";
 
 export default node;

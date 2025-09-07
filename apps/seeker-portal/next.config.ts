@@ -86,6 +86,62 @@ const nextConfig: NextConfig = {
 				: []),
 		],
 	},
+	async rewrites() {
+		return [
+			{
+				source: "/search/jobs-in-:location",
+				destination: "/search/jobs-in/:location?via_rewrite=true",
+			},
+			{
+				source: "/search/:speciality-jobs",
+				destination: "/search/:speciality/jobs?via_rewrite=true",
+			},
+			{
+				source: "/search/:speciality-jobs-in-:location",
+				destination: "/search/:speciality/jobs-in/:location?via_rewrite=true",
+			},
+		];
+	},
+	async redirects() {
+		return [
+			{
+				source: "/search/jobs-in/:location",
+				has: [
+					{
+						type: "query",
+						key: "via_rewrite",
+						value: undefined,
+					},
+				],
+				destination: "/search/jobs-in-:location",
+				permanent: false,
+			},
+			{
+				source: "/search/:speciality/jobs",
+				has: [
+					{
+						type: "query",
+						key: "via_rewrite",
+						value: undefined,
+					},
+				],
+				destination: "/search/:speciality-jobs",
+				permanent: false,
+			},
+			{
+				source: "/search/:speciality/jobs-in/:location",
+				has: [
+					{
+						type: "query",
+						key: "via_rewrite",
+						value: undefined,
+					},
+				],
+				destination: "/search/:speciality-jobs-in-:location",
+				permanent: false,
+			},
+		];
+	},
 	async headers() {
 		return [
 			{

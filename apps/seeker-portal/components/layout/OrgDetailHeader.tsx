@@ -57,10 +57,7 @@ export default function OrgDetailHeader({
 
 	const handleSearchSubmit = (searchTerm: string) => {
 		// Navigate to search with the search term
-		const params = new URLSearchParams({
-			q: searchTerm.trim(),
-		});
-		router.push(`${links.search()}?${params.toString()}`);
+		router.push(links.search(undefined, searchTerm));
 	};
 
 	return (

@@ -15,7 +15,6 @@ import JobSearchAutocomplete from "../forms/JobSearchAutocomplete";
 import LocationAutocomplete from "../forms/LocationAutocomplete";
 
 export type FilterValues = {
-	q: string | null;
 	minExperience: number | null;
 	minSalary: number | null;
 	maxSalary: number | null;
@@ -28,28 +27,94 @@ export type FilterValues = {
 export type FilterSidebarProps = {
 	values: FilterValues;
 	location: string | null;
+	speciality: string | null;
 	onChange: (values: FilterValues) => void;
 	open?: boolean;
-	searchTerm: string | null;
-	setSearchTerm: (value: string | null) => void;
+	filters: FilterValues;
 };
 
 export default function FilterSidebar({
 	values,
 	location,
+	speciality,
 	onChange,
 	open = true,
-	searchTerm,
+	filters,
 }: FilterSidebarProps) {
 	const router = useRouter();
 	const params = useSearchParams();
 	const [locationInput, setLocationInput] = useState(location);
-	const [searchInput, setSearchInput] = useState(searchTerm || "");
+	const [searchInput, setSearchInput] = useState(speciality || "");
 
-	// Sync local state when searchTerm changes externally
+	// Sync local state when speciality changes externally
 	useEffect(() => {
-		setSearchInput(searchTerm || "");
-	}, [searchTerm]);
+		setSearchInput(speciality || "");
+	}, [speciality]);
+
+	const handleJobSearchSubmit = (newSpeciality: string) => {
+		if (!newSpeciality.trim()) return;
+
+		// Build redirect URL based on location presence
+		let redirectUrl: string;
+		if (location) {
+			redirectUrl = links.search(location, newSpeciality);
+		} else {
+			redirectUrl = links.search(undefined, newSpeciality);
+		}
+
+		// Preserve existing query parameters
+		const queryParams = new URLSearchParams(params.toString());
+		if (queryParams.toString()) {
+			redirectUrl += `?${queryParams.toString()}`;
+		}
+
+		router.push(redirectUrl);
+	};
+
+	const handleJobSearchClear = () => {
+		let redirectUrl: string;
+		if (location) {
+			redirectUrl = links.search(location);
+		} else {
+			redirectUrl = links.search();
+		}
+	};
+
+	const handleLocationSubmit = (newLocation: string) => {
+		// Build redirect URL based on speciality presence
+		let redirectUrl: string;
+		if (speciality) {
+			redirectUrl = links.search(newLocation, speciality);
+		} else {
+			redirectUrl = links.search(newLocation);
+		}
+
+		// Preserve existing query parameters
+		const queryParams = new URLSearchParams(params.toString());
+		if (queryParams.toString()) {
+			redirectUrl += `?${queryParams.toString()}`;
+		}
+
+		router.push(redirectUrl);
+	};
+
+	const handleLocationClear = () => {
+		// Build redirect URL without location
+		let redirectUrl: string;
+		if (speciality) {
+			redirectUrl = links.search(undefined, speciality);
+		} else {
+			redirectUrl = links.search();
+		}
+
+		// Preserve existing query parameters
+		const queryParams = new URLSearchParams(params.toString());
+		if (queryParams.toString()) {
+			redirectUrl += `?${queryParams.toString()}`;
+		}
+
+		router.push(redirectUrl);
+	};
 
 	if (!open) return null;
 
@@ -62,15 +127,13 @@ export default function FilterSidebar({
 				<div className="block lg:hidden">
 					{/* Speciality input for mobile only */}
 					<JobSearchAutocomplete
-						label="Search"
 						value={searchInput}
 						onValueChange={setSearchInput}
-						onSubmit={(searchTerm: string) => {
-							onChange({ ...values, q: searchTerm });
-						}}
-						onClear={() => {
-							setSearchInput("");
-							onChange({ ...values, q: "" });
+						onSubmit={handleJobSearchSubmit}
+						onClear={handleJobSearchClear}
+						onJobSelect={(job) => {
+							setSearchInput(job.displayName);
+							handleJobSearchSubmit(job.displayName);
 						}}
 						placeholder="Search by Speciality or keyword"
 						variant="bordered"
@@ -81,23 +144,17 @@ export default function FilterSidebar({
 					id="location"
 					label="Location"
 					value={locationInput || ""}
-					onChange={(val) => {
-						setLocationInput(val.displayName);
-						router.push(
-							`${links.search(val.displayName)}?${params.toString()}`,
-						);
-					}}
+					onSubmit={handleLocationSubmit}
 					onValueChange={(val) => {
 						setLocationInput(val);
 					}}
-					onClear={() => {
-						router.push(`${links.search()}?${params.toString()}`);
-					}}
+					onClear={handleLocationClear}
 					onBlur={() => {
 						if (locationInput !== location) {
 							setLocationInput(location);
 						}
 					}}
+					allowsCustomValue
 				/>
 				{location && (
 					<Slider

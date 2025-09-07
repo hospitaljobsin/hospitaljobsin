@@ -26,3 +26,6 @@ export const COOKIE_ANALYTICS_PREFERENCE = "analytics_preference";
 
 export const WHATSAPP_CHANNEL_LINK =
 	"https://whatsapp.com/channel/0029Vb67UBn4dTnDcBJC2Y2H";
+
+// Only show count in metadata if we have this many jobs atleast
+export const REASONABLE_JOB_COUNT = 50;

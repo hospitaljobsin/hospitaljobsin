@@ -2,8 +2,17 @@ import { env } from "./env/client";
 
 const links = {
 	landing: "/",
-	search: (location: string | undefined = undefined) =>
-		location ? `/search/${location}` : "/search",
+	search: (
+		location: string | undefined = undefined,
+		speciality: string | undefined = undefined,
+	) =>
+		location && speciality
+			? `/search/${speciality.trim().replace(/\s+/g, "-")}-jobs-in-${location.trim().replace(/\s+/g, "-")}`
+			: location
+				? `/search/jobs-in-${location.trim().replace(/\s+/g, "-")}`
+				: speciality
+					? `/search/${speciality.trim().replace(/\s+/g, "-")}-jobs`
+					: "/search",
 	recruiterLanding: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/`,
 	profile: "/profile",
 	savedJobs: "/saved",

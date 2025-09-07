@@ -11,10 +11,11 @@ import { graphql } from "relay-runtime";
 import { useDebounce } from "use-debounce";
 
 interface LocationAutocompleteProps
-	extends Omit<AutocompleteProps, "children" | "onChange"> {
+	extends Omit<AutocompleteProps, "children" | "onChange" | "onSubmit"> {
 	value: string;
-	onChange: (value: SearchLocation) => void;
+	onChange?: (value: SearchLocation) => void;
 	onValueChange: (value: string) => void;
+	onSubmit?: (searchTerm: string) => void;
 	onClear?: () => void;
 }
 
@@ -68,12 +69,15 @@ export default function LocationAutocomplete({
 	onChange,
 	onClear,
 	onValueChange,
+	onSubmit,
 	...props
 }: LocationAutocompleteProps) {
 	const [debouncedLocation] = useDebounce(value, 300);
 	const [suggestions, setSuggestions] = useState<SearchLocation[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isPending, startTransition] = useTransition();
+	const [justSubmitted, setJustSubmitted] = useState(false);
+	const inputRef = useRef<HTMLInputElement>(null);
 	const [queryReference, loadQuery, disposeQuery] =
 		useQueryLoader<LocationAutocompleteQuery>(SearchLocationsQuery);
 
@@ -90,8 +94,8 @@ export default function LocationAutocomplete({
 			shouldRefetchSuggestions.current = true;
 			return;
 		}
-		// Only fetch suggestions if we have a valid query
-		if (debouncedLocation && debouncedLocation.length >= 3) {
+		// Only fetch suggestions if we have a valid query and haven't just submitted
+		if (debouncedLocation && debouncedLocation.length >= 3 && !justSubmitted) {
 			setIsLoading(true);
 			startTransition(() => {
 				loadQuery(
@@ -106,14 +110,13 @@ export default function LocationAutocomplete({
 			// Clear suggestions and loading state for empty or short queries
 			setSuggestions([]);
 			setIsLoading(false);
-			// Make sure to dispose any pending query
-			// disposeQuery();
+			disposeQuery();
 		}
 
 		return () => {
 			disposeQuery();
 		};
-	}, [debouncedLocation, loadQuery, disposeQuery]);
+	}, [debouncedLocation, loadQuery, disposeQuery, justSubmitted]);
 
 	const handleSelectionChange = (selectedKey: Key | null) => {
 		if (!selectedKey) {
@@ -123,7 +126,11 @@ export default function LocationAutocomplete({
 		const selected = suggestions.find((item) => item.placeId === selectedKey);
 		if (selected) {
 			shouldRefetchSuggestions.current = false;
-			onChange(selected);
+			onChange?.({
+				displayName: selected.displayName,
+				placeId: selected.placeId,
+			});
+			onSubmit?.(selected.displayName);
 			setIsLoading(false);
 			// Clear query reference to completely stop the loading state
 			disposeQuery();
@@ -131,14 +138,27 @@ export default function LocationAutocomplete({
 	};
 
 	const handleInputChange = (value: string) => {
+		// Reset justSubmitted when user starts typing again
+		if (justSubmitted) {
+			setJustSubmitted(false);
+		}
 		onValueChange(value);
 		// Don't call onChange here, only when selection changes
 	};
 
-	// Prevent form submission that could cause page refresh
-	const preventFormSubmission = (e: React.KeyboardEvent) => {
+	const handleKeyDown = (e: React.KeyboardEvent) => {
 		if (e.key === "Enter") {
 			e.preventDefault();
+			setJustSubmitted(true);
+			onSubmit?.(value);
+
+			// Blur the input to remove focus
+			inputRef.current?.blur();
+
+			// Reset the flag after a short delay to allow typing again
+			setTimeout(() => {
+				setJustSubmitted(false);
+			}, 500);
 		}
 	};
 
@@ -158,12 +178,14 @@ export default function LocationAutocomplete({
 			)}
 			<Autocomplete
 				{...props}
+				ref={inputRef}
 				inputValue={value}
 				onInputChange={handleInputChange}
 				isLoading={isLoading || isPending}
 				onSelectionChange={handleSelectionChange}
-				onKeyDown={preventFormSubmission}
+				onKeyDown={handleKeyDown}
 				isClearable
+				menuTrigger="input"
 				onClear={onClear}
 				onBlur={onBlur}
 			>
