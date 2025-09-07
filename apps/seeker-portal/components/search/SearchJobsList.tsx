@@ -10,7 +10,7 @@ import type {
 import type { Filters } from "@/app/search/jobs-in/[location]/SearchViewLocationClientComponent";
 import Job from "@/components/landing/Job";
 import JobListSkeleton from "@/components/landing/JobListSkeleton";
-import { APP_TITLE } from "@/lib/constants";
+import { APP_TITLE, REASONABLE_JOB_COUNT } from "@/lib/constants";
 import usePageTitle from "@/lib/hooks/usePageTitle";
 import { Card, CardBody, Select, SelectItem } from "@heroui/react";
 import { Search } from "lucide-react";
@@ -122,10 +122,17 @@ export default function SearchJobsList({
 
 	usePageTitle({
 		title: (() => {
-			let title = `${data.jobs.totalCount} Hospital Jobs`;
+			const hasReasonableCount =
+				data.jobs.totalCount && data.jobs.totalCount >= REASONABLE_JOB_COUNT;
+
+			let title = hasReasonableCount
+				? `${data.jobs.totalCount} Hospital Jobs`
+				: "Hospital Jobs";
 
 			if (searchTerm) {
-				title = `${data.jobs.totalCount} ${searchTerm} Hospital Jobs`;
+				title = hasReasonableCount
+					? `${data.jobs.totalCount} ${searchTerm} Hospital Jobs`
+					: `${searchTerm} Hospital Jobs`;
 			}
 
 			if (location) {
