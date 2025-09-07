@@ -1,14 +1,11 @@
-import type { JobWorkModeFilter } from "@/__generated__/SearchJobsListRefetchQuery.graphql";
 import type { pageSearchLocationSpecialityMetadataFragment$key } from "@/__generated__/pageSearchLocationSpecialityMetadataFragment.graphql";
 import type SearchMetadataQueryNode from "@/__generated__/pageSearchLocationSpecialityMetadataQuery.graphql";
-import type {
-	JobTypeFilter,
-	pageSearchLocationSpecialityMetadataQuery,
-} from "@/__generated__/pageSearchLocationSpecialityMetadataQuery.graphql";
+import type { pageSearchLocationSpecialityMetadataQuery } from "@/__generated__/pageSearchLocationSpecialityMetadataQuery.graphql";
 import type SearchViewLocationQueryNode from "@/__generated__/pageSearchLocationSpecialityViewQuery.graphql";
 import type { pageSearchLocationSpecialityViewQuery } from "@/__generated__/pageSearchLocationSpecialityViewQuery.graphql";
-import { FILTER_DEFAULTS, REASONABLE_JOB_COUNT } from "@/lib/constants";
+import { REASONABLE_JOB_COUNT } from "@/lib/constants";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
+import { parseSearchParams } from "@/lib/searchParams";
 import type { Metadata } from "next";
 import { graphql, readInlineData } from "relay-runtime";
 import SearchViewLocationSpecialityClientComponent from "./SearchViewLocationSpecialityClientComponent";
@@ -82,87 +79,6 @@ const PageSearchMetadataFragment = graphql`
 		}
 	}
 `;
-
-// Helper function to parse search params with default values
-function parseSearchParams(
-	searchParams: Record<string, string | string[] | undefined>,
-) {
-	const VALID_WORK_MODES = ["HYBRID", "OFFICE", "REMOTE"] as const;
-	const VALID_JOB_TYPES = [
-		"CONTRACT",
-		"FULL_TIME",
-		"INTERNSHIP",
-		"LOCUM",
-		"PART_TIME",
-	] as const;
-
-	const parseStringParam = (
-		param: string | string[] | undefined,
-		defaultValue: string,
-	): string => {
-		if (typeof param === "string") return param;
-		if (Array.isArray(param) && param.length > 0) return param[0];
-		return defaultValue;
-	};
-
-	const parseIntParam = (
-		param: string | string[] | undefined,
-	): number | null => {
-		const value = parseStringParam(param, "");
-		const parsed = Number.parseInt(value, 10);
-		return Number.isNaN(parsed) ? null : parsed;
-	};
-
-	const parseFloatParam = (
-		param: string | string[] | undefined,
-	): number | null => {
-		const value = parseStringParam(param, "");
-		const parsed = Number.parseFloat(value);
-		return Number.isNaN(parsed) ? null : parsed;
-	};
-
-	const parseArrayParam = (param: string | string[] | undefined): string[] => {
-		if (Array.isArray(param)) return param;
-		if (typeof param === "string" && param) {
-			// Handle comma-separated values
-			return param
-				.split(",")
-				.map((item) => item.trim())
-				.filter((item) => item);
-		}
-		return [];
-	};
-
-	const validateEnumArray = <T extends string>(
-		values: string[],
-		validValues: readonly T[],
-	): T[] => {
-		return values.filter((value) => validValues.includes(value as T)) as T[];
-	};
-
-	const workModeValues = validateEnumArray(
-		parseArrayParam(searchParams.workMode),
-		VALID_WORK_MODES,
-	);
-	const jobTypeValues = validateEnumArray(
-		parseArrayParam(searchParams.jobType),
-		VALID_JOB_TYPES,
-	);
-
-	return {
-		searchTerm: null, // searchTerm will be set from path parameter, not query param
-		minExperience: parseIntParam(searchParams.minExperience),
-		minSalary: parseIntParam(searchParams.minSalary),
-		maxSalary: parseIntParam(searchParams.maxSalary),
-		proximityKm:
-			parseFloatParam(searchParams.proximityKm) ?? FILTER_DEFAULTS.proximityKm,
-		workMode: workModeValues as readonly JobWorkModeFilter[],
-		jobType: jobTypeValues as readonly JobTypeFilter[],
-		sortBy: parseStringParam(searchParams.sortBy, FILTER_DEFAULTS.sortBy) as
-			| "RELEVANCE"
-			| "UPDATED_AT",
-	};
-}
 
 export async function generateMetadata({
 	searchParams,
