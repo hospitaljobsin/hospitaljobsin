@@ -46,7 +46,6 @@ const PageSearchMetadataQuery = graphql`
 		$minSalary: Int
 		$maxSalary: Int
 		$proximityKm: Float
-		$location: String
 		$workMode: [JobWorkModeFilter!]!
 		$jobType: [JobTypeFilter!]!
 		$sortBy: JobSearchSortBy!
@@ -57,7 +56,6 @@ const PageSearchMetadataQuery = graphql`
 		minSalary: $minSalary
 		maxSalary: $maxSalary
 		proximityKm: $proximityKm
-		location: $location
 		workMode: $workMode
 		jobType: $jobType
 		sortBy: $sortBy
@@ -167,18 +165,11 @@ function parseSearchParams(
 
 export async function generateMetadata({
 	searchParams,
-	params,
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
-	params: Promise<{ location: string | string[] | undefined }>;
 }): Promise<Metadata> {
 	const filterParams = await searchParams;
-	const locationParam = (await params).location;
-	const location = Array.isArray(locationParam)
-		? locationParam.map((segment) => decodeURIComponent(segment)).join("-")
-		: locationParam
-			? decodeURIComponent(locationParam)
-			: locationParam;
+
 	const variables = parseSearchParams(filterParams);
 
 	console.log("generating metadata for search", variables);
@@ -187,7 +178,7 @@ export async function generateMetadata({
 		const preloadedQuery = await loadSerializableQuery<
 			typeof SearchMetadataQueryNode,
 			pageSearchMetadataQuery
-		>(PageSearchMetadataQuery, { ...variables, location });
+		>(PageSearchMetadataQuery, { ...variables });
 
 		const data = readInlineData<pageSearchMetadataFragment$key>(
 			PageSearchMetadataFragment,

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<df6c5194646b3f2cf0e90ac1c8e9f27b>>
+ * @generated SignedSource<<2f3dd4c9c3c61530701e132d72b98966>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -25,6 +25,11 @@ const node: ReaderFragment = {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "jobType"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "location"
     },
     {
       "defaultValue": null,
@@ -75,6 +80,11 @@ const node: ReaderFragment = {
         },
         {
           "kind": "Variable",
+          "name": "location",
+          "variableName": "location"
+        },
+        {
+          "kind": "Variable",
           "name": "maxSalary",
           "variableName": "maxSalary"
         },
@@ -117,6 +127,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "ddcf7d92a64308594290c2ade4b94007";
+(node as any).hash = "dc728fed8da4ed4f44abe20c9c1af0b2";
 
 export default node;

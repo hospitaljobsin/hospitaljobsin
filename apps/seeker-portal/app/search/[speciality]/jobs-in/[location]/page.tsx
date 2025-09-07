@@ -20,6 +20,7 @@ export const PageSearchLocationSpecialityViewQuery = graphql`
 		$minSalary: Int
 		$maxSalary: Int
 		$proximityKm: Float
+		$location: String
 		$workMode: [JobWorkModeFilter!]!
 		$jobType: [JobTypeFilter!]!
 		$sortBy: JobSearchSortBy!
@@ -30,6 +31,7 @@ export const PageSearchLocationSpecialityViewQuery = graphql`
 		minSalary: $minSalary
 		maxSalary: $maxSalary
 		proximityKm: $proximityKm
+		location: $location
 		workMode: $workMode
 		jobType: $jobType
 		sortBy: $sortBy
@@ -168,10 +170,17 @@ export async function generateMetadata({
 	params,
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
-	params: Promise<{ location: string | string[] }>;
+	params: Promise<{
+		location: string | string[];
+		speciality: string | string[];
+	}>;
 }): Promise<Metadata> {
 	const filterParams = await searchParams;
 	const locationParam = (await params).location;
+	const specialityParam = (await params).speciality;
+	const speciality = Array.isArray(specialityParam)
+		? specialityParam.map((segment) => decodeURIComponent(segment)).join("-")
+		: decodeURIComponent(specialityParam);
 	const location = Array.isArray(locationParam)
 		? locationParam.map((segment) => decodeURIComponent(segment)).join("-")
 		: decodeURIComponent(locationParam);
@@ -251,10 +260,17 @@ export default async function SearchPage({
 	params,
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
-	params: Promise<{ speciality: string | string[] }>;
+	params: Promise<{
+		location: string | string[];
+		speciality: string | string[];
+	}>;
 }) {
 	const filterParams = await searchParams;
 	const variables = parseSearchParams(filterParams);
+	const locationParam = (await params).location;
+	const location = Array.isArray(locationParam)
+		? locationParam.map((segment) => decodeURIComponent(segment)).join("-")
+		: decodeURIComponent(locationParam);
 	const specialityParam = (await params).speciality;
 	const speciality = Array.isArray(specialityParam)
 		? specialityParam.map((segment) => decodeURIComponent(segment)).join("-")
@@ -268,6 +284,7 @@ export default async function SearchPage({
 	>(PageSearchLocationSpecialityViewQuery, {
 		...variables,
 		searchTerm: speciality,
+		location,
 	});
 
 	return (

@@ -36,6 +36,7 @@ export const SearchViewLocationSpecialityClientComponentFragment = graphql`
 		minSalary: { type: "Int" }
 		maxSalary: { type: "Int" }
 		proximityKm: { type: "Float" }
+		location: { type: "String" }
 		workMode: { type: "[JobWorkModeFilter!]!" }
 		jobType: { type: "[JobTypeFilter!]!" }
 		sortBy: { type: "JobSearchSortBy!" }
@@ -46,6 +47,7 @@ export const SearchViewLocationSpecialityClientComponentFragment = graphql`
 			minSalary: $minSalary
 			maxSalary: $maxSalary
 			proximityKm: $proximityKm
+			location: $location
 			workMode: $workMode
 			jobType: $jobType
 			sortBy: $sortBy

@@ -168,13 +168,13 @@ export async function generateMetadata({
 	params,
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
-	params: Promise<{ location: string | string[] }>;
+	params: Promise<{ speciality: string | string[] }>;
 }): Promise<Metadata> {
 	const filterParams = await searchParams;
-	const locationParam = (await params).location;
-	const location = Array.isArray(locationParam)
-		? locationParam.map((segment) => decodeURIComponent(segment)).join("-")
-		: decodeURIComponent(locationParam);
+	const specialityParam = (await params).speciality;
+	const speciality = Array.isArray(specialityParam)
+		? specialityParam.map((segment) => decodeURIComponent(segment)).join("-")
+		: decodeURIComponent(specialityParam);
 	const variables = parseSearchParams(filterParams);
 
 	console.log("generating metadata for search", variables);
@@ -183,7 +183,7 @@ export async function generateMetadata({
 		const preloadedQuery = await loadSerializableQuery<
 			typeof SearchMetadataQueryNode,
 			pageSearchSpecialityMetadataQuery
-		>(PageSearchMetadataQuery, { ...variables, location });
+		>(PageSearchMetadataQuery, { ...variables });
 
 		const data = readInlineData<pageSearchSpecialityMetadataFragment$key>(
 			PageSearchMetadataFragment,
