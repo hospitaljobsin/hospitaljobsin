@@ -92,6 +92,14 @@ const nextConfig: NextConfig = {
 				source: "/search/jobs-in-:location",
 				destination: "/search/jobs-in/:location",
 			},
+			{
+				source: "/search/:speciality-jobs",
+				destination: "/search/:speciality/jobs",
+			},
+			{
+				source: "/search/:speciality-jobs-in-:location",
+				destination: "/search/:speciality/jobs-in/:location",
+			},
 		];
 	},
 	async headers() {

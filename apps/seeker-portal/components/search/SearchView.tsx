@@ -66,11 +66,13 @@ const validateEnumArray = <T extends string>(
 
 export default function SearchView({
 	location,
+	speciality,
 	fragmentKey,
 	filters,
 	setFilters,
 }: {
 	location: string | null;
+	speciality: string | null;
 	fragmentKey: SearchView_query$key;
 	filters: Filters;
 	setFilters: (filters: Filters | ((prevFilters: Filters) => Filters)) => void;
