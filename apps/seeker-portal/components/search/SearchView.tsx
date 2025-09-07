@@ -54,6 +54,7 @@ const VALID_JOB_TYPES = [
 	"LOCUM",
 	"PART_TIME",
 ] as const;
+const VALID_SORT_BY = ["RELEVANCE", "UPDATED_AT"] as const;
 
 // Function to validate enum arrays and return empty array if invalid
 const validateEnumArray = <T extends string>(
@@ -62,6 +63,16 @@ const validateEnumArray = <T extends string>(
 ): T[] => {
 	if (!values || !Array.isArray(values)) return [];
 	return values.filter((value) => validValues.includes(value as T)) as T[];
+};
+
+// Function to validate single enum value and return default if invalid
+const validateEnum = <T extends string>(
+	value: string | null | undefined,
+	validValues: readonly T[],
+	defaultValue: T,
+): T => {
+	if (!value || !validValues.includes(value as T)) return defaultValue;
+	return value as T;
 };
 
 export default function SearchView({
@@ -84,16 +95,18 @@ export default function SearchView({
 		fragmentKey,
 	);
 
-	// Fix: Only validate and update workMode/jobType if actually needed, and only depend on those fields
-	const { workMode, jobType } = filters;
+	// Fix: Only validate and update workMode/jobType/sortBy if actually needed, and only depend on those fields
+	const { workMode, jobType, sortBy } = filters;
 
 	useEffect(() => {
 		const validatedWorkMode = validateEnumArray(workMode, VALID_WORK_MODES);
 		const validatedJobType = validateEnumArray(jobType, VALID_JOB_TYPES);
+		const validatedSortBy = validateEnum(sortBy, VALID_SORT_BY, "RELEVANCE");
 
 		if (
 			JSON.stringify(validatedWorkMode) !== JSON.stringify(workMode) ||
-			JSON.stringify(validatedJobType) !== JSON.stringify(jobType)
+			JSON.stringify(validatedJobType) !== JSON.stringify(jobType) ||
+			validatedSortBy !== sortBy
 		) {
 			setFilters({
 				...filters,
@@ -105,13 +118,15 @@ export default function SearchView({
 					validatedJobType.length > 0
 						? validatedJobType
 						: FILTER_DEFAULTS.jobType,
+				sortBy: validatedSortBy,
 			});
 		}
-	}, [workMode, jobType, setFilters, filters]);
+	}, [workMode, jobType, sortBy, setFilters, filters]);
 
 	// Get validated values for use in render
 	const validatedWorkMode = validateEnumArray(workMode, VALID_WORK_MODES);
 	const validatedJobType = validateEnumArray(jobType, VALID_JOB_TYPES);
+	const validatedSortBy = validateEnum(sortBy, VALID_SORT_BY, "RELEVANCE");
 
 	// When passing to FilterSidebar and JobList, treat undefined as null
 	const sidebarFilters = {
@@ -194,7 +209,7 @@ export default function SearchView({
 							maxSalary={filters.maxSalary ?? null}
 							workMode={validatedWorkMode}
 							jobType={validatedJobType}
-							sortBy={filters.sortBy}
+							sortBy={validatedSortBy}
 							setFilters={setFilters as (filters: unknown) => void}
 						/>
 					</Suspense>

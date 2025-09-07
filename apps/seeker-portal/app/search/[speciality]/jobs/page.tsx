@@ -1,14 +1,11 @@
-import type { JobWorkModeFilter } from "@/__generated__/SearchJobsListRefetchQuery.graphql";
 import type { pageSearchSpecialityMetadataFragment$key } from "@/__generated__/pageSearchSpecialityMetadataFragment.graphql";
 import type SearchMetadataQueryNode from "@/__generated__/pageSearchSpecialityMetadataQuery.graphql";
-import type {
-	JobTypeFilter,
-	pageSearchSpecialityMetadataQuery,
-} from "@/__generated__/pageSearchSpecialityMetadataQuery.graphql";
+import type { pageSearchSpecialityMetadataQuery } from "@/__generated__/pageSearchSpecialityMetadataQuery.graphql";
 import type SearchViewLocationQueryNode from "@/__generated__/pageSearchSpecialityViewQuery.graphql";
 import type { pageSearchSpecialityViewQuery } from "@/__generated__/pageSearchSpecialityViewQuery.graphql";
-import { FILTER_DEFAULTS, REASONABLE_JOB_COUNT } from "@/lib/constants";
+import { REASONABLE_JOB_COUNT } from "@/lib/constants";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
+import { parseSearchParams } from "@/lib/searchParams";
 import type { Metadata } from "next";
 import { graphql, readInlineData } from "relay-runtime";
 import SearchViewSpecialityClientComponent from "./SearchViewSpecialityClientComponent";
@@ -81,87 +78,6 @@ const PageSearchMetadataFragment = graphql`
 	}
 `;
 
-// Helper function to parse search params with default values
-function parseSearchParams(
-	searchParams: Record<string, string | string[] | undefined>,
-) {
-	const VALID_WORK_MODES = ["HYBRID", "OFFICE", "REMOTE"] as const;
-	const VALID_JOB_TYPES = [
-		"CONTRACT",
-		"FULL_TIME",
-		"INTERNSHIP",
-		"LOCUM",
-		"PART_TIME",
-	] as const;
-
-	const parseStringParam = (
-		param: string | string[] | undefined,
-		defaultValue: string,
-	): string => {
-		if (typeof param === "string") return param;
-		if (Array.isArray(param) && param.length > 0) return param[0];
-		return defaultValue;
-	};
-
-	const parseIntParam = (
-		param: string | string[] | undefined,
-	): number | null => {
-		const value = parseStringParam(param, "");
-		const parsed = Number.parseInt(value, 10);
-		return Number.isNaN(parsed) ? null : parsed;
-	};
-
-	const parseFloatParam = (
-		param: string | string[] | undefined,
-	): number | null => {
-		const value = parseStringParam(param, "");
-		const parsed = Number.parseFloat(value);
-		return Number.isNaN(parsed) ? null : parsed;
-	};
-
-	const parseArrayParam = (param: string | string[] | undefined): string[] => {
-		if (Array.isArray(param)) return param;
-		if (typeof param === "string" && param) {
-			// Handle comma-separated values
-			return param
-				.split(",")
-				.map((item) => item.trim())
-				.filter((item) => item);
-		}
-		return [];
-	};
-
-	const validateEnumArray = <T extends string>(
-		values: string[],
-		validValues: readonly T[],
-	): T[] => {
-		return values.filter((value) => validValues.includes(value as T)) as T[];
-	};
-
-	const workModeValues = validateEnumArray(
-		parseArrayParam(searchParams.workMode),
-		VALID_WORK_MODES,
-	);
-	const jobTypeValues = validateEnumArray(
-		parseArrayParam(searchParams.jobType),
-		VALID_JOB_TYPES,
-	);
-
-	return {
-		searchTerm: null, // searchTerm will be set from path parameter, not query param
-		minExperience: parseIntParam(searchParams.minExperience),
-		minSalary: parseIntParam(searchParams.minSalary),
-		maxSalary: parseIntParam(searchParams.maxSalary),
-		proximityKm:
-			parseFloatParam(searchParams.proximityKm) ?? FILTER_DEFAULTS.proximityKm,
-		workMode: workModeValues as readonly JobWorkModeFilter[],
-		jobType: jobTypeValues as readonly JobTypeFilter[],
-		sortBy: parseStringParam(searchParams.sortBy, FILTER_DEFAULTS.sortBy) as
-			| "RELEVANCE"
-			| "UPDATED_AT",
-	};
-}
-
 export async function generateMetadata({
 	searchParams,
 	params,
@@ -196,10 +112,10 @@ export async function generateMetadata({
 		const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT;
 
 		let title = hasReasonableCount
-			? `${jobCount}+ Medical Jobs & Healthcare Careers`
+			? `${jobCount}Medical Jobs & Healthcare Careers`
 			: "Medical Jobs & Healthcare Careers";
 		let description = hasReasonableCount
-			? `Discover ${jobCount}+ verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
+			? `Discover ${jobCount}verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
 			: "Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.";
 
 		if (speciality) {
@@ -208,14 +124,14 @@ export async function generateMetadata({
 				const medicalTitle =
 					speciality.toLowerCase().includes("doctor") ||
 					speciality.toLowerCase().includes("physician")
-						? `${jobCount}+ ${speciality} Positions & Medical Careers`
+						? `${jobCount}${speciality} Positions & Medical Careers`
 						: speciality.toLowerCase().includes("nurse") ||
 								speciality.toLowerCase().includes("nursing")
-							? `${jobCount}+ ${speciality} Jobs & Healthcare Opportunities`
-							: `${jobCount}+ ${speciality} Medical Jobs & Healthcare Careers`;
+							? `${jobCount}${speciality} Jobs & Healthcare Opportunities`
+							: `${jobCount}${speciality} Medical Jobs & Healthcare Careers`;
 
 				title = medicalTitle;
-				description = `Find ${jobCount}+ ${speciality} positions at leading healthcare institutions. Join top medical facilities as a ${speciality.toLowerCase()} with competitive salaries & benefits.`;
+				description = `Find ${jobCount}${speciality} positions at leading healthcare institutions. Join top medical facilities as a ${speciality.toLowerCase()} with competitive salaries & benefits.`;
 			} else {
 				const medicalTitle =
 					speciality.toLowerCase().includes("doctor") ||

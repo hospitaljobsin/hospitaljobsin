@@ -52,16 +52,15 @@ export const SiteMapOrganizationQuery = graphql`
 `;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-	console.log("sitemap");
 	const staticPages: MetadataRoute.Sitemap = [
 		{
-			url: `${env.NEXT_PUBLIC_URL}/`,
+			url: `${env.NEXT_PUBLIC_URL}${links.landing}`,
 			lastModified: new Date(),
 			changeFrequency: "daily",
 			priority: 1.0,
 		},
 		{
-			url: `${env.NEXT_PUBLIC_URL}/search`,
+			url: `${env.NEXT_PUBLIC_URL}${links.search()}`,
 			lastModified: new Date(),
 			changeFrequency: "daily",
 			priority: 1.0,
