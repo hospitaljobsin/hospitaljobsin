@@ -2,8 +2,17 @@ import { env } from "./env/client";
 
 const links = {
 	landing: "/",
-	search: (location: string | undefined = undefined) =>
-		location ? `/search/jobs-in-${location}` : "/search",
+	search: (
+		location: string | undefined = undefined,
+		speciality: string | undefined = undefined,
+	) =>
+		location && speciality
+			? `/search/${speciality}-jobs-in-${location}`
+			: location
+				? `/search/jobs-in-${location}`
+				: speciality
+					? `/search/${speciality}-jobs`
+					: "/search",
 	recruiterLanding: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/`,
 	profile: "/profile",
 	savedJobs: "/saved",
