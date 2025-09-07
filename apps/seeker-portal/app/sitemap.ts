@@ -1,6 +1,7 @@
 import type { sitemapJobsQuery as sitemapJobsType } from "@/__generated__/sitemapJobsQuery.graphql";
 import type { sitemapOrganizationsQuery as SiteMapOrganizationQueryType } from "@/__generated__/sitemapOrganizationsQuery.graphql";
 import { env } from "@/lib/env/client";
+import links from "@/lib/links";
 import { getCurrentEnvironment } from "@/lib/relay/environments";
 import type { MetadataRoute } from "next";
 import { fetchQuery, graphql } from "relay-runtime";
@@ -70,10 +71,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const jobs = await genJobsSitemap();
 	const organizations = await genOrganizationsSitemap();
 
-	console.log("jobs", jobs);
-	console.log("organizations", organizations);
+	const searchLocations = await genSearchLocationsSitemap();
+	const searchSpecialities = await genSearchSpecialitiesSitemap();
 
-	return [...staticPages, ...jobs, ...organizations];
+	return [
+		...staticPages,
+		...jobs,
+		...organizations,
+		...searchLocations,
+		...searchSpecialities,
+	];
 }
 
 async function genJobsSitemap(): Promise<MetadataRoute.Sitemap> {
@@ -114,7 +121,7 @@ async function genJobsSitemap(): Promise<MetadataRoute.Sitemap> {
 	}
 
 	return allJobs.map((job) => ({
-		url: `${env.NEXT_PUBLIC_URL}/organizations/${job.organization.slug}/jobs/${job.slug}`,
+		url: `${env.NEXT_PUBLIC_URL}${links.jobDetail(job.organization.slug, job.slug)}`,
 		lastModified: new Date(job.updatedAt),
 		changeFrequency: "weekly",
 		priority: 0.8,
@@ -154,10 +161,63 @@ async function genOrganizationsSitemap(): Promise<MetadataRoute.Sitemap> {
 	}
 
 	return allOrganizations.map((organization) => ({
-		url: `${env.NEXT_PUBLIC_URL}/organizations/${organization.slug}`,
+		url: `${env.NEXT_PUBLIC_URL}${links.organizationDetail(organization.slug)}`,
 		lastModified: new Date(organization.createdAt),
 		changeFrequency: "weekly",
 		priority: 0.7,
 		images: [organization.bannerUrl],
+	}));
+}
+
+async function genSearchLocationsSitemap(): Promise<MetadataRoute.Sitemap> {
+	const locations = [
+		"Chennai",
+		"Tamil Nadu",
+		"Trichy",
+		"Alwarpet",
+		"Vadapalani",
+		"Madipakkam",
+		"Nungambakkam",
+		"Thiruvallur",
+		"Madurai",
+		"Thanjavur",
+		"Delhi",
+		"West Bengal",
+	];
+
+	return locations.map((location) => ({
+		url: `${env.NEXT_PUBLIC_URL}${links.search(location)}`,
+		lastModified: new Date(),
+		changeFrequency: "weekly",
+		priority: 0.9,
+		images: [],
+	}));
+}
+
+async function genSearchSpecialitiesSitemap(): Promise<MetadataRoute.Sitemap> {
+	const specialities = [
+		"Ambulance Driver",
+		"Nurse",
+		"Staff Nurse",
+		"Front Office Executive",
+		"Lab Technician",
+		"Guest Relations",
+		"Manager On Duty",
+		"Radiographer",
+		"Pharmacist",
+		"Fitness Trainer",
+		"Nutritionist",
+		"Physician",
+		"Biomedical Engineer",
+		"Dental Surgeon",
+		"Radiologist",
+	];
+
+	return specialities.map((speciality) => ({
+		url: `${env.NEXT_PUBLIC_URL}${links.search(undefined, speciality)}`,
+		lastModified: new Date(),
+		changeFrequency: "weekly",
+		priority: 0.9,
+		images: [],
 	}));
 }
