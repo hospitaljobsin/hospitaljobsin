@@ -101,7 +101,7 @@ export async function generateMetadata({
 		const preloadedQuery = await loadSerializableQuery<
 			typeof SearchMetadataQueryNode,
 			pageSearchSpecialityMetadataQuery
-		>(PageSearchMetadataQuery, { ...variables });
+		>(PageSearchMetadataQuery, { ...variables, searchTerm: speciality });
 
 		const data = readInlineData<pageSearchSpecialityMetadataFragment$key>(
 			PageSearchMetadataFragment,
