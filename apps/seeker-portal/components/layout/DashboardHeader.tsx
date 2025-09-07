@@ -49,7 +49,7 @@ export default function DashboardHeader({
 
 	const handleSearchSubmit = (searchTerm: string) => {
 		// Navigate to search with the search term
-		router.push(links.search(undefined, searchTerm.trim()));
+		router.push(links.search(undefined, searchTerm));
 	};
 
 	return (

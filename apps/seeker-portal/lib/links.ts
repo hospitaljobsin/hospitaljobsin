@@ -7,11 +7,11 @@ const links = {
 		speciality: string | undefined = undefined,
 	) =>
 		location && speciality
-			? `/search/${speciality}-jobs-in-${location}`
+			? `/search/${speciality.trim().replace(/\s+/g, "-")}-jobs-in-${location.trim()}`
 			: location
-				? `/search/jobs-in-${location}`
+				? `/search/jobs-in-${location.trim()}`
 				: speciality
-					? `/search/${speciality}-jobs`
+					? `/search/${speciality.trim().replace(/\s+/g, "-")}-jobs`
 					: "/search",
 	recruiterLanding: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/`,
 	profile: "/profile",
