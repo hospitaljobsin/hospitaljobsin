@@ -164,6 +164,7 @@ export default function LocationAutocomplete({
 				onSelectionChange={handleSelectionChange}
 				onKeyDown={preventFormSubmission}
 				isClearable
+				allowsCustomValue
 				onClear={onClear}
 				onBlur={onBlur}
 			>

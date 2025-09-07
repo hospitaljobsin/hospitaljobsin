@@ -26,16 +26,16 @@ export function LandingSearchController({
 			e.preventDefault();
 		}
 		const termToUse = overrideSearchTerm || searchTerm;
-		if (termToUse && selectedLocation?.displayName) {
-			router.push(links.search(selectedLocation.displayName, termToUse));
+		if (termToUse && locationInput) {
+			router.push(links.search(locationInput, termToUse));
 			return;
 		}
 		if (termToUse) {
 			router.push(links.search(undefined, termToUse));
 			return;
 		}
-		if (selectedLocation?.displayName) {
-			router.push(links.search(selectedLocation.displayName));
+		if (locationInput) {
+			router.push(links.search(locationInput));
 			return;
 		}
 		router.push(links.search());
