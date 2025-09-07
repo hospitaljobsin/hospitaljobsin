@@ -29,3 +29,12 @@ class GeoJSONPolygon(BaseModel):
     coordinates: list[list[list[float]]] = Field(
         ..., description="Array of linear rings"
     )
+
+
+class GeoJSONMultiPolygon(BaseModel):
+    """GeoJSON MultiPolygon geometry."""
+
+    type: str = Field(default="MultiPolygon", description="Geometry type")
+    coordinates: list[list[list[list[float]]]] = Field(
+        ..., description="Array of linear rings"
+    )

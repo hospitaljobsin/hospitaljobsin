@@ -6,7 +6,7 @@ from beanie import Document, Indexed
 from pydantic import Field
 
 from app.base.models import Address
-from app.geocoding.models import GeoJSONPoint, GeoJSONPolygon
+from app.geocoding.models import GeoJSONMultiPolygon, GeoJSONPoint, GeoJSONPolygon
 
 
 class Region(Document):
@@ -15,7 +15,7 @@ class Region(Document):
     aliases: list[str] = Field(default_factory=list)
     level: Literal["locality", "city", "state", "country", "neighbourhood"]
 
-    geometry: GeoJSONPolygon | None = None
+    geometry: GeoJSONPolygon | GeoJSONMultiPolygon | None = None
     coordinates: GeoJSONPoint
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 

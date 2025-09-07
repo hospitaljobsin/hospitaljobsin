@@ -1,6 +1,5 @@
 import asyncio
 import json
-import re
 import time
 import zipfile
 from pathlib import Path
@@ -11,7 +10,7 @@ from app.base.models import Address
 from app.config import DatabaseSettings, get_settings
 from app.database import initialize_database
 from app.geocoding.documents import Region
-from app.geocoding.models import GeoJSONPoint, GeoJSONPolygon
+from app.geocoding.models import GeoJSONMultiPolygon, GeoJSONPoint, GeoJSONPolygon
 from pydantic import ValidationError
 from pydantic_extra_types.country import CountryAlpha2
 from pymongo.errors import BulkWriteError
@@ -50,7 +49,7 @@ NATURAL_EARTH_URLS = {
 }
 
 # Reliable data sources replacing WhoisOnFirst
-WOF_BUNDLES = {
+DATA_SOURCES = {
     # Global data from Natural Earth
     "country": "https://naciscdn.org/naturalearth/50m/cultural/ne_50m_admin_0_countries.zip",
     "region": "https://naciscdn.org/naturalearth/50m/cultural/ne_50m_admin_1_states_provinces.zip",
@@ -59,17 +58,6 @@ WOF_BUNDLES = {
     "neighbourhood": "http://download.geonames.org/export/dump/IN.zip",
 }
 
-# Map WOF place types to our region levels
-WOF_LEVEL_MAPPING = {
-    "country": "country",
-    "dependency": "country",  # territories, dependencies
-    "region": "state",
-    "macroregion": "state",
-    "locality": "city",
-    "localadmin": "locality",
-    "neighbourhood": "neighbourhood",
-    "microhood": "neighbourhood",
-}
 
 # -------------------
 # HELPERS
@@ -102,13 +90,14 @@ def clean_country_code(code: str | None) -> CountryAlpha2 | None:
         return None
 
 
-def is_english_text(text: str) -> bool:
+def is_valid_text(text: str) -> bool:
     """Check if text contains only English/Latin characters."""
-    if not text:
-        return False
-    # Allow Latin characters, spaces, hyphens, apostrophes, periods, commas
-    pattern = r"^[a-zA-Z\s\-\'\.,&()]+$"
-    return bool(re.match(pattern, text.strip()))
+    # if not text:
+    #     return False
+    # # Allow Latin characters, spaces, hyphens, apostrophes, periods, commas
+    # pattern = r"^[a-zA-Z\s\-\'\.,&()]+$"
+    # return bool(re.match(pattern, text.strip()))
+    return True
 
 
 def filter_english_names(names: list[str]) -> list[str]:
@@ -121,11 +110,11 @@ def filter_english_names(names: list[str]) -> list[str]:
         if not name or len(name.strip()) < 2:
             continue
         # Skip if contains non-Latin characters
-        if not is_english_text(name.strip()):
+        if not is_valid_text(name.strip()):
             continue
-        # Skip if it's all uppercase and short (likely a code)
-        if name.isupper() and len(name) < 5:
-            continue
+        # # Skip if it's all uppercase and short (likely a code)
+        # if name.isupper() and len(name) < 5:
+        #     continue
         english_names.append(name.strip())
 
     # Remove duplicates while preserving order
@@ -137,146 +126,142 @@ def filter_english_names(names: list[str]) -> list[str]:
     ]
 
 
-def extract_wof_names(properties: dict) -> tuple[str | None, list[str]]:
-    """Extract primary name and aliases from WOF properties."""
-    # Primary name - prefer English names
-    primary_name = None
-
-    # Try different name fields in order of preference
-    name_fields = [
-        "wof:name",
-        "name:eng_x_preferred",
-        "name:eng_x_variant",
-        "wof:shortcode",
-        "wof:lang_x_spoken",
-    ]
-
-    for field in name_fields:
-        if properties.get(field):
-            if isinstance(properties[field], list) and properties[field]:
-                primary_name = safe_str(properties[field][0])
-            else:
-                primary_name = safe_str(properties[field])
-            if primary_name:
-                break
-
-    if not primary_name:
-        return None, []
-
-    # Collect aliases from various name fields
+def get_healthcare_aliases(name: str, level: str) -> list[str]:
+    """Get healthcare-specific aliases for Indian locations."""
     aliases = []
+    name_lower = name.lower()
 
-    # Name variants and translations
-    for key, value in properties.items():
-        if key.startswith("name:") and key != "name:eng_x_preferred":
-            if isinstance(value, list):
-                aliases.extend([safe_str(v) for v in value if v])
-            elif value:
-                aliases.append(safe_str(value))
+    # Healthcare hub aliases and colloquial names for major Indian cities/states
+    healthcare_aliases = {
+        # Major healthcare destination cities
+        "bangalore": [
+            "bengaluru",
+            "silicon valley of india",
+            "garden city",
+            "tech city",
+        ],
+        "bengaluru": [
+            "bangalore",
+            "silicon valley of india",
+            "garden city",
+            "tech city",
+        ],
+        "mumbai": ["bombay", "financial capital", "bollywood city"],
+        "bombay": ["mumbai", "financial capital", "bollywood city"],
+        "delhi": ["new delhi", "national capital territory", "nct", "capital"],
+        "new delhi": ["delhi", "national capital territory", "nct", "capital"],
+        "chennai": ["madras", "detroit of india", "health city"],
+        "madras": ["chennai", "detroit of india", "health city"],
+        "hyderabad": ["cyberabad", "hitec city", "pharma city"],
+        "kolkata": ["calcutta", "city of joy", "cultural capital"],
+        "calcutta": ["kolkata", "city of joy", "cultural capital"],
+        "pune": ["poona", "oxford of the east", "pune city"],
+        "poona": ["pune", "oxford of the east", "pune city"],
+        "ahmedabad": ["amdavad", "karnavati", "commercial capital of gujarat"],
+        "gurgaon": ["gurugram", "millennium city", "cyber city"],
+        "gurugram": ["gurgaon", "millennium city", "cyber city"],
+        "noida": ["new okhla industrial development authority"],
+        "kochi": ["cochin", "queen of arabian sea"],
+        "cochin": ["kochi", "queen of arabian sea"],
+        "thiruvananthapuram": ["trivandrum", "tvm"],
+        "trivandrum": ["thiruvananthapuram", "tvm"],
+        "bhubaneswar": ["temple city", "planned city"],
+        "jaipur": ["pink city", "paris of india"],
+        "lucknow": ["city of nawabs"],
+        "chandigarh": ["city beautiful", "planned city"],
+        "indore": ["commercial capital of mp"],
+        "nagpur": ["orange city", "geographical center of india"],
+        "coimbatore": ["manchester of south india", "textile city"],
+        "visakhapatnam": ["vizag", "city of destiny"],
+        "vijayawada": ["bezawada"],
+        "vadodara": ["baroda"],
+        "surat": ["diamond city", "textile city"],
+        "rajkot": ["ranger city"],
+        "agra": ["city of taj"],
+        "kanpur": ["manchester of east"],
+        "patna": ["pataliputra"],
+        # State aliases
+        "karnataka": ["mysore state"],
+        "tamil nadu": ["madras state", "tn"],
+        "andhra pradesh": ["ap"],
+        "telangana": ["ts"],
+        "maharashtra": ["mh"],
+        "west bengal": ["wb", "bengal"],
+        "uttar pradesh": ["up"],
+        "madhya pradesh": ["mp", "heart of india"],
+        "rajasthan": ["land of kings"],
+        "gujarat": ["jewel of west"],
+        "kerala": ["gods own country"],
+        "punjab": ["land of five rivers"],
+        "haryana": ["wheat bowl of india"],
+        "himachal pradesh": ["hp", "dev bhoomi"],
+        "uttarakhand": ["uk", "dev bhoomi"],
+        "jharkhand": ["land of forests"],
+        "chhattisgarh": ["cg"],
+        "odisha": ["orissa"],
+        "assam": ["gateway to northeast"],
+        "arunachal pradesh": ["ap", "land of rising sun"],
+        "manipur": ["jewel of india"],
+        "meghalaya": ["abode of clouds"],
+        "mizoram": ["land of mizos"],
+        "nagaland": ["land of festivals"],
+        "sikkim": ["land of mystic splendor"],
+        "tripura": ["land of tripura"],
+        # Union territories
+        "andaman and nicobar islands": ["andaman", "nicobar", "a&n islands"],
+        "dadra and nagar haveli and daman and diu": [
+            "dadra",
+            "nagar haveli",
+            "daman",
+            "diu",
+        ],
+        "lakshadweep": ["laccadive islands"],
+        "puducherry": ["pondicherry", "pondy"],
+    }
 
-    # Add WOF label if different from primary name
-    if "wof:label" in properties:
-        label = safe_str(properties["wof:label"])
-        if label and label != primary_name:
-            aliases.append(label)
+    # Healthcare specialization aliases
+    healthcare_specializations = {
+        "hyderabad": ["genome valley", "vaccine capital"],
+        "bangalore": ["biotech capital", "it capital"],
+        "chennai": ["medical tourism hub"],
+        "mumbai": ["pharmaceutical hub"],
+        "delhi": ["medical capital"],
+        "pune": ["pharma cluster"],
+        "ahmedabad": ["pharma hub"],
+        "goa": ["wellness destination"],
+        "kerala": ["ayurveda capital", "medical tourism"],
+    }
 
-    # Filter to English names only and remove duplicates
-    aliases = filter_english_names([a for a in aliases if a and a != primary_name])
+    # Add aliases based on exact or partial matches
+    for location, location_aliases in healthcare_aliases.items():
+        if location in name_lower or name_lower in location:
+            aliases.extend(location_aliases)
 
-    return primary_name, aliases
+    # Add healthcare specialization aliases
+    for location, spec_aliases in healthcare_specializations.items():
+        if location in name_lower or name_lower in location:
+            aliases.extend(spec_aliases)
 
+    # Add common abbreviations and variations
+    if level in ["state", "country"]:
+        # Add state-specific abbreviations
+        state_abbrevs = {
+            "andhra pradesh": ["ap"],
+            "arunachal pradesh": ["ap"],
+            "tamil nadu": ["tn"],
+            "west bengal": ["wb"],
+            "uttar pradesh": ["up"],
+            "madhya pradesh": ["mp"],
+            "himachal pradesh": ["hp"],
+            "uttarakhand": ["uk"],
+            "jammu and kashmir": ["j&k", "jk"],
+        }
 
-def extract_geometry_and_coordinates(geojson: dict) -> tuple[dict | None, dict | None]:
-    """Extract geometry and coordinates from GeoJSON feature."""
-    geometry = geojson.get("geometry")
-    if not geometry:
-        return None, None
+        for state, abbrevs in state_abbrevs.items():
+            if state in name_lower:
+                aliases.extend(abbrevs)
 
-    # Handle different geometry types
-    geom_type = geometry.get("type")
-    coordinates = geometry.get("coordinates")
-
-    if not coordinates:
-        return None, None
-
-    # For polygons, use as-is but validate
-    if geom_type in ["Polygon", "MultiPolygon"]:
-        try:
-            # For MultiPolygon, take the largest polygon
-            if geom_type == "MultiPolygon":
-                if not coordinates or not coordinates[0]:
-                    return None, None
-                # Find largest polygon by coordinate count
-                largest = max(coordinates, key=lambda p: len(p[0]) if p and p[0] else 0)
-                polygon_geom = {"type": "Polygon", "coordinates": largest}
-            else:
-                polygon_geom = geometry
-
-            # Create point from polygon centroid (approximate)
-            if polygon_geom["coordinates"] and polygon_geom["coordinates"][0]:
-                exterior_ring = polygon_geom["coordinates"][0]
-                if len(exterior_ring) >= 3:
-                    # Calculate centroid
-                    total_x = sum(coord[0] for coord in exterior_ring)
-                    total_y = sum(coord[1] for coord in exterior_ring)
-                    count = len(exterior_ring)
-                    center_x = total_x / count
-                    center_y = total_y / count
-
-                    point_geom = {"type": "Point", "coordinates": [center_x, center_y]}
-                    return polygon_geom, point_geom
-
-        except (TypeError, IndexError, KeyError):
-            pass
-
-    # For points, use directly
-    elif geom_type == "Point":
-        if len(coordinates) >= 2:
-            return None, geometry  # No polygon for points
-
-    return None, None
-
-
-def extract_address_info(properties: dict, level: str) -> Address:
-    """Extract address information from WOF properties."""
-    # Get country code
-    country_code = None
-    if "wof:country" in properties:
-        country_code = clean_country_code(properties["wof:country"])
-    elif "iso:country" in properties:
-        country_code = clean_country_code(properties["iso:country"])
-
-    # Get parent region names for address hierarchy
-    address_locality = None
-    address_region = None
-
-    # Extract parent place names from hierarchy
-    if properties.get("wof:hierarchy"):
-        hierarchy = (
-            properties["wof:hierarchy"][0]
-            if isinstance(properties["wof:hierarchy"], list)
-            else properties["wof:hierarchy"]
-        )
-
-        # For different levels, use appropriate hierarchy
-        if level in ["neighbourhood", "locality"]:
-            # For neighborhoods/localities, use locality as address_locality
-            if "locality_id" in hierarchy and hierarchy["locality_id"] != -1:
-                address_locality = safe_str(properties.get("wof:name"))
-
-        if level != "country":
-            # Use region for address_region (state/province)
-            if "region_id" in hierarchy and hierarchy["region_id"] != -1:
-                # We'll need to look this up, for now use placetype
-                pass
-
-    return Address(
-        street_address=None,
-        address_locality=address_locality,
-        address_region=address_region,
-        postal_code=None,  # WOF doesn't typically have postal codes
-        country=country_code,
-    )
+    return [alias for alias in aliases if alias and alias.lower() != name_lower]
 
 
 class ProgressTracker:
@@ -333,7 +318,7 @@ class ProgressTracker:
 
 async def download_and_extract_wof_bundle(wof_type: str, dest_dir: Path) -> Path:
     """Download and extract data bundle."""
-    url = WOF_BUNDLES[wof_type]
+    url = DATA_SOURCES[wof_type]
     dest_dir.mkdir(parents=True, exist_ok=True)
 
     filename = url.split("/")[-1]
@@ -477,7 +462,7 @@ def find_geojson_files(data_dir: Path) -> list[Path]:
     return geojson_files
 
 
-async def import_wof_data_type(
+async def import_specifc_data_type(
     wof_type: str, our_level: str, progress_tracker: ProgressTracker
 ) -> None:
     """Import a specific type of data."""
@@ -550,14 +535,49 @@ async def process_natural_earth_data(
                 if not primary_name:
                     continue
 
-                # Get aliases
+                # Get aliases - Enhanced for healthcare recruitment
                 aliases = []
-                alias_fields = ["NAME_SORT", "NAME_ALT", "ABBREV", "POSTAL"]
+
+                # Standard Natural Earth alias fields
+                alias_fields = [
+                    "NAME_SORT",
+                    "NAME_ALT",
+                    "ABBREV",
+                    "POSTAL",
+                    "NAME_LOCAL",
+                    "NAME_AR",
+                    "NAME_BN",
+                    "NAME_DE",
+                    "NAME_ES",
+                    "NAME_FR",
+                    "NAME_EL",
+                    "NAME_HI",
+                    "NAME_HU",
+                    "NAME_ID",
+                    "NAME_IT",
+                    "NAME_JA",
+                    "NAME_KO",
+                    "NAME_NL",
+                    "NAME_PL",
+                    "NAME_PT",
+                    "NAME_RU",
+                    "NAME_SV",
+                    "NAME_TR",
+                    "NAME_VI",
+                    "NAME_ZH",
+                    "ABBREV_LEN",
+                    "TINY",
+                    "HOMEPART",
+                ]
+
                 for field in alias_fields:
                     if properties.get(field):
                         alias = safe_str(properties[field])
                         if alias and alias != primary_name:
                             aliases.append(alias)
+
+                # Add manual healthcare-specific aliases for Indian states/regions
+                aliases.extend(get_healthcare_aliases(primary_name, our_level))
 
                 aliases = filter_english_names(aliases)
 
@@ -569,12 +589,28 @@ async def process_natural_earth_data(
                 # Get centroid for coordinates - fix coordinate handling
                 if hasattr(geometry, "centroid"):
                     centroid = geometry.centroid
-                    # Ensure coordinates are proper floats, not tuples
-                    point_coords = [float(centroid.x), float(centroid.y)]
-                    point_geom = {
-                        "type": "Point",
-                        "coordinates": point_coords,
-                    }
+                    try:
+                        # Ensure coordinates are proper floats, not tuples
+                        lon = float(centroid.x)
+                        lat = float(centroid.y)
+
+                        # Validate coordinate ranges
+                        if not (-180 <= lon <= 180) or not (-90 <= lat <= 90):
+                            print(
+                                f"Warning: Invalid centroid coordinates for {primary_name}: ({lon}, {lat})"
+                            )
+                            continue
+
+                        # Create point geometry with validated coordinates
+                        point_geom = {
+                            "type": "Point",
+                            "coordinates": [float(lon), float(lat)],
+                        }
+                    except (ValueError, TypeError, AttributeError) as centroid_error:
+                        print(
+                            f"Warning: Failed to extract centroid for {primary_name}: {centroid_error}"
+                        )
+                        continue
                 else:
                     continue
 
@@ -586,20 +622,77 @@ async def process_natural_earth_data(
 
                     def clean_coordinates(coords):
                         """Recursively clean coordinate arrays to ensure they're lists of floats"""
-                        if isinstance(coords, (list, tuple)):
-                            if len(coords) == 2 and all(
-                                isinstance(x, (int, float)) for x in coords
-                            ):
-                                # This is a coordinate pair
-                                return [float(coords[0]), float(coords[1])]
-                            else:
-                                # This is a nested structure
-                                return [clean_coordinates(item) for item in coords]
-                        return coords
+                        if not isinstance(coords, (list, tuple)):
+                            return coords
 
-                    geom_dict["coordinates"] = clean_coordinates(
-                        geom_dict["coordinates"]
-                    )
+                        # Check if this is a coordinate pair [lon, lat]
+                        if len(coords) == 2 and all(
+                            isinstance(x, (int, float)) for x in coords
+                        ):
+                            try:
+                                lon, lat = float(coords[0]), float(coords[1])
+                                # Validate coordinate ranges
+                                if (-180 <= lon <= 180) and (-90 <= lat <= 90):
+                                    return [lon, lat]
+                                else:
+                                    print(
+                                        f"Warning: Coordinates out of range: ({lon}, {lat})"
+                                    )
+                                    return []
+                            except (ValueError, TypeError) as e:
+                                print(f"Warning: Invalid coordinate values: {e}")
+                                return []
+
+                        # Check if this is a coordinate pair with optional elevation [lon, lat, elev]
+                        if len(coords) == 3 and all(
+                            isinstance(x, (int, float)) for x in coords
+                        ):
+                            try:
+                                lon, lat = float(coords[0]), float(coords[1])
+                                # Validate coordinate ranges (ignore elevation)
+                                if (-180 <= lon <= 180) and (-90 <= lat <= 90):
+                                    return [lon, lat]
+                                else:
+                                    print(
+                                        f"Warning: Coordinates out of range: ({lon}, {lat})"
+                                    )
+                                    return []
+                            except (ValueError, TypeError) as e:
+                                print(f"Warning: Invalid coordinate values: {e}")
+                                return []
+
+                        # This is a nested structure - recursively process
+                        try:
+                            cleaned = []
+                            for item in coords:
+                                if item is not None:
+                                    result = clean_coordinates(item)
+                                    if result:  # Only add non-empty results
+                                        cleaned.append(result)
+                            return cleaned
+                        except (TypeError, ValueError) as e:
+                            print(
+                                f"Warning: Skipping invalid coordinate structure: {e}"
+                            )
+                            return []
+
+                    try:
+                        geom_dict["coordinates"] = clean_coordinates(
+                            geom_dict["coordinates"]
+                        )
+
+                        # Validate that we have valid coordinates after cleaning
+                        if not geom_dict["coordinates"]:
+                            print(
+                                f"Warning: Empty coordinates after cleaning for {primary_name}"
+                            )
+                            continue
+
+                    except Exception as clean_error:
+                        print(
+                            f"Warning: Failed to clean coordinates for {primary_name}: {clean_error}"
+                        )
+                        continue
 
                 # Create address
                 country_code = clean_country_code(properties.get("ISO_A2"))
@@ -614,18 +707,79 @@ async def process_natural_earth_data(
                 # Create region with proper coordinate handling
                 try:
                     polygon_geom = None
-                    if geom_dict["type"] in ["Polygon", "MultiPolygon"]:
-                        polygon_geom = GeoJSONPolygon(**geom_dict)
+                    if geom_dict["type"] in ["Polygon"]:
+                        try:
+                            # Validate coordinate structure before creating polygon
+                            coords = geom_dict["coordinates"]
+                            if not coords or len(coords) == 0:
+                                print(
+                                    f"Warning: Empty coordinates for polygon {primary_name}"
+                                )
+                            else:
+                                polygon_geom = GeoJSONPolygon(**geom_dict)
+                        except (ValidationError, ValueError, TypeError) as poly_error:
+                            print(
+                                f"Warning: Invalid polygon geometry for {primary_name}: {poly_error}"
+                            )
+                            polygon_geom = None
+                    if geom_dict["type"] in ["MultiPolygon"]:
+                        try:
+                            # Validate coordinate structure before creating polygon
+                            coords = geom_dict["coordinates"]
+                            if not coords or len(coords) == 0:
+                                print(
+                                    f"Warning: Empty coordinates for polygon {primary_name}"
+                                )
+                            else:
+                                polygon_geom = GeoJSONMultiPolygon(**geom_dict)
+                        except (ValidationError, ValueError, TypeError) as poly_error:
+                            print(
+                                f"Warning: Invalid polygon geometry for {primary_name}: {poly_error}"
+                            )
+                            polygon_geom = None
+                    # Validate point geometry with enhanced error handling
+                    try:
+                        # Ensure coordinates are exactly 2 elements [lon, lat]
+                        coords = point_geom.get("coordinates", [])
+                        if not isinstance(coords, list) or len(coords) != 2:
+                            print(
+                                f"❌ Invalid coordinates structure for {primary_name}: {coords}"
+                            )
+                            continue
+
+                        # Ensure each coordinate is a valid float
+                        try:
+                            lon, lat = float(coords[0]), float(coords[1])
+                            if not ((-180 <= lon <= 180) and (-90 <= lat <= 90)):
+                                print(
+                                    f"❌ Coordinates out of valid range for {primary_name}: ({lon}, {lat})"
+                                )
+                                continue
+                            # Recreate with validated coordinates
+                            point_geom["coordinates"] = [lon, lat]
+                        except (ValueError, TypeError, IndexError) as coord_err:
+                            print(
+                                f"❌ Cannot convert coordinates to float for {primary_name}: {coord_err}"
+                            )
+                            continue
+
+                        point_obj = GeoJSONPoint(**point_geom)
+                    except (ValidationError, ValueError, TypeError) as point_error:
+                        print(
+                            f"❌ Invalid point geometry for {primary_name}: {point_error}"
+                        )
+                        continue
 
                     region = Region(
                         name=primary_name,
                         aliases=aliases,
                         level=our_level,  # type: ignore
                         geometry=polygon_geom,
-                        coordinates=GeoJSONPoint(**point_geom),
+                        coordinates=point_obj,
                         address=address,
                     )
                     docs.append(region)
+
                 except Exception as coord_error:
                     print(f"❌ Coordinate error for {primary_name}: {coord_error}")
                     continue
@@ -697,14 +851,22 @@ async def process_geonames_india_data(
                 if not (-90 <= latitude <= 90) or not (-180 <= longitude <= 180):
                     continue
 
-                # Get alternate names
+                # Get alternate names from GeoNames
                 alt_names = parts[3].split(",") if parts[3] else []
-                aliases = filter_english_names(
-                    [n.strip() for n in alt_names if n.strip()]
-                )
+                geonames_aliases = [n.strip() for n in alt_names if n.strip()]
 
-                # Create point geometry with proper coordinate format
-                point_geom = {"type": "Point", "coordinates": [longitude, latitude]}
+                # Add healthcare-specific aliases
+                healthcare_aliases = get_healthcare_aliases(name, our_level)
+
+                # Combine all aliases
+                all_aliases = geonames_aliases + healthcare_aliases
+                aliases = filter_english_names(all_aliases)
+
+                # Create point geometry with validated coordinate format
+                point_geom = {
+                    "type": "Point",
+                    "coordinates": [float(longitude), float(latitude)],
+                }
 
                 # Create address
                 address = Address(
@@ -717,12 +879,45 @@ async def process_geonames_india_data(
 
                 # Create region with validation
                 try:
+                    # Validate point geometry first with enhanced error handling
+                    try:
+                        # Ensure coordinates are exactly 2 elements [lon, lat]
+                        coords = point_geom.get("coordinates", [])
+                        if not isinstance(coords, list) or len(coords) != 2:
+                            print(
+                                f"❌ Invalid coordinates structure for {name}: {coords}"
+                            )
+                            continue
+
+                        # Ensure each coordinate is a valid float
+                        try:
+                            lon, lat = float(coords[0]), float(coords[1])
+                            if not ((-180 <= lon <= 180) and (-90 <= lat <= 90)):
+                                print(
+                                    f"❌ Coordinates out of valid range for {name}: ({lon}, {lat})"
+                                )
+                                continue
+                            # Recreate with validated coordinates
+                            point_geom["coordinates"] = [lon, lat]
+                        except (ValueError, TypeError, IndexError) as coord_err:
+                            print(
+                                f"❌ Cannot convert coordinates to float for {name}: {coord_err}"
+                            )
+                            continue
+
+                        point_obj = GeoJSONPoint(**point_geom)
+                    except (ValidationError, ValueError, TypeError) as point_error:
+                        print(
+                            f"❌ Invalid point coordinates for {name} ({longitude}, {latitude}): {point_error}"
+                        )
+                        continue
+
                     region = Region(
                         name=name,
                         aliases=aliases,
                         level=our_level,  # type: ignore
                         geometry=None,  # No polygon for GeoNames points
-                        coordinates=GeoJSONPoint(**point_geom),
+                        coordinates=point_obj,
                         address=address,
                     )
                     docs.append(region)
@@ -734,7 +929,7 @@ async def process_geonames_india_data(
                 continue
 
 
-async def import_all_wof_data(
+async def import_all_data(
     progress_tracker: ProgressTracker, level_filter: str | None = None
 ) -> None:
     """Import all data types."""
@@ -757,7 +952,7 @@ async def import_all_wof_data(
         if our_level in ["city", "locality", "neighbourhood"]:
             print(f"🇮🇳 Processing India-only {our_level} data...")
 
-        await import_wof_data_type(wof_type, our_level, progress_tracker)
+        await import_specifc_data_type(wof_type, our_level, progress_tracker)
 
 
 # -------------------
@@ -784,7 +979,7 @@ async def main(level_filter: str | None = None) -> None:
             print(f"📋 Resuming from previous session (last update: {last_update})")
 
         # Import data
-        await import_all_wof_data(progress_tracker, level_filter)
+        await import_all_data(progress_tracker, level_filter)
 
         print("🎉 WhoisOnFirst import completed successfully!")
         print("📊 Final stats:")
