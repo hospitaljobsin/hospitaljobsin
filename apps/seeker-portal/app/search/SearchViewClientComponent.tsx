@@ -4,6 +4,7 @@ import type { SearchViewClientComponentFragment$key } from "@/__generated__/Sear
 import type PageSearchViewQueryNode from "@/__generated__/pageSearchViewQuery.graphql";
 import type { pageSearchViewQuery } from "@/__generated__/pageSearchViewQuery.graphql";
 import PageSearchViewQuery from "@/__generated__/pageSearchViewQuery.graphql";
+import type { FilterValues } from "@/components/search/FilterSidebar";
 import SearchView from "@/components/search/SearchView";
 import { FILTER_DEFAULTS } from "@/lib/constants";
 import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
@@ -55,17 +56,7 @@ export const SearchViewClientComponentFragment = graphql`
 	}
 `;
 
-export type Filters = {
-	q: string | null;
-	minExperience?: number | null;
-	maxExperience?: number | null;
-	minSalary?: number | null;
-	maxSalary?: number | null;
-	proximityKm: number;
-	workMode: string[];
-	jobType: string[];
-	sortBy: string;
-};
+// Use FilterValues from FilterSidebar instead of defining Filters here
 
 export default function SearchViewClientComponent({
 	preloadedQuery,
@@ -73,7 +64,6 @@ export default function SearchViewClientComponent({
 }: Props) {
 	const [filters, setFilters] = useQueryStates(
 		{
-			q: parseAsString.withDefault(FILTER_DEFAULTS.q || ""),
 			minExperience: parseAsInteger,
 			maxExperience: parseAsInteger,
 			minSalary: parseAsInteger,
@@ -105,9 +95,14 @@ export default function SearchViewClientComponent({
 	return (
 		<SearchView
 			location={location || null}
+			speciality={null} // No speciality in main search page
 			fragmentKey={fragmentKey}
-			filters={filters}
-			setFilters={setFilters}
+			filters={filters as FilterValues}
+			setFilters={
+				setFilters as (
+					filters: FilterValues | ((prevFilters: FilterValues) => FilterValues),
+				) => void
+			}
 		/>
 	);
 }

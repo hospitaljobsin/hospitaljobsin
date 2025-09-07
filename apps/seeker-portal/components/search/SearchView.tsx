@@ -1,5 +1,4 @@
 import type { SearchView_query$key } from "@/__generated__/SearchView_query.graphql";
-import type { Filters } from "@/app/search/jobs-in/[location]/SearchViewLocationClientComponent";
 import { FILTER_DEFAULTS } from "@/lib/constants";
 import {
 	Button,
@@ -12,6 +11,7 @@ import {
 import { FilterIcon } from "lucide-react";
 import { Suspense, useEffect } from "react";
 import { graphql, useFragment } from "react-relay";
+import type { FilterValues } from "./FilterSidebar";
 import FilterSidebar from "./FilterSidebar";
 import SearchHeader from "./SearchHeader";
 import SearchJobsList from "./SearchJobsList";
@@ -74,8 +74,10 @@ export default function SearchView({
 	location: string | null;
 	speciality: string | null;
 	fragmentKey: SearchView_query$key;
-	filters: Filters;
-	setFilters: (filters: Filters | ((prevFilters: Filters) => Filters)) => void;
+	filters: FilterValues;
+	setFilters: (
+		filters: FilterValues | ((prevFilters: FilterValues) => FilterValues),
+	) => void;
 }) {
 	const data = useFragment<SearchView_query$key>(
 		SearchPageContentFragment,
@@ -128,8 +130,10 @@ export default function SearchView({
 		<div className="w-full flex flex-col h-full min-h-screen lg:min-h-0 bg-background-600">
 			<SearchHeader
 				query={data}
-				searchTerm={filters.q}
-				setSearchTerm={(value) => setFilters({ ...filters, q: value })}
+				searchTerm={speciality}
+				location={location}
+				setFilters={setFilters}
+				filters={filters}
 			/>
 			<div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 mx-auto max-w-7xl py-6 px-4 bg-background-600 flex-1 min-h-0">
 				{/* Mobile filter button */}
@@ -157,13 +161,11 @@ export default function SearchView({
 							<DrawerBody>
 								<FilterSidebar
 									location={location}
+									speciality={speciality}
 									values={sidebarFilters}
 									onChange={setFilters}
 									open={true}
-									searchTerm={filters.q}
-									setSearchTerm={(value) =>
-										setFilters({ ...filters, q: value })
-									}
+									filters={filters}
 								/>
 							</DrawerBody>
 						</DrawerContent>
@@ -173,18 +175,18 @@ export default function SearchView({
 				<div className="hidden lg:block lg:w-auto lg:sticky lg:top-0 lg:self-start lg:max-h-screen lg:overflow-y-auto h-full">
 					<FilterSidebar
 						location={location}
+						speciality={speciality}
 						values={sidebarFilters}
 						onChange={setFilters}
 						open={true}
-						searchTerm={filters.q}
-						setSearchTerm={(value) => setFilters({ ...filters, q: value })}
+						filters={filters}
 					/>
 				</div>
 				<div className="flex-1 min-w-0 min-h-0">
 					<Suspense fallback={<SearchJobsListSkeleton />}>
 						<SearchJobsList
 							rootQuery={data}
-							searchTerm={filters.q || null}
+							searchTerm={speciality}
 							location={location}
 							proximityKm={filters.proximityKm}
 							minExperience={filters.minExperience ?? null}
@@ -193,7 +195,7 @@ export default function SearchView({
 							workMode={validatedWorkMode}
 							jobType={validatedJobType}
 							sortBy={filters.sortBy}
-							setFilters={setFilters}
+							setFilters={setFilters as (filters: unknown) => void}
 						/>
 					</Suspense>
 				</div>

@@ -13,12 +13,14 @@ import {
 } from "@heroui/react";
 import { ExternalLinkIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Logo from "../Logo";
 import JobSearchAutocomplete from "../forms/JobSearchAutocomplete";
 import AuthNavigation from "../layout/AuthNavigation";
+import type { FilterValues } from "./FilterSidebar";
 
 export const SearchHeaderFragment = graphql`
   fragment SearchHeaderFragment on Query {
@@ -38,13 +40,21 @@ export const SearchHeaderFragment = graphql`
 export default function SearchHeader({
 	query,
 	searchTerm,
-	setSearchTerm,
+	location,
+	setFilters,
+	filters,
 }: {
 	query: SearchHeaderFragment$key;
 	searchTerm: string | null;
-	setSearchTerm: (value: string | null) => void;
+	location: string | null;
+	setFilters: (
+		filters: FilterValues | ((prevFilters: FilterValues) => FilterValues),
+	) => void;
+	filters: FilterValues;
 }) {
 	const data = useFragment(SearchHeaderFragment, query);
+	const router = useRouter();
+	const searchParams = useSearchParams();
 
 	// Local state for input value, initialized from nuqs filter
 	const [inputValue, setInputValue] = useState(searchTerm || "");
@@ -53,6 +63,26 @@ export default function SearchHeader({
 	useEffect(() => {
 		setInputValue(searchTerm || "");
 	}, [searchTerm]);
+
+	const handleJobSearchSubmit = (speciality: string) => {
+		if (!speciality.trim()) return;
+
+		// Build redirect URL based on location presence
+		let redirectUrl: string;
+		if (location) {
+			redirectUrl = links.search(location, speciality);
+		} else {
+			redirectUrl = links.search(undefined, speciality);
+		}
+
+		// Preserve existing query parameters
+		const params = new URLSearchParams(searchParams.toString());
+		if (params.toString()) {
+			redirectUrl += `?${params.toString()}`;
+		}
+
+		router.push(redirectUrl);
+	};
 
 	return (
 		<div className={"w-full flex flex-col sticky top-0 z-50"}>
@@ -89,11 +119,11 @@ export default function SearchHeader({
 						<JobSearchAutocomplete
 							value={inputValue}
 							onValueChange={setInputValue}
-							onSubmit={(searchTerm) => {
-								setSearchTerm(searchTerm || null);
-							}}
+							onSubmit={handleJobSearchSubmit}
 							onClear={() => {
-								setSearchTerm(null);
+								setInputValue("");
+								// Redirect to base search page
+								router.push(location ? links.search(location) : links.search());
 							}}
 							placeholder="Search by Speciality or keyword"
 							startContent={
@@ -101,7 +131,7 @@ export default function SearchHeader({
 							}
 							onJobSelect={(job) => {
 								setInputValue(job.displayName);
-								setSearchTerm(job.displayName);
+								handleJobSearchSubmit(job.displayName);
 							}}
 							fullWidth
 							variant="bordered"

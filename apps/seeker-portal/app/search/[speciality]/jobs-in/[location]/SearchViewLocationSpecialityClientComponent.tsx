@@ -27,6 +27,7 @@ type Props = {
 		pageSearchLocationSpecialityViewQuery
 	>;
 	speciality: string | undefined;
+	location: string | undefined;
 };
 
 export const SearchViewLocationSpecialityClientComponentFragment = graphql`
@@ -56,7 +57,6 @@ export const SearchViewLocationSpecialityClientComponentFragment = graphql`
 `;
 
 export type Filters = {
-	q: string | null;
 	minExperience?: number | null;
 	maxExperience?: number | null;
 	minSalary?: number | null;
@@ -70,10 +70,10 @@ export type Filters = {
 export default function SearchViewClientComponent({
 	preloadedQuery,
 	speciality,
+	location,
 }: Props) {
 	const [filters, setFilters] = useQueryStates(
 		{
-			q: parseAsString.withDefault(FILTER_DEFAULTS.q || ""),
 			minExperience: parseAsInteger,
 			maxExperience: parseAsInteger,
 			minSalary: parseAsInteger,
@@ -109,7 +109,7 @@ export default function SearchViewClientComponent({
 	return (
 		<SearchView
 			speciality={speciality || null}
-			location={null}
+			location={location || null}
 			fragmentKey={fragmentKey}
 			filters={filters}
 			setFilters={setFilters}
