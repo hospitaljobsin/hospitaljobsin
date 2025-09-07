@@ -62,7 +62,6 @@ export default function FilterSidebar({
 				<div className="block lg:hidden">
 					{/* Speciality input for mobile only */}
 					<JobSearchAutocomplete
-						label="Search"
 						value={searchInput}
 						onValueChange={setSearchInput}
 						onSubmit={(searchTerm: string) => {

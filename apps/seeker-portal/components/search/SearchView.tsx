@@ -1,5 +1,5 @@
 import type { SearchView_query$key } from "@/__generated__/SearchView_query.graphql";
-import type { Filters } from "@/app/search/[[...location]]/SearchViewClientComponent";
+import type { Filters } from "@/app/search/jobs-in/[location]/SearchViewLocationClientComponent";
 import { FILTER_DEFAULTS } from "@/lib/constants";
 import {
 	Button,

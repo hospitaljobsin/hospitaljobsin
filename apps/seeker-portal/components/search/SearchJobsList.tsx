@@ -7,7 +7,7 @@ import type {
 	SearchJobsListRefetchQuery as SearchClientComponentQueryType,
 	SearchJobsListRefetchQuery$variables,
 } from "@/__generated__/SearchJobsListRefetchQuery.graphql";
-import type { Filters } from "@/app/search/[[...location]]/SearchViewClientComponent";
+import type { Filters } from "@/app/search/jobs-in/[location]/SearchViewLocationClientComponent";
 import Job from "@/components/landing/Job";
 import JobListSkeleton from "@/components/landing/JobListSkeleton";
 import { APP_TITLE } from "@/lib/constants";

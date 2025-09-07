@@ -86,6 +86,14 @@ const nextConfig: NextConfig = {
 				: []),
 		],
 	},
+	async rewrites() {
+		return [
+			{
+				source: "/search/jobs-in-:location",
+				destination: "/search/jobs-in/:location",
+			},
+		];
+	},
 	async headers() {
 		return [
 			{
