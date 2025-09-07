@@ -175,8 +175,11 @@ export async function generateMetadata({
 	const filterParams = await searchParams;
 	const locationParam = (await params).location;
 	const location = Array.isArray(locationParam)
-		? locationParam.map((segment) => decodeURIComponent(segment)).join("-")
-		: decodeURIComponent(locationParam);
+		? locationParam
+				.map((segment) => decodeURIComponent(segment))
+				.join("-")
+				.replace(/-/g, " ")
+		: decodeURIComponent(locationParam).replace(/-/g, " ");
 	const variables = parseSearchParams(filterParams);
 
 	console.log("generating metadata for search", variables);
@@ -258,8 +261,11 @@ export default async function SearchPage({
 	const variables = parseSearchParams(filterParams);
 	const locationParam = (await params).location;
 	const location = Array.isArray(locationParam)
-		? locationParam.map((segment) => decodeURIComponent(segment)).join("-")
-		: decodeURIComponent(locationParam);
+		? locationParam
+				.map((segment) => decodeURIComponent(segment))
+				.join("-")
+				.replace(/-/g, " ")
+		: decodeURIComponent(locationParam).replace(/-/g, " ");
 
 	console.log("location", location);
 

@@ -7,9 +7,9 @@ const links = {
 		speciality: string | undefined = undefined,
 	) =>
 		location && speciality
-			? `/search/${speciality.trim().replace(/\s+/g, "-")}-jobs-in-${location.trim()}`
+			? `/search/${speciality.trim().replace(/\s+/g, "-")}-jobs-in-${location.trim().replace(/\s+/g, "-")}`
 			: location
-				? `/search/jobs-in-${location.trim()}`
+				? `/search/jobs-in-${location.trim().replace(/\s+/g, "-")}`
 				: speciality
 					? `/search/${speciality.trim().replace(/\s+/g, "-")}-jobs`
 					: "/search",
