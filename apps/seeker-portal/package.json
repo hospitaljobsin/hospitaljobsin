@@ -27,6 +27,7 @@
 		"@next/bundle-analyzer": "^15.3.5",
 		"@next/mdx": "^15.3.3",
 		"@opennextjs/aws": "^3.7.4",
+		"@react-oauth/google": "^0.12.2",
 		"@sentry/nextjs": "^9.33.0",
 		"@sentry/node": "^9.33.0",
 		"@sentry/profiling-node": "^9.33.0",

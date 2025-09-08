@@ -5,9 +5,7 @@ directive @requiresSudoMode on FIELD_DEFINITION
 """
 The accept organization invite payload.
 """
-union AcceptOrganizationInvitePayload =
-	| OrganizationInviteEdge
-	| OrganizationInviteNotFoundError
+union AcceptOrganizationInvitePayload = OrganizationInviteEdge | OrganizationInviteNotFoundError
 
 """
 An account.
@@ -630,9 +628,7 @@ type CreatePresignedURLPayloadType {
 """
 The create webauthn credential payload.
 """
-union CreateWebAuthnCredentialPayload =
-	| CreateWebAuthnCredentialSuccess
-	| InvalidPasskeyRegistrationCredentialError
+union CreateWebAuthnCredentialPayload = CreateWebAuthnCredentialSuccess | InvalidPasskeyRegistrationCredentialError
 
 """
 Create webauthn credential success.
@@ -664,9 +660,7 @@ scalar DateTime
 """
 The decline organization invite payload.
 """
-union DeclineOrganizationInvitePayload =
-	| OrganizationInviteEdge
-	| OrganizationInviteNotFoundError
+union DeclineOrganizationInvitePayload = OrganizationInviteEdge | OrganizationInviteNotFoundError
 
 """
 The delete job payload.
@@ -685,10 +679,7 @@ union DeleteOrganizationInvitePayload =
 """
 The delete organization payload.
 """
-union DeleteOrganizationPayload =
-	| Organization
-	| OrganizationNotFoundError
-	| OrganizationAuthorizationError
+union DeleteOrganizationPayload = Organization | OrganizationNotFoundError | OrganizationAuthorizationError
 
 """
 The delete other sessions payload.
@@ -723,10 +714,7 @@ type DeleteSessionSuccess {
 """
 The delete webauthn credential payload.
 """
-union DeleteWebAuthnCredentialPayload =
-	| DeleteWebAuthnCredentialSuccess
-	| WebAuthnCredentialNotFoundError
-	| InsufficientAuthProvidersError
+union DeleteWebAuthnCredentialPayload = DeleteWebAuthnCredentialSuccess | WebAuthnCredentialNotFoundError | InsufficientAuthProvidersError
 
 """
 Delete webauthn credential success.
@@ -766,9 +754,7 @@ type DemoteOrganizationMemberSuccess {
 """
 The disable account 2FA payload.
 """
-union DisableAccount2FAWithAuthenticatorPayload =
-	| Account
-	| AuthenticatorNotEnabledError
+union DisableAccount2FAWithAuthenticatorPayload = Account | AuthenticatorNotEnabledError
 
 type Education {
 	degree: String!
@@ -888,9 +874,7 @@ enum GenderType {
 """
 The generate 2FA recovery codes payload.
 """
-union Generate2FARecoveryCodesPayload =
-	| Generate2FARecoveryCodesSuccess
-	| TwoFactorAuthenticationNotEnabledError
+union Generate2FARecoveryCodesPayload = Generate2FARecoveryCodesSuccess | TwoFactorAuthenticationNotEnabledError
 
 """
 Generate 2FA recovery codes success.
@@ -905,9 +889,7 @@ type Generate2FARecoveryCodesSuccess {
 """
 The generate authentication options payload.
 """
-union GenerateAuthenticationOptionsPayload =
-	| GenerateAuthenticationOptionsSuccess
-	| InvalidCaptchaTokenError
+union GenerateAuthenticationOptionsPayload = GenerateAuthenticationOptionsSuccess | InvalidCaptchaTokenError
 
 """
 Generate authentication options success.
@@ -922,8 +904,7 @@ type GenerateAuthenticationOptionsSuccess {
 """
 The generate authenticator 2FA challenge payload.
 """
-union GenerateAuthenticator2FAChallengePayload =
-	| GenerateAuthenticator2FAChallengeSuccess
+union GenerateAuthenticator2FAChallengePayload = GenerateAuthenticator2FAChallengeSuccess
 
 """
 Generate account 2FA Challenge success.
@@ -943,8 +924,7 @@ type GenerateAuthenticator2FAChallengeSuccess {
 """
 The generate passkey creation options payload.
 """
-union GeneratePasskeyCreationOptionsPayload =
-	| GeneratePasskeyCreationOptionsSuccess
+union GeneratePasskeyCreationOptionsPayload = GeneratePasskeyCreationOptionsSuccess
 
 """
 Generate passkey creation options success.
@@ -959,10 +939,7 @@ type GeneratePasskeyCreationOptionsSuccess {
 """
 The generate passkey registration options payload.
 """
-union GeneratePasskeyRegistrationOptionsPayload =
-	| GeneratePasskeyRegistrationOptionsSuccess
-	| InvalidCaptchaTokenError
-	| EmailInUseError
+union GeneratePasskeyRegistrationOptionsPayload = GeneratePasskeyRegistrationOptionsSuccess | InvalidCaptchaTokenError | EmailInUseError
 
 """
 Generate passkey registration options success.
@@ -1160,10 +1137,7 @@ enum InviteStatus {
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf).
 """
-scalar JSON
-	@specifiedBy(
-		url: "https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf"
-	)
+scalar JSON @specifiedBy(url: "https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf")
 
 """
 A job posting.
@@ -1507,10 +1481,7 @@ type JobApplicantAnalysisFailed {
 """
 The payload for the job applicant analysis.
 """
-union JobApplicantAnalysisPayload =
-	| JobApplicantAnalysis
-	| JobApplicantAnalysisPending
-	| JobApplicantAnalysisFailed
+union JobApplicantAnalysisPayload = JobApplicantAnalysis | JobApplicantAnalysisPending | JobApplicantAnalysisFailed
 
 type JobApplicantAnalysisPending {
 	"""
@@ -1579,10 +1550,7 @@ type JobApplicantCountNotFoundError implements Error {
 """
 The job applicant payload.
 """
-union JobApplicantCountPayload =
-	| JobApplicantCount
-	| OrganizationAuthorizationError
-	| JobApplicantCountNotFoundError
+union JobApplicantCountPayload = JobApplicantCount | OrganizationAuthorizationError | JobApplicantCountNotFoundError
 
 type JobApplicantEdge {
 	"""
@@ -1609,10 +1577,7 @@ type JobApplicantNotFoundError implements Error {
 """
 The job applicant payload.
 """
-union JobApplicantPayload =
-	| JobApplicant
-	| OrganizationAuthorizationError
-	| JobApplicantNotFoundError
+union JobApplicantPayload = JobApplicant | OrganizationAuthorizationError | JobApplicantNotFoundError
 
 """
 The status of the job application.
@@ -1812,9 +1777,7 @@ type JobViewCountSuccess {
 """
 The job view metric points payload.
 """
-union JobViewMetricPointsPayload =
-	| JobViewMetricPointsSuccess
-	| OrganizationAuthorizationError
+union JobViewMetricPointsPayload = JobViewMetricPointsSuccess | OrganizationAuthorizationError
 
 """
 The job view metric points success.
@@ -2273,9 +2236,7 @@ type Mutation {
 	"""
 	Delete other sessions of the viewer than the current one.
 	"""
-	deleteOtherSessions: DeleteOtherSessionsPayload!
-		@isAuthenticated
-		@requiresSudoMode
+	deleteOtherSessions: DeleteOtherSessionsPayload! @isAuthenticated @requiresSudoMode
 
 	"""
 	Delete session by ID.
@@ -2315,9 +2276,7 @@ type Mutation {
 	"""
 	Generate registration options for adding a webauthn credential.
 	"""
-	generateWebAuthnCredentialCreationOptions: GeneratePasskeyCreationOptionsPayload!
-		@isAuthenticated
-		@requiresSudoMode
+	generateWebAuthnCredentialCreationOptions: GeneratePasskeyCreationOptionsPayload! @isAuthenticated @requiresSudoMode
 
 	"""
 	Create a new webauthn credential for the current user.
@@ -2392,16 +2351,12 @@ type Mutation {
 	"""
 	Disable two factor authentication with authenticator app.
 	"""
-	disableAccount2faWithAuthenticator: DisableAccount2FAWithAuthenticatorPayload!
-		@isAuthenticated
-		@requiresSudoMode
+	disableAccount2faWithAuthenticator: DisableAccount2FAWithAuthenticatorPayload! @isAuthenticated @requiresSudoMode
 
 	"""
 	Generate an account 2FA challenge to setup an authenticator.
 	"""
-	generateAuthenticator2faChallenge: GenerateAuthenticator2FAChallengePayload!
-		@isAuthenticated
-		@requiresSudoMode
+	generateAuthenticator2faChallenge: GenerateAuthenticator2FAChallengePayload! @isAuthenticated @requiresSudoMode
 
 	"""
 	Verify Account 2FA challenge with an authenticator.
@@ -2436,9 +2391,17 @@ type Mutation {
 	"""
 	Generate 2FA recovery codes for the current user.
 	"""
-	generate2faRecoveryCodes: Generate2FARecoveryCodesPayload!
-		@isAuthenticated
-		@requiresSudoMode
+	generate2faRecoveryCodes: Generate2FARecoveryCodesPayload! @isAuthenticated @requiresSudoMode
+
+	"""
+	Verify the given Google (one-tap) token.
+	"""
+	verifyGoogleToken(
+		"""
+		The Google (one-tap) credential token.
+		"""
+		token: String!
+	): VerifyGoogleTokenPayload!
 
 	"""
 	Save a job.
@@ -2718,8 +2681,7 @@ type Mutation {
 	"""
 	Create a presigned URL for a job applicant's resume.
 	"""
-	createJobApplicantResumePresignedUrl: CreateJobApplicantResumePresignedURLPayload!
-		@isAuthenticated
+	createJobApplicantResumePresignedUrl: CreateJobApplicantResumePresignedURLPayload! @isAuthenticated
 
 	"""
 	Log a job view start.
@@ -2839,9 +2801,7 @@ type Mutation {
 	"""
 	Remove the current user's phone number.
 	"""
-	removeAccountPhoneNumber: RemoveAccountPhoneNumberPayload!
-		@isAuthenticated
-		@requiresSudoMode
+	removeAccountPhoneNumber: RemoveAccountPhoneNumberPayload! @isAuthenticated @requiresSudoMode
 
 	"""
 	Update the current user's analytics preference.
@@ -3595,9 +3555,7 @@ type OrganizationInviteNotFoundError implements Error {
 """
 The organization invite payload.
 """
-union OrganizationInvitePayload =
-	| OrganizationInvite
-	| OrganizationInviteNotFoundError
+union OrganizationInvitePayload = OrganizationInvite | OrganizationInviteNotFoundError
 
 type OrganizationMemberConnection {
 	"""
@@ -3777,9 +3735,7 @@ type PasswordResetTokenNotFoundError implements Error {
 """
 The password reset token payload.
 """
-union PasswordResetTokenPayload =
-	| PasswordResetToken
-	| PasswordResetTokenNotFoundError
+union PasswordResetTokenPayload = PasswordResetToken | PasswordResetTokenNotFoundError
 
 """
 Organization verification is pending.
@@ -4028,11 +3984,7 @@ type PromoteOrganizationMemberSuccess {
 """
 The publish job payload.
 """
-union PublishJobPayload =
-	| Job
-	| JobNotFoundError
-	| InsufficientActiveVacanciesError
-	| OrganizationAuthorizationError
+union PublishJobPayload = Job | JobNotFoundError | InsufficientActiveVacanciesError | OrganizationAuthorizationError
 
 type Query {
 	"""
@@ -4375,10 +4327,7 @@ union RequestOrganizationVerificationPayload =
 """
 The request password reset payload.
 """
-union RequestPasswordResetPayload =
-	| RequestPasswordResetSuccess
-	| InvalidCaptchaTokenError
-	| PasswordResetTokenCooldownError
+union RequestPasswordResetPayload = RequestPasswordResetSuccess | InvalidCaptchaTokenError | PasswordResetTokenCooldownError
 
 """
 Request password reset success.
@@ -4414,11 +4363,7 @@ type RequestPhoneNumberVerificationTokenSuccess implements Error {
 """
 The request sudo mode with authenticator app payload.
 """
-union RequestSudoModeWithAuthenticatorPayload =
-	| Account
-	| InvalidCredentialsError
-	| InvalidCaptchaTokenError
-	| AuthenticatorNotEnabledError
+union RequestSudoModeWithAuthenticatorPayload = Account | InvalidCredentialsError | InvalidCaptchaTokenError | AuthenticatorNotEnabledError
 
 """
 The request sudo mode with passkey payload.
@@ -4605,9 +4550,7 @@ enum TermsAndPolicyType {
 """
 The total view count payload.
 """
-union TotalViewCountPayload =
-	| TotalViewCountSuccess
-	| OrganizationAuthorizationError
+union TotalViewCountPayload = TotalViewCountSuccess | OrganizationAuthorizationError
 
 """
 The total view count success.
@@ -4622,9 +4565,7 @@ type TotalViewCountSuccess {
 """
 The total view metric points payload.
 """
-union TotalViewMetricPointsPayload =
-	| TotalViewMetricPointsSuccess
-	| OrganizationAuthorizationError
+union TotalViewMetricPointsPayload = TotalViewMetricPointsSuccess | OrganizationAuthorizationError
 
 """
 The total view metric points success.
@@ -4676,11 +4617,7 @@ enum TwoFactorProvider {
 """
 The unpublish job payload.
 """
-union UnpublishJobPayload =
-	| Job
-	| JobNotFoundError
-	| OrganizationAuthorizationError
-	| JobNotPublishedError
+union UnpublishJobPayload = Job | JobNotFoundError | OrganizationAuthorizationError | JobNotPublishedError
 
 """
 The unsave job payload.
@@ -4705,10 +4642,7 @@ union UpdateAccountPayload = Account
 """
 The update account phone number payload.
 """
-union UpdateAccountPhoneNumberPayload =
-	| Account
-	| InvalidPhoneNumberVerificationTokenError
-	| InvalidPhoneNumberError
+union UpdateAccountPhoneNumberPayload = Account | InvalidPhoneNumberVerificationTokenError | InvalidPhoneNumberError
 
 """
 The update job applicants status payload.
@@ -4777,11 +4711,7 @@ type UpdateJobSuccess {
 """
 The update organization payload.
 """
-union UpdateOrganizationPayload =
-	| Organization
-	| OrganizationSlugInUseError
-	| OrganizationNotFoundError
-	| OrganizationAuthorizationError
+union UpdateOrganizationPayload = Organization | OrganizationSlugInUseError | OrganizationNotFoundError | OrganizationAuthorizationError
 
 """
 The update password payload.
@@ -4796,9 +4726,7 @@ union UpdateProfilePayload = Account
 """
 The update webauthn credential payload.
 """
-union UpdateWebAuthnCredentialPayload =
-	| WebAuthnCredential
-	| WebAuthnCredentialNotFoundError
+union UpdateWebAuthnCredentialPayload = WebAuthnCredential | WebAuthnCredentialNotFoundError
 
 """
 Organization verification status type.
@@ -4859,11 +4787,7 @@ union Verify2FAWithRecoveryCodePayload =
 """
 The verify email payload.
 """
-union VerifyEmailPayload =
-	| VerifyEmailSuccess
-	| InvalidCaptchaTokenError
-	| InvalidEmailVerificationTokenError
-	| EmailInUseError
+union VerifyEmailPayload = VerifyEmailSuccess | InvalidCaptchaTokenError | InvalidEmailVerificationTokenError | EmailInUseError
 
 """
 Verify email success.
@@ -4874,6 +4798,11 @@ type VerifyEmailSuccess {
 	"""
 	message: String!
 }
+
+"""
+The verify Google (one-tap) token payload.
+"""
+union VerifyGoogleTokenPayload = Account | InvalidCredentialsError | InvalidEmailError | TwoFactorAuthenticationRequiredError
 
 """
 The viewer payload.

@@ -787,7 +787,10 @@ Generate2FARecoveryCodesPayload = Annotated[
 ]
 
 VerifyGoogleTokenPayload = Annotated[
-    AccountType | InvalidCredentialsErrorType,
+    AccountType
+    | InvalidCredentialsErrorType
+    | InvalidEmailErrorType
+    | TwoFactorAuthenticationRequiredErrorType,
     strawberry.union(
         name="VerifyGoogleTokenPayload",
         description="The verify Google (one-tap) token payload.",

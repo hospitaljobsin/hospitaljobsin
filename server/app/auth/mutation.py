@@ -1492,17 +1492,22 @@ class AuthMutation:
         ],
         auth_service: Annotated[AuthService, Inject],
     ) -> VerifyGoogleTokenPayload:
-        """Generate 2FA recovery codes for the current user."""
-        match await auth_service.generate_2fa_recovery_codes(
-            account=info.context["current_user"],
+        """Verify the given Google (one-tap) token."""
+        match await auth_service.verify_google_token(
+            token=token,
+            request=info.context["request"],
+            response=info.context["response"],
+            user_agent=info.context["user_agent"],
         ):
             case Err(error):
                 match error:
-                    case TwoFactorAuthenticationNotEnabledError():
-                        return TwoFactorAuthenticationNotEnabledErrorType()
-            case Ok(recovery_codes):
-                return Generate2FARecoveryCodesSuccessType(
-                    recovery_codes=recovery_codes,
-                )
+                    case InvalidCredentialsError():
+                        return InvalidCredentialsErrorType()
+                    case InvalidEmailError():
+                        return InvalidEmailErrorType()
+                    case TwoFactorAuthenticationRequiredError():
+                        return TwoFactorAuthenticationRequiredErrorType()
+            case Ok(account):
+                return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)

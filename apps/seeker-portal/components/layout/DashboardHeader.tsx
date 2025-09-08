@@ -1,25 +1,20 @@
-"use client";
-import type { DashboardHeaderFragment$key } from "@/__generated__/DashboardHeaderFragment.graphql";
-import IncompleteProfileBanner from "@/components/layout/IncompleteProfileBanner";
-import { APP_NAME } from "@/lib/constants";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
-import { useRouter } from "@bprogress/next";
-import {
-	Button,
-	Navbar,
-	NavbarBrand,
-	NavbarContent,
-	NavbarItem,
-} from "@heroui/react";
-import { ExternalLinkIcon, SearchIcon } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
-import { useFragment } from "react-relay";
-import { graphql } from "relay-runtime";
-import Logo from "../Logo";
-import JobSearchAutocomplete from "../forms/JobSearchAutocomplete";
-import AuthNavigation from "./AuthNavigation";
+'use client';
+import type { DashboardHeaderFragment$key } from '@/__generated__/DashboardHeaderFragment.graphql';
+import IncompleteProfileBanner from '@/components/layout/IncompleteProfileBanner';
+import { APP_NAME } from '@/lib/constants';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
+import { useRouter } from '@bprogress/next';
+import { Button, Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@heroui/react';
+import { ExternalLinkIcon, SearchIcon } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import JobSearchAutocomplete from '../forms/JobSearchAutocomplete';
+import GoogleOneTapLogin from '../GoogleOneTapLogin';
+import Logo from '../Logo';
+import AuthNavigation from './AuthNavigation';
 
 export const DashboardHeaderFragment = graphql`
   fragment DashboardHeaderFragment on Query {
@@ -36,16 +31,10 @@ export const DashboardHeaderFragment = graphql`
   }
 `;
 
-export default function DashboardHeader({
-	query,
-	animate = true,
-}: {
-	query: DashboardHeaderFragment$key;
-	animate?: boolean;
-}) {
+export default function DashboardHeader({ query, animate = true }: { query: DashboardHeaderFragment$key; animate?: boolean }) {
 	const data = useFragment(DashboardHeaderFragment, query);
 	const router = useRouter();
-	const [searchValue, setSearchValue] = useState("");
+	const [searchValue, setSearchValue] = useState('');
 
 	const handleSearchSubmit = (searchTerm: string) => {
 		// Navigate to search with the search term
@@ -53,78 +42,66 @@ export default function DashboardHeader({
 	};
 
 	return (
-		<div className={"w-full flex flex-col sticky top-0 z-50"}>
-			{data.viewer.__typename === "Account" ? (
-				<IncompleteProfileBanner account={data.viewer} animate={animate} />
-			) : null}
+		<div className={'w-full flex flex-col sticky top-0 z-50'}>
+			{data.viewer.__typename === 'Account' ? <IncompleteProfileBanner account={data.viewer} animate={animate} /> : null}
 			<Navbar
-				maxWidth="xl"
+				maxWidth='xl'
 				isBordered
-				position="static"
+				position='static'
 				classNames={{
-					base: "bg-background-600",
-					brand: "basis-auto flex-shrink-0",
+					base: 'bg-background-600',
+					brand: 'basis-auto flex-shrink-0',
 					content:
-						"data-[justify-center]:flex-1 data-[justify-center]:w-full data-[justify-center]:flex data-[justify-center]:justify-center data-[justify-end]:basis-auto data-[justify-end]:flex-shrink-0",
+						'data-[justify-center]:flex-1 data-[justify-center]:w-full data-[justify-center]:flex data-[justify-center]:justify-center data-[justify-end]:basis-auto data-[justify-end]:flex-shrink-0'
 				}}
 				isBlurred={false}
 			>
-				<NavbarContent justify="center" className="flex-1 w-full flex gap-6">
-					<NavbarBrand
-						className={"flex items-center gap-4 text-foreground-500"}
-					>
-						<Link
-							href={links.landing}
-							className="font-medium text-inherit flex items-center gap-4"
-						>
-							<Logo />{" "}
-							<span className="font-medium text-inherit sm:flex items-center gap-4 hidden">
-								{APP_NAME}
-							</span>
+				<NavbarContent justify='center' className='flex-1 w-full flex gap-6'>
+					<NavbarBrand className={'flex items-center gap-4 text-foreground-500'}>
+						<Link href={links.landing} className='font-medium text-inherit flex items-center gap-4'>
+							<Logo /> <span className='font-medium text-inherit sm:flex items-center gap-4 hidden'>{APP_NAME}</span>
 						</Link>
 					</NavbarBrand>
-					<NavbarItem className="w-full">
+					<NavbarItem className='w-full'>
 						<JobSearchAutocomplete
 							value={searchValue}
 							onValueChange={setSearchValue}
 							onSubmit={handleSearchSubmit}
-							onJobSelect={(job) => {
+							onJobSelect={job => {
 								setSearchValue(job.displayName);
 								handleSearchSubmit(job.displayName);
 							}}
-							placeholder="Search by speciality (e.g. Cardiology)"
-							startContent={
-								<SearchIcon size={16} className="text-foreground-500" />
-							}
+							placeholder='Search by speciality (e.g. Cardiology)'
+							startContent={<SearchIcon size={16} className='text-foreground-500' />}
 							fullWidth
-							variant="bordered"
-							className="hidden lg:block"
+							variant='bordered'
+							className='hidden lg:block'
 							inputProps={{
 								classNames: {
-									inputWrapper: "bg-background",
-								},
+									inputWrapper: 'bg-background'
+								}
 							}}
 						/>
 					</NavbarItem>
-					{data.viewer.__typename === "Account" ? (
-						<div className="flex items-center gap-2">
-							<NavbarItem className="hidden md:block">
+					{data.viewer.__typename === 'Account' ? (
+						<div className='flex items-center gap-2'>
+							<NavbarItem className='hidden md:block'>
 								<Link
 									href={env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}
-									target="_blank"
-									rel="noopener noreferrer"
-									color="foreground"
-									className={"text-foreground flex items-center gap-2"}
+									target='_blank'
+									rel='noopener noreferrer'
+									color='foreground'
+									className={'text-foreground flex items-center gap-2'}
 								>
-									For Recruiters <ExternalLinkIcon className="w-4 h-4" />
+									For Recruiters <ExternalLinkIcon className='w-4 h-4' />
 								</Link>
 							</NavbarItem>
 							<NavbarItem>
 								<Button
 									isIconOnly
-									variant="light"
-									size="sm"
-									className="block sm:hidden mt-2 text-foreground-500"
+									variant='light'
+									size='sm'
+									className='block sm:hidden mt-2 text-foreground-500'
 									as={Link}
 									href={links.search()}
 								>
@@ -134,13 +111,10 @@ export default function DashboardHeader({
 							<AuthNavigation rootQuery={data.viewer} />
 						</div>
 					) : (
-						<div className="flex items-center gap-2 sm:gap-4">
+						<div className='flex items-center gap-2 sm:gap-4'>
+							<GoogleOneTapLogin />
 							<NavbarItem>
-								<Button
-									as={Link}
-									color="primary"
-									href={links.login(env.NEXT_PUBLIC_URL)}
-								>
+								<Button as={Link} color='primary' href={links.login(env.NEXT_PUBLIC_URL)}>
 									Log In
 								</Button>
 							</NavbarItem>
@@ -148,11 +122,11 @@ export default function DashboardHeader({
 								<Button
 									as={Link}
 									href={links.recruiterLanding}
-									target="_blank"
-									rel="noopener noreferrer"
-									color="default"
-									className="text-base"
-									variant="flat"
+									target='_blank'
+									rel='noopener noreferrer'
+									color='default'
+									className='text-base'
+									variant='flat'
 								>
 									For Recruiters
 								</Button>
