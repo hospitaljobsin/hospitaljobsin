@@ -63,13 +63,19 @@ def create_schema(
         AioInjectExtension(
             container=create_container(),
         ),
-        PersistedQueriesExtension(
-            persisted_queries_path=app_settings.persisted_queries_path
-        ),
         ParserCache(maxsize=128),
         ValidationCache(maxsize=128),
         QueryDepthLimiter(max_depth=10),
     ]
+
+    if not env_settings.is_testing:
+        extensions.extend(
+            [
+                PersistedQueriesExtension(
+                    persisted_queries_path=app_settings.persisted_queries_path
+                ),
+            ]
+        )
 
     if env_settings.is_production or env_settings.is_staging:
         extensions.extend(

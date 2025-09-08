@@ -32,5 +32,5 @@ async def http_client(fastapi_app: FastAPI) -> AsyncIterator[AsyncClient]:
 async def graphql_client(http_client: AsyncClient) -> GraphQLClient:
     return GraphQLClient(
         client=http_client,
-        endpoint="/graphql/",
+        endpoint="/graphql",
     )
