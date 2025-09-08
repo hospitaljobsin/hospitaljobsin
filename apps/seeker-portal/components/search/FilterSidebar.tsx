@@ -1,4 +1,3 @@
-import { FILTER_DEFAULTS } from "@/lib/constants";
 import links from "@/lib/links";
 import {
 	Button,
@@ -274,8 +273,7 @@ export default function FilterSidebar({
 					size="md"
 					startContent={<EraserIcon size={18} />}
 					onPress={() => {
-						setLocationInput("");
-						onChange(FILTER_DEFAULTS);
+						router.replace(links.search());
 					}}
 				>
 					Clear All Filters
