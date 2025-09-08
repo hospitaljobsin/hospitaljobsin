@@ -56,6 +56,7 @@
 		"react-hook-form": "^7.57.0",
 		"react-markdown": "^10.1.0",
 		"react-pdf": "^9.2.1",
+		"react-scan": "^0.4.3",
 		"react-syntax-highlighter": "^15.6.1",
 		"recharts": "^2.15.3",
 		"rehype-raw": "^7.0.0",
@@ -73,7 +74,7 @@
 		"zod": "^3.25.64"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
+		"@biomejs/biome": "^2.0.6",
 		"@react-types/shared": "^3.30.0",
 		"@tailwindcss/postcss": "^4.1.10",
 		"@tailwindcss/typography": "^0.5.16",

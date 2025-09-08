@@ -1,5 +1,6 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"root": false,
+	"$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
@@ -8,7 +9,7 @@
 	},
 	"files": {
 		"ignoreUnknown": true,
-		"ignore": ["**/build", "**/.sanity", "**/dist", "**/.next"]
+		"includes": ["**", "!**/build", "!**/.sanity", "!**/dist", "!**/.next"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -16,9 +17,7 @@
 		"lineWidth": 140,
 		"formatWithErrors": true
 	},
-	"organizeImports": {
-		"enabled": true
-	},
+	"assist": { "actions": { "source": { "organizeImports": "on" } } },
 	"linter": {
 		"enabled": true,
 		"rules": {
@@ -41,15 +40,24 @@
 						"reportUnnecessaryDependencies": false
 					}
 				},
-				"noUnusedVariables": "error",
-				"useArrayLiterals": "error"
+				"noUnusedVariables": "error"
 			},
 			"style": {
 				"noParameterProperties": "error",
 				"noYodaExpression": "error",
 				"useConsistentBuiltinInstantiation": "error",
 				"useFragmentSyntax": "error",
-				"useShorthandAssign": "error"
+				"useShorthandAssign": "error",
+				"useAsConstAssertion": "error",
+				"useDefaultParameterLast": "error",
+				"useEnumInitializers": "error",
+				"useSelfClosingElements": "error",
+				"useSingleVarDeclarator": "error",
+				"noUnusedTemplateLiteral": "error",
+				"useNumberNamespace": "error",
+				"noInferrableTypes": "error",
+				"noUselessElse": "error",
+				"useArrayLiterals": "error"
 			},
 			"suspicious": {
 				"useAwait": "error",
@@ -67,7 +75,7 @@
 	},
 	"overrides": [
 		{
-			"include": ["*.jsx", "*.tsx"],
+			"includes": ["**/*.jsx", "**/*.tsx"],
 			"linter": {
 				"rules": {
 					"style": {
@@ -77,7 +85,7 @@
 			}
 		},
 		{
-			"include": ["*.ts", "*.tsx"],
+			"includes": ["**/*.ts", "**/*.tsx"],
 			"linter": {
 				"rules": {
 					"correctness": {
