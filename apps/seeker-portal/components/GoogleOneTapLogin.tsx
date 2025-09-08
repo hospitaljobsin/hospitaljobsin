@@ -49,6 +49,7 @@ export default function GoogleOneTapLogin() {
 						posthog.identify(response.verifyGoogleToken.id, {
 							email: response.verifyGoogleToken.email
 						});
+						window.location.reload();
 						return;
 					}
 					if (response.verifyGoogleToken.__typename === 'InvalidCredentialsError') {
