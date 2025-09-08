@@ -1,7 +1,7 @@
 'use client';
 // biome-ignore assist/source/organizeImports: import react-scan before react
 import { scan } from 'react-scan';
-// biome-ignore assist/source/organizeImports: import react-scan before react
+
 import { env } from '@/lib/env/client';
 import { type JSX, useEffect } from 'react';
 
