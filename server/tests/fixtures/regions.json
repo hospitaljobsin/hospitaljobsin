@@ -1,0 +1,236 @@
+[
+	{
+		"name": "India",
+		"address": {
+			"display_name": "India",
+			"country": "IN"
+		},
+		"aliases": ["Bharat", "Republic of India"],
+		"level": "country",
+		"geometry": {
+			"type": "Polygon",
+			"coordinates": [[[68.1766, 37.0841], [97.4025, 37.0841], [97.4025, 6.7535], [68.1766, 6.7535], [68.1766, 37.0841]]]
+		},
+		"coordinates": {
+			"type": "Point",
+			"coordinates": [77.1025, 28.7041]
+		}
+	},
+	{
+		"name": "Karnataka",
+		"address": {
+			"display_name": "Karnataka, India",
+			"address_region": "Karnataka",
+			"country": "IN"
+		},
+		"aliases": ["KA", "Mysore State"],
+		"level": "state",
+		"geometry": {
+			"type": "Polygon",
+			"coordinates": [[[74.049, 18.4511], [78.588, 18.4511], [78.588, 11.5945], [74.049, 11.5945], [74.049, 18.4511]]]
+		},
+		"coordinates": {
+			"type": "Point",
+			"coordinates": [75.7139, 15.3173]
+		}
+	},
+	{
+		"name": "Bangalore",
+		"address": {
+			"display_name": "Bangalore, Karnataka, India",
+			"address_locality": "Bangalore",
+			"address_region": "Karnataka",
+			"country": "IN"
+		},
+		"aliases": ["Bengaluru", "Garden City", "Silicon Valley of India"],
+		"level": "city",
+		"coordinates": {
+			"type": "Point",
+			"coordinates": [77.5946, 12.9716]
+		}
+	},
+	{
+		"name": "Koramangala",
+		"address": {
+			"display_name": "Koramangala, Bangalore, Karnataka, India",
+			"street_address": "Koramangala",
+			"address_locality": "Bangalore",
+			"address_region": "Karnataka",
+			"postal_code": "560034",
+			"country": "IN"
+		},
+		"aliases": ["Koramangala Layout"],
+		"level": "locality",
+		"coordinates": {
+			"type": "Point",
+			"coordinates": [77.6172, 12.9279]
+		}
+	},
+	{
+		"name": "HSR Layout",
+		"address": {
+			"display_name": "HSR Layout, Bangalore, Karnataka, India",
+			"street_address": "HSR Layout",
+			"address_locality": "Bangalore",
+			"address_region": "Karnataka",
+			"postal_code": "560102",
+			"country": "IN"
+		},
+		"aliases": ["Hosur Sarjapur Road Layout"],
+		"level": "neighbourhood",
+		"coordinates": {
+			"type": "Point",
+			"coordinates": [77.6387, 12.9082]
+		}
+	},
+	{
+		"name": "Maharashtra",
+		"address": {
+			"display_name": "Maharashtra, India",
+			"address_region": "Maharashtra",
+			"country": "IN"
+		},
+		"aliases": ["MH", "Bombay State"],
+		"level": "state",
+		"geometry": {
+			"type": "Polygon",
+			"coordinates": [[[72.6589, 22.0278], [80.8826, 22.0278], [80.8826, 15.6024], [72.6589, 15.6024], [72.6589, 22.0278]]]
+		},
+		"coordinates": {
+			"type": "Point",
+			"coordinates": [75.7139, 19.7515]
+		}
+	},
+	{
+		"name": "Mumbai",
+		"address": {
+			"display_name": "Mumbai, Maharashtra, India",
+			"address_locality": "Mumbai",
+			"address_region": "Maharashtra",
+			"country": "IN"
+		},
+		"aliases": ["Bombay", "Financial Capital of India"],
+		"level": "city",
+		"coordinates": {
+			"type": "Point",
+			"coordinates": [72.8777, 19.076]
+		}
+	},
+	{
+		"name": "Andheri",
+		"address": {
+			"display_name": "Andheri, Mumbai, Maharashtra, India",
+			"street_address": "Andheri",
+			"address_locality": "Mumbai",
+			"address_region": "Maharashtra",
+			"postal_code": "400053",
+			"country": "IN"
+		},
+		"aliases": ["Andheri Suburb"],
+		"level": "locality",
+		"coordinates": {
+			"type": "Point",
+			"coordinates": [72.8697, 19.1136]
+		}
+	},
+	{
+		"name": "Delhi",
+		"address": {
+			"display_name": "Delhi, India",
+			"address_locality": "Delhi",
+			"address_region": "Delhi",
+			"country": "IN"
+		},
+		"aliases": ["New Delhi", "National Capital Territory"],
+		"level": "city",
+		"coordinates": {
+			"type": "Point",
+			"coordinates": [77.1025, 28.7041]
+		}
+	},
+	{
+		"name": "Connaught Place",
+		"address": {
+			"display_name": "Connaught Place, Delhi, India",
+			"street_address": "Connaught Place",
+			"address_locality": "Delhi",
+			"address_region": "Delhi",
+			"postal_code": "110001",
+			"country": "IN"
+		},
+		"aliases": ["CP", "Rajiv Chowk"],
+		"level": "locality",
+		"coordinates": {
+			"type": "Point",
+			"coordinates": [77.2167, 28.6315]
+		}
+	},
+	{
+		"name": "Haryana",
+		"address": {
+			"display_name": "Haryana, India",
+			"address_region": "Haryana",
+			"country": "IN"
+		},
+		"aliases": ["HR"],
+		"level": "state",
+		"geometry": {
+			"type": "Polygon",
+			"coordinates": [[[74.4728, 30.9293], [77.8849, 30.9293], [77.8849, 27.6648], [74.4728, 27.6648], [74.4728, 30.9293]]]
+		},
+		"coordinates": {
+			"type": "Point",
+			"coordinates": [76.0856, 29.0588]
+		}
+	},
+	{
+		"name": "Gurgaon",
+		"address": {
+			"display_name": "Gurgaon, Haryana, India",
+			"address_locality": "Gurgaon",
+			"address_region": "Haryana",
+			"country": "IN"
+		},
+		"aliases": ["Gurugram", "Millennium City"],
+		"level": "city",
+		"coordinates": {
+			"type": "Point",
+			"coordinates": [77.0266, 28.4595]
+		}
+	},
+	{
+		"name": "United States",
+		"address": {
+			"display_name": "United States",
+			"country": "US"
+		},
+		"aliases": ["USA", "America", "United States of America"],
+		"level": "country",
+		"geometry": {
+			"type": "Polygon",
+			"coordinates": [[[-179.1506, 71.5232], [-66.9345, 71.5232], [-66.9345, 18.911], [-179.1506, 18.911], [-179.1506, 71.5232]]]
+		},
+		"coordinates": {
+			"type": "Point",
+			"coordinates": [-95.7129, 37.0902]
+		}
+	},
+	{
+		"name": "California",
+		"address": {
+			"display_name": "California, United States",
+			"address_region": "California",
+			"country": "US"
+		},
+		"aliases": ["CA", "Golden State"],
+		"level": "state",
+		"geometry": {
+			"type": "Polygon",
+			"coordinates": [[[-124.4821, 42.0095], [-114.1315, 42.0095], [-114.1315, 32.5343], [-124.4821, 32.5343], [-124.4821, 42.0095]]]
+		},
+		"coordinates": {
+			"type": "Point",
+			"coordinates": [-119.4179, 36.7783]
+		}
+	}
+]
