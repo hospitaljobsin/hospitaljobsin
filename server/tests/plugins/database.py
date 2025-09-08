@@ -33,6 +33,8 @@ async def initialize_test_database(
 
     collections = await database.list_collection_names()
 
+    print("Dropping collections:", collections)
+
     for collection_name in collections:
         if collection_name.startswith("system."):
             continue

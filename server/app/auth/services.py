@@ -196,7 +196,7 @@ class AuthService:
 
         try:
             email_info = validate_email(
-                email,
+                email.lower().strip(),
                 check_deliverability=True,
             )
             email = email_info.normalized
