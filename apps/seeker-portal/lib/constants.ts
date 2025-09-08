@@ -11,7 +11,6 @@ export const APP_DESCRIPTION =
 	"Find the latest hospital jobs in India. Apply for doctor, nurse, paramedical, and healthcare vacancies at top hospitals, clinics, and nursing homes. Updated daily.";
 
 export const FILTER_DEFAULTS = {
-	q: "",
 	minExperience: null,
 	maxExperience: null,
 	minSalary: null,
