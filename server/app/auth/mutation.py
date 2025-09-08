@@ -100,6 +100,7 @@ from .types import (
     Verify2FAWithRecoveryCodePayload,
     VerifyEmailPayload,
     VerifyEmailSuccessType,
+    VerifyGoogleTokenPayload,
     WebAuthnChallengeNotFoundErrorType,
     WebAuthnCredentialEdgeType,
     WebAuthnCredentialNotFoundErrorType,
@@ -1460,6 +1461,37 @@ class AuthMutation:
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
     ) -> Generate2FARecoveryCodesPayload:
+        """Generate 2FA recovery codes for the current user."""
+        match await auth_service.generate_2fa_recovery_codes(
+            account=info.context["current_user"],
+        ):
+            case Err(error):
+                match error:
+                    case TwoFactorAuthenticationNotEnabledError():
+                        return TwoFactorAuthenticationNotEnabledErrorType()
+            case Ok(recovery_codes):
+                return Generate2FARecoveryCodesSuccessType(
+                    recovery_codes=recovery_codes,
+                )
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=VerifyGoogleTokenPayload,
+        description="Verify the given Google (one-tap) token.",
+    )
+    @inject
+    async def verify_google_token(
+        self,
+        info: Info,
+        token: Annotated[
+            str,
+            strawberry.argument(
+                description="The Google (one-tap) credential token.",
+            ),
+        ],
+        auth_service: Annotated[AuthService, Inject],
+    ) -> VerifyGoogleTokenPayload:
         """Generate 2FA recovery codes for the current user."""
         match await auth_service.generate_2fa_recovery_codes(
             account=info.context["current_user"],

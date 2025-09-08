@@ -786,6 +786,14 @@ Generate2FARecoveryCodesPayload = Annotated[
     ),
 ]
 
+VerifyGoogleTokenPayload = Annotated[
+    AccountType | InvalidCredentialsErrorType,
+    strawberry.union(
+        name="VerifyGoogleTokenPayload",
+        description="The verify Google (one-tap) token payload.",
+    ),
+]
+
 Verify2FAWithAuthenticatorPayload = Annotated[
     AccountType
     | InvalidCredentialsErrorType

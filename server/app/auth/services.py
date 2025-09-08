@@ -11,6 +11,8 @@ from bson.objectid import ObjectId
 from email_validator import EmailNotValidError, validate_email
 from fastapi import Request, Response
 from humanize import naturaldelta
+from jose import ExpiredSignatureError, JWTError, jwt
+from jose.exceptions import JWTClaimsError
 from posthog import Posthog
 from result import Err, Ok, Result
 from strawberry import relay
@@ -86,7 +88,7 @@ from app.auth.repositories import (
     WebAuthnCredentialRepo,
 )
 from app.auth.utils import get_analytics_preference
-from app.config import AppSettings, AuthSettings, FrontendSettings
+from app.config import AppSettings, AuthSettings, FrontendSettings, Oauth2Settings
 from app.core.captcha import BaseCaptchaVerifier
 from app.core.constants import (
     APP_NAME,
@@ -118,6 +120,7 @@ class AuthService:
         app_settings: AppSettings,
         frontend_settings: FrontendSettings,
         posthog_client: Posthog,
+        oauth_settings: Oauth2Settings,
     ) -> None:
         self._account_repo = account_repo
         self._session_repo = session_repo
@@ -138,6 +141,7 @@ class AuthService:
         self._frontend_settings = frontend_settings
         self._captcha_verifier = captcha_verifier
         self._posthog_client = posthog_client
+        self._oauth_settings = oauth_settings
 
     def _is_email_verification_token_cooled_down(
         self, token: EmailVerificationToken
@@ -1892,3 +1896,22 @@ class AuthService:
             account_id=account.id
         )
         return Ok(recovery_codes)
+
+    async def verify_google_token(
+        self, token: str, request: Request
+    ) -> Result[Account, InvalidCredentialsError]:
+        """Verify a Google OAuth token and return the user info."""
+        async with httpx.AsyncClient() as client:
+            resp = await client.get("https://www.googleapis.com/oauth2/v3/certs")
+            jwks = resp.json()
+
+        try:
+            claims = jwt.decode(token, jwks)
+        except (JWTError, ExpiredSignatureError, JWTClaimsError):
+            return Err(InvalidCredentialsError())
+
+        # Make sure the token is meant for your app
+        if claims["aud"] != self._oauth_settings.google_client_id:
+            return Err(InvalidCredentialsError())
+
+        return claims
