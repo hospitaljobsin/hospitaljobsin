@@ -222,6 +222,7 @@ Follow these steps to deploy the project to the cloud:
 	- **Client config:**
 		- *Authorized Javascript origins:*
 			- https://accounts.hospitaljobs.in
+			- https://hospitaljobs.in
 		- *Authorized Redirect URIs:*
 			- https://api.hospitaljobs.in/auth/callback/signin/google
 			- https://api.hospitaljobs.in/auth/callback/request_sudo_mode/google

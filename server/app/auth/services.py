@@ -11,6 +11,8 @@ from bson.objectid import ObjectId
 from email_validator import EmailNotValidError, validate_email
 from fastapi import Request, Response
 from humanize import naturaldelta
+from jose import ExpiredSignatureError, JWTError, jwt
+from jose.exceptions import JWTClaimsError
 from posthog import Posthog
 from result import Err, Ok, Result
 from strawberry import relay
@@ -86,7 +88,7 @@ from app.auth.repositories import (
     WebAuthnCredentialRepo,
 )
 from app.auth.utils import get_analytics_preference
-from app.config import AppSettings, AuthSettings, FrontendSettings
+from app.config import AppSettings, AuthSettings, FrontendSettings, Oauth2Settings
 from app.core.captcha import BaseCaptchaVerifier
 from app.core.constants import (
     APP_NAME,
@@ -118,6 +120,7 @@ class AuthService:
         app_settings: AppSettings,
         frontend_settings: FrontendSettings,
         posthog_client: Posthog,
+        oauth_settings: Oauth2Settings,
     ) -> None:
         self._account_repo = account_repo
         self._session_repo = session_repo
@@ -138,6 +141,7 @@ class AuthService:
         self._frontend_settings = frontend_settings
         self._captcha_verifier = captcha_verifier
         self._posthog_client = posthog_client
+        self._oauth_settings = oauth_settings
 
     def _is_email_verification_token_cooled_down(
         self, token: EmailVerificationToken
@@ -779,8 +783,6 @@ class AuthService:
                 headers={"Authorization": f"Bearer {access_token}"},
             )
 
-            print("RESPONSE", response.json())
-
             if response.status_code == HTTPStatus.OK:
                 data = response.json()
                 # This will likely be empty if the auth app isn't verified by Google.
@@ -799,22 +801,24 @@ class AuthService:
 
     async def signin_with_google(
         self,
-        user_info: dict,
+        user_attributes: dict,
         request: Request,
         user_agent: str,
         response: Response,
-        access_token: str,
+        access_token: str | None = None,
     ) -> Result[Account, InvalidEmailError | TwoFactorAuthenticationRequiredError]:
         """Sign in with Google."""
-        if not user_info["email_verified"]:
+        if not user_attributes["email_verified"]:
             return Err(InvalidEmailError(message="Email address is not verified."))
 
         is_signup = False
-        account = await self._account_repo.get_by_email(email=user_info["email"])
+        phone_number = None
+        account = await self._account_repo.get_by_email(email=user_attributes["email"])
         if account is None:
             is_signup = True
 
-            phone_number = await self._get_google_phone_number(access_token)
+            if access_token:
+                phone_number = await self._get_google_phone_number(access_token)
             # Only add phone number if no account exists with that phone number already.
             existing_account_with_phone_number = None
 
@@ -824,8 +828,8 @@ class AuthService:
                 )
 
             account = await self._account_repo.create(
-                email=user_info["email"],
-                full_name=user_info["name"],
+                email=user_attributes["email"],
+                full_name=user_attributes["name"],
                 phone_number=phone_number
                 if (
                     existing_account_with_phone_number is None
@@ -842,9 +846,9 @@ class AuthService:
             await self._oauth_credential_repo.create(
                 account_id=account.id,
                 provider="google",
-                provider_user_id=user_info["sub"],
+                provider_user_id=user_attributes["sub"],
             )
-        elif account.phone_number is None:
+        elif account.phone_number is None and access_token:
             phone_number = await self._get_google_phone_number(access_token)
 
             # Only add phone number if no account exists with that phone number already.
@@ -873,7 +877,7 @@ class AuthService:
             await self._oauth_credential_repo.create(
                 account_id=account.id,
                 provider="google",
-                provider_user_id=user_info["sub"],
+                provider_user_id=user_attributes["sub"],
             )
 
         if account.has_2fa_enabled and "authenticator" in account.two_factor_providers:
@@ -1892,3 +1896,34 @@ class AuthService:
             account_id=account.id
         )
         return Ok(recovery_codes)
+
+    async def verify_google_token(
+        self, token: str, request: Request, response: Response, user_agent: str
+    ) -> Result[
+        Account,
+        InvalidCredentialsError
+        | InvalidEmailError
+        | TwoFactorAuthenticationRequiredError,
+    ]:
+        """Verify a Google OAuth token and return the user info."""
+        async with httpx.AsyncClient() as client:
+            resp = await client.get("https://www.googleapis.com/oauth2/v3/certs")
+            jwks = resp.json()
+
+        try:
+            claims = jwt.decode(
+                token, jwks, audience=self._oauth_settings.google_client_id
+            )
+        except (JWTError, ExpiredSignatureError, JWTClaimsError) as e:
+            print("JWTError:", e)
+            return Err(InvalidCredentialsError())
+
+        print("claims:", claims)
+
+        return await self.signin_with_google(
+            user_attributes=claims,
+            request=request,
+            response=response,
+            user_agent=user_agent,
+            access_token=None,
+        )

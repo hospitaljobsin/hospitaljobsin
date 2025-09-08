@@ -1,37 +1,31 @@
-import { env } from "./env/client";
+import { env } from './env/client';
 
 const links = {
-	landing: "/",
-	search: (
-		location: string | undefined = undefined,
-		speciality: string | undefined = undefined,
-	) =>
+	landing: '/',
+	search: (location: string | undefined = undefined, speciality: string | undefined = undefined) =>
 		location && speciality
-			? `/search/${speciality.trim().replace(/\s+/g, "-")}-jobs-in-${location.trim().replace(/\s+/g, "-")}`
+			? `/search/${speciality.trim().replace(/\s+/g, '-')}-jobs-in-${location.trim().replace(/\s+/g, '-')}`
 			: location
-				? `/search/jobs-in-${location.trim().replace(/\s+/g, "-")}`
+				? `/search/jobs-in-${location.trim().replace(/\s+/g, '-')}`
 				: speciality
-					? `/search/${speciality.trim().replace(/\s+/g, "-")}-jobs`
-					: "/search",
+					? `/search/${speciality.trim().replace(/\s+/g, '-')}-jobs`
+					: '/search',
 	recruiterLanding: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/`,
-	profile: "/profile",
-	savedJobs: "/saved",
-	appliedJobs: "/applied",
-	jobDetail: (slug: string, jobSlug: string) =>
-		`/organizations/${slug}/jobs/${jobSlug}`,
-	jobDetailApply: (slug: string, jobSlug: string) =>
-		`/organizations/${slug}/jobs/${jobSlug}/apply`,
+	profile: '/profile',
+	savedJobs: '/saved',
+	appliedJobs: '/applied',
+	jobDetail: (slug: string, jobSlug: string) => `/organizations/${slug}/jobs/${jobSlug}`,
+	jobDetailApply: (slug: string, jobSlug: string) => `/organizations/${slug}/jobs/${jobSlug}/apply`,
 	organizationDetail: (slug: string) => `/organizations/${slug}`,
 	organizationDetailMembers: (slug: string) => `/organizations/${slug}/members`,
-	organizationDetailSettings: (slug: string) =>
-		`/organizations/${slug}/settings`,
+	organizationDetailSettings: (slug: string) => `/organizations/${slug}/settings`,
 	login: (returnTo: string | undefined = undefined) =>
-		returnTo
-			? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login?return_to=${returnTo}`
-			: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login`,
+		returnTo ? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login?return_to=${returnTo}` : `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login`,
 	accountSettings: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/settings`,
-	terms: "/terms",
-	privacy: "/privacy",
+	twoFactorAuthentication: (returnTo: string | null = null) =>
+		returnTo ? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/2fa?return_to=${returnTo}` : `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/2fa`,
+	terms: '/terms',
+	privacy: '/privacy'
 };
 
 export default links;

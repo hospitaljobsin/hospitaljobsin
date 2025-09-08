@@ -30,7 +30,7 @@ if __name__ == "__main__":
         factory=True,
         address=settings.host,
         port=settings.port,
-        workers=multiprocessing.cpu_count(),
+        workers=multiprocessing.cpu_count() if not env_settings.is_development else 1,
         reload=env_settings.debug,
         reload_filter=PyJsonFilter,
         reload_paths=[Path(__file__).parent.parent],

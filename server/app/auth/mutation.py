@@ -100,6 +100,7 @@ from .types import (
     Verify2FAWithRecoveryCodePayload,
     VerifyEmailPayload,
     VerifyEmailSuccessType,
+    VerifyGoogleTokenPayload,
     WebAuthnChallengeNotFoundErrorType,
     WebAuthnCredentialEdgeType,
     WebAuthnCredentialNotFoundErrorType,
@@ -1472,5 +1473,41 @@ class AuthMutation:
                 return Generate2FARecoveryCodesSuccessType(
                     recovery_codes=recovery_codes,
                 )
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=VerifyGoogleTokenPayload,
+        description="Verify the given Google (one-tap) token.",
+    )
+    @inject
+    async def verify_google_token(
+        self,
+        info: Info,
+        token: Annotated[
+            str,
+            strawberry.argument(
+                description="The Google (one-tap) credential token.",
+            ),
+        ],
+        auth_service: Annotated[AuthService, Inject],
+    ) -> VerifyGoogleTokenPayload:
+        """Verify the given Google (one-tap) token."""
+        match await auth_service.verify_google_token(
+            token=token,
+            request=info.context["request"],
+            response=info.context["response"],
+            user_agent=info.context["user_agent"],
+        ):
+            case Err(error):
+                match error:
+                    case InvalidCredentialsError():
+                        return InvalidCredentialsErrorType()
+                    case InvalidEmailError():
+                        return InvalidEmailErrorType()
+                    case TwoFactorAuthenticationRequiredError():
+                        return TwoFactorAuthenticationRequiredErrorType()
+            case Ok(account):
+                return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)
