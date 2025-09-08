@@ -60,7 +60,7 @@
 		"zod": "^3.25.64"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.0.6",
+		"@biomejs/biome": "2.2.3",
 		"@swc/plugin-relay": "^8.0.0",
 		"@tailwindcss/postcss": "^4.1.10",
 		"@types/js-cookie": "^3.0.6",
