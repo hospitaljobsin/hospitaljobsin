@@ -169,6 +169,49 @@ mutation RequestEmailVerificationTokenMutation($email: String!, $captchaToken: S
         ),
         ("", "captcha-token", "InvalidEmailError", "Empty email"),
         ("   ", "captcha-token", "InvalidEmailError", "Whitespace only email"),
+        # Disposable email domains
+        (
+            "user@10minutemail.com",
+            "captcha-token",
+            "InvalidEmailError",
+            "Disposable email domain - 10minutemail.com",
+        ),
+        (
+            "user@tempmail.org",
+            "captcha-token",
+            "InvalidEmailError",
+            "Disposable email domain - tempmail.org",
+        ),
+        (
+            "user@guerrillamail.com",
+            "captcha-token",
+            "InvalidEmailError",
+            "Disposable email domain - guerrillamail.com",
+        ),
+        (
+            "user@mailinator.com",
+            "captcha-token",
+            "InvalidEmailError",
+            "Disposable email domain - mailinator.com",
+        ),
+        (
+            "user@throwaway.email",
+            "captcha-token",
+            "InvalidEmailError",
+            "Disposable email domain - throwaway.email",
+        ),
+        (
+            "user@temp-mail.org",
+            "captcha-token",
+            "InvalidEmailError",
+            "Disposable email domain - temp-mail.org",
+        ),
+        (
+            "user@yopmail.com",
+            "captcha-token",
+            "InvalidEmailError",
+            "Disposable email domain - yopmail.com",
+        ),
         # Existing email (email already in use)
         (
             "aryan@outlook.com",
@@ -193,8 +236,6 @@ async def test_request_email_verification_token_invalid(
     description: str,
 ) -> None:
     """Ensure that we cannot request an email verification token with invalid parameters."""
-    # The password_account fixture ensures the account exists for email conflict tests
-    _ = password_account  # Explicitly reference to avoid lint error
     response = await graphql_client(
         REQUEST_EMAIL_VERIFICATION_TOKEN_MUTATION,
         variables={

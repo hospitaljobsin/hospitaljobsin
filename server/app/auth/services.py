@@ -92,6 +92,7 @@ from app.config import AppSettings, AuthSettings, FrontendSettings, Oauth2Settin
 from app.core.captcha import BaseCaptchaVerifier
 from app.core.constants import (
     APP_NAME,
+    DISPOSABLE_EMAIL_DOMAINS,
     EMAIL_VERIFICATION_EXPIRES_IN,
     PASSWORD_RESET_EXPIRES_IN,
     SUDO_MODE_EXPIRES_IN,
@@ -200,6 +201,11 @@ class AuthService:
                 check_deliverability=True,
             )
             email = email_info.normalized
+
+            email_domain = email_info.domain.lower()
+            if email_domain in DISPOSABLE_EMAIL_DOMAINS:
+                return Err(InvalidEmailError(message="Invalid email address provided."))
+
         except EmailNotValidError as err:
             return Err(InvalidEmailError(message=str(err)))
 
