@@ -242,11 +242,13 @@ async def test_login_with_passkey_invalid_credential_structure(
     )
 
     # This should result in a GraphQL error due to credential validation failure
-    assert response["data"] is None
-    assert "errors" in response
-    assert len(response["errors"]) > 0
-    error_message = response["errors"][0]["message"]
-    assert "id and raw_id were not equivalent" in error_message
+    assert response == {
+        "data": {
+            "loginWithPasskey": {
+                "__typename": "InvalidPasskeyAuthenticationCredentialError",
+            },
+        },
+    }
 
 
 async def test_login_with_passkey_malformed_response(
@@ -383,9 +385,13 @@ async def test_login_with_passkey_invalid_client_data_type(
     )
 
     # This should result in a GraphQL error due to wrong client data type
-    assert response["data"] is None
-    assert "errors" in response
-    assert len(response["errors"]) > 0
+    assert response == {
+        "data": {
+            "loginWithPasskey": {
+                "__typename": "InvalidPasskeyAuthenticationCredentialError",
+            },
+        },
+    }
 
 
 async def test_login_with_passkey_invalid_origin(
@@ -431,9 +437,13 @@ async def test_login_with_passkey_invalid_origin(
     )
 
     # This should result in a GraphQL error due to origin mismatch
-    assert response["data"] is None
-    assert "errors" in response
-    assert len(response["errors"]) > 0
+    assert response == {
+        "data": {
+            "loginWithPasskey": {
+                "__typename": "InvalidPasskeyAuthenticationCredentialError",
+            },
+        },
+    }
 
 
 async def test_login_with_passkey_null_authentication_response(
@@ -488,9 +498,13 @@ async def test_login_with_passkey_invalid_base64_data(
     )
 
     # This should result in a GraphQL error due to invalid base64 data
-    assert response["data"] is None
-    assert "errors" in response
-    assert len(response["errors"]) > 0
+    assert response == {
+        "data": {
+            "loginWithPasskey": {
+                "__typename": "InvalidPasskeyAuthenticationCredentialError",
+            },
+        },
+    }
 
 
 async def test_login_with_passkey_with_existing_account(
