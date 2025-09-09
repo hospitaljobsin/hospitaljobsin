@@ -1,7 +1,11 @@
 import pytest
 from aioinject import Container
 from app.accounts.repositories import AccountRepo, EmailVerificationTokenRepo
-from app.auth.repositories import SessionRepo, WebAuthnCredentialRepo
+from app.auth.repositories import (
+    SessionRepo,
+    WebAuthnChallengeRepo,
+    WebAuthnCredentialRepo,
+)
 
 
 @pytest.fixture(scope="session")
@@ -24,6 +28,14 @@ async def webauthn_credential_repo(
 ) -> WebAuthnCredentialRepo:
     async with container.context() as ctx:
         return await ctx.resolve(WebAuthnCredentialRepo)
+
+
+@pytest.fixture(scope="session")
+async def webauthn_challenge_repo(
+    container: Container,
+) -> WebAuthnChallengeRepo:
+    async with container.context() as ctx:
+        return await ctx.resolve(WebAuthnChallengeRepo)
 
 
 @pytest.fixture(scope="session")
