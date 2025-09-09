@@ -4,7 +4,6 @@ LOGOUT_MUTATION = """
 mutation LogoutMutation {
     logout {
         __typename
-        message
     }
 }
 """
@@ -22,7 +21,6 @@ async def test_logout_success_authenticated_user(
         "data": {
             "logout": {
                 "__typename": "LogoutPayload",
-                "message": "Successfully logged out.",
             }
         }
     }
@@ -40,7 +38,6 @@ async def test_logout_success_webauthn_authenticated_user(
         "data": {
             "logout": {
                 "__typename": "LogoutPayload",
-                "message": "Successfully logged out.",
             }
         }
     }
