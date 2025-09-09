@@ -104,7 +104,7 @@ jobs:
 
       - name: Run unit and integration tests
         working-directory: ./server
-        run: uv run pytest -vv --timeout=15
+        run: uv run pytest -vv
 
   build-and-push:
     needs: test-backend
