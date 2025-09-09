@@ -144,6 +144,10 @@ class AuthService:
         self._posthog_client = posthog_client
         self._oauth_settings = oauth_settings
 
+    def _normalize_email(self, email: str) -> str:
+        """Normalize an email address."""
+        return email.lower().strip()
+
     def _is_email_verification_token_cooled_down(
         self, token: EmailVerificationToken
     ) -> bool:
@@ -197,7 +201,7 @@ class AuthService:
 
         try:
             email_info = validate_email(
-                email.lower().strip(),
+                self._normalize_email(email=email),
                 check_deliverability=True,
             )
             email = email_info.normalized
@@ -272,7 +276,7 @@ class AuthService:
         ):
             return Err(InvalidCaptchaTokenError())
 
-        email = email.lower().strip()
+        email = self._normalize_email(email=email)
 
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
@@ -319,7 +323,7 @@ class AuthService:
         ):
             return Err(InvalidCaptchaTokenError())
 
-        email = email.lower().strip()
+        email = self._normalize_email(email=email)
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())
@@ -397,7 +401,7 @@ class AuthService:
         ):
             return Err(InvalidCaptchaTokenError())
 
-        email = email.lower().strip()
+        email = self._normalize_email(email=email)
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())
@@ -445,7 +449,7 @@ class AuthService:
         ):
             return Err(InvalidCaptchaTokenError())
 
-        email = email.lower().strip()
+        email = self._normalize_email(email=email)
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())
@@ -711,7 +715,7 @@ class AuthService:
         ):
             return Err(InvalidCaptchaTokenError())
 
-        email = email.lower().strip()
+        email = self._normalize_email(email=email)
 
         account = await self._account_repo.get_by_email(email=email)
         if not account:
@@ -845,7 +849,7 @@ class AuthService:
                 )
 
             account = await self._account_repo.create(
-                email=user_attributes["email"].lower().strip(),
+                email=self._normalize_email(email=user_attributes["email"]),
                 full_name=user_attributes["name"],
                 phone_number=phone_number
                 if (
@@ -1066,7 +1070,7 @@ class AuthService:
         ):
             return Err(InvalidCaptchaTokenError())
 
-        email = email.lower().strip()
+        email = self._normalize_email(email=email)
         existing_user = await self._account_repo.get_by_email(email=email)
         if not existing_user:
             return Ok(None)
@@ -1129,7 +1133,7 @@ class AuthService:
         ):
             return Err(InvalidCaptchaTokenError())
 
-        email = email.lower().strip()
+        email = self._normalize_email(email=email)
         existing_reset_token = await self._password_reset_token_repo.get(
             token=password_reset_token,
             email=email,
@@ -1193,7 +1197,7 @@ class AuthService:
         ):
             return Err(InvalidCaptchaTokenError())
 
-        email = email.lower().strip()
+        email = self._normalize_email(email=email)
         existing_reset_token = await self._password_reset_token_repo.get(
             token=password_reset_token,
             email=email,
@@ -1271,7 +1275,7 @@ class AuthService:
         | TwoFactorAuthenticationChallengeNotFoundError,
     ]:
         """Reset a user's password."""
-        email = email.lower().strip()
+        email = self._normalize_email(email=email)
         existing_reset_token = await self._password_reset_token_repo.get(
             token=password_reset_token,
             email=email,
