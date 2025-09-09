@@ -15,6 +15,7 @@ mutation LoginPasswordMutation($email: String!, $password: String!, $captchaToke
 """
 
 
+@pytest.mark.usefixtures("password_account")
 @pytest.mark.parametrize(
     ("email", "password", "description"),
     [
@@ -47,7 +48,6 @@ mutation LoginPasswordMutation($email: String!, $password: String!, $captchaToke
 )
 async def test_invalid_password_login(
     graphql_client: GraphQLClient,
-    password_account: Account,
     email: str,
     password: str,
     description: str,

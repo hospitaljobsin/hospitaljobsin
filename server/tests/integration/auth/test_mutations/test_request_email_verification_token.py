@@ -1,5 +1,4 @@
 import pytest
-from app.accounts.documents import Account
 
 from tests.integration.graphql_client import GraphQLClient
 from tests.utils.emails import generate_test_email
@@ -28,6 +27,7 @@ mutation RequestEmailVerificationTokenMutation($email: String!, $captchaToken: S
 """
 
 
+@pytest.mark.usefixtures("password_account")
 @pytest.mark.parametrize(
     ("email", "captcha_token", "expected_typename", "description"),
     [
@@ -124,7 +124,6 @@ mutation RequestEmailVerificationTokenMutation($email: String!, $captchaToken: S
 )
 async def test_request_email_verification_token_invalid(
     graphql_client: GraphQLClient,
-    password_account: Account,  # Needed to ensure the account exists for EmailInUseError tests
     email: str,
     captcha_token: str,
     expected_typename: str,

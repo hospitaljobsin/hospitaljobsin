@@ -1,5 +1,4 @@
 import pytest
-from app.accounts.documents import Account
 
 from tests.integration.graphql_client import GraphQLClient
 from tests.utils.emails import generate_test_email
@@ -23,6 +22,7 @@ mutation GeneratePasskeyRegistrationOptionsMutation($email: String!, $fullName: 
 """
 
 
+@pytest.mark.usefixtures("password_account")
 @pytest.mark.parametrize(
     ("email", "full_name", "captcha_token", "expected_typename", "description"),
     [
@@ -45,7 +45,6 @@ mutation GeneratePasskeyRegistrationOptionsMutation($email: String!, $fullName: 
 )
 async def test_generate_passkey_registration_options_invalid(
     graphql_client: GraphQLClient,
-    password_account: Account,  # Needed to ensure the account exists for EmailInUseError tests
     email: str,
     full_name: str,
     captcha_token: str,

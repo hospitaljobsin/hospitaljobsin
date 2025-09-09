@@ -1,8 +1,6 @@
 from collections.abc import AsyncIterator
 
 import pytest
-from app.accounts.documents import Account
-from app.accounts.repositories import AccountRepo
 from asgi_lifespan import LifespanManager
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
@@ -35,15 +33,4 @@ async def graphql_client(http_client: AsyncClient) -> GraphQLClient:
     return GraphQLClient(
         client=http_client,
         endpoint="/graphql",
-    )
-
-
-@pytest.fixture(scope="session")
-async def password_account(account_repo: AccountRepo) -> Account:
-    return await account_repo.create(
-        full_name="Aryan Iyappan",
-        email="aryan@outlook.com",
-        password="Password123!",
-        analytics_preference="acceptance",
-        auth_providers=["password"],
     )
