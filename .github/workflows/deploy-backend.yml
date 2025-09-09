@@ -17,6 +17,10 @@ jobs:
     services:
       mongodb:
         image: mongodb/mongodb-atlas-local:8.0.1
+        env:
+          MONGODB_INITDB_ROOT_USERNAME: user
+          MONGODB_INITDB_ROOT_PASSWORD: pass
+          RUNNER_LOG_FILE: /dev/stderr
         ports:
           - 27017:27017
         options: >-
