@@ -1,3 +1,4 @@
+'use client';
 import type { pageJobDetailViewQuery } from '@/__generated__/pageJobDetailViewQuery.graphql';
 import type { RelatedJobsListFragment$key } from '@/__generated__/RelatedJobsListFragment.graphql';
 import { SearchIcon } from 'lucide-react';

@@ -1,3 +1,4 @@
+'use client';
 import type { LandingClientComponentQuery } from '@/__generated__/LandingClientComponentQuery.graphql';
 import type { TrendingJobListFragment$key } from '@/__generated__/TrendingJobListFragment.graphql';
 import type { TrendingJobListInternalFragment$key } from '@/__generated__/TrendingJobListInternalFragment.graphql';
@@ -5,7 +6,7 @@ import { FlameIcon } from 'lucide-react';
 import { useTransition } from 'react';
 import { useFragment, usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import RelatedJob from './AuxiliaryJob';
+import AuxiliaryJob from './AuxiliaryJob';
 import AuxiliaryJobListSkeleton from './AuxiliaryJobsListSkeleton';
 
 const TrendingJobListFragment = graphql`
@@ -42,9 +43,10 @@ const TrendingJobListInternalFragment = graphql`
 
 type Props = {
 	rootQuery: TrendingJobListFragment$key;
+	jobDetailId: string;
 };
 
-export default function TrendingJobList({ rootQuery }: Props) {
+export default function TrendingJobList({ rootQuery, jobDetailId }: Props) {
 	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(TrendingJobListFragment, rootQuery);
 	const { data, loadNext, isLoadingNext } = usePaginationFragment<LandingClientComponentQuery, TrendingJobListInternalFragment$key>(
@@ -79,11 +81,13 @@ export default function TrendingJobList({ rootQuery }: Props) {
 				}}
 				onScroll={handleScroll}
 			>
-				{data.trendingJobs.edges.map(jobEdge => (
-					<div key={jobEdge.node.id} className='pb-2 sm:pb-4'>
-						<RelatedJob job={jobEdge.node} />
-					</div>
-				))}
+				{data.trendingJobs.edges.map(jobEdge =>
+					jobEdge.node.id !== jobDetailId ? (
+						<div key={jobEdge.node.id} className='pb-2 sm:pb-4'>
+							<AuxiliaryJob job={jobEdge.node} />
+						</div>
+					) : null
+				)}
 				{data.trendingJobs.pageInfo.hasNextPage && (
 					<div className='pb-4 sm:pb-6'>
 						<AuxiliaryJobListSkeleton />

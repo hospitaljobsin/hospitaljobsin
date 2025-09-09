@@ -3,10 +3,8 @@ import LandingClientComponentQuery, {
 	type LandingClientComponentQuery as LandingClientComponentQueryType
 } from '@/__generated__/LandingClientComponentQuery.graphql';
 import type { LandingViewFragment$key } from '@/__generated__/LandingViewFragment.graphql';
-import links from '@/lib/links';
-import { ArrowRight, TrendingUpIcon } from 'lucide-react';
+import { SparklesIcon } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import LandingHeader from '../layout/LandingHeader';
@@ -85,16 +83,13 @@ export default function LandingView({ queryReference }: { queryReference: Preloa
 				<div className='w-full flex flex-col gap-4 items-center justify-center'>
 					<div className='flex flex-col gap-4 w-full py-8'>
 						<div className='flex items-center gap-4 w-full'>
-							<TrendingUpIcon className='text-foreground-600 w-7 h-7' />
-							<h2 className='text-xl sm:text-2xl font-medium text-foreground-600 tracking-tight'>Trending Jobs</h2>
+							<SparklesIcon className='text-foreground-600 w-7 h-7' />
+							<h2 className='text-xl sm:text-2xl font-medium text-foreground-600 tracking-tight'>Latest Jobs</h2>
 						</div>
-						<h3 className='text-foreground-500 text-base sm:text-lg font-medium tracking-tight'>Most Viewed Healthcare Jobs This Week</h3>
+						<h3 className='text-foreground-500 text-base sm:text-lg font-medium tracking-tight'>Latest Healthcare Jobs Posted</h3>
 					</div>
 					<JobList rootQuery={data} />
 				</div>
-				<Link href={links.search()} className='flex items-center gap-2 text-lg text-foreground-600 font-medium -mt-6'>
-					View all jobs <ArrowRight className='w-4 h-4' strokeWidth={3} />
-				</Link>
 			</div>
 		</div>
 	);

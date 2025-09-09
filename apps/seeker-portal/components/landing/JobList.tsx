@@ -74,7 +74,7 @@ export default function JobList({ rootQuery }: Props) {
 						<Search className='text-foreground-800' size={35} />
 					</div>
 					<div className='w-full flex flex-col gap-2 items-center'>
-						<h2 className='font-medium text-muted-foreground text-base'>No Trending Jobs found</h2>
+						<h2 className='font-medium text-muted-foreground text-base'>No Jobs found</h2>
 						<p className='text-muted-foreground text-sm text-center max-w-xs'>Please try again later.</p>
 					</div>
 				</CardBody>

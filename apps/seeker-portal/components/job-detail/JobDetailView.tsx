@@ -47,7 +47,7 @@ export default function JobDetailView(props: { rootQuery: JobDetailViewFragment$
 						<JobDetails rootQuery={query} />
 						<div className='flex h-full flex-col gap-6 w-full lg:w-80 xl:w-96 shrink-0'>
 							<RelatedJobsList job={query.organization.job} />
-							<TrendingJobList rootQuery={query} />
+							<TrendingJobList rootQuery={query} jobDetailId={query.organization.job.id} />
 						</div>
 					</div>
 				</div>
