@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<03c05da9f9f8b2d798006640ea5e1b94>>
+ * @generated SignedSource<<facb872f0a21d0b95d88098696a9c241>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobListInternalFragment$data = {
-  readonly trendingJobs: {
+  readonly jobs: {
     readonly edges: ReadonlyArray<{
       readonly node: {
         readonly id: string;
@@ -33,7 +33,7 @@ import JobListRefetchQuery_graphql from './JobListRefetchQuery.graphql';
 
 const node: ReaderFragment = (function(){
 var v0 = [
-  "trendingJobs"
+  "jobs"
 ];
 return {
   "argumentDefinitions": [
@@ -46,6 +46,21 @@ return {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "cursor"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "jobType"
+    },
+    {
+      "defaultValue": "UPDATED_AT",
+      "kind": "LocalArgument",
+      "name": "sortBy"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "workMode"
     }
   ],
   "kind": "Fragment",
@@ -74,11 +89,27 @@ return {
   "name": "JobListInternalFragment",
   "selections": [
     {
-      "alias": "trendingJobs",
-      "args": null,
+      "alias": "jobs",
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "jobType",
+          "variableName": "jobType"
+        },
+        {
+          "kind": "Variable",
+          "name": "sortBy",
+          "variableName": "sortBy"
+        },
+        {
+          "kind": "Variable",
+          "name": "workMode",
+          "variableName": "workMode"
+        }
+      ],
       "concreteType": "JobConnection",
       "kind": "LinkedField",
-      "name": "__JobListFragment_trendingJobs_connection",
+      "name": "__JobListFragment_jobs_connection",
       "plural": false,
       "selections": [
         {
@@ -168,6 +199,6 @@ return {
 };
 })();
 
-(node as any).hash = "e519ebf79ba2231b891acbe8af542bfd";
+(node as any).hash = "0454efb57e117e10d6cea17f9237aeb9";
 
 export default node;

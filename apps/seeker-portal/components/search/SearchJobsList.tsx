@@ -1,23 +1,23 @@
-import type { SearchJobsListFragment$key } from "@/__generated__/SearchJobsListFragment.graphql";
-import type { SearchJobsListInternalFragment$key } from "@/__generated__/SearchJobsListInternalFragment.graphql";
+import type { SearchJobsListFragment$key } from '@/__generated__/SearchJobsListFragment.graphql';
+import type { SearchJobsListInternalFragment$key } from '@/__generated__/SearchJobsListInternalFragment.graphql';
 import type {
 	JobSearchSortBy,
 	JobTypeFilter,
 	JobWorkModeFilter,
 	SearchJobsListRefetchQuery as SearchClientComponentQueryType,
-	SearchJobsListRefetchQuery$variables,
-} from "@/__generated__/SearchJobsListRefetchQuery.graphql";
-import type { Filters } from "@/app/search/jobs-in/[location]/SearchViewLocationClientComponent";
-import Job from "@/components/landing/Job";
-import JobListSkeleton from "@/components/landing/JobListSkeleton";
-import { APP_TITLE, REASONABLE_JOB_COUNT } from "@/lib/constants";
-import usePageTitle from "@/lib/hooks/usePageTitle";
-import { Card, CardBody, Select, SelectItem } from "@heroui/react";
-import { Search } from "lucide-react";
-import { useEffect, useRef, useTransition } from "react";
-import { useFragment, usePaginationFragment } from "react-relay";
-import { graphql } from "relay-runtime";
-import { WindowVirtualizer } from "virtua";
+	SearchJobsListRefetchQuery$variables
+} from '@/__generated__/SearchJobsListRefetchQuery.graphql';
+import type { Filters } from '@/app/search/jobs-in/[location]/SearchViewLocationClientComponent';
+import Job from '@/components/landing/Job';
+import JobListSkeleton from '@/components/landing/JobListSkeleton';
+import { APP_TITLE, REASONABLE_JOB_COUNT } from '@/lib/constants';
+import usePageTitle from '@/lib/hooks/usePageTitle';
+import { Card, CardBody, Select, SelectItem } from '@heroui/react';
+import Image from 'next/image';
+import { useEffect, useRef, useTransition } from 'react';
+import { useFragment, usePaginationFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { WindowVirtualizer } from 'virtua';
 
 const SearchJobsListFragment = graphql`
 fragment SearchJobsListFragment on Query @argumentDefinitions(
@@ -96,7 +96,7 @@ export default function SearchJobsList({
 	workMode,
 	jobType,
 	sortBy,
-	setFilters,
+	setFilters
 }: Props) {
 	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(SearchJobsListFragment, rootQuery);
@@ -107,7 +107,7 @@ export default function SearchJobsList({
 
 	const hasMountedRef = useRef(false);
 
-	console.log("search term", searchTerm);
+	console.log('search term', searchTerm);
 
 	// Flatten all job edges for virtualizer
 	const allJobEdges = data.jobs.edges;
@@ -122,17 +122,12 @@ export default function SearchJobsList({
 
 	usePageTitle({
 		title: (() => {
-			const hasReasonableCount =
-				data.jobs.totalCount && data.jobs.totalCount >= REASONABLE_JOB_COUNT;
+			const hasReasonableCount = data.jobs.totalCount && data.jobs.totalCount >= REASONABLE_JOB_COUNT;
 
-			let title = hasReasonableCount
-				? `${data.jobs.totalCount} Hospital Jobs`
-				: "Hospital Jobs";
+			let title = hasReasonableCount ? `${data.jobs.totalCount} Hospital Jobs` : 'Hospital Jobs';
 
 			if (searchTerm) {
-				title = hasReasonableCount
-					? `${data.jobs.totalCount} ${searchTerm} Hospital Jobs`
-					: `${searchTerm} Hospital Jobs`;
+				title = hasReasonableCount ? `${data.jobs.totalCount} ${searchTerm} Hospital Jobs` : `${searchTerm} Hospital Jobs`;
 			}
 
 			if (location) {
@@ -140,7 +135,7 @@ export default function SearchJobsList({
 			}
 
 			return `${title} | ${APP_TITLE}`;
-		})(),
+		})()
 	});
 
 	// Debounced filter refetch for all filters
@@ -158,47 +153,28 @@ export default function SearchJobsList({
 					proximityKm,
 					workMode: (workMode || []) as readonly JobWorkModeFilter[],
 					jobType: (jobType || []) as readonly JobTypeFilter[],
-					sortBy: sortBy as JobSearchSortBy,
+					sortBy: sortBy as JobSearchSortBy
 				};
-				if (typeof minExperience !== "undefined")
-					refetchVars.minExperience = minExperience;
-				if (typeof minSalary !== "undefined") refetchVars.minSalary = minSalary;
-				if (typeof maxSalary !== "undefined") refetchVars.maxSalary = maxSalary;
-				refetch(refetchVars, { fetchPolicy: "network-only" });
+				if (typeof minExperience !== 'undefined') refetchVars.minExperience = minExperience;
+				if (typeof minSalary !== 'undefined') refetchVars.minSalary = minSalary;
+				if (typeof maxSalary !== 'undefined') refetchVars.maxSalary = maxSalary;
+				refetch(refetchVars, { fetchPolicy: 'network-only' });
 			});
 		}, 300);
 		return () => clearTimeout(debounceTimeout);
-	}, [
-		refetch,
-		searchTerm,
-		location,
-		proximityKm,
-		minExperience,
-		minSalary,
-		maxSalary,
-		workMode,
-		jobType,
-		sortBy,
-	]);
+	}, [refetch, searchTerm, location, proximityKm, minExperience, minSalary, maxSalary, workMode, jobType, sortBy]);
 
 	if (allJobEdges.length === 0 && !hasNextPage) {
 		return (
-			<Card
-				className="p-6 h-full"
-				fullWidth
-				shadow="none"
-				style={{ background: "transparent" }}
-			>
-				<CardBody className="flex flex-col gap-6 w-full items-center h-full justify-center">
-					<div className="flex flex-col items-center">
-						<Search className="text-foreground-800" size={35} />
-					</div>
-					<div className="w-full flex flex-col gap-2 items-center">
-						<h2 className="font-medium text-muted-foreground text-base">
-							No jobs found
+			<Card className='p-4' fullWidth shadow='none'>
+				<CardBody className='flex flex-col sm:flex-row gap-6 w-full items-center justify-center'>
+					<Image src='/illustrations/empty.svg' alt='No jobs found' width={200} height={200} />
+					<div className='flex flex-col gap-2 items-center'>
+						<h2 className='font-medium text-muted-foreground text-base text-center'>
+							No jobs found {searchTerm ? `for "${searchTerm}"` : ''} {location ? `in ${location}` : ''}.
 						</h2>
-						<p className="text-muted-foreground text-sm text-center max-w-xs">
-							Try adjusting your search or filters to see more results.
+						<p className='text-muted-foreground text-sm text-center max-w-xs'>
+							Try searching for another keyword or check for spelling errors in your search query.
 						</p>
 					</div>
 				</CardBody>
@@ -208,60 +184,49 @@ export default function SearchJobsList({
 
 	return (
 		<div
-			className="w-full scroll-smooth h-full overflow-y-auto"
+			className='w-full scroll-smooth h-full overflow-y-auto'
 			style={{
-				scrollbarWidth: "none",
+				scrollbarWidth: 'none'
 			}}
 		>
-			<div className="w-full flex gap-12 justify-between items-center mb-6 sm:mb-8">
-				<h2 className="text-base sm:text-lg text-foreground-600 whitespace-nowrap">
-					<span className="font-medium">{data.jobs.totalCount}</span>{" "}
-					{searchTerm ? (
-						<span className="font-medium">{searchTerm}</span>
-					) : (
-						" hospital"
-					)}
-					{location ? ` jobs found in ${location}` : " jobs found"}
+			<div className='w-full flex gap-12 justify-between items-center mb-6 sm:mb-8'>
+				<h2 className='text-base sm:text-lg text-foreground-600 whitespace-nowrap'>
+					<span className='font-medium'>{data.jobs.totalCount}</span>{' '}
+					{searchTerm ? <span className='font-medium'>{searchTerm}</span> : ' hospital'}
+					{location ? ` jobs found in ${location}` : ' jobs found'}
 				</h2>
-				<div className="flex gap-2 w-full sm:max-w-xs">
+				<div className='flex gap-2 w-full sm:max-w-xs'>
 					<Select
-						label="Sort by"
-						placeholder="Select sorting option"
-						selectedKeys={[sortBy || "RELEVANCE"]}
-						onSelectionChange={(keys) => {
+						label='Sort by'
+						placeholder='Select sorting option'
+						selectedKeys={[sortBy || 'RELEVANCE']}
+						onSelectionChange={keys => {
 							const selectedKey = Array.from(keys)[0] as string;
 							if (selectedKey) {
 								startTransition(() => {
 									setFilters((prevFilters: Filters) => ({
 										...prevFilters,
-										sortBy: selectedKey,
+										sortBy: selectedKey
 									}));
 								});
 							}
 						}}
-						variant="faded"
-						size="sm"
+						variant='faded'
+						size='sm'
 					>
-						<SelectItem key="RELEVANCE">Relevance</SelectItem>
-						<SelectItem key="UPDATED_AT">Date Posted</SelectItem>
+						<SelectItem key='RELEVANCE'>Relevance</SelectItem>
+						<SelectItem key='UPDATED_AT'>Date Posted</SelectItem>
 					</Select>
 				</div>
 			</div>
-			<WindowVirtualizer
-				onScrollEnd={handleScrollEnd}
-				ssrCount={10}
-				count={data.jobs.totalCount}
-				shift={false}
-				item="div"
-				itemSize={350}
-			>
+			<WindowVirtualizer onScrollEnd={handleScrollEnd} ssrCount={10} count={data.jobs.totalCount} shift={false} item='div' itemSize={350}>
 				{allJobEdges.map((jobEdge, index) => (
-					<div key={jobEdge.node.id} className="pb-4 sm:pb-6">
+					<div key={jobEdge.node.id} className='pb-4 sm:pb-6'>
 						<Job job={jobEdge.node} authQueryRef={root.viewer} />
 					</div>
 				))}
 				{hasNextPage && (
-					<div className="pb-4 sm:pb-6">
+					<div className='pb-4 sm:pb-6'>
 						<JobListSkeleton />
 					</div>
 				)}
