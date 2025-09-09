@@ -191,6 +191,10 @@ class AccountRepo:
         account.auth_providers.remove("password")
         return await account.save()
 
+    async def delete(self, account: Account) -> None:
+        """Delete an account by ID."""
+        await account.delete()
+
 
 class PhoneNumberVerificationTokenRepo:
     async def create(

@@ -225,6 +225,8 @@ class DatabaseSettings(CoreSettings):
 
     default_database_name: str = "medicaljobs"
 
+    test_database_name: str = "testmedicaljobs"
+
 
 class RedisSettings(CoreSettings):
     redis_host: str

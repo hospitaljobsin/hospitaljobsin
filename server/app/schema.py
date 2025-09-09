@@ -10,6 +10,7 @@ from strawberry.extensions import (
     QueryDepthLimiter,
     ValidationCache,
 )
+from strawberry.extensions.mask_errors import MaskErrors
 from strawberry.file_uploads import Upload
 from strawberry.schema.config import StrawberryConfig
 from strawberry.tools import merge_types
@@ -19,7 +20,6 @@ from app.accounts.query import AccountQuery
 from app.auth.mutation import AuthMutation
 from app.auth.query import AuthQuery
 from app.config import AppSettings, EnvironmentSettings, get_settings
-from app.core.schema.extensions.mask_errors import MaskErrors
 from app.core.schema.extensions.persisted_queries import PersistedQueriesExtension
 from app.geocoding.query import GeocodingQuery
 from app.jobs.mutation import JobMutation
@@ -63,13 +63,19 @@ def create_schema(
         AioInjectExtension(
             container=create_container(),
         ),
-        PersistedQueriesExtension(
-            persisted_queries_path=app_settings.persisted_queries_path
-        ),
         ParserCache(maxsize=128),
         ValidationCache(maxsize=128),
         QueryDepthLimiter(max_depth=10),
     ]
+
+    if not env_settings.is_testing:
+        extensions.extend(
+            [
+                PersistedQueriesExtension(
+                    persisted_queries_path=app_settings.persisted_queries_path
+                ),
+            ]
+        )
 
     if env_settings.is_production or env_settings.is_staging:
         extensions.extend(

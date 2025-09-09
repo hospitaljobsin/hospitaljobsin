@@ -92,6 +92,7 @@ from app.config import AppSettings, AuthSettings, FrontendSettings, Oauth2Settin
 from app.core.captcha import BaseCaptchaVerifier
 from app.core.constants import (
     APP_NAME,
+    DISPOSABLE_EMAIL_DOMAINS,
     EMAIL_VERIFICATION_EXPIRES_IN,
     PASSWORD_RESET_EXPIRES_IN,
     SUDO_MODE_EXPIRES_IN,
@@ -142,6 +143,10 @@ class AuthService:
         self._captcha_verifier = captcha_verifier
         self._posthog_client = posthog_client
         self._oauth_settings = oauth_settings
+
+    def _normalize_email(self, email: str) -> str:
+        """Normalize an email address."""
+        return email.lower().strip()
 
     def _is_email_verification_token_cooled_down(
         self, token: EmailVerificationToken
@@ -196,10 +201,15 @@ class AuthService:
 
         try:
             email_info = validate_email(
-                email,
+                self._normalize_email(email=email),
                 check_deliverability=True,
             )
             email = email_info.normalized
+
+            email_domain = email_info.domain.lower()
+            if email_domain in DISPOSABLE_EMAIL_DOMAINS:
+                return Err(InvalidEmailError(message="Invalid email address provided."))
+
         except EmailNotValidError as err:
             return Err(InvalidEmailError(message=str(err)))
 
@@ -266,6 +276,8 @@ class AuthService:
         ):
             return Err(InvalidCaptchaTokenError())
 
+        email = self._normalize_email(email=email)
+
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())
@@ -310,6 +322,8 @@ class AuthService:
             captcha_token, ip_address=request.client.host
         ):
             return Err(InvalidCaptchaTokenError())
+
+        email = self._normalize_email(email=email)
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())
@@ -386,6 +400,8 @@ class AuthService:
             captcha_token, ip_address=request.client.host
         ):
             return Err(InvalidCaptchaTokenError())
+
+        email = self._normalize_email(email=email)
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())
@@ -432,6 +448,8 @@ class AuthService:
             captcha_token, ip_address=request.client.host
         ):
             return Err(InvalidCaptchaTokenError())
+
+        email = self._normalize_email(email=email)
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())
@@ -696,6 +714,9 @@ class AuthService:
             captcha_token, ip_address=request.client.host
         ):
             return Err(InvalidCaptchaTokenError())
+
+        email = self._normalize_email(email=email)
+
         account = await self._account_repo.get_by_email(email=email)
         if not account:
             return Err(InvalidCredentialsError())
@@ -828,7 +849,7 @@ class AuthService:
                 )
 
             account = await self._account_repo.create(
-                email=user_attributes["email"],
+                email=self._normalize_email(email=user_attributes["email"]),
                 full_name=user_attributes["name"],
                 phone_number=phone_number
                 if (
@@ -1006,9 +1027,7 @@ class AuthService:
             return Err(PasswordResetTokenNotFoundError())
         return Ok(reset_token)
 
-    def _is_password_reset_token_cooled_down(
-        self, token: EmailVerificationToken
-    ) -> bool:
+    def _is_password_reset_token_cooled_down(self, token: PasswordResetToken) -> bool:
         """Check if a password reset token is cooled down."""
         current_time = datetime.now(UTC)
         # Ensure generation_time is aware (assuming it's stored in UTC)
@@ -1019,7 +1038,7 @@ class AuthService:
         return current_time >= cooldown_time
 
     def _password_reset_token_cooldown_remaining_seconds(
-        self, token: EmailVerificationToken
+        self, token: PasswordResetToken
     ) -> int:
         """
         Calculate remaining cooldown seconds for the password reset token.
@@ -1050,6 +1069,8 @@ class AuthService:
             captcha_token, ip_address=request.client.host
         ):
             return Err(InvalidCaptchaTokenError())
+
+        email = self._normalize_email(email=email)
         existing_user = await self._account_repo.get_by_email(email=email)
         if not existing_user:
             return Ok(None)
@@ -1111,6 +1132,8 @@ class AuthService:
             captcha_token, ip_address=request.client.host
         ):
             return Err(InvalidCaptchaTokenError())
+
+        email = self._normalize_email(email=email)
         existing_reset_token = await self._password_reset_token_repo.get(
             token=password_reset_token,
             email=email,
@@ -1173,6 +1196,8 @@ class AuthService:
             captcha_token, ip_address=request.client.host
         ):
             return Err(InvalidCaptchaTokenError())
+
+        email = self._normalize_email(email=email)
         existing_reset_token = await self._password_reset_token_repo.get(
             token=password_reset_token,
             email=email,
@@ -1250,6 +1275,7 @@ class AuthService:
         | TwoFactorAuthenticationChallengeNotFoundError,
     ]:
         """Reset a user's password."""
+        email = self._normalize_email(email=email)
         existing_reset_token = await self._password_reset_token_repo.get(
             token=password_reset_token,
             email=email,
@@ -1539,7 +1565,7 @@ class AuthService:
         ):
             return Err(InvalidCaptchaTokenError())
 
-        webauthn_challenge: str = request.session.get("webauthn_challenge")
+        webauthn_challenge: str | None = request.session.get("webauthn_challenge")
         if webauthn_challenge is None:
             return Err(WebAuthnChallengeNotFoundError())
 

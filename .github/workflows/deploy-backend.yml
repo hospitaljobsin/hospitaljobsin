@@ -12,7 +12,113 @@ concurrency:
   cancel-in-progress: false      # Waits instead of cancelling previous runs
 
 jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
+    services:
+      mongodb:
+        image: mongodb/mongodb-atlas-local:8.0.1
+        env:
+          MONGODB_INITDB_ROOT_USERNAME: user
+          MONGODB_INITDB_ROOT_PASSWORD: pass
+          RUNNER_LOG_FILE: /dev/stderr
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: docker.io/bitnami/redis:latest
+        env:
+          ALLOW_EMPTY_PASSWORD: yes
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      AWS_DEFAULT_REGION: ${{ vars.AWS_REGION }}
+      SERVER_DEBUG: 'true'
+      SERVER_ENVIRONMENT: 'testing'
+      SERVER_DATABASE_URL: 'mongodb://user:pass@localhost:27017/?directConnection=true'
+      SERVER_HOST: '0.0.0.0'
+      SERVER_PORT: '8000'
+      SERVER_LOG_LEVEL: 'INFO'
+      SERVER_CORS_ALLOW_ORIGINS: '["https://localtest.me"]'
+      SERVER_CORS_ALLOW_ORIGIN_REGEX: 'https://.*\.localtest\.me'
+      SERVER_GOOGLE_CLIENT_ID: ''
+      SERVER_GOOGLE_CLIENT_SECRET: ''
+      SERVER_EMAIl_PROVIDER: 'dummy'
+      SERVER_EMAIL_FROM: 'noreply@example.com'
+      SERVER_CAPTCHA_SECRET_KEY: "1x0000000000000000000000000000000AA"
+      SERVER_S3_BUCKET_NAME: "medicaljobs"
+      SERVER_ACCOUNTS_BASE_URL: "https://accounts.localtest.me"
+      SERVER_RECRUITER_PORTAL_BASE_URL: "https://recruiter.localtest.me"
+      SERVER_SEEKER_PORTAL_BASE_URL: "https://localtest.me"
+      SERVER_RP_ID: 'localtest.me'
+      SERVER_RP_NAME: 'Starter'
+      SERVER_RP_EXPECTED_ORIGIN: 'https://accounts.localtest.me'
+      SERVER_JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
+      SERVER_AWS_ENDPOINT_URL: "http://localhost:9000"
+      SERVER_AWS_SECRET_ACCESS_KEY: "minio-secret-key"
+      SERVER_AWS_ACCESS_KEY_ID: "minio-access-key"
+      SERVER_SENTRY_DSN: ""
+      SERVER_PERSISTED_QUERIES_PATH: "query_map.json"
+      SERVER_SESSION_COOKIE_DOMAIN: '.localtest.me'
+      SERVER_SESSION_COOKIE_SECURE: 'True'
+      SERVER_REDIS_HOST: 'localhost'
+      SERVER_REDIS_PORT: '6379'
+      SERVER_REDIS_USERNAME: ''
+      SERVER_REDIS_PASSWORD: ''
+      SERVER_REDIS_SSL: 'False'
+      SERVER_SQS_QUEUE_URL: ""
+      SERVER_TESSERACT_DATA_PATH: "/usr/share/tesseract-ocr/5/tessdata"
+      SERVER_WHATSAPP_ACCESS_TOKEN: ""
+      SERVER_WHATSAPP_PHONE_NUMBER_ID: ""
+      SERVER_TWO_FACTOR_IN_API_KEY: ""
+      SERVER_POSTHOG_API_HOST: ""
+      SERVER_POSTHOG_API_KEY: ""
+
+    steps:
+      - name: Checkout code
+        if: ${{ inputs.run-deploy }}
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        if: ${{ inputs.run-deploy }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Setup Python
+        if: ${{ inputs.run-deploy }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install uv
+        if: ${{ inputs.run-deploy }}
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install dependencies
+        if: ${{ inputs.run-deploy }}
+        working-directory: ./server
+        run: uv sync --group test
+
+      - name: Run unit and integration tests
+        if: ${{ inputs.run-deploy }}
+        working-directory: ./server
+        run: uv run pytest -vv
+
   build-and-push:
+    needs: test-backend
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
     steps:
@@ -33,7 +139,7 @@ jobs:
         if: ${{ inputs.run-deploy }}
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push Docker image
+      - name: Build and push Server Docker image
         if: ${{ inputs.run-deploy }}
         uses: docker/build-push-action@v6
         with:
@@ -61,9 +167,50 @@ jobs:
           NEW_REVISION=$(echo $NEW_TASK_INFO | jq '.taskDefinition.revision')
           aws ecs update-service --cluster ${{vars.AWS_BACKEND_ECS_CLUSTER}} --service ${{vars.AWS_BACKEND_ECS_SERVICE}} --task-definition ${{vars.AWS_BACKEND_ECS_TASK_FAMILY}}:${NEW_REVISION}
 
-      # - name: Update AWS Lambda function
-      #   env:
-      #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #     IMAGE_NAME: ${{ vars.AWS_BACKEND_IMAGE_NAME }}
-      #     IMAGE_TAG: ${{ github.sha }}
-      #   run: aws lambda update-function-code --function-name ${{ vars.AWS_BACKEND_FUNCTION_NAME }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+      - name: Build and push Worker Docker image
+        if: ${{ inputs.run-deploy }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ./server
+          target: lambda-handler
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_WORKER_IMAGE_NAME }}:${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_WORKER_IMAGE_NAME }}:${{ github.ref_name == 'production' && 'production' || 'staging' }}-latest
+          build-args: |
+            AWS_DEFAULT_REGION=${{ env.AWS_DEFAULT_REGION }}
+            AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Update AWS Lambda Worker function
+        if: ${{ inputs.run-deploy }}
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
+          IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
+        run: aws lambda update-function-code --function-name ${{ vars.AWS_WORKER_FUNCTION_NAME }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+
+      - name: Update AWS Lambda Automation Generate WA Messages function
+        if: ${{ inputs.run-deploy }}
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
+          IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
+        run: aws lambda update-function-code --function-name ${{ vars.AWS_AUTOMATION_GENERATE_WA_MESSAGES_FUNCTION_NAME }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+
+
+      - name: Update AWS Lambda Staging Setup function
+        if: ${{ inputs.run-deploy && github.ref_name == 'staging' }}
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
+          IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
+        run: aws lambda update-function-code --function-name ${{ vars.STAGING_ENVIRONMENT_SETUP_LAMBDA_FUNCTION_ARN }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+
+      - name: Update AWS Lambda Staging Teardown function
+        if: ${{ inputs.run-deploy && github.ref_name == 'staging' }}
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
+          IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
+        run: aws lambda update-function-code --function-name ${{ vars.STAGING_ENVIRONMENT_TEARDOWN_LAMBDA_FUNCTION_ARN }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG

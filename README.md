@@ -5,6 +5,11 @@
 [![check-runs](https://img.shields.io/github/check-runs/hospitaljobsin/hospitaljobsin/staging?logo=ticktick&logoColor=yellow)](https://github.com/hospitaljobsin/hospitaljobsin/actions)
 [![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/hospital-jobs/hospital-jobs)
 
+![Landing Screenshot](./.github/assets/landing-screenshot.png)
+
+
+
+
 
 ## Codebase Structure
 

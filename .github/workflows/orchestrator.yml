@@ -9,7 +9,6 @@ jobs:
       runs-on: ubuntu-latest
       outputs:
         backend: ${{ steps.filter.outputs.backend }}
-        worker: ${{ steps.filter.outputs.worker }}
         accounts_ui: ${{ steps.filter.outputs.accounts_ui }}
         recruiter_dashboard_ui: ${{ steps.filter.outputs.recruiter_dashboard_ui }}
         recruiter_portal_ui: ${{ steps.filter.outputs.recruiter_portal_ui }}
@@ -31,9 +30,6 @@ jobs:
             backend:
               - 'server/**'
               - '.github/workflows/deploy-backend.yml'
-            worker:
-              - 'server/**'
-              - '.github/workflows/deploy-worker.yml'
             accounts_ui:
               - 'apps/accounts/**'
               - '.github/workflows/deploy-accounts-ui.yml'
@@ -68,15 +64,6 @@ jobs:
         - deploy-shared-infra
         - deploy-infra
 
-  deploy-worker:
-    uses: ./.github/workflows/deploy-worker.yml
-    with:
-        run-deploy: ${{ needs.changes.outputs.worker == 'true' }}
-    secrets: inherit
-    needs:
-        - changes
-        - deploy-shared-infra
-        - deploy-infra
 
   deploy-accounts-ui:
     uses: ./.github/workflows/deploy-accounts-ui.yml
@@ -138,11 +125,10 @@ jobs:
       - deploy-shared-infra
 
   e2e-tests:
-    if: ${{ github.ref == 'refs/heads/staging' && (needs.changes.outputs.backend == 'true' || needs.changes.outputs.worker == 'true' || needs.changes.outputs.accounts_ui == 'true' || needs.changes.outputs.recruiter_dashboard_ui == 'true' || needs.changes.outputs.recruiter_portal_ui == 'true' || needs.changes.outputs.seeker_portal_ui == 'true' || needs.changes.outputs.shared_infra == 'true' || needs.changes.outputs.infra == 'true' || needs.changes.outputs.e2e_tests == 'true') }}
+    if: ${{ github.ref == 'refs/heads/staging' && (needs.changes.outputs.backend == 'true' || needs.changes.outputs.accounts_ui == 'true' || needs.changes.outputs.recruiter_dashboard_ui == 'true' || needs.changes.outputs.recruiter_portal_ui == 'true' || needs.changes.outputs.seeker_portal_ui == 'true' || needs.changes.outputs.shared_infra == 'true' || needs.changes.outputs.infra == 'true' || needs.changes.outputs.e2e_tests == 'true') }}
     needs:
       - changes
       - deploy-backend
-      - deploy-worker
       - deploy-accounts-ui
       - deploy-recruiter-dashboard-ui
       - deploy-recruiter-portal-ui

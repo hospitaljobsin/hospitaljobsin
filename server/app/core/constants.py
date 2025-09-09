@@ -119,3 +119,23 @@ DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT = 5
 
 # terms and policy
 TERMS_AND_POLICY_LATEST_VERSION = "1.0.0"
+
+
+DISPOSABLE_EMAIL_DOMAINS = {
+    "10minutemail.com",
+    "tempmail.org",
+    "guerrillamail.com",
+    "mailinator.com",
+    "throwaway.email",
+    "temp-mail.org",
+    "yopmail.com",
+    "maildrop.cc",
+    "sharklasers.com",
+    "grr.la",
+    "guerrillamailblock.com",
+    "pokemail.net",
+    "spam4.me",
+    "bccto.me",
+    "chacuo.net",
+    "dispostable.com",
+}
