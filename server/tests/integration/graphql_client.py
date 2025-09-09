@@ -27,6 +27,8 @@ class GraphQLClient:
                 "variables": variables,
             },
         )
-        print(response.cookies)
+        print("Response: ", response.json())
+        print("RESPONSE COOKIES: ", response.cookies)
+        print("CLIENT COOKIES: ", self._client.cookies)
         response.raise_for_status()
         return cast("GraphQLResponse", response.json())

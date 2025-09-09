@@ -6,29 +6,30 @@ from app.accounts.documents import Account
 from app.auth.repositories import SessionRepo
 from app.config import AuthSettings, SecretSettings
 from asgi_lifespan import LifespanManager
-from fastapi import FastAPI
-from httpx import ASGITransport, AsyncClient
+from httpx import ASGITransport, AsyncClient, Cookies
 from jose import jwe
 
 from .graphql_client import GraphQLClient
 
 
 @pytest.fixture(scope="session")
-async def fastapi_app() -> AsyncIterator[FastAPI]:
+async def lifespan_manager() -> AsyncIterator[LifespanManager]:
     from app import create_app
 
     app = create_app()
-    async with LifespanManager(app=app):
-        yield app
+    async with LifespanManager(app=app) as manager:
+        yield manager
 
 
 @pytest.fixture
-async def http_client(fastapi_app: FastAPI) -> AsyncIterator[AsyncClient]:
+async def http_client(lifespan_manager: LifespanManager) -> AsyncIterator[AsyncClient]:
     async with AsyncClient(
         transport=ASGITransport(
-            app=fastapi_app,  # type: ignore[arg-type]
+            app=lifespan_manager.app,  # type: ignore[arg-type]
         ),
-        base_url="http://test",
+        base_url="https://localtest.me",
+        follow_redirects=True,
+        cookies=Cookies(),
     ) as client:
         yield client
 
@@ -43,7 +44,7 @@ async def graphql_client(http_client: AsyncClient) -> GraphQLClient:
 
 @pytest.fixture
 async def webauthn_auth_http_client(
-    fastapi_app: FastAPI,
+    lifespan_manager: LifespanManager,
     webauthn_account: Account,
     session_repo: SessionRepo,
     auth_settings: AuthSettings,
@@ -62,14 +63,18 @@ async def webauthn_auth_http_client(
         algorithm="dir",
     )
 
+    cookies = Cookies()
+    cookies.set(
+        auth_settings.session_user_cookie_name, encrypted_session.decode("utf-8")
+    )
+
     async with AsyncClient(
         transport=ASGITransport(
-            app=fastapi_app,  # type: ignore[arg-type]
+            app=lifespan_manager.app,  # type: ignore[arg-type]
         ),
-        base_url="http://test",
-        cookies={
-            auth_settings.session_user_cookie_name: encrypted_session.decode("utf-8")
-        },
+        base_url="https://localtest.me",
+        follow_redirects=True,
+        cookies=cookies,
     ) as client:
         yield client
 
@@ -86,7 +91,7 @@ async def webauthn_auth_graphql_client(
 
 @pytest.fixture
 async def password_auth_http_client(
-    fastapi_app: FastAPI,
+    lifespan_manager: LifespanManager,
     password_account: Account,
     session_repo: SessionRepo,
     auth_settings: AuthSettings,
@@ -104,14 +109,19 @@ async def password_auth_http_client(
         key=secret_key,
         algorithm="dir",
     )
+
+    cookies = Cookies()
+    cookies.set(
+        auth_settings.session_user_cookie_name, encrypted_session.decode("utf-8")
+    )
+
     async with AsyncClient(
         transport=ASGITransport(
-            app=fastapi_app,  # type: ignore[arg-type]
+            app=lifespan_manager.app,  # type: ignore[arg-type]
         ),
-        base_url="http://test",
-        cookies={
-            auth_settings.session_user_cookie_name: encrypted_session.decode("utf-8")
-        },
+        base_url="https://localtest.me",
+        follow_redirects=True,
+        cookies=cookies,
     ) as client:
         yield client
 

@@ -67,6 +67,8 @@ class SessionMiddleware(BaseHTTPMiddleware):
         # Process the request.
         response: Response = await call_next(request)
 
+        print("REQUEST SESSION: ", request.state.session)
+
         # Ensure the scope's session is updated in case it was modified.
         request.scope["session"] = request.state.session
 

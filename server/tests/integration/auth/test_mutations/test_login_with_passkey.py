@@ -531,6 +531,7 @@ async def test_login_with_passkey_invalid_credential_type(
     """Test login_with_passkey with invalid credential type."""
     # Generate authentication options first to set up challenge
     challenge_bytes, _ = await generate_authentication_options_for_test(graphql_client)
+    print("CHALLENGE BYTES: ", challenge_bytes)
     authentication_response = create_mock_webauthn_authentication_response(
         challenge_bytes
     )
@@ -595,47 +596,43 @@ async def test_login_with_passkey_with_proper_challenge_setup(
     ]
 
 
-async def test_login_with_passkey_various_user_handle_values(
-    graphql_client: GraphQLClient,
-) -> None:
-    """Test login_with_passkey with various userHandle values."""
-    test_cases = [
+@pytest.mark.parametrize(
+    "user_handle, description",
+    [
         (None, "Null user handle"),
         ("", "Empty user handle"),
         ("user123", "Valid user handle"),
         ("invalid-base64!@#", "Invalid base64 user handle"),
-    ]
+    ],
+)
+async def test_login_with_passkey_various_user_handle_values(
+    graphql_client: GraphQLClient,
+    user_handle: str | None,
+    description: str,
+) -> None:
+    """Test login_with_passkey with various userHandle values."""
+    # Generate authentication options first to set up challenge
+    challenge_bytes, _ = await generate_authentication_options_for_test(graphql_client)
+    authentication_response = create_mock_webauthn_authentication_response(
+        challenge_bytes
+    )
+    authentication_response["response"]["userHandle"] = user_handle
 
-    for user_handle, description in test_cases:
-        # Generate authentication options first to set up challenge
-        challenge_bytes, _ = await generate_authentication_options_for_test(
-            graphql_client
-        )
-        authentication_response = create_mock_webauthn_authentication_response(
-            challenge_bytes
-        )
-        authentication_response["response"]["userHandle"] = user_handle
+    response = await graphql_client(
+        LOGIN_WITH_PASSKEY_MUTATION,
+        variables={
+            "authenticationResponse": authentication_response,
+            "captchaToken": "captcha-token",
+        },
+    )
 
-        response = await graphql_client(
-            LOGIN_WITH_PASSKEY_MUTATION,
-            variables={
-                "authenticationResponse": authentication_response,
-                "captchaToken": "captcha-token",
+    # The response should be consistent regardless of userHandle value
+    # Since we have a valid challenge but no real credential in the database,
+    # we should get InvalidPasskeyAuthenticationCredentialError
+    assert response == {
+        "data": {
+            "loginWithPasskey": {
+                "__typename": "InvalidPasskeyAuthenticationCredentialError",
             },
-        )
-
-        # The response should be consistent regardless of userHandle value
-        # Since we have a valid challenge but no real credential in the database,
-        # we should get InvalidPasskeyAuthenticationCredentialError
-        assert (
-            response
-            == {
-                "data": {
-                    "loginWithPasskey": {
-                        "__typename": "InvalidPasskeyAuthenticationCredentialError",
-                    },
-                },
-            }
-            or response["data"]
-            is None  # In case of validation errors for invalid base64
-        ), f"Failed for case: {description}"
+        },
+    }, f"Failed for case: {description}"
