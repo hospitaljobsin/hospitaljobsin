@@ -40,7 +40,7 @@ jobs:
     env:
       SERVER_DEBUG: 'true'
       SERVER_ENVIRONMENT: 'testing'
-      SERVER_DATABASE_URL: 'mongodb://user:pass@localhost:27017/?directConnection=true'
+      SERVER_DATABASE_URL: 'mongodb://user:pass@mongodb:27017/?directConnection=true'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '8000'
       SERVER_LOG_LEVEL: 'INFO'
@@ -69,7 +69,7 @@ jobs:
       SERVER_PERSISTED_QUERIES_PATH: "query_map.json"
       SERVER_SESSION_COOKIE_DOMAIN: '.localtest.me'
       SERVER_SESSION_COOKIE_SECURE: 'True'
-      SERVER_REDIS_HOST: 'localhost'
+      SERVER_REDIS_HOST: 'redis'
       SERVER_REDIS_PORT: '6379'
       SERVER_REDIS_USERNAME: ''
       SERVER_REDIS_PASSWORD: ''
