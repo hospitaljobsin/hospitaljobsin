@@ -255,6 +255,7 @@ async def test_login_with_passkey_malformed_response(
     graphql_client: GraphQLClient,
 ) -> None:
     """Test login_with_passkey with malformed authentication response."""
+    challenge_bytes, _ = await generate_authentication_options_for_test(graphql_client)
     # Create malformed authentication response missing required fields
     malformed_response = {
         "id": "some-id",
