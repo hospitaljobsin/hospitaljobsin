@@ -46,6 +46,7 @@ uv sync -p 3.13 --frozen
 - While creating the credentials, fill in the following information:
 	- **Client config:**
 		- *Authorized Javascript origins:*
+			- https://localtest.me
 			- https://accounts.localtest.me
 		- *Authorized Redirect URIs:*
 			- https://api.localtest.me/auth/callback/signin/google
