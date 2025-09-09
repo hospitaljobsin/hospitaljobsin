@@ -14,6 +14,7 @@ concurrency:
 jobs:
   test-backend:
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
     services:
       mongodb:
         image: mongodb/mongodb-atlas-local:8.0.1
@@ -85,6 +86,7 @@ jobs:
 
     steps:
       - name: Checkout code
+        if: ${{ inputs.run-deploy }}
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -96,18 +98,22 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Setup Python
+        if: ${{ inputs.run-deploy }}
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
 
       - name: Install uv
+        if: ${{ inputs.run-deploy }}
         uses: astral-sh/setup-uv@v4
 
       - name: Install dependencies
+        if: ${{ inputs.run-deploy }}
         working-directory: ./server
         run: uv sync --group test
 
       - name: Run unit and integration tests
+        if: ${{ inputs.run-deploy }}
         working-directory: ./server
         run: uv run pytest -vv
 
