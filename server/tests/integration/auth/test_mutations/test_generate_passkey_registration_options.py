@@ -1,3 +1,5 @@
+import json
+
 import pytest
 from app.accounts.documents import Account
 
@@ -95,3 +97,36 @@ async def test_generate_passkey_registration_options_successful(
     data = response["data"]["generatePasskeyRegistrationOptions"]
     assert data["__typename"] == "GeneratePasskeyRegistrationOptionsSuccess"
     assert "registrationOptions" in data  # registrationOptions should be present
+
+    # Additional assertions for registrationOptions
+    registration_options = data["registrationOptions"]
+    assert isinstance(registration_options, str), (
+        "registrationOptions should be a string"
+    )
+    assert len(registration_options) > 0, "registrationOptions should not be empty"
+
+    # Parse the JSON string to verify it's valid JSON
+    parsed_options = json.loads(registration_options)
+    assert isinstance(parsed_options, dict), (
+        "registrationOptions should be a valid JSON object"
+    )
+
+    # Verify expected WebAuthn registration options structure
+    assert "challenge" in parsed_options, (
+        "registrationOptions should contain a challenge"
+    )
+    assert "rp" in parsed_options, (
+        "registrationOptions should contain relying party info"
+    )
+    assert "user" in parsed_options, "registrationOptions should contain user info"
+    assert "pubKeyCredParams" in parsed_options, (
+        "registrationOptions should contain public key credential parameters"
+    )
+
+    # Verify user info matches input
+    user_info = parsed_options["user"]
+    assert user_info["name"] == email, "User name should match the provided email"
+    assert user_info["displayName"] == full_name, (
+        "User display name should match the provided full name"
+    )
+    assert "id" in user_info, "User should have an ID"
