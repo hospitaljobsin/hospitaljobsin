@@ -1,4 +1,3 @@
-import json
 from collections.abc import AsyncIterator
 
 import pytest
@@ -7,7 +6,8 @@ from app.auth.repositories import SessionRepo
 from app.config import AuthSettings, SecretSettings
 from asgi_lifespan import LifespanManager
 from httpx import ASGITransport, AsyncClient, Cookies
-from jose import jwe
+
+from tests.utils.auth import encrypt_session_data
 
 from .graphql_client import GraphQLClient
 
@@ -55,12 +55,8 @@ async def webauthn_auth_http_client(
     )
 
     # Create session data and encrypt it as JWE cookie (same as SessionMiddleware does)
-    session_data = {"session_token": session_token}
-    secret_key = secret_settings.jwe_secret_key.get_secret_value()
-    encrypted_session = jwe.encrypt(
-        json.dumps(session_data),
-        key=secret_key,
-        algorithm="dir",
+    encrypted_session = encrypt_session_data(
+        secret_settings, {"session_token": session_token}
     )
 
     cookies = Cookies()
@@ -102,12 +98,8 @@ async def password_auth_http_client(
     )
 
     # Create session data and encrypt it as JWE cookie (same as SessionMiddleware does)
-    session_data = {"session_token": session_token}
-    secret_key = secret_settings.jwe_secret_key.get_secret_value()
-    encrypted_session = jwe.encrypt(
-        json.dumps(session_data),
-        key=secret_key,
-        algorithm="dir",
+    encrypted_session = encrypt_session_data(
+        secret_settings, {"session_token": session_token}
     )
 
     cookies = Cookies()

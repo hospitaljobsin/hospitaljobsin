@@ -12,7 +12,98 @@ concurrency:
   cancel-in-progress: false      # Waits instead of cancelling previous runs
 
 jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongodb/mongodb-atlas-local:8.0.1
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: docker.io/bitnami/redis:latest
+        env:
+          ALLOW_EMPTY_PASSWORD: yes
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      SERVER_DEBUG: 'true'
+      SERVER_ENVIRONMENT: 'testing'
+      SERVER_DATABASE_URL: 'mongodb://user:pass@localhost:27017/?directConnection=true'
+      SERVER_HOST: '0.0.0.0'
+      SERVER_PORT: '8000'
+      SERVER_LOG_LEVEL: 'INFO'
+      SERVER_CORS_ALLOW_ORIGINS: '["https://localtest.me"]'
+      SERVER_CORS_ALLOW_ORIGIN_REGEX: 'https://.*\.localtest\.me'
+      SERVER_GOOGLE_CLIENT_ID: ''
+      SERVER_GOOGLE_CLIENT_SECRET: ''
+      SERVER_EMAIL_HOST: 'localhost'
+      SERVER_EMAIL_PORT: '1025'
+      SERVER_EMAIL_USERNAME: ''
+      SERVER_EMAIL_PASSWORD: ''
+      SERVER_EMAIL_FROM: 'noreply@example.com'
+      SERVER_CAPTCHA_SECRET_KEY: "1x0000000000000000000000000000000AA"
+      SERVER_S3_BUCKET_NAME: "medicaljobs"
+      SERVER_ACCOUNTS_BASE_URL: "https://accounts.localtest.me"
+      SERVER_RECRUITER_PORTAL_BASE_URL: "https://recruiter.localtest.me"
+      SERVER_SEEKER_PORTAL_BASE_URL: "https://localtest.me"
+      SERVER_RP_ID: 'localtest.me'
+      SERVER_RP_NAME: 'Starter'
+      SERVER_RP_EXPECTED_ORIGIN: 'https://accounts.localtest.me'
+      SERVER_JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
+      SERVER_AWS_ENDPOINT_URL: "http://localhost:9000"
+      SERVER_AWS_SECRET_ACCESS_KEY: "minio-secret-key"
+      SERVER_AWS_ACCESS_KEY_ID: "minio-access-key"
+      SERVER_SENTRY_DSN: ""
+      SERVER_PERSISTED_QUERIES_PATH: "query_map.json"
+      SERVER_SESSION_COOKIE_DOMAIN: '.localtest.me'
+      SERVER_SESSION_COOKIE_SECURE: 'True'
+      SERVER_REDIS_HOST: 'localhost'
+      SERVER_REDIS_PORT: '6379'
+      SERVER_REDIS_USERNAME: ''
+      SERVER_REDIS_PASSWORD: ''
+      SERVER_REDIS_SSL: 'False'
+      SERVER_SQS_QUEUE_URL: ""
+      SERVER_TESSERACT_DATA_PATH: "/usr/share/tesseract-ocr/5/tessdata"
+      SERVER_WHATSAPP_ACCESS_TOKEN: ""
+      SERVER_WHATSAPP_PHONE_NUMBER_ID: ""
+      SERVER_TWO_FACTOR_IN_API_KEY: ""
+      SERVER_POSTHOG_API_HOST: ""
+      SERVER_POSTHOG_API_KEY: ""
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install dependencies
+        working-directory: ./server
+        run: uv sync --group test
+
+      - name: Run unit and integration tests
+        working-directory: ./server
+        run: uv run pytest -vv
+
   build-and-push:
+    needs: test-backend
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
     steps:
