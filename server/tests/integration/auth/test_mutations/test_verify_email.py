@@ -126,6 +126,36 @@ async def test_verify_email_email_in_use(
     }, f"Failed for case: {description}"
 
 
+async def test_verify_email_invalid_token(
+    graphql_client: GraphQLClient,
+    email_verification_token_repo: EmailVerificationTokenRepo,
+) -> None:
+    """Ensure that verify_email fails when the verification token doesn't correspond to the given email."""
+    # Use a unique email address for this test
+    email = generate_test_email()
+    email_verification_token, _ = await email_verification_token_repo.create(
+        email=generate_test_email(),  # Different email
+    )
+
+    # Now verify the email
+    response = await graphql_client(
+        VERIFY_EMAIL_MUTATION,
+        variables={
+            "email": email,
+            "emailVerificationToken": email_verification_token,
+            "captchaToken": "captcha-token",
+        },
+    )
+
+    assert response == {
+        "data": {
+            "verifyEmail": {
+                "__typename": "InvalidEmailVerificationTokenError",
+            },
+        },
+    }
+
+
 async def test_verify_email_successful(
     graphql_client: GraphQLClient,
     email_verification_token_repo: EmailVerificationTokenRepo,
@@ -134,7 +164,7 @@ async def test_verify_email_successful(
     # Use a unique email address for this test
     email = generate_test_email()
     email_verification_token, _ = await email_verification_token_repo.create(
-        email=generate_test_email()
+        email=email
     )
 
     # Now verify the email
