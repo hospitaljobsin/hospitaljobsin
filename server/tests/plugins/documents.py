@@ -4,14 +4,14 @@ import pytest
 from app.accounts.documents import Account
 from app.accounts.repositories import AccountRepo
 
+from tests.utils.emails import generate_test_email
+
 
 @pytest.fixture(scope="session")
 async def password_account(account_repo: AccountRepo) -> AsyncGenerator[Account]:
-    # TODO: dynamically create email here.
-    # and also use the dynamic email instead of aryan@outlook.com in the pytest parameterized tests
     account = await account_repo.create(
         full_name="Aryan Iyappan",
-        email="aryan@outlook.com",
+        email=generate_test_email(),
         password="Password123!",
         analytics_preference="acceptance",
         auth_providers=["password"],

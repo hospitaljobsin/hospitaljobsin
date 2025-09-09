@@ -51,7 +51,6 @@ mutation GenerateAuthenticationOptionsMutation($captchaToken: String!) {
 #     }, f"Failed for case: {description}"
 
 
-# @pytest.mark.usefixtures("password_account")
 async def test_generate_authentication_options_successful(
     graphql_client: GraphQLClient,
 ) -> None:

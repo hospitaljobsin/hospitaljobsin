@@ -1,4 +1,5 @@
 import pytest
+from app.accounts.documents import Account
 
 from tests.integration.graphql_client import GraphQLClient
 from tests.utils.emails import generate_test_email
@@ -22,20 +23,17 @@ mutation GeneratePasskeyRegistrationOptionsMutation($email: String!, $fullName: 
 """
 
 
-@pytest.mark.usefixtures("password_account")
 @pytest.mark.parametrize(
-    ("email", "full_name", "captcha_token", "expected_typename", "description"),
+    ("full_name", "captcha_token", "expected_typename", "description"),
     [
         # Email already in use
         (
-            "aryan@outlook.com",
             "Test User",
             "captcha-token",
             "EmailInUseError",
             "Email already in use",
         ),
         (
-            "ARYAN@OUTLOOK.COM",
             "Test User",
             "captcha-token",
             "EmailInUseError",
@@ -45,13 +43,19 @@ mutation GeneratePasskeyRegistrationOptionsMutation($email: String!, $fullName: 
 )
 async def test_generate_passkey_registration_options_invalid(
     graphql_client: GraphQLClient,
-    email: str,
+    password_account: Account,
     full_name: str,
     captcha_token: str,
     expected_typename: str,
     description: str,
 ) -> None:
     """Ensure that generate_passkey_registration_options fails with invalid inputs."""
+    # Use the email from the fixture for the first test case (exact match)
+    # For the second test case, convert to uppercase for case insensitive testing
+    email = password_account.email
+    if "case insensitive" in description:
+        email = email.upper()
+
     response = await graphql_client(
         GENERATE_PASSKEY_REGISTRATION_OPTIONS_MUTATION,
         variables={

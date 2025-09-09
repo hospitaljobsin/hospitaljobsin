@@ -1,4 +1,5 @@
 import pytest
+from app.accounts.documents import Account
 from app.accounts.repositories import EmailVerificationTokenRepo
 
 from tests.integration.graphql_client import GraphQLClient
@@ -34,22 +35,6 @@ mutation VerifyEmailMutation($email: String!, $emailVerificationToken: String!, 
         "description",
     ),
     [
-        # Email already in use
-        (
-            "aryan@outlook.com",
-            "some-token",
-            "captcha-token",
-            "EmailInUseError",
-            "Email already in use",
-        ),
-        # Email case sensitivity- already in use
-        (
-            "ARYAN@OUTLOOK.COM",
-            "some-token",
-            "captcha-token",
-            "EmailInUseError",
-            "Email already in use",
-        ),
         # Invalid email verification token
         (
             "test@example.com",
@@ -98,6 +83,44 @@ async def test_verify_email_invalid(
         "data": {
             "verifyEmail": {
                 "__typename": expected_typename,
+            },
+        },
+    }, f"Failed for case: {description}"
+
+
+@pytest.mark.parametrize(
+    ("email_case", "description"),
+    [
+        ("normal", "Email already in use"),
+        ("uppercase", "Email already in use (case insensitive)"),
+    ],
+)
+async def test_verify_email_email_in_use(
+    graphql_client: GraphQLClient,
+    password_account: Account,
+    email_case: str,
+    description: str,
+) -> None:
+    """Ensure that verify_email fails when email is already in use."""
+    email = (
+        password_account.email.upper()
+        if email_case == "uppercase"
+        else password_account.email
+    )
+
+    response = await graphql_client(
+        VERIFY_EMAIL_MUTATION,
+        variables={
+            "email": email,
+            "emailVerificationToken": "some-token",
+            "captchaToken": "captcha-token",
+        },
+    )
+
+    assert response == {
+        "data": {
+            "verifyEmail": {
+                "__typename": "EmailInUseError",
             },
         },
     }, f"Failed for case: {description}"

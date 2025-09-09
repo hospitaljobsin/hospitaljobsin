@@ -15,7 +15,6 @@ mutation LoginPasswordMutation($email: String!, $password: String!, $captchaToke
 """
 
 
-@pytest.mark.usefixtures("password_account")
 @pytest.mark.parametrize(
     ("email", "password", "description"),
     [
@@ -31,19 +30,6 @@ mutation LoginPasswordMutation($email: String!, $password: String!, $captchaToke
         ("user@example.com", "123", "Too short password"),
         ("user@example.com", "password", "Weak password - no uppercase/numbers"),
         ("user@example.com", "PASSWORD123", "Weak password - no lowercase"),
-        # Existing email but wrong password
-        ("aryan@outlook.com", "wrongpassword", "Existing email with wrong password"),
-        (
-            "aryan@outlook.com",
-            "Password123",
-            "Existing email with almost correct password",
-        ),
-        ("aryan@outlook.com", "password123!", "Existing email with different case"),
-        (
-            "aryan@outlook.com",
-            "Password124!",
-            "Existing email with similar but wrong password",
-        ),
     ],
 )
 async def test_invalid_password_login(
@@ -57,6 +43,40 @@ async def test_invalid_password_login(
         LOGIN_PASSWORD_MUTATION,
         variables={
             "email": email,
+            "password": password,
+            "captchaToken": "captcha-token",
+        },
+    )
+
+    assert response == {
+        "data": {
+            "loginWithPassword": {
+                "__typename": "InvalidCredentialsError",
+            },
+        },
+    }, f"Failed for case: {description}"
+
+
+@pytest.mark.parametrize(
+    ("password", "description"),
+    [
+        ("wrongpassword", "Existing email with wrong password"),
+        ("Password123", "Existing email with almost correct password"),
+        ("password123!", "Existing email with different case"),
+        ("Password124!", "Existing email with similar but wrong password"),
+    ],
+)
+async def test_existing_email_wrong_password_login(
+    graphql_client: GraphQLClient,
+    password_account: Account,
+    password: str,
+    description: str,
+) -> None:
+    """Ensure that we cannot log in with existing email but wrong password."""
+    response = await graphql_client(
+        LOGIN_PASSWORD_MUTATION,
+        variables={
+            "email": password_account.email,
             "password": password,
             "captchaToken": "captcha-token",
         },

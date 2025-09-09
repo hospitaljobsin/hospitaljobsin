@@ -1,4 +1,5 @@
 import pytest
+from app.accounts.documents import Account
 
 from tests.integration.graphql_client import GraphQLClient
 from tests.utils.emails import generate_test_email
@@ -27,7 +28,6 @@ mutation RequestEmailVerificationTokenMutation($email: String!, $captchaToken: S
 """
 
 
-@pytest.mark.usefixtures("password_account")
 @pytest.mark.parametrize(
     ("email", "captcha_token", "expected_typename", "description"),
     [
@@ -107,19 +107,6 @@ mutation RequestEmailVerificationTokenMutation($email: String!, $captchaToken: S
             "InvalidEmailError",
             "Disposable email domain - yopmail.com",
         ),
-        # Existing email (email already in use)
-        (
-            "aryan@outlook.com",
-            "captcha-token",
-            "EmailInUseError",
-            "Email already in use",
-        ),
-        (
-            "ARYAN@OUTLOOK.COM",
-            "captcha-token",
-            "EmailInUseError",
-            "Email already in use (case insensitive)",
-        ),
     ],
 )
 async def test_request_email_verification_token_invalid(
@@ -142,6 +129,43 @@ async def test_request_email_verification_token_invalid(
         "data": {
             "requestEmailVerificationToken": {
                 "__typename": expected_typename,
+            },
+        },
+    }, f"Failed for case: {description}"
+
+
+@pytest.mark.parametrize(
+    ("email_case", "description"),
+    [
+        ("normal", "Email already in use"),
+        ("uppercase", "Email already in use (case insensitive)"),
+    ],
+)
+async def test_request_email_verification_token_existing_email(
+    graphql_client: GraphQLClient,
+    password_account: Account,
+    email_case: str,
+    description: str,
+) -> None:
+    """Ensure that we cannot request an email verification token for an email already in use."""
+    email = (
+        password_account.email.upper()
+        if email_case == "uppercase"
+        else password_account.email
+    )
+
+    response = await graphql_client(
+        REQUEST_EMAIL_VERIFICATION_TOKEN_MUTATION,
+        variables={
+            "email": email,
+            "captchaToken": "captcha-token",
+        },
+    )
+
+    assert response == {
+        "data": {
+            "requestEmailVerificationToken": {
+                "__typename": "EmailInUseError",
             },
         },
     }, f"Failed for case: {description}"

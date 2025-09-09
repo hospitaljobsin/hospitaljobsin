@@ -4,6 +4,7 @@ from base64 import b64encode
 from typing import Any
 
 import pytest
+from app.accounts.documents import Account
 from app.accounts.repositories import EmailVerificationTokenRepo
 from app.config import AuthSettings, get_settings
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
@@ -158,16 +159,6 @@ def create_invalid_webauthn_credential() -> dict[str, Any]:
         "description",
     ),
     [
-        # Email already in use
-        (
-            "aryan@outlook.com",
-            "some-token",
-            "My Passkey",
-            "Test User",
-            "captcha-token",
-            "EmailInUseError",
-            "Email already in use",
-        ),
         # Invalid email verification token
         (
             "test@example.com",
@@ -214,6 +205,36 @@ async def test_register_with_passkey_invalid_params(
             },
         },
     }, f"Failed for case: {description}"
+
+
+async def test_register_with_passkey_email_in_use(
+    graphql_client: GraphQLClient,
+    password_account: Account,
+) -> None:
+    """Ensure that register_with_passkey fails when email is already in use."""
+    # Use a valid credential structure but test will fail due to email being in use
+    challenge = b"test-challenge-bytes-1234567890123456"
+    passkey_registration_response = create_mock_webauthn_credential(challenge)
+
+    response = await graphql_client(
+        REGISTER_WITH_PASSKEY_MUTATION,
+        variables={
+            "email": password_account.email,
+            "emailVerificationToken": "some-token",
+            "passkeyRegistrationResponse": passkey_registration_response,
+            "passkeyNickname": "My Passkey",
+            "fullName": "Test User",
+            "captchaToken": "captcha-token",
+        },
+    )
+
+    assert response == {
+        "data": {
+            "registerWithPasskey": {
+                "__typename": "EmailInUseError",
+            },
+        },
+    }
 
 
 async def test_register_with_passkey_invalid_credential(

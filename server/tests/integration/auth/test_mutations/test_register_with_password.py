@@ -1,4 +1,5 @@
 import pytest
+from app.accounts.documents import Account
 from app.accounts.repositories import EmailVerificationTokenRepo
 
 from tests.integration.graphql_client import GraphQLClient
@@ -42,16 +43,6 @@ mutation RegisterWithPasswordMutation($email: String!, $emailVerificationToken: 
         "description",
     ),
     [
-        # Email already in use
-        (
-            "aryan@outlook.com",
-            "some-token",
-            "StrongPass123!",
-            "Test User",
-            "captcha-token",
-            "EmailInUseError",
-            "Email already in use",
-        ),
         # Invalid email verification token
         (
             "test@example.com",
@@ -93,6 +84,31 @@ async def test_register_with_password_invalid(
             },
         },
     }, f"Failed for case: {description}"
+
+
+async def test_register_with_password_email_in_use(
+    graphql_client: GraphQLClient,
+    password_account: Account,
+) -> None:
+    """Ensure that register_with_password fails when email is already in use."""
+    response = await graphql_client(
+        REGISTER_WITH_PASSWORD_MUTATION,
+        variables={
+            "email": password_account.email,
+            "emailVerificationToken": "some-token",
+            "password": "StrongPass123!",
+            "fullName": "Test User",
+            "captchaToken": "captcha-token",
+        },
+    )
+
+    assert response == {
+        "data": {
+            "registerWithPassword": {
+                "__typename": "EmailInUseError",
+            },
+        },
+    }
 
 
 @pytest.mark.parametrize(
