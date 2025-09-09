@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cb3c29e95f7bb7421c36187f51c9271b>>
+ * @generated SignedSource<<e108eba09666581a487f9caf45d76dab>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,9 +11,6 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type TrendingJobListFragment$data = {
-  readonly viewer: {
-    readonly " $fragmentSpreads": FragmentRefs<"JobControlsAuthFragment">;
-  };
   readonly " $fragmentSpreads": FragmentRefs<"TrendingJobListInternalFragment">;
   readonly " $fragmentType": "TrendingJobListFragment";
 };
@@ -32,28 +29,12 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "FragmentSpread",
       "name": "TrendingJobListInternalFragment"
-    },
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": null,
-      "kind": "LinkedField",
-      "name": "viewer",
-      "plural": false,
-      "selections": [
-        {
-          "args": null,
-          "kind": "FragmentSpread",
-          "name": "JobControlsAuthFragment"
-        }
-      ],
-      "storageKey": null
     }
   ],
   "type": "Query",
   "abstractKey": null
 };
 
-(node as any).hash = "0acbfc151a275c53a76d03c112a8f433";
+(node as any).hash = "79025a6a50b72dc9f3975dd7c75c0a9e";
 
 export default node;

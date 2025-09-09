@@ -8,7 +8,6 @@ import { useFragment, usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { WindowVirtualizer } from 'virtua';
 import Job from './Job';
-import JobListSkeleton from './JobListSkeleton';
 
 const JobListFragment = graphql`
 fragment JobListFragment on Query {
@@ -57,14 +56,6 @@ export default function JobList({ rootQuery }: Props) {
 		root
 	);
 
-	const handleScrollEnd = () => {
-		if (data.jobs.pageInfo.hasNextPage && !isLoadingNext) {
-			startTransition(() => {
-				loadNext(25);
-			});
-		}
-	};
-
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (
 			<Card className='p-6' fullWidth shadow='none' style={{ background: 'transparent' }}>
@@ -92,17 +83,12 @@ export default function JobList({ rootQuery }: Props) {
 				scrollBehavior: 'smooth'
 			}}
 		>
-			<WindowVirtualizer onScrollEnd={handleScrollEnd}>
+			<WindowVirtualizer>
 				{data.jobs.edges.map(jobEdge => (
 					<div key={jobEdge.node.id} className='pb-4 sm:pb-6'>
 						<Job job={jobEdge.node} authQueryRef={root.viewer} />
 					</div>
 				))}
-				{data.jobs.pageInfo.hasNextPage && (
-					<div className='pb-4 sm:pb-6'>
-						<JobListSkeleton />
-					</div>
-				)}
 			</WindowVirtualizer>
 		</div>
 	);

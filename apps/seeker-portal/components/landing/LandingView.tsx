@@ -3,8 +3,10 @@ import LandingClientComponentQuery, {
 	type LandingClientComponentQuery as LandingClientComponentQueryType
 } from '@/__generated__/LandingClientComponentQuery.graphql';
 import type { LandingViewFragment$key } from '@/__generated__/LandingViewFragment.graphql';
-import { SparklesIcon } from 'lucide-react';
+import links from '@/lib/links';
+import { ArrowRight, SparklesIcon } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import LandingHeader from '../layout/LandingHeader';
@@ -90,6 +92,9 @@ export default function LandingView({ queryReference }: { queryReference: Preloa
 					</div>
 					<JobList rootQuery={data} />
 				</div>
+				<Link href={links.search()} className='flex items-center gap-2 text-lg text-foreground-600 font-medium -mt-6'>
+					View all jobs <ArrowRight className='w-4 h-4' strokeWidth={3} />
+				</Link>
 			</div>
 		</div>
 	);
