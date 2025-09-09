@@ -1,0 +1,94 @@
+import pytest
+from app.accounts.documents import Account
+
+from tests.integration.graphql_client import GraphQLClient
+from tests.utils.emails import generate_test_email
+
+GENERATE_PASSKEY_REGISTRATION_OPTIONS_MUTATION = """
+mutation GeneratePasskeyRegistrationOptionsMutation($email: String!, $fullName: String!, $captchaToken: String!) {
+    generatePasskeyRegistrationOptions(email: $email, fullName: $fullName, captchaToken: $captchaToken) {
+        __typename
+        ... on GeneratePasskeyRegistrationOptionsSuccess {
+            __typename
+            registrationOptions
+        }
+        ... on InvalidCaptchaTokenError {
+            __typename
+        }
+        ... on EmailInUseError {
+            __typename
+        }
+    }
+}
+"""
+
+
+@pytest.mark.parametrize(
+    ("email", "full_name", "captcha_token", "expected_typename", "description"),
+    [
+        # Email already in use
+        (
+            "aryan@outlook.com",
+            "Test User",
+            "captcha-token",
+            "EmailInUseError",
+            "Email already in use",
+        ),
+        (
+            "ARYAN@OUTLOOK.COM",
+            "Test User",
+            "captcha-token",
+            "EmailInUseError",
+            "Email already in use (case insensitive)",
+        ),
+    ],
+)
+async def test_generate_passkey_registration_options_invalid(
+    graphql_client: GraphQLClient,
+    password_account: Account,  # Needed to ensure the account exists for EmailInUseError tests
+    email: str,
+    full_name: str,
+    captcha_token: str,
+    expected_typename: str,
+    description: str,
+) -> None:
+    """Ensure that generate_passkey_registration_options fails with invalid inputs."""
+    response = await graphql_client(
+        GENERATE_PASSKEY_REGISTRATION_OPTIONS_MUTATION,
+        variables={
+            "email": email,
+            "fullName": full_name,
+            "captchaToken": captcha_token,
+        },
+    )
+
+    assert response == {
+        "data": {
+            "generatePasskeyRegistrationOptions": {
+                "__typename": expected_typename,
+            },
+        },
+    }, f"Failed for case: {description}"
+
+
+async def test_generate_passkey_registration_options_successful(
+    graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that generate_passkey_registration_options succeeds with valid inputs."""
+    # Use a unique email address for this test to avoid conflicts
+    email = generate_test_email()
+    full_name = "Test User"
+
+    response = await graphql_client(
+        GENERATE_PASSKEY_REGISTRATION_OPTIONS_MUTATION,
+        variables={
+            "email": email,
+            "fullName": full_name,
+            "captchaToken": "captcha-token",
+        },
+    )
+
+    # Check the response structure
+    data = response["data"]["generatePasskeyRegistrationOptions"]
+    assert data["__typename"] == "GeneratePasskeyRegistrationOptionsSuccess"
+    assert "registrationOptions" in data  # registrationOptions should be present
