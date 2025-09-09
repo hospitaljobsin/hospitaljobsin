@@ -41,6 +41,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     env:
+      AWS_DEFAULT_REGION: ${{ vars.AWS_REGION }}
       SERVER_DEBUG: 'true'
       SERVER_ENVIRONMENT: 'testing'
       SERVER_DATABASE_URL: 'mongodb://user:pass@localhost:27017/?directConnection=true'
