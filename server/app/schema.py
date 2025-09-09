@@ -10,6 +10,7 @@ from strawberry.extensions import (
     QueryDepthLimiter,
     ValidationCache,
 )
+from strawberry.extensions.mask_errors import MaskErrors
 from strawberry.file_uploads import Upload
 from strawberry.schema.config import StrawberryConfig
 from strawberry.tools import merge_types
@@ -19,7 +20,6 @@ from app.accounts.query import AccountQuery
 from app.auth.mutation import AuthMutation
 from app.auth.query import AuthQuery
 from app.config import AppSettings, EnvironmentSettings, get_settings
-from app.core.schema.extensions.mask_errors import MaskErrors
 from app.core.schema.extensions.persisted_queries import PersistedQueriesExtension
 from app.geocoding.query import GeocodingQuery
 from app.jobs.mutation import JobMutation
