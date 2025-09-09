@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0e36920a0930a0342bb07e096627269f>>
- * @relayHash e994491371134f757818f074a3809ed6
+ * @generated SignedSource<<f2c6945d4aea8dd988cf9d7c65b32a83>>
+ * @relayHash fe72b2a0a47b654b97202587d370decf
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,13 +9,19 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID e994491371134f757818f074a3809ed6
+// @relayRequestID fe72b2a0a47b654b97202587d370decf
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
+export type JobSearchSortBy = "RELEVANCE" | "UPDATED_AT" | "%future added value";
+export type JobTypeFilter = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
+export type JobWorkModeFilter = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 export type JobListRefetchQuery$variables = {
   count?: number | null | undefined;
   cursor?: string | null | undefined;
+  jobType: ReadonlyArray<JobTypeFilter>;
+  sortBy?: JobSearchSortBy | null | undefined;
+  workMode: ReadonlyArray<JobWorkModeFilter>;
 };
 export type JobListRefetchQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"JobListInternalFragment">;
@@ -36,9 +42,39 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "cursor"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "jobType"
+  },
+  {
+    "defaultValue": "UPDATED_AT",
+    "kind": "LocalArgument",
+    "name": "sortBy"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "workMode"
   }
 ],
-v1 = [
+v1 = {
+  "kind": "Variable",
+  "name": "jobType",
+  "variableName": "jobType"
+},
+v2 = {
+  "kind": "Variable",
+  "name": "sortBy",
+  "variableName": "sortBy"
+},
+v3 = {
+  "kind": "Variable",
+  "name": "workMode",
+  "variableName": "workMode"
+},
+v4 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -48,23 +84,26 @@ v1 = [
     "kind": "Variable",
     "name": "first",
     "variableName": "count"
-  }
+  },
+  (v1/*: any*/),
+  (v2/*: any*/),
+  (v3/*: any*/)
 ],
-v2 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v3 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "slug",
   "storageKey": null
 },
-v4 = {
+v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -89,7 +128,10 @@ return {
             "kind": "Variable",
             "name": "cursor",
             "variableName": "cursor"
-          }
+          },
+          (v1/*: any*/),
+          (v2/*: any*/),
+          (v3/*: any*/)
         ],
         "kind": "FragmentSpread",
         "name": "JobListInternalFragment"
@@ -106,10 +148,10 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v4/*: any*/),
         "concreteType": "JobConnection",
         "kind": "LinkedField",
-        "name": "trendingJobs",
+        "name": "jobs",
         "plural": false,
         "selections": [
           {
@@ -128,7 +170,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v2/*: any*/),
+                  (v5/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -136,7 +178,7 @@ return {
                     "name": "isSaved",
                     "storageKey": null
                   },
-                  (v3/*: any*/),
+                  (v6/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -173,8 +215,8 @@ return {
                         "name": "logoUrl",
                         "storageKey": null
                       },
-                      (v3/*: any*/),
-                      (v2/*: any*/),
+                      (v6/*: any*/),
+                      (v5/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -183,7 +225,7 @@ return {
                         "name": "verificationStatus",
                         "plural": false,
                         "selections": [
-                          (v4/*: any*/),
+                          (v7/*: any*/),
                           {
                             "kind": "InlineFragment",
                             "selections": [
@@ -302,7 +344,7 @@ return {
                     "name": "createdAt",
                     "storageKey": null
                   },
-                  (v4/*: any*/)
+                  (v7/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -346,17 +388,21 @@ return {
       },
       {
         "alias": null,
-        "args": (v1/*: any*/),
-        "filters": null,
+        "args": (v4/*: any*/),
+        "filters": [
+          "workMode",
+          "jobType",
+          "sortBy"
+        ],
         "handle": "connection",
-        "key": "JobListFragment_trendingJobs",
+        "key": "JobListFragment_jobs",
         "kind": "LinkedHandle",
-        "name": "trendingJobs"
+        "name": "jobs"
       }
     ]
   },
   "params": {
-    "id": "e994491371134f757818f074a3809ed6",
+    "id": "fe72b2a0a47b654b97202587d370decf",
     "metadata": {},
     "name": "JobListRefetchQuery",
     "operationKind": "query",
@@ -365,6 +411,6 @@ return {
 };
 })();
 
-(node as any).hash = "e519ebf79ba2231b891acbe8af542bfd";
+(node as any).hash = "0454efb57e117e10d6cea17f9237aeb9";
 
 export default node;

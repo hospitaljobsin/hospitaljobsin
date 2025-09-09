@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c436b00560a5645a5e055d03985693f0>>
+ * @generated SignedSource<<2049d5ef09ce7e6e57936010a132377c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -29,7 +29,18 @@ const node: ReaderFragment = {
   "name": "JobListFragment",
   "selections": [
     {
-      "args": null,
+      "args": [
+        {
+          "kind": "Literal",
+          "name": "jobType",
+          "value": []
+        },
+        {
+          "kind": "Literal",
+          "name": "workMode",
+          "value": []
+        }
+      ],
       "kind": "FragmentSpread",
       "name": "JobListInternalFragment"
     },
@@ -54,6 +65,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "f3cab486cda55ed485339ce88f54d7e2";
+(node as any).hash = "9a561118d9993c83176c9317c514f383";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d05b5c8e5e54b70c1a030335d43463f2>>
+ * @generated SignedSource<<4973b1127041fb65a025e7fdd15edb77>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -27,7 +27,7 @@ export type JobDetailViewFragment$data = {
     // value in case none of the concrete values match.
     readonly __typename: "%other";
   };
-  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderFragment" | "JobDetailsFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderFragment" | "JobDetailsFragment" | "TrendingJobListFragment">;
   readonly " $fragmentType": "JobDetailViewFragment";
 };
 export type JobDetailViewFragment$key = {
@@ -69,6 +69,11 @@ return {
       "args": null,
       "kind": "FragmentSpread",
       "name": "DashboardHeaderFragment"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "TrendingJobListFragment"
     },
     {
       "args": [
@@ -146,6 +151,6 @@ return {
 };
 })();
 
-(node as any).hash = "2ca773d9f9645364db3a89ffb41abf00";
+(node as any).hash = "73eb4c9c1e7b289a69e14df32058af5e";
 
 export default node;

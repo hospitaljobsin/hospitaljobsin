@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<8cb3977c9b82d8ff641519398701ebf7>>
- * @relayHash 8c8435843844b2b663ce0b69fbc5c1a9
+ * @generated SignedSource<<d003be25ecbdb603cd0aadec7d9398ef>>
+ * @relayHash 17f3ead8e2eab70b0df4c896b8e10a33
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 8c8435843844b2b663ce0b69fbc5c1a9
+// @relayRequestID 17f3ead8e2eab70b0df4c896b8e10a33
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -28,6 +28,21 @@ var v0 = [
     "kind": "Literal",
     "name": "first",
     "value": 10
+  },
+  {
+    "kind": "Literal",
+    "name": "jobType",
+    "value": ([]/*: any*/)
+  },
+  {
+    "kind": "Literal",
+    "name": "sortBy",
+    "value": "UPDATED_AT"
+  },
+  {
+    "kind": "Literal",
+    "name": "workMode",
+    "value": ([]/*: any*/)
   }
 ],
 v1 = {
@@ -78,7 +93,7 @@ return {
         "args": (v0/*: any*/),
         "concreteType": "JobConnection",
         "kind": "LinkedField",
-        "name": "trendingJobs",
+        "name": "jobs",
         "plural": false,
         "selections": [
           {
@@ -311,16 +326,20 @@ return {
             "storageKey": null
           }
         ],
-        "storageKey": "trendingJobs(first:10)"
+        "storageKey": "jobs(first:10,jobType:[],sortBy:\"UPDATED_AT\",workMode:[])"
       },
       {
         "alias": null,
         "args": (v0/*: any*/),
-        "filters": null,
+        "filters": [
+          "workMode",
+          "jobType",
+          "sortBy"
+        ],
         "handle": "connection",
-        "key": "JobListFragment_trendingJobs",
+        "key": "JobListFragment_jobs",
         "kind": "LinkedHandle",
-        "name": "trendingJobs"
+        "name": "jobs"
       },
       {
         "alias": null,
@@ -390,7 +409,7 @@ return {
     ]
   },
   "params": {
-    "id": "8c8435843844b2b663ce0b69fbc5c1a9",
+    "id": "17f3ead8e2eab70b0df4c896b8e10a33",
     "metadata": {},
     "name": "LandingClientComponentQuery",
     "operationKind": "query",
