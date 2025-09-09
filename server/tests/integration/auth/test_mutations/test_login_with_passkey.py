@@ -531,7 +531,6 @@ async def test_login_with_passkey_invalid_credential_type(
     """Test login_with_passkey with invalid credential type."""
     # Generate authentication options first to set up challenge
     challenge_bytes, _ = await generate_authentication_options_for_test(graphql_client)
-    print("CHALLENGE BYTES: ", challenge_bytes)
     authentication_response = create_mock_webauthn_authentication_response(
         challenge_bytes
     )
@@ -545,20 +544,13 @@ async def test_login_with_passkey_invalid_credential_type(
         },
     )
 
-    # This should result in an error
-    if wrong_type is None:
-        # GraphQL validation error for null type
-        assert response["data"] is None
-        assert "errors" in response
-    else:
-        # Application error for invalid type
-        assert response == {
-            "data": {
-                "loginWithPasskey": {
-                    "__typename": "InvalidPasskeyAuthenticationCredentialError",
-                },
+    assert response == {
+        "data": {
+            "loginWithPasskey": {
+                "__typename": "InvalidPasskeyAuthenticationCredentialError",
             },
-        }
+        },
+    }
 
 
 async def test_login_with_passkey_with_proper_challenge_setup(
