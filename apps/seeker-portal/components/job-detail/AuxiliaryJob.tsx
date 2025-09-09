@@ -114,7 +114,7 @@ export default function AuxiliaryJob({ job }: Props) {
 							</div>
 						)}
 						<div className='flex flex-col gap-2 items-start'>
-							<h4 className='text-medium/7 sm:text-medium/8 font-medium text-balance'>{data.title}</h4>
+							<h4 className='text-medium/7 sm:text-medium/8 font-medium text-balance truncate'>{data.title}</h4>
 							{data.organization && (
 								<div className='flex flex-row items-center gap-2'>
 									<p className='text-xs sm:text-sm font-normal text-foreground-500'>{data.organization.name}</p>

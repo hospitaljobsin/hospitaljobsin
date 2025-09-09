@@ -3,18 +3,13 @@ import type { LandingClientComponentQuery } from '@/__generated__/LandingClientC
 import type { TrendingJobListFragment$key } from '@/__generated__/TrendingJobListFragment.graphql';
 import type { TrendingJobListInternalFragment$key } from '@/__generated__/TrendingJobListInternalFragment.graphql';
 import { FlameIcon } from 'lucide-react';
-import { useTransition } from 'react';
 import { useFragment, usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import AuxiliaryJob from './AuxiliaryJob';
-import AuxiliaryJobListSkeleton from './AuxiliaryJobsListSkeleton';
 
 const TrendingJobListFragment = graphql`
 fragment TrendingJobListFragment on Query {
     ...TrendingJobListInternalFragment
-    viewer {
-        ...JobControlsAuthFragment
-    }
 }
 `;
 
@@ -47,25 +42,15 @@ type Props = {
 };
 
 export default function TrendingJobList({ rootQuery, jobDetailId }: Props) {
-	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(TrendingJobListFragment, rootQuery);
-	const { data, loadNext, isLoadingNext } = usePaginationFragment<LandingClientComponentQuery, TrendingJobListInternalFragment$key>(
+	const { data } = usePaginationFragment<LandingClientComponentQuery, TrendingJobListInternalFragment$key>(
 		TrendingJobListInternalFragment,
 		root
 	);
 
-	const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-		const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-		const isNearBottom = scrollTop + clientHeight >= scrollHeight - 100;
+	const trendingJobsExcludingCurrent = data.trendingJobs.edges.filter(jobEdge => jobEdge.node.id !== jobDetailId);
 
-		if (isNearBottom && data.trendingJobs.pageInfo.hasNextPage && !isLoadingNext) {
-			startTransition(() => {
-				loadNext(25);
-			});
-		}
-	};
-
-	if (data.trendingJobs.edges.length === 0 && !data.trendingJobs.pageInfo.hasNextPage) {
+	if (trendingJobsExcludingCurrent.length === 0 && !data.trendingJobs.pageInfo.hasNextPage) {
 		return null;
 	}
 
@@ -79,20 +64,12 @@ export default function TrendingJobList({ rootQuery, jobDetailId }: Props) {
 				style={{
 					scrollbarWidth: 'none'
 				}}
-				onScroll={handleScroll}
 			>
-				{data.trendingJobs.edges.map(jobEdge =>
-					jobEdge.node.id !== jobDetailId ? (
-						<div key={jobEdge.node.id} className='pb-2 sm:pb-4'>
-							<AuxiliaryJob job={jobEdge.node} />
-						</div>
-					) : null
-				)}
-				{data.trendingJobs.pageInfo.hasNextPage && (
-					<div className='pb-4 sm:pb-6'>
-						<AuxiliaryJobListSkeleton />
+				{trendingJobsExcludingCurrent.map(jobEdge => (
+					<div key={jobEdge.node.id} className='pb-2 sm:pb-4'>
+						<AuxiliaryJob job={jobEdge.node} />
 					</div>
-				)}
+				))}
 			</div>
 		</div>
 	);
