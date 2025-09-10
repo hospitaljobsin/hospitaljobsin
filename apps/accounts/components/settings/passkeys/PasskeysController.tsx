@@ -1,25 +1,15 @@
-import {
-	addToast,
-	Button,
-	Input,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	useDisclosure,
-} from "@heroui/react";
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { startRegistration } from "@simplewebauthn/browser";
-import { PlusIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { useFragment, useMutation } from "react-relay";
-import { graphql } from "relay-runtime";
-import { z } from "zod/v4-mini";
-import type { PasskeysControllerFragment$key } from "@/__generated__/PasskeysControllerFragment.graphql";
-import type { PasskeysControllerGenerateOptionsMutation } from "@/__generated__/PasskeysControllerGenerateOptionsMutation.graphql";
-import type { PasskeysControllerMutation } from "@/__generated__/PasskeysControllerMutation.graphql";
-import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
+import type { PasskeysControllerFragment$key } from '@/__generated__/PasskeysControllerFragment.graphql';
+import type { PasskeysControllerGenerateOptionsMutation } from '@/__generated__/PasskeysControllerGenerateOptionsMutation.graphql';
+import type { PasskeysControllerMutation } from '@/__generated__/PasskeysControllerMutation.graphql';
+import { useCheckSudoMode } from '@/lib/hooks/useCheckSudoMode';
+import { addToast, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/react';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
+import { startRegistration } from '@simplewebauthn/browser';
+import { PlusIcon } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { useFragment, useMutation } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { z } from 'zod/v4-mini';
 
 const PasskeysControllerFragment = graphql`
   fragment PasskeysControllerFragment on Account {
@@ -64,37 +54,27 @@ type Props = {
 };
 
 const createPasskeySchema = z.object({
-	nickname: z
-		.string()
-		.check(
-			z.minLength(1, "This field is required"),
-			z.maxLength(75, "Nickname cannot exceed 75 characters"),
-		),
+	nickname: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(75, 'Nickname cannot exceed 75 characters'))
 });
 
-export default function PasskeysController({
-	passkeysConnectionId,
-	account,
-}: Props) {
+export default function PasskeysController({ passkeysConnectionId, account }: Props) {
 	const { checkSudoMode } = useCheckSudoMode();
 	const data = useFragment(PasskeysControllerFragment, account);
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-	const [commitCreateMutation, isCreateMutationInFlight] =
-		useMutation<PasskeysControllerMutation>(CreatePasskeyMutation);
-	const [commitGenerateOptionsMutation, isGenerateOptionsMutationInFlight] =
-		useMutation<PasskeysControllerGenerateOptionsMutation>(
-			GeneratePasskeyCreationOptionsMutation,
-		);
+	const [commitCreateMutation, isCreateMutationInFlight] = useMutation<PasskeysControllerMutation>(CreatePasskeyMutation);
+	const [commitGenerateOptionsMutation, isGenerateOptionsMutationInFlight] = useMutation<PasskeysControllerGenerateOptionsMutation>(
+		GeneratePasskeyCreationOptionsMutation
+	);
 
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isSubmitting },
+		formState: { errors, isSubmitting }
 	} = useForm<z.infer<typeof createPasskeySchema>>({
 		resolver: standardSchemaResolver(createPasskeySchema),
 		defaultValues: {
-			nickname: "My Passkey",
-		},
+			nickname: 'My Passkey'
+		}
 	});
 
 	function handleModalOpen() {
@@ -103,49 +83,39 @@ export default function PasskeysController({
 		}
 	}
 
-	async function onSubmit(values: z.infer<typeof createPasskeySchema>) {
+	function onSubmit(values: z.infer<typeof createPasskeySchema>) {
 		commitGenerateOptionsMutation({
 			variables: {},
 			onCompleted(response) {
 				startRegistration({
-					optionsJSON: JSON.parse(
-						response.generateWebAuthnCredentialCreationOptions
-							.registrationOptions,
-					),
+					optionsJSON: JSON.parse(response.generateWebAuthnCredentialCreationOptions.registrationOptions)
 				})
-					.then((registrationResponse) => {
+					.then(registrationResponse => {
 						commitCreateMutation({
 							variables: {
 								connections: [passkeysConnectionId],
 								nickname: values.nickname,
-								passkeyRegistrationResponse:
-									JSON.stringify(registrationResponse),
+								passkeyRegistrationResponse: JSON.stringify(registrationResponse)
 							},
 							onCompleted(response) {
-								if (
-									response.createWebAuthnCredential.__typename ===
-									"InvalidPasskeyRegistrationCredentialError"
-								) {
+								if (response.createWebAuthnCredential.__typename === 'InvalidPasskeyRegistrationCredentialError') {
 									addToast({
-										title: "Passkey creation failed!",
-										color: "danger",
+										title: 'Passkey creation failed!',
+										color: 'danger'
 									});
-								} else if (
-									response.createWebAuthnCredential.__typename ===
-									"CreateWebAuthnCredentialSuccess"
-								) {
+								} else if (response.createWebAuthnCredential.__typename === 'CreateWebAuthnCredentialSuccess') {
 									onClose();
 								}
-							},
+							}
 						});
 					})
-					.catch((error) => {
+					.catch(error => {
 						addToast({
-							title: "Passkey creation failed!",
-							color: "danger",
+							title: 'Passkey creation failed!',
+							color: 'danger'
 						});
 					});
-			},
+			}
 		});
 	}
 
@@ -153,52 +123,45 @@ export default function PasskeysController({
 		<>
 			<Button
 				startContent={<PlusIcon size={16} />}
-				variant="flat"
+				variant='flat'
 				onPress={handleModalOpen}
-				spinnerPlacement="end"
-				className="hidden md:flex"
+				spinnerPlacement='end'
+				className='hidden md:flex'
 			>
 				Create Passkey
 			</Button>
 			<Button
 				startContent={<PlusIcon size={16} />}
-				variant="flat"
+				variant='flat'
 				onPress={handleModalOpen}
-				spinnerPlacement="end"
-				size="sm"
-				className="flex md:hidden"
+				spinnerPlacement='end'
+				size='sm'
+				className='flex md:hidden'
 			>
 				Create Passkey
 			</Button>
 			<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
 				<ModalContent>
-					<ModalHeader className="flex flex-col gap-1">
-						Create Passkey
-					</ModalHeader>
-					<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+					<ModalHeader className='flex flex-col gap-1'>Create Passkey</ModalHeader>
+					<form onSubmit={handleSubmit(onSubmit)} className='space-y-3'>
 						<ModalBody>
 							<Input
-								id="nickname"
-								label="Nickname"
-								placeholder="My Screen Lock"
-								{...register("nickname")}
-								description="Nicknames help identify your passkeys"
+								label='Nickname'
+								placeholder='My Screen Lock'
+								{...register('nickname')}
+								description='Nicknames help identify your passkeys'
 								errorMessage={errors.nickname?.message}
 								isInvalid={!!errors.nickname}
 							/>
 						</ModalBody>
 						<ModalFooter>
-							<Button variant="light" onPress={onClose}>
+							<Button variant='light' onPress={onClose}>
 								Cancel
 							</Button>
 							<Button
-								color="primary"
-								type="submit"
-								isLoading={
-									isSubmitting ||
-									isCreateMutationInFlight ||
-									isGenerateOptionsMutationInFlight
-								}
+								color='primary'
+								type='submit'
+								isLoading={isSubmitting || isCreateMutationInFlight || isGenerateOptionsMutationInFlight}
 							>
 								Create Passkey
 							</Button>

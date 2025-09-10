@@ -1,16 +1,8 @@
-import type { DeletePasskeyModalFragment$key } from "@/__generated__/DeletePasskeyModalFragment.graphql";
-import type { DeletePasskeyModalMutation } from "@/__generated__/DeletePasskeyModalMutation.graphql";
-import {
-	Button,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	addToast,
-} from "@heroui/react";
-import { useFragment, useMutation } from "react-relay";
-import { graphql } from "relay-runtime";
+import type { DeletePasskeyModalFragment$key } from '@/__generated__/DeletePasskeyModalFragment.graphql';
+import type { DeletePasskeyModalMutation } from '@/__generated__/DeletePasskeyModalMutation.graphql';
+import { addToast, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
+import { useFragment, useMutation } from 'react-relay';
+import { graphql } from 'relay-runtime';
 
 const DeletePasskeyModalFragment = graphql`
   fragment DeletePasskeyModalFragment on WebAuthnCredential {
@@ -45,7 +37,7 @@ export default function DeletePasskeyModal({
 	onOpenChange,
 	onClose,
 	passkey,
-	passkeysConnectionId,
+	passkeysConnectionId
 }: {
 	isOpen: boolean;
 	onOpenChange: (isOpen: boolean) => void;
@@ -54,64 +46,48 @@ export default function DeletePasskeyModal({
 	passkeysConnectionId: string;
 }) {
 	const data = useFragment(DeletePasskeyModalFragment, passkey);
-	const [commitMutation, isMutationInFlight] =
-		useMutation<DeletePasskeyModalMutation>(DeletePasskeyMutation);
+	const [commitMutation, isMutationInFlight] = useMutation<DeletePasskeyModalMutation>(DeletePasskeyMutation);
 
 	function handleDeletePasskey() {
 		commitMutation({
 			variables: {
 				webAuthnCredentialId: data.id,
-				connections: [passkeysConnectionId],
+				connections: [passkeysConnectionId]
 			},
 			onCompleted(response) {
-				if (
-					response.deleteWebAuthnCredential.__typename ===
-					"WebAuthnCredentialNotFoundError"
-				) {
+				if (response.deleteWebAuthnCredential.__typename === 'WebAuthnCredentialNotFoundError') {
 					addToast({
-						title: "Passkey not found!",
-						color: "danger",
+						title: 'Passkey not found!',
+						color: 'danger'
 					});
-				} else if (
-					response.deleteWebAuthnCredential.__typename ===
-					"DeleteWebAuthnCredentialSuccess"
-				) {
+				} else if (response.deleteWebAuthnCredential.__typename === 'DeleteWebAuthnCredentialSuccess') {
 					addToast({
-						title: "Passkey deleted successfully!",
-						color: "success",
+						title: 'Passkey deleted successfully!',
+						color: 'success'
 					});
 				}
-			},
+			}
 		});
 		onClose();
 	}
 	return (
-		<>
-			<Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
-				<ModalContent className="flex flex-col w-full p-4 sm:p-6">
-					<ModalHeader>
-						<h2 className="text-lg font-medium">Delete Passkey</h2>
-					</ModalHeader>
-					<ModalBody>
-						<p className="text-foreground-500">
-							Are you sure you want to delete this passkey? This action cannot
-							be undone.
-						</p>
-					</ModalBody>
-					<ModalFooter className="w-full">
-						<Button variant="light" onPress={onClose}>
-							Cancel
-						</Button>
-						<Button
-							color="danger"
-							isLoading={isMutationInFlight}
-							onPress={handleDeletePasskey}
-						>
-							Delete passkey
-						</Button>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
-		</>
+		<Modal isOpen={isOpen} onOpenChange={onOpenChange} size='xl'>
+			<ModalContent className='flex flex-col w-full p-4 sm:p-6'>
+				<ModalHeader>
+					<h2 className='text-lg font-medium'>Delete Passkey</h2>
+				</ModalHeader>
+				<ModalBody>
+					<p className='text-foreground-500'>Are you sure you want to delete this passkey? This action cannot be undone.</p>
+				</ModalBody>
+				<ModalFooter className='w-full'>
+					<Button variant='light' onPress={onClose}>
+						Cancel
+					</Button>
+					<Button color='danger' isLoading={isMutationInFlight} onPress={handleDeletePasskey}>
+						Delete passkey
+					</Button>
+				</ModalFooter>
+			</ModalContent>
+		</Modal>
 	);
 }

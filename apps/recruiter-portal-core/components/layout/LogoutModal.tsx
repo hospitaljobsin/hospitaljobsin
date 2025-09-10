@@ -1,15 +1,8 @@
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
-import {
-	Button,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-} from "@heroui/react";
-import posthog from "posthog-js";
-import { graphql, useMutation } from "react-relay";
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
+import posthog from 'posthog-js';
+import { graphql, useMutation } from 'react-relay';
 
 type Props = {
 	isOpen: boolean;
@@ -27,16 +20,14 @@ const LogoutModalMutation = graphql`
 export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 	const [commitMutation, isMutationInFlight] = useMutation(LogoutModalMutation);
 
-	async function handleLogout() {
+	function handleLogout() {
 		commitMutation({
 			variables: {},
-			onCompleted(response, errors) {
-				if (!errors) {
-					posthog.reset();
-					// Redirect to login page
-					window.location.href = links.login(env.NEXT_PUBLIC_URL);
-				}
-			},
+			onCompleted() {
+				posthog.reset();
+				// Redirect to login page
+				window.location.href = links.login(env.NEXT_PUBLIC_URL);
+			}
 		});
 	}
 
@@ -46,27 +37,21 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 			isKeyboardDismissDisabled={true}
 			isOpen={isOpen}
 			onOpenChange={onOpenChange}
-			placement="center"
+			placement='center'
 			hideCloseButton
 		>
 			<ModalContent>
-				{(onClose) => (
+				{onClose => (
 					<>
-						<ModalHeader className="flex flex-col gap-1">
-							Confirm Logout
-						</ModalHeader>
+						<ModalHeader className='flex flex-col gap-1'>Confirm Logout</ModalHeader>
 						<ModalBody>
 							<p>Are you sure you want to logout?</p>
 						</ModalBody>
 						<ModalFooter>
-							<Button variant="light" onPress={onClose}>
+							<Button variant='light' onPress={onClose}>
 								Close
 							</Button>
-							<Button
-								color="danger"
-								onPress={handleLogout}
-								isLoading={isMutationInFlight}
-							>
+							<Button color='danger' onPress={handleLogout} isLoading={isMutationInFlight}>
 								Logout
 							</Button>
 						</ModalFooter>

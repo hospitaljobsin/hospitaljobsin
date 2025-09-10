@@ -1,18 +1,11 @@
-import {
-	addToast,
-	Button,
-	Card,
-	CardBody,
-	CardHeader,
-	Input,
-} from "@heroui/react";
-import { startAuthentication } from "@simplewebauthn/browser";
-import { Fingerprint } from "lucide-react";
-import { useState } from "react";
-import { graphql, useMutation } from "react-relay";
-import type { PasskeyTwoFactorAuthenticationGenerateOptionsMutation } from "@/__generated__/PasskeyTwoFactorAuthenticationGenerateOptionsMutation.graphql";
-import type { PasskeyTwoFactorAuthenticationResetPasswordMutation as PasskeyTwoFactorAuthenticationResetPasswordMutationType } from "@/__generated__/PasskeyTwoFactorAuthenticationResetPasswordMutation.graphql";
-import { useTurnstile } from "@/components/TurnstileProvider";
+import type { PasskeyTwoFactorAuthenticationGenerateOptionsMutation } from '@/__generated__/PasskeyTwoFactorAuthenticationGenerateOptionsMutation.graphql';
+import type { PasskeyTwoFactorAuthenticationResetPasswordMutation as PasskeyTwoFactorAuthenticationResetPasswordMutationType } from '@/__generated__/PasskeyTwoFactorAuthenticationResetPasswordMutation.graphql';
+import { useTurnstile } from '@/components/TurnstileProvider';
+import { addToast, Button, Card, CardBody, CardHeader, Input } from '@heroui/react';
+import { startAuthentication } from '@simplewebauthn/browser';
+import { Fingerprint } from 'lucide-react';
+import { useState } from 'react';
+import { graphql, useMutation } from 'react-relay';
 
 const GenerateAuthenticationOptionsMutation = graphql`
   mutation PasskeyTwoFactorAuthenticationGenerateOptionsMutation($captchaToken: String!) {
@@ -63,7 +56,7 @@ export default function PasskeyTwoFactorAuthentication({
 	onAuthStart,
 	onAuthEnd,
 	hasAuthenticator,
-	onSwitchToAuthenticator,
+	onSwitchToAuthenticator
 }: {
 	email: string;
 	resetToken: string;
@@ -74,18 +67,10 @@ export default function PasskeyTwoFactorAuthentication({
 	hasAuthenticator?: boolean;
 	onSwitchToAuthenticator?: () => void;
 }) {
-	const [
-		commitPasskeyAuthenticateMutation,
-		isPasskeyAuthenticateMutationInFlight,
-	] = useMutation<PasskeyTwoFactorAuthenticationResetPasswordMutationType>(
-		PasskeyTwoFactorAuthenticationResetPasswordMutation,
-	);
-	const [
-		commitGenerateReauthenticationOptionsMutation,
-		isGenerateReauthenticationOptionsMutationInFlight,
-	] = useMutation<PasskeyTwoFactorAuthenticationGenerateOptionsMutation>(
-		GenerateAuthenticationOptionsMutation,
-	);
+	const [commitPasskeyAuthenticateMutation, isPasskeyAuthenticateMutationInFlight] =
+		useMutation<PasskeyTwoFactorAuthenticationResetPasswordMutationType>(PasskeyTwoFactorAuthenticationResetPasswordMutation);
+	const [commitGenerateReauthenticationOptionsMutation, isGenerateReauthenticationOptionsMutationInFlight] =
+		useMutation<PasskeyTwoFactorAuthenticationGenerateOptionsMutation>(GenerateAuthenticationOptionsMutation);
 	const { executeCaptcha } = useTurnstile();
 	const [isPasskeysPromptActive, setIsPasskeysPromptActive] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -93,96 +78,64 @@ export default function PasskeyTwoFactorAuthentication({
 	async function handlePasskeyAuthentication() {
 		onAuthStart();
 		if (!executeCaptcha) {
-			console.log("Recaptcha not loaded");
+			console.log('Recaptcha not loaded');
 			onAuthEnd();
 			return;
 		}
 		setIsPasskeysPromptActive(true);
-		const token = await executeCaptcha(
-			"reset_password_passkey_generate_authentication_options",
-		);
+		const token = await executeCaptcha('reset_password_passkey_generate_authentication_options');
 		commitGenerateReauthenticationOptionsMutation({
 			variables: {
-				captchaToken: token,
+				captchaToken: token
 			},
 			onCompleted(response) {
-				if (
-					response.generateAuthenticationOptions.__typename ===
-					"InvalidCaptchaTokenError"
-				) {
+				if (response.generateAuthenticationOptions.__typename === 'InvalidCaptchaTokenError') {
 					// handle recaptcha failure
 					setIsPasskeysPromptActive(false);
 					onAuthEnd();
-					alert("Recaptcha failed. Please try again.");
-				} else if (
-					response.generateAuthenticationOptions.__typename ===
-					"GenerateAuthenticationOptionsSuccess"
-				) {
+					alert('Recaptcha failed. Please try again.');
+				} else if (response.generateAuthenticationOptions.__typename === 'GenerateAuthenticationOptionsSuccess') {
 					// login with passkey
-					const authenticationOptions =
-						response.generateAuthenticationOptions.authenticationOptions;
+					const authenticationOptions = response.generateAuthenticationOptions.authenticationOptions;
 
 					startAuthentication({
-						optionsJSON: JSON.parse(authenticationOptions),
+						optionsJSON: JSON.parse(authenticationOptions)
 					})
-						.then((authenticationResponse) => {
-							executeCaptcha("password_reset_authenticate_passkey")
-								.then((captchaToken) => {
+						.then(authenticationResponse => {
+							executeCaptcha('password_reset_authenticate_passkey')
+								.then(captchaToken => {
 									commitPasskeyAuthenticateMutation({
 										variables: {
 											email: email,
 											passwordResetToken: resetToken,
-											authenticationResponse: JSON.stringify(
-												authenticationResponse,
-											),
-											captchaToken: captchaToken,
+											authenticationResponse: JSON.stringify(authenticationResponse),
+											captchaToken: captchaToken
 										},
 										onCompleted(response) {
 											setIsPasskeysPromptActive(false);
-											if (
-												response.verify2faPasswordResetWithPasskey
-													.__typename === "InvalidCaptchaTokenError"
-											) {
+											if (response.verify2faPasswordResetWithPasskey.__typename === 'InvalidCaptchaTokenError') {
 												// handle recaptcha failure
-												alert("Recaptcha failed. Please try again.");
+												alert('Recaptcha failed. Please try again.');
 
 												onAuthEnd();
-											} else if (
-												response.verify2faPasswordResetWithPasskey
-													.__typename ===
-												"InvalidPasskeyAuthenticationCredentialError"
-											) {
+											} else if (response.verify2faPasswordResetWithPasskey.__typename === 'InvalidPasskeyAuthenticationCredentialError') {
 												addToast({
-													title: "Passkey authentication failed!",
-													color: "danger",
+													title: 'Passkey authentication failed!',
+													color: 'danger'
 												});
 												onAuthEnd();
-											} else if (
-												response.verify2faPasswordResetWithPasskey
-													.__typename === "InvalidPasswordResetTokenError"
-											) {
-												setErrorMessage(
-													response.verify2faPasswordResetWithPasskey.message,
-												);
-											} else if (
-												response.verify2faPasswordResetWithPasskey
-													.__typename ===
-												"TwoFactorAuthenticationNotEnabledError"
-											) {
+											} else if (response.verify2faPasswordResetWithPasskey.__typename === 'InvalidPasswordResetTokenError') {
+												setErrorMessage(response.verify2faPasswordResetWithPasskey.message);
+											} else if (response.verify2faPasswordResetWithPasskey.__typename === 'TwoFactorAuthenticationNotEnabledError') {
 												addToast({
-													title:
-														"An unexpected error occurred. Please try again.",
-													color: "danger",
+													title: 'An unexpected error occurred. Please try again.',
+													color: 'danger'
 												});
 												onComplete();
-											} else if (
-												response.verify2faPasswordResetWithPasskey
-													.__typename === "WebAuthnChallengeNotFoundError"
-											) {
+											} else if (response.verify2faPasswordResetWithPasskey.__typename === 'WebAuthnChallengeNotFoundError') {
 												addToast({
-													title:
-														"An unexpected error occurred. Please try again.",
-													color: "danger",
+													title: 'An unexpected error occurred. Please try again.',
+													color: 'danger'
 												});
 
 												onAuthEnd();
@@ -192,31 +145,30 @@ export default function PasskeyTwoFactorAuthentication({
 										},
 										onError() {
 											addToast({
-												title:
-													"An unexpected error occurred. Please try again.",
-												color: "danger",
+												title: 'An unexpected error occurred. Please try again.',
+												color: 'danger'
 											});
 											setIsPasskeysPromptActive(false);
 											onAuthEnd();
 										},
 										updater(store) {
 											store.invalidateStore();
-										},
+										}
 									});
 								})
-								.catch((error) => {
+								.catch(error => {
 									addToast({
-										title: "Passkey authentication failed!",
-										color: "danger",
+										title: 'Passkey authentication failed!',
+										color: 'danger'
 									});
 									setIsPasskeysPromptActive(false);
 									onAuthEnd();
 								});
 						})
-						.catch((error) => {
+						.catch(error => {
 							addToast({
-								title: "Passkey authentication failed!",
-								color: "danger",
+								title: 'Passkey authentication failed!',
+								color: 'danger'
 							});
 							setIsPasskeysPromptActive(false);
 							onAuthEnd();
@@ -225,69 +177,51 @@ export default function PasskeyTwoFactorAuthentication({
 			},
 			onError: () => {
 				addToast({
-					title: "An unexpected error occurred. Please try again.",
-					color: "danger",
+					title: 'An unexpected error occurred. Please try again.',
+					color: 'danger'
 				});
 				setIsPasskeysPromptActive(false);
 				onAuthEnd();
-			},
+			}
 		});
 	}
 
 	return (
-		<Card className="p-6 space-y-6" shadow="none">
-			<CardHeader className="w-full flex flex-col gap-6">
-				<h1 className={"w-full text-center text-2xl"}>
-					Two Factor Authentication
-				</h1>
-				<p className="text-center text-sm text-foreground-400">
-					Your account is protected by 2FA. Use your passkey to proceed.
-				</p>
+		<Card className='p-6 space-y-6' shadow='none'>
+			<CardHeader className='w-full flex flex-col gap-6'>
+				<h1 className={'w-full text-center text-2xl'}>Two Factor Authentication</h1>
+				<p className='text-center text-sm text-foreground-400'>Your account is protected by 2FA. Use your passkey to proceed.</p>
 			</CardHeader>
 			<CardBody>
-				<div className="w-full flex flex-col gap-6">
-					<Input
-						id="email"
-						label="Email Address"
-						placeholder="Enter your email address"
-						type="email"
-						value={email || ""}
-						isReadOnly
-						variant="faded"
-					/>
+				<div className='w-full flex flex-col gap-6'>
+					<Input label='Email Address' placeholder='Enter your email address' type='email' value={email || ''} isReadOnly variant='faded' />
 					{isPasskeysPromptActive ? (
-						<Button fullWidth size="lg" isDisabled={isDisabled} isLoading>
+						<Button fullWidth size='lg' isDisabled={isDisabled} isLoading>
 							Waiting for browser interaction
 						</Button>
 					) : (
 						<Button
 							fullWidth
 							startContent={<Fingerprint size={20} />}
-							size="lg"
+							size='lg'
 							isDisabled={isDisabled}
 							onPress={handlePasskeyAuthentication}
-							spinnerPlacement="end"
+							spinnerPlacement='end'
 						>
 							Authenticate with passkey
 						</Button>
 					)}
 
 					{hasAuthenticator && (
-						<Button variant="light" onPress={onSwitchToAuthenticator} fullWidth>
+						<Button variant='light' onPress={onSwitchToAuthenticator} fullWidth>
 							Use authenticator app instead
 						</Button>
 					)}
 				</div>
 
-				<div className="flex h-8 items-end space-x-1">
-					<div
-						className="flex h-8 items-end space-x-1"
-						aria-live="polite"
-						aria-atomic="true"
-					>
-						{errorMessage && (
-							<p className="text-sm text-red-500">{errorMessage}</p>
-						)}
+				<div className='flex h-8 items-end space-x-1'>
+					<div className='flex h-8 items-end space-x-1' aria-live='polite' aria-atomic='true'>
+						{errorMessage && <p className='text-sm text-red-500'>{errorMessage}</p>}
 					</div>
 				</div>
 			</CardBody>

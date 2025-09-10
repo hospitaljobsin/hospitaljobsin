@@ -1,19 +1,11 @@
-import type { DeleteJobModalFragment$key } from "@/__generated__/DeleteJobModalFragment.graphql";
-import type { DeleteJobModalMutation } from "@/__generated__/DeleteJobModalMutation.graphql";
-import links from "@/lib/links";
-import { useRouter } from "@bprogress/next/app";
-import {
-	Button,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	addToast,
-} from "@heroui/react";
-import { useParams } from "next/navigation";
-import { useFragment, useMutation } from "react-relay";
-import { ConnectionHandler, graphql } from "relay-runtime";
+import type { DeleteJobModalFragment$key } from '@/__generated__/DeleteJobModalFragment.graphql';
+import type { DeleteJobModalMutation } from '@/__generated__/DeleteJobModalMutation.graphql';
+import links from '@/lib/links';
+import { useRouter } from '@bprogress/next/app';
+import { addToast, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
+import { useParams } from 'next/navigation';
+import { useFragment, useMutation } from 'react-relay';
+import { ConnectionHandler, graphql } from 'relay-runtime';
 
 const DeleteJobModalFragment = graphql`
     fragment DeleteJobModalFragment on Job {
@@ -46,7 +38,7 @@ export default function DeleteJobModal({
 	isOpen,
 	onOpenChange,
 	onClose,
-	job,
+	job
 }: {
 	isOpen: boolean;
 	onOpenChange: (isOpen: boolean) => void;
@@ -56,20 +48,15 @@ export default function DeleteJobModal({
 	const router = useRouter();
 	const params = useParams<{ slug: string }>();
 	const data = useFragment(DeleteJobModalFragment, job);
-	const [commitMutation, isMutationInFlight] =
-		useMutation<DeleteJobModalMutation>(DeleteJobMutation);
+	const [commitMutation, isMutationInFlight] = useMutation<DeleteJobModalMutation>(DeleteJobMutation);
 
 	function handleDeleteJob() {
 		commitMutation({
 			variables: {
-				jobId: data.id,
+				jobId: data.id
 			},
 			updater(store) {
-				const connectionID = ConnectionHandler.getConnectionID(
-					data.organization.id,
-					"OrganizationJobsListInternalFragment_jobs",
-					[],
-				);
+				const connectionID = ConnectionHandler.getConnectionID(data.organization.id, 'OrganizationJobsListInternalFragment_jobs', []);
 				const connectionRecord = store.get(connectionID);
 
 				const jobRecord = store.get(data.id);
@@ -82,52 +69,41 @@ export default function DeleteJobModal({
 
 			onCompleted(response) {
 				onClose();
-				if (response.deleteJob.__typename === "Job") {
+				if (response.deleteJob.__typename === 'Job') {
 					// handle success
 					router.push(links.dashboard);
-				} else if (response.deleteJob.__typename === "JobNotFoundError") {
+				} else if (response.deleteJob.__typename === 'JobNotFoundError') {
 					addToast({
-						description: "An unexpected error occurred. Please try again.",
-						color: "danger",
+						description: 'An unexpected error occurred. Please try again.',
+						color: 'danger'
 					});
-				} else if (
-					response.deleteJob.__typename === "OrganizationAuthorizationError"
-				) {
+				} else if (response.deleteJob.__typename === 'OrganizationAuthorizationError') {
 					addToast({
-						description: "You are not authorized to perform this action.",
-						color: "danger",
+						description: 'You are not authorized to perform this action.',
+						color: 'danger'
 					});
 				}
-			},
+			}
 		});
 	}
 	return (
-		<>
-			<Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
-				<ModalContent className="flex flex-col w-full p-4 sm:p-6">
-					<ModalHeader>
-						<h2 className="text-lg font-medium">Delete Job</h2>
-					</ModalHeader>
-					<ModalBody>
-						<p className="text-foreground-500">
-							Are you sure you want to delete this job? This action cannot be
-							undone.
-						</p>
-					</ModalBody>
-					<ModalFooter className="w-full">
-						<Button variant="light" onPress={onClose}>
-							Cancel
-						</Button>
-						<Button
-							color="danger"
-							isLoading={isMutationInFlight}
-							onPress={handleDeleteJob}
-						>
-							Delete Job
-						</Button>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
-		</>
+		<Modal isOpen={isOpen} onOpenChange={onOpenChange} size='xl'>
+			<ModalContent className='flex flex-col w-full p-4 sm:p-6'>
+				<ModalHeader>
+					<h2 className='text-lg font-medium'>Delete Job</h2>
+				</ModalHeader>
+				<ModalBody>
+					<p className='text-foreground-500'>Are you sure you want to delete this job? This action cannot be undone.</p>
+				</ModalBody>
+				<ModalFooter className='w-full'>
+					<Button variant='light' onPress={onClose}>
+						Cancel
+					</Button>
+					<Button color='danger' isLoading={isMutationInFlight} onPress={handleDeleteJob}>
+						Delete Job
+					</Button>
+				</ModalFooter>
+			</ModalContent>
+		</Modal>
 	);
 }

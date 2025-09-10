@@ -1,18 +1,9 @@
-import type { PublishJobModalFragment$key } from "@/__generated__/PublishJobModalFragment.graphql";
-import type { PublishJobModalMutation as PublishJobModalMutationType } from "@/__generated__/PublishJobModalMutation.graphql";
-import links from "@/lib/links";
-import {
-	Alert,
-	Button,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	addToast,
-} from "@heroui/react";
-import Link from "next/link";
-import { graphql, useFragment, useMutation } from "react-relay";
+import type { PublishJobModalFragment$key } from '@/__generated__/PublishJobModalFragment.graphql';
+import type { PublishJobModalMutation as PublishJobModalMutationType } from '@/__generated__/PublishJobModalMutation.graphql';
+import links from '@/lib/links';
+import { addToast, Alert, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
+import Link from 'next/link';
+import { graphql, useFragment, useMutation } from 'react-relay';
 
 type Props = {
 	isOpen: boolean;
@@ -58,18 +49,11 @@ fragment PublishJobModalFragment on Job {
     }
 }`;
 
-export default function PublishJobModal({
-	isOpen,
-	onOpenChange,
-	onClose,
-	job,
-}: Props) {
+export default function PublishJobModal({ isOpen, onOpenChange, onClose, job }: Props) {
 	const data = useFragment(PublishJobModalFragment, job);
-	const [commitPublishMutation, isPublishMutationInFlight] =
-		useMutation<PublishJobModalMutationType>(PublishJobModalMutation);
+	const [commitPublishMutation, isPublishMutationInFlight] = useMutation<PublishJobModalMutationType>(PublishJobModalMutation);
 
-	const hasScreeningQuestions =
-		data.applicationForm?.fields && data.applicationForm.fields.length > 0;
+	const hasScreeningQuestions = data.applicationForm?.fields && data.applicationForm.fields.length > 0;
 
 	const isVacanciesZero = data.vacancies === 0;
 
@@ -80,29 +64,26 @@ export default function PublishJobModal({
 				isKeyboardDismissDisabled={true}
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}
-				placement="center"
+				placement='center'
 				hideCloseButton
-				size="xl"
+				size='xl'
 			>
-				<ModalContent className="p-4 sm:p-6">
-					<ModalHeader className="flex flex-col gap-1">
-						Cannot Publish Job
-					</ModalHeader>
-					<ModalBody className="space-y-4">
+				<ModalContent className='p-4 sm:p-6'>
+					<ModalHeader className='flex flex-col gap-1'>Cannot Publish Job</ModalHeader>
+					<ModalBody className='space-y-4'>
 						<Alert
-							color="danger"
-							variant="flat"
+							color='danger'
+							variant='flat'
 							hideIconWrapper
 							description={
 								<p>
-									This job has <b>0 vacancies</b>. Please remove the vacancies
-									field or add atleast one vacancy to publish this job.
+									This job has <b>0 vacancies</b>. Please remove the vacancies field or add atleast one vacancy to publish this job.
 								</p>
 							}
 						/>
 					</ModalBody>
-					<ModalFooter className="flex justify-end gap-4">
-						<Button variant="light" onPress={onClose}>
+					<ModalFooter className='flex justify-end gap-4'>
+						<Button variant='light' onPress={onClose}>
 							Cancel
 						</Button>
 					</ModalFooter>
@@ -111,35 +92,33 @@ export default function PublishJobModal({
 		);
 	}
 
-	async function handlePublishJob() {
+	function handlePublishJob() {
 		commitPublishMutation({
 			variables: {
-				jobId: data.id,
+				jobId: data.id
 			},
 			onCompleted(response) {
 				onClose();
-				if (response.publishJob.__typename === "Job") {
+				if (response.publishJob.__typename === 'Job') {
 					addToast({
-						description: "Job published successfully!",
-						color: "success",
+						description: 'Job published successfully!',
+						color: 'success'
 					});
 				} else if (
-					response.publishJob.__typename === "JobNotFoundError" ||
-					response.publishJob.__typename === "InsufficientActiveVacanciesError"
+					response.publishJob.__typename === 'JobNotFoundError' ||
+					response.publishJob.__typename === 'InsufficientActiveVacanciesError'
 				) {
 					addToast({
-						description: "An unexpected error occurred. Please try again.",
-						color: "danger",
+						description: 'An unexpected error occurred. Please try again.',
+						color: 'danger'
 					});
-				} else if (
-					response.publishJob.__typename === "OrganizationAuthorizationError"
-				) {
+				} else if (response.publishJob.__typename === 'OrganizationAuthorizationError') {
 					addToast({
-						description: "You are not authorized to perform this action.",
-						color: "danger",
+						description: 'You are not authorized to perform this action.',
+						color: 'danger'
 					});
 				}
-			},
+			}
 		});
 	}
 
@@ -149,34 +128,31 @@ export default function PublishJobModal({
 			isKeyboardDismissDisabled={true}
 			isOpen={isOpen}
 			onOpenChange={onOpenChange}
-			placement="center"
+			placement='center'
 			hideCloseButton
-			size="xl"
+			size='xl'
 		>
-			<ModalContent className="p-4 sm:p-6">
-				<ModalHeader className="flex flex-col gap-1">Publish job</ModalHeader>
-				<ModalBody className="space-y-4">
-					<p>
-						Are you sure you want to publish this job? It will make it publicly
-						visible to all job seekers.
-					</p>
+			<ModalContent className='p-4 sm:p-6'>
+				<ModalHeader className='flex flex-col gap-1'>Publish job</ModalHeader>
+				<ModalBody className='space-y-4'>
+					<p>Are you sure you want to publish this job? It will make it publicly visible to all job seekers.</p>
 
 					{!hasScreeningQuestions && (
 						<Alert
-							color="warning"
-							variant="flat"
+							color='warning'
+							variant='flat'
 							hideIconWrapper
 							description={
 								<p>
-									This job doesn't have screening questions. Consider{" "}
+									This job doesn't have screening questions. Consider{' '}
 									<Link
 										href={links.jobDetailSettingsApplicationForm(data.slug)}
-										target="_blank"
-										rel="noopener noreferrer"
-										className="underline"
+										target='_blank'
+										rel='noopener noreferrer'
+										className='underline'
 									>
 										adding them
-									</Link>{" "}
+									</Link>{' '}
 									to get more relevant applications.
 								</p>
 							}
@@ -185,22 +161,18 @@ export default function PublishJobModal({
 
 					{hasScreeningQuestions && (
 						<Alert
-							color="success"
-							variant="flat"
+							color='success'
+							variant='flat'
 							hideIconWrapper
-							description={`This job has ${data.applicationForm?.fields.length} screening question${data.applicationForm?.fields.length === 1 ? "" : "s"}.`}
+							description={`This job has ${data.applicationForm?.fields.length} screening question${data.applicationForm?.fields.length === 1 ? '' : 's'}.`}
 						/>
 					)}
 				</ModalBody>
-				<ModalFooter className="flex justify-end gap-4">
-					<Button variant="light" onPress={onClose}>
+				<ModalFooter className='flex justify-end gap-4'>
+					<Button variant='light' onPress={onClose}>
 						Cancel
 					</Button>
-					<Button
-						color="primary"
-						onPress={handlePublishJob}
-						isDisabled={isPublishMutationInFlight}
-					>
+					<Button color='primary' onPress={handlePublishJob} isLoading={isPublishMutationInFlight}>
 						Publish job
 					</Button>
 				</ModalFooter>
