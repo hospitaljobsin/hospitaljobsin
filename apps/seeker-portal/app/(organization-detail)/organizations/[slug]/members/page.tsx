@@ -1,13 +1,13 @@
-import type { pageOrganizationMembersMetadataFragment$key } from "@/__generated__/pageOrganizationMembersMetadataFragment.graphql";
-import type OrganizationMembersMetadataQueryNode from "@/__generated__/pageOrganizationMembersMetadataQuery.graphql";
-import type { pageOrganizationMembersMetadataQuery } from "@/__generated__/pageOrganizationMembersMetadataQuery.graphql";
-import type { pageOrganizationMembersServerFragment$key } from "@/__generated__/pageOrganizationMembersServerFragment.graphql";
-import type OrganizationMembersViewQueryNode from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
-import type { pageOrganizationMembersViewQuery } from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
-import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
-import { notFound } from "next/navigation";
-import { graphql, readInlineData } from "relay-runtime";
-import OrganizationMembersViewClientComponent from "./OrganizationMembersViewClientComponent";
+import type { pageOrganizationMembersMetadataFragment$key } from '@/__generated__/pageOrganizationMembersMetadataFragment.graphql';
+import type OrganizationMembersMetadataQueryNode from '@/__generated__/pageOrganizationMembersMetadataQuery.graphql';
+import type { pageOrganizationMembersMetadataQuery } from '@/__generated__/pageOrganizationMembersMetadataQuery.graphql';
+import type { pageOrganizationMembersServerFragment$key } from '@/__generated__/pageOrganizationMembersServerFragment.graphql';
+import type OrganizationMembersViewQueryNode from '@/__generated__/pageOrganizationMembersViewQuery.graphql';
+import type { pageOrganizationMembersViewQuery } from '@/__generated__/pageOrganizationMembersViewQuery.graphql';
+import loadSerializableQuery from '@/lib/relay/loadSerializableQuery';
+import { notFound } from 'next/navigation';
+import { graphql, readInlineData } from 'relay-runtime';
+import OrganizationMembersViewClientComponent from './OrganizationMembersViewClientComponent';
 
 export const PageOrganizationMembersViewQuery = graphql`
   query pageOrganizationMembersViewQuery($slug: String!) {
@@ -56,28 +56,21 @@ const PageOrganizationMembersMetadataFragment = graphql`
   }
 `;
 
-export async function generateMetadata({
-	params,
-}: {
-	params: Promise<{ slug: string }>;
-}) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
 	const slug = (await params).slug;
-	const preloadedQuery = await loadSerializableQuery<
-		typeof OrganizationMembersMetadataQueryNode,
-		pageOrganizationMembersMetadataQuery
-	>(PageOrganizationMembersMetadataQuery, {
-		slug: slug,
-	});
-
-	const data = readInlineData<pageOrganizationMembersMetadataFragment$key>(
-		PageOrganizationMembersMetadataFragment,
-		preloadedQuery.data,
+	const preloadedQuery = await loadSerializableQuery<typeof OrganizationMembersMetadataQueryNode, pageOrganizationMembersMetadataQuery>(
+		PageOrganizationMembersMetadataQuery,
+		{
+			slug: slug
+		}
 	);
 
-	if (data.organization.__typename !== "Organization") {
+	const data = readInlineData<pageOrganizationMembersMetadataFragment$key>(PageOrganizationMembersMetadataFragment, preloadedQuery.data);
+
+	if (data.organization.__typename !== 'Organization') {
 		return {
-			title: "Organization Not found",
-			description: "The organization you are looking for does not exist",
+			title: 'Organization Not found',
+			description: 'The organization you are looking for does not exist'
 		};
 	}
 
@@ -85,35 +78,26 @@ export async function generateMetadata({
 		title: `Members - ${data.organization.name}`,
 		description: data.organization.description,
 		openGraph: {
-			images: [data.organization.bannerUrl],
-		},
+			images: [data.organization.bannerUrl]
+		}
 	};
 }
 
-export default async function OrganizationMembersPage({
-	params,
-}: {
-	params: Promise<{ slug: string }>;
-}) {
+export default async function OrganizationMembersPage({ params }: { params: Promise<{ slug: string }> }) {
 	const slug = (await params).slug;
 
-	const preloadedQuery = await loadSerializableQuery<
-		typeof OrganizationMembersViewQueryNode,
-		pageOrganizationMembersViewQuery
-	>(PageOrganizationMembersViewQuery, {
-		slug: slug,
-	});
-
-	const data = readInlineData<pageOrganizationMembersServerFragment$key>(
-		PageOrganizationMembersServerFragment,
-		preloadedQuery.data,
+	const preloadedQuery = await loadSerializableQuery<typeof OrganizationMembersViewQueryNode, pageOrganizationMembersViewQuery>(
+		PageOrganizationMembersViewQuery,
+		{
+			slug: slug
+		}
 	);
 
-	if (data.organization.__typename !== "Organization") {
+	const data = readInlineData<pageOrganizationMembersServerFragment$key>(PageOrganizationMembersServerFragment, preloadedQuery.data);
+
+	if (data.organization.__typename !== 'Organization') {
 		notFound();
 	}
 
-	return (
-		<OrganizationMembersViewClientComponent preloadedQuery={preloadedQuery} />
-	);
+	return <OrganizationMembersViewClientComponent preloadedQuery={preloadedQuery} slug={slug} />;
 }
