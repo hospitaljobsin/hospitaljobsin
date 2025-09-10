@@ -69,7 +69,7 @@ export default function LandingViewSkeleton() {
 							<SparklesIcon className='text-foreground-600 w-7 h-7' />
 							<h2 className='text-xl sm:text-2xl font-medium text-foreground-600 tracking-tight'>Latest Jobs</h2>
 						</div>
-						<h3 className='text-foreground-500 text-base sm:text-lg font-medium tracking-tight'>Most Viewed Healthcare Jobs This Week</h3>
+						<h3 className='text-foreground-500 text-base sm:text-lg font-medium tracking-tight'>Latest Healthcare Jobs Posted</h3>
 					</div>
 					<JobListSkeleton />
 				</div>
