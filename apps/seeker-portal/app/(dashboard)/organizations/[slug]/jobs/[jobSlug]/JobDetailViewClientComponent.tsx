@@ -1,5 +1,4 @@
 'use client';
-
 import type { JobDetailViewClientComponentFragment$key } from '@/__generated__/JobDetailViewClientComponentFragment.graphql';
 import type JobDetailViewQueryNode from '@/__generated__/pageJobDetailViewQuery.graphql';
 import type { pageJobDetailViewQuery } from '@/__generated__/pageJobDetailViewQuery.graphql';

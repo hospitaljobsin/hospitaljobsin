@@ -1,7 +1,7 @@
 import CookieBanner from '@/components/CookieBanner';
+import Footer from '@/components/layout/Footer';
 import PostHogIdentifier from '@/components/PostHogIdentifier';
 import { ReactScan } from '@/components/ReactScanComponent';
-import Footer from '@/components/layout/Footer';
 import { APP_DESCRIPTION, APP_TITLE } from '@/lib/constants';
 import { env } from '@/lib/env/client';
 import type { Metadata } from 'next';
@@ -14,8 +14,6 @@ const workSans = Work_Sans({
 	variable: '--font-work-sans',
 	subsets: ['latin']
 });
-
-export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
 	title: {

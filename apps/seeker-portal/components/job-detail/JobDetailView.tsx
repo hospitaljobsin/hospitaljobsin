@@ -1,18 +1,24 @@
+'use client';
 import type { JobDetailViewFragment$key } from '@/__generated__/JobDetailViewFragment.graphql';
 import useJobImpressionTracker from '@/lib/hooks/useJobImpressionTracker';
+import dynamic from 'next/dynamic';
 import { graphql, useFragment } from 'react-relay';
 import invariant from 'tiny-invariant';
-import DashboardHeader from '../layout/DashboardHeader';
+import DashboardHeaderSkeleton from '../layout/DashboardHeaderSkeleton';
 import JobDetails from './JobDetails';
 import RelatedJobsList from './RelatedJobsList';
 import TrendingJobList from './TrendingJobList';
+
+const DashboardHeaderClientComponent = dynamic(() => import('../layout/DashboardHeaderClientComponent'), {
+	ssr: false,
+	loading: () => <DashboardHeaderSkeleton />
+});
 
 const JobDetailViewFragment = graphql`
  fragment JobDetailViewFragment on Query @argumentDefinitions(
 	slug: { type: "String!"}
 	jobSlug: { type: "String!"}
     ) {
-		...DashboardHeaderFragment
 		...TrendingJobListFragment
 		...JobDetailsFragment @arguments(slug: $slug, jobSlug: $jobSlug)
 		organization(slug: $slug) {
@@ -40,7 +46,7 @@ export default function JobDetailView(props: { rootQuery: JobDetailViewFragment$
 
 	return (
 		<div className='w-full flex flex-col flex-1 h-full'>
-			<DashboardHeader query={query} animate={false} />
+			<DashboardHeaderClientComponent animate={false} />
 			<div className='w-full mx-auto bg-background-600'>
 				<div className='w-full px-5 max-w-7xl mx-auto'>
 					<div className='py-8 w-full h-full flex flex-col lg:flex-row items-start gap-6'>
