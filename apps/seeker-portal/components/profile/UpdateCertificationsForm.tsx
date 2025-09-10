@@ -1,15 +1,11 @@
-import type { UpdateCertificationsFormFragment$key } from "@/__generated__/UpdateCertificationsFormFragment.graphql";
-import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { Plus, ShieldCheckIcon, Trash } from "lucide-react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { graphql, useFragment, useMutation } from "react-relay";
-import { z } from "zod/v4-mini";
-import {
-	MonthYearPicker,
-	parseMonthYear,
-	toDateString,
-} from "../forms/MonthYearPicker";
+import type { UpdateCertificationsFormFragment$key } from '@/__generated__/UpdateCertificationsFormFragment.graphql';
+import { Button, Card, CardBody, CardHeader, Input } from '@heroui/react';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
+import { Plus, ShieldCheckIcon, Trash } from 'lucide-react';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { graphql, useFragment, useMutation } from 'react-relay';
+import { z } from 'zod/v4-mini';
+import { MonthYearPicker, parseMonthYear, toDateString } from '../forms/MonthYearPicker';
 
 const UpdateCertificationsFormMutation = graphql`
 mutation UpdateCertificationsFormMutation($certifications: [CertificationInput!]!) {
@@ -45,89 +41,66 @@ type Props = {
 const formSchema = z.object({
 	certifications: z.array(
 		z.object({
-			name: z
-				.string()
-				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
-			issuer: z
-				.string()
-				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
-			certificationUrl: z.url("Must be a valid URL"),
-			createdAt: z.custom<{ month: number; year: number }>((data) => {
-				return (
-					data &&
-					typeof data === "object" &&
-					data !== null &&
-					typeof data.month === "number" &&
-					typeof data.year === "number"
-				);
-			}, "Issued At is required and must be a valid month/year"),
+			name: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
+			issuer: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
+			certificationUrl: z.url('Must be a valid URL'),
+			createdAt: z.custom<{ month: number; year: number }>(data => {
+				return data && typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number';
+			}, 'Issued At is required and must be a valid month/year'),
 			expiresAt: z.nullable(
-				z.custom<{ month: number; year: number }>((data) => {
+				z.custom<{ month: number; year: number }>(data => {
 					if (data === null) return true;
-					return (
-						data &&
-						typeof data === "object" &&
-						data !== null &&
-						typeof data.month === "number" &&
-						typeof data.year === "number"
-					);
-				}, "Expires At must be a valid month/year or null"),
-			),
-		}),
-	),
+					return data && typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number';
+				}, 'Expires At must be a valid month/year or null')
+			)
+		})
+	)
 });
 
-export default function UpdateCertificationsForm({
-	rootQuery,
-	onSaveChanges,
-}: Props) {
-	const [commitMutation, isMutationInFlight] = useMutation(
-		UpdateCertificationsFormMutation,
-	);
+export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: Props) {
+	const [commitMutation, isMutationInFlight] = useMutation(UpdateCertificationsFormMutation);
 	const data = useFragment(UpdateCertificationsFormFragment, rootQuery);
 	const {
 		handleSubmit,
 		control,
 		setError,
-		formState: { errors, isSubmitting },
+		formState: { errors, isSubmitting }
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
 		defaultValues:
 			data.certifications.length > 0
 				? {
-						certifications: data.certifications.map((cert) => {
+						certifications: data.certifications.map(cert => {
 							const created = parseMonthYear(cert.createdAt) || {
 								month: 1,
-								year: 2000,
+								year: 2000
 							};
-							const expires = cert.expiresAt
-								? parseMonthYear(cert.expiresAt)
-								: null;
+							const expires = cert.expiresAt ? parseMonthYear(cert.expiresAt) : null;
 							return {
 								name: cert.name,
 								issuer: cert.issuer,
 								certificationUrl: cert.certificationUrl,
 								createdAt: created,
-								expiresAt: expires,
+								expiresAt: expires
 							};
-						}),
+						})
 					}
 				: {
 						certifications: [
 							{
-								name: "",
-								issuer: "",
-								certificationUrl: "",
+								name: '',
+								issuer: '',
+								certificationUrl: '',
 								createdAt: { month: 1, year: new Date().getFullYear() },
-								expiresAt: null,
-							},
-						],
-					},
+								expiresAt: null
+							}
+						]
+					}
 	});
 
 	const { fields, append, remove } = useFieldArray({
 		control: control,
-		name: "certifications",
+		name: 'certifications'
 	});
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
@@ -137,15 +110,14 @@ export default function UpdateCertificationsForm({
 			if (
 				exp.createdAt &&
 				(exp.createdAt.year > new Date().getFullYear() ||
-					(exp.createdAt.year === new Date().getFullYear() &&
-						exp.createdAt.month > new Date().getMonth() + 1))
+					(exp.createdAt.year === new Date().getFullYear() && exp.createdAt.month > new Date().getMonth() + 1))
 			) {
 				setError(
 					`certifications.${index}.createdAt`,
 					{
-						message: "Start date cannot be in the future",
+						message: 'Start date cannot be in the future'
 					},
-					{ shouldFocus: true },
+					{ shouldFocus: true }
 				);
 				hasValidationErrors = true;
 			}
@@ -155,9 +127,9 @@ export default function UpdateCertificationsForm({
 					setError(
 						`certifications.${index}.expiresAt`,
 						{
-							message: "Start date cannot be after expiry date",
+							message: 'Start date cannot be after expiry date'
 						},
-						{ shouldFocus: true },
+						{ shouldFocus: true }
 					);
 					hasValidationErrors = true;
 				}
@@ -169,50 +141,46 @@ export default function UpdateCertificationsForm({
 		}
 		commitMutation({
 			variables: {
-				certifications: formData.certifications.map((cert) => ({
+				certifications: formData.certifications.map(cert => ({
 					...cert,
 					createdAt: toDateString(cert.createdAt),
-					expiresAt: cert.expiresAt ? toDateString(cert.expiresAt) : null,
-				})),
-			},
+					expiresAt: cert.expiresAt ? toDateString(cert.expiresAt) : null
+				}))
+			}
 		});
 		onSaveChanges();
 	}
 
-	async function handleCancel() {
+	function handleCancel() {
 		onSaveChanges();
 	}
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-			<Card className="p-6 space-y-6" shadow="none">
+		<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
+			<Card className='p-6 space-y-6' shadow='none'>
 				<CardHeader>
-					<div className="flex items-center gap-2 text-foreground-400">
+					<div className='flex items-center gap-2 text-foreground-400'>
 						<ShieldCheckIcon />
-						<h1 className="w-full text-sm font-medium">
-							Editing Certifications
-						</h1>
+						<h1 className='w-full text-sm font-medium'>Editing Certifications</h1>
 					</div>
 				</CardHeader>
-				<CardBody className="w-full flex flex-col">
+				<CardBody className='w-full flex flex-col'>
 					{/* Dynamic Array of certifications */}
-					<div className="w-full space-y-12 items-center">
+					<div className='w-full space-y-12 items-center'>
 						{fields.length === 0 ? (
-							<div className="flex flex-col items-center gap-4">
-								<p className="text-foreground-500">
-									No certification entries. Add your certifications.
-								</p>
+							<div className='flex flex-col items-center gap-4'>
+								<p className='text-foreground-500'>No certification entries. Add your certifications.</p>
 								<Button
-									type="button"
-									variant="bordered"
+									type='button'
+									variant='bordered'
 									startContent={<Plus size={18} />}
 									onPress={() =>
 										append({
-											name: "",
-											issuer: "",
-											certificationUrl: "",
+											name: '',
+											issuer: '',
+											certificationUrl: '',
 											createdAt: { month: 1, year: 2000 },
-											expiresAt: null,
+											expiresAt: null
 										})
 									}
 								>
@@ -222,85 +190,69 @@ export default function UpdateCertificationsForm({
 						) : (
 							<>
 								{fields.map((item, index) => (
-									<div
-										key={`field-${item.name}-${index}`}
-										className="flex gap-8 items-end w-full flex-col"
-									>
-										<div className="w-full space-y-4">
+									<div key={`field-${item.name}-${index}`} className='flex gap-8 items-end w-full flex-col'>
+										<div className='w-full space-y-4'>
 											<Controller
 												name={`certifications.${index}.name`}
 												control={control}
-												defaultValue=""
+												defaultValue=''
 												render={({ field }) => (
 													<Input
 														{...field}
 														fullWidth
-														label="Name"
-														placeholder="Certification name"
-														errorMessage={
-															errors.certifications?.[index]?.name?.message
-														}
+														label='Name'
+														placeholder='Certification name'
+														errorMessage={errors.certifications?.[index]?.name?.message}
 														isInvalid={!!errors.certifications?.[index]?.name}
 													/>
 												)}
 											/>
 										</div>
-										<div className="w-full space-y-4">
+										<div className='w-full space-y-4'>
 											<Controller
 												name={`certifications.${index}.issuer`}
 												control={control}
-												defaultValue=""
+												defaultValue=''
 												render={({ field }) => (
 													<Input
 														{...field}
 														fullWidth
-														label="Issuer"
-														placeholder="Certification issuer"
-														errorMessage={
-															errors.certifications?.[index]?.issuer?.message
-														}
+														label='Issuer'
+														placeholder='Certification issuer'
+														errorMessage={errors.certifications?.[index]?.issuer?.message}
 														isInvalid={!!errors.certifications?.[index]?.issuer}
 													/>
 												)}
 											/>
 										</div>
-										<div className="w-full space-y-4">
+										<div className='w-full space-y-4'>
 											<Controller
 												name={`certifications.${index}.certificationUrl`}
 												control={control}
-												defaultValue=""
+												defaultValue=''
 												render={({ field }) => (
 													<Input
 														{...field}
 														fullWidth
-														label="Certification URL"
-														placeholder="https://..."
-														errorMessage={
-															errors.certifications?.[index]?.certificationUrl
-																?.message
-														}
-														isInvalid={
-															!!errors.certifications?.[index]?.certificationUrl
-														}
+														label='Certification URL'
+														placeholder='https://...'
+														errorMessage={errors.certifications?.[index]?.certificationUrl?.message}
+														isInvalid={!!errors.certifications?.[index]?.certificationUrl}
 													/>
 												)}
 											/>
 										</div>
-										<div className="w-full space-y-4 flex flex-col sm:flex-row gap-6">
+										<div className='w-full space-y-4 flex flex-col sm:flex-row gap-6'>
 											<Controller
 												control={control}
 												name={`certifications.${index}.createdAt`}
 												render={({ field }) => (
 													<MonthYearPicker
-														label="Issued At"
+														label='Issued At'
 														value={field.value}
 														onChange={field.onChange}
-														errorMessage={
-															errors.certifications?.[index]?.createdAt?.message
-														}
-														isInvalid={
-															!!errors.certifications?.[index]?.createdAt
-														}
+														errorMessage={errors.certifications?.[index]?.createdAt?.message}
+														isInvalid={!!errors.certifications?.[index]?.createdAt}
 													/>
 												)}
 											/>
@@ -309,41 +261,32 @@ export default function UpdateCertificationsForm({
 												name={`certifications.${index}.expiresAt`}
 												render={({ field }) => (
 													<MonthYearPicker
-														label="Expires At"
+														label='Expires At'
 														value={field.value}
 														onChange={field.onChange}
-														errorMessage={
-															errors.certifications?.[index]?.expiresAt?.message
-														}
-														isInvalid={
-															!!errors.certifications?.[index]?.expiresAt
-														}
+														errorMessage={errors.certifications?.[index]?.expiresAt?.message}
+														isInvalid={!!errors.certifications?.[index]?.expiresAt}
 													/>
 												)}
 											/>
 										</div>
-										<Button
-											type="button"
-											variant="bordered"
-											onPress={() => remove(index)}
-											startContent={<Trash size={18} />}
-										>
+										<Button type='button' variant='bordered' onPress={() => remove(index)} startContent={<Trash size={18} />}>
 											Delete Certification
 										</Button>
 									</div>
 								))}
 								<Button
-									type="button"
-									variant="bordered"
-									className="w-full sm:w-auto"
+									type='button'
+									variant='bordered'
+									className='w-full sm:w-auto'
 									startContent={<Plus size={18} />}
 									onPress={() =>
 										append({
-											name: "",
-											issuer: "",
-											certificationUrl: "",
+											name: '',
+											issuer: '',
+											certificationUrl: '',
 											createdAt: { month: 1, year: 2000 },
-											expiresAt: null,
+											expiresAt: null
 										})
 									}
 								>
@@ -355,19 +298,11 @@ export default function UpdateCertificationsForm({
 				</CardBody>
 			</Card>
 
-			<div className="flex flex-col-reverse sm:flex-row justify-end gap-4 w-full">
-				<Button
-					variant="bordered"
-					onPress={onSaveChanges}
-					className="w-full sm:w-auto"
-				>
+			<div className='flex flex-col-reverse sm:flex-row justify-end gap-4 w-full'>
+				<Button variant='bordered' onPress={onSaveChanges} className='w-full sm:w-auto'>
 					Cancel
 				</Button>
-				<Button
-					type="submit"
-					isLoading={isMutationInFlight || isSubmitting}
-					className="w-full sm:w-auto"
-				>
+				<Button type='submit' isLoading={isMutationInFlight || isSubmitting} className='w-full sm:w-auto'>
 					Save Changes
 				</Button>
 			</div>

@@ -1,10 +1,10 @@
-import type { PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation } from "@/__generated__/PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation.graphql";
-import { Button, Input } from "@heroui/react";
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { Controller, useForm } from "react-hook-form";
-import { useMutation } from "react-relay";
-import { graphql } from "relay-runtime";
-import { z } from "zod/v4";
+import type { PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation } from '@/__generated__/PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation.graphql';
+import { Button, Input } from '@heroui/react';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
+import { Controller, useForm } from 'react-hook-form';
+import { useMutation } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { z } from 'zod/v4';
 
 const RequestPhoneNumberVerificationTokenMutation = graphql`
   mutation PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation($phoneNumber: String!) {
@@ -28,7 +28,7 @@ const RequestPhoneNumberVerificationTokenMutation = graphql`
 `;
 
 const formSchema = z.object({
-	phoneNumber: z.string().min(1, "Phone number is required").length(10),
+	phoneNumber: z.string().min(1, 'Phone number is required').length(10)
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -39,118 +39,98 @@ type Props = {
 	isSubmitting: boolean;
 };
 
-export default function PhoneNumberEntryStep({
-	onSubmit,
-	onCancel,
-	isSubmitting,
-}: Props) {
-	const [commitMutation, isMutationInFlight] =
-		useMutation<PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation>(
-			RequestPhoneNumberVerificationTokenMutation,
-		);
+export default function PhoneNumberEntryStep({ onSubmit, onCancel, isSubmitting }: Props) {
+	const [commitMutation, isMutationInFlight] = useMutation<PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation>(
+		RequestPhoneNumberVerificationTokenMutation
+	);
 
 	const {
 		handleSubmit,
 		control,
 		formState: { errors, isValid },
-		setError,
+		setError
 	} = useForm<FormData>({
 		resolver: standardSchemaResolver(formSchema),
 		defaultValues: {
-			phoneNumber: "",
-		},
+			phoneNumber: ''
+		}
 	});
 
 	function handleFormSubmit(data: FormData) {
 		commitMutation({
 			variables: {
-				phoneNumber: `+91${data.phoneNumber}`,
+				phoneNumber: `+91${data.phoneNumber}`
 			},
 			onCompleted: (response, errors) => {
 				if (errors) {
-					setError("phoneNumber", {
-						type: "manual",
-						message: "An unexpected error occurred. Please try again.",
+					setError('phoneNumber', {
+						type: 'manual',
+						message: 'An unexpected error occurred. Please try again.'
 					});
 					return;
 				}
 
 				const result = response.requestPhoneNumberVerificationToken;
-				if (
-					result.__typename === "RequestPhoneNumberVerificationTokenSuccess"
-				) {
+				if (result.__typename === 'RequestPhoneNumberVerificationTokenSuccess') {
 					onSubmit({
 						...data,
-						cooldownRemainingSeconds: result.cooldownRemainingSeconds,
+						cooldownRemainingSeconds: result.cooldownRemainingSeconds
 					});
-				} else if (result.__typename === "InvalidPhoneNumberError") {
-					setError("phoneNumber", {
-						type: "manual",
-						message: result.message,
+				} else if (result.__typename === 'InvalidPhoneNumberError') {
+					setError('phoneNumber', {
+						type: 'manual',
+						message: result.message
 					});
-				} else if (result.__typename === "PhoneNumberAlreadyExistsError") {
-					setError("phoneNumber", {
-						type: "manual",
-						message: result.message,
+				} else if (result.__typename === 'PhoneNumberAlreadyExistsError') {
+					setError('phoneNumber', {
+						type: 'manual',
+						message: result.message
 					});
-				} else if (
-					result.__typename === "PhoneNumberVerificationTokenCooldownError"
-				) {
+				} else if (result.__typename === 'PhoneNumberVerificationTokenCooldownError') {
 					onSubmit({
 						...data,
-						cooldownRemainingSeconds: result.remainingSeconds,
+						cooldownRemainingSeconds: result.remainingSeconds
 					});
 				}
 			},
-			onError: (error) => {
-				setError("phoneNumber", {
-					type: "manual",
-					message: "Failed to send verification code. Please try again.",
+			onError: _error => {
+				setError('phoneNumber', {
+					type: 'manual',
+					message: 'Failed to send verification code. Please try again.'
 				});
-			},
+			}
 		});
 	}
 
 	return (
-		<form
-			onSubmit={handleSubmit(handleFormSubmit)}
-			className="flex flex-col gap-4"
-		>
-			<p className="text-foreground-600">
-				Enter your WhatsApp number to receive a verification code.
-			</p>
+		<form onSubmit={handleSubmit(handleFormSubmit)} className='flex flex-col gap-4'>
+			<p className='text-foreground-600'>Enter your WhatsApp number to receive a verification code.</p>
 			<Controller
-				name="phoneNumber"
+				name='phoneNumber'
 				control={control}
 				render={({ field }) => (
 					<Input
 						{...field}
-						type="tel"
-						label="WhatsApp Phone Number"
-						startContent={<p className="text-sm">+91 </p>}
-						placeholder="98765 43210"
-						description="Only Indian numbers are supported currently."
+						type='tel'
+						label='WhatsApp Phone Number'
+						startContent={<p className='text-sm'>+91 </p>}
+						placeholder='98765 43210'
+						description='Only Indian numbers are supported currently.'
 						errorMessage={errors.phoneNumber?.message}
 						isInvalid={!!errors.phoneNumber}
 						isDisabled={isSubmitting || isMutationInFlight}
-						className="w-full"
+						className='w-full'
 					/>
 				)}
 			/>
-			<div className="flex gap-4 items-center w-full flex-row">
-				<Button
-					variant="flat"
-					type="button"
-					fullWidth
-					onPress={onCancel}
-					isDisabled={isSubmitting || isMutationInFlight}
-				>
+			<div className='flex gap-4 items-center w-full flex-row'>
+				<Button variant='flat' type='button' fullWidth onPress={onCancel} isDisabled={isSubmitting || isMutationInFlight}>
 					Cancel
 				</Button>
 				<Button
-					color="primary"
+					color='primary'
 					fullWidth
-					type="submit"
+					type='submit'
 					isDisabled={!isValid || isSubmitting || isMutationInFlight}
 					isLoading={isSubmitting || isMutationInFlight}
 				>

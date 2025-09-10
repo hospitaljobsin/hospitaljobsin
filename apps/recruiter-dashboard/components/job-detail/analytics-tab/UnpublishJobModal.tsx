@@ -1,15 +1,7 @@
-import type { UnpublishJobModalFragment$key } from "@/__generated__/UnpublishJobModalFragment.graphql";
-import type { UnpublishJobModalMutation as UnpublishJobModalMutationType } from "@/__generated__/UnpublishJobModalMutation.graphql";
-import {
-	Button,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	addToast,
-} from "@heroui/react";
-import { graphql, useFragment, useMutation } from "react-relay";
+import type { UnpublishJobModalFragment$key } from '@/__generated__/UnpublishJobModalFragment.graphql';
+import type { UnpublishJobModalMutation as UnpublishJobModalMutationType } from '@/__generated__/UnpublishJobModalMutation.graphql';
+import { addToast, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
+import { graphql, useFragment, useMutation } from 'react-relay';
 
 type Props = {
 	isOpen: boolean;
@@ -47,42 +39,31 @@ fragment UnpublishJobModalFragment on Job {
     id
 }`;
 
-export default function UnpublishJobModal({
-	isOpen,
-	onOpenChange,
-	onClose,
-	job,
-}: Props) {
+export default function UnpublishJobModal({ isOpen, onOpenChange, onClose, job }: Props) {
 	const data = useFragment(UnpublishJobModalFragment, job);
-	const [commitUnpublishMutation, isUnpublishMutationInFlight] =
-		useMutation<UnpublishJobModalMutationType>(UnpublishJobModalMutation);
+	const [commitUnpublishMutation, isUnpublishMutationInFlight] = useMutation<UnpublishJobModalMutationType>(UnpublishJobModalMutation);
 
-	async function handleUnpublishJob() {
+	function handleUnpublishJob() {
 		commitUnpublishMutation({
 			variables: {
-				jobId: data.id,
+				jobId: data.id
 			},
 			onCompleted(response) {
 				onClose();
-				if (response.unpublishJob.__typename === "Job") {
+				if (response.unpublishJob.__typename === 'Job') {
 					// Handle success
-				} else if (
-					response.unpublishJob.__typename === "JobNotFoundError" ||
-					response.unpublishJob.__typename === "JobNotPublishedError"
-				) {
+				} else if (response.unpublishJob.__typename === 'JobNotFoundError' || response.unpublishJob.__typename === 'JobNotPublishedError') {
 					addToast({
-						description: "An unexpected error occurred. Please try again.",
-						color: "danger",
+						description: 'An unexpected error occurred. Please try again.',
+						color: 'danger'
 					});
-				} else if (
-					response.unpublishJob.__typename === "OrganizationAuthorizationError"
-				) {
+				} else if (response.unpublishJob.__typename === 'OrganizationAuthorizationError') {
 					addToast({
-						description: "You are not authorized to perform this action.",
-						color: "danger",
+						description: 'You are not authorized to perform this action.',
+						color: 'danger'
 					});
 				}
-			},
+			}
 		});
 	}
 
@@ -92,25 +73,20 @@ export default function UnpublishJobModal({
 			isKeyboardDismissDisabled={true}
 			isOpen={isOpen}
 			onOpenChange={onOpenChange}
-			placement="center"
+			placement='center'
 			hideCloseButton
-			size="xl"
+			size='xl'
 		>
-			<ModalContent className="p-4 sm:p-6">
-				<ModalHeader className="flex flex-col gap-1">Unpublish job</ModalHeader>
+			<ModalContent className='p-4 sm:p-6'>
+				<ModalHeader className='flex flex-col gap-1'>Unpublish job</ModalHeader>
 				<ModalBody>
-					Are you sure you want to unpublish this job? It won't be visible to
-					job seekers on the platform with immediate effect.
+					Are you sure you want to unpublish this job? It won't be visible to job seekers on the platform with immediate effect.
 				</ModalBody>
-				<ModalFooter className="flex justify-end gap-4">
-					<Button variant="light" onPress={onClose}>
+				<ModalFooter className='flex justify-end gap-4'>
+					<Button variant='light' onPress={onClose}>
 						Cancel
 					</Button>
-					<Button
-						color="danger"
-						onPress={handleUnpublishJob}
-						isDisabled={isUnpublishMutationInFlight}
-					>
+					<Button color='danger' onPress={handleUnpublishJob} isLoading={isUnpublishMutationInFlight}>
 						Unpublish job
 					</Button>
 				</ModalFooter>

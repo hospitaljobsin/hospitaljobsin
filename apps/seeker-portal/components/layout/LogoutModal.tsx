@@ -21,16 +21,14 @@ const LogoutModalMutation = graphql`
 export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 	const [commitMutation, isMutationInFlight] = useMutation(LogoutModalMutation);
 
-	async function handleLogout() {
+	function handleLogout() {
 		commitMutation({
 			variables: {},
-			onCompleted(response, errors) {
-				if (!errors) {
-					posthog.reset();
-					googleLogout();
-					// Redirect to login page
-					window.location.href = links.login(env.NEXT_PUBLIC_URL);
-				}
+			onCompleted() {
+				posthog.reset();
+				googleLogout();
+				// Redirect to login page
+				window.location.href = links.login(env.NEXT_PUBLIC_URL);
 			}
 		});
 	}

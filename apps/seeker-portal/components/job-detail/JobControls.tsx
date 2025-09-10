@@ -141,7 +141,8 @@ export default function JobControls({
 							event.preventDefault();
 							handleUnsave();
 						}}
-						isDisabled={isSaveMutationInFlight || isUnsaveMutationInFlight}
+						isLoading={isUnsaveMutationInFlight}
+						isDisabled={isSaveMutationInFlight}
 					>
 						<BookmarkCheckIcon size={24} strokeWidth={1.5} className='text-foreground-500' />
 					</Button>
@@ -157,7 +158,8 @@ export default function JobControls({
 							event.preventDefault();
 							handleSave();
 						}}
-						isDisabled={isSaveMutationInFlight || isUnsaveMutationInFlight}
+						isLoading={isSaveMutationInFlight}
+						isDisabled={isUnsaveMutationInFlight}
 					>
 						<BookmarkIcon size={24} strokeWidth={1.5} className='text-foreground-500' />
 					</Button>

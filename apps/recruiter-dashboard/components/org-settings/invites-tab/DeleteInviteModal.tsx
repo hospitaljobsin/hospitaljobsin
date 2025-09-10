@@ -1,17 +1,9 @@
-import type { DeleteInviteModalFragment$key } from "@/__generated__/DeleteInviteModalFragment.graphql";
-import type { DeleteInviteModalMutation } from "@/__generated__/DeleteInviteModalMutation.graphql";
-import type { DeleteInviteModalOrganizationFragment$key } from "@/__generated__/DeleteInviteModalOrganizationFragment.graphql";
-import {
-	Button,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	addToast,
-} from "@heroui/react";
-import { useFragment, useMutation } from "react-relay";
-import { graphql } from "relay-runtime";
+import type { DeleteInviteModalFragment$key } from '@/__generated__/DeleteInviteModalFragment.graphql';
+import type { DeleteInviteModalMutation } from '@/__generated__/DeleteInviteModalMutation.graphql';
+import type { DeleteInviteModalOrganizationFragment$key } from '@/__generated__/DeleteInviteModalOrganizationFragment.graphql';
+import { addToast, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
+import { useFragment, useMutation } from 'react-relay';
+import { graphql } from 'relay-runtime';
 
 const DeleteInviteModalFragment = graphql`
     fragment DeleteInviteModalFragment on OrganizationInvite {
@@ -55,7 +47,7 @@ export default function DeleteInviteModal({
 	onClose,
 	invitesConnectionId,
 	invite,
-	organization,
+	organization
 }: {
 	isOpen: boolean;
 	onOpenChange: (isOpen: boolean) => void;
@@ -65,82 +57,59 @@ export default function DeleteInviteModal({
 	organization: DeleteInviteModalOrganizationFragment$key;
 }) {
 	const data = useFragment(DeleteInviteModalFragment, invite);
-	const organizationData = useFragment(
-		DeleteInviteModalOrganizationFragment,
-		organization,
-	);
-	const [commitMutation, isMutationInFlight] =
-		useMutation<DeleteInviteModalMutation>(DeleteInviteMutation);
+	const organizationData = useFragment(DeleteInviteModalOrganizationFragment, organization);
+	const [commitMutation, isMutationInFlight] = useMutation<DeleteInviteModalMutation>(DeleteInviteMutation);
 
 	function handleDeleteAllInvites() {
 		commitMutation({
 			variables: {
 				inviteId: data.id,
 				organizationId: organizationData.id,
-				connections: [invitesConnectionId],
+				connections: [invitesConnectionId]
 			},
 			onCompleted(response) {
 				onClose();
-				if (
-					response.deleteOrganizationInvite.__typename ===
-					"OrganizationInviteEdge"
-				) {
+				if (response.deleteOrganizationInvite.__typename === 'OrganizationInviteEdge') {
 					// handle success
-				} else if (
-					response.deleteOrganizationInvite.__typename ===
-					"OrganizationNotFoundError"
-				) {
+				} else if (response.deleteOrganizationInvite.__typename === 'OrganizationNotFoundError') {
 					addToast({
-						description: "An unexpected error occurred. Please try again.",
-						color: "danger",
+						description: 'An unexpected error occurred. Please try again.',
+						color: 'danger'
 					});
-				} else if (
-					response.deleteOrganizationInvite.__typename ===
-					"OrganizationInviteNotFoundError"
-				) {
+				} else if (response.deleteOrganizationInvite.__typename === 'OrganizationInviteNotFoundError') {
 					addToast({
-						description: "An unexpected error occurred. Please try again.",
-						color: "danger",
+						description: 'An unexpected error occurred. Please try again.',
+						color: 'danger'
 					});
-				} else if (
-					response.deleteOrganizationInvite.__typename ===
-					"OrganizationAuthorizationError"
-				) {
+				} else if (response.deleteOrganizationInvite.__typename === 'OrganizationAuthorizationError') {
 					addToast({
-						description: "You are not authorized to perform this action.",
-						color: "danger",
+						description: 'You are not authorized to perform this action.',
+						color: 'danger'
 					});
 				}
-			},
+			}
 		});
 	}
 	return (
-		<>
-			<Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
-				<ModalContent className="flex flex-col w-full p-4 sm:p-6">
-					<ModalHeader>
-						<h2 className="text-lg font-medium">Delete Organization Invite</h2>
-					</ModalHeader>
-					<ModalBody>
-						<p className="text-foreground-500">
-							Are you sure you want to delete this invite? <b>{data.email}</b>{" "}
-							won't be invited to the organization.
-						</p>
-					</ModalBody>
-					<ModalFooter className="w-full">
-						<Button variant="light" onPress={onClose}>
-							Cancel
-						</Button>
-						<Button
-							color="danger"
-							isLoading={isMutationInFlight}
-							onPress={handleDeleteAllInvites}
-						>
-							Delete Invite
-						</Button>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
-		</>
+		<Modal isOpen={isOpen} onOpenChange={onOpenChange} size='xl'>
+			<ModalContent className='flex flex-col w-full p-4 sm:p-6'>
+				<ModalHeader>
+					<h2 className='text-lg font-medium'>Delete Organization Invite</h2>
+				</ModalHeader>
+				<ModalBody>
+					<p className='text-foreground-500'>
+						Are you sure you want to delete this invite? <b>{data.email}</b> won't be invited to the organization.
+					</p>
+				</ModalBody>
+				<ModalFooter className='w-full'>
+					<Button variant='light' onPress={onClose}>
+						Cancel
+					</Button>
+					<Button color='danger' isLoading={isMutationInFlight} onPress={handleDeleteAllInvites}>
+						Delete Invite
+					</Button>
+				</ModalFooter>
+			</ModalContent>
+		</Modal>
 	);
 }
