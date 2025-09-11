@@ -126,6 +126,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		{
 			slug: slug,
 			jobSlug: jobSlug
+		},
+		{
+			next: {
+				revalidate: 60 * 5 // revalidate this after 5 minutes
+			}
 		}
 	);
 
@@ -159,10 +164,18 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 	const slug = decodeURIComponent(pathParams.slug);
 	const jobSlug = decodeURIComponent(pathParams.jobSlug);
 
-	const preloadedQuery = await loadSerializableQuery<typeof JobDetailViewQueryNode, pageJobDetailViewQuery>(PageJobDetailViewQuery, {
-		slug: slug,
-		jobSlug: jobSlug
-	});
+	const preloadedQuery = await loadSerializableQuery<typeof JobDetailViewQueryNode, pageJobDetailViewQuery>(
+		PageJobDetailViewQuery,
+		{
+			slug: slug,
+			jobSlug: jobSlug
+		},
+		{
+			next: {
+				revalidate: 60 * 5 // revalidate this after 5 minutes
+			}
+		}
+	);
 
 	const data = readInlineData<pageJobDetailServerFragment$key>(PageJobDetailServerFragment, preloadedQuery.data);
 

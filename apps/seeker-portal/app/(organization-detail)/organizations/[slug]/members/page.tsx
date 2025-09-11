@@ -62,6 +62,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		PageOrganizationMembersMetadataQuery,
 		{
 			slug: slug
+		},
+		{
+			next: {
+				revalidate: 60 * 5 // revalidate this after 5 minutes
+			}
 		}
 	);
 
@@ -90,6 +95,11 @@ export default async function OrganizationMembersPage({ params }: { params: Prom
 		PageOrganizationMembersViewQuery,
 		{
 			slug: slug
+		},
+		{
+			next: {
+				revalidate: 60 * 5 // revalidate this after 5 minutes
+			}
 		}
 	);
 
