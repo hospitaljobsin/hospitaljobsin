@@ -1,20 +1,13 @@
-import { useMemo } from "react";
-import type { PreloadFetchPolicy, PreloadedQuery } from "react-relay";
-import type {
-	ConcreteRequest,
-	IEnvironment,
-	OperationType,
-} from "relay-runtime";
-import { responseCache } from "./environments/client";
-import type { SerializablePreloadedQuery } from "./serializablePreloadedQuery";
+import { useMemo } from 'react';
+import type { PreloadedQuery, PreloadFetchPolicy } from 'react-relay';
+import type { ConcreteRequest, IEnvironment, OperationType } from 'relay-runtime';
+import { responseCache } from './environments/client';
+import type { SerializablePreloadedQuery } from './serializablePreloadedQuery';
 
-export default function useSerializablePreloadedQuery<
-	TRequest extends ConcreteRequest,
-	TQuery extends OperationType,
->(
+export default function useSerializablePreloadedQuery<TRequest extends ConcreteRequest, TQuery extends OperationType>(
 	environment: IEnvironment,
 	preloadQuery: SerializablePreloadedQuery<TRequest, TQuery>,
-	fetchPolicy: PreloadFetchPolicy = "store-or-network",
+	fetchPolicy: PreloadFetchPolicy = 'store-or-network'
 ): PreloadedQuery<TQuery> {
 	useMemo(() => {
 		writePreloadedQueryToCache(preloadQuery);
@@ -26,23 +19,17 @@ export default function useSerializablePreloadedQuery<
 		fetchPolicy,
 		isDisposed: false,
 		name: preloadQuery.params.name,
-		kind: "PreloadedQuery",
+		kind: 'PreloadedQuery',
 		variables: preloadQuery.variables,
 		dispose: () => {
 			return;
-		},
+		}
 	};
 }
 
-function writePreloadedQueryToCache<
-	TRequest extends ConcreteRequest,
-	TQuery extends OperationType,
->(preloadedQueryObject: SerializablePreloadedQuery<TRequest, TQuery>) {
-	const cacheKey =
-		preloadedQueryObject.params.id ?? preloadedQueryObject.params.cacheID;
-	responseCache?.set(
-		cacheKey,
-		preloadedQueryObject.variables,
-		preloadedQueryObject.graphQLResponse,
-	);
+function writePreloadedQueryToCache<TRequest extends ConcreteRequest, TQuery extends OperationType>(
+	preloadedQueryObject: SerializablePreloadedQuery<TRequest, TQuery>
+) {
+	const cacheKey = preloadedQueryObject.params.id ?? preloadedQueryObject.params.cacheID;
+	responseCache?.set(cacheKey, preloadedQueryObject.variables, preloadedQueryObject.graphQLResponse);
 }

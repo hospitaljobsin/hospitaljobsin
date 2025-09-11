@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<12a413fe48a11b00afd8a2e60870d45d>>
- * @relayHash 55e401f0809cc74a8f7f855b2d8bd46a
+ * @generated SignedSource<<af8726769d136c972a8021b4079c2584>>
+ * @relayHash 209b59b33cdcc3ecd3d9ce55a21ed14c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 55e401f0809cc74a8f7f855b2d8bd46a
+// @relayRequestID 209b59b33cdcc3ecd3d9ce55a21ed14c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -23,13 +23,13 @@ export type AppliedJobsClientComponentQuery = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "kind": "Literal",
-    "name": "first",
-    "value": 10
-  }
-],
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
 v1 = {
   "alias": null,
   "args": null,
@@ -37,18 +37,18 @@ v1 = {
   "name": "id",
   "storageKey": null
 },
-v2 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "slug",
-  "storageKey": null
-},
+v2 = [
+  {
+    "kind": "Literal",
+    "name": "first",
+    "value": 10
+  }
+],
 v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "__typename",
+  "name": "slug",
   "storageKey": null
 };
 return {
@@ -75,7 +75,72 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v0/*: any*/),
+        "args": null,
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "viewer",
+        "plural": false,
+        "selections": [
+          (v0/*: any*/),
+          {
+            "kind": "TypeDiscriminator",
+            "abstractKey": "__isViewerPayload"
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              (v1/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  },
+                  (v1/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "type": "Account",
+            "abstractKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v1/*: any*/)
+            ],
+            "type": "Node",
+            "abstractKey": "__isNode"
+          }
+        ],
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": (v2/*: any*/),
         "concreteType": "JobApplicantConnection",
         "kind": "LinkedField",
         "name": "appliedJobs",
@@ -114,7 +179,7 @@ return {
                         "name": "isSaved",
                         "storageKey": null
                       },
-                      (v2/*: any*/),
+                      (v3/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -151,7 +216,7 @@ return {
                             "name": "logoUrl",
                             "storageKey": null
                           },
-                          (v2/*: any*/),
+                          (v3/*: any*/),
                           (v1/*: any*/),
                           {
                             "alias": null,
@@ -161,7 +226,7 @@ return {
                             "name": "verificationStatus",
                             "plural": false,
                             "selections": [
-                              (v3/*: any*/),
+                              (v0/*: any*/),
                               {
                                 "kind": "InlineFragment",
                                 "selections": [
@@ -283,7 +348,7 @@ return {
                     ],
                     "storageKey": null
                   },
-                  (v3/*: any*/)
+                  (v0/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -327,41 +392,17 @@ return {
       },
       {
         "alias": null,
-        "args": (v0/*: any*/),
+        "args": (v2/*: any*/),
         "filters": null,
         "handle": "connection",
         "key": "AppliedJobListFragment_appliedJobs",
         "kind": "LinkedHandle",
         "name": "appliedJobs"
-      },
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "viewer",
-        "plural": false,
-        "selections": [
-          (v3/*: any*/),
-          {
-            "kind": "TypeDiscriminator",
-            "abstractKey": "__isViewerPayload"
-          },
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              (v1/*: any*/)
-            ],
-            "type": "Node",
-            "abstractKey": "__isNode"
-          }
-        ],
-        "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "55e401f0809cc74a8f7f855b2d8bd46a",
+    "id": "209b59b33cdcc3ecd3d9ce55a21ed14c",
     "metadata": {},
     "name": "AppliedJobsClientComponentQuery",
     "operationKind": "query",

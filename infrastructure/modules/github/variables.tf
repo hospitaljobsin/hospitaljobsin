@@ -67,6 +67,12 @@ variable "sst_jwe_secret_key" {
   sensitive   = true
 }
 
+variable "sst_revalidate_secret" {
+  type        = string
+  description = "The revalidate secret for the SST application."
+  sensitive   = true
+}
+
 variable "sentry_backend_dsn" {
   type        = string
   description = "The Sentry DSN for the backend."

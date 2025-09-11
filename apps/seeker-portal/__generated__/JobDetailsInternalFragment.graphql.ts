@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<50aa2e3e7a594220a93b1df15274b300>>
+ * @generated SignedSource<<56bb138cd93835d802baccf5719f40d8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,8 +18,6 @@ export type JobDetailsInternalFragment$data = {
   readonly currency: Currency;
   readonly description: string;
   readonly descriptionHtml: string;
-  readonly externalApplicationUrl: string | null | undefined;
-  readonly isApplied: boolean;
   readonly isSalaryNegotiable: boolean;
   readonly location: string | null | undefined;
   readonly maxExperience: number | null | undefined;
@@ -47,7 +45,6 @@ export type JobDetailsInternalFragment$data = {
   readonly type: JobType | null | undefined;
   readonly vacancies: number | null | undefined;
   readonly workMode: WorkMode | null | undefined;
-  readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment">;
   readonly " $fragmentType": "JobDetailsInternalFragment";
 };
 export type JobDetailsInternalFragment$key = {
@@ -76,11 +73,6 @@ return {
   "metadata": null,
   "name": "JobDetailsInternalFragment",
   "selections": [
-    {
-      "args": null,
-      "kind": "FragmentSpread",
-      "name": "JobControlsFragment"
-    },
     {
       "alias": null,
       "args": null,
@@ -165,20 +157,6 @@ return {
       "args": null,
       "kind": "ScalarField",
       "name": "createdAt",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "isApplied",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "externalApplicationUrl",
       "storageKey": null
     },
     {
@@ -310,6 +288,6 @@ return {
 };
 })();
 
-(node as any).hash = "eacc5e8ecb308ba0d2517ca530a86023";
+(node as any).hash = "ab1fc112070bdb7356b938abb0ec6b7c";
 
 export default node;

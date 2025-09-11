@@ -1,18 +1,13 @@
-"use client";
+'use client';
 
-import type { OrganizationMembersViewClientComponentFragment$key } from "@/__generated__/OrganizationMembersViewClientComponentFragment.graphql";
-import type OrganizationMembersViewQueryNode from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
-import type { pageOrganizationMembersViewQuery } from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
-import PageOrganizationMembersViewQuery from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
-import OrganizationMembersTab from "@/components/organization-detail/members-tab/OrganizationMembersTab";
-import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
-import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
-import {
-	graphql,
-	useFragment,
-	usePreloadedQuery,
-	useRelayEnvironment,
-} from "react-relay";
+import type { OrganizationMembersViewClientComponentFragment$key } from '@/__generated__/OrganizationMembersViewClientComponentFragment.graphql';
+import type OrganizationMembersViewQueryNode from '@/__generated__/pageOrganizationMembersViewQuery.graphql';
+import type { pageOrganizationMembersViewQuery } from '@/__generated__/pageOrganizationMembersViewQuery.graphql';
+import PageOrganizationMembersViewQuery from '@/__generated__/pageOrganizationMembersViewQuery.graphql';
+import OrganizationMembersTab from '@/components/organization-detail/members-tab/OrganizationMembersTab';
+import type { SerializablePreloadedQuery } from '@/lib/relay/serializablePreloadedQuery';
+import useSerializablePreloadedQuery from '@/lib/relay/useSerializablePreloadedQuery';
+import { graphql, useFragment, usePreloadedQuery, useRelayEnvironment } from 'react-relay';
 
 const OrganizationMembersViewClientComponentFragment = graphql`
  fragment OrganizationMembersViewClientComponentFragment on Query @argumentDefinitions(
@@ -26,24 +21,19 @@ const OrganizationMembersViewClientComponentFragment = graphql`
 `;
 
 export default function OrganizationMembersViewClientComponent(props: {
-	preloadedQuery: SerializablePreloadedQuery<
-		typeof OrganizationMembersViewQueryNode,
-		pageOrganizationMembersViewQuery
-	>;
+	preloadedQuery: SerializablePreloadedQuery<typeof OrganizationMembersViewQueryNode, pageOrganizationMembersViewQuery>;
+	slug: string;
 }) {
 	const environment = useRelayEnvironment();
-	const queryRef = useSerializablePreloadedQuery<
-		typeof OrganizationMembersViewQueryNode,
-		pageOrganizationMembersViewQuery
-	>(environment, props.preloadedQuery, "store-or-network");
+	const queryRef = useSerializablePreloadedQuery<typeof OrganizationMembersViewQueryNode, pageOrganizationMembersViewQuery>(
+		environment,
+		props.preloadedQuery,
+		'store-or-network'
+	);
 
 	const data = usePreloadedQuery(PageOrganizationMembersViewQuery, queryRef);
 
-	const rootQuery =
-		useFragment<OrganizationMembersViewClientComponentFragment$key>(
-			OrganizationMembersViewClientComponentFragment,
-			data,
-		);
+	const rootQuery = useFragment<OrganizationMembersViewClientComponentFragment$key>(OrganizationMembersViewClientComponentFragment, data);
 
-	return <OrganizationMembersTab rootQuery={rootQuery} />;
+	return <OrganizationMembersTab rootQuery={rootQuery} slug={props.slug} />;
 }

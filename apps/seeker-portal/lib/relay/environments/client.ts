@@ -1,62 +1,49 @@
-"use client";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
-import type {
-	CacheConfig,
-	GraphQLResponse,
-	RequestParameters,
-	Variables,
-} from "relay-runtime";
-import {
-	Environment,
-	Network,
-	QueryResponseCache,
-	RecordSource,
-	Store,
-} from "relay-runtime";
+'use client';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
+import type { CacheConfig, GraphQLResponse, RequestParameters, Variables } from 'relay-runtime';
+import { Environment, Network, QueryResponseCache, RecordSource, Store } from 'relay-runtime';
 
 const CACHE_TTL = 5 * 1000; // 5 seconds, to resolve preloaded results
 
-export async function networkFetch(
-	request: RequestParameters,
-	variables: Variables,
-): Promise<GraphQLResponse> {
-	let method = "POST";
+export async function networkFetch(request: RequestParameters, variables: Variables, options: RequestInit = {}): Promise<GraphQLResponse> {
+	let method = 'POST';
 	let url = `${env.NEXT_PUBLIC_API_URL}/graphql`;
 	let body: string | undefined;
 	const headers: Record<string, string> = {
-		Accept: "application/json",
-		"Accept-Encoding": "gzip",
+		Accept: 'application/json',
+		'Accept-Encoding': 'gzip'
 	};
 
-	if (request.operationKind === "query") {
+	if (request.operationKind === 'query') {
 		// For GET requests, use query parameters as per GraphQL over HTTP specification
-		method = "GET";
+		method = 'GET';
 		const searchParams = new URLSearchParams();
 
 		if (request.id) {
-			searchParams.append("document_id", request.id);
+			searchParams.append('document_id', request.id);
 		}
 
 		if (variables && Object.keys(variables).length > 0) {
-			searchParams.append("variables", JSON.stringify(variables));
+			searchParams.append('variables', JSON.stringify(variables));
 		}
 
 		url = `${url}?${searchParams.toString()}`;
 	} else {
 		// For POST requests (mutations), use request body
-		headers["Content-Type"] = "application/json";
+		headers['Content-Type'] = 'application/json';
 		body = JSON.stringify({
 			document_id: request.id,
-			variables,
+			variables
 		});
 	}
 
 	const resp = await fetch(url, {
 		method,
 		headers,
-		credentials: "include",
+		credentials: 'include',
 		body,
+		...options
 	});
 	const json = await resp.json();
 
@@ -68,17 +55,13 @@ export async function networkFetch(
 			switch (err.extensions?.code) {
 				// Apollo Server sets code to UNAUTHENTICATED
 				// when an AuthenticationError is thrown in a resolver
-				case "UNAUTHENTICATED":
+				case 'UNAUTHENTICATED':
 					window.location.href = links.login();
 			}
 		}
 		console.error(json.errors);
 		throw new Error(
-			`Error fetching GraphQL query '${
-				request.name
-			}' with variables '${JSON.stringify(variables)}': ${JSON.stringify(
-				json.errors,
-			)}`,
+			`Error fetching GraphQL query '${request.name}' with variables '${JSON.stringify(variables)}': ${JSON.stringify(json.errors)}`
 		);
 	}
 
@@ -87,19 +70,19 @@ export async function networkFetch(
 
 export const responseCache: QueryResponseCache = new QueryResponseCache({
 	size: 100,
-	ttl: CACHE_TTL,
+	ttl: CACHE_TTL
 });
 
 function createNetwork() {
-	async function fetchResponse(
-		params: RequestParameters,
-		variables: Variables,
-		cacheConfig: CacheConfig,
-	) {
-		const isQuery = params.operationKind === "query";
+	async function fetchResponse(params: RequestParameters, variables: Variables, cacheConfig: CacheConfig) {
+		console.log('fetching CLIENT SIDE...', params.id);
+		const isQuery = params.operationKind === 'query';
 		const cacheKey = params.id ?? params.cacheID;
 		const forceFetch = cacheConfig?.force;
+
+		// The cache is primarily useful for server-side rendered data
 		if (isQuery && !forceFetch) {
+			// Only use cache during SSR, not in client components
 			const fromCache = responseCache.get(cacheKey, variables);
 			if (fromCache != null) {
 				return Promise.resolve(fromCache);
@@ -114,11 +97,11 @@ function createNetwork() {
 }
 
 export function createClientEnvironment() {
-	console.log("creating a new client environment");
+	console.log('creating a new client environment');
 	return new Environment({
 		log: console.log,
 		network: createNetwork(),
 		store: new Store(RecordSource.create()),
-		isServer: false,
+		isServer: false
 	});
 }

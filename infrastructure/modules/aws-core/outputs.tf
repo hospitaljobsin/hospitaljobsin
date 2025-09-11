@@ -202,3 +202,8 @@ output "sst_jwe_secret_key" {
   value     = random_bytes.jwe_secret.hex
   sensitive = true
 }
+
+output "sst_revalidate_secret" {
+  value     = random_bytes.revalidate_secret.hex
+  sensitive = true
+}

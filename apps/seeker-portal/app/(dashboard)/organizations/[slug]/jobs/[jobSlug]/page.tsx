@@ -1,20 +1,21 @@
-import type { pageJobDetailMetadataFragment$key } from "@/__generated__/pageJobDetailMetadataFragment.graphql";
-import type JobDetailMetadataQueryNode from "@/__generated__/pageJobDetailMetadataQuery.graphql";
-import type { pageJobDetailMetadataQuery } from "@/__generated__/pageJobDetailMetadataQuery.graphql";
-import type { pageJobDetailServerFragment$key } from "@/__generated__/pageJobDetailServerFragment.graphql";
-import type JobDetailViewQueryNode from "@/__generated__/pageJobDetailViewQuery.graphql";
-import type { pageJobDetailViewQuery } from "@/__generated__/pageJobDetailViewQuery.graphql";
-import { env } from "@/lib/env/client";
-import { getEmploymentType } from "@/lib/jsonLd";
-import links from "@/lib/links";
-import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { graphql, readInlineData } from "relay-runtime";
-import type { JobPosting, WithContext } from "schema-dts";
-import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
+import type { pageJobDetailMetadataFragment$key } from '@/__generated__/pageJobDetailMetadataFragment.graphql';
+import type JobDetailMetadataQueryNode from '@/__generated__/pageJobDetailMetadataQuery.graphql';
+import type { pageJobDetailMetadataQuery } from '@/__generated__/pageJobDetailMetadataQuery.graphql';
+import type { pageJobDetailServerFragment$key } from '@/__generated__/pageJobDetailServerFragment.graphql';
+import type JobDetailViewQueryNode from '@/__generated__/pageJobDetailViewQuery.graphql';
+import type { pageJobDetailViewQuery } from '@/__generated__/pageJobDetailViewQuery.graphql';
+import type { pageTrendingJobsQuery } from '@/__generated__/pageTrendingJobsQuery.graphql';
+import { env } from '@/lib/env/client';
+import { getEmploymentType } from '@/lib/jsonLd';
+import links from '@/lib/links';
+import loadSerializableQuery from '@/lib/relay/loadSerializableQuery';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { graphql, readInlineData } from 'relay-runtime';
+import type { JobPosting, WithContext } from 'schema-dts';
+import JobDetailViewClientComponent from './JobDetailViewClientComponent';
 
-export const PageJobDetailViewQuery = graphql`
+const PageJobDetailViewQuery = graphql`
   query pageJobDetailViewQuery($slug: String!, $jobSlug: String!) {
 	...pageJobDetailServerFragment @arguments(slug: $slug, jobSlug: $jobSlug)
     ...JobDetailViewClientComponentFragment @arguments(slug: $slug, jobSlug: $jobSlug)
@@ -115,43 +116,45 @@ const PageJobDetailMetadataFragment = graphql`
   }
 `;
 
-export async function generateMetadata({
-	params,
-}: {
-	params: Promise<{ slug: string; jobSlug: string }>;
-}): Promise<Metadata> {
+const PageTrendingJobsQuery = graphql`
+  query pageTrendingJobsQuery {
+	...TrendingJobListFragment
+  }
+`;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string; jobSlug: string }> }): Promise<Metadata> {
 	const pathParams = await params;
 	const slug = decodeURIComponent(pathParams.slug);
 	const jobSlug = decodeURIComponent(pathParams.jobSlug);
 
-	console.log("generating metadata for job", slug, jobSlug);
-	const preloadedQuery = await loadSerializableQuery<
-		typeof JobDetailMetadataQueryNode,
-		pageJobDetailMetadataQuery
-	>(PageJobDetailMetadataQuery, {
-		slug: slug,
-		jobSlug: jobSlug,
-	});
-
-	const data = readInlineData<pageJobDetailMetadataFragment$key>(
-		PageJobDetailMetadataFragment,
-		preloadedQuery.data,
+	console.log('generating metadata for job', slug, jobSlug);
+	const preloadedQuery = await loadSerializableQuery<typeof JobDetailMetadataQueryNode, pageJobDetailMetadataQuery>(
+		PageJobDetailMetadataQuery,
+		{
+			slug: slug,
+			jobSlug: jobSlug
+		},
+		{
+			cache: 'force-cache',
+			next: {
+				tags: [`job:${slug}:${jobSlug}`] // invalidate this cache when job is updated
+			}
+		}
 	);
 
-	if (data.organization.__typename !== "Organization") {
+	const data = readInlineData<pageJobDetailMetadataFragment$key>(PageJobDetailMetadataFragment, preloadedQuery.data);
+
+	if (data.organization.__typename !== 'Organization') {
 		return {
-			title: "Organization Not found",
-			description: "The organization you are looking for does not exist",
+			title: 'Organization Not found',
+			description: 'The organization you are looking for does not exist'
 		};
 	}
 
-	if (
-		data.organization.job.__typename !== "Job" ||
-		!data.organization.job.isVisible
-	) {
+	if (data.organization.job.__typename !== 'Job' || !data.organization.job.isVisible) {
 		return {
-			title: "Job Not found",
-			description: "The job you are looking for does not exist",
+			title: 'Job Not found',
+			description: 'The job you are looking for does not exist'
 		};
 	}
 
@@ -159,44 +162,52 @@ export async function generateMetadata({
 		title: data.organization.job.title,
 		description: data.organization.job.descriptionCleaned,
 		openGraph: {
-			images: [data.organization.bannerUrl],
-		},
+			images: [data.organization.bannerUrl]
+		}
 	};
 }
 
-export default async function JobDetailPage({
-	params,
-}: {
-	params: Promise<{ slug: string; jobSlug: string }>;
-}) {
+export default async function JobDetailPage({ params }: { params: Promise<{ slug: string; jobSlug: string }> }) {
 	const pathParams = await params;
 	const slug = decodeURIComponent(pathParams.slug);
 	const jobSlug = decodeURIComponent(pathParams.jobSlug);
 
-	const preloadedQuery = await loadSerializableQuery<
-		typeof JobDetailViewQueryNode,
-		pageJobDetailViewQuery
-	>(PageJobDetailViewQuery, {
-		slug: slug,
-		jobSlug: jobSlug,
-	});
-
-	const data = readInlineData<pageJobDetailServerFragment$key>(
-		PageJobDetailServerFragment,
-		preloadedQuery.data,
+	const preloadedQuery = await loadSerializableQuery<typeof JobDetailViewQueryNode, pageJobDetailViewQuery>(
+		PageJobDetailViewQuery,
+		{
+			slug: slug,
+			jobSlug: jobSlug
+		},
+		{
+			cache: 'force-cache',
+			next: {
+				tags: [`job:${slug}:${jobSlug}`] // invalidate this cache when job is updated
+			}
+		}
 	);
 
-	if (
-		data.organization.__typename !== "Organization" ||
-		data.organization.job.__typename !== "Job" ||
-		!data.organization.job.isVisible
-	) {
+	const data = readInlineData<pageJobDetailServerFragment$key>(PageJobDetailServerFragment, preloadedQuery.data);
+
+	if (data.organization.__typename !== 'Organization' || data.organization.job.__typename !== 'Job' || !data.organization.job.isVisible) {
 		notFound();
 	}
 
+	const preloadedTrendingQuery = await loadSerializableQuery<typeof JobDetailViewQueryNode, pageTrendingJobsQuery>(
+		PageTrendingJobsQuery,
+		{},
+		{
+			next: {
+				revalidate: 60 * 60, // revalidate this after 60 minutes
+				tags: ['trending-jobs']
+			}
+		}
+	);
+
+	// JSON-LD structured data for the job posting
+
 	const jsonLd: WithContext<JobPosting> = {
-		"@context": "https://schema.org",
-		"@type": "JobPosting",
+		'@context': 'https://schema.org',
+		'@type': 'JobPosting',
 		image: data.organization.bannerUrl,
 		title: data.organization.job.title,
 		url: `${env.NEXT_PUBLIC_URL}${links.jobDetail(slug, jobSlug)}`,
@@ -204,69 +215,62 @@ export default async function JobDetailPage({
 		jobLocation: !data.organization.job.address
 			? undefined
 			: {
-					"@type": "Place",
+					'@type': 'Place',
 					address: {
-						"@type": "PostalAddress",
-						addressLocality:
-							data.organization.job.address.addressLocality || undefined,
-						addressRegion:
-							data.organization.job.address.addressRegion || undefined,
+						'@type': 'PostalAddress',
+						addressLocality: data.organization.job.address.addressLocality || undefined,
+						addressRegion: data.organization.job.address.addressRegion || undefined,
 						postalCode: data.organization.job.address.postalCode || undefined,
-						addressCountry: data.organization.job.address.country || "IN",
-					},
+						addressCountry: data.organization.job.address.country || 'IN'
+					}
 				},
 		datePosted: new Date(data.organization.job.createdAt).toISOString(),
 		validThrough: new Date(data.organization.job.expiresAt).toISOString(),
-		employmentType: data.organization.job.type
-			? getEmploymentType(data.organization.job.type)
-			: undefined,
-		jobLocationType:
-			data.organization.job.workMode === "REMOTE" ? "TELECOMMUTE" : undefined,
+		employmentType: data.organization.job.type ? getEmploymentType(data.organization.job.type) : undefined,
+		jobLocationType: data.organization.job.workMode === 'REMOTE' ? 'TELECOMMUTE' : undefined,
 
-		applicantLocationRequirements: data.organization.job.applicantLocations.map(
-			(location) => ({
-				"@type": "Country",
-				name: location,
-			}),
-		),
+		applicantLocationRequirements: data.organization.job.applicantLocations.map(location => ({
+			'@type': 'Country',
+			name: location
+		})),
 		directApply: true,
 		hiringOrganization: {
-			"@type": "Organization",
+			'@type': 'Organization',
 			name: data.organization.name,
 			description: data.organization.description || undefined,
 			logo: data.organization.logoUrl,
-			sameAs: data.organization.website || undefined,
+			sameAs: data.organization.website || undefined
 		},
 		baseSalary:
 			data.organization.job.minSalary || data.organization.job.maxSalary
 				? {
-						"@type": "MonetaryAmount",
-						currency: "INR",
+						'@type': 'MonetaryAmount',
+						currency: 'INR',
 						value: {
-							"@type": "QuantitativeValue",
-							unitText: "MONTH",
+							'@type': 'QuantitativeValue',
+							unitText: 'MONTH',
 							minValue: data.organization.job.minSalary || undefined,
-							maxValue: data.organization.job.maxSalary || undefined,
-						},
+							maxValue: data.organization.job.maxSalary || undefined
+						}
 					}
 				: undefined,
 		identifier: {
-			"@type": "PropertyValue",
-			name: "Job Slug",
-			value: data.organization.job.slug,
-		},
+			'@type': 'PropertyValue',
+			name: 'Job Slug',
+			value: data.organization.job.slug
+		}
 	};
 
 	return (
 		<>
 			<script
-				type="application/ld+json"
+				type='application/ld+json'
 				// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 				dangerouslySetInnerHTML={{
-					__html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+					__html: JSON.stringify(jsonLd).replace(/</g, '\\u003c')
 				}}
 			/>
-			<JobDetailViewClientComponent preloadedQuery={preloadedQuery} />
+			<JobDetailViewClientComponent preloadedQuery={preloadedQuery} preloadedTrendingQuery={preloadedTrendingQuery} />
 		</>
 	);
 }

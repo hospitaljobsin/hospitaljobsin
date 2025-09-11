@@ -66,6 +66,7 @@ from app.organizations.exceptions import (
 )
 from app.organizations.repositories import OrganizationRepo
 from app.organizations.services import OrganizationMemberService
+from app.revalidation.services import RevalidationService
 
 
 class SavedJobService:
@@ -149,6 +150,7 @@ class JobService:
         job_application_form_repo: JobApplicationFormRepo,
         job_metric_repo: JobMetricRepo,
         region_repo: RegionRepo,
+        revalidation_service: RevalidationService,
     ) -> None:
         self._job_repo = job_repo
         self._organization_repo = organization_repo
@@ -156,6 +158,7 @@ class JobService:
         self._job_application_form_repo = job_application_form_repo
         self._job_metric_repo = job_metric_repo
         self._region_repo = region_repo
+        self._revalidation_service = revalidation_service
 
     async def log_view_start(
         self,
@@ -339,13 +342,13 @@ class JobService:
             job_id = ObjectId(job_id)
         except InvalidId:
             return Err(JobNotFoundError())
-        existing_job = await self._job_repo.get(job_id)
+        existing_job = await self._job_repo.get(job_id, fetch_links=True)
         if existing_job is None:
             return Err(JobNotFoundError())
 
         if not await self._organization_member_service.is_member(
             account_id=account.id,
-            organization_id=existing_job.organization.ref.id,
+            organization_id=existing_job.organization.id,
         ):
             return Err(OrganizationAuthorizationError())
 
@@ -409,6 +412,10 @@ class JobService:
             is_active=is_active,
         )
 
+        await self._revalidation_service.revalidate_tag(
+            tag=f"job:{job.organization.slug}:{job.slug}"
+        )
+
         return Ok(job)
 
     async def publish(
@@ -425,7 +432,7 @@ class JobService:
             job_id = ObjectId(job_id)
         except InvalidId:
             return Err(JobNotFoundError())
-        existing_job = await self._job_repo.get(job_id=job_id)
+        existing_job = await self._job_repo.get(job_id=job_id, fetch_links=True)
         if existing_job is None:
             return Err(JobNotFoundError())
 
@@ -434,11 +441,15 @@ class JobService:
 
         if not await self._organization_member_service.is_admin(
             account_id=account.id,
-            organization_id=existing_job.organization.ref.id,
+            organization_id=existing_job.organization.id,
         ):
             return Err(OrganizationAuthorizationError())
 
         existing_job = await self._job_repo.update_active(existing_job, is_active=True)
+
+        await self._revalidation_service.revalidate_tag(
+            tag=f"job:{existing_job.organization.slug}:{existing_job.slug}"
+        )
 
         return Ok(existing_job)
 
@@ -454,13 +465,13 @@ class JobService:
             job_id = ObjectId(job_id)
         except InvalidId:
             return Err(JobNotFoundError())
-        existing_job = await self._job_repo.get(job_id=job_id)
+        existing_job = await self._job_repo.get(job_id=job_id, fetch_links=True)
         if existing_job is None:
             return Err(JobNotFoundError())
 
         if not await self._organization_member_service.is_admin(
             account_id=account.id,
-            organization_id=existing_job.organization.ref.id,
+            organization_id=existing_job.organization.id,
         ):
             return Err(OrganizationAuthorizationError())
 
@@ -468,6 +479,10 @@ class JobService:
             return Err(JobNotPublishedError())
 
         existing_job = await self._job_repo.update_active(existing_job, is_active=False)
+
+        await self._revalidation_service.revalidate_tag(
+            tag=f"job:{existing_job.organization.slug}:{existing_job.slug}"
+        )
 
         return Ok(existing_job)
 
@@ -483,17 +498,21 @@ class JobService:
             job_id = ObjectId(job_id)
         except InvalidId:
             return Err(JobNotFoundError())
-        existing_job = await self._job_repo.get(job_id=job_id)
+        existing_job = await self._job_repo.get(job_id=job_id, fetch_links=True)
         if existing_job is None:
             return Err(JobNotFoundError())
 
         if not await self._organization_member_service.is_admin(
             account_id=account.id,
-            organization_id=existing_job.organization.ref.id,
+            organization_id=existing_job.organization.id,
         ):
             return Err(OrganizationAuthorizationError())
 
         await self._job_repo.delete(existing_job)
+
+        await self._revalidation_service.revalidate_tag(
+            tag=f"job:{existing_job.organization.slug}:{existing_job.slug}"
+        )
 
         return Ok(existing_job)
 
