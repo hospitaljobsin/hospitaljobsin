@@ -9,8 +9,6 @@ import { notFound } from 'next/navigation';
 import { graphql, readInlineData } from 'relay-runtime';
 import OrganizationMembersViewClientComponent from './OrganizationMembersViewClientComponent';
 
-// TODO: make this work properly with anonymous server rendering
-
 export const PageOrganizationMembersViewQuery = graphql`
   query pageOrganizationMembersViewQuery($slug: String!) {
 	...pageOrganizationMembersServerFragment @arguments(slug: $slug)

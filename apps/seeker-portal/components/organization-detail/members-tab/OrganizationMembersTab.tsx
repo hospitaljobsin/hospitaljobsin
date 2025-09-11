@@ -1,11 +1,15 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 'use client';
 import type { OrganizationMembersTabFragment$key } from '@/__generated__/OrganizationMembersTabFragment.graphql';
+import OrgDetailHeaderSkeleton from '@/components/layout/OrgDetailHeaderSkeleton';
 import dynamic from 'next/dynamic';
 import { graphql, useFragment } from 'react-relay';
 import OrganizationMembersList from './OrganizationMembersList';
 
-const OrgDetailHeaderClientComponent = dynamic(() => import('@/components/layout/OrgDetailHeaderClientComponent'), { ssr: false });
+const OrgDetailHeaderClientComponent = dynamic(() => import('@/components/layout/OrgDetailHeaderClientComponent'), {
+	ssr: false,
+	loading: () => <OrgDetailHeaderSkeleton />
+});
 
 const OrganizationMembersTabFragment = graphql`
  fragment OrganizationMembersTabFragment on Query @argumentDefinitions(
