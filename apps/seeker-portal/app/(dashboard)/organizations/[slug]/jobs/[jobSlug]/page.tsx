@@ -137,7 +137,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		{
 			cache: 'force-cache',
 			next: {
-				tags: [`job:${slug}:${jobSlug}`] // invalidate this cache when job is updated
+				tags: [`job:${slug}:${jobSlug}`, `organization:${slug}`] // invalidate this cache when job is updated
 			}
 		}
 	);
@@ -181,7 +181,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 		{
 			cache: 'force-cache',
 			next: {
-				tags: [`job:${slug}:${jobSlug}`] // invalidate this cache when job is updated
+				tags: [`job:${slug}:${jobSlug}`, `organization:${slug}`] // invalidate this cache when job is updated
 			}
 		}
 	);
