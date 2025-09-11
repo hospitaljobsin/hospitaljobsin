@@ -23,6 +23,8 @@ export default function OrgDetailHeaderSkeleton() {
 					</NavbarBrand>
 					<NavbarItem className='w-full'>
 						<JobSearchAutocomplete
+							value=''
+							onValueChange={() => {}}
 							isDisabled
 							placeholder='Search by Speciality or keyword'
 							startContent={<SearchIcon size={16} className='text-foreground-500' />}
