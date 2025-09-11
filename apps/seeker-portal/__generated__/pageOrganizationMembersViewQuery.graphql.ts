@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a64be1f2bd82720eb149a4405b5cc404>>
- * @relayHash 25f4c8467ab28a955d0f9e4f0993c9e0
+ * @generated SignedSource<<23e5f75d68467839de8fc36687b3e456>>
+ * @relayHash c5c2b929b90a7337ffe06493c55a9e59
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 25f4c8467ab28a955d0f9e4f0993c9e0
+// @relayRequestID c5c2b929b90a7337ffe06493c55a9e59
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -59,28 +59,6 @@ v4 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-},
-v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "fullName",
-  "storageKey": null
-},
-v6 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "avatarUrl",
-  "storageKey": null
-},
-v7 = {
-  "kind": "InlineFragment",
-  "selections": [
-    (v4/*: any*/)
-  ],
-  "type": "Node",
-  "abstractKey": "__isNode"
 };
 return {
   "fragment": {
@@ -138,20 +116,6 @@ return {
             "selections": [
               {
                 "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "name",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "slug",
-                "storageKey": null
-              },
-              {
-                "alias": null,
                 "args": (v3/*: any*/),
                 "concreteType": "OrganizationMemberConnection",
                 "kind": "LinkedField",
@@ -175,8 +139,20 @@ return {
                         "plural": false,
                         "selections": [
                           (v4/*: any*/),
-                          (v5/*: any*/),
-                          (v6/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "fullName",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "avatarUrl",
+                            "storageKey": null
+                          },
                           (v2/*: any*/)
                         ],
                         "storageKey": null
@@ -240,56 +216,21 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v7/*: any*/)
-        ],
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "viewer",
-        "plural": false,
-        "selections": [
-          (v2/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              (v5/*: any*/),
-              (v6/*: any*/),
-              (v4/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Profile",
-                "kind": "LinkedField",
-                "name": "profile",
-                "plural": false,
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "isComplete",
-                    "storageKey": null
-                  },
-                  (v4/*: any*/)
-                ],
-                "storageKey": null
-              }
+              (v4/*: any*/)
             ],
-            "type": "Account",
-            "abstractKey": null
-          },
-          (v7/*: any*/)
+            "type": "Node",
+            "abstractKey": "__isNode"
+          }
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "25f4c8467ab28a955d0f9e4f0993c9e0",
+    "id": "c5c2b929b90a7337ffe06493c55a9e59",
     "metadata": {},
     "name": "pageOrganizationMembersViewQuery",
     "operationKind": "query",

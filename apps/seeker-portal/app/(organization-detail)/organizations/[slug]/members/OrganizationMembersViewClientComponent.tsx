@@ -15,7 +15,6 @@ const OrganizationMembersViewClientComponentFragment = graphql`
 		type: "String!",
 	  }
 	) {
-		...OrgDetailHeaderFragment @arguments(slug: $slug)
 		...OrganizationMembersTabFragment @arguments(slug: $slug)
   }
 `;

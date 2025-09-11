@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<107d04bc90e7c5908f3f40540303b834>>
+ * @generated SignedSource<<e8d187b4926d2a7650ca1db80ab463f2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type OrganizationMembersViewClientComponentFragment$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"OrgDetailHeaderFragment" | "OrganizationMembersTabFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"OrganizationMembersTabFragment">;
   readonly " $fragmentType": "OrganizationMembersViewClientComponentFragment";
 };
 export type OrganizationMembersViewClientComponentFragment$key = {
@@ -19,15 +19,7 @@ export type OrganizationMembersViewClientComponentFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"OrganizationMembersViewClientComponentFragment">;
 };
 
-const node: ReaderFragment = (function(){
-var v0 = [
-  {
-    "kind": "Variable",
-    "name": "slug",
-    "variableName": "slug"
-  }
-];
-return {
+const node: ReaderFragment = {
   "argumentDefinitions": [
     {
       "defaultValue": null,
@@ -40,12 +32,13 @@ return {
   "name": "OrganizationMembersViewClientComponentFragment",
   "selections": [
     {
-      "args": (v0/*: any*/),
-      "kind": "FragmentSpread",
-      "name": "OrgDetailHeaderFragment"
-    },
-    {
-      "args": (v0/*: any*/),
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "slug",
+          "variableName": "slug"
+        }
+      ],
       "kind": "FragmentSpread",
       "name": "OrganizationMembersTabFragment"
     }
@@ -53,8 +46,7 @@ return {
   "type": "Query",
   "abstractKey": null
 };
-})();
 
-(node as any).hash = "3ef6f945ad83b939a076fc755e73dad1";
+(node as any).hash = "95ce6583e178a578e848104566131c95";
 
 export default node;
