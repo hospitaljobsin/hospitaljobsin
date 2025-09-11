@@ -210,18 +210,18 @@ class JobMutation:
                 description="The skills required for the job.",
             ),
         ],
-        location: Annotated[
-            str | None,
-            strawberry.argument(
-                description="The location of the job.",
-            ),
-        ],
         applicant_locations: Annotated[
             list[str],
             strawberry.argument(
                 description="The applicant locations for the job.",
             ),
         ],
+        location: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The location of the job.",
+            ),
+        ] = None,
         external_application_url: Annotated[
             str | None,
             strawberry.argument(
