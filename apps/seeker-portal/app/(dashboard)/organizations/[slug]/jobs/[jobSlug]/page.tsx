@@ -4,6 +4,7 @@ import type { pageJobDetailMetadataQuery } from '@/__generated__/pageJobDetailMe
 import type { pageJobDetailServerFragment$key } from '@/__generated__/pageJobDetailServerFragment.graphql';
 import type JobDetailViewQueryNode from '@/__generated__/pageJobDetailViewQuery.graphql';
 import type { pageJobDetailViewQuery } from '@/__generated__/pageJobDetailViewQuery.graphql';
+import type { pageTrendingJobsQuery } from '@/__generated__/pageTrendingJobsQuery.graphql';
 import { env } from '@/lib/env/client';
 import { getEmploymentType } from '@/lib/jsonLd';
 import links from '@/lib/links';
@@ -14,7 +15,7 @@ import { graphql, readInlineData } from 'relay-runtime';
 import type { JobPosting, WithContext } from 'schema-dts';
 import JobDetailViewClientComponent from './JobDetailViewClientComponent';
 
-export const PageJobDetailViewQuery = graphql`
+const PageJobDetailViewQuery = graphql`
   query pageJobDetailViewQuery($slug: String!, $jobSlug: String!) {
 	...pageJobDetailServerFragment @arguments(slug: $slug, jobSlug: $jobSlug)
     ...JobDetailViewClientComponentFragment @arguments(slug: $slug, jobSlug: $jobSlug)
@@ -115,6 +116,12 @@ const PageJobDetailMetadataFragment = graphql`
   }
 `;
 
+const PageTrendingJobsQuery = graphql`
+  query pageTrendingJobsQuery {
+	...TrendingJobListFragment
+  }
+`;
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string; jobSlug: string }> }): Promise<Metadata> {
 	const pathParams = await params;
 	const slug = decodeURIComponent(pathParams.slug);
@@ -128,8 +135,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 			jobSlug: jobSlug
 		},
 		{
+			cache: 'force-cache',
 			next: {
-				revalidate: 60 * 60, // revalidate this after 5 minutes
 				tags: [`job:${slug}:${jobSlug}`] // invalidate this cache when job is updated
 			}
 		}
@@ -172,8 +179,8 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 			jobSlug: jobSlug
 		},
 		{
+			cache: 'force-cache',
 			next: {
-				revalidate: 60 * 60, // revalidate this after 5 minutes
 				tags: [`job:${slug}:${jobSlug}`] // invalidate this cache when job is updated
 			}
 		}
@@ -184,6 +191,19 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 	if (data.organization.__typename !== 'Organization' || data.organization.job.__typename !== 'Job' || !data.organization.job.isVisible) {
 		notFound();
 	}
+
+	const preloadedTrendingQuery = await loadSerializableQuery<typeof JobDetailViewQueryNode, pageTrendingJobsQuery>(
+		PageTrendingJobsQuery,
+		{},
+		{
+			next: {
+				revalidate: 60 * 60, // revalidate this after 60 minutes
+				tags: ['trending-jobs']
+			}
+		}
+	);
+
+	// JSON-LD structured data for the job posting
 
 	const jsonLd: WithContext<JobPosting> = {
 		'@context': 'https://schema.org',
@@ -250,7 +270,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 					__html: JSON.stringify(jsonLd).replace(/</g, '\\u003c')
 				}}
 			/>
-			<JobDetailViewClientComponent preloadedQuery={preloadedQuery} />
+			<JobDetailViewClientComponent preloadedQuery={preloadedQuery} preloadedTrendingQuery={preloadedTrendingQuery} />
 		</>
 	);
 }

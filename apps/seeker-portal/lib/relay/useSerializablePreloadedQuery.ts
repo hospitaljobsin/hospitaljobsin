@@ -30,7 +30,6 @@ export default function useSerializablePreloadedQuery<TRequest extends ConcreteR
 function writePreloadedQueryToCache<TRequest extends ConcreteRequest, TQuery extends OperationType>(
 	preloadedQueryObject: SerializablePreloadedQuery<TRequest, TQuery>
 ) {
-	console.log('Writing preloaded query to cache:', preloadedQueryObject);
 	const cacheKey = preloadedQueryObject.params.id ?? preloadedQueryObject.params.cacheID;
 	responseCache?.set(cacheKey, preloadedQueryObject.variables, preloadedQueryObject.graphQLResponse);
 }
