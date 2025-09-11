@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		{
 			next: {
 				revalidate: 60 * 5, // revalidate this after 5 minutes
-				tags: [`organization-members-metadata:${slug}`] // invalidate this cache when organization members are updated
+				tags: [`organization-members:${slug}`] // invalidate this cache when organization members are updated
 			}
 		}
 	);

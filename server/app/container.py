@@ -53,6 +53,7 @@ from app.config import (
     PosthogSettings,
     ProviderSettings,
     RedisSettings,
+    RevalidateSettings,
     SecretSettings,
     TesseractSettings,
     TSettings,
@@ -134,6 +135,7 @@ from app.organizations.services import (
     OrganizationMemberService,
     OrganizationService,
 )
+from app.revalidation.services import RevalidationService
 from app.testing.services import TestSetupService
 
 settings_classes: list[type[BaseSettings]] = [
@@ -152,6 +154,7 @@ settings_classes: list[type[BaseSettings]] = [
     FrontendSettings,
     TwoFactorINSettings,
     Oauth2Settings,
+    RevalidateSettings,
 ]
 
 
@@ -163,7 +166,6 @@ class SettingsProvider(aioinject.Provider[TSettings]):
         self,
         kwargs: dict[str, Any],  # noqa: ARG002
     ) -> TSettings:
-        print(f"Providing {self.implementation}")
         return self.implementation()
 
 
@@ -319,4 +321,5 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(create_profile_parser_agent))
     container.register(aioinject.Singleton(JobApplicantAnalysisService))
     container.register(aioinject.Singleton(ProfileParserService))
+    container.register(aioinject.Singleton(RevalidationService))
     return container

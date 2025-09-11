@@ -319,9 +319,9 @@ class JobRepo:
 
         return await job.save(link_rule=WriteRules.DO_NOTHING)
 
-    async def get(self, job_id: ObjectId) -> Job | None:
+    async def get(self, job_id: ObjectId, *, fetch_links: bool = False) -> Job | None:
         """Get job by ID."""
-        return await Job.get(job_id)
+        return await Job.get(job_id, fetch_links=fetch_links)
 
     async def get_by_slug(self, slug: str, organization_id: ObjectId) -> Job | None:
         """Get job by slug and organization ID."""

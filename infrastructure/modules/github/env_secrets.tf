@@ -21,6 +21,13 @@ resource "github_actions_environment_secret" "sst_jwe_secret_key" {
   plaintext_value = var.sst_jwe_secret_key
 }
 
+resource "github_actions_environment_secret" "sst_revalidate_secret" {
+  repository      = data.github_repository.this.name
+  environment     = github_repository_environment.this.environment
+  secret_name     = "SST_REVALIDATE_SECRET"
+  plaintext_value = var.sst_revalidate_secret
+}
+
 resource "github_actions_environment_secret" "sst_accounts_secret_id" {
   repository      = data.github_repository.this.name
   environment     = github_repository_environment.this.environment

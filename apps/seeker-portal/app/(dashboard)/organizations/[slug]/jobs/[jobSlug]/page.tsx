@@ -130,7 +130,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		{
 			next: {
 				revalidate: 60 * 5, // revalidate this after 5 minutes
-				tags: [`job-metadata:${slug}:${jobSlug}`] // invalidate this cache when job is updated
+				tags: [`job:${slug}:${jobSlug}`] // invalidate this cache when job is updated
 			}
 		}
 	);

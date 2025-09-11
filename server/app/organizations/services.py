@@ -42,6 +42,7 @@ from app.organizations.repositories import (
     OrganizationMemberRepo,
     OrganizationRepo,
 )
+from app.revalidation.services import RevalidationService
 
 
 class OrganizationMemberService:
@@ -50,10 +51,12 @@ class OrganizationMemberService:
         organization_member_repo: OrganizationMemberRepo,
         organization_repo: OrganizationRepo,
         dataloaders: Dataloaders,
+        revalidation_service: RevalidationService,
     ) -> None:
         self._organization_member_repo = organization_member_repo
         self._organization_repo = organization_repo
         self._dataloaders = dataloaders
+        self._revalidation_service = revalidation_service
 
     async def is_admin(self, account_id: ObjectId, organization_id: ObjectId) -> bool:
         member = await self._dataloaders.organization_member_by_id.load(
@@ -112,6 +115,10 @@ class OrganizationMemberService:
 
         await self._organization_member_repo.delete(existing_organization_member)
 
+        await self._revalidation_service.revalidate_tag(
+            tag=f"organization-members:{existing_organization.slug}"
+        )
+
         return Ok((existing_organization_member, existing_organization))
 
     async def promote_member(
@@ -150,6 +157,10 @@ class OrganizationMemberService:
         existing_organization_member = await self._organization_member_repo.update(
             existing_organization_member,
             role="admin",
+        )
+
+        await self._revalidation_service.revalidate_tag(
+            tag=f"organization-members:{existing_organization.slug}"
         )
 
         return Ok((existing_organization_member, existing_organization))
@@ -203,6 +214,10 @@ class OrganizationMemberService:
             role="member",
         )
 
+        await self._revalidation_service.revalidate_tag(
+            tag=f"organization-members:{existing_organization.slug}"
+        )
+
         return Ok((existing_organization_member, existing_organization))
 
 
@@ -214,12 +229,14 @@ class OrganizationService:
         organization_member_service: OrganizationMemberService,
         s3_client: S3Client,
         aws_settings: AWSSettings,
+        revalidation_service: RevalidationService,
     ) -> None:
         self._organization_repo = organization_repo
         self._organization_member_repo = organization_member_repo
         self._organization_member_service = organization_member_service
         self._s3_client = s3_client
         self._aws_settings = aws_settings
+        self._revalidation_service = revalidation_service
 
     async def create(
         self,
@@ -344,6 +361,9 @@ class OrganizationService:
             logo_url=logo_url,
             banner_url=banner_url,
         )
+        await self._revalidation_service.revalidate_tag(
+            tag=f"organization:{existing_organization.slug}"
+        )
 
         return Ok(organization)
 
@@ -371,6 +391,10 @@ class OrganizationService:
             return Err(OrganizationAuthorizationError())
 
         await self._organization_repo.delete(existing_organization)
+
+        await self._revalidation_service.revalidate_tag(
+            tag=f"organization:{existing_organization.slug}"
+        )
 
         return Ok(existing_organization)
 
@@ -476,6 +500,7 @@ class OrganizationInviteService:
         email_sender: BaseEmailSender,
         app_settings: AppSettings,
         frontend_settings: FrontendSettings,
+        revalidation_service: RevalidationService,
     ) -> None:
         self._invite_repo = invite_repo
         self._organization_repo = organization_repo
@@ -485,6 +510,7 @@ class OrganizationInviteService:
         self._email_sender = email_sender
         self._app_settings = app_settings
         self._frontend_settings = frontend_settings
+        self._revalidation_service = revalidation_service
 
     async def create(
         self,
@@ -618,6 +644,10 @@ class OrganizationInviteService:
             organization_id=existing_invite.organization.id,
             account=account,
             role="member",
+        )
+
+        await self._revalidation_service.revalidate_tag(
+            tag=f"organization-members:{existing_invite.organization.slug}"
         )
 
         return Ok(existing_invite)

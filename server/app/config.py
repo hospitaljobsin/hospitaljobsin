@@ -211,6 +211,11 @@ class FrontendSettings(CoreSettings):
     seeker_portal_base_url: str = "http://localtest.me:5000"
 
 
+class RevalidateSettings(CoreSettings):
+    revalidate_secret: SecretStr
+    revalidate_base_url: str
+
+
 class DatabaseSettings(CoreSettings):
     # database config
 

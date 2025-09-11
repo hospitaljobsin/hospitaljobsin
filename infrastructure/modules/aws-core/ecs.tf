@@ -634,6 +634,10 @@ resource "aws_ecs_task_definition" "app" {
         {
           name  = "SERVER_POSTHOG_API_HOST"
           value = var.posthog_api_host
+        },
+        {
+          name  = "SERVER_REVALIDATE_BASE_URL"
+          value = "https://${var.domain_name}/api/revalidate"
         }
       ], local.staging_env_vars)
     }
