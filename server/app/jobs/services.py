@@ -3,6 +3,7 @@ import uuid
 from datetime import datetime
 from typing import Any, Literal
 
+from beanie import Link
 from bson import ObjectId
 from bson.errors import InvalidId
 from fastapi import Request
@@ -248,7 +249,7 @@ class JobService:
             return Err(OrganizationNotFoundError())
 
         if not await self._organization_member_service.is_member(
-            account_id=account.id,
+            account_id=account.ref.id if isinstance(account, Link) else account.id,
             organization_id=existing_organization.id,
         ):
             return Err(OrganizationAuthorizationError())

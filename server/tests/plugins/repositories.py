@@ -6,6 +6,7 @@ from app.auth.repositories import (
     WebAuthnChallengeRepo,
     WebAuthnCredentialRepo,
 )
+from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
 
 
 @pytest.fixture(scope="session")
@@ -44,3 +45,19 @@ async def session_repo(
 ) -> SessionRepo:
     async with container.context() as ctx:
         return await ctx.resolve(SessionRepo)
+
+
+@pytest.fixture(scope="session")
+async def organization_repo(
+    container: Container,
+) -> OrganizationRepo:
+    async with container.context() as ctx:
+        return await ctx.resolve(OrganizationRepo)
+
+
+@pytest.fixture(scope="session")
+async def organization_member_repo(
+    container: Container,
+) -> OrganizationMemberRepo:
+    async with container.context() as ctx:
+        return await ctx.resolve(OrganizationMemberRepo)

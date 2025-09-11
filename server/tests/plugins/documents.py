@@ -24,6 +24,21 @@ async def password_account(account_repo: AccountRepo) -> AsyncGenerator[Account]
 
 
 @pytest.fixture(scope="session")
+async def foreign_password_account(
+    account_repo: AccountRepo,
+) -> AsyncGenerator[Account]:
+    account = await account_repo.create(
+        full_name="Mark David",
+        email=generate_test_email(),
+        password="Password123!",
+        analytics_preference="acceptance",
+        auth_providers=["password"],
+    )
+    yield account
+    await account_repo.delete(account)
+
+
+@pytest.fixture(scope="session")
 async def webauthn_account(
     account_repo: AccountRepo,
     webauthn_credential_repo: WebAuthnCredentialRepo,
