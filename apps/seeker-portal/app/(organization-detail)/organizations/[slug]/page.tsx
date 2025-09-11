@@ -65,7 +65,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		},
 		{
 			next: {
-				revalidate: 60 * 5, // revalidate this after 5 minutes
+				revalidate: 60 * 60, // revalidate this after 5 minutes
 				tags: [`organization:${slug}`] // invalidate this cache when organization metadata is updated
 			}
 		}
@@ -99,7 +99,7 @@ export default async function OrganizationDetailPage({ params }: { params: Promi
 		},
 		{
 			next: {
-				revalidate: 60 * 5, // revalidate this after 5 minutes
+				revalidate: 60 * 60, // revalidate this after 5 minutes
 				tags: [`organization:${slug}`] // invalidate this cache when organization members are updated
 			}
 		}

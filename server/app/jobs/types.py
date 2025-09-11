@@ -877,7 +877,9 @@ class JobType(BaseNodeType[Job]):
             expires_at=job.expires_at,
             is_active=job.is_active,
             external_application_url=job.external_application_url,
-            organization_id=str(job.organization.ref.id),
+            organization_id=str(job.organization.ref.id)
+            if isinstance(job.organization, Link)
+            else str(job.organization.id),
             embedding=job.embedding,
             is_visible=job.is_visible,
         )
