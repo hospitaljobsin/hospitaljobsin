@@ -18,7 +18,7 @@ const JobControlsClientComponent = dynamic(() => import('./JobControlsClientComp
 
 const JobApplyButtonClientComponent = dynamic(() => import('./JobApplyButtonClientComponent'), {
 	ssr: false,
-	loading: () => <Skeleton className='h-12 rounded-lg w-32' />
+	loading: () => <Skeleton className='h-12 rounded-lg w-full sm:w-32' />
 });
 
 const JobDetailsFragment = graphql`
