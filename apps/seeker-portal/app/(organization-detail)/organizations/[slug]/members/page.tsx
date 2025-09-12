@@ -66,6 +66,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		{
 			cache: 'force-cache',
 			next: {
+				revalidate: false,
 				tags: [`organization-members:${slug}`] // invalidate this cache when organization members are updated
 			}
 		}
@@ -100,6 +101,7 @@ export default async function OrganizationMembersPage({ params }: { params: Prom
 		{
 			cache: 'force-cache',
 			next: {
+				revalidate: false,
 				tags: [`organization-members:${slug}`] // invalidate this cache when organization members are updated
 			}
 		}
