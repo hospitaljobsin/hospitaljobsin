@@ -7,8 +7,7 @@ const config = {
 			incrementalCache: 's3-lite',
 			queue: 'sqs-lite',
 			wrapper: 'aws-lambda'
-		},
-		minify: true
+		}
 	},
 	imageOptimization: {
 		override: {
