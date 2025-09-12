@@ -1,20 +1,21 @@
-import type { OpenNextConfig } from "@opennextjs/aws/types/open-next.js";
+import type { OpenNextConfig } from '@opennextjs/aws/types/open-next.js';
 
 const config = {
 	default: {
 		override: {
-			tagCache: "dynamodb-lite",
-			incrementalCache: "s3-lite",
-			queue: "sqs-lite",
-			wrapper: "aws-lambda",
+			tagCache: 'dynamodb-lite',
+			incrementalCache: 's3-lite',
+			queue: 'sqs-lite',
+			wrapper: 'aws-lambda'
 		},
+		minify: true
 	},
 	imageOptimization: {
 		override: {
-			wrapper: "aws-lambda",
+			wrapper: 'aws-lambda'
 		},
-		loader: "s3-lite",
-	},
+		loader: 's3-lite'
+	}
 } satisfies OpenNextConfig;
 
 export default config;
