@@ -23,7 +23,7 @@
 		"@lobehub/icons": "^2.4.0",
 		"@marsidev/react-turnstile": "^1.1.0",
 		"@next/bundle-analyzer": "^15.3.5",
-		"@opennextjs/aws": "^3.7.4",
+		"@opennextjs/aws": "^3.7.6",
 		"@sentry/nextjs": "^9.33.0",
 		"@sentry/node": "^9.33.0",
 		"@sentry/profiling-node": "^9.33.0",
