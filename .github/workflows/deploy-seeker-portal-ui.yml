@@ -37,6 +37,8 @@ jobs:
       - name: Setup pnpm
         if: ${{ inputs.run-deploy }}
         uses: pnpm/action-setup@v4
+        with:
+          version: 10.11.0
 
       - name: Setup Node
         if: ${{ inputs.run-deploy }}
