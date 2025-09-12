@@ -14,6 +14,14 @@ export async function networkFetch(request: RequestParameters, variables: Variab
 		'Accept-Encoding': 'gzip'
 	};
 
+	// Log cache configuration for debugging
+	if (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
+		console.log(`[networkFetch] ${request.operationKind} ${request.name}`, {
+			cache: options.cache,
+			next: options.next
+		});
+	}
+
 	if (request.operationKind === 'query') {
 		// For GET requests, use query parameters as per GraphQL over HTTP specification
 		method = 'GET';

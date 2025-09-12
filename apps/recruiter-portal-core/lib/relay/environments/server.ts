@@ -12,6 +12,7 @@ import { Environment, Network, RecordSource, Store } from "relay-runtime";
 export async function networkFetch(
 	request: RequestParameters,
 	variables: Variables,
+	options: RequestInit = {}
 ): Promise<GraphQLResponse> {
 	const { cookies } = await import("next/headers");
 	const serverCookie = await cookies();
@@ -24,6 +25,14 @@ export async function networkFetch(
 		"Accept-Encoding": "gzip",
 		Cookie: serverCookie.toString(),
 	};
+
+	// Log cache configuration for debugging
+	if (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
+		console.log(`[recruiter-portal:networkFetch] ${request.operationKind} ${request.name}`, {
+			cache: options.cache,
+			next: options.next
+		});
+	}
 
 	if (request.operationKind === "query") {
 		// For GET requests, use query parameters as per GraphQL over HTTP specification
@@ -53,6 +62,7 @@ export async function networkFetch(
 		headers,
 		credentials: "include",
 		body,
+		...options
 	});
 	const json = await resp.json();
 
