@@ -6,8 +6,6 @@ settings:
 
 importers:
 
-  .: {}
-
   apps/accounts:
     dependencies:
       '@bprogress/next':
