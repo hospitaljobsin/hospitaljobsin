@@ -13,7 +13,7 @@ class Region(Document):
     name: Annotated[str, Indexed()]
     address: Address
     aliases: list[str] = Field(default_factory=list)
-    level: Literal["locality", "city", "state", "country", "neighbourhood"]
+    level: Literal["neighbourhood", "locality", "city", "state", "country", "continent"]
 
     geometry: GeoJSONPolygon | GeoJSONMultiPolygon | None = None
     coordinates: GeoJSONPoint
