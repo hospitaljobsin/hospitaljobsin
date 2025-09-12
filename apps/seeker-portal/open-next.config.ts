@@ -6,10 +6,8 @@ const config = {
 			tagCache: 'dynamodb-lite',
 			incrementalCache: 's3-lite',
 			queue: 'sqs-lite',
-			wrapper: 'aws-lambda',
-			converter: 'aws-cloudfront'
-		},
-		placement: 'global'
+			wrapper: 'aws-lambda'
+		}
 	},
 	imageOptimization: {
 		override: {
