@@ -5,10 +5,21 @@ from pathlib import Path
 import pytest
 from app.base.models import Address
 from app.config import DatabaseSettings, get_settings
+from app.core.constants import (
+    JOB_APPLICANT_EMBEDDING_INDEX_NAME,
+    JOB_SEARCH_INDEX_NAME,
+    REGION_SEARCH_INDEX_NAME,
+)
 from app.database import initialize_database
 from app.geocoding.documents import Region
 from app.geocoding.models import GeoJSONMultiPolygon, GeoJSONPoint, GeoJSONPolygon
+from app.jobs.documents import Job, JobApplicant
 from motor.motor_asyncio import AsyncIOMotorClient
+from structlog import get_logger
+
+from tests.utils.database import wait_for_search_indexes
+
+logger = get_logger()
 
 
 @pytest.fixture(scope="session")
@@ -20,10 +31,38 @@ def db_settings() -> DatabaseSettings:
 async def initialize_test_database(
     db_settings: DatabaseSettings,
 ) -> AsyncGenerator[None]:
+    client: AsyncIOMotorClient = AsyncIOMotorClient(str(db_settings.database_url))
+
     await initialize_database(
         database_url=str(db_settings.database_url),
         default_database_name=db_settings.test_database_name,
     )
+
+    # Wait for indexes to be ready
+    logger.info("Waiting for search indexes to be ready, this may take a moment...")
+    print(
+        "\n[INFO] Waiting for MongoDB search indexes to be ready, this may take a moment..."
+    )
+
+    await wait_for_search_indexes(
+        client=client,
+        database_name=db_settings.test_database_name,
+        collection_names=[
+            str(JobApplicant.get_settings().name),
+            str(Job.get_settings().name),
+            str(Region.get_settings().name),
+        ],
+        index_names=[
+            JOB_APPLICANT_EMBEDDING_INDEX_NAME,
+            JOB_SEARCH_INDEX_NAME,
+            REGION_SEARCH_INDEX_NAME,
+        ],
+        wait_time=60,  # wait up to 60 seconds for indexes to be ready
+        check_interval=0.5,  # check every half second
+    )
+
+    logger.info("Test database initialized and indexes are ready.")
+    print("[INFO] MongoDB search indexes are ready. Test database initialized.")
 
     yield
 
@@ -33,7 +72,7 @@ async def initialize_test_database(
 
     collections = await database.list_collection_names()
 
-    print("Dropping collections:", collections)
+    logger.info("Dropping collections", collections=collections)
 
     for collection_name in collections:
         if collection_name.startswith("system."):
@@ -45,8 +84,12 @@ async def initialize_test_database(
 
 
 @pytest.fixture(autouse=True, scope="session")
-async def import_region_data(initialize_test_database: AsyncGenerator[None]) -> None:
+async def import_region_data(
+    initialize_test_database: AsyncGenerator[None],
+) -> AsyncGenerator[None]:
     """Import region data into the test database."""
+    logger.info("Importing region data into the test database...")
+    print("\n[INFO] Importing region test data...")
     # Load the fixtures data
     fixtures_path = Path(__file__).parent.parent / "fixtures" / "regions.json"
 
@@ -100,3 +143,8 @@ async def import_region_data(initialize_test_database: AsyncGenerator[None]) -> 
     # Insert all regions into the database
     if regions:
         await Region.insert_many(regions)
+        print(f"[INFO] Successfully imported {len(regions)} regions.")
+        logger.info("Successfully imported regions", count=len(regions))
+
+    yield None
+    await Region.delete_all()

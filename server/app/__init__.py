@@ -97,12 +97,13 @@ def add_middleware(
 async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None]:
     with sentry_sdk.start_transaction(name="App Lifespan", op="lifespan"):
         logger = get_logger(__name__)
-        database_settings = get_settings(DatabaseSettings)
-        logger.debug("Initializing database connection")
-        await initialize_database(
-            database_url=str(database_settings.database_url),
-            default_database_name=database_settings.default_database_name,
-        )
+        if not get_settings(EnvironmentSettings).is_testing:
+            database_settings = get_settings(DatabaseSettings)
+            logger.debug("Initializing database connection")
+            await initialize_database(
+                database_url=str(database_settings.database_url),
+                default_database_name=database_settings.default_database_name,
+            )
         yield
 
 
