@@ -100,7 +100,7 @@ function createNetwork() {
 export function createClientEnvironment() {
 	console.log('creating a new client environment');
 	return new Environment({
-		log: console.log,
+		log: env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? console.log : undefined,
 		network: createNetwork(),
 		store: new Store(RecordSource.create()),
 		isServer: false
