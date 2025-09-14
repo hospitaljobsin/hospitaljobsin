@@ -1,15 +1,16 @@
-import { useHeaders } from "@/components/HeadersProvider";
-import { use } from "react";
+import { use } from 'react';
+import { useHeaders } from '@/components/HeadersProvider';
 
 export default function useIsAuthenticated() {
 	const { headersPromise } = useHeaders();
 	const headersList = use(headersPromise);
 	const headersMap = new Map(headersList);
-	const isAuthenticated = headersMap.get("x-is-authenticated");
+	const isAuthenticated = headersMap.get('x-is-authenticated');
 
 	if (!isAuthenticated) {
-		throw new Error("Is authenticated header is required in headers");
+		// don't error if header is missing, this happens when we pre-fetch
+		return { isAuthenticated: false };
 	}
 
-	return { isAuthenticated: isAuthenticated === "true" };
+	return { isAuthenticated: isAuthenticated === 'true' };
 }
