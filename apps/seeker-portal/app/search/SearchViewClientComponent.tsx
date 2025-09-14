@@ -1,32 +1,18 @@
-"use client";
-
-import type { SearchViewClientComponentFragment$key } from "@/__generated__/SearchViewClientComponentFragment.graphql";
-import type PageSearchViewQueryNode from "@/__generated__/pageSearchViewQuery.graphql";
-import type { pageSearchViewQuery } from "@/__generated__/pageSearchViewQuery.graphql";
-import PageSearchViewQuery from "@/__generated__/pageSearchViewQuery.graphql";
-import type { FilterValues } from "@/components/search/FilterSidebar";
-import SearchView from "@/components/search/SearchView";
-import { FILTER_DEFAULTS } from "@/lib/constants";
-import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
-import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
-import {
-	parseAsArrayOf,
-	parseAsInteger,
-	parseAsString,
-	useQueryStates,
-} from "nuqs";
-import {
-	graphql,
-	useFragment,
-	usePreloadedQuery,
-	useRelayEnvironment,
-} from "react-relay";
+'use client';
+import type PageSearchViewQueryNode from '@/__generated__/pageSearchViewQuery.graphql';
+import type { pageSearchViewQuery } from '@/__generated__/pageSearchViewQuery.graphql';
+import PageSearchViewQuery from '@/__generated__/pageSearchViewQuery.graphql';
+import type { SearchViewClientComponentFragment$key } from '@/__generated__/SearchViewClientComponentFragment.graphql';
+import type { FilterValues } from '@/components/search/FilterSidebar';
+import SearchView from '@/components/search/SearchView';
+import { FILTER_DEFAULTS } from '@/lib/constants';
+import type { SerializablePreloadedQuery } from '@/lib/relay/serializablePreloadedQuery';
+import useSerializablePreloadedQuery from '@/lib/relay/useSerializablePreloadedQuery';
+import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
+import { graphql, useFragment, usePreloadedQuery, useRelayEnvironment } from 'react-relay';
 
 type Props = {
-	preloadedQuery: SerializablePreloadedQuery<
-		typeof PageSearchViewQueryNode,
-		pageSearchViewQuery
-	>;
+	preloadedQuery: SerializablePreloadedQuery<typeof PageSearchViewQueryNode, pageSearchViewQuery>;
 	location: string | undefined;
 };
 
@@ -58,10 +44,7 @@ export const SearchViewClientComponentFragment = graphql`
 
 // Use FilterValues from FilterSidebar instead of defining Filters here
 
-export default function SearchViewClientComponent({
-	preloadedQuery,
-	location,
-}: Props) {
+export default function SearchViewClientComponent({ preloadedQuery, location }: Props) {
 	const [filters, setFilters] = useQueryStates(
 		{
 			minExperience: parseAsInteger,
@@ -69,28 +52,27 @@ export default function SearchViewClientComponent({
 			minSalary: parseAsInteger,
 			maxSalary: parseAsInteger,
 			proximityKm: parseAsInteger.withDefault(FILTER_DEFAULTS.proximityKm),
-			workMode: parseAsArrayOf(parseAsString).withDefault(
-				FILTER_DEFAULTS.workMode,
-			),
-			jobType: parseAsArrayOf(parseAsString).withDefault(
-				FILTER_DEFAULTS.jobType,
-			),
-			sortBy: parseAsString.withDefault("RELEVANCE"),
+			workMode: parseAsArrayOf(parseAsString).withDefault(FILTER_DEFAULTS.workMode),
+			jobType: parseAsArrayOf(parseAsString).withDefault(FILTER_DEFAULTS.jobType),
+			sortBy: parseAsString.withDefault('RELEVANCE')
 		},
-		{ shallow: true },
+		{ shallow: true }
 	);
 	const environment = useRelayEnvironment();
-	const queryRef = useSerializablePreloadedQuery<
-		typeof PageSearchViewQueryNode,
-		pageSearchViewQuery
-	>(environment, preloadedQuery, "store-or-network");
+	const queryRef = useSerializablePreloadedQuery<typeof PageSearchViewQueryNode, pageSearchViewQuery>(
+		environment,
+		preloadedQuery,
+		'store-or-network',
+		{
+			metadata: {
+				includeAuth: true
+			}
+		}
+	);
 
 	const data = usePreloadedQuery(PageSearchViewQuery, queryRef);
 
-	const fragmentKey = useFragment<SearchViewClientComponentFragment$key>(
-		SearchViewClientComponentFragment,
-		data,
-	);
+	const fragmentKey = useFragment<SearchViewClientComponentFragment$key>(SearchViewClientComponentFragment, data);
 
 	return (
 		<SearchView
@@ -98,11 +80,7 @@ export default function SearchViewClientComponent({
 			speciality={null} // No speciality in main search page
 			fragmentKey={fragmentKey}
 			filters={filters as FilterValues}
-			setFilters={
-				setFilters as (
-					filters: FilterValues | ((prevFilters: FilterValues) => FilterValues),
-				) => void
-			}
+			setFilters={setFilters as (filters: FilterValues | ((prevFilters: FilterValues) => FilterValues)) => void}
 		/>
 	);
 }

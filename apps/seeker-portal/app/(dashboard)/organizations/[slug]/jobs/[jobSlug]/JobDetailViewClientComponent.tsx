@@ -22,18 +22,42 @@ const JobDetailViewClientComponentFragment = graphql`
 export default function JobDetailViewClientComponent(props: {
 	preloadedQuery: SerializablePreloadedQuery<typeof JobDetailViewQueryNode, pageJobDetailViewQuery>;
 	preloadedTrendingQuery: SerializablePreloadedQuery<typeof TrendingJobsQueryNode, pageTrendingJobsQuery>;
+	slug: string;
+	jobSlug: string;
 }) {
 	const environment = useRelayEnvironment();
 	const queryRef = useSerializablePreloadedQuery<typeof JobDetailViewQueryNode, pageJobDetailViewQuery>(
 		environment,
 		props.preloadedQuery,
-		'store-or-network'
+		'store-or-network',
+		{
+			metadata: {
+				options: {
+					cache: 'force-cache',
+					next: {
+						revalidate: false,
+						tags: [`job:${props.slug}:${props.jobSlug}`]
+					}
+				}
+			}
+		}
 	);
 
 	const trendingQueryRef = useSerializablePreloadedQuery<typeof TrendingJobsQueryNode, pageTrendingJobsQuery>(
 		environment,
 		props.preloadedTrendingQuery,
-		'store-or-network'
+		'store-or-network',
+		{
+			metadata: {
+				options: {
+					cache: 'force-cache',
+					next: {
+						revalidate: 60,
+						tags: ['trending-jobs']
+					}
+				}
+			}
+		}
 	);
 
 	const trendingData = usePreloadedQuery(TrendingJobsQueryNode, trendingQueryRef);

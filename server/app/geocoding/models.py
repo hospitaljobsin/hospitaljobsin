@@ -1,15 +1,19 @@
 from pydantic import BaseModel, Field
 
+from app.base.models import Address
+from app.core.constants import RegionLevel
+
 
 class LocationAutocompleteSuggestion(BaseModel):
     place_id: str
-    display_name: str
+    level: RegionLevel
+    address: Address
 
     class Config:
         frozen = True
 
     def __hash__(self):
-        return hash((self.place_id, self.display_name))
+        return hash((self.place_id, self.address.display_name))
 
 
 # GeoJSON models for spatial data

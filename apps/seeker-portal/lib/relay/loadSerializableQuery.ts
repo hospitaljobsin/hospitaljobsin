@@ -1,15 +1,15 @@
 import type { ConcreteRequest, GraphQLTaggedNode, OperationType, VariablesOf } from 'relay-runtime';
 import { createOperationDescriptor, getRequest } from 'relay-runtime';
 import { getCurrentEnvironment } from './environments';
-import { networkFetch } from './environments/server';
+import { type CustomCacheConfig, networkFetch } from './environments/server';
 import type { SerializablePreloadedQuery } from './serializablePreloadedQuery';
 
 export default async function loadSerializableQuery<TRequest extends ConcreteRequest, TQuery extends OperationType>(
 	taggedNode: GraphQLTaggedNode,
 	variables: VariablesOf<TQuery>,
-	options: RequestInit = {}
+	cacheConfig: CustomCacheConfig = {}
 ): Promise<SerializablePreloadedQuery<TRequest, TQuery>> {
-	console.log('loading query called...');
+	console.log('loading serializable query called...', cacheConfig);
 	const environment = getCurrentEnvironment();
 
 	// Convert params into a valid ConcreteRequest
@@ -19,7 +19,12 @@ export default async function loadSerializableQuery<TRequest extends ConcreteReq
 		throw new Error('Invalid request: could not resolve query to ConcreteRequest.');
 	}
 
-	const graphQLResponse = await networkFetch(request.params, variables, options);
+	const graphQLResponse = await networkFetch(
+		request.params,
+		variables,
+		cacheConfig.metadata?.options ?? {},
+		cacheConfig.metadata?.includeAuth || false
+	);
 
 	const operationDescriptor = createOperationDescriptor(request, variables);
 

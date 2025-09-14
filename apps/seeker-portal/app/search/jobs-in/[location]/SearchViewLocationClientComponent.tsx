@@ -1,31 +1,18 @@
-"use client";
+'use client';
 
-import type { SearchViewLocationClientComponentFragment$key } from "@/__generated__/SearchViewLocationClientComponentFragment.graphql";
-import type PageSearchLocationViewQueryNode from "@/__generated__/pageSearchLocationViewQuery.graphql";
-import type { pageSearchLocationViewQuery } from "@/__generated__/pageSearchLocationViewQuery.graphql";
-import PageSearchLocationViewQuery from "@/__generated__/pageSearchLocationViewQuery.graphql";
-import SearchView from "@/components/search/SearchView";
-import { FILTER_DEFAULTS } from "@/lib/constants";
-import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
-import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
-import {
-	parseAsArrayOf,
-	parseAsInteger,
-	parseAsString,
-	useQueryStates,
-} from "nuqs";
-import {
-	graphql,
-	useFragment,
-	usePreloadedQuery,
-	useRelayEnvironment,
-} from "react-relay";
+import type PageSearchLocationViewQueryNode from '@/__generated__/pageSearchLocationViewQuery.graphql';
+import type { pageSearchLocationViewQuery } from '@/__generated__/pageSearchLocationViewQuery.graphql';
+import PageSearchLocationViewQuery from '@/__generated__/pageSearchLocationViewQuery.graphql';
+import type { SearchViewLocationClientComponentFragment$key } from '@/__generated__/SearchViewLocationClientComponentFragment.graphql';
+import SearchView from '@/components/search/SearchView';
+import { FILTER_DEFAULTS } from '@/lib/constants';
+import type { SerializablePreloadedQuery } from '@/lib/relay/serializablePreloadedQuery';
+import useSerializablePreloadedQuery from '@/lib/relay/useSerializablePreloadedQuery';
+import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
+import { graphql, useFragment, usePreloadedQuery, useRelayEnvironment } from 'react-relay';
 
 type Props = {
-	preloadedQuery: SerializablePreloadedQuery<
-		typeof PageSearchLocationViewQueryNode,
-		pageSearchLocationViewQuery
-	>;
+	preloadedQuery: SerializablePreloadedQuery<typeof PageSearchLocationViewQueryNode, pageSearchLocationViewQuery>;
 	location: string | undefined;
 };
 
@@ -67,48 +54,30 @@ export type Filters = {
 	sortBy: string;
 };
 
-export default function SearchViewClientComponent({
-	preloadedQuery,
-	location,
-}: Props) {
+export default function SearchViewClientComponent({ preloadedQuery, location }: Props) {
 	const [filters, setFilters] = useQueryStates(
 		{
-			q: parseAsString.withDefault(FILTER_DEFAULTS.q || ""),
 			minExperience: parseAsInteger,
 			maxExperience: parseAsInteger,
 			minSalary: parseAsInteger,
 			maxSalary: parseAsInteger,
 			proximityKm: parseAsInteger.withDefault(FILTER_DEFAULTS.proximityKm),
-			workMode: parseAsArrayOf(parseAsString).withDefault(
-				FILTER_DEFAULTS.workMode,
-			),
-			jobType: parseAsArrayOf(parseAsString).withDefault(
-				FILTER_DEFAULTS.jobType,
-			),
-			sortBy: parseAsString.withDefault("RELEVANCE"),
+			workMode: parseAsArrayOf(parseAsString).withDefault(FILTER_DEFAULTS.workMode),
+			jobType: parseAsArrayOf(parseAsString).withDefault(FILTER_DEFAULTS.jobType),
+			sortBy: parseAsString.withDefault('RELEVANCE')
 		},
-		{ shallow: true },
+		{ shallow: true }
 	);
 	const environment = useRelayEnvironment();
-	const queryRef = useSerializablePreloadedQuery<
-		typeof PageSearchLocationViewQueryNode,
-		pageSearchLocationViewQuery
-	>(environment, preloadedQuery, "store-or-network");
+	const queryRef = useSerializablePreloadedQuery<typeof PageSearchLocationViewQueryNode, pageSearchLocationViewQuery>(
+		environment,
+		preloadedQuery,
+		'store-or-network'
+	);
 
 	const data = usePreloadedQuery(PageSearchLocationViewQuery, queryRef);
 
-	const fragmentKey =
-		useFragment<SearchViewLocationClientComponentFragment$key>(
-			SearchViewLocationClientComponentFragment,
-			data,
-		);
+	const fragmentKey = useFragment<SearchViewLocationClientComponentFragment$key>(SearchViewLocationClientComponentFragment, data);
 
-	return (
-		<SearchView
-			location={location || null}
-			fragmentKey={fragmentKey}
-			filters={filters}
-			setFilters={setFilters}
-		/>
-	);
+	return <SearchView speciality={null} location={location || null} fragmentKey={fragmentKey} filters={filters} setFilters={setFilters} />;
 }

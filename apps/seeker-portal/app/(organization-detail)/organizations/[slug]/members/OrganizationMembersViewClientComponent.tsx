@@ -27,7 +27,18 @@ export default function OrganizationMembersViewClientComponent(props: {
 	const queryRef = useSerializablePreloadedQuery<typeof OrganizationMembersViewQueryNode, pageOrganizationMembersViewQuery>(
 		environment,
 		props.preloadedQuery,
-		'store-or-network'
+		'store-or-network',
+		{
+			metadata: {
+				options: {
+					cache: 'force-cache',
+					next: {
+						revalidate: false,
+						tags: [`organization-members:${props.slug}`]
+					}
+				}
+			}
+		}
 	);
 
 	const data = usePreloadedQuery(PageOrganizationMembersViewQuery, queryRef);

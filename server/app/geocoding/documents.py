@@ -1,11 +1,12 @@
 from datetime import UTC, datetime
-from typing import Annotated, ClassVar, Literal
+from typing import Annotated, ClassVar
 
 import pymongo
 from beanie import Document, Indexed
 from pydantic import Field
 
 from app.base.models import Address
+from app.core.constants import RegionLevel
 from app.geocoding.models import GeoJSONMultiPolygon, GeoJSONPoint, GeoJSONPolygon
 
 
@@ -13,7 +14,7 @@ class Region(Document):
     name: Annotated[str, Indexed()]
     address: Address
     aliases: list[str] = Field(default_factory=list)
-    level: Literal["locality", "city", "state", "country", "neighbourhood"]
+    level: RegionLevel
 
     geometry: GeoJSONPolygon | GeoJSONMultiPolygon | None = None
     coordinates: GeoJSONPoint

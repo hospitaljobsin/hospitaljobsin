@@ -15,7 +15,6 @@ import JobSearchAutocomplete from '../forms/JobSearchAutocomplete';
 import GoogleOneTapLogin from '../GoogleOneTapLogin';
 import AuthNavigation from '../layout/AuthNavigation';
 import Logo from '../Logo';
-import type { FilterValues } from './FilterSidebar';
 
 export const SearchHeaderFragment = graphql`
   fragment SearchHeaderFragment on Query {
@@ -35,15 +34,11 @@ export const SearchHeaderFragment = graphql`
 export default function SearchHeader({
 	query,
 	searchTerm,
-	location,
-	setFilters,
-	filters
+	location
 }: {
 	query: SearchHeaderFragment$key;
 	searchTerm: string | null;
 	location: string | null;
-	setFilters: (filters: FilterValues | ((prevFilters: FilterValues) => FilterValues)) => void;
-	filters: FilterValues;
 }) {
 	const data = useFragment(SearchHeaderFragment, query);
 	const router = useRouter();

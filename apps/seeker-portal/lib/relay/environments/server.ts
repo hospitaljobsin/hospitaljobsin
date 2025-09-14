@@ -2,17 +2,71 @@ import { env } from '@/lib/env/client';
 import links from '@/lib/links';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
-import type { GraphQLResponse, RequestParameters, Variables } from 'relay-runtime';
+import type { CacheConfig, GraphQLResponse, RequestParameters, Variables } from 'relay-runtime';
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 
-export async function networkFetch(request: RequestParameters, variables: Variables, options: RequestInit = {}): Promise<GraphQLResponse> {
+interface CacheConfigMetadata {
+	// Whether to include authentication credentials in the request
+	includeAuth?: boolean;
+	// Additional fetch options
+	options?: RequestInit;
+	[key: string]: unknown;
+}
+
+export interface CustomCacheConfig extends CacheConfig {
+	// Whether to include authentication credentials in the request
+	metadata?: CacheConfigMetadata;
+}
+
+/**
+ * Creates a canonicalized copy of variables with keys sorted alphabetically
+ * to ensure consistent serialization regardless of key order
+ */
+function canonicalizeVariables<T>(variables: T): T {
+	if (!variables || typeof variables !== 'object' || Array.isArray(variables)) {
+		return variables;
+	}
+
+	const result: Record<string, any> = {};
+
+	// Sort keys alphabetically
+	Object.keys(variables)
+		.sort()
+		.forEach(key => {
+			const value = variables[key as keyof T];
+			// Recursively canonicalize nested objects
+			result[key] = typeof value === 'object' && value !== null ? canonicalizeVariables(value) : value;
+		});
+
+	return result as T;
+}
+
+export async function networkFetch(
+	request: RequestParameters,
+	variables: Variables,
+	options: RequestInit = {},
+	includeAuth = false
+): Promise<GraphQLResponse> {
+	console.log('MAKING A SERVER SIDE REQUEST...', request.id);
 	let method = 'POST';
 	let url = `${env.NEXT_PUBLIC_INTERNAL_API_URL}/graphql`;
 	let body: string | undefined;
+	let serverCookie: string | undefined;
+	if (includeAuth) {
+		const { cookies } = require('next/headers');
+		serverCookie = (await cookies()).toString();
+		options.credentials = 'include';
+	}
+	const extraHeaders = options.headers as Record<string, string> | undefined;
 	const headers: Record<string, string> = {
 		Accept: 'application/json',
-		'Accept-Encoding': 'gzip'
+		'Accept-Encoding': 'gzip',
+		...extraHeaders,
+		...(includeAuth && serverCookie ? { Cookie: serverCookie } : {})
 	};
+
+	// remove headers from options so we don't pass them twice
+	delete options.headers;
 
 	if (request.operationKind === 'query') {
 		// For GET requests, use query parameters as per GraphQL over HTTP specification
@@ -24,7 +78,7 @@ export async function networkFetch(request: RequestParameters, variables: Variab
 		}
 
 		if (variables && Object.keys(variables).length > 0) {
-			searchParams.append('variables', JSON.stringify(variables));
+			searchParams.append('variables', JSON.stringify(canonicalizeVariables(variables)));
 		}
 
 		url = `${url}?${searchParams.toString()}`;
@@ -33,14 +87,13 @@ export async function networkFetch(request: RequestParameters, variables: Variab
 		headers['Content-Type'] = 'application/json';
 		body = JSON.stringify({
 			document_id: request.id,
-			variables
+			variables: canonicalizeVariables(variables)
 		});
 	}
 
 	const resp = await fetch(url, {
 		method,
 		headers,
-		credentials: 'include',
 		body,
 		...options
 	});
@@ -67,8 +120,11 @@ export async function networkFetch(request: RequestParameters, variables: Variab
 }
 
 function createNetwork() {
-	async function fetchResponse(params: RequestParameters, variables: Variables) {
-		return await networkFetch(params, variables);
+	async function fetchResponse(params: RequestParameters, variables: Variables, cacheConfig: CustomCacheConfig) {
+		console.log('fetchResponse called...', params, variables, cacheConfig);
+		// FIXME: pass custom headers here
+		// this is the reason we need to make an additional call, even though revalidate and cache options are passed!
+		return await networkFetch(params, variables, cacheConfig.metadata?.options ?? {}, cacheConfig.metadata?.includeAuth || false);
 	}
 
 	const network = Network.create(fetchResponse);

@@ -144,6 +144,17 @@ export default function SearchJobsList({
 			hasMountedRef.current = true;
 			return;
 		}
+		console.log('refetching with new filters', {
+			searchTerm,
+			location,
+			proximityKm,
+			minExperience,
+			minSalary,
+			maxSalary,
+			workMode,
+			jobType,
+			sortBy
+		});
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
 				// Only include defined variables
@@ -220,7 +231,7 @@ export default function SearchJobsList({
 				</div>
 			</div>
 			<WindowVirtualizer onScrollEnd={handleScrollEnd} ssrCount={10} count={data.jobs.totalCount} shift={false} item='div' itemSize={350}>
-				{allJobEdges.map((jobEdge, index) => (
+				{allJobEdges.map(jobEdge => (
 					<div key={jobEdge.node.id} className='pb-4 sm:pb-6'>
 						<Job job={jobEdge.node} authQueryRef={root.viewer} />
 					</div>

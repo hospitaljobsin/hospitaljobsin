@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<596764ef17ade2b1f079bc6a74a29b62>>
+ * @generated SignedSource<<c2b17e8e852ef618e9ac7549e861146d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type SearchView_query$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"SearchHeaderFragment" | "SearchJobsListFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"SearchJobsListFragment">;
   readonly " $fragmentType": "SearchView_query";
 };
 export type SearchView_query$key = {
@@ -72,11 +72,6 @@ const node: ReaderFragment = {
   "name": "SearchView_query",
   "selections": [
     {
-      "args": null,
-      "kind": "FragmentSpread",
-      "name": "SearchHeaderFragment"
-    },
-    {
       "args": [
         {
           "kind": "Variable",
@@ -132,6 +127,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "8defff866ebcec4ac8b15a34004485b6";
+(node as any).hash = "39e2257971875f15cea33226a5b37dd2";
 
 export default node;

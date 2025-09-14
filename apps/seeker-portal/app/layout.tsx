@@ -21,7 +21,10 @@ export const metadata: Metadata = {
 		default: APP_TITLE
 	},
 	description: APP_DESCRIPTION,
-	metadataBase: new URL(env.NEXT_PUBLIC_URL)
+	metadataBase: new URL(env.NEXT_PUBLIC_URL),
+	alternates: {
+		canonical: './'
+	}
 };
 
 export default async function RootLayout({
