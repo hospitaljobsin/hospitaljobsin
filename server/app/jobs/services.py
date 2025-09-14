@@ -269,6 +269,7 @@ class JobService:
         geo, address = None, None
         if location is not None:
             result = await self._region_repo.get_by_name(location)
+            print("RESULT LOCATION: ", result, location)
             if result is None:
                 return Err(InvalidLocationError())
             geo = GeoObject(

@@ -6,13 +6,13 @@ from app.core.constants import (
     REGION_SEARCH_INDEX_NAME,
 )
 from app.geocoding.documents import Region
-from app.geocoding.models import LocationAutocompleteSuggestion
+from app.geocoding.models import (
+    LocationAutocompleteSuggestion,
+)
 
 
 class RegionRepo:
     async def get_by_name(self, name: str) -> Region | None:
-        # TODO: cache this if needed in the future
-        # Use Atlas Search for exact matching and alias searching
         pipeline = [
             {
                 "$search": {
@@ -37,8 +37,13 @@ class RegionRepo:
                                 {"case": {"$eq": ["$level", "country"]}, "then": 2},
                                 {"case": {"$eq": ["$level", "state"]}, "then": 3},
                                 {"case": {"$eq": ["$level", "locality"]}, "then": 4},
+                                {
+                                    "case": {"$eq": ["$level", "neighbourhood"]},
+                                    "then": 5,
+                                },
+                                {"case": {"$eq": ["$level", "city"]}, "then": 6},
                             ],
-                            "default": 5,  # Any other level gets lowest priority
+                            "default": 7,  # Any other level gets lowest priority
                         }
                     },
                 }
@@ -49,13 +54,10 @@ class RegionRepo:
             {"$limit": 1},  # Get the highest priority match
         ]
 
-        results = await Region.aggregate(pipeline).to_list()
+        results = await Region.aggregate(pipeline, projection_model=Region).to_list()
 
         if results:
-            # Convert the raw result back to a Region document
-            region_data = results[0]
-            return Region(**region_data)
-
+            return results[0]
         return None
 
     async def get_autocomplete_suggestions(

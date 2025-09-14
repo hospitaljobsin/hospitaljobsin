@@ -43,7 +43,7 @@
 			"country": "IN"
 		},
 		"aliases": ["Bengaluru", "Garden City", "Silicon Valley of India"],
-		"level": "city",
+		"level": "locality",
 		"coordinates": {
 			"type": "Point",
 			"coordinates": [77.5946, 12.9716]
@@ -104,13 +104,13 @@
 	{
 		"name": "Mumbai",
 		"address": {
-			"display_name": "Mumbai, Maharashtra, India",
+			"display_name": "Mumbai",
 			"address_locality": "Mumbai",
 			"address_region": "Maharashtra",
 			"country": "IN"
 		},
-		"aliases": ["Bombay", "Financial Capital of India"],
-		"level": "city",
+		"aliases": ["Bombay"],
+		"level": "locality",
 		"coordinates": {
 			"type": "Point",
 			"coordinates": [72.8777, 19.076]
@@ -142,7 +142,7 @@
 			"country": "IN"
 		},
 		"aliases": ["New Delhi", "National Capital Territory"],
-		"level": "city",
+		"level": "locality",
 		"coordinates": {
 			"type": "Point",
 			"coordinates": [77.1025, 28.7041]
@@ -192,7 +192,7 @@
 			"country": "IN"
 		},
 		"aliases": ["Gurugram", "Millennium City"],
-		"level": "city",
+		"level": "locality",
 		"coordinates": {
 			"type": "Point",
 			"coordinates": [77.0266, 28.4595]
