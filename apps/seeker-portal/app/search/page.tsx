@@ -7,7 +7,6 @@ import { REASONABLE_JOB_COUNT } from '@/lib/constants';
 import loadSerializableQuery from '@/lib/relay/loadSerializableQuery';
 import { parseSearchParams } from '@/lib/searchParams';
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
 import { graphql, readInlineData } from 'relay-runtime';
 import SearchViewClientComponent from './SearchViewClientComponent';
 
@@ -84,7 +83,6 @@ export async function generateMetadata({
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
-	const serverCookie = await cookies();
 	const filterParams = await searchParams;
 
 	const variables = parseSearchParams(filterParams);
@@ -97,9 +95,8 @@ export async function generateMetadata({
 				searchTerm: null
 			},
 			{
-				credentials: 'include',
-				headers: {
-					Cookie: serverCookie.toString()
+				metadata: {
+					includeAuth: true
 				}
 			}
 		);
@@ -140,8 +137,6 @@ export async function generateMetadata({
 }
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-	const serverCookie = await cookies();
-	console.log('server cookie', serverCookie.toString());
 	const filterParams = await searchParams;
 	const variables = parseSearchParams(filterParams);
 
@@ -149,9 +144,8 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 		PageSearchViewQuery,
 		{ ...variables, location: null, searchTerm: null },
 		{
-			credentials: 'include',
-			headers: {
-				Cookie: serverCookie.toString()
+			metadata: {
+				includeAuth: true
 			}
 		}
 	);

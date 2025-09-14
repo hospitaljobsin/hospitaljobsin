@@ -64,10 +64,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 			slug: slug
 		},
 		{
-			cache: 'force-cache',
-			next: {
-				revalidate: false,
-				tags: [`organization:${slug}`] // invalidate this cache when organization metadata is updated
+			metadata: {
+				options: {
+					cache: 'force-cache',
+					next: {
+						revalidate: false,
+						tags: [`organization:${slug}`] // invalidate this cache when organization metadata is updated
+					}
+				}
 			}
 		}
 	);
@@ -99,10 +103,14 @@ export default async function OrganizationDetailPage({ params }: { params: Promi
 			slug: slug
 		},
 		{
-			cache: 'force-cache',
-			next: {
-				revalidate: false,
-				tags: [`organization:${slug}`] // invalidate this cache when organization members are updated
+			metadata: {
+				options: {
+					cache: 'force-cache',
+					next: {
+						revalidate: false,
+						tags: [`organization:${slug}`] // invalidate this cache when organization members are updated
+					}
+				}
 			}
 		}
 	);

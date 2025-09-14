@@ -62,7 +62,12 @@ export default function SearchViewClientComponent({ preloadedQuery, location }: 
 	const queryRef = useSerializablePreloadedQuery<typeof PageSearchViewQueryNode, pageSearchViewQuery>(
 		environment,
 		preloadedQuery,
-		'store-or-network'
+		'store-or-network',
+		{
+			metadata: {
+				includeAuth: true
+			}
+		}
 	);
 
 	const data = usePreloadedQuery(PageSearchViewQuery, queryRef);

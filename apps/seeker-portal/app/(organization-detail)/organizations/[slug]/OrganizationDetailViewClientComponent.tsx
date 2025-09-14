@@ -27,7 +27,18 @@ export default function OrganizationDetailViewClientComponent(props: {
 	const queryRef = useSerializablePreloadedQuery<typeof OrganizationDetailViewQueryNode, pageOrganizationDetailViewQuery>(
 		environment,
 		props.preloadedQuery,
-		'store-or-network'
+		'store-or-network',
+		{
+			metadata: {
+				options: {
+					cache: 'force-cache',
+					next: {
+						revalidate: false,
+						tags: [`organization:${props.slug}`]
+					}
+				}
+			}
+		}
 	);
 
 	const data = usePreloadedQuery(PageOrganizationDetailViewQuery, queryRef);

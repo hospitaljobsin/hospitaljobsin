@@ -135,10 +135,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 			jobSlug: jobSlug
 		},
 		{
-			cache: 'force-cache',
-			next: {
-				revalidate: false,
-				tags: [`job:${slug}:${jobSlug}`, `organization:${slug}`] // invalidate this cache when job is updated
+			metadata: {
+				options: {
+					cache: 'force-cache',
+					next: {
+						revalidate: false,
+						tags: [`job:${slug}:${jobSlug}`, `organization:${slug}`] // invalidate this cache when job is updated
+					}
+				}
 			}
 		}
 	);
@@ -180,10 +184,14 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 			jobSlug: jobSlug
 		},
 		{
-			cache: 'force-cache',
-			next: {
-				revalidate: false,
-				tags: [`job:${slug}:${jobSlug}`, `organization:${slug}`] // invalidate this cache when job is updated
+			metadata: {
+				options: {
+					cache: 'force-cache',
+					next: {
+						revalidate: false,
+						tags: [`job:${slug}:${jobSlug}`, `organization:${slug}`] // invalidate this cache when job is updated
+					}
+				}
 			}
 		}
 	);
@@ -198,9 +206,13 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 		PageTrendingJobsQuery,
 		{},
 		{
-			next: {
-				revalidate: 60 * 60, // revalidate this after 60 minutes
-				tags: ['trending-jobs']
+			metadata: {
+				options: {
+					next: {
+						revalidate: 60 * 60, // revalidate this after 60 minutes
+						tags: ['trending-jobs']
+					}
+				}
 			}
 		}
 	);
@@ -272,7 +284,12 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 					__html: JSON.stringify(jsonLd).replace(/</g, '\\u003c')
 				}}
 			/>
-			<JobDetailViewClientComponent preloadedQuery={preloadedQuery} preloadedTrendingQuery={preloadedTrendingQuery} />
+			<JobDetailViewClientComponent
+				preloadedQuery={preloadedQuery}
+				preloadedTrendingQuery={preloadedTrendingQuery}
+				slug={slug}
+				jobSlug={jobSlug}
+			/>
 		</>
 	);
 }

@@ -7,7 +7,6 @@ import { REASONABLE_JOB_COUNT } from '@/lib/constants';
 import loadSerializableQuery from '@/lib/relay/loadSerializableQuery';
 import { parseSearchParams } from '@/lib/searchParams';
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
 import { graphql, readInlineData } from 'relay-runtime';
 import SearchViewLocationSpecialityClientComponent from './SearchViewLocationSpecialityClientComponent';
 
@@ -197,7 +196,6 @@ export default async function SearchPage({
 		speciality: string | string[];
 	}>;
 }) {
-	const serverCookie = await cookies();
 	const filterParams = await searchParams;
 	const variables = parseSearchParams(filterParams);
 	const locationParam = (await params).location;
@@ -225,9 +223,8 @@ export default async function SearchPage({
 			location
 		},
 		{
-			credentials: 'include',
-			headers: {
-				Cookie: serverCookie.toString()
+			metadata: {
+				includeAuth: true
 			}
 		}
 	);

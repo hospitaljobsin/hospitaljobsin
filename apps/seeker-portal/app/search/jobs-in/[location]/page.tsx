@@ -7,7 +7,6 @@ import { REASONABLE_JOB_COUNT } from '@/lib/constants';
 import loadSerializableQuery from '@/lib/relay/loadSerializableQuery';
 import { parseSearchParams } from '@/lib/searchParams';
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
 import { graphql, readInlineData } from 'relay-runtime';
 import SearchViewLocationClientComponent from './/SearchViewLocationClientComponent';
 
@@ -150,7 +149,6 @@ export default async function SearchPage({
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 	params: Promise<{ location: string | string[] }>;
 }) {
-	const serverCookie = await cookies();
 	const filterParams = await searchParams;
 	const variables = parseSearchParams(filterParams);
 	const locationParam = (await params).location;
@@ -167,9 +165,8 @@ export default async function SearchPage({
 		PageSearchLocationViewQuery,
 		{ ...variables, location, searchTerm: null },
 		{
-			credentials: 'include',
-			headers: {
-				Cookie: serverCookie.toString()
+			metadata: {
+				includeAuth: true
 			}
 		}
 	);

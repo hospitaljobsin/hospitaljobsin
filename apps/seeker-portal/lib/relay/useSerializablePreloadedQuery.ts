@@ -1,13 +1,14 @@
 import { useMemo } from 'react';
 import type { PreloadedQuery, PreloadFetchPolicy } from 'react-relay';
-import type { ConcreteRequest, IEnvironment, OperationType } from 'relay-runtime';
+import type { CacheConfig, ConcreteRequest, IEnvironment, OperationType } from 'relay-runtime';
 import { responseCache } from './environments/client';
 import type { SerializablePreloadedQuery } from './serializablePreloadedQuery';
 
 export default function useSerializablePreloadedQuery<TRequest extends ConcreteRequest, TQuery extends OperationType>(
 	environment: IEnvironment,
 	preloadQuery: SerializablePreloadedQuery<TRequest, TQuery>,
-	fetchPolicy: PreloadFetchPolicy = 'store-or-network'
+	fetchPolicy: PreloadFetchPolicy = 'store-or-network',
+	cacheConfig: CacheConfig | undefined = undefined
 ): PreloadedQuery<TQuery> {
 	useMemo(() => {
 		writePreloadedQueryToCache(preloadQuery);
@@ -21,6 +22,7 @@ export default function useSerializablePreloadedQuery<TRequest extends ConcreteR
 		name: preloadQuery.params.name,
 		kind: 'PreloadedQuery',
 		variables: preloadQuery.variables,
+		networkCacheConfig: cacheConfig,
 		dispose: () => {
 			return;
 		}
