@@ -15,7 +15,7 @@ from shapely.validation import make_valid
 
 EXPORT_DIR = Path(__file__).parent.parent.parent / "notebooks" / "export"
 STATE_DIR = Path(__file__).parent.parent / "import_state"
-BATCH_SIZE = 100
+BATCH_SIZE = 1000
 MAX_RETRIES = 3
 RETRY_DELAY = 2  # seconds
 BACKOFF_MULTIPLIER = 2

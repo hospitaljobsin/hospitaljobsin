@@ -121,7 +121,7 @@ class RegionRepo:
                     place_id=place_id,
                     level=result.level,
                     address=Address(
-                        display_name=result.address.display_name,
+                        display_name=result.name,
                         country=result.address.country,
                         street_address=result.address.street_address,
                         address_locality=result.address.address_locality,

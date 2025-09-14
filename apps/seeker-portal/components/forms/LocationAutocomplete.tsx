@@ -253,26 +253,32 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 				onBlur={onBlur}
 				items={suggestions}
 				menuTrigger='input'
-				shouldCloseOnBlur={true} // Close after selection to indicate to user that selection was made
+				shouldCloseOnBlur={false}
 				allowsEmptyCollection
 				autoComplete='off' // Prevent browser autocomplete from interfering
 			>
 				{(suggestion: SearchLocation) => (
-					<AutocompleteItem key={suggestion.placeId}>
-						<div className='flex flex-col'>
-							<div className='flex items-center'>
-								{suggestion.address.displayName}
-								{suggestion.level && (
-									<span className='text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded ml-2'>{suggestion.level.toLowerCase()}</span>
+					<AutocompleteItem key={suggestion.placeId} textValue={suggestion.address.displayName || ''}>
+						<div className='flex justify-between items-center w-full py-1.5'>
+							<div className='flex flex-col'>
+								<span className=''>{suggestion.address.displayName}</span>
+								{(suggestion.address.addressLocality ||
+									suggestion.address.addressRegion ||
+									(suggestion.address.country && suggestion.level.toLowerCase() !== 'country') ||
+									suggestion.address.postalCode) && (
+									<span className='text-xs text-default-400'>
+										{[
+											suggestion.address.addressLocality,
+											suggestion.address.addressRegion,
+											suggestion.address.postalCode,
+											suggestion.level.toLowerCase() !== 'country' ? suggestion.address.country : null
+										]
+											.filter(Boolean)
+											.join(', ')}
+									</span>
 								)}
 							</div>
-							{(suggestion.address.addressLocality || suggestion.address.addressRegion || suggestion.address.country) && (
-								<span className='text-sm text-gray-500'>
-									{[suggestion.address.addressLocality, suggestion.address.addressRegion, suggestion.address.country]
-										.filter(Boolean)
-										.join(', ')}
-								</span>
-							)}
+							<span className='text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded ml-2'>{suggestion.level.toLowerCase()}</span>
 						</div>
 					</AutocompleteItem>
 				)}
