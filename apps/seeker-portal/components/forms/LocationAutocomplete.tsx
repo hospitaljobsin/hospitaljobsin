@@ -256,6 +256,8 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 				shouldCloseOnBlur={false}
 				allowsEmptyCollection
 				autoComplete='off' // Prevent browser autocomplete from interfering
+				isVirtualized
+				itemHeight={50}
 			>
 				{(suggestion: SearchLocation) => (
 					<AutocompleteItem key={suggestion.placeId} textValue={suggestion.address.displayName || ''}>
