@@ -10,7 +10,7 @@ import { graphql } from 'relay-runtime';
 import { useDebounce } from 'use-debounce';
 import type { LocationAutocompleteQuery } from '@/__generated__/LocationAutocompleteQuery.graphql';
 
-interface LocationAutocompleteProps extends Omit<AutocompleteProps, 'children' | 'onChange' | 'onSubmit'> {
+interface LocationAutocompleteProps extends Omit<AutocompleteProps<SearchLocation>, 'children' | 'onChange' | 'onSubmit'> {
 	value: string;
 	onChange?: (value: SearchLocation) => void;
 	onValueChange: (value: string) => void;
@@ -27,6 +27,7 @@ export type SearchLocation = {
 		postalCode: string | null;
 	};
 	placeId: string;
+	level: string;
 };
 
 const SearchLocationsQuery = graphql`
@@ -41,6 +42,7 @@ const SearchLocationsQuery = graphql`
 					addressRegion
 					postalCode
 				}
+				level
 				placeId
 			}
 		}
@@ -61,13 +63,14 @@ function LocationResultControls({
 		if (data?.autocompleteLocations?.locations) {
 			const mappedLocations = data.autocompleteLocations.locations.map(item => ({
 				address: {
-					displayName: item.address.displayName,
-					country: item.address.country,
-					addressLocality: item.address.addressLocality,
-					addressRegion: item.address.addressRegion,
-					postalCode: item.address.postalCode
+					displayName: item.address.displayName || null,
+					country: item.address.country || null,
+					addressLocality: item.address.addressLocality || null,
+					addressRegion: item.address.addressRegion || null,
+					postalCode: item.address.postalCode || null
 				},
-				placeId: item.placeId
+				placeId: item.placeId,
+				level: item.level
 			}));
 			onDataLoaded(mappedLocations);
 		} else {
@@ -80,7 +83,8 @@ function LocationResultControls({
 }
 
 export default function LocationAutocomplete({ value, onChange, onClear, onValueChange, onSubmit, ...props }: LocationAutocompleteProps) {
-	const [debouncedLocation] = useDebounce(value, 300);
+	// Use a shorter debounce time for more responsive suggestions
+	const [debouncedLocation] = useDebounce(value, 250);
 	const [suggestions, setSuggestions] = useState<SearchLocation[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isPending, startTransition] = useTransition();
@@ -88,6 +92,9 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [queryReference, loadQuery, disposeQuery] = useQueryLoader<LocationAutocompleteQuery>(SearchLocationsQuery);
 
+	// Track the last selected value to prevent it from being cleared
+	const lastSelectedValue = useRef<string | null>(null);
+	const lastSelectedValueTimestamp = useRef<number>(0);
 	const shouldRefetchSuggestions = useRef(true);
 
 	const handleDataLoaded = useCallback((locations: SearchLocation[]) => {
@@ -101,15 +108,18 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 			shouldRefetchSuggestions.current = true;
 			return;
 		}
+
 		// Only fetch suggestions if we have a valid query and haven't just submitted
-		if (debouncedLocation && debouncedLocation.length >= 3 && !justSubmitted) {
+		if (debouncedLocation && debouncedLocation.length >= 2 && !justSubmitted) {
 			setIsLoading(true);
+
+			// Use startTransition to avoid UI jank during data fetching
 			startTransition(() => {
 				loadQuery(
 					{ searchTerm: debouncedLocation },
 					{
-						fetchPolicy: 'store-or-network',
-						networkCacheConfig: { force: false }
+						fetchPolicy: 'network-only', // Always get fresh data from network
+						networkCacheConfig: { force: true }
 					}
 				);
 			});
@@ -132,12 +142,31 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 		}
 		const selected = suggestions.find(item => item.placeId === selectedKey);
 		if (selected) {
+			console.log('Selection changed to:', selected);
+
+			// Prevent refetching suggestions when setting value from selection
 			shouldRefetchSuggestions.current = false;
+
+			// Update the parent component with the selected location object
 			onChange?.({
 				address: selected.address,
-				placeId: selected.placeId
+				placeId: selected.placeId,
+				level: selected.level
 			});
-			onSubmit?.(selected.address.displayName);
+
+			// Set the input value to the displayName if it exists
+			if (selected.address.displayName) {
+				// Store the selected value to prevent it from being cleared
+				lastSelectedValue.current = selected.address.displayName;
+				lastSelectedValueTimestamp.current = Date.now();
+
+				// Update the input value
+				onValueChange?.(selected.address.displayName);
+
+				// Submit the selected value
+				onSubmit?.(selected.address.displayName);
+			}
+
 			setIsLoading(false);
 			// Clear query reference to completely stop the loading state
 			disposeQuery();
@@ -145,11 +174,44 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 	};
 
 	const handleInputChange = (value: string) => {
+		console.log('INPUT CHANGE: ', value);
+
 		// Reset justSubmitted when user starts typing again
 		if (justSubmitted) {
 			setJustSubmitted(false);
 		}
-		onValueChange(value);
+
+		// If we have a last selected value and the input is being cleared (likely due to a race condition),
+		// don't clear it and maintain the selected value
+		if (value === '' && lastSelectedValue.current && !justSubmitted) {
+			// If the value is being cleared right after a selection, it might be a race condition
+			// Check if less than 100ms passed since selection (typical for UI framework events)
+			const timeSinceLastUpdate = Date.now() - (lastSelectedValueTimestamp.current || 0);
+			if (timeSinceLastUpdate < 100) {
+				console.log('Preventing value clear, restoring:', lastSelectedValue.current);
+				setTimeout(() => {
+					// Make sure value is not null before using it
+					const valueToRestore = lastSelectedValue.current;
+					if (valueToRestore) {
+						onValueChange?.(valueToRestore);
+					}
+				}, 0);
+				return;
+			}
+
+			// If it's been longer, user probably intentionally cleared the input
+			lastSelectedValue.current = null;
+			setSuggestions([]);
+		} else if (value === '') {
+			// Normal clearing behavior
+			setSuggestions([]);
+		}
+
+		// Only update the value if it's not undefined or null
+		if (value !== undefined && value !== null) {
+			onValueChange?.(value);
+		}
+
 		// Don't call onChange here, only when selection changes
 	};
 
@@ -178,7 +240,7 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 	return (
 		<>
 			{queryReference && <LocationResultControls queryReference={queryReference} onDataLoaded={handleDataLoaded} />}
-			<Autocomplete
+			<Autocomplete<SearchLocation>
 				{...props}
 				ref={inputRef}
 				inputValue={value}
@@ -187,13 +249,33 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 				onSelectionChange={handleSelectionChange}
 				onKeyDown={handleKeyDown}
 				isClearable
-				menuTrigger='input'
 				onClear={onClear}
 				onBlur={onBlur}
+				items={suggestions}
+				menuTrigger='input'
+				shouldCloseOnBlur={true} // Close after selection to indicate to user that selection was made
+				allowsEmptyCollection
+				autoComplete='off' // Prevent browser autocomplete from interfering
 			>
-				{suggestions.map(suggestion => (
-					<AutocompleteItem key={suggestion.placeId}>{suggestion.address.displayName}</AutocompleteItem>
-				))}
+				{(suggestion: SearchLocation) => (
+					<AutocompleteItem key={suggestion.placeId}>
+						<div className='flex flex-col'>
+							<div className='flex items-center'>
+								{suggestion.address.displayName}
+								{suggestion.level && (
+									<span className='text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded ml-2'>{suggestion.level.toLowerCase()}</span>
+								)}
+							</div>
+							{(suggestion.address.addressLocality || suggestion.address.addressRegion || suggestion.address.country) && (
+								<span className='text-sm text-gray-500'>
+									{[suggestion.address.addressLocality, suggestion.address.addressRegion, suggestion.address.country]
+										.filter(Boolean)
+										.join(', ')}
+								</span>
+							)}
+						</div>
+					</AutocompleteItem>
+				)}
 			</Autocomplete>
 		</>
 	);

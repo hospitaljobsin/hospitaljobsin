@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<3dfdb3c3a5b4138f21e44331e9214dcf>>
- * @relayHash 7fcd73f4a9355e77a0e13ac110200a76
+ * @generated SignedSource<<cd30f290f5254d6adaa4c6f348f0b6ab>>
+ * @relayHash aad6a559f637431392d333a90520c8b2
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,9 +9,10 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 7fcd73f4a9355e77a0e13ac110200a76
+// @relayRequestID aad6a559f637431392d333a90520c8b2
 
 import type { ConcreteRequest } from 'relay-runtime';
+export type RegionLevel = "CONTINENT" | "COUNTRY" | "LOCALITY" | "STATE" | "%future added value";
 export type LocationAutocompleteQuery$variables = {
   searchTerm: string;
 };
@@ -26,6 +27,7 @@ export type LocationAutocompleteQuery$data = {
         readonly displayName: string | null | undefined;
         readonly postalCode: string | null | undefined;
       };
+      readonly level: RegionLevel;
       readonly placeId: string;
     }>;
   };
@@ -123,6 +125,13 @@ v1 = [
             "alias": null,
             "args": null,
             "kind": "ScalarField",
+            "name": "level",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "placeId",
             "storageKey": null
           }
@@ -151,7 +160,7 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "id": "7fcd73f4a9355e77a0e13ac110200a76",
+    "id": "aad6a559f637431392d333a90520c8b2",
     "metadata": {},
     "name": "LocationAutocompleteQuery",
     "operationKind": "query",
@@ -160,6 +169,6 @@ return {
 };
 })();
 
-(node as any).hash = "4c56052eabd40edc677cf8fd05f94f54";
+(node as any).hash = "8bfafcb5d7f5e3b96bed4aaff91d816b";
 
 export default node;
