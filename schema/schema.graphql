@@ -4247,6 +4247,8 @@ enum RegionLevel {
 	COUNTRY
 	STATE
 	LOCALITY
+	CITY
+	NEIGHBOURHOOD
 }
 
 """

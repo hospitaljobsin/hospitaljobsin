@@ -1,62 +1,48 @@
-"use client";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
-import type {
-	CacheConfig,
-	GraphQLResponse,
-	RequestParameters,
-	Variables,
-} from "relay-runtime";
-import {
-	Environment,
-	Network,
-	QueryResponseCache,
-	RecordSource,
-	Store,
-} from "relay-runtime";
+'use client';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
+import type { CacheConfig, GraphQLResponse, RequestParameters, Variables } from 'relay-runtime';
+import { Environment, Network, QueryResponseCache, RecordSource, Store } from 'relay-runtime';
 
 const CACHE_TTL = 5 * 1000; // 5 seconds, to resolve preloaded results
 
-export async function networkFetch(
-	request: RequestParameters,
-	variables: Variables,
-): Promise<GraphQLResponse> {
-	let method = "POST";
+export async function networkFetch(request: RequestParameters, variables: Variables): Promise<GraphQLResponse> {
+	let method = 'POST';
 	let url = `${env.NEXT_PUBLIC_API_URL}/graphql`;
 	let body: string | undefined;
 	const headers: Record<string, string> = {
-		Accept: "application/json",
-		"Accept-Encoding": "gzip",
+		Accept: 'application/json',
+		'Accept-Encoding': 'gzip'
 	};
 
-	if (request.operationKind === "query") {
+	if (request.operationKind === 'query') {
 		// For GET requests, use query parameters as per GraphQL over HTTP specification
-		method = "GET";
+		method = 'GET';
 		const searchParams = new URLSearchParams();
 
 		if (request.id) {
-			searchParams.append("document_id", request.id);
+			searchParams.append('document_id', request.id);
 		}
 
 		if (variables && Object.keys(variables).length > 0) {
-			searchParams.append("variables", JSON.stringify(variables));
+			searchParams.append('variables', JSON.stringify(variables));
 		}
 
 		url = `${url}?${searchParams.toString()}`;
 	} else {
 		// For POST requests (mutations), use request body
-		headers["Content-Type"] = "application/json";
+		headers['Content-Type'] = 'application/json';
 		body = JSON.stringify({
 			document_id: request.id,
-			variables,
+			variables
 		});
 	}
 
 	const resp = await fetch(url, {
 		method,
 		headers,
-		credentials: "include",
-		body,
+		credentials: 'include',
+		body
 	});
 	const json = await resp.json();
 
@@ -68,21 +54,17 @@ export async function networkFetch(
 			switch (err.extensions?.code) {
 				// Server sets code to UNAUTHENTICATED
 				// when an AuthenticationError is thrown in a resolver
-				case "UNAUTHENTICATED":
+				case 'UNAUTHENTICATED':
 					window.location.href = links.login(links.seekerLanding);
 					break;
-				case "REQUIRES_SUDO_MODE":
+				case 'REQUIRES_SUDO_MODE':
 					window.location.href = links.requestSudo(window.location.pathname);
 					break;
 			}
 		}
 		console.error(json.errors);
 		throw new Error(
-			`Error fetching GraphQL query '${
-				request.name
-			}' with variables '${JSON.stringify(variables)}': ${JSON.stringify(
-				json.errors,
-			)}`,
+			`Error fetching GraphQL query '${request.name}' with variables '${JSON.stringify(variables)}': ${JSON.stringify(json.errors)}`
 		);
 	}
 
@@ -91,16 +73,12 @@ export async function networkFetch(
 
 export const responseCache: QueryResponseCache = new QueryResponseCache({
 	size: 100,
-	ttl: CACHE_TTL,
+	ttl: CACHE_TTL
 });
 
 function createNetwork() {
-	async function fetchResponse(
-		params: RequestParameters,
-		variables: Variables,
-		cacheConfig: CacheConfig,
-	) {
-		const isQuery = params.operationKind === "query";
+	async function fetchResponse(params: RequestParameters, variables: Variables, cacheConfig: CacheConfig) {
+		const isQuery = params.operationKind === 'query';
 		const cacheKey = params.id ?? params.cacheID;
 		const forceFetch = cacheConfig?.force;
 		if (isQuery && !forceFetch) {
@@ -119,9 +97,9 @@ function createNetwork() {
 
 export function createClientEnvironment() {
 	return new Environment({
-		log: console.log,
+		log: env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? console.log : undefined,
 		network: createNetwork(),
 		store: new Store(RecordSource.create()),
-		isServer: false,
+		isServer: false
 	});
 }
