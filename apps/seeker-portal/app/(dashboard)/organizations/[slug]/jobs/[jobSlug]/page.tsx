@@ -159,7 +159,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 	if (data.organization.job.__typename !== 'Job' || !data.organization.job.isVisible) {
 		return {
 			title: 'Job Not found',
-			description: 'The job you are looking for does not exist'
+			description: 'The job you are looking for does not exist',
+			robots: { index: false, follow: false },
+			alternates: {
+				canonical: `${env.NEXT_PUBLIC_URL}${links.jobDetail(slug, jobSlug)}`
+			}
 		};
 	}
 
@@ -168,6 +172,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		description: data.organization.job.descriptionCleaned,
 		openGraph: {
 			images: [data.organization.bannerUrl]
+		},
+		robots: {
+			index: true,
+			follow: true
+		},
+		alternates: {
+			canonical: `${env.NEXT_PUBLIC_URL}${links.jobDetail(slug, jobSlug)}`
 		}
 	};
 }

@@ -4,6 +4,8 @@ import type { pageOrganizationMembersMetadataQuery } from '@/__generated__/pageO
 import type { pageOrganizationMembersServerFragment$key } from '@/__generated__/pageOrganizationMembersServerFragment.graphql';
 import type OrganizationMembersViewQueryNode from '@/__generated__/pageOrganizationMembersViewQuery.graphql';
 import type { pageOrganizationMembersViewQuery } from '@/__generated__/pageOrganizationMembersViewQuery.graphql';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
 import loadSerializableQuery from '@/lib/relay/loadSerializableQuery';
 import { notFound } from 'next/navigation';
 import { graphql, readInlineData } from 'relay-runtime';
@@ -81,7 +83,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 	if (data.organization.__typename !== 'Organization') {
 		return {
 			title: 'Organization Not found',
-			description: 'The organization you are looking for does not exist'
+			description: 'The organization you are looking for does not exist',
+			robots: {
+				index: false,
+				follow: false
+			},
+			alternates: {
+				canonical: `${env.NEXT_PUBLIC_URL}${links.organizationDetailMembers(slug)}`
+			}
 		};
 	}
 
@@ -90,6 +99,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		description: data.organization.description,
 		openGraph: {
 			images: [data.organization.bannerUrl]
+		},
+		robots: {
+			index: true,
+			follow: true
+		},
+		alternates: {
+			canonical: `${env.NEXT_PUBLIC_URL}${links.organizationDetailMembers(slug)}`
 		}
 	};
 }
