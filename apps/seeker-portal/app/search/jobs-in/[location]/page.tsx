@@ -4,6 +4,8 @@ import type { pageSearchLocationMetadataQuery } from '@/__generated__/pageSearch
 import type SearchViewLocationQueryNode from '@/__generated__/pageSearchLocationViewQuery.graphql';
 import type { pageSearchLocationViewQuery } from '@/__generated__/pageSearchLocationViewQuery.graphql';
 import { REASONABLE_JOB_COUNT } from '@/lib/constants';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
 import loadSerializableQuery from '@/lib/relay/loadSerializableQuery';
 import { parseSearchParams } from '@/lib/searchParams';
 import type { Metadata } from 'next';
@@ -97,49 +99,40 @@ export async function generateMetadata({
 		: decodeURIComponent(locationParam).replace(/-/g, ' ');
 	const variables = parseSearchParams(filterParams);
 
-	console.log('generating metadata for search', variables);
+	const preloadedQuery = await loadSerializableQuery<typeof SearchMetadataQueryNode, pageSearchLocationMetadataQuery>(
+		PageSearchMetadataQuery,
+		{ ...variables, location, searchTerm: null }
+	);
 
-	try {
-		const preloadedQuery = await loadSerializableQuery<typeof SearchMetadataQueryNode, pageSearchLocationMetadataQuery>(
-			PageSearchMetadataQuery,
-			{ ...variables, location, searchTerm: null }
-		);
+	const data = readInlineData<pageSearchLocationMetadataFragment$key>(PageSearchMetadataFragment, preloadedQuery.data);
 
-		const data = readInlineData<pageSearchLocationMetadataFragment$key>(PageSearchMetadataFragment, preloadedQuery.data);
+	const jobCount = data.jobs.totalCount;
+	const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT;
 
-		const jobCount = data.jobs.totalCount;
-		const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT;
+	let title = hasReasonableCount ? `${jobCount} Medical Jobs & Healthcare Careers` : 'Medical Jobs & Healthcare Careers';
+	let description = hasReasonableCount
+		? `Discover ${jobCount} verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
+		: 'Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.';
 
-		let title = hasReasonableCount ? `${jobCount} Medical Jobs & Healthcare Careers` : 'Medical Jobs & Healthcare Careers';
-		let description = hasReasonableCount
-			? `Discover ${jobCount} verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
-			: 'Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.';
-
-		if (location) {
-			title += ` in ${location}`;
-			description += ` Explore medical career opportunities in ${location}'s premier hospitals, specialty clinics & healthcare centers.`;
-		} else {
-			title += " | India's Medical Job Portal";
-			description += " Browse nationwide medical career opportunities across India's leading healthcare networks.";
-		}
-
-		return {
-			title,
-			description
-		};
-	} catch (error) {
-		console.error('Error generating search metadata:', error);
-
-		// Fallback metadata
-		const title = 'Medical Jobs & Healthcare Careers in India | Leading Medical Job Portal';
-		const description =
-			'Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities across India.';
-
-		return {
-			title,
-			description
-		};
+	if (location) {
+		title += ` in ${location}`;
+		description += ` Explore medical career opportunities in ${location}'s premier hospitals, specialty clinics & healthcare centers.`;
+	} else {
+		title += " | India's Medical Job Portal";
+		description += " Browse nationwide medical career opportunities across India's leading healthcare networks.";
 	}
+
+	return {
+		title,
+		description,
+		robots: {
+			index: true,
+			follow: true
+		},
+		alternates: {
+			canonical: `${env.NEXT_PUBLIC_URL}${links.search(location)}`
+		}
+	};
 }
 
 export default async function SearchPage({

@@ -4,6 +4,8 @@ import type { pageSearchMetadataQuery } from '@/__generated__/pageSearchMetadata
 import type SearchViewQueryNode from '@/__generated__/pageSearchViewQuery.graphql';
 import type { pageSearchViewQuery } from '@/__generated__/pageSearchViewQuery.graphql';
 import { REASONABLE_JOB_COUNT } from '@/lib/constants';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
 import loadSerializableQuery from '@/lib/relay/loadSerializableQuery';
 import { parseSearchParams } from '@/lib/searchParams';
 import type { Metadata } from 'next';
@@ -87,53 +89,44 @@ export async function generateMetadata({
 
 	const variables = parseSearchParams(filterParams);
 
-	try {
-		const preloadedQuery = await loadSerializableQuery<typeof SearchMetadataQueryNode, pageSearchMetadataQuery>(
-			PageSearchMetadataQuery,
-			{
-				...variables,
-				searchTerm: null
-			},
-			{
-				metadata: {
-					includeAuth: true
-				}
+	const preloadedQuery = await loadSerializableQuery<typeof SearchMetadataQueryNode, pageSearchMetadataQuery>(
+		PageSearchMetadataQuery,
+		{
+			...variables,
+			searchTerm: null
+		},
+		{
+			metadata: {
+				includeAuth: true
 			}
-		);
+		}
+	);
 
-		const data = readInlineData<pageSearchMetadataFragment$key>(PageSearchMetadataFragment, preloadedQuery.data);
+	const data = readInlineData<pageSearchMetadataFragment$key>(PageSearchMetadataFragment, preloadedQuery.data);
 
-		const jobCount = data.jobs.totalCount;
-		const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT; // Only show count if we have 50+ jobs
+	const jobCount = data.jobs.totalCount;
+	const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT; // Only show count if we have 50+ jobs
 
-		let title = hasReasonableCount ? `${jobCount} Medical Jobs & Healthcare Careers` : 'Medical Jobs & Healthcare Careers';
-		let description = hasReasonableCount
-			? `Discover ${jobCount} verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
-			: 'Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.';
+	let title = hasReasonableCount ? `${jobCount} Medical Jobs & Healthcare Careers` : 'Medical Jobs & Healthcare Careers';
+	let description = hasReasonableCount
+		? `Discover ${jobCount} verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
+		: 'Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.';
 
-		// No search term handling for main search page since we removed 'q' param
-		title += " | India's Medical Job Portal";
-		description += " Browse nationwide medical career opportunities across India's leading healthcare networks.";
+	// No search term handling for main search page since we removed 'q' param
+	title += " | India's Medical Job Portal";
+	description += " Browse nationwide medical career opportunities across India's leading healthcare networks.";
 
-		return {
-			title,
-			description
-		};
-	} catch (error) {
-		console.error('Error generating search metadata:', error);
-
-		// Fallback metadata
-		const title = 'Medical Jobs & Healthcare Careers in India | Leading Medical Job Portal';
-		const description =
-			'Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities across India.';
-
-		// No search term handling for main search page fallback
-
-		return {
-			title,
-			description
-		};
-	}
+	return {
+		title,
+		description,
+		robots: {
+			index: true,
+			follow: true
+		},
+		alternates: {
+			canonical: `${env.NEXT_PUBLIC_URL}${links.search()}`
+		}
+	};
 }
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
