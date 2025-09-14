@@ -5,6 +5,7 @@ const config = {
 		override: {
 			tagCache: "dynamodb-lite",
 			incrementalCache: "s3-lite",
+			dataCache: "dynamodb-lite",
 			queue: "sqs-lite",
 			wrapper: "aws-lambda",
 		},

@@ -1,3 +1,4 @@
+import { cache } from "react";
 import type {
 	ConcreteRequest,
 	GraphQLTaggedNode,
@@ -9,12 +10,16 @@ import { getCurrentEnvironment } from "./environments";
 import { networkFetch } from "./environments/server";
 import type { SerializablePreloadedQuery } from "./serializablePreloadedQuery";
 
+// Cache the network fetch to prevent duplicate requests within a single server render
+const cachedNetworkFetch = cache(networkFetch);
+
 export default async function loadSerializableQuery<
 	TRequest extends ConcreteRequest,
 	TQuery extends OperationType,
 >(
 	taggedNode: GraphQLTaggedNode,
 	variables: VariablesOf<TQuery>,
+	options: RequestInit = {}
 ): Promise<SerializablePreloadedQuery<TRequest, TQuery>> {
 	const environment = getCurrentEnvironment();
 
@@ -27,7 +32,7 @@ export default async function loadSerializableQuery<
 		);
 	}
 
-	const graphQLResponse = await networkFetch(request.params, variables);
+	const graphQLResponse = await cachedNetworkFetch(request.params, variables, options);
 
 	const operationDescriptor = createOperationDescriptor(request, variables);
 
