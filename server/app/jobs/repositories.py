@@ -510,13 +510,7 @@ class JobRepo:
                 geo_query = {
                     "geoWithin": {
                         "circle": {
-                            "center": {
-                                "type": "Point",
-                                "coordinates": [
-                                    region.coordinates.coordinates[0],
-                                    region.coordinates.coordinates[1],
-                                ],
-                            },
+                            "center": region.coordinates.model_dump(),
                             "radius": max_distance_meters,
                         },
                         "path": "geo",

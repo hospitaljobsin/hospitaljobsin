@@ -62,7 +62,7 @@ export default function JobControls({
 }) {
 	const data = useFragment(JobControlsFragment, job);
 	const authData = useFragment(JobControlsAuthFragment, rootQuery);
-
+	console.log('IS AUTHENTICATED', authData);
 	const isAuthenticated = authData.__typename === 'Account';
 	const [commitSaveMutation, isSaveMutationInFlight] = useMutation(JobControlsSaveMutation);
 	const [commitUnsaveMutation, isUnsaveMutationInFlight] = useMutation(JobControlsUnsaveMutation);

@@ -7,6 +7,7 @@ import { Environment, Network, QueryResponseCache, RecordSource, Store } from 'r
 const CACHE_TTL = 5 * 1000; // 5 seconds, to resolve preloaded results
 
 export async function networkFetch(request: RequestParameters, variables: Variables, options: RequestInit = {}): Promise<GraphQLResponse> {
+	console.log('MAKING A CLIENT SIDE REQUEST...', request.id);
 	let method = 'POST';
 	let url = `${env.NEXT_PUBLIC_API_URL}/graphql`;
 	let body: string | undefined;

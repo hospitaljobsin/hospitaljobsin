@@ -1,16 +1,17 @@
-import type { pageSearchMetadataFragment$key } from "@/__generated__/pageSearchMetadataFragment.graphql";
-import type SearchMetadataQueryNode from "@/__generated__/pageSearchMetadataQuery.graphql";
-import type { pageSearchMetadataQuery } from "@/__generated__/pageSearchMetadataQuery.graphql";
-import type SearchViewQueryNode from "@/__generated__/pageSearchViewQuery.graphql";
-import type { pageSearchViewQuery } from "@/__generated__/pageSearchViewQuery.graphql";
-import { REASONABLE_JOB_COUNT } from "@/lib/constants";
-import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
-import { parseSearchParams } from "@/lib/searchParams";
-import type { Metadata } from "next";
-import { graphql, readInlineData } from "relay-runtime";
-import SearchViewClientComponent from "./SearchViewClientComponent";
+import type { pageSearchMetadataFragment$key } from '@/__generated__/pageSearchMetadataFragment.graphql';
+import type SearchMetadataQueryNode from '@/__generated__/pageSearchMetadataQuery.graphql';
+import type { pageSearchMetadataQuery } from '@/__generated__/pageSearchMetadataQuery.graphql';
+import type SearchViewQueryNode from '@/__generated__/pageSearchViewQuery.graphql';
+import type { pageSearchViewQuery } from '@/__generated__/pageSearchViewQuery.graphql';
+import { REASONABLE_JOB_COUNT } from '@/lib/constants';
+import loadSerializableQuery from '@/lib/relay/loadSerializableQuery';
+import { parseSearchParams } from '@/lib/searchParams';
+import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
+import { graphql, readInlineData } from 'relay-runtime';
+import SearchViewClientComponent from './SearchViewClientComponent';
 
-export const PageSearchViewQuery = graphql`
+const PageSearchViewQuery = graphql`
   query pageSearchViewQuery(
 		$searchTerm: String
 		$minExperience: Int
@@ -79,91 +80,81 @@ const PageSearchMetadataFragment = graphql`
 `;
 
 export async function generateMetadata({
-	searchParams,
+	searchParams
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
+	const serverCookie = await cookies();
 	const filterParams = await searchParams;
 
 	const variables = parseSearchParams(filterParams);
 
-	console.log("generating metadata for search", variables);
-
 	try {
-		const preloadedQuery = await loadSerializableQuery<
-			typeof SearchMetadataQueryNode,
-			pageSearchMetadataQuery
-		>(PageSearchMetadataQuery, { ...variables });
-
-		const data = readInlineData<pageSearchMetadataFragment$key>(
-			PageSearchMetadataFragment,
-			preloadedQuery.data,
+		const preloadedQuery = await loadSerializableQuery<typeof SearchMetadataQueryNode, pageSearchMetadataQuery>(
+			PageSearchMetadataQuery,
+			{
+				...variables,
+				searchTerm: null
+			},
+			{
+				credentials: 'include',
+				headers: {
+					Cookie: serverCookie.toString()
+				}
+			}
 		);
+
+		const data = readInlineData<pageSearchMetadataFragment$key>(PageSearchMetadataFragment, preloadedQuery.data);
 
 		const jobCount = data.jobs.totalCount;
 		const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT; // Only show count if we have 50+ jobs
 
-		let title = hasReasonableCount
-			? `${jobCount} Medical Jobs & Healthcare Careers`
-			: "Medical Jobs & Healthcare Careers";
+		let title = hasReasonableCount ? `${jobCount} Medical Jobs & Healthcare Careers` : 'Medical Jobs & Healthcare Careers';
 		let description = hasReasonableCount
 			? `Discover ${jobCount} verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
-			: "Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.";
+			: 'Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.';
 
 		// No search term handling for main search page since we removed 'q' param
 		title += " | India's Medical Job Portal";
-		description +=
-			" Browse nationwide medical career opportunities across India's leading healthcare networks.";
+		description += " Browse nationwide medical career opportunities across India's leading healthcare networks.";
 
 		return {
 			title,
-			description,
+			description
 		};
 	} catch (error) {
-		console.error("Error generating search metadata:", error);
+		console.error('Error generating search metadata:', error);
 
 		// Fallback metadata
-		const title =
-			"Medical Jobs & Healthcare Careers in India | Leading Medical Job Portal";
+		const title = 'Medical Jobs & Healthcare Careers in India | Leading Medical Job Portal';
 		const description =
-			"Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities across India.";
+			'Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities across India.';
 
 		// No search term handling for main search page fallback
 
 		return {
 			title,
-			description,
+			description
 		};
 	}
 }
 
-export default async function SearchPage({
-	searchParams,
-	params,
-}: {
-	searchParams: Promise<Record<string, string | string[] | undefined>>;
-	params: Promise<{ location: string | string[] | undefined }>;
-}) {
+export default async function SearchPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+	const serverCookie = await cookies();
+	console.log('server cookie', serverCookie.toString());
 	const filterParams = await searchParams;
 	const variables = parseSearchParams(filterParams);
-	const locationParam = (await params).location;
-	const location = Array.isArray(locationParam)
-		? locationParam.map((segment) => decodeURIComponent(segment)).join("-")
-		: locationParam
-			? decodeURIComponent(locationParam)
-			: locationParam;
 
-	console.log("location", location);
-
-	const preloadedQuery = await loadSerializableQuery<
-		typeof SearchViewQueryNode,
-		pageSearchViewQuery
-	>(PageSearchViewQuery, { ...variables, location });
-
-	return (
-		<SearchViewClientComponent
-			preloadedQuery={preloadedQuery}
-			location={location}
-		/>
+	const preloadedQuery = await loadSerializableQuery<typeof SearchViewQueryNode, pageSearchViewQuery>(
+		PageSearchViewQuery,
+		{ ...variables, location: null, searchTerm: null },
+		{
+			credentials: 'include',
+			headers: {
+				Cookie: serverCookie.toString()
+			}
+		}
 	);
+
+	return <SearchViewClientComponent preloadedQuery={preloadedQuery} location={undefined} />;
 }

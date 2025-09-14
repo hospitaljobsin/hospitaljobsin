@@ -25,9 +25,27 @@ class RegionRepo:
                     },
                 }
             },
-            {"$limit": 1},  # Get the best match
-            {"$addFields": {"searchScore": {"$meta": "searchScore"}}},
-            {"$sort": {"searchScore": -1}},  # Sort by relevance score
+            {
+                "$addFields": {
+                    "searchScore": {"$meta": "searchScore"},
+                    # Assign priority based on level (lower number = higher priority)
+                    "levelPriority": {
+                        "$switch": {
+                            "branches": [
+                                {"case": {"$eq": ["$level", "continent"]}, "then": 1},
+                                {"case": {"$eq": ["$level", "country"]}, "then": 2},
+                                {"case": {"$eq": ["$level", "state"]}, "then": 3},
+                                {"case": {"$eq": ["$level", "locality"]}, "then": 4},
+                            ],
+                            "default": 5,  # Any other level gets lowest priority
+                        }
+                    },
+                }
+            },
+            {
+                "$sort": {"levelPriority": 1, "searchScore": -1}
+            },  # Sort by level priority first, then search relevance
+            {"$limit": 1},  # Get the highest priority match
         ]
 
         results = await Region.aggregate(pipeline).to_list()
@@ -65,6 +83,24 @@ class RegionRepo:
                     },
                 }
             },
+            {
+                "$addFields": {
+                    "searchScore": {"$meta": "searchScore"},
+                    # Assign priority based on level (lower number = higher priority)
+                    "levelPriority": {
+                        "$switch": {
+                            "branches": [
+                                {"case": {"$eq": ["$level", "continent"]}, "then": 1},
+                                {"case": {"$eq": ["$level", "country"]}, "then": 2},
+                                {"case": {"$eq": ["$level", "state"]}, "then": 3},
+                                {"case": {"$eq": ["$level", "locality"]}, "then": 4},
+                            ],
+                            "default": 5,  # Any other level gets lowest priority
+                        }
+                    },
+                }
+            },
+            {"$sort": {"levelPriority": 1, "searchScore": -1}},
             {"$limit": DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT},
         ]
 

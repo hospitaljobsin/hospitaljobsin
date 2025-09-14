@@ -9,7 +9,7 @@ export default async function loadSerializableQuery<TRequest extends ConcreteReq
 	variables: VariablesOf<TQuery>,
 	options: RequestInit = {}
 ): Promise<SerializablePreloadedQuery<TRequest, TQuery>> {
-	console.log('loading query called...');
+	console.log('loading serializable query called...', options);
 	const environment = getCurrentEnvironment();
 
 	// Convert params into a valid ConcreteRequest

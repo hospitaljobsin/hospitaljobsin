@@ -1,14 +1,15 @@
-import type { pageSearchSpecialityMetadataFragment$key } from "@/__generated__/pageSearchSpecialityMetadataFragment.graphql";
-import type SearchMetadataQueryNode from "@/__generated__/pageSearchSpecialityMetadataQuery.graphql";
-import type { pageSearchSpecialityMetadataQuery } from "@/__generated__/pageSearchSpecialityMetadataQuery.graphql";
-import type SearchViewLocationQueryNode from "@/__generated__/pageSearchSpecialityViewQuery.graphql";
-import type { pageSearchSpecialityViewQuery } from "@/__generated__/pageSearchSpecialityViewQuery.graphql";
-import { REASONABLE_JOB_COUNT } from "@/lib/constants";
-import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
-import { parseSearchParams } from "@/lib/searchParams";
-import type { Metadata } from "next";
-import { graphql, readInlineData } from "relay-runtime";
-import SearchViewSpecialityClientComponent from "./SearchViewSpecialityClientComponent";
+import type { pageSearchSpecialityMetadataFragment$key } from '@/__generated__/pageSearchSpecialityMetadataFragment.graphql';
+import type SearchMetadataQueryNode from '@/__generated__/pageSearchSpecialityMetadataQuery.graphql';
+import type { pageSearchSpecialityMetadataQuery } from '@/__generated__/pageSearchSpecialityMetadataQuery.graphql';
+import type SearchViewLocationQueryNode from '@/__generated__/pageSearchSpecialityViewQuery.graphql';
+import type { pageSearchSpecialityViewQuery } from '@/__generated__/pageSearchSpecialityViewQuery.graphql';
+import { REASONABLE_JOB_COUNT } from '@/lib/constants';
+import loadSerializableQuery from '@/lib/relay/loadSerializableQuery';
+import { parseSearchParams } from '@/lib/searchParams';
+import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
+import { graphql, readInlineData } from 'relay-runtime';
+import SearchViewSpecialityClientComponent from './SearchViewSpecialityClientComponent';
 
 export const PageSearchSpecialityViewQuery = graphql`
   query pageSearchSpecialityViewQuery(
@@ -80,7 +81,7 @@ const PageSearchMetadataFragment = graphql`
 
 export async function generateMetadata({
 	searchParams,
-	params,
+	params
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 	params: Promise<{ speciality: string | string[] }>;
@@ -89,44 +90,37 @@ export async function generateMetadata({
 	const specialityParam = (await params).speciality;
 	const speciality = Array.isArray(specialityParam)
 		? specialityParam
-				.map((segment) => decodeURIComponent(segment))
-				.join("-")
-				.replace(/-/g, " ")
-		: decodeURIComponent(specialityParam).replace(/-/g, " ");
+				.map(segment => decodeURIComponent(segment))
+				.join('-')
+				.replace(/-/g, ' ')
+		: decodeURIComponent(specialityParam).replace(/-/g, ' ');
 	const variables = parseSearchParams(filterParams);
 
-	console.log("generating metadata for search", variables);
+	console.log('generating metadata for search', variables);
 
 	try {
-		const preloadedQuery = await loadSerializableQuery<
-			typeof SearchMetadataQueryNode,
-			pageSearchSpecialityMetadataQuery
-		>(PageSearchMetadataQuery, { ...variables, searchTerm: speciality });
-
-		const data = readInlineData<pageSearchSpecialityMetadataFragment$key>(
-			PageSearchMetadataFragment,
-			preloadedQuery.data,
+		const preloadedQuery = await loadSerializableQuery<typeof SearchMetadataQueryNode, pageSearchSpecialityMetadataQuery>(
+			PageSearchMetadataQuery,
+			{ ...variables, searchTerm: speciality, location: null }
 		);
+
+		const data = readInlineData<pageSearchSpecialityMetadataFragment$key>(PageSearchMetadataFragment, preloadedQuery.data);
 
 		const jobCount = data.jobs.totalCount;
 		const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT;
 
-		let title = hasReasonableCount
-			? `${jobCount} Medical Jobs & Healthcare Careers`
-			: "Medical Jobs & Healthcare Careers";
+		let title = hasReasonableCount ? `${jobCount} Medical Jobs & Healthcare Careers` : 'Medical Jobs & Healthcare Careers';
 		let description = hasReasonableCount
 			? `Discover ${jobCount} verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
-			: "Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.";
+			: 'Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.';
 
 		if (speciality) {
 			// Enhance search term titles with medical context
 			if (hasReasonableCount) {
 				const medicalTitle =
-					speciality.toLowerCase().includes("doctor") ||
-					speciality.toLowerCase().includes("physician")
+					speciality.toLowerCase().includes('doctor') || speciality.toLowerCase().includes('physician')
 						? `${jobCount} ${speciality} Positions & Medical Careers`
-						: speciality.toLowerCase().includes("nurse") ||
-								speciality.toLowerCase().includes("nursing")
+						: speciality.toLowerCase().includes('nurse') || speciality.toLowerCase().includes('nursing')
 							? `${jobCount} ${speciality} Jobs & Healthcare Opportunities`
 							: `${jobCount} ${speciality} Medical Jobs & Healthcare Careers`;
 
@@ -134,11 +128,9 @@ export async function generateMetadata({
 				description = `Find ${jobCount} ${speciality} positions at leading healthcare institutions. Join top medical facilities as a ${speciality.toLowerCase()} with competitive salaries & benefits.`;
 			} else {
 				const medicalTitle =
-					speciality.toLowerCase().includes("doctor") ||
-					speciality.toLowerCase().includes("physician")
+					speciality.toLowerCase().includes('doctor') || speciality.toLowerCase().includes('physician')
 						? `${speciality} Positions & Medical Careers`
-						: speciality.toLowerCase().includes("nurse") ||
-								speciality.toLowerCase().includes("nursing")
+						: speciality.toLowerCase().includes('nurse') || speciality.toLowerCase().includes('nursing')
 							? `${speciality} Jobs & Healthcare Opportunities`
 							: `${speciality} Medical Jobs & Healthcare Careers`;
 
@@ -148,21 +140,19 @@ export async function generateMetadata({
 		}
 
 		title += " | India's Medical Job Portal";
-		description +=
-			" Browse nationwide medical career opportunities across India's leading healthcare networks.";
+		description += " Browse nationwide medical career opportunities across India's leading healthcare networks.";
 
 		return {
 			title,
-			description,
+			description
 		};
 	} catch (error) {
-		console.error("Error generating search metadata:", error);
+		console.error('Error generating search metadata:', error);
 
 		// Fallback metadata
-		let title =
-			"Medical Jobs & Healthcare Careers in India | Leading Medical Job Portal";
+		let title = 'Medical Jobs & Healthcare Careers in India | Leading Medical Job Portal';
 		let description =
-			"Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities across India.";
+			'Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities across India.';
 
 		if (speciality) {
 			title = `${speciality} Medical Jobs & Healthcare Careers in India`;
@@ -171,39 +161,41 @@ export async function generateMetadata({
 
 		return {
 			title,
-			description,
+			description
 		};
 	}
 }
 
 export default async function SearchPage({
 	searchParams,
-	params,
+	params
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 	params: Promise<{ speciality: string | string[] }>;
 }) {
+	const serverCookie = await cookies();
 	const filterParams = await searchParams;
 	const variables = parseSearchParams(filterParams);
 	const specialityParam = (await params).speciality;
 	const speciality = Array.isArray(specialityParam)
 		? specialityParam
-				.map((segment) => decodeURIComponent(segment))
-				.join("-")
-				.replace(/-/g, " ")
-		: decodeURIComponent(specialityParam).replace(/-/g, " ");
+				.map(segment => decodeURIComponent(segment))
+				.join('-')
+				.replace(/-/g, ' ')
+		: decodeURIComponent(specialityParam).replace(/-/g, ' ');
 
-	console.log("speciality", speciality);
+	console.log('speciality', speciality);
 
-	const preloadedQuery = await loadSerializableQuery<
-		typeof SearchViewLocationQueryNode,
-		pageSearchSpecialityViewQuery
-	>(PageSearchSpecialityViewQuery, { ...variables, searchTerm: speciality });
-
-	return (
-		<SearchViewSpecialityClientComponent
-			preloadedQuery={preloadedQuery}
-			speciality={speciality}
-		/>
+	const preloadedQuery = await loadSerializableQuery<typeof SearchViewLocationQueryNode, pageSearchSpecialityViewQuery>(
+		PageSearchSpecialityViewQuery,
+		{ ...variables, searchTerm: speciality },
+		{
+			credentials: 'include',
+			headers: {
+				Cookie: serverCookie.toString()
+			}
+		}
 	);
+
+	return <SearchViewSpecialityClientComponent preloadedQuery={preloadedQuery} speciality={speciality} />;
 }
