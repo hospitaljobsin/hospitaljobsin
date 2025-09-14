@@ -1,10 +1,21 @@
+from enum import Enum
 from typing import Self
 
 import strawberry
 
+from app.base.types import AddressType
+
 from .models import (
     LocationAutocompleteSuggestion,
 )
+
+
+@strawberry.enum(name="RegionLevel", description="The level of the region.")
+class RegionLevel(Enum):
+    CONTINENT = "continent"
+    COUNTRY = "country"
+    STATE = "state"
+    LOCALITY = "locality"
 
 
 @strawberry.type(
@@ -15,7 +26,10 @@ class LocationAutocompleteSuggestionType:
     place_id: str = strawberry.field(
         description="Place ID of the location",
     )
-    display_name: str = strawberry.field(
+    level: RegionLevel = strawberry.field(
+        description="The level of the region.",
+    )
+    address: AddressType = strawberry.field(
         description="Display name of the location",
     )
 
@@ -23,7 +37,8 @@ class LocationAutocompleteSuggestionType:
     def marshal(cls, data: LocationAutocompleteSuggestion) -> Self:
         return cls(
             place_id=data.place_id,
-            display_name=data.display_name,
+            address=AddressType.marshal(data.address),
+            level=RegionLevel(data.level),
         )
 
 

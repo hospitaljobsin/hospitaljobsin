@@ -1,27 +1,19 @@
-"use client";
-import links from "@/lib/links";
+'use client';
+import { Button, Card } from '@heroui/react';
+import { SearchIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 // @ts-ignore: HeroUI types may be missing, but usage is required by project rules
-import { Button, Card } from "@heroui/react";
-import { SearchIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import JobSearchAutocomplete from "../forms/JobSearchAutocomplete";
-import type { SearchLocation } from "../forms/LocationAutocomplete";
-import LocationAutocomplete from "../forms/LocationAutocomplete";
+import links from '@/lib/links';
+import JobSearchAutocomplete from '../forms/JobSearchAutocomplete';
+import LocationAutocomplete from '../forms/LocationAutocomplete';
 
-export function LandingSearchController({
-	isDisabled,
-}: { isDisabled?: boolean }) {
+export function LandingSearchController({ isDisabled }: { isDisabled?: boolean }) {
 	const router = useRouter();
-	const [searchTerm, setSearchTerm] = useState("");
-	const [locationInput, setLocationInput] = useState("");
-	const [selectedLocation, setSelectedLocation] =
-		useState<SearchLocation | null>(null);
+	const [searchTerm, setSearchTerm] = useState('');
+	const [locationInput, setLocationInput] = useState('');
 
-	const handleSubmit = (
-		e?: React.FormEvent<HTMLFormElement>,
-		overrideSearchTerm?: string,
-	) => {
+	const handleSubmit = (e?: React.FormEvent<HTMLFormElement>, overrideSearchTerm?: string) => {
 		if (e) {
 			e.preventDefault();
 		}
@@ -42,48 +34,43 @@ export function LandingSearchController({
 	};
 
 	return (
-		<Card className="p-6" shadow="none" fullWidth>
-			<form
-				onSubmit={handleSubmit}
-				className="w-full rounded-lg flex flex-col gap-6"
-			>
-				<div className="w-full flex flex-col sm:flex-row gap-4 sm:gap-6">
+		<Card className='p-6' shadow='none' fullWidth>
+			<form onSubmit={handleSubmit} className='w-full rounded-lg flex flex-col gap-6'>
+				<div className='w-full flex flex-col sm:flex-row gap-4 sm:gap-6'>
 					<JobSearchAutocomplete
-						name="searchTerm"
-						label="Search by"
-						variant="underlined"
-						placeholder="Speciality or Keyword"
+						name='searchTerm'
+						label='Search by'
+						variant='underlined'
+						placeholder='Speciality or Keyword'
 						value={searchTerm}
 						isDisabled={isDisabled}
 						onValueChange={setSearchTerm}
-						onJobSelect={(job) => {
+						onJobSelect={job => {
 							setSearchTerm(job.displayName);
 						}}
 					/>
 					<LocationAutocomplete
-						id="location"
-						name="location"
-						label="Location"
-						placeholder="e.g. Chennai"
-						variant="underlined"
+						name='location'
+						label='Location'
+						placeholder='e.g. Chennai'
+						variant='underlined'
 						allowsCustomValue
 						value={locationInput}
 						isDisabled={isDisabled}
-						onValueChange={setLocationInput}
-						onChange={(loc) => {
-							setSelectedLocation(loc);
-							setLocationInput(loc.displayName);
+						onValueChange={val => {
+							console.log('on value change: ', val);
+							setLocationInput(val);
+						}}
+						onChange={loc => {
+							console.log('changed: ', loc);
+							setLocationInput(loc.address.displayName || '');
+						}}
+						onSubmit={val => {
+							setLocationInput(val);
 						}}
 					/>
 				</div>
-				<Button
-					type="submit"
-					className="min-w-44"
-					color="primary"
-					size="lg"
-					startContent={<SearchIcon />}
-					isDisabled={isDisabled}
-				>
+				<Button type='submit' className='min-w-44' color='primary' size='lg' startContent={<SearchIcon />} isDisabled={isDisabled}>
 					Search Jobs
 				</Button>
 			</form>

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<ea7edadf87712bfcc57d717a2284910c>>
- * @relayHash ff29daeb71125f936fa144d45905e0e2
+ * @generated SignedSource<<cd30f290f5254d6adaa4c6f348f0b6ab>>
+ * @relayHash aad6a559f637431392d333a90520c8b2
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,9 +9,10 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ff29daeb71125f936fa144d45905e0e2
+// @relayRequestID aad6a559f637431392d333a90520c8b2
 
 import type { ConcreteRequest } from 'relay-runtime';
+export type RegionLevel = "CONTINENT" | "COUNTRY" | "LOCALITY" | "STATE" | "%future added value";
 export type LocationAutocompleteQuery$variables = {
   searchTerm: string;
 };
@@ -19,7 +20,14 @@ export type LocationAutocompleteQuery$data = {
   readonly autocompleteLocations: {
     readonly locations: ReadonlyArray<{
       readonly __typename: "LocationAutocompleteSuggestion";
-      readonly displayName: string;
+      readonly address: {
+        readonly addressLocality: string | null | undefined;
+        readonly addressRegion: string | null | undefined;
+        readonly country: string | null | undefined;
+        readonly displayName: string | null | undefined;
+        readonly postalCode: string | null | undefined;
+      };
+      readonly level: RegionLevel;
       readonly placeId: string;
     }>;
   };
@@ -70,8 +78,54 @@ v1 = [
           {
             "alias": null,
             "args": null,
+            "concreteType": "Address",
+            "kind": "LinkedField",
+            "name": "address",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "displayName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "country",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "addressLocality",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "addressRegion",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "postalCode",
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
             "kind": "ScalarField",
-            "name": "displayName",
+            "name": "level",
             "storageKey": null
           },
           {
@@ -106,7 +160,7 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "id": "ff29daeb71125f936fa144d45905e0e2",
+    "id": "aad6a559f637431392d333a90520c8b2",
     "metadata": {},
     "name": "LocationAutocompleteQuery",
     "operationKind": "query",
@@ -115,6 +169,6 @@ return {
 };
 })();
 
-(node as any).hash = "bfb0bc9b7fb85e5e02c3c8f090e7bb47";
+(node as any).hash = "8bfafcb5d7f5e3b96bed4aaff91d816b";
 
 export default node;

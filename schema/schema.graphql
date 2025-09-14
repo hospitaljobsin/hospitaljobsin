@@ -184,6 +184,11 @@ type AccountProfileNotFoundError implements Error {
 
 type Address {
 	"""
+	Full display name of the address.
+	"""
+	displayName: String
+
+	"""
 	Street address.
 	"""
 	streetAddress: String
@@ -1890,9 +1895,14 @@ type LocationAutocompleteSuggestion {
 	placeId: String!
 
 	"""
+	The level of the region.
+	"""
+	level: RegionLevel!
+
+	"""
 	Display name of the location
 	"""
-	displayName: String!
+	address: Address!
 }
 
 """
@@ -2448,14 +2458,14 @@ type Mutation {
 		skills: [String!]!
 
 		"""
-		The location of the job.
-		"""
-		location: String
-
-		"""
 		The applicant locations for the job.
 		"""
 		applicantLocations: [String!]!
+
+		"""
+		The location of the job.
+		"""
+		location: String = null
 
 		"""
 		The external application URL for the job.
@@ -4227,6 +4237,16 @@ type Query {
 		"""
 		searchTerm: String!
 	): AutocompleteLocationsPayload!
+}
+
+"""
+The level of the region.
+"""
+enum RegionLevel {
+	CONTINENT
+	COUNTRY
+	STATE
+	LOCALITY
 }
 
 """

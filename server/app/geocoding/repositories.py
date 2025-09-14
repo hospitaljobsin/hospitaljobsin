@@ -1,5 +1,6 @@
 import uuid
 
+from app.base.models import Address
 from app.core.constants import (
     DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT,
     REGION_SEARCH_INDEX_NAME,
@@ -104,27 +105,45 @@ class RegionRepo:
             {"$limit": DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT},
         ]
 
-        results = await Region.aggregate(pipeline, projection_model=None).to_list()
+        results = await Region.aggregate(pipeline, projection_model=Region).to_list()
+
+        print(f"Autocomplete raw results: {results}")
 
         # Collect all names and aliases, avoiding duplicates by place_id
-        suggestions_dict = {}
+        suggestions_dict: dict[str, LocationAutocompleteSuggestion] = {}
         for result in results:
             # Generate a new UUID for the main name
-            if "name" in result:
+            if result.name:
                 place_id = str(uuid.uuid4())
                 suggestions_dict[place_id] = LocationAutocompleteSuggestion(
                     place_id=place_id,
-                    display_name=result["name"],
+                    level=result.level,
+                    address=Address(
+                        display_name=result.address.display_name,
+                        country=result.address.country,
+                        street_address=result.address.street_address,
+                        address_locality=result.address.address_locality,
+                        address_region=result.address.address_region,
+                        postal_code=result.address.postal_code,
+                    ),
                 )
 
             # Generate a new UUID for each alias
-            if result.get("aliases"):
-                for alias in result["aliases"]:
+            if result.aliases:
+                for alias in result.aliases:
                     place_id = str(uuid.uuid4())
                     suggestions_dict[place_id] = LocationAutocompleteSuggestion(
                         place_id=place_id,
-                        display_name=alias,
+                        level=result.level,
+                        address=Address(
+                            display_name=alias,
+                            country=result.address.country,
+                            street_address=result.address.street_address,
+                            address_locality=result.address.address_locality,
+                            address_region=result.address.address_region,
+                            postal_code=result.address.postal_code,
+                        ),
                     )
 
         # Convert to list and sort by display_name for consistent ordering
-        return sorted(suggestions_dict.values(), key=lambda x: x.display_name)
+        return list(suggestions_dict.values())

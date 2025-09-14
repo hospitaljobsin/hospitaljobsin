@@ -115,6 +115,9 @@ class NotAuthenticatedErrorType(BaseErrorType):
 
 @strawberry.type(name="Address")
 class AddressType:
+    display_name: str | None = field(
+        description="Full display name of the address.",
+    )
     street_address: str | None = field(
         description="Street address.",
     )
@@ -135,6 +138,7 @@ class AddressType:
     def marshal(cls, address: Address) -> Self:
         """Marshal into a node instance."""
         return cls(
+            display_name=address.display_name,
             street_address=address.street_address,
             address_locality=address.address_locality,
             address_region=address.address_region,

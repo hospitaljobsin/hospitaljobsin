@@ -76,6 +76,8 @@ JobApplicantAnalysisStatus = Literal["pending", "complete", "failed"]
 
 JobKindType = Literal["full_time", "part_time", "internship", "contract", "locum"]
 
+RegionLevel = Literal["continent", "country", "state", "locality"]
+
 # Organization names
 # (subdomains which are in use/ might be needed in the future)
 RESERVED_ORGANIZATION_NAMES = [

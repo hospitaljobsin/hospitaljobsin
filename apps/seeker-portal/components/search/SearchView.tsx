@@ -1,8 +1,9 @@
 import type { SearchView_query$key } from '@/__generated__/SearchView_query.graphql';
+import { FILTER_DEFAULTS } from '@/lib/constants';
 import { Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, useDisclosure } from '@heroui/react';
 import { FilterIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import type { FilterValues } from './FilterSidebar';
 import FilterSidebar from './FilterSidebar';
@@ -77,24 +78,24 @@ export default function SearchView({
 	// Fix: Only validate and update workMode/jobType/sortBy if actually needed, and only depend on those fields
 	const { workMode, jobType, sortBy } = filters;
 
-	// useEffect(() => {
-	// 	const validatedWorkMode = validateEnumArray(workMode, VALID_WORK_MODES);
-	// 	const validatedJobType = validateEnumArray(jobType, VALID_JOB_TYPES);
-	// 	const validatedSortBy = validateEnum(sortBy, VALID_SORT_BY, 'RELEVANCE');
+	useEffect(() => {
+		const validatedWorkMode = validateEnumArray(workMode, VALID_WORK_MODES);
+		const validatedJobType = validateEnumArray(jobType, VALID_JOB_TYPES);
+		const validatedSortBy = validateEnum(sortBy, VALID_SORT_BY, 'RELEVANCE');
 
-	// 	if (
-	// 		JSON.stringify(validatedWorkMode) !== JSON.stringify(workMode) ||
-	// 		JSON.stringify(validatedJobType) !== JSON.stringify(jobType) ||
-	// 		validatedSortBy !== sortBy
-	// 	) {
-	// 		setFilters({
-	// 			...filters,
-	// 			workMode: validatedWorkMode.length > 0 ? validatedWorkMode : FILTER_DEFAULTS.workMode,
-	// 			jobType: validatedJobType.length > 0 ? validatedJobType : FILTER_DEFAULTS.jobType,
-	// 			sortBy: validatedSortBy
-	// 		});
-	// 	}
-	// }, [workMode, jobType, sortBy, setFilters, filters]);
+		if (
+			JSON.stringify(validatedWorkMode) !== JSON.stringify(workMode) ||
+			JSON.stringify(validatedJobType) !== JSON.stringify(jobType) ||
+			validatedSortBy !== sortBy
+		) {
+			setFilters({
+				...filters,
+				workMode: validatedWorkMode.length > 0 ? validatedWorkMode : FILTER_DEFAULTS.workMode,
+				jobType: validatedJobType.length > 0 ? validatedJobType : FILTER_DEFAULTS.jobType,
+				sortBy: validatedSortBy
+			});
+		}
+	}, [workMode, jobType, sortBy, setFilters, filters]);
 
 	// Get validated values for use in render
 	const validatedWorkMode = validateEnumArray(workMode, VALID_WORK_MODES);
