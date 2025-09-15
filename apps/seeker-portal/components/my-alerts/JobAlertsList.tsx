@@ -79,12 +79,23 @@ export default function JobAlertsList({ rootQuery }: Props) {
 	}
 
 	return (
-		<div className='w-full flex flex-col gap-8 pb-6'>
-			{data.jobAlerts.edges.map(jobEdge => (
-				<JobAlert jobAlert={jobEdge.node} key={jobEdge.node.id} />
-			))}
-			<div ref={observerRef} className='h-10' />
-			{isLoadingNext && <JobAlertsListSkeleton />}
-		</div>
+		<>
+			<div className='flex flex-col w-full h-full gap-12'>
+				<div className='flex flex-row justify-between items-center'>
+					<h2 className='text-lg'>My Job Alerts</h2>
+					<Button color='primary' startContent={<PlusIcon />} onPress={() => setShowCreateJobAlertModal(true)}>
+						Create Job Alert
+					</Button>
+				</div>
+				<div className='w-full flex flex-col gap-8 pb-6'>
+					{data.jobAlerts.edges.map(jobEdge => (
+						<JobAlert jobAlert={jobEdge.node} key={jobEdge.node.id} />
+					))}
+					<div ref={observerRef} className='h-10' />
+					{isLoadingNext && <JobAlertsListSkeleton />}
+				</div>
+			</div>
+			<CreateJobAlertModal isOpen={showCreateJobAlertModal} onOpenChange={setShowCreateJobAlertModal} />
+		</>
 	);
 }
