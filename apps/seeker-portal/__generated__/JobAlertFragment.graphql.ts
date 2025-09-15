@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a82b8d3863cfad5bbe1ca1c3bcb0c748>>
+ * @generated SignedSource<<b9983d6d9de82e4dcb70c04238e5a75c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -27,6 +27,7 @@ export type JobAlertFragment$data = {
   };
   readonly frequency: JobAlertFrequency;
   readonly id: string;
+  readonly " $fragmentSpreads": FragmentRefs<"JobAlertControlsFragment">;
   readonly " $fragmentType": "JobAlertFragment";
 };
 export type JobAlertFragment$key = {
@@ -127,12 +128,17 @@ const node: ReaderFragment = {
         }
       ],
       "storageKey": null
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "JobAlertControlsFragment"
     }
   ],
   "type": "JobAlert",
   "abstractKey": null
 };
 
-(node as any).hash = "ba28dc51b8b5e217c0abdbe6185bf694";
+(node as any).hash = "944beea59c27f28cabbe9c04cfbe4c8a";
 
 export default node;

@@ -47,7 +47,7 @@ class JobAlertService:
         except InvalidId:
             return Err(JobAlertNotFoundError())
         job_alert = await self._job_alert_repo.get_by_id(job_alert_id)
-        if not job_alert or job_alert.account.id != account.id:
+        if not job_alert or job_alert.account.ref.id != account.id:
             return Err(JobAlertNotFoundError())
         if await self._job_alert_repo.check_exists(
             account_id=account.id,
@@ -69,7 +69,7 @@ class JobAlertService:
         except InvalidId:
             return Err(JobAlertNotFoundError())
         job_alert = await self._job_alert_repo.get_by_id(job_alert_id)
-        if not job_alert or job_alert.account.id != account.id:
+        if not job_alert or job_alert.account.ref.id != account.id:
             return Err(JobAlertNotFoundError())
         await self._job_alert_repo.delete(job_alert)
         return Ok(job_alert)

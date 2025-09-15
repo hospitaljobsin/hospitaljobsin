@@ -81,7 +81,7 @@ export default function JobAlertsList({ rootQuery }: Props) {
 	return (
 		<>
 			<div className='flex flex-col w-full h-full gap-12'>
-				<div className='flex flex-row justify-between items-center'>
+				<div className='flex flex-col sm:flex-row justify-between sm:items-center gap-6'>
 					<div className='space-y-2'>
 						<h2 className='text-2xl font-medium'>My Job Alerts</h2>
 						<p className='text-sm text-foreground-600'>Get notified when new jobs match your preferences</p>

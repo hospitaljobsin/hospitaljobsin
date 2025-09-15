@@ -1,9 +1,10 @@
 import type { JobAlertFragment$key, JobAlertFrequency, JobTypeFilter, WorkMode } from '@/__generated__/JobAlertFragment.graphql';
 import { dateTimeFormat } from '@/lib/intl';
-import { Button, Card, CardBody, CardFooter, CardHeader, Tooltip } from '@heroui/react';
+import { Card, CardBody, CardFooter, CardHeader, Tooltip } from '@heroui/react';
 import { BellIcon, Briefcase, Clock, IndianRupee } from 'lucide-react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import JobAlertControls from './JobAlertControls';
 
 const JobAlertFragment = graphql`
   fragment JobAlertFragment on JobAlert {
@@ -20,6 +21,7 @@ const JobAlertFragment = graphql`
         minSalary
         searchTerm
     }
+    ...JobAlertControlsFragment
   }
 `;
 
@@ -216,14 +218,7 @@ export default function JobAlert({ jobAlert }: { jobAlert: JobAlertFragment$key 
 
 			<CardFooter className='flex justify-between gap-2 border-t border-neutral-100 py-3 px-4 bg-neutral-50/50 w-full'>
 				<p className='text-xs text-neutral-400 mt-1'>Created {dateTimeFormat.format(new Date(data.createdAt))}</p>
-				<div className='flex gap-4 items-center'>
-					<Button color='primary' variant='light' size='sm'>
-						Edit
-					</Button>
-					<Button color='danger' variant='light' size='sm'>
-						Delete
-					</Button>
-				</div>
+				<JobAlertControls jobAlert={data} />
 			</CardFooter>
 		</Card>
 	);
