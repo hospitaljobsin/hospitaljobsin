@@ -35,3 +35,6 @@ dev-debug.log
 # tasks.json
 # tasks/
 whatsapp_messages/
+
+# million - react performance monitoring
+.million/
