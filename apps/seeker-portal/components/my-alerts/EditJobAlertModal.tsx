@@ -58,18 +58,8 @@ const UpdateJobAlertMutation = graphql`
     ) {
       __typename
       ... on JobAlert {
-        id
-        filters {
-          searchTerm
-          jobType
-          workMode
-          location
-          minExperience
-          maxExperience
-          minSalary
-          maxSalary
-        }
-        frequency
+        ...JobAlertFragment
+        ...EditJobAlertModalFragment
       }
       ... on JobAlertAlreadyExistsError {
         message

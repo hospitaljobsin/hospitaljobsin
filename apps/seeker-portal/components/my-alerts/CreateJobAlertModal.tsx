@@ -21,7 +21,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { BellIcon, BriefcaseIcon, Clock, Globe, IndianRupee } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { ConnectionHandler, graphql } from 'relay-runtime';
 import { z } from 'zod';
 import JobSearchAutocomplete from '../forms/JobSearchAutocomplete';
 import LocationAutocomplete from '../forms/LocationAutocomplete';
@@ -32,6 +32,7 @@ mutation CreateJobAlertModalMutation( $filters: AlertFiltersInput!, $frequency: 
     __typename
     ... on JobAlert {
         __typename
+        ...JobAlertFragment
     }
     ... on JobAlertAlreadyExistsError {
         message
@@ -181,6 +182,26 @@ export default function CreateJobAlertModal({ isOpen, onOpenChange }: CreateJobA
 					maxSalary: data.maxSalary
 				},
 				frequency: data.frequency
+			},
+			updater: store => {
+				// Get the payload from the store
+				const payload = store.getRootField('createJobAlert');
+				if (!payload || payload.getType() !== 'JobAlert') {
+					// Not a successful creation
+					return;
+				}
+
+				// Retrieve the connection from the store
+				const rootRecord = store.getRoot();
+				const connectionRecord = ConnectionHandler.getConnection(rootRecord, 'JobAlertsListFragment_jobAlerts');
+
+				// Only update if the connection exists
+				if (connectionRecord) {
+					// Create a new edge with the payload
+					const newEdge = ConnectionHandler.createEdge(store, connectionRecord, payload, 'JobAlertEdge');
+					// Insert the new edge at the beginning of the connection
+					ConnectionHandler.insertEdgeBefore(connectionRecord, newEdge);
+				}
 			},
 			onCompleted: response => {
 				if (response.createJobAlert.__typename === 'JobAlert') {

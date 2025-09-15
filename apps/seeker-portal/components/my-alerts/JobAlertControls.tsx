@@ -5,7 +5,7 @@ import type { JobAlertControlsFragment$key } from '@/__generated__/JobAlertContr
 import { addToast, Button, useDisclosure } from '@heroui/react';
 import { EditIcon, TrashIcon } from 'lucide-react';
 import { useFragment, useMutation } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { ConnectionHandler, graphql } from 'relay-runtime';
 import DeleteJobAlertConfirmationModal from './DeleteJobAlertConfirmationModal';
 import EditJobAlertModal from './EditJobAlertModal';
 
@@ -62,6 +62,29 @@ export default function JobAlertControls({ jobAlert }: JobAlertControlsProps) {
 		deleteJobAlert({
 			variables: {
 				jobAlertId
+			},
+			updater: store => {
+				// Get the payload from the store
+				const payload = store.getRootField('deleteJobAlert');
+				if (!payload || payload.getType() !== 'JobAlert') {
+					// Not a successful deletion
+					return;
+				}
+
+				const deletedID = payload.getValue('id');
+				if (!deletedID || typeof deletedID !== 'string') {
+					return;
+				}
+
+				// Retrieve the connection from the store
+				const rootRecord = store.getRoot();
+				const connectionRecord = ConnectionHandler.getConnection(rootRecord, 'JobAlertsListFragment_jobAlerts');
+
+				// Only update if the connection exists
+				if (connectionRecord) {
+					// Delete the node from the connection
+					ConnectionHandler.deleteNode(connectionRecord, deletedID);
+				}
 			},
 			onCompleted: response => {
 				if (response.deleteJobAlert.__typename === 'JobAlert') {

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<704c9028e4f0903cbce53b5be3696de2>>
- * @relayHash 9303b0101ef80d5e901ec35d5aca26fc
+ * @generated SignedSource<<96b9c511fa88ff33ebfeab03a6e1beb6>>
+ * @relayHash 434f34754638a618165d195e0b61aea8
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,9 +9,10 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 9303b0101ef80d5e901ec35d5aca26fc
+// @relayRequestID 434f34754638a618165d195e0b61aea8
 
 import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type JobAlertFrequency = "DAILY" | "MONTHLY" | "WEEKLY" | "%future added value";
 export type JobTypeFilter = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
@@ -33,6 +34,7 @@ export type CreateJobAlertModalMutation$data = {
   readonly createJobAlert: {
     readonly __typename: "JobAlert";
     readonly __typename: "JobAlert";
+    readonly " $fragmentSpreads": FragmentRefs<"JobAlertFragment">;
   } | {
     readonly __typename: "JobAlertAlreadyExistsError";
     readonly message: string;
@@ -92,6 +94,13 @@ v3 = {
   ],
   "type": "JobAlertAlreadyExistsError",
   "abstractKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -109,6 +118,18 @@ return {
         "plural": false,
         "selections": [
           (v2/*: any*/),
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "JobAlertFragment"
+              }
+            ],
+            "type": "JobAlert",
+            "abstractKey": null
+          },
           (v3/*: any*/)
         ],
         "storageKey": null
@@ -132,17 +153,100 @@ return {
         "plural": false,
         "selections": [
           (v2/*: any*/),
-          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "id",
+                "name": "createdAt",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "frequency",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "AlertFilters",
+                "kind": "LinkedField",
+                "name": "filters",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "jobType",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "workMode",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "location",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "maxExperience",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "minExperience",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "maxSalary",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "minSalary",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "searchTerm",
+                    "storageKey": null
+                  }
+                ],
                 "storageKey": null
               }
+            ],
+            "type": "JobAlert",
+            "abstractKey": null
+          },
+          (v3/*: any*/),
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v4/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -153,7 +257,7 @@ return {
     ]
   },
   "params": {
-    "id": "9303b0101ef80d5e901ec35d5aca26fc",
+    "id": "434f34754638a618165d195e0b61aea8",
     "metadata": {},
     "name": "CreateJobAlertModalMutation",
     "operationKind": "mutation",
@@ -162,6 +266,6 @@ return {
 };
 })();
 
-(node as any).hash = "79ec8372d461a64b0e66e201168da866";
+(node as any).hash = "c8d7d00709139ba89384744aebd1efdc";
 
 export default node;
