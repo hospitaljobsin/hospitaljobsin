@@ -258,6 +258,7 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 				autoComplete='off' // Prevent browser autocomplete from interfering
 				isVirtualized
 				itemHeight={50}
+				maxListboxHeight={250}
 			>
 				{(suggestion: SearchLocation) => (
 					<AutocompleteItem key={suggestion.placeId} textValue={suggestion.address.displayName || ''}>
