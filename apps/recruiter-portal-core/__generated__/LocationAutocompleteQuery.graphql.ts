@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1c35cf5731538a95523170bcefd6bdeb>>
+ * @generated SignedSource<<cd30f290f5254d6adaa4c6f348f0b6ab>>
  * @relayHash aad6a559f637431392d333a90520c8b2
  * @lightSyntaxTransform
  * @nogrep
@@ -12,7 +12,7 @@
 // @relayRequestID aad6a559f637431392d333a90520c8b2
 
 import type { ConcreteRequest } from 'relay-runtime';
-export type RegionLevel = "CITY" | "CONTINENT" | "COUNTRY" | "LOCALITY" | "NEIGHBOURHOOD" | "STATE" | "%future added value";
+export type RegionLevel = "CONTINENT" | "COUNTRY" | "LOCALITY" | "STATE" | "%future added value";
 export type LocationAutocompleteQuery$variables = {
   searchTerm: string;
 };

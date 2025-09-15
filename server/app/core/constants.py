@@ -76,11 +76,11 @@ JobApplicantAnalysisStatus = Literal["pending", "complete", "failed"]
 
 JobKindType = Literal["full_time", "part_time", "internship", "contract", "locum"]
 
-# TODO: remove neighbourhood, city later
+WorkModeType = Literal["remote", "hybrid", "office"]
 
-RegionLevel = Literal[
-    "continent", "country", "state", "locality", "city", "neighbourhood"
-]
+RegionLevel = Literal["continent", "country", "state", "locality"]
+
+JobAlertFrequency = Literal["daily", "weekly", "monthly"]
 
 # Organization names
 # (subdomains which are in use/ might be needed in the future)

@@ -252,6 +252,96 @@ enum AddressProof {
 }
 
 """
+Filters for the job alert.
+"""
+type AlertFilters {
+	"""
+	Search term to filter job listings.
+	"""
+	searchTerm: String
+
+	"""
+	Location to filter job listings.
+	"""
+	location: String
+
+	"""
+	Minimum experience to filter job listings.
+	"""
+	minExperience: Int
+
+	"""
+	Maximum experience to filter job listings.
+	"""
+	maxExperience: Int
+
+	"""
+	Minimum salary to filter job listings.
+	"""
+	minSalary: Int
+
+	"""
+	Maximum salary to filter job listings.
+	"""
+	maxSalary: Int
+
+	"""
+	Job types to filter job listings.
+	"""
+	jobType: [JobTypeFilter!]
+
+	"""
+	Work modes to filter job listings.
+	"""
+	workMode: [WorkMode!]
+}
+
+"""
+Filters for the job alert.
+"""
+input AlertFiltersInput {
+	"""
+	Search term to filter job listings.
+	"""
+	searchTerm: String = null
+
+	"""
+	Location to filter job listings.
+	"""
+	location: String = null
+
+	"""
+	Minimum experience to filter job listings.
+	"""
+	minExperience: Int = null
+
+	"""
+	Maximum experience to filter job listings.
+	"""
+	maxExperience: Int = null
+
+	"""
+	Minimum salary to filter job listings.
+	"""
+	minSalary: Int = null
+
+	"""
+	Maximum salary to filter job listings.
+	"""
+	maxSalary: Int = null
+
+	"""
+	Job types to filter job listings.
+	"""
+	jobType: [JobTypeFilter!] = null
+
+	"""
+	Work modes to filter job listings.
+	"""
+	workMode: [WorkMode!] = null
+}
+
+"""
 The analysed fields of a job applicant.
 """
 type AnalysedFields {
@@ -552,6 +642,11 @@ type CheckOrganizationSlugAvailabilityPayload {
 	"""
 	isAvailable: Boolean!
 }
+
+"""
+The create job alert payload.
+"""
+union CreateJobAlertPayload = JobAlert | JobAlertAlreadyExistsError
 
 """
 The create job application payload.
@@ -1388,6 +1483,74 @@ type Job implements Node {
 	The organization of the job.
 	"""
 	organization: Organization
+}
+
+"""
+A job alert.
+"""
+type JobAlert implements Node {
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
+
+	"""
+	The filters for the job alert.
+	"""
+	filters: AlertFilters!
+
+	"""
+	The frequency of the job alert.
+	"""
+	frequency: JobAlertFrequency!
+}
+
+"""
+Error when the job alert already exists.
+"""
+type JobAlertAlreadyExistsError {
+	"""
+	The error message.
+	"""
+	message: String!
+}
+
+type JobAlertConnection {
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
+
+	"""
+	A list of edges.
+	"""
+	edges: [JobAlertEdge!]!
+
+	"""
+	The total number of items in the connection.
+	"""
+	totalCount: Int
+}
+
+type JobAlertEdge {
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
+
+	"""
+	The item at the end of the edge
+	"""
+	node: JobAlert!
+}
+
+"""
+Job alert frequency type.
+"""
+enum JobAlertFrequency {
+	DAILY
+	WEEKLY
+	MONTHLY
 }
 
 """
@@ -3192,6 +3355,21 @@ type Mutation {
 		"""
 		accountId: ID!
 	): DemoteOrganizationMemberPayload! @isAuthenticated @requiresSudoMode
+
+	"""
+	Create a job alert.
+	"""
+	createJobAlert(
+		"""
+		The filters for the job alert.
+		"""
+		filters: AlertFiltersInput!
+
+		"""
+		The frequency of the job alert.
+		"""
+		frequency: JobAlertFrequency!
+	): CreateJobAlertPayload! @isAuthenticated
 }
 
 """
@@ -4237,6 +4415,31 @@ type Query {
 		"""
 		searchTerm: String!
 	): AutocompleteLocationsPayload!
+
+	"""
+	Get all the job alerts for the current user.
+	"""
+	jobAlerts(
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
+
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
+
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
+
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): JobAlertConnection! @isAuthenticated
 }
 
 """
@@ -4247,8 +4450,6 @@ enum RegionLevel {
 	COUNTRY
 	STATE
 	LOCALITY
-	CITY
-	NEIGHBOURHOOD
 }
 
 """

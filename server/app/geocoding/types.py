@@ -16,9 +16,6 @@ class RegionLevel(Enum):
     COUNTRY = "country"
     STATE = "state"
     LOCALITY = "locality"
-    # TODO: remove city, neighbourhood later
-    CITY = "city"
-    NEIGHBOURHOOD = "neighbourhood"
 
 
 @strawberry.type(
