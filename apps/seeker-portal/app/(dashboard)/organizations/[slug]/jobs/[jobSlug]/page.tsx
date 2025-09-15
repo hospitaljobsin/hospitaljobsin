@@ -188,7 +188,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 	const slug = decodeURIComponent(pathParams.slug);
 	const jobSlug = decodeURIComponent(pathParams.jobSlug);
 
-	const preloadedQuery = await loadSerializableQuery<typeof JobDetailViewQueryNode, pageJobDetailViewQuery>(
+	const preloadedQueryPromise = loadSerializableQuery<typeof JobDetailViewQueryNode, pageJobDetailViewQuery>(
 		PageJobDetailViewQuery,
 		{
 			slug: slug,
@@ -207,13 +207,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 		}
 	);
 
-	const data = readInlineData<pageJobDetailServerFragment$key>(PageJobDetailServerFragment, preloadedQuery.data);
-
-	if (data.organization.__typename !== 'Organization' || data.organization.job.__typename !== 'Job' || !data.organization.job.isVisible) {
-		notFound();
-	}
-
-	const preloadedTrendingQuery = await loadSerializableQuery<typeof JobDetailViewQueryNode, pageTrendingJobsQuery>(
+	const preloadedTrendingQueryPromise = loadSerializableQuery<typeof JobDetailViewQueryNode, pageTrendingJobsQuery>(
 		PageTrendingJobsQuery,
 		{},
 		{
@@ -227,6 +221,14 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 			}
 		}
 	);
+
+	const [preloadedQuery, preloadedTrendingQuery] = await Promise.all([preloadedQueryPromise, preloadedTrendingQueryPromise]);
+
+	const data = readInlineData<pageJobDetailServerFragment$key>(PageJobDetailServerFragment, preloadedQuery.data);
+
+	if (data.organization.__typename !== 'Organization' || data.organization.job.__typename !== 'Job' || !data.organization.job.isVisible) {
+		notFound();
+	}
 
 	// JSON-LD structured data for the job posting
 
@@ -290,7 +292,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 		<>
 			<script
 				type='application/ld+json'
-				// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: this data has been sanitized
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify(jsonLd).replace(/</g, '\\u003c')
 				}}
