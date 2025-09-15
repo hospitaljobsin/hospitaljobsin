@@ -6,7 +6,6 @@ import {
 	Button,
 	Card,
 	CardBody,
-	Input,
 	Modal,
 	ModalBody,
 	ModalContent,
@@ -19,11 +18,12 @@ import {
 	SelectItem
 } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { BellIcon, BriefcaseIcon, Clock, Globe, IndianRupee, Search } from 'lucide-react';
+import { BellIcon, BriefcaseIcon, Clock, Globe, IndianRupee } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { z } from 'zod';
+import JobSearchAutocomplete from '../forms/JobSearchAutocomplete';
 import LocationAutocomplete from '../forms/LocationAutocomplete';
 
 const CreateJobAlertMutation = graphql`
@@ -214,7 +214,7 @@ export default function CreateJobAlertModal({ isOpen, onOpenChange }: CreateJobA
 	const watchedWorkMode = watch('workMode');
 
 	return (
-		<Modal isOpen={isOpen} onOpenChange={handleOpenChange} size='2xl' scrollBehavior='inside'>
+		<Modal isOpen={isOpen} onOpenChange={handleOpenChange} size='4xl' scrollBehavior='inside'>
 			<ModalContent className='max-h-[90vh]'>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<ModalHeader className='flex items-center gap-2'>
@@ -232,12 +232,12 @@ export default function CreateJobAlertModal({ isOpen, onOpenChange }: CreateJobA
 									name='searchTerm'
 									control={control}
 									render={({ field }) => (
-										<Input
+										<JobSearchAutocomplete
 											label='Search Term'
-											placeholder='Enter keywords, job titles, or skills'
-											startContent={<Search size={16} />}
+											placeholder='Enter job titles, specialties, or skills'
 											value={field.value || ''}
-											onChange={e => field.onChange(e.target.value || null)}
+											onValueChange={value => field.onChange(value || null)}
+											onJobSelect={job => field.onChange(job.displayName)}
 											errorMessage={errors.searchTerm?.message}
 											isInvalid={!!errors.searchTerm}
 										/>

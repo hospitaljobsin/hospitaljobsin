@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a0ee7bf8f72cd75b401a56503c845fb3>>
- * @relayHash 895e562bd74c6491d7387d87f744fac8
+ * @generated SignedSource<<e8c306e0b27d29a4b71c5de8c97743dc>>
+ * @relayHash 240fbf9dc44c870b2e08da3a5dafd9c0
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 895e562bd74c6491d7387d87f744fac8
+// @relayRequestID 240fbf9dc44c870b2e08da3a5dafd9c0
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -156,6 +156,13 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
+                    "name": "createdAt",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
                     "name": "frequency",
                     "storageKey": null
                   },
@@ -280,7 +287,7 @@ return {
     ]
   },
   "params": {
-    "id": "895e562bd74c6491d7387d87f744fac8",
+    "id": "240fbf9dc44c870b2e08da3a5dafd9c0",
     "metadata": {},
     "name": "MyJobAlertsClientComponentQuery",
     "operationKind": "query",

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<55e6efc6134bafa7b4fee2a5fefaf4cd>>
- * @relayHash ac2e7b20399a7736d9ba986541af3c66
+ * @generated SignedSource<<4dc78279477e8907251e555da5bf9844>>
+ * @relayHash 9377f9ac4b65bb652975d423b0bd06c0
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ac2e7b20399a7736d9ba986541af3c66
+// @relayRequestID 9377f9ac4b65bb652975d423b0bd06c0
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -112,6 +112,13 @@ return {
                     "args": null,
                     "kind": "ScalarField",
                     "name": "id",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "createdAt",
                     "storageKey": null
                   },
                   {
@@ -248,7 +255,7 @@ return {
     ]
   },
   "params": {
-    "id": "ac2e7b20399a7736d9ba986541af3c66",
+    "id": "9377f9ac4b65bb652975d423b0bd06c0",
     "metadata": {},
     "name": "JobAlertsListPaginationQuery",
     "operationKind": "query",

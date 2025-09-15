@@ -1,9 +1,10 @@
+from datetime import datetime
 from enum import Enum
 from typing import Annotated, Self
 
 import strawberry
 
-from app.base.types import BaseConnectionType, BaseEdgeType, BaseNodeType
+from app.base.types import BaseConnectionType, BaseEdgeType, BaseErrorType, BaseNodeType
 from app.job_alerts.documents import JobAlert
 from app.job_alerts.models import AlertFilters
 from app.jobs.types import JobTypeFilterEnum, WorkModeEnum
@@ -144,6 +145,9 @@ class JobAlertType(BaseNodeType[JobAlert]):
     frequency: JobAlertFrequencyEnum = strawberry.field(
         description="The frequency of the job alert."
     )
+    created_at: datetime = strawberry.field(
+        description="The creation time of the job alert."
+    )
 
     @classmethod
     def marshal(cls, data: JobAlert) -> Self:
@@ -151,6 +155,7 @@ class JobAlertType(BaseNodeType[JobAlert]):
             id=str(data.id),
             filters=AlertFiltersType.marshal(data.filters),
             frequency=JobAlertFrequencyEnum(data.frequency),
+            created_at=data.id.generation_time,
         )
 
 
@@ -158,7 +163,7 @@ class JobAlertType(BaseNodeType[JobAlert]):
     name="JobAlertAlreadyExistsError",
     description="Error when the job alert already exists.",
 )
-class JobAlertAlreadyExistsErrorType:
+class JobAlertAlreadyExistsErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="The error message.",
         default="A job alert with the same parameters already exists for the user.",

@@ -82,7 +82,10 @@ export default function JobAlertsList({ rootQuery }: Props) {
 		<>
 			<div className='flex flex-col w-full h-full gap-12'>
 				<div className='flex flex-row justify-between items-center'>
-					<h2 className='text-lg'>My Job Alerts</h2>
+					<div className='space-y-2'>
+						<h2 className='text-2xl font-medium'>My Job Alerts</h2>
+						<p className='text-sm text-foreground-600'>Get notified when new jobs match your preferences</p>
+					</div>
 					<Button color='primary' startContent={<PlusIcon />} onPress={() => setShowCreateJobAlertModal(true)}>
 						Create Job Alert
 					</Button>

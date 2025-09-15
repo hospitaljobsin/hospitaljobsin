@@ -15,7 +15,6 @@ from .types import JobAlertConnectionType
 @strawberry.type
 class JobAlertQuery:
     @strawberry.field(  # type: ignore[misc]
-        graphql_type=JobAlertConnectionType,
         description="Get all the job alerts for the current user.",
         extensions=[
             PermissionExtension(

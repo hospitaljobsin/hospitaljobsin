@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2f2d7679dee69e94a98b0d44b52a70bc>>
+ * @generated SignedSource<<a82b8d3863cfad5bbe1ca1c3bcb0c748>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,6 +14,7 @@ export type JobTypeFilter = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | 
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type JobAlertFragment$data = {
+  readonly createdAt: any;
   readonly filters: {
     readonly jobType: ReadonlyArray<JobTypeFilter> | null | undefined;
     readonly location: string | null | undefined;
@@ -44,6 +45,13 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "ScalarField",
       "name": "id",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "createdAt",
       "storageKey": null
     },
     {
@@ -125,6 +133,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "f7085f2d14169e6e80ecb7d590efdd7e";
+(node as any).hash = "ba28dc51b8b5e217c0abdbe6185bf694";
 
 export default node;

@@ -1503,12 +1503,17 @@ type JobAlert implements Node {
 	The frequency of the job alert.
 	"""
 	frequency: JobAlertFrequency!
+
+	"""
+	The creation time of the job alert.
+	"""
+	createdAt: DateTime!
 }
 
 """
 Error when the job alert already exists.
 """
-type JobAlertAlreadyExistsError {
+type JobAlertAlreadyExistsError implements Error {
 	"""
 	The error message.
 	"""
