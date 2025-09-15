@@ -388,7 +388,7 @@ class JobRepo:
                                 }
                             },
                         ],
-                        "minimumShouldMatch": 2,
+                        "minimumShouldMatch": 1,
                         "must": [
                             # Always filter for active jobs
                             {"equals": {"value": True, "path": "is_active"}},
