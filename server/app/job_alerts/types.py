@@ -80,7 +80,7 @@ class AlertFiltersInput:
     name="AlertFilters",
     description="Filters for the job alert.",
 )
-class AlertFilters:
+class AlertFiltersType:
     search_term: str | None = strawberry.field(
         default=None,
         description="Search term to filter job listings.",
@@ -138,7 +138,7 @@ class AlertFilters:
     description="A job alert.",
 )
 class JobAlertType(BaseNodeType[JobAlert]):
-    filters: AlertFilters = strawberry.field(
+    filters: AlertFiltersType = strawberry.field(
         description="The filters for the job alert."
     )
     frequency: JobAlertFrequencyEnum = strawberry.field(
@@ -149,7 +149,7 @@ class JobAlertType(BaseNodeType[JobAlert]):
     def marshal(cls, data: JobAlert) -> Self:
         return cls(
             id=str(data.id),
-            filters=AlertFilters.marshal(data.filters),
+            filters=AlertFiltersType.marshal(data.filters),
             frequency=JobAlertFrequencyEnum(data.frequency),
         )
 
@@ -176,7 +176,13 @@ CreateJobAlertPayload = Annotated[
 
 @strawberry.type(name="JobAlertEdge")
 class JobAlertEdgeType(BaseEdgeType[JobAlertType, JobAlert]):
-    pass
+    @classmethod
+    def marshal(cls, job_alert: JobAlert) -> Self:
+        """Marshal into a edge instance."""
+        return cls(
+            node=JobAlertType.marshal(job_alert),
+            cursor=strawberry.relay.to_base64(JobAlertType, job_alert.id),
+        )
 
 
 @strawberry.type(name="JobAlertConnection")

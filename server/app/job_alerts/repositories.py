@@ -65,9 +65,18 @@ class JobAlertRepo:
         frequency: JobAlertFrequency,
     ) -> bool:
         """Check if a job alert with the same filters and frequency already exists for the account."""
-        existing_alert = await JobAlert.find_one(
-            (JobAlert.account.id == account_id)
-            & (JobAlert.filters == filters)
-            & (JobAlert.frequency == frequency)
+        # Using Beanie's query syntax with find method
+        query = JobAlert.find(
+            JobAlert.account == account_id,
+            JobAlert.filters.location == filters.location,
+            JobAlert.filters.job_type == filters.job_type,
+            JobAlert.filters.work_mode == filters.work_mode,
+            JobAlert.filters.min_experience == filters.min_experience,
+            JobAlert.filters.max_experience == filters.max_experience,
+            JobAlert.filters.min_salary == filters.min_salary,
+            JobAlert.filters.max_salary == filters.max_salary,
+            JobAlert.filters.search_term == filters.search_term,
+            JobAlert.frequency == frequency,
         )
+        existing_alert = await query.first_or_none()
         return existing_alert is not None
