@@ -31,6 +31,10 @@ class JobAlertRepo:
         """Delete all job alerts for an account."""
         await JobAlert.find(JobAlert.account.id == account.id).delete_many()
 
+    async def get_by_id(self, job_alert_id: ObjectId) -> JobAlert | None:
+        """Get a job alert by its ID."""
+        return await JobAlert.get(job_alert_id)
+
     async def get_all_list(self, account_id: ObjectId) -> list[JobAlert]:
         """Get all job alerts for an account."""
         return await JobAlert.find(JobAlert.account.id == account_id).to_list()

@@ -170,11 +170,39 @@ class JobAlertAlreadyExistsErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="JobAlertNotFoundError",
+    description="Error when the job alert is not found.",
+)
+class JobAlertNotFoundErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="The error message.",
+        default="The job alert was not found.",
+    )
+
+
 CreateJobAlertPayload = Annotated[
     JobAlertType | JobAlertAlreadyExistsErrorType,
     strawberry.union(
         name="CreateJobAlertPayload",
         description="The create job alert payload.",
+    ),
+]
+
+
+UpdateJobAlertPayload = Annotated[
+    JobAlertType | JobAlertAlreadyExistsErrorType | JobAlertNotFoundErrorType,
+    strawberry.union(
+        name="UpdateJobAlertPayload",
+        description="The update job alert payload.",
+    ),
+]
+
+DeleteJobAlertPayload = Annotated[
+    JobAlertType | JobAlertNotFoundErrorType,
+    strawberry.union(
+        name="DeleteJobAlertPayload",
+        description="The delete job alert payload.",
     ),
 ]
 

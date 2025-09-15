@@ -177,7 +177,7 @@ export default function JobAlert({ jobAlert }: { jobAlert: JobAlertFragment$key 
 							<BellIcon className='h-5 w-5 text-primary' />
 						</div>
 						<div>
-							<h3 className='font-semibold text-lg text-neutral-800'>{data.filters.searchTerm || 'Job Alert'}</h3>
+							<h3 className='font-medium text-lg text-neutral-800'>{data.filters.searchTerm || 'Job Alert'}</h3>
 							{filterSummary && <p className='text-sm text-neutral-500 mt-0.5 line-clamp-1'>{filterSummary}</p>}
 						</div>
 					</div>

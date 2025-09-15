@@ -763,6 +763,11 @@ The decline organization invite payload.
 union DeclineOrganizationInvitePayload = OrganizationInviteEdge | OrganizationInviteNotFoundError
 
 """
+The delete job alert payload.
+"""
+union DeleteJobAlertPayload = JobAlert | JobAlertNotFoundError
+
+"""
 The delete job payload.
 """
 union DeleteJobPayload = Job | JobNotFoundError | OrganizationAuthorizationError
@@ -1556,6 +1561,16 @@ enum JobAlertFrequency {
 	DAILY
 	WEEKLY
 	MONTHLY
+}
+
+"""
+Error when the job alert is not found.
+"""
+type JobAlertNotFoundError implements Error {
+	"""
+	The error message.
+	"""
+	message: String!
 }
 
 """
@@ -3375,6 +3390,36 @@ type Mutation {
 		"""
 		frequency: JobAlertFrequency!
 	): CreateJobAlertPayload! @isAuthenticated
+
+	"""
+	Update a job alert.
+	"""
+	updateJobAlert(
+		"""
+		The ID of the job alert to update.
+		"""
+		jobAlertId: ID!
+
+		"""
+		The filters for the job alert.
+		"""
+		filters: AlertFiltersInput!
+
+		"""
+		The frequency of the job alert.
+		"""
+		frequency: JobAlertFrequency!
+	): UpdateJobAlertPayload! @isAuthenticated
+
+	"""
+	Delete a job alert.
+	"""
+	deleteJobAlert(
+		"""
+		The ID of the job alert to delete.
+		"""
+		jobAlertId: ID!
+	): DeleteJobAlertPayload! @isAuthenticated
 }
 
 """
@@ -4871,6 +4916,11 @@ union UpdateAccountPayload = Account
 The update account phone number payload.
 """
 union UpdateAccountPhoneNumberPayload = Account | InvalidPhoneNumberVerificationTokenError | InvalidPhoneNumberError
+
+"""
+The update job alert payload.
+"""
+union UpdateJobAlertPayload = JobAlert | JobAlertAlreadyExistsError | JobAlertNotFoundError
 
 """
 The update job applicants status payload.
