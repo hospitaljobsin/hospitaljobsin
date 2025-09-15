@@ -16,7 +16,7 @@ import {
 	NavbarItem,
 	useDisclosure
 } from '@heroui/react';
-import { BriefcaseBusiness, ExternalLinkIcon, LogOutIcon, Settings, UserIcon } from 'lucide-react';
+import { AlertTriangle, BriefcaseBusiness, ExternalLinkIcon, LogOutIcon, Settings, UserIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useFragment } from 'react-relay';
@@ -97,6 +97,9 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							<DropdownItem key='saved' startContent={<BriefcaseBusiness className='h-4 w-4' />} href={links.savedJobs}>
 								My Jobs
 							</DropdownItem>
+							<DropdownItem key='my-alerts' startContent={<AlertTriangle className='h-4 w-4' />} href={links.jobAlerts}>
+								My Job Alerts
+							</DropdownItem>
 						</DropdownSection>
 						<DropdownSection>
 							<DropdownItem key='logout' startContent={<LogOutIcon className='h-4 w-4' />} onPress={onLogoutModalOpen}>
@@ -155,6 +158,17 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							fullWidth
 						>
 							My Jobs
+						</Button>
+						<Button
+							className='w-full justify-start'
+							radius='sm'
+							variant='light'
+							startContent={<AlertTriangle className='h-4 w-4' />}
+							href={links.jobAlerts}
+							as={links.jobAlerts ? 'a' : 'button'}
+							fullWidth
+						>
+							My Job Alerts
 						</Button>
 						<Divider />
 						<Button

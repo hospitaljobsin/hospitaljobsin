@@ -1,30 +1,24 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { env } from "./lib/env/client";
-import links from "./lib/links";
-import { unsign } from "./lib/session";
+import { type NextRequest, NextResponse } from 'next/server';
+import { env } from './lib/env/client';
+import links from './lib/links';
+import { unsign } from './lib/session';
 
-const AUTHENTICATED_ROUTES = [
-	/\/saved(\/.*)?/,
-	/\/profile/,
-	/\/organizations\/[^/]+\/jobs\/[^/]+\/apply$/,
-];
+const AUTHENTICATED_ROUTES = [/\/saved(\/.*)?/, /\/profile/, /\/my-alerts(\/.*)?/, /\/organizations\/[^/]+\/jobs\/[^/]+\/apply$/];
 
 const ANONYMOUS_ROUTES: RegExp[] = [];
 
 function requiresAuthenticated(request: NextRequest): boolean {
-	return AUTHENTICATED_ROUTES.some((route) =>
-		route.test(request.nextUrl.pathname),
-	);
+	return AUTHENTICATED_ROUTES.some(route => route.test(request.nextUrl.pathname));
 }
 
 function requiresAnonymous(request: NextRequest): boolean {
-	return ANONYMOUS_ROUTES.some((route) => route.test(request.nextUrl.pathname));
+	return ANONYMOUS_ROUTES.some(route => route.test(request.nextUrl.pathname));
 }
 
 function getAuthenticationResponse(request: NextRequest): NextResponse {
 	const redirectURL = new URL(links.login());
 	const returnTo = `${env.NEXT_PUBLIC_URL}${request.nextUrl.pathname}${request.nextUrl.search}`;
-	redirectURL.searchParams.set("return_to", returnTo);
+	redirectURL.searchParams.set('return_to', returnTo);
 	return NextResponse.redirect(redirectURL);
 }
 
@@ -34,7 +28,7 @@ function getAnonymousResponse(request: NextRequest): NextResponse {
 }
 
 export async function middleware(request: NextRequest) {
-	const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+	const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 	const cspHeader = `
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://*.posthog.com;
@@ -50,17 +44,12 @@ export async function middleware(request: NextRequest) {
     upgrade-insecure-requests;
 `;
 	// Replace newline characters and spaces
-	const contentSecurityPolicyHeaderValue = cspHeader
-		.replace(/\s{2,}/g, " ")
-		.trim();
+	const contentSecurityPolicyHeaderValue = cspHeader.replace(/\s{2,}/g, ' ').trim();
 
 	const requestHeaders = new Headers(request.headers);
-	requestHeaders.set("x-nonce", nonce);
+	requestHeaders.set('x-nonce', nonce);
 
-	requestHeaders.set(
-		"Content-Security-Policy",
-		contentSecurityPolicyHeaderValue,
-	);
+	requestHeaders.set('Content-Security-Policy', contentSecurityPolicyHeaderValue);
 
 	const sessionCookie = request.cookies.get(env.NEXT_PUBLIC_SESSION_COOKIE_KEY);
 
@@ -78,12 +67,12 @@ export async function middleware(request: NextRequest) {
 	}
 
 	// Set the authentication header
-	requestHeaders.set("x-is-authenticated", isAuthenticated ? "true" : "false");
+	requestHeaders.set('x-is-authenticated', isAuthenticated ? 'true' : 'false');
 
 	const response = NextResponse.next({
 		request: {
-			headers: requestHeaders,
-		},
+			headers: requestHeaders
+		}
 	});
 
 	if (requiresAuthenticated(request)) {
@@ -107,11 +96,11 @@ export const config = {
 		 * - favicon.ico (favicon file)
 		 */
 		{
-			source: "/((?!api|_next/static|_next/image|favicon.ico).*)",
+			source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
 			missing: [
-				{ type: "header", key: "next-router-prefetch" },
-				{ type: "header", key: "purpose", value: "prefetch" },
-			],
-		},
-	],
+				{ type: 'header', key: 'next-router-prefetch' },
+				{ type: 'header', key: 'purpose', value: 'prefetch' }
+			]
+		}
+	]
 };
