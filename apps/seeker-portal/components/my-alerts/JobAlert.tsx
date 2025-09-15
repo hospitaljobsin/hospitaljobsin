@@ -156,7 +156,7 @@ export default function JobAlert({ jobAlert }: { jobAlert: JobAlertFragment$key 
 	};
 
 	return (
-		<Card className='p-4 overflow-visible transition-all hover:scale-[1.02]' radius='md' shadow='sm' isHoverable>
+		<Card className='p-6' radius='md' shadow='none'>
 			<CardHeader className='flex flex-row justify-between items-start pb-2'>
 				<div className='flex items-center gap-2'>
 					<div className='bg-primary/10 p-2 rounded-full'>
