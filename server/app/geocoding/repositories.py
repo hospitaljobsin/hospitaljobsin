@@ -69,18 +69,8 @@ class RegionRepo:
                     "index": REGION_SEARCH_INDEX_NAME,
                     "compound": {
                         "should": [
-                            {
-                                "autocomplete": {
-                                    "query": search_term,
-                                    "path": "name",
-                                }
-                            },
-                            {
-                                "autocomplete": {
-                                    "query": search_term,
-                                    "path": "aliases",
-                                }
-                            },
+                            {"autocomplete": {"query": search_term, "path": "name"}},
+                            {"autocomplete": {"query": search_term, "path": "aliases"}},
                         ],
                         "minimumShouldMatch": 1,
                     },
@@ -89,7 +79,6 @@ class RegionRepo:
             {
                 "$addFields": {
                     "searchScore": {"$meta": "searchScore"},
-                    # Assign priority based on level (lower number = higher priority)
                     "levelPriority": {
                         "$switch": {
                             "branches": [
@@ -98,54 +87,75 @@ class RegionRepo:
                                 {"case": {"$eq": ["$level", "state"]}, "then": 3},
                                 {"case": {"$eq": ["$level", "locality"]}, "then": 4},
                             ],
-                            "default": 5,  # Any other level gets lowest priority
+                            "default": 5,
                         }
                     },
                 }
             },
+            {
+                "$project": {
+                    "searchScore": 1,
+                    "levelPriority": 1,
+                    "level": 1,
+                    "coordinates": 1,
+                    "geometry": 1,
+                    "address": {
+                        "street_address": "$address.street_address",
+                        "address_locality": "$address.address_locality",
+                        "address_region": "$address.address_region",
+                        "country": "$address.country",
+                        "postal_code": "$address.postal_code",
+                    },
+                    "names": {"$setUnion": [["$name"], {"$ifNull": ["$aliases", []]}]},
+                }
+            },
+            {"$unwind": "$names"},
+            {
+                "$group": {
+                    "_id": {
+                        "name": "$names",
+                        "country": "$address.country",
+                        "region": "$address.address_region",
+                        "locality": "$address.address_locality",
+                        "street": "$address.street_address",
+                        "level": "$level",
+                    },
+                    "doc": {
+                        "$first": {
+                            "name": "$names",
+                            "coordinates": "$coordinates",
+                            "geometry": "$geometry",
+                            "address": "$address",
+                            "level": "$level",
+                            "levelPriority": "$levelPriority",
+                            "searchScore": "$searchScore",
+                        }
+                    },
+                }
+            },
+            {"$replaceRoot": {"newRoot": "$doc"}},
             {"$sort": {"levelPriority": 1, "searchScore": -1}},
             {"$limit": DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT},
         ]
 
-        results = await Region.aggregate(pipeline, projection_model=Region).to_list()
+        results = await Region.aggregate(pipeline).to_list()
 
-        print(f"Autocomplete raw results: {results}")
-
-        # Collect all names and aliases, avoiding duplicates by place_id
-        suggestions_dict: dict[str, LocationAutocompleteSuggestion] = {}
+        suggestions: list[LocationAutocompleteSuggestion] = []
         for result in results:
-            # Generate a new UUID for the main name
-            if result.name:
-                place_id = str(uuid.uuid4())
-                suggestions_dict[place_id] = LocationAutocompleteSuggestion(
+            place_id = str(uuid.uuid4())
+            suggestions.append(
+                LocationAutocompleteSuggestion(
                     place_id=place_id,
-                    level=result.level,
+                    level=result["level"],
                     address=Address(
-                        display_name=result.name,
-                        country=result.address.country,
-                        street_address=result.address.street_address,
-                        address_locality=result.address.address_locality,
-                        address_region=result.address.address_region,
-                        postal_code=result.address.postal_code,
+                        display_name=result["name"],
+                        street_address=result["address"].get("street_address"),
+                        address_locality=result["address"].get("address_locality"),
+                        address_region=result["address"].get("address_region"),
+                        country=result["address"].get("country"),
+                        postal_code=result["address"].get("postal_code"),
                     ),
                 )
+            )
 
-            # Generate a new UUID for each alias
-            if result.aliases:
-                for alias in result.aliases:
-                    place_id = str(uuid.uuid4())
-                    suggestions_dict[place_id] = LocationAutocompleteSuggestion(
-                        place_id=place_id,
-                        level=result.level,
-                        address=Address(
-                            display_name=alias,
-                            country=result.address.country,
-                            street_address=result.address.street_address,
-                            address_locality=result.address.address_locality,
-                            address_region=result.address.address_region,
-                            postal_code=result.address.postal_code,
-                        ),
-                    )
-
-        # Convert to list and sort by display_name for consistent ordering
-        return list(suggestions_dict.values())
+        return suggestions

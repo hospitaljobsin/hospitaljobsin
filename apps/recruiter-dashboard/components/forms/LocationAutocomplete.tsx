@@ -1,5 +1,6 @@
 'use client';
 
+import type { LocationAutocompleteQuery } from '@/__generated__/LocationAutocompleteQuery.graphql';
 import type { AutocompleteProps } from '@heroui/react';
 import { Autocomplete, AutocompleteItem } from '@heroui/react';
 import type { Key } from 'react';
@@ -8,7 +9,6 @@ import type { PreloadedQuery } from 'react-relay';
 import { usePreloadedQuery, useQueryLoader } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { useDebounce } from 'use-debounce';
-import type { LocationAutocompleteQuery } from '@/__generated__/LocationAutocompleteQuery.graphql';
 
 interface LocationAutocompleteProps extends Omit<AutocompleteProps<SearchLocation>, 'children' | 'onChange' | 'onSubmit'> {
 	value: string;
@@ -258,6 +258,7 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 				autoComplete='off' // Prevent browser autocomplete from interfering
 				isVirtualized
 				itemHeight={50}
+				maxListboxHeight={250}
 			>
 				{(suggestion: SearchLocation) => (
 					<AutocompleteItem key={suggestion.placeId} textValue={suggestion.address.displayName || ''}>

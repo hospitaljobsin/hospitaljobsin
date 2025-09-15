@@ -415,7 +415,14 @@ class JobRepo:
                         ],
                     },
                 }
+            },  # Group by title to remove duplicates
+            {
+                "$group": {
+                    "_id": "$title",
+                    "doc": {"$first": "$$ROOT"},  # pick one representative job
+                }
             },
+            {"$replaceRoot": {"newRoot": "$doc"}},
             {"$limit": DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT},
         ]
 
