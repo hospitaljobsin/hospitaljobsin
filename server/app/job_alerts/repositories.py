@@ -77,7 +77,7 @@ class JobAlertRepo:
         """Check if a job alert with the same filters and frequency already exists for the account."""
         # Using Beanie's query syntax with find method
         query = JobAlert.find(
-            JobAlert.account == account_id,
+            JobAlert.account.id == account_id,
             JobAlert.filters.location == filters.location,
             JobAlert.filters.job_type == filters.job_type,
             JobAlert.filters.work_mode == filters.work_mode,
