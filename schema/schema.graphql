@@ -258,7 +258,7 @@ type AlertFilters {
 	"""
 	Search term to filter job listings.
 	"""
-	searchTerm: String
+	searchTerm: String!
 
 	"""
 	Location to filter job listings.
@@ -303,7 +303,7 @@ input AlertFiltersInput {
 	"""
 	Search term to filter job listings.
 	"""
-	searchTerm: String = null
+	searchTerm: String!
 
 	"""
 	Location to filter job listings.

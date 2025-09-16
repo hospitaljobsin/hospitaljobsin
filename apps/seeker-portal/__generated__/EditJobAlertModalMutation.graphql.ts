@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<485f38e2d25710bd04910a056cefe2b3>>
+ * @generated SignedSource<<2f89cc1f41661a5893727de5adc4f927>>
  * @relayHash cfe8e08cbb60bb8a38e1320c6c748364
  * @lightSyntaxTransform
  * @nogrep
@@ -23,7 +23,7 @@ export type AlertFiltersInput = {
   maxSalary?: number | null | undefined;
   minExperience?: number | null | undefined;
   minSalary?: number | null | undefined;
-  searchTerm?: string | null | undefined;
+  searchTerm: string;
   workMode?: ReadonlyArray<WorkMode> | null | undefined;
 };
 export type EditJobAlertModalMutation$variables = {

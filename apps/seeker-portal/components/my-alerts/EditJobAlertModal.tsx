@@ -20,7 +20,6 @@ import {
 } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { BellIcon, BriefcaseIcon, Clock, Globe, IndianRupee } from 'lucide-react';
-import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useFragment, useMutation } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -96,7 +95,7 @@ const ALERT_FREQUENCIES = [
 // Form schema for validation
 const editAlertSchema = z
 	.object({
-		searchTerm: z.string().optional().nullable(),
+		searchTerm: z.string(),
 		jobType: z
 			.array(z.enum(['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT', 'LOCUM']))
 			.optional()
@@ -174,59 +173,22 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 		control,
 		handleSubmit,
 		formState: { errors, isValid, isDirty },
-		reset,
-		watch,
-		setValue
+		reset
 	} = useForm<EditAlertFormValues>({
 		resolver: zodResolver(editAlertSchema),
 		defaultValues: {
-			searchTerm: null,
-			jobType: [],
-			workMode: [],
-			location: null,
-			minExperience: null,
-			maxExperience: null,
-			minSalary: null,
-			maxSalary: null,
-			frequency: 'WEEKLY' // Default frequency
+			searchTerm: data.filters.searchTerm,
+			jobType: data.filters.jobType ? [...data.filters.jobType] : [],
+			workMode: data.filters.workMode ? [...data.filters.workMode] : [],
+			location: data.filters.location || null,
+			minExperience: data.filters.minExperience || null,
+			maxExperience: data.filters.maxExperience || null,
+			minSalary: data.filters.minSalary || null,
+			maxSalary: data.filters.maxSalary || null,
+			frequency: data.frequency as 'DAILY' | 'WEEKLY' | 'MONTHLY'
 		},
 		mode: 'onChange'
 	});
-
-	// Populate form with existing job alert data when the modal opens
-	useEffect(() => {
-		if (isOpen && data) {
-			setValue('searchTerm', data.filters.searchTerm || null);
-			// Convert readonly arrays to mutable arrays with proper type casting
-			setValue(
-				'jobType',
-				data.filters.jobType
-					? ([...data.filters.jobType].filter(type => ['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT', 'LOCUM'].includes(type)) as (
-							| 'FULL_TIME'
-							| 'PART_TIME'
-							| 'INTERNSHIP'
-							| 'CONTRACT'
-							| 'LOCUM'
-						)[])
-					: []
-			);
-
-			setValue(
-				'workMode',
-				data.filters.workMode
-					? ([...data.filters.workMode].filter(mode => ['REMOTE', 'HYBRID', 'OFFICE'].includes(mode)) as ('REMOTE' | 'HYBRID' | 'OFFICE')[])
-					: []
-			);
-
-			setValue('location', data.filters.location || null);
-			setValue('minExperience', data.filters.minExperience || null);
-			setValue('maxExperience', data.filters.maxExperience || null);
-			setValue('minSalary', data.filters.minSalary || null);
-			setValue('maxSalary', data.filters.maxSalary || null);
-			// Convert to the expected string type
-			setValue('frequency', data.frequency as 'DAILY' | 'WEEKLY' | 'MONTHLY');
-		}
-	}, [isOpen, data, setValue]);
 
 	// Reset form when modal closes
 	const handleOpenChange = (open: boolean) => {
@@ -241,7 +203,7 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 			variables: {
 				jobAlertId: data.id,
 				filters: {
-					searchTerm: formData.searchTerm || null,
+					searchTerm: formData.searchTerm,
 					jobType: formData.jobType?.length ? formData.jobType : null,
 					workMode: formData.workMode?.length ? formData.workMode : null,
 					location: formData.location || null,
@@ -258,6 +220,9 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 						title: 'Success!',
 						description: 'Job alert updated successfully',
 						color: 'success'
+					});
+					reset({
+						...formData
 					});
 					handleOpenChange(false);
 				} else if (
@@ -281,10 +246,6 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 			}
 		});
 	};
-
-	// Watch values for conditional rendering
-	const watchedJobType = watch('jobType');
-	const watchedWorkMode = watch('workMode');
 
 	return (
 		<Modal isOpen={isOpen} onOpenChange={handleOpenChange} size='4xl' scrollBehavior='inside'>
@@ -313,6 +274,7 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 											onJobSelect={job => field.onChange(job.displayName)}
 											errorMessage={errors.searchTerm?.message}
 											isInvalid={!!errors.searchTerm}
+											isRequired
 										/>
 									)}
 								/>
@@ -332,6 +294,7 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 											onChange={location => field.onChange(location.address.displayName || null)}
 											errorMessage={errors.location?.message}
 											isInvalid={!!errors.location}
+											allowsCustomValue
 										/>
 									)}
 								/>

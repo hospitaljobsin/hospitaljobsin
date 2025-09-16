@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3c0b05bc94589f54fa0970bb39989130>>
+ * @generated SignedSource<<bb920392d87c4124a2c0df881ad8baa6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,7 +21,7 @@ export type EditJobAlertModalFragment$data = {
     readonly maxSalary: number | null | undefined;
     readonly minExperience: number | null | undefined;
     readonly minSalary: number | null | undefined;
-    readonly searchTerm: string | null | undefined;
+    readonly searchTerm: string;
     readonly workMode: ReadonlyArray<WorkMode> | null | undefined;
   };
   readonly frequency: JobAlertFrequency;

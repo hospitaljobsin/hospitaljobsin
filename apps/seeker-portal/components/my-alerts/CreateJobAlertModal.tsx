@@ -66,7 +66,7 @@ const ALERT_FREQUENCIES = [
 // Form schema for validation
 const createAlertSchema = z
 	.object({
-		searchTerm: z.string().optional().nullable(),
+		searchTerm: z.string(),
 		jobType: z
 			.array(z.enum(['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT', 'LOCUM']))
 			.optional()
@@ -147,7 +147,7 @@ export default function CreateJobAlertModal({ isOpen, onOpenChange }: CreateJobA
 	} = useForm<CreateAlertFormValues>({
 		resolver: zodResolver(createAlertSchema),
 		defaultValues: {
-			searchTerm: null,
+			searchTerm: '',
 			jobType: [],
 			workMode: [],
 			location: null,
@@ -172,7 +172,7 @@ export default function CreateJobAlertModal({ isOpen, onOpenChange }: CreateJobA
 		createJobAlert({
 			variables: {
 				filters: {
-					searchTerm: data.searchTerm || null,
+					searchTerm: data.searchTerm,
 					jobType: data.jobType?.length ? data.jobType : null,
 					workMode: data.workMode?.length ? data.workMode : null,
 					location: data.location || null,
@@ -261,6 +261,7 @@ export default function CreateJobAlertModal({ isOpen, onOpenChange }: CreateJobA
 											onJobSelect={job => field.onChange(job.displayName)}
 											errorMessage={errors.searchTerm?.message}
 											isInvalid={!!errors.searchTerm}
+											isRequired
 										/>
 									)}
 								/>
@@ -280,6 +281,7 @@ export default function CreateJobAlertModal({ isOpen, onOpenChange }: CreateJobA
 											onChange={location => field.onChange(location.address.displayName || null)}
 											errorMessage={errors.location?.message}
 											isInvalid={!!errors.location}
+											allowsCustomValue
 										/>
 									)}
 								/>

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b7e7ea9f97b8fcb77ae32ea2753d3960>>
+ * @generated SignedSource<<e08eed2ea88162421713bceb6337ce2c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,7 @@ import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type DeleteJobAlertConfirmationModalFragment$data = {
   readonly filters: {
-    readonly searchTerm: string | null | undefined;
+    readonly searchTerm: string;
   };
   readonly id: string;
   readonly " $fragmentType": "DeleteJobAlertConfirmationModalFragment";
