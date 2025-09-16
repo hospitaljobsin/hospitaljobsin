@@ -7,8 +7,6 @@ import {
 	AccordionItem,
 	addToast,
 	Button,
-	Card,
-	CardBody,
 	Modal,
 	ModalBody,
 	ModalContent,
@@ -21,7 +19,7 @@ import {
 	SelectItem
 } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { BellIcon, BriefcaseIcon, Clock, Globe, IndianRupee } from 'lucide-react';
+import { BellIcon, BriefcaseIcon, Clock, Globe, IndianRupee, StarIcon } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { useFragment, useMutation } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -251,21 +249,24 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 	};
 
 	return (
-		<Modal isOpen={isOpen} onOpenChange={handleOpenChange} size='4xl' scrollBehavior='inside'>
+		<Modal isOpen={isOpen} onOpenChange={handleOpenChange} size='4xl' className='overflow-y-auto p-6' scrollBehavior='inside'>
 			<ModalContent className='max-h-[90vh]'>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					<ModalHeader className='flex flex-col gap-1 pb-2'>
+					<ModalHeader className='flex flex-col gap-1 pb-2 text-sm text-foreground-600'>
 						<div className='flex items-center gap-2'>
-							<BellIcon className='h-5 w-5 text-primary' />
+							<BellIcon size={16} className='text-foreground-600' />
 							<span>Edit Job Alert</span>
 						</div>
 						<p className='text-sm text-foreground-500 font-normal mt-1'>Update your preferences to receive more relevant job matches</p>
 					</ModalHeader>
 
-					<ModalBody className='overflow-y-auto py-6 gap-8'>
+					<ModalBody className='overflow-y-auto py-6 gap-12'>
 						{/* Essential Fields Section */}
 						<div className='flex flex-col gap-8'>
-							<h3 className='text-lg font-medium text-foreground-800'>Essential Criteria</h3>
+							<div className='flex items-center mb-1'>
+								<StarIcon className='mr-2 h-5 w-5 text-foreground-700' />
+								<h3 className='text-md font-medium text-foreground-700'>Primary Job Criteria</h3>
+							</div>
 
 							<div className='flex flex-col gap-6'>
 								<Controller
@@ -309,85 +310,99 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 								/>
 							</div>
 						</div>
-
+						{/* Alert Frequency */}
+						<div className='flex flex-col gap-6'>
+							<div className='flex items-center mb-1'>
+								<Clock className='mr-2 h-5 w-5 text-foreground-700' />
+								<h3 className='text-md font-medium text-foreground-700'>Alert Frequency</h3>
+							</div>
+							<p className='text-sm text-foreground-500 mb-3'>How often would you like to receive job alerts?</p>
+							<Controller
+								name='frequency'
+								control={control}
+								render={({ field }) => (
+									<RadioGroup
+										orientation='horizontal'
+										value={field.value}
+										onValueChange={field.onChange}
+										errorMessage={errors.frequency?.message}
+										isInvalid={!!errors.frequency}
+										classNames={{
+											wrapper: 'gap-4'
+										}}
+									>
+										{ALERT_FREQUENCIES.map(freq => (
+											<Radio key={freq.value} value={freq.value}>
+												{freq.label}
+											</Radio>
+										))}
+									</RadioGroup>
+								)}
+							/>
+						</div>
 						{/* Filters Accordion */}
-						<Accordion
-							className='mb-6'
-							selectionMode='multiple'
-							itemClasses={{
-								trigger: 'py-3 px-4 bg-neutral-50 hover:bg-neutral-100 transition-colors',
-								content: 'px-4 py-3 bg-white'
-							}}
-						>
+						<Accordion className='mb-6' selectionMode='multiple' variant='light'>
 							{/* Job Preferences Section */}
 							<AccordionItem
 								key='job-preferences'
 								aria-label='Job Preferences'
-								startContent={
-									<div className='p-1.5 bg-neutral-200 rounded-full mr-2'>
-										<BriefcaseIcon size={16} className='text-neutral-700' />
-									</div>
-								}
+								startContent={<BriefcaseIcon size={16} className='text-neutral-700' />}
 								title={<span className='text-md font-medium text-foreground-700'>Job Preferences</span>}
 							>
-								<div className='space-y-4'>
+								<div className='flex flex-col gap-6 mb-6'>
 									{/* Job Types */}
-									<div className='mb-4'>
-										<Controller
-											name='jobType'
-											control={control}
-											render={({ field }) => (
-												<Select
-													label='Job Types'
-													placeholder='Select job types'
-													selectionMode='multiple'
-													startContent={<BriefcaseIcon size={16} />}
-													selectedKeys={new Set(field.value || [])}
-													onSelectionChange={keys => {
-														field.onChange(Array.from(keys as Set<string>));
-													}}
-													errorMessage={errors.jobType?.message}
-													isInvalid={!!errors.jobType}
-													classNames={{
-														trigger: 'min-h-unit-10'
-													}}
-												>
-													{JOB_TYPES.map(jobType => (
-														<SelectItem key={jobType.value}>{jobType.label}</SelectItem>
-													))}
-												</Select>
-											)}
-										/>
-									</div>
+									<Controller
+										name='jobType'
+										control={control}
+										render={({ field }) => (
+											<Select
+												label='Job Types'
+												placeholder='Select job types'
+												selectionMode='multiple'
+												startContent={<BriefcaseIcon size={16} />}
+												selectedKeys={new Set(field.value || [])}
+												onSelectionChange={keys => {
+													field.onChange(Array.from(keys as Set<string>));
+												}}
+												errorMessage={errors.jobType?.message}
+												isInvalid={!!errors.jobType}
+												classNames={{
+													trigger: 'min-h-unit-10'
+												}}
+											>
+												{JOB_TYPES.map(jobType => (
+													<SelectItem key={jobType.value}>{jobType.label}</SelectItem>
+												))}
+											</Select>
+										)}
+									/>
 
 									{/* Work Modes */}
-									<div>
-										<Controller
-											name='workMode'
-											control={control}
-											render={({ field }) => (
-												<Select
-													label='Work Modes'
-													placeholder='Select work modes'
-													selectionMode='multiple'
-													startContent={<Globe size={16} />}
-													selectedKeys={new Set(field.value || [])}
-													onSelectionChange={keys => {
-														field.onChange(Array.from(keys as Set<string>));
-													}}
-													errorMessage={errors.workMode?.message}
-													isInvalid={!!errors.workMode}
-													classNames={{
-														trigger: 'min-h-unit-10'
-													}}
-												>
-													{WORK_MODES.map(mode => (
-														<SelectItem key={mode.value}>{mode.label}</SelectItem>
-													))}
-												</Select>
-											)}
-										/>
-									</div>
+									<Controller
+										name='workMode'
+										control={control}
+										render={({ field }) => (
+											<Select
+												label='Work Modes'
+												placeholder='Select work modes'
+												selectionMode='multiple'
+												startContent={<Globe size={16} />}
+												selectedKeys={new Set(field.value || [])}
+												onSelectionChange={keys => {
+													field.onChange(Array.from(keys as Set<string>));
+												}}
+												errorMessage={errors.workMode?.message}
+												isInvalid={!!errors.workMode}
+												classNames={{
+													trigger: 'min-h-unit-10'
+												}}
+											>
+												{WORK_MODES.map(mode => (
+													<SelectItem key={mode.value}>{mode.label}</SelectItem>
+												))}
+											</Select>
+										)}
+									/>
 								</div>
 							</AccordionItem>
 
@@ -395,17 +410,13 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 							<AccordionItem
 								key='exp-salary'
 								aria-label='Experience and Salary'
-								startContent={
-									<div className='p-1.5 bg-neutral-200 rounded-full mr-2'>
-										<IndianRupee size={16} className='text-neutral-700' />
-									</div>
-								}
+								startContent={<IndianRupee size={16} className='text-neutral-700' />}
 								title={<span className='text-md font-medium text-foreground-700'>Experience & Salary</span>}
 							>
-								<div className='space-y-6'>
+								<div className='flex flex-col gap-6 mb-6'>
 									{/* Experience Range */}
-									<div className='mb-4'>
-										<div className='text-sm font-medium text-foreground-700 mb-2 flex items-center'>
+									<div className='flex flex-col gap-2'>
+										<div className='text-sm font-medium text-foreground-700 gap-2 flex items-center'>
 											<Clock size={16} className='mr-1.5 text-neutral-600' />
 											Experience (in years)
 										</div>
@@ -454,8 +465,8 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 									</div>
 
 									{/* Salary Range */}
-									<div>
-										<div className='text-sm font-medium text-foreground-700 mb-2 flex items-center'>
+									<div className='flex flex-col gap-2'>
+										<div className='text-sm font-medium text-foreground-700 gap-2 flex items-center'>
 											<IndianRupee size={16} className='mr-1.5 text-neutral-600' />
 											Salary Range (INR)
 										</div>
@@ -507,39 +518,6 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 								</div>
 							</AccordionItem>
 						</Accordion>
-
-						{/* Alert Frequency */}
-						<Card shadow='none' className='p-0'>
-							<CardBody className='py-3 px-4'>
-								<div className='flex items-center mb-1'>
-									<Clock className='mr-2 h-5 w-5 text-primary' />
-									<h3 className='text-md font-medium text-foreground-700'>Alert Frequency</h3>
-								</div>
-								<p className='text-sm text-foreground-500 mb-3'>How often would you like to receive job alerts?</p>
-								<Controller
-									name='frequency'
-									control={control}
-									render={({ field }) => (
-										<RadioGroup
-											orientation='horizontal'
-											value={field.value}
-											onValueChange={field.onChange}
-											errorMessage={errors.frequency?.message}
-											isInvalid={!!errors.frequency}
-											classNames={{
-												wrapper: 'gap-4'
-											}}
-										>
-											{ALERT_FREQUENCIES.map(freq => (
-												<Radio key={freq.value} value={freq.value}>
-													{freq.label}
-												</Radio>
-											))}
-										</RadioGroup>
-									)}
-								/>
-							</CardBody>
-						</Card>
 					</ModalBody>
 
 					<ModalFooter>
