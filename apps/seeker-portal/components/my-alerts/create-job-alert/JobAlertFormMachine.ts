@@ -102,7 +102,12 @@ const machine = createMachine({
 			}
 		},
 		complete: {
-			type: 'final'
+			// Remove the final type so it doesn't stop
+			// type: 'final',
+			// Add RESET transition to allow going back to step1
+			on: {
+				RESET: 'step1'
+			}
 		}
 	}
 });

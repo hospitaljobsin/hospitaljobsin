@@ -32,9 +32,11 @@ export default function JobAlertStep2({ control, errors }: Step2Props) {
 
 	return (
 		<div className='space-y-8'>
-			<div className='space-y-4'>
-				<h3 className='text-lg font-semibold text-foreground-800'>Job Details</h3>
-				<p className='text-sm text-foreground-500'>Add more specifics to refine your job alerts</p>
+			<div className='space-y-8'>
+				<div className='space-y-2'>
+					<h3 className='text-lg font-semibold text-foreground-800'>Job Details (Optional)</h3>
+					<p className='text-sm text-foreground-500'>Add more specifics to refine your job alerts</p>
+				</div>
 
 				{/* Job Types */}
 				<div className='mb-4'>
@@ -102,11 +104,11 @@ export default function JobAlertStep2({ control, errors }: Step2Props) {
 			</div>
 
 			{/* Navigation */}
-			<div className='flex justify-between'>
-				<Button variant='flat' onPress={() => send({ type: 'BACK' })}>
+			<div className='flex justify-between gap-6'>
+				<Button variant='flat' onPress={() => send({ type: 'BACK' })} fullWidth>
 					Back
 				</Button>
-				<Button color='primary' onPress={() => send({ type: 'NEXT' })}>
+				<Button color='primary' onPress={() => send({ type: 'NEXT' })} fullWidth>
 					Next
 				</Button>
 			</div>

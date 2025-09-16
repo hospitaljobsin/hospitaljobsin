@@ -17,9 +17,11 @@ export default function JobAlertStep3({ control, errors }: Step3Props) {
 
 	return (
 		<div className='space-y-8'>
-			<div className='space-y-4'>
-				<h3 className='text-lg font-semibold text-foreground-800'>Experience & Salary Range</h3>
-				<p className='text-sm text-foreground-500'>Set your preferred experience and salary requirements</p>
+			<div className='space-y-8'>
+				<div className='space-y-2'>
+					<h3 className='text-lg font-semibold text-foreground-800'>Experience & Salary Range</h3>
+					<p className='text-sm text-foreground-500'>Set your preferred experience and salary requirements</p>
+				</div>
 
 				{/* Experience Range */}
 				<div className='mb-6'>
@@ -117,11 +119,11 @@ export default function JobAlertStep3({ control, errors }: Step3Props) {
 			</div>
 
 			{/* Navigation */}
-			<div className='flex justify-between'>
-				<Button variant='flat' onPress={() => send({ type: 'BACK' })}>
+			<div className='flex justify-between gap-6'>
+				<Button variant='flat' onPress={() => send({ type: 'BACK' })} fullWidth>
 					Back
 				</Button>
-				<Button color='primary' onPress={() => send({ type: 'NEXT' })}>
+				<Button color='primary' onPress={() => send({ type: 'NEXT' })} fullWidth>
 					Next
 				</Button>
 			</div>

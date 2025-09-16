@@ -3,8 +3,8 @@
 import { Button } from '@heroui/react';
 import type { Control, FieldErrors } from 'react-hook-form';
 import { Controller, useWatch } from 'react-hook-form';
-import JobSearchAutocomplete from '../forms/JobSearchAutocomplete';
-import LocationAutocomplete from '../forms/LocationAutocomplete';
+import JobSearchAutocomplete from '../../forms/JobSearchAutocomplete';
+import LocationAutocomplete from '../../forms/LocationAutocomplete';
 import type { CreateAlertFormValues } from './JobAlertFormMachine';
 import JobAlertFormContext from './JobAlertFormMachine';
 
@@ -28,9 +28,11 @@ export default function JobAlertStep1({ control, errors }: Step1Props) {
 
 	return (
 		<div className='space-y-8'>
-			<div className='space-y-4'>
-				<h3 className='text-lg font-semibold text-foreground-800'>Primary Job Criteria</h3>
-				<p className='text-sm text-foreground-500'>Start with the most important details for your job alert</p>
+			<div className='space-y-8'>
+				<div className='space-y-2'>
+					<h3 className='text-lg font-semibold text-foreground-800'>Primary Job Criteria</h3>
+					<p className='text-sm text-foreground-500'>Start with the most important details for your job alert</p>
+				</div>
 
 				{/* Search Term */}
 				<div className='mb-4'>
@@ -88,7 +90,7 @@ export default function JobAlertStep1({ control, errors }: Step1Props) {
 
 			{/* Navigation */}
 			<div className='flex justify-end'>
-				<Button color='primary' onPress={() => send({ type: 'NEXT' })} isDisabled={!canProceed}>
+				<Button color='primary' onPress={() => send({ type: 'NEXT' })} isDisabled={!canProceed} fullWidth>
 					Next
 				</Button>
 			</div>

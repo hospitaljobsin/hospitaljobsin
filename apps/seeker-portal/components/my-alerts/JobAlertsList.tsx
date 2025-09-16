@@ -6,7 +6,7 @@ import { PlusIcon, SendIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import CreateJobAlertModal from './CreateJobAlertModal';
+import CreateJobAlertModal from './create-job-alert/CreateJobAlertModal';
 import JobAlert from './JobAlert';
 
 const JobAlertsListFragment = graphql`

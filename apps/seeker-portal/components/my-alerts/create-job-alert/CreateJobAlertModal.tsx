@@ -1,21 +1,21 @@
 'use client';
 
 import type { CreateJobAlertModalMutation as CreateJobAlertMutationType } from '@/__generated__/CreateJobAlertModalMutation.graphql';
-import { addToast, Button, Modal, ModalContent, ModalHeader } from '@heroui/react';
+import { addToast, Modal, ModalContent, ModalHeader } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { BellIcon } from 'lucide-react';
 import type { Control } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-relay';
 import { ConnectionHandler, graphql } from 'relay-runtime';
-
+import StepProgress from '../StepProgress';
 import type { CreateAlertFormValues } from './JobAlertFormMachine';
 import JobAlertFormContext, { createAlertSchema } from './JobAlertFormMachine';
+import JobAlertFormProvider from './JobAlertFormProvider';
 import JobAlertStep1 from './JobAlertStep1';
 import JobAlertStep2 from './JobAlertStep2';
 import JobAlertStep3 from './JobAlertStep3';
 import JobAlertStep4 from './JobAlertStep4';
-import StepProgress from './StepProgress';
 
 const CreateJobAlertMutation = graphql`
 mutation CreateJobAlertModalMutation( $filters: AlertFiltersInput!, $frequency: JobAlertFrequency! ) {
@@ -47,10 +47,8 @@ function CreateJobAlertModalContent({ isOpen, onOpenChange }: CreateJobAlertModa
 	const {
 		control,
 		handleSubmit,
-		formState: { errors, isDirty },
-		reset,
-		setValue,
-		getValues
+		formState: { errors },
+		reset
 	} = useForm<CreateAlertFormValues>({
 		resolver: zodResolver(createAlertSchema),
 		defaultValues: {
@@ -80,8 +78,12 @@ function CreateJobAlertModalContent({ isOpen, onOpenChange }: CreateJobAlertModa
 	const handleOpenChange = (open: boolean) => {
 		if (!open) {
 			reset();
-			// Reset the state machine to step 1 by going back through all steps
-			if (currentState !== 'step1') {
+			// Reset the state machine to step 1 directly
+			// If we're in 'complete' state, use RESET, otherwise use BACK
+			if (currentState === 'complete') {
+				send({ type: 'RESET' });
+			} else if (currentState !== 'step1') {
+				// If we're in any other state, navigate back to step1
 				send({ type: 'BACK' });
 				if (currentState !== 'step1') {
 					send({ type: 'BACK' });
@@ -139,6 +141,8 @@ function CreateJobAlertModalContent({ isOpen, onOpenChange }: CreateJobAlertModa
 						description: 'Job alert created successfully',
 						color: 'success'
 					});
+					// Reset the state machine to step1 before closing the modal
+					send({ type: 'RESET' });
 					handleOpenChange(false);
 				} else if (response.createJobAlert.__typename === 'JobAlertAlreadyExistsError') {
 					addToast({
@@ -176,34 +180,24 @@ function CreateJobAlertModalContent({ isOpen, onOpenChange }: CreateJobAlertModa
 	};
 
 	return (
-		<Modal isOpen={isOpen} onOpenChange={handleOpenChange} size='3xl' scrollBehavior='inside'>
+		<Modal isOpen={isOpen} onOpenChange={handleOpenChange} size='3xl' className='p-6' scrollBehavior='inside'>
 			<ModalContent className='max-h-[90vh]'>
-				<ModalHeader className='flex items-center gap-2 pb-2'>
-					<BellIcon className='h-5 w-5 text-primary' />
+				<ModalHeader className='flex items-center gap-2 pb-2 font-medium text-foreground-600 text-sm'>
+					<BellIcon className='h-5 w-5 text-foreground-600' />
 					Create Job Alert
 				</ModalHeader>
 
-				<div className='px-6 pb-2'>
+				<div className='px-6 py-4'>
 					<StepProgress currentStep={getCurrentStep()} totalSteps={4} />
 				</div>
 
 				<div className='px-6 py-4 overflow-y-auto'>{renderStep(control)}</div>
-
-				{/* Cancel button for first step only */}
-				{currentState === 'step1' && (
-					<div className='px-6 py-4 flex justify-end border-t'>
-						<Button variant='light' onPress={() => handleOpenChange(false)}>
-							Cancel
-						</Button>
-					</div>
-				)}
 			</ModalContent>
 		</Modal>
 	);
 }
 
 // Wrap with provider
-import JobAlertFormProvider from './JobAlertFormProvider';
 
 export default function CreateJobAlertModal(props: CreateJobAlertModalProps) {
 	return (
