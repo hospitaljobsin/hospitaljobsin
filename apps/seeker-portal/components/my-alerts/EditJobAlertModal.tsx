@@ -3,6 +3,8 @@
 import type { EditJobAlertModalFragment$key } from '@/__generated__/EditJobAlertModalFragment.graphql';
 import type { EditJobAlertModalMutation as EditJobAlertModalMutationType } from '@/__generated__/EditJobAlertModalMutation.graphql';
 import {
+	Accordion,
+	AccordionItem,
 	addToast,
 	Button,
 	Card,
@@ -178,8 +180,8 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 		resolver: zodResolver(editAlertSchema),
 		defaultValues: {
 			searchTerm: data.filters.searchTerm,
-			jobType: data.filters.jobType ? [...data.filters.jobType] : [],
-			workMode: data.filters.workMode ? [...data.filters.workMode] : [],
+			jobType: data.filters.jobType ? ([...data.filters.jobType] as any) : [],
+			workMode: data.filters.workMode ? ([...data.filters.workMode] as any) : [],
 			location: data.filters.location || null,
 			minExperience: data.filters.minExperience || null,
 			maxExperience: data.filters.maxExperience || null,
@@ -252,23 +254,26 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 		<Modal isOpen={isOpen} onOpenChange={handleOpenChange} size='4xl' scrollBehavior='inside'>
 			<ModalContent className='max-h-[90vh]'>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					<ModalHeader className='flex items-center gap-2'>
-						<BellIcon className='h-5 w-5 text-primary' />
-						Edit Job Alert
+					<ModalHeader className='flex flex-col gap-1 pb-2'>
+						<div className='flex items-center gap-2'>
+							<BellIcon className='h-5 w-5 text-primary' />
+							<span>Edit Job Alert</span>
+						</div>
+						<p className='text-sm text-foreground-500 font-normal mt-1'>Update your preferences to receive more relevant job matches</p>
 					</ModalHeader>
 
-					<ModalBody className='space-y-4 overflow-y-auto'>
-						<div className='rounded-xl'>
-							<h3 className='text-md font-medium text-foreground-700 mb-4'>Update your job alert preferences</h3>
+					<ModalBody className='overflow-y-auto py-6 gap-8'>
+						{/* Essential Fields Section */}
+						<div className='flex flex-col gap-8'>
+							<h3 className='text-lg font-medium text-foreground-800'>Essential Criteria</h3>
 
-							{/* Search Term */}
-							<div className='mb-4'>
+							<div className='flex flex-col gap-6'>
 								<Controller
 									name='searchTerm'
 									control={control}
 									render={({ field }) => (
 										<JobSearchAutocomplete
-											label='Search Term'
+											label='Job Title or Keyword'
 											placeholder='Enter job titles, specialties, or skills'
 											value={field.value || ''}
 											onValueChange={value => field.onChange(value)}
@@ -277,13 +282,13 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 											isInvalid={!!errors.searchTerm}
 											isRequired
 											validationBehavior='aria'
+											classNames={{
+												base: 'text-base'
+											}}
 										/>
 									)}
 								/>
-							</div>
 
-							{/* Location */}
-							<div className='mb-4'>
 								<Controller
 									name='location'
 									control={control}
@@ -303,170 +308,214 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 									)}
 								/>
 							</div>
-
-							{/* Job Types */}
-							<div className='mb-4'>
-								<Controller
-									name='jobType'
-									control={control}
-									render={({ field }) => (
-										<Select
-											label='Job Types'
-											placeholder='Select job types'
-											selectionMode='multiple'
-											startContent={<BriefcaseIcon size={16} />}
-											selectedKeys={new Set(field.value || [])}
-											onSelectionChange={keys => {
-												field.onChange(Array.from(keys as Set<string>));
-											}}
-											errorMessage={errors.jobType?.message}
-											isInvalid={!!errors.jobType}
-											classNames={{
-												trigger: 'min-h-unit-12'
-											}}
-										>
-											{JOB_TYPES.map(jobType => (
-												<SelectItem key={jobType.value}>{jobType.label}</SelectItem>
-											))}
-										</Select>
-									)}
-								/>
-							</div>
-
-							{/* Work Modes */}
-							<div className='mb-4'>
-								<Controller
-									name='workMode'
-									control={control}
-									render={({ field }) => (
-										<Select
-											label='Work Modes'
-											placeholder='Select work modes'
-											selectionMode='multiple'
-											startContent={<Globe size={16} />}
-											selectedKeys={new Set(field.value || [])}
-											onSelectionChange={keys => {
-												field.onChange(Array.from(keys as Set<string>));
-											}}
-											errorMessage={errors.workMode?.message}
-											isInvalid={!!errors.workMode}
-											classNames={{
-												trigger: 'min-h-unit-12'
-											}}
-										>
-											{WORK_MODES.map(mode => (
-												<SelectItem key={mode.value}>{mode.label}</SelectItem>
-											))}
-										</Select>
-									)}
-								/>
-							</div>
-
-							{/* Experience Range */}
-							<div className='mb-4'>
-								<div className='text-sm font-medium text-foreground-700 mb-2'>Experience (in years)</div>
-								<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-									<Controller
-										name='minExperience'
-										control={control}
-										render={({ field }) => (
-											<NumberInput
-												label='Minimum'
-												placeholder='Min years'
-												min={0}
-												size='sm'
-												value={field.value as number | undefined}
-												onValueChange={value => {
-													field.onChange(value);
-												}}
-												errorMessage={errors.minExperience?.message}
-												isInvalid={!!errors.minExperience}
-												isClearable
-												onClear={() => field.onChange(null)}
-											/>
-										)}
-									/>
-									<Controller
-										name='maxExperience'
-										control={control}
-										render={({ field }) => (
-											<NumberInput
-												label='Maximum'
-												placeholder='Max years'
-												min={0}
-												size='sm'
-												value={field.value as number | undefined}
-												onValueChange={value => {
-													field.onChange(value);
-												}}
-												errorMessage={errors.maxExperience?.message}
-												isInvalid={!!errors.maxExperience}
-												isClearable
-												onClear={() => field.onChange(null)}
-											/>
-										)}
-									/>
-								</div>
-							</div>
-
-							{/* Salary Range */}
-							<div className='mb-4'>
-								<div className='text-sm font-medium text-foreground-700 mb-2'>Salary Range (INR)</div>
-								<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-									<Controller
-										name='minSalary'
-										control={control}
-										render={({ field }) => (
-											<NumberInput
-												label='Minimum'
-												placeholder='Min salary'
-												min={0}
-												size='sm'
-												startContent={<IndianRupee size={16} />}
-												value={field.value as number | undefined}
-												onValueChange={value => {
-													field.onChange(value);
-												}}
-												errorMessage={errors.minSalary?.message}
-												isInvalid={!!errors.minSalary}
-												isClearable
-												onClear={() => field.onChange(null)}
-											/>
-										)}
-									/>
-									<Controller
-										name='maxSalary'
-										control={control}
-										render={({ field }) => (
-											<NumberInput
-												label='Maximum'
-												placeholder='Max salary'
-												min={0}
-												size='sm'
-												startContent={<IndianRupee size={16} />}
-												value={field.value as number | undefined}
-												onValueChange={value => {
-													field.onChange(value);
-												}}
-												errorMessage={errors.maxSalary?.message}
-												isInvalid={!!errors.maxSalary}
-												isClearable
-												onClear={() => field.onChange(null)}
-											/>
-										)}
-									/>
-								</div>
-							</div>
 						</div>
 
+						{/* Filters Accordion */}
+						<Accordion
+							className='mb-6'
+							selectionMode='multiple'
+							itemClasses={{
+								trigger: 'py-3 px-4 bg-neutral-50 hover:bg-neutral-100 transition-colors',
+								content: 'px-4 py-3 bg-white'
+							}}
+						>
+							{/* Job Preferences Section */}
+							<AccordionItem
+								key='job-preferences'
+								aria-label='Job Preferences'
+								startContent={
+									<div className='p-1.5 bg-neutral-200 rounded-full mr-2'>
+										<BriefcaseIcon size={16} className='text-neutral-700' />
+									</div>
+								}
+								title={<span className='text-md font-medium text-foreground-700'>Job Preferences</span>}
+							>
+								<div className='space-y-4'>
+									{/* Job Types */}
+									<div className='mb-4'>
+										<Controller
+											name='jobType'
+											control={control}
+											render={({ field }) => (
+												<Select
+													label='Job Types'
+													placeholder='Select job types'
+													selectionMode='multiple'
+													startContent={<BriefcaseIcon size={16} />}
+													selectedKeys={new Set(field.value || [])}
+													onSelectionChange={keys => {
+														field.onChange(Array.from(keys as Set<string>));
+													}}
+													errorMessage={errors.jobType?.message}
+													isInvalid={!!errors.jobType}
+													classNames={{
+														trigger: 'min-h-unit-10'
+													}}
+												>
+													{JOB_TYPES.map(jobType => (
+														<SelectItem key={jobType.value}>{jobType.label}</SelectItem>
+													))}
+												</Select>
+											)}
+										/>
+									</div>
+
+									{/* Work Modes */}
+									<div>
+										<Controller
+											name='workMode'
+											control={control}
+											render={({ field }) => (
+												<Select
+													label='Work Modes'
+													placeholder='Select work modes'
+													selectionMode='multiple'
+													startContent={<Globe size={16} />}
+													selectedKeys={new Set(field.value || [])}
+													onSelectionChange={keys => {
+														field.onChange(Array.from(keys as Set<string>));
+													}}
+													errorMessage={errors.workMode?.message}
+													isInvalid={!!errors.workMode}
+													classNames={{
+														trigger: 'min-h-unit-10'
+													}}
+												>
+													{WORK_MODES.map(mode => (
+														<SelectItem key={mode.value}>{mode.label}</SelectItem>
+													))}
+												</Select>
+											)}
+										/>
+									</div>
+								</div>
+							</AccordionItem>
+
+							{/* Experience & Salary Section */}
+							<AccordionItem
+								key='exp-salary'
+								aria-label='Experience and Salary'
+								startContent={
+									<div className='p-1.5 bg-neutral-200 rounded-full mr-2'>
+										<IndianRupee size={16} className='text-neutral-700' />
+									</div>
+								}
+								title={<span className='text-md font-medium text-foreground-700'>Experience & Salary</span>}
+							>
+								<div className='space-y-6'>
+									{/* Experience Range */}
+									<div className='mb-4'>
+										<div className='text-sm font-medium text-foreground-700 mb-2 flex items-center'>
+											<Clock size={16} className='mr-1.5 text-neutral-600' />
+											Experience (in years)
+										</div>
+										<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+											<Controller
+												name='minExperience'
+												control={control}
+												render={({ field }) => (
+													<NumberInput
+														label='Minimum'
+														placeholder='Min years'
+														min={0}
+														size='sm'
+														value={field.value as number | undefined}
+														onValueChange={value => {
+															field.onChange(value);
+														}}
+														errorMessage={errors.minExperience?.message}
+														isInvalid={!!errors.minExperience}
+														isClearable
+														onClear={() => field.onChange(null)}
+													/>
+												)}
+											/>
+											<Controller
+												name='maxExperience'
+												control={control}
+												render={({ field }) => (
+													<NumberInput
+														label='Maximum'
+														placeholder='Max years'
+														min={0}
+														size='sm'
+														value={field.value as number | undefined}
+														onValueChange={value => {
+															field.onChange(value);
+														}}
+														errorMessage={errors.maxExperience?.message}
+														isInvalid={!!errors.maxExperience}
+														isClearable
+														onClear={() => field.onChange(null)}
+													/>
+												)}
+											/>
+										</div>
+									</div>
+
+									{/* Salary Range */}
+									<div>
+										<div className='text-sm font-medium text-foreground-700 mb-2 flex items-center'>
+											<IndianRupee size={16} className='mr-1.5 text-neutral-600' />
+											Salary Range (INR)
+										</div>
+										<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+											<Controller
+												name='minSalary'
+												control={control}
+												render={({ field }) => (
+													<NumberInput
+														label='Minimum'
+														placeholder='Min salary'
+														min={0}
+														size='sm'
+														startContent={<IndianRupee size={14} />}
+														value={field.value as number | undefined}
+														onValueChange={value => {
+															field.onChange(value);
+														}}
+														errorMessage={errors.minSalary?.message}
+														isInvalid={!!errors.minSalary}
+														isClearable
+														onClear={() => field.onChange(null)}
+													/>
+												)}
+											/>
+											<Controller
+												name='maxSalary'
+												control={control}
+												render={({ field }) => (
+													<NumberInput
+														label='Maximum'
+														placeholder='Max salary'
+														min={0}
+														size='sm'
+														startContent={<IndianRupee size={14} />}
+														value={field.value as number | undefined}
+														onValueChange={value => {
+															field.onChange(value);
+														}}
+														errorMessage={errors.maxSalary?.message}
+														isInvalid={!!errors.maxSalary}
+														isClearable
+														onClear={() => field.onChange(null)}
+													/>
+												)}
+											/>
+										</div>
+									</div>
+								</div>
+							</AccordionItem>
+						</Accordion>
+
 						{/* Alert Frequency */}
-						<Card shadow='sm' className='p-0'>
+						<Card shadow='none' className='p-0'>
 							<CardBody className='py-3 px-4'>
 								<div className='flex items-center mb-1'>
 									<Clock className='mr-2 h-5 w-5 text-primary' />
 									<h3 className='text-md font-medium text-foreground-700'>Alert Frequency</h3>
 								</div>
-								<p className='text-sm text-foreground-500 mb-2'>How often would you like to receive job alerts?</p>
+								<p className='text-sm text-foreground-500 mb-3'>How often would you like to receive job alerts?</p>
 								<Controller
 									name='frequency'
 									control={control}
@@ -477,6 +526,9 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 											onValueChange={field.onChange}
 											errorMessage={errors.frequency?.message}
 											isInvalid={!!errors.frequency}
+											classNames={{
+												wrapper: 'gap-4'
+											}}
 										>
 											{ALERT_FREQUENCIES.map(freq => (
 												<Radio key={freq.value} value={freq.value}>
@@ -494,7 +546,7 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 						<Button variant='light' onPress={() => handleOpenChange(false)}>
 							Cancel
 						</Button>
-						<Button color='primary' type='submit' isDisabled={!isValid || !isDirty} isLoading={isUpdatingJobAlert}>
+						<Button color='primary' type='submit' isDisabled={!isValid || !isDirty} isLoading={isUpdatingJobAlert} className='px-6'>
 							Update Alert
 						</Button>
 					</ModalFooter>
