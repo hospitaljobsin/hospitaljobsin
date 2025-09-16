@@ -51,7 +51,8 @@ class JobAlertRepo:
         paginator: Paginator[JobAlert, ObjectId] = Paginator(
             reverse=True,
             document_cls=JobAlert,
-            paginate_by="id",
+            paginate_by="_id",
+            entity_paginate_by="id",
         )
 
         return await paginator.paginate(
