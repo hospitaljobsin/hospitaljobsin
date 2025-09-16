@@ -1,6 +1,6 @@
 import type { JobAlertFragment$key, JobAlertFrequency, JobTypeFilter, WorkMode } from '@/__generated__/JobAlertFragment.graphql';
 import { dateTimeFormat } from '@/lib/intl';
-import { Card, CardBody, CardFooter, CardHeader, Tooltip } from '@heroui/react';
+import { Card, CardBody, CardFooter, CardHeader, Chip, Tooltip } from '@heroui/react';
 import { BellIcon, Briefcase, Clock, IndianRupee } from 'lucide-react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -185,10 +185,9 @@ export default function JobAlert({ jobAlert }: { jobAlert: JobAlertFragment$key 
 					</div>
 					<div className='flex items-center gap-1'>
 						<Tooltip content={`${formatFrequency(data.frequency)} updates`}>
-							<div className='flex items-center text-xs text-primary font-medium bg-primary/5 py-1 px-2.5 rounded-full'>
-								<Clock size={12} className='mr-1' />
+							<Chip size='lg' startContent={<Clock size={16} />} variant='light'>
 								{formatFrequency(data.frequency)}
-							</div>
+							</Chip>
 						</Tooltip>
 					</div>
 				</div>

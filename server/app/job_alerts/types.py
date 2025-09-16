@@ -25,8 +25,7 @@ class JobAlertFrequencyEnum(Enum):
     description="Filters for the job alert.",
 )
 class AlertFiltersInput:
-    search_term: str | None = strawberry.field(
-        default=None,
+    search_term: str = strawberry.field(
         description="Search term to filter job listings.",
     )
     location: str | None = strawberry.field(
@@ -82,8 +81,7 @@ class AlertFiltersInput:
     description="Filters for the job alert.",
 )
 class AlertFiltersType:
-    search_term: str | None = strawberry.field(
-        default=None,
+    search_term: str = strawberry.field(
         description="Search term to filter job listings.",
     )
     location: str | None = strawberry.field(

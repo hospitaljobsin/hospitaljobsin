@@ -4,7 +4,7 @@ from app.core.constants import JobKindType, WorkModeType
 
 
 class AlertFilters(BaseModel):
-    search_term: str | None = None
+    search_term: str
     location: str | None = None
     min_experience: int | None = None
     max_experience: int | None = None
