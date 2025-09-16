@@ -36,6 +36,7 @@
 		"@tiptap/react": "^3.0.1",
 		"@tiptap/starter-kit": "^3.0.1",
 		"@types/mdx": "^2.0.13",
+		"@xstate/react": "^5.0.5",
 		"acorn": "^8.15.0",
 		"date-fns": "^4.1.0",
 		"framer-motion": "^12.18.1",
@@ -63,6 +64,7 @@
 		"use-debounce": "^10.0.5",
 		"uuid": "^11.1.0",
 		"virtua": "^0.41.5",
+		"xstate": "^5.19.4",
 		"zod": "^3.25.64"
 	},
 	"devDependencies": {
