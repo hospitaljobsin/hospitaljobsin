@@ -1,7 +1,8 @@
 import type { JobAlertsListFragment$key } from '@/__generated__/JobAlertsListFragment.graphql';
 import type { MyJobAlertsClientComponentQuery } from '@/__generated__/MyJobAlertsClientComponentQuery.graphql';
 import JobAlertsListSkeleton from '@/components/landing/JobListSkeleton';
-import { Button } from '@heroui/react';
+import { MAX_JOB_ALERTS_PER_ACCOUNT } from '@/lib/constants';
+import { Button, Tooltip } from '@heroui/react';
 import { PlusIcon, SendIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { usePaginationFragment } from 'react-relay';
@@ -18,6 +19,7 @@ const JobAlertsListFragment = graphql`
   @refetchable(queryName: "JobAlertsListPaginationQuery") {
     jobAlerts(after: $cursor, first: $count)
       @connection(key: "JobAlertsListFragment_jobAlerts") {
+		totalCount @required(action: THROW)
       edges {
         node {
           id
@@ -86,9 +88,22 @@ export default function JobAlertsList({ rootQuery }: Props) {
 						<h2 className='text-2xl font-medium'>My Job Alerts</h2>
 						<p className='text-sm text-foreground-600'>Get notified when new jobs match your preferences</p>
 					</div>
-					<Button color='primary' startContent={<PlusIcon />} onPress={() => setShowCreateJobAlertModal(true)}>
-						Create Job Alert
-					</Button>
+					{data.jobAlerts.totalCount >= MAX_JOB_ALERTS_PER_ACCOUNT ? (
+						<Tooltip
+							content={`You have reached the maximum of ${MAX_JOB_ALERTS_PER_ACCOUNT} job alerts. Please delete an existing alert to create a new one.`}
+							showArrow
+						>
+							<span>
+								<Button color='primary' startContent={<PlusIcon />} isDisabled>
+									Create Job Alert
+								</Button>
+							</span>
+						</Tooltip>
+					) : (
+						<Button color='primary' startContent={<PlusIcon />} onPress={() => setShowCreateJobAlertModal(true)}>
+							Create Job Alert
+						</Button>
+					)}
 				</div>
 				<div className='w-full flex flex-col gap-8 pb-6'>
 					{data.jobAlerts.edges.map(jobEdge => (

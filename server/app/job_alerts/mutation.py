@@ -8,7 +8,11 @@ from strawberry.permission import PermissionExtension
 
 from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo
-from app.job_alerts.exceptions import JobAlertAlreadyExistsError, JobAlertNotFoundError
+from app.job_alerts.exceptions import (
+    JobAlertAlreadyExistsError,
+    JobAlertNotFoundError,
+    MaxJobAlertsReachedError,
+)
 from app.job_alerts.services import JobAlertService
 
 from .types import (
@@ -19,6 +23,7 @@ from .types import (
     JobAlertFrequencyEnum,
     JobAlertNotFoundErrorType,
     JobAlertType,
+    MaxJobAlertsReachedErrorType,
     UpdateJobAlertPayload,
 )
 
@@ -60,6 +65,8 @@ class JobAlertMutation:
                 match error:
                     case JobAlertAlreadyExistsError():
                         return JobAlertAlreadyExistsErrorType()
+                    case MaxJobAlertsReachedError():
+                        return MaxJobAlertsReachedErrorType()
             case Ok(organization):
                 return JobAlertType.marshal(organization)
             case _ as unreachable:

@@ -767,7 +767,8 @@ class JobRepo:
         paginator: Paginator[Job, ObjectId] = Paginator(
             reverse=True,
             document_cls=Job,
-            paginate_by="id",
+            paginate_by="_id",
+            entity_paginate_by="id",
             # we apply our own ordering in the query, so this isn't needed!
             apply_ordering=False,
         )
@@ -1381,7 +1382,8 @@ class JobApplicantRepo:
         paginator: Paginator[JobApplicant, ObjectId] = Paginator(
             reverse=True,
             document_cls=JobApplicant,
-            paginate_by="id",
+            paginate_by="_id",
+            entity_paginate_by="id",
             # we add ordering in the pipeline/ search criteria, so we don't need to apply ordering here
             apply_ordering=False,
         )
@@ -1522,7 +1524,8 @@ class JobApplicantRepo:
         paginator: Paginator[JobApplicant, ObjectId] = Paginator(
             reverse=True,
             document_cls=JobApplicant,
-            paginate_by="id",
+            paginate_by="_id",
+            entity_paginate_by="id",
         )
 
         search_criteria = JobApplicant.find(
@@ -1551,7 +1554,8 @@ class JobApplicantRepo:
         paginator: Paginator[JobApplicant, ObjectId] = Paginator(
             reverse=True,
             document_cls=JobApplicant,
-            paginate_by="id",
+            paginate_by="_id",
+            entity_paginate_by="id",
         )
 
         search_criteria = JobApplicant.find(

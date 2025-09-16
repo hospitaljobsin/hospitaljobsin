@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<51e8ba38beb28bc5b8921d2bc5496690>>
+ * @generated SignedSource<<594d9b36b9997a4f8eb4c79d837a043d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,6 +21,7 @@ export type JobAlertsListFragment$data = {
     readonly pageInfo: {
       readonly hasNextPage: boolean;
     };
+    readonly totalCount: number;
   };
   readonly " $fragmentType": "JobAlertsListFragment";
 };
@@ -81,6 +82,17 @@ return {
       "name": "__JobAlertsListFragment_jobAlerts_connection",
       "plural": false,
       "selections": [
+        {
+          "kind": "RequiredField",
+          "field": {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "totalCount",
+            "storageKey": null
+          },
+          "action": "THROW"
+        },
         {
           "alias": null,
           "args": null,
@@ -163,6 +175,6 @@ return {
 };
 })();
 
-(node as any).hash = "4781ed0b342e08362bbc2da2fd20100a";
+(node as any).hash = "629e2ad5c4cee061e339965022242d14";
 
 export default node;

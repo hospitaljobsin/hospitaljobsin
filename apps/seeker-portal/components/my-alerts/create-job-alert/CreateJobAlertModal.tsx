@@ -28,6 +28,9 @@ mutation CreateJobAlertModalMutation( $filters: AlertFiltersInput!, $frequency: 
     ... on JobAlertAlreadyExistsError {
         message
     }
+	... on MaxJobAlertsReachedError {
+		message
+	}
   }
 }
 `;
@@ -145,6 +148,12 @@ function CreateJobAlertModalContent({ isOpen, onOpenChange }: CreateJobAlertModa
 					send({ type: 'RESET' });
 					handleOpenChange(false);
 				} else if (response.createJobAlert.__typename === 'JobAlertAlreadyExistsError') {
+					addToast({
+						title: 'Error',
+						description: response.createJobAlert.message,
+						color: 'danger'
+					});
+				} else if (response.createJobAlert.__typename === 'MaxJobAlertsReachedError') {
 					addToast({
 						title: 'Error',
 						description: response.createJobAlert.message,

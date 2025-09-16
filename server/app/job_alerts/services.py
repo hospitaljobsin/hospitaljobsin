@@ -3,9 +3,13 @@ from bson.errors import InvalidId
 from result import Err, Ok, Result
 
 from app.accounts.documents import Account
-from app.core.constants import JobAlertFrequency
+from app.core.constants import MAX_JOB_ALERTS_PER_ACCOUNT, JobAlertFrequency
 from app.job_alerts.documents import JobAlert
-from app.job_alerts.exceptions import JobAlertAlreadyExistsError, JobAlertNotFoundError
+from app.job_alerts.exceptions import (
+    JobAlertAlreadyExistsError,
+    JobAlertNotFoundError,
+    MaxJobAlertsReachedError,
+)
 from app.job_alerts.models import AlertFilters
 from app.job_alerts.repositories import JobAlertRepo
 
@@ -19,7 +23,7 @@ class JobAlertService:
         account: Account,
         filters: AlertFilters,
         frequency: JobAlertFrequency,
-    ) -> Result[JobAlert, JobAlertAlreadyExistsError]:
+    ) -> Result[JobAlert, JobAlertAlreadyExistsError | MaxJobAlertsReachedError]:
         """Create a new job alert."""
         if await self._job_alert_repo.check_exists(
             account_id=account.id,
@@ -27,6 +31,11 @@ class JobAlertService:
             frequency=frequency,
         ):
             return Err(JobAlertAlreadyExistsError())
+        if (
+            await self._job_alert_repo.get_all_count(account.id)
+            >= MAX_JOB_ALERTS_PER_ACCOUNT
+        ):
+            return Err(MaxJobAlertsReachedError())
         job_alert = await self._job_alert_repo.create(
             account=account,
             frequency=frequency,

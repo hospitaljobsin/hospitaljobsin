@@ -144,3 +144,7 @@ DISPOSABLE_EMAIL_DOMAINS = {
     "chacuo.net",
     "dispostable.com",
 }
+
+
+# Job alerts
+MAX_JOB_ALERTS_PER_ACCOUNT = 10

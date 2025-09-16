@@ -145,7 +145,8 @@ class OrganizationRepo:
         paginator: Paginator[Organization, ObjectId] = Paginator(
             reverse=True,
             document_cls=Organization,
-            paginate_by="id",
+            paginate_by="_id",
+            entity_paginate_by="id",
         )
 
         return await paginator.paginate(
@@ -468,7 +469,8 @@ class OrganizationInviteRepo:
         paginator: Paginator[OrganizationInvite, ObjectId] = Paginator(
             reverse=True,
             document_cls=OrganizationInvite,
-            paginate_by="id",
+            paginate_by="_id",
+            entity_paginate_by="id",
         )
 
         search_criteria = OrganizationInvite.find(

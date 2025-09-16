@@ -1,14 +1,13 @@
-export const APP_NAME = "Hospital Jobs";
+export const APP_NAME = 'Hospital Jobs';
 
-export const COMPANY_NAME = "Vnadi";
+export const COMPANY_NAME = 'Vnadi';
 
-export const SUPPORT_EMAIL = "support@hospitaljobs.in";
+export const SUPPORT_EMAIL = 'support@hospitaljobs.in';
 
-export const APP_TITLE =
-	"Hospital Jobs in India | Nursing, Doctor & Healthcare Vacancies";
+export const APP_TITLE = 'Hospital Jobs in India | Nursing, Doctor & Healthcare Vacancies';
 
 export const APP_DESCRIPTION =
-	"Find the latest hospital jobs in India. Apply for doctor, nurse, paramedical, and healthcare vacancies at top hospitals, clinics, and nursing homes. Updated daily.";
+	'Find the latest hospital jobs in India. Apply for doctor, nurse, paramedical, and healthcare vacancies at top hospitals, clinics, and nursing homes. Updated daily.';
 
 export const FILTER_DEFAULTS = {
 	minExperience: null,
@@ -18,13 +17,14 @@ export const FILTER_DEFAULTS = {
 	proximityKm: 50.0,
 	workMode: [],
 	jobType: [],
-	sortBy: "RELEVANCE",
+	sortBy: 'RELEVANCE'
 };
 
-export const COOKIE_ANALYTICS_PREFERENCE = "analytics_preference";
+export const COOKIE_ANALYTICS_PREFERENCE = 'analytics_preference';
 
-export const WHATSAPP_CHANNEL_LINK =
-	"https://whatsapp.com/channel/0029Vb67UBn4dTnDcBJC2Y2H";
+export const WHATSAPP_CHANNEL_LINK = 'https://whatsapp.com/channel/0029Vb67UBn4dTnDcBJC2Y2H';
 
 // Only show count in metadata if we have this many jobs atleast
 export const REASONABLE_JOB_COUNT = 50;
+
+export const MAX_JOB_ALERTS_PER_ACCOUNT = 10;

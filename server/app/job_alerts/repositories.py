@@ -39,6 +39,10 @@ class JobAlertRepo:
         """Get all job alerts for an account."""
         return await JobAlert.find(JobAlert.account.id == account_id).to_list()
 
+    async def get_all_count(self, account_id: ObjectId) -> int:
+        """Get the count of all job alerts for an account."""
+        return await JobAlert.find(JobAlert.account.id == account_id).count()
+
     async def get_all(
         self,
         account_id: ObjectId,
@@ -53,6 +57,7 @@ class JobAlertRepo:
             document_cls=JobAlert,
             paginate_by="_id",
             entity_paginate_by="id",
+            calculate_total_count=True,
         )
 
         return await paginator.paginate(

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c3a837120035f1caba0c082f8b2e8da7>>
- * @relayHash 541a4fa08a49d3bae9eb2bf3262fe57d
+ * @generated SignedSource<<9fb72c8d12a364c14ca5196aaf0ba910>>
+ * @relayHash f973e697382f6e1076be93d73fb6f24a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 541a4fa08a49d3bae9eb2bf3262fe57d
+// @relayRequestID f973e697382f6e1076be93d73fb6f24a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -91,6 +91,13 @@ return {
         "name": "jobAlerts",
         "plural": false,
         "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "totalCount",
+            "storageKey": null
+          },
           {
             "alias": null,
             "args": null,
@@ -255,7 +262,7 @@ return {
     ]
   },
   "params": {
-    "id": "541a4fa08a49d3bae9eb2bf3262fe57d",
+    "id": "f973e697382f6e1076be93d73fb6f24a",
     "metadata": {},
     "name": "JobAlertsListPaginationQuery",
     "operationKind": "query",
@@ -264,6 +271,6 @@ return {
 };
 })();
 
-(node as any).hash = "4781ed0b342e08362bbc2da2fd20100a";
+(node as any).hash = "629e2ad5c4cee061e339965022242d14";
 
 export default node;

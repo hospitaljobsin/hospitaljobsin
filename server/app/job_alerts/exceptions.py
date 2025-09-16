@@ -4,3 +4,7 @@ class JobAlertAlreadyExistsError:
 
 class JobAlertNotFoundError:
     """Raised when a job alert is not found."""
+
+
+class MaxJobAlertsReachedError:
+    """Raised when the maximum number of job alerts for an account is reached."""

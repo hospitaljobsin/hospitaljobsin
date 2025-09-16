@@ -179,8 +179,19 @@ class JobAlertNotFoundErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="MaxJobAlertsReachedError",
+    description="Error when the maximum number of job alerts is reached.",
+)
+class MaxJobAlertsReachedErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="The error message.",
+        default="The maximum number of job alerts for the account has been reached.",
+    )
+
+
 CreateJobAlertPayload = Annotated[
-    JobAlertType | JobAlertAlreadyExistsErrorType,
+    JobAlertType | JobAlertAlreadyExistsErrorType | MaxJobAlertsReachedErrorType,
     strawberry.union(
         name="CreateJobAlertPayload",
         description="The create job alert payload.",

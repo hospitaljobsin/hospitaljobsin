@@ -646,7 +646,7 @@ type CheckOrganizationSlugAvailabilityPayload {
 """
 The create job alert payload.
 """
-union CreateJobAlertPayload = JobAlert | JobAlertAlreadyExistsError
+union CreateJobAlertPayload = JobAlert | JobAlertAlreadyExistsError | MaxJobAlertsReachedError
 
 """
 The create job application payload.
@@ -2133,6 +2133,16 @@ Marital status type.
 enum MaritalStatusType {
 	MARRIED
 	SINGLE
+}
+
+"""
+Error when the maximum number of job alerts is reached.
+"""
+type MaxJobAlertsReachedError implements Error {
+	"""
+	The error message.
+	"""
+	message: String!
 }
 
 """

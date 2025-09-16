@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<3d83ea3e2abc72b4f9384add079c4042>>
- * @relayHash 434f34754638a618165d195e0b61aea8
+ * @generated SignedSource<<511c6d83ac8db7d9379971578afe247d>>
+ * @relayHash 08979f748fce2b59ab6ab57f485d6e11
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 434f34754638a618165d195e0b61aea8
+// @relayRequestID 08979f748fce2b59ab6ab57f485d6e11
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -37,6 +37,9 @@ export type CreateJobAlertModalMutation$data = {
     readonly " $fragmentSpreads": FragmentRefs<"JobAlertFragment">;
   } | {
     readonly __typename: "JobAlertAlreadyExistsError";
+    readonly message: string;
+  } | {
+    readonly __typename: "MaxJobAlertsReachedError";
     readonly message: string;
   } | {
     // This will never be '%other', but we need some
@@ -81,21 +84,28 @@ v2 = {
   "name": "__typename",
   "storageKey": null
 },
-v3 = {
+v3 = [
+  {
+    "alias": null,
+    "args": null,
+    "kind": "ScalarField",
+    "name": "message",
+    "storageKey": null
+  }
+],
+v4 = {
   "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "message",
-      "storageKey": null
-    }
-  ],
+  "selections": (v3/*: any*/),
   "type": "JobAlertAlreadyExistsError",
   "abstractKey": null
 },
-v4 = {
+v5 = {
+  "kind": "InlineFragment",
+  "selections": (v3/*: any*/),
+  "type": "MaxJobAlertsReachedError",
+  "abstractKey": null
+},
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -130,7 +140,8 @@ return {
             "type": "JobAlert",
             "abstractKey": null
           },
-          (v3/*: any*/)
+          (v4/*: any*/),
+          (v5/*: any*/)
         ],
         "storageKey": null
       }
@@ -156,7 +167,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v4/*: any*/),
+              (v6/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -242,11 +253,12 @@ return {
             "type": "JobAlert",
             "abstractKey": null
           },
-          (v3/*: any*/),
+          (v4/*: any*/),
+          (v5/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              (v4/*: any*/)
+              (v6/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -257,7 +269,7 @@ return {
     ]
   },
   "params": {
-    "id": "434f34754638a618165d195e0b61aea8",
+    "id": "08979f748fce2b59ab6ab57f485d6e11",
     "metadata": {},
     "name": "CreateJobAlertModalMutation",
     "operationKind": "mutation",
@@ -266,6 +278,6 @@ return {
 };
 })();
 
-(node as any).hash = "c8d7d00709139ba89384744aebd1efdc";
+(node as any).hash = "c7e5c12eb45f408b412925e877320374";
 
 export default node;
