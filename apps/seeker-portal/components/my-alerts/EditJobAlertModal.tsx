@@ -19,7 +19,7 @@ import {
 	SelectItem
 } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { BellIcon, BriefcaseIcon, Clock, Globe, IndianRupee, StarIcon } from 'lucide-react';
+import { BellIcon, BriefcaseIcon, Clock, CompassIcon, Globe, IndianRupee, StarIcon } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { useFragment, useMutation } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -249,8 +249,16 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 	};
 
 	return (
-		<Modal isOpen={isOpen} onOpenChange={handleOpenChange} size='4xl' className='overflow-y-auto p-6' scrollBehavior='inside'>
-			<ModalContent className='max-h-[90vh]'>
+		<Modal
+			isOpen={isOpen}
+			onOpenChange={handleOpenChange}
+			size='4xl'
+			scrollBehavior='inside'
+			classNames={{
+				base: 'overflow-auto'
+			}}
+		>
+			<ModalContent>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<ModalHeader className='flex flex-col gap-1 pb-2 text-sm text-foreground-600'>
 						<div className='flex items-center gap-2'>
@@ -260,7 +268,7 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 						<p className='text-sm text-foreground-500 font-normal mt-1'>Update your preferences to receive more relevant job matches</p>
 					</ModalHeader>
 
-					<ModalBody className='overflow-y-auto py-6 gap-12'>
+					<ModalBody className='py-6 gap-12'>
 						{/* Essential Fields Section */}
 						<div className='flex flex-col gap-8'>
 							<div className='flex items-center mb-1'>
@@ -346,7 +354,7 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 							<AccordionItem
 								key='job-preferences'
 								aria-label='Job Preferences'
-								startContent={<BriefcaseIcon size={16} className='text-neutral-700' />}
+								startContent={<CompassIcon size={16} className='text-neutral-700' />}
 								title={<span className='text-md font-medium text-foreground-700'>Job Preferences</span>}
 							>
 								<div className='flex flex-col gap-6 mb-6'>
@@ -410,16 +418,12 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 							<AccordionItem
 								key='exp-salary'
 								aria-label='Experience and Salary'
-								startContent={<IndianRupee size={16} className='text-neutral-700' />}
-								title={<span className='text-md font-medium text-foreground-700'>Experience & Salary</span>}
+								startContent={<BriefcaseIcon size={16} className='text-neutral-700' />}
+								title={<span className='text-md font-medium text-foreground-700'>Experience Range</span>}
 							>
 								<div className='flex flex-col gap-6 mb-6'>
 									{/* Experience Range */}
 									<div className='flex flex-col gap-2'>
-										<div className='text-sm font-medium text-foreground-700 gap-2 flex items-center'>
-											<Clock size={16} className='mr-1.5 text-neutral-600' />
-											Experience (in years)
-										</div>
 										<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 											<Controller
 												name='minExperience'
@@ -463,13 +467,18 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 											/>
 										</div>
 									</div>
+								</div>
+							</AccordionItem>
 
+							<AccordionItem
+								key='salary'
+								aria-label='Salary'
+								startContent={<IndianRupee size={16} className='text-neutral-700' />}
+								title={<span className='text-md font-medium text-foreground-700'>Salary Range</span>}
+							>
+								<div className='flex flex-col gap-6 mb-6'>
 									{/* Salary Range */}
 									<div className='flex flex-col gap-2'>
-										<div className='text-sm font-medium text-foreground-700 gap-2 flex items-center'>
-											<IndianRupee size={16} className='mr-1.5 text-neutral-600' />
-											Salary Range (INR)
-										</div>
 										<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 											<Controller
 												name='minSalary'
