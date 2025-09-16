@@ -66,7 +66,7 @@ const ALERT_FREQUENCIES = [
 // Form schema for validation
 const createAlertSchema = z
 	.object({
-		searchTerm: z.string(),
+		searchTerm: z.string().min(1, 'Search term is required'),
 		jobType: z
 			.array(z.enum(['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT', 'LOCUM']))
 			.optional()
@@ -142,8 +142,7 @@ export default function CreateJobAlertModal({ isOpen, onOpenChange }: CreateJobA
 		control,
 		handleSubmit,
 		formState: { errors, isValid, isDirty },
-		reset,
-		watch
+		reset
 	} = useForm<CreateAlertFormValues>({
 		resolver: zodResolver(createAlertSchema),
 		defaultValues: {
@@ -230,10 +229,6 @@ export default function CreateJobAlertModal({ isOpen, onOpenChange }: CreateJobA
 		});
 	};
 
-	// Watch values for conditional rendering
-	const watchedJobType = watch('jobType');
-	const watchedWorkMode = watch('workMode');
-
 	return (
 		<Modal isOpen={isOpen} onOpenChange={handleOpenChange} size='4xl' scrollBehavior='inside'>
 			<ModalContent className='max-h-[90vh]'>
@@ -262,6 +257,7 @@ export default function CreateJobAlertModal({ isOpen, onOpenChange }: CreateJobA
 											errorMessage={errors.searchTerm?.message}
 											isInvalid={!!errors.searchTerm}
 											isRequired
+											validationBehavior='aria'
 										/>
 									)}
 								/>

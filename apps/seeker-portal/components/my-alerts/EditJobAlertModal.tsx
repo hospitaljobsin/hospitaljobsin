@@ -95,7 +95,7 @@ const ALERT_FREQUENCIES = [
 // Form schema for validation
 const editAlertSchema = z
 	.object({
-		searchTerm: z.string(),
+		searchTerm: z.string().min(1, 'Search term is required'),
 		jobType: z
 			.array(z.enum(['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT', 'LOCUM']))
 			.optional()
@@ -187,7 +187,8 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 			maxSalary: data.filters.maxSalary || null,
 			frequency: data.frequency as 'DAILY' | 'WEEKLY' | 'MONTHLY'
 		},
-		mode: 'onChange'
+		mode: 'onChange',
+		reValidateMode: 'onChange'
 	});
 
 	// Reset form when modal closes
@@ -270,11 +271,12 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 											label='Search Term'
 											placeholder='Enter job titles, specialties, or skills'
 											value={field.value || ''}
-											onValueChange={value => field.onChange(value || null)}
+											onValueChange={value => field.onChange(value)}
 											onJobSelect={job => field.onChange(job.displayName)}
 											errorMessage={errors.searchTerm?.message}
 											isInvalid={!!errors.searchTerm}
 											isRequired
+											validationBehavior='aria'
 										/>
 									)}
 								/>
@@ -295,6 +297,8 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 											errorMessage={errors.location?.message}
 											isInvalid={!!errors.location}
 											allowsCustomValue
+											isClearable
+											onClear={() => field.onChange(null)}
 										/>
 									)}
 								/>
@@ -377,6 +381,8 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 												}}
 												errorMessage={errors.minExperience?.message}
 												isInvalid={!!errors.minExperience}
+												isClearable
+												onClear={() => field.onChange(null)}
 											/>
 										)}
 									/>
@@ -395,6 +401,8 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 												}}
 												errorMessage={errors.maxExperience?.message}
 												isInvalid={!!errors.maxExperience}
+												isClearable
+												onClear={() => field.onChange(null)}
 											/>
 										)}
 									/>
@@ -421,6 +429,8 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 												}}
 												errorMessage={errors.minSalary?.message}
 												isInvalid={!!errors.minSalary}
+												isClearable
+												onClear={() => field.onChange(null)}
 											/>
 										)}
 									/>
@@ -440,6 +450,8 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 												}}
 												errorMessage={errors.maxSalary?.message}
 												isInvalid={!!errors.maxSalary}
+												isClearable
+												onClear={() => field.onChange(null)}
 											/>
 										)}
 									/>
