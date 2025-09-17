@@ -12,7 +12,7 @@ export default function MyJobAlertsViewSkeleton() {
 						<div className='flex flex-row justify-between items-center'>
 							<div className='space-y-2'>
 								<h2 className='text-2xl font-medium'>My Job Alerts</h2>
-								<p className='text-sm text-foreground-600'>Get notified when new jobs match your preferences</p>
+								<p className='text-sm text-foreground-600'>Get notified when new jobs match your preferences, directly in your inbox</p>
 							</div>
 							<Skeleton className='h-12 w-48 rounded-md' />
 						</div>

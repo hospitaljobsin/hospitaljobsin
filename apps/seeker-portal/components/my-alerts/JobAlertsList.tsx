@@ -86,7 +86,7 @@ export default function JobAlertsList({ rootQuery }: Props) {
 				<div className='flex flex-col sm:flex-row justify-between sm:items-center gap-6'>
 					<div className='space-y-2'>
 						<h2 className='text-2xl font-medium'>My Job Alerts</h2>
-						<p className='text-sm text-foreground-600'>Get notified when new jobs match your preferences</p>
+						<p className='text-sm text-foreground-600'>Get notified when new jobs match your preferences, directly in your inbox</p>
 					</div>
 					{data.jobAlerts.totalCount >= MAX_JOB_ALERTS_PER_ACCOUNT ? (
 						<Tooltip
