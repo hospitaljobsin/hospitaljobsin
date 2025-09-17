@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c3c2121931b1ea796a95ebe4e423071b>>
+ * @generated SignedSource<<9eff4ce40a6f0d9a540dff2723b2e075>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -54,6 +54,20 @@ var v0 = {
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
+  "storageKey": null
+},
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "slug",
+  "storageKey": null
+},
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "description",
   "storageKey": null
 };
 return {
@@ -146,9 +160,211 @@ return {
                       "name": "JobApplicationDetailsFragment"
                     },
                     {
+                      "kind": "InlineDataFragmentSpread",
+                      "name": "JobDetailsInternalFragment",
+                      "selections": [
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "title",
+                          "storageKey": null
+                        },
+                        (v1/*: any*/),
+                        (v2/*: any*/),
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "descriptionHtml",
+                          "storageKey": null
+                        },
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "type",
+                          "storageKey": null
+                        },
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "workMode",
+                          "storageKey": null
+                        },
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "location",
+                          "storageKey": null
+                        },
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "skills",
+                          "storageKey": null
+                        },
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "currency",
+                          "storageKey": null
+                        },
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "minSalary",
+                          "storageKey": null
+                        },
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "maxSalary",
+                          "storageKey": null
+                        },
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "minExperience",
+                          "storageKey": null
+                        },
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "maxExperience",
+                          "storageKey": null
+                        },
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "createdAt",
+                          "storageKey": null
+                        },
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "vacancies",
+                          "storageKey": null
+                        },
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "isSalaryNegotiable",
+                          "storageKey": null
+                        },
+                        {
+                          "alias": null,
+                          "args": null,
+                          "concreteType": "Organization",
+                          "kind": "LinkedField",
+                          "name": "organization",
+                          "plural": false,
+                          "selections": [
+                            (v1/*: any*/),
+                            {
+                              "alias": null,
+                              "args": null,
+                              "kind": "ScalarField",
+                              "name": "name",
+                              "storageKey": null
+                            },
+                            (v2/*: any*/),
+                            {
+                              "alias": null,
+                              "args": null,
+                              "kind": "ScalarField",
+                              "name": "logoUrl",
+                              "storageKey": null
+                            },
+                            {
+                              "alias": null,
+                              "args": null,
+                              "concreteType": null,
+                              "kind": "LinkedField",
+                              "name": "verificationStatus",
+                              "plural": false,
+                              "selections": [
+                                (v0/*: any*/),
+                                {
+                                  "fragment": {
+                                    "kind": "InlineFragment",
+                                    "selections": [
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "verifiedAt",
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "type": "Verified",
+                                    "abstractKey": null
+                                  },
+                                  "kind": "AliasedInlineFragmentSpread",
+                                  "name": "verified"
+                                },
+                                {
+                                  "kind": "InlineFragment",
+                                  "selections": [
+                                    {
+                                      "alias": null,
+                                      "args": null,
+                                      "kind": "ScalarField",
+                                      "name": "rejectedAt",
+                                      "storageKey": null
+                                    }
+                                  ],
+                                  "type": "Rejected",
+                                  "abstractKey": null
+                                },
+                                {
+                                  "kind": "InlineFragment",
+                                  "selections": [
+                                    {
+                                      "alias": null,
+                                      "args": null,
+                                      "kind": "ScalarField",
+                                      "name": "requestedAt",
+                                      "storageKey": null
+                                    }
+                                  ],
+                                  "type": "Pending",
+                                  "abstractKey": null
+                                },
+                                {
+                                  "kind": "InlineFragment",
+                                  "selections": [
+                                    {
+                                      "alias": null,
+                                      "args": null,
+                                      "kind": "ScalarField",
+                                      "name": "message",
+                                      "storageKey": null
+                                    }
+                                  ],
+                                  "type": "NotRequested",
+                                  "abstractKey": null
+                                }
+                              ],
+                              "storageKey": null
+                            }
+                          ],
+                          "storageKey": null
+                        }
+                      ],
                       "args": null,
-                      "kind": "FragmentSpread",
-                      "name": "JobDetailsInternalFragment"
+                      "argumentDefinitions": []
                     }
                   ],
                   "type": "Job",

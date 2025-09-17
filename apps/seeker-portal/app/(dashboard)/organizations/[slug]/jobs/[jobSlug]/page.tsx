@@ -5,6 +5,7 @@ import type { pageJobDetailServerFragment$key } from '@/__generated__/pageJobDet
 import type JobDetailViewQueryNode from '@/__generated__/pageJobDetailViewQuery.graphql';
 import type { pageJobDetailViewQuery } from '@/__generated__/pageJobDetailViewQuery.graphql';
 import type { pageTrendingJobsQuery } from '@/__generated__/pageTrendingJobsQuery.graphql';
+import JobDetailView from '@/components/job-detail/JobDetailView';
 import { env } from '@/lib/env/client';
 import { getEmploymentType } from '@/lib/jsonLd';
 import links from '@/lib/links';
@@ -13,12 +14,11 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { graphql, readInlineData } from 'relay-runtime';
 import type { JobPosting, WithContext } from 'schema-dts';
-import JobDetailViewClientComponent from './JobDetailViewClientComponent';
 
 const PageJobDetailViewQuery = graphql`
   query pageJobDetailViewQuery($slug: String!, $jobSlug: String!) {
 	...pageJobDetailServerFragment @arguments(slug: $slug, jobSlug: $jobSlug)
-    ...JobDetailViewClientComponentFragment @arguments(slug: $slug, jobSlug: $jobSlug)
+
   }
 `;
 
@@ -27,6 +27,7 @@ const PageJobDetailServerFragment = graphql`
       slug: { type: "String!"}
 	  jobSlug: { type: "String!"}
     ) {
+    ...JobDetailViewFragment @arguments(slug: $slug, jobSlug: $jobSlug)
 		organization(slug: $slug) {
 			__typename
 			... on Organization {
@@ -297,12 +298,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 					__html: JSON.stringify(jsonLd).replace(/</g, '\\u003c')
 				}}
 			/>
-			<JobDetailViewClientComponent
-				preloadedQuery={preloadedQuery}
-				preloadedTrendingQuery={preloadedTrendingQuery}
-				slug={slug}
-				jobSlug={jobSlug}
-			/>
+			<JobDetailView rootQuery={data} trendingData={preloadedTrendingQuery.data} />
 		</>
 	);
 }

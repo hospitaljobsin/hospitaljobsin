@@ -1,25 +1,15 @@
-'use client';
-import type { LandingClientComponentQuery } from '@/__generated__/LandingClientComponentQuery.graphql';
 import type { TrendingJobListFragment$key } from '@/__generated__/TrendingJobListFragment.graphql';
-import type { TrendingJobListInternalFragment$key } from '@/__generated__/TrendingJobListInternalFragment.graphql';
 import { FlameIcon } from 'lucide-react';
-import { useFragment, usePaginationFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { graphql, readInlineData } from 'relay-runtime';
 import AuxiliaryJob from './AuxiliaryJob';
 
 const TrendingJobListFragment = graphql`
-fragment TrendingJobListFragment on Query {
-    ...TrendingJobListInternalFragment
-}
-`;
-
-const TrendingJobListInternalFragment = graphql`
-  fragment TrendingJobListInternalFragment on Query
+  fragment TrendingJobListFragment on Query
   @refetchable(queryName: "TrendingJobListRefetchQuery")
   @argumentDefinitions(
     cursor: { type: "ID" }
     count: { type: "Int", defaultValue: 10 }
-  ){
+  ) @inline {
     trendingJobs(after: $cursor, first: $count)
       @connection(key: "TrendingJobListFragment_trendingJobs") {
       edges {
@@ -42,11 +32,7 @@ type Props = {
 };
 
 export default function TrendingJobList({ rootQuery, jobDetailId }: Props) {
-	const root = useFragment(TrendingJobListFragment, rootQuery);
-	const { data } = usePaginationFragment<LandingClientComponentQuery, TrendingJobListInternalFragment$key>(
-		TrendingJobListInternalFragment,
-		root
-	);
+	const data = readInlineData(TrendingJobListFragment, rootQuery);
 
 	const trendingJobsExcludingCurrent = data.trendingJobs.edges.filter(jobEdge => jobEdge.node.id !== jobDetailId);
 

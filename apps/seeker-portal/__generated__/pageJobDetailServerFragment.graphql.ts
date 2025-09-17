@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<22d3c32768de768feac67323f97316b1>>
+ * @generated SignedSource<<bb617f7367a2e49ea0c880b694161d06>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -53,6 +53,7 @@ export type pageJobDetailServerFragment$data = {
     // value in case none of the concrete values match.
     readonly __typename: "%other";
   };
+  readonly " $fragmentSpreads": FragmentRefs<"JobDetailViewFragment">;
   readonly " $fragmentType": "pageJobDetailServerFragment";
 };
 export type pageJobDetailServerFragment$key = {
@@ -65,6 +66,6 @@ const node: ReaderInlineDataFragment = {
   "name": "pageJobDetailServerFragment"
 };
 
-(node as any).hash = "7057d5610f6bf22012b6b626def5cd78";
+(node as any).hash = "bcd047390e7d475b687f871c09285287";
 
 export default node;

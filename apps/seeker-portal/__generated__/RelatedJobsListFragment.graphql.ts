@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0295d46487bd7ccffb11436953fb92ef>>
+ * @generated SignedSource<<a828540c4572e84ba4559288e68a509f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import type { ReaderFragment } from 'relay-runtime';
+import type { ReaderInlineDataFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type RelatedJobsListFragment$data = {
   readonly id: string;
@@ -30,148 +30,11 @@ export type RelatedJobsListFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"RelatedJobsListFragment">;
 };
 
-import RelatedJobsListRefetchQuery_graphql from './RelatedJobsListRefetchQuery.graphql';
-
-const node: ReaderFragment = (function(){
-var v0 = [
-  "relatedJobs"
-],
-v1 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
+const node: ReaderInlineDataFragment = {
+  "kind": "InlineDataFragment",
+  "name": "RelatedJobsListFragment"
 };
-return {
-  "argumentDefinitions": [
-    {
-      "defaultValue": 10,
-      "kind": "LocalArgument",
-      "name": "count"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "cursor"
-    }
-  ],
-  "kind": "Fragment",
-  "metadata": {
-    "connection": [
-      {
-        "count": "count",
-        "cursor": "cursor",
-        "direction": "forward",
-        "path": (v0/*: any*/)
-      }
-    ],
-    "refetch": {
-      "connection": {
-        "forward": {
-          "count": "count",
-          "cursor": "cursor"
-        },
-        "backward": null,
-        "path": (v0/*: any*/)
-      },
-      "fragmentPathInResult": [
-        "node"
-      ],
-      "operation": RelatedJobsListRefetchQuery_graphql,
-      "identifierInfo": {
-        "identifierField": "id",
-        "identifierQueryVariableName": "id"
-      }
-    }
-  },
-  "name": "RelatedJobsListFragment",
-  "selections": [
-    {
-      "alias": "relatedJobs",
-      "args": null,
-      "concreteType": "JobConnection",
-      "kind": "LinkedField",
-      "name": "__RelatedJobsListFragment_relatedJobs_connection",
-      "plural": false,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "JobEdge",
-          "kind": "LinkedField",
-          "name": "edges",
-          "plural": true,
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "concreteType": "Job",
-              "kind": "LinkedField",
-              "name": "node",
-              "plural": false,
-              "selections": [
-                (v1/*: any*/),
-                {
-                  "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "AuxiliaryJobFragment"
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "__typename",
-                  "storageKey": null
-                }
-              ],
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "cursor",
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "PageInfo",
-          "kind": "LinkedField",
-          "name": "pageInfo",
-          "plural": false,
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "hasNextPage",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "endCursor",
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        }
-      ],
-      "storageKey": null
-    },
-    (v1/*: any*/)
-  ],
-  "type": "Job",
-  "abstractKey": null
-};
-})();
 
-(node as any).hash = "ac9e6b63db22c650db4305b23ec30d2b";
+(node as any).hash = "79b109471e62c552bad3af568d868322";
 
 export default node;

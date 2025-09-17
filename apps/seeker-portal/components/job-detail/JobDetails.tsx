@@ -11,7 +11,7 @@ import { Briefcase, Clock, ExternalLinkIcon, Globe, HandshakeIcon, IndianRupee, 
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
-import { graphql, useFragment } from 'react-relay';
+import { graphql, readInlineData } from 'react-relay';
 import invariant from 'tiny-invariant';
 
 const JobControlsClientComponent = dynamic(() => import('./JobControlsClientComponent'), { ssr: false });
@@ -25,7 +25,7 @@ const JobDetailsFragment = graphql`
   fragment JobDetailsFragment on Query @argumentDefinitions(
 	slug: { type: "String!"}
 	jobSlug: { type: "String!"}
-    ) {
+    ) @inline {
 		organization(slug: $slug) {
 		__typename
 		... on Organization {
@@ -41,7 +41,7 @@ const JobDetailsFragment = graphql`
 `;
 
 const JobDetailsInternalFragment = graphql`
-  fragment JobDetailsInternalFragment on Job {
+  fragment JobDetailsInternalFragment on Job @inline {
     title
 	slug
     description
@@ -58,7 +58,7 @@ const JobDetailsInternalFragment = graphql`
     createdAt
 	vacancies
     isSalaryNegotiable
-    organization @required(action: THROW) {
+    organization {
       slug
       name
       description
@@ -83,13 +83,15 @@ const JobDetailsInternalFragment = graphql`
 `;
 
 export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragment$key }) {
-	const root = useFragment(JobDetailsFragment, rootQuery);
+	const root = readInlineData(JobDetailsFragment, rootQuery);
+
+	invariant(root.organization, 'Organization not found');
 
 	invariant(root.organization.__typename === 'Organization', "Expected 'Organization' node type");
 
 	invariant(root.organization.job.__typename === 'Job', "Expected 'Job' node type");
 
-	const data = useFragment<JobDetailsInternalFragmentType>(JobDetailsInternalFragment, root.organization.job);
+	const data = readInlineData<JobDetailsInternalFragmentType>(JobDetailsInternalFragment, root.organization.job);
 
 	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
 
@@ -191,7 +193,7 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 				<CardHeader>
 					<div className='flex flex-col sm:flex-row w-full justify-between gap-3 sm:gap-4 items-start sm:items-center'>
 						<h4 className='text-lg sm:text-xl font-medium break-words max-w-full leading-snug text-foreground-900'>{data.title}</h4>
-						<JobApplyButtonClientComponent slug={data.organization.slug} jobSlug={data.slug} />
+						<JobApplyButtonClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
 					</div>
 				</CardHeader>
 				<CardBody className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full'>
@@ -239,7 +241,7 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 					<div className='w-full sm:w-auto flex justify-end items-center gap-4'>
 						<p className='text-foreground-500 text-xs block sm:hidden w-full'>{formattedCreatedAt}</p>
 						<div className='w-full sm:w-auto flex justify-end'>
-							<JobControlsClientComponent slug={data.organization.slug} jobSlug={data.slug} />
+							<JobControlsClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
 						</div>
 					</div>
 				</CardFooter>
@@ -250,7 +252,7 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 			<Card fullWidth className='p-4 sm:p-6' shadow='none'>
 				<CardBody className='flex items-center gap-4 sm:gap-6 flex-row w-full'>
 					<div className='relative aspect-square h-12 w-12 sm:h-14 sm:w-14 min-w-[3rem] sm:min-w-[3.5rem]'>
-						<Image src={data.organization.logoUrl} alt={data.organization.name} fill className='rounded-md object-cover' />
+						<Image src={data.organization?.logoUrl || ''} alt={data.organization?.name || ''} fill className='rounded-md object-cover' />
 					</div>
 
 					<div className='w-full flex flex-col gap-1 sm:gap-2'>
@@ -258,18 +260,18 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 							color='foreground'
 							target='_blank'
 							rel='noopener noreferrer'
-							href={links.organizationDetail(data.organization.slug)}
+							href={links.organizationDetail(data.organization?.slug || '')}
 							className='text-base sm:text-lg font-medium flex items-center gap-2'
 						>
-							{data.organization.name}
+							{data.organization?.name}
 							<ExternalLinkIcon className='w-3 h-3' />
-							{data.organization.verificationStatus.verified && (
+							{data.organization?.verificationStatus.verified && (
 								<Tooltip content='This organization is verified' placement='right'>
 									<VerifiedIcon className='w-4 h-4 text-primary' strokeWidth={2.5} />
 								</Tooltip>
 							)}
 						</Link>
-						{data.organization.description && (
+						{data.organization?.description && (
 							<p className='text-xs sm:text-base text-default-500 leading-tight line-clamp-2'>{data.organization.description}</p>
 						)}
 					</div>

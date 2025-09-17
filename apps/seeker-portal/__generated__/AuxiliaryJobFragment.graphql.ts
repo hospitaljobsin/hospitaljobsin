@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<352b48b9e421d8665127d8f05fef1dab>>
+ * @generated SignedSource<<a82f16994efe8d5e6a91e037833baae1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import type { ReaderFragment } from 'relay-runtime';
+import type { ReaderInlineDataFragment } from 'relay-runtime';
 export type Currency = "INR" | "%future added value";
 export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
@@ -30,7 +30,7 @@ export type AuxiliaryJobFragment$data = {
         readonly verifiedAt: any;
       } | null | undefined;
     };
-  };
+  } | null | undefined;
   readonly skills: ReadonlyArray<string>;
   readonly slug: string;
   readonly title: string;
@@ -44,181 +44,11 @@ export type AuxiliaryJobFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"AuxiliaryJobFragment">;
 };
 
-const node: ReaderFragment = (function(){
-var v0 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "slug",
-  "storageKey": null
+const node: ReaderInlineDataFragment = {
+  "kind": "InlineDataFragment",
+  "name": "AuxiliaryJobFragment"
 };
-return {
-  "argumentDefinitions": [
-    {
-      "defaultValue": true,
-      "kind": "LocalArgument",
-      "name": "showOrganization"
-    }
-  ],
-  "kind": "Fragment",
-  "metadata": null,
-  "name": "AuxiliaryJobFragment",
-  "selections": [
-    {
-      "args": null,
-      "kind": "FragmentSpread",
-      "name": "JobControlsFragment"
-    },
-    (v0/*: any*/),
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "title",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "type",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "workMode",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "location",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "skills",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "currency",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "minSalary",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "maxSalary",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "minExperience",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "maxExperience",
-      "storageKey": null
-    },
-    {
-      "kind": "RequiredField",
-      "field": {
-        "alias": null,
-        "args": null,
-        "concreteType": "Organization",
-        "kind": "LinkedField",
-        "name": "organization",
-        "plural": false,
-        "selections": [
-          {
-            "condition": "showOrganization",
-            "kind": "Condition",
-            "passingValue": true,
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "name",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "logoUrl",
-                "storageKey": null
-              }
-            ]
-          },
-          (v0/*: any*/),
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": null,
-            "kind": "LinkedField",
-            "name": "verificationStatus",
-            "plural": false,
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "__typename",
-                "storageKey": null
-              },
-              {
-                "fragment": {
-                  "kind": "InlineFragment",
-                  "selections": [
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "verifiedAt",
-                      "storageKey": null
-                    }
-                  ],
-                  "type": "Verified",
-                  "abstractKey": null
-                },
-                "kind": "AliasedInlineFragmentSpread",
-                "name": "verified"
-              }
-            ],
-            "storageKey": null
-          }
-        ],
-        "storageKey": null
-      },
-      "action": "THROW"
-    }
-  ],
-  "type": "Job",
-  "abstractKey": null
-};
-})();
 
-(node as any).hash = "6d3bb86ce850008c050cf0b021cb34b9";
+(node as any).hash = "bb2ffd5f9098caa31116079f47519020";
 
 export default node;
