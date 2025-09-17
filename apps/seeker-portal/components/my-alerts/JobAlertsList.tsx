@@ -94,13 +94,13 @@ export default function JobAlertsList({ rootQuery }: Props) {
 							showArrow
 						>
 							<span>
-								<Button color='primary' startContent={<PlusIcon />} isDisabled>
+								<Button color='primary' size='lg' startContent={<PlusIcon />} isDisabled>
 									Create Job Alert
 								</Button>
 							</span>
 						</Tooltip>
 					) : (
-						<Button color='primary' startContent={<PlusIcon />} onPress={() => setShowCreateJobAlertModal(true)}>
+						<Button color='primary' size='lg' startContent={<PlusIcon />} onPress={() => setShowCreateJobAlertModal(true)}>
 							Create Job Alert
 						</Button>
 					)}

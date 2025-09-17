@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4d59b83881c5d6a6e6cfcca2d69f36f6>>
+ * @generated SignedSource<<05a92ccf430904a90958512daadcbac0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type MyJobAlertsViewFragment$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderFragment" | "JobAlertsListFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderFragment" | "EnableWhatsappAlertsFragment" | "JobAlertsListFragment">;
   readonly " $fragmentType": "MyJobAlertsViewFragment";
 };
 export type MyJobAlertsViewFragment$key = {
@@ -34,12 +34,17 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "FragmentSpread",
       "name": "JobAlertsListFragment"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "EnableWhatsappAlertsFragment"
     }
   ],
   "type": "Query",
   "abstractKey": null
 };
 
-(node as any).hash = "3a245e8341255d50ae1a5596b9b67813";
+(node as any).hash = "348d2c35aded9286b1263978dd057fc7";
 
 export default node;

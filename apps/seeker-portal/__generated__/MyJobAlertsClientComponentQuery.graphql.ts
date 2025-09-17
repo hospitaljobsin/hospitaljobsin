@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<66217c7124c1e948729a0b2fcfa3a584>>
- * @relayHash b83b5eee52d9a4cd0342f6e482a5f588
+ * @generated SignedSource<<e07570a9111d099d93756e970f253e74>>
+ * @relayHash 44c2c9f31ed3ae8f72a2ae105787f618
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b83b5eee52d9a4cd0342f6e482a5f588
+// @relayRequestID 44c2c9f31ed3ae8f72a2ae105787f618
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -110,6 +110,20 @@ return {
                   },
                   (v1/*: any*/)
                 ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "whatsappJobAlertsEnabled",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
                 "storageKey": null
               }
             ],
@@ -301,7 +315,7 @@ return {
     ]
   },
   "params": {
-    "id": "b83b5eee52d9a4cd0342f6e482a5f588",
+    "id": "44c2c9f31ed3ae8f72a2ae105787f618",
     "metadata": {},
     "name": "MyJobAlertsClientComponentQuery",
     "operationKind": "query",
