@@ -324,7 +324,6 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 								<Clock className='mr-2 h-5 w-5 text-foreground-700' />
 								<h3 className='text-md font-medium text-foreground-700'>Alert Frequency</h3>
 							</div>
-							<p className='text-sm text-foreground-500 mb-3'>How often would you like to receive job alerts?</p>
 							<Controller
 								name='frequency'
 								control={control}

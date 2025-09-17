@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from beanie import (
     Document,
     Link,
@@ -12,6 +14,7 @@ class JobAlert(Document):
     filters: AlertFilters
     frequency: JobAlertFrequency
     account: Link[Account]
+    last_sent_at: datetime | None = None
 
     class Settings:
         name = "job_alerts"

@@ -147,6 +147,10 @@ class JobAlertType(BaseNodeType[JobAlert]):
         description="The creation time of the job alert."
     )
 
+    last_sent_at: datetime | None = strawberry.field(
+        description="The last time the job alert was sent.",
+    )
+
     @classmethod
     def marshal(cls, data: JobAlert) -> Self:
         return cls(
@@ -154,6 +158,7 @@ class JobAlertType(BaseNodeType[JobAlert]):
             filters=AlertFiltersType.marshal(data.filters),
             frequency=JobAlertFrequencyEnum(data.frequency),
             created_at=data.id.generation_time,
+            last_sent_at=data.last_sent_at,
         )
 
 

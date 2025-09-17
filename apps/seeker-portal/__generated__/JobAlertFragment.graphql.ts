@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2cf8e236528cd66bf4953984e2f833e9>>
+ * @generated SignedSource<<1848761b20c3f4d0e12125c046f3bf37>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -27,6 +27,7 @@ export type JobAlertFragment$data = {
   };
   readonly frequency: JobAlertFrequency;
   readonly id: string;
+  readonly lastSentAt: any | null | undefined;
   readonly " $fragmentSpreads": FragmentRefs<"JobAlertControlsFragment">;
   readonly " $fragmentType": "JobAlertFragment";
 };
@@ -53,6 +54,13 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "ScalarField",
       "name": "createdAt",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "lastSentAt",
       "storageKey": null
     },
     {
@@ -139,6 +147,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "944beea59c27f28cabbe9c04cfbe4c8a";
+(node as any).hash = "23f1d4b67944061722d9d2fbdb9ea147";
 
 export default node;

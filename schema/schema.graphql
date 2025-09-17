@@ -1513,6 +1513,11 @@ type JobAlert implements Node {
 	The creation time of the job alert.
 	"""
 	createdAt: DateTime!
+
+	"""
+	The last time the job alert was sent.
+	"""
+	lastSentAt: DateTime
 }
 
 """

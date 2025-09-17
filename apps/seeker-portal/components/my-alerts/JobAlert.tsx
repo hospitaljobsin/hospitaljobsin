@@ -1,7 +1,7 @@
 import type { JobAlertFragment$key, JobAlertFrequency, JobTypeFilter, WorkMode } from '@/__generated__/JobAlertFragment.graphql';
 import { dateTimeFormat } from '@/lib/intl';
-import { Card, CardBody, CardFooter, CardHeader, Chip, Tooltip } from '@heroui/react';
-import { BellIcon, Briefcase, Clock, IndianRupee } from 'lucide-react';
+import { Card, CardBody, Chip, Tooltip } from '@heroui/react';
+import { BellIcon, Briefcase, Clock, IndianRupee, MapPin } from 'lucide-react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import JobAlertControls from './JobAlertControls';
@@ -10,6 +10,7 @@ const JobAlertFragment = graphql`
   fragment JobAlertFragment on JobAlert {
     id
     createdAt
+	lastSentAt
     frequency
     filters {
         jobType
@@ -129,8 +130,6 @@ export default function JobAlert({ jobAlert }: { jobAlert: JobAlertFragment$key 
 		data.filters.minSalary ||
 		data.filters.maxSalary;
 
-	// Removed unused chip rendering functions
-
 	// Function to join job types into a readable string
 	const joinJobTypes = (jobTypes: ReadonlyArray<JobTypeFilter> | null | undefined) => {
 		if (!jobTypes || jobTypes.length === 0) return null;
@@ -147,78 +146,84 @@ export default function JobAlert({ jobAlert }: { jobAlert: JobAlertFragment$key 
 		return `${formatWorkMode([workModes[0]])} + ${workModes.length - 1} more`;
 	};
 
-	// Create a summary of the most important filters
-	const createFilterSummary = () => {
-		const parts: string[] = [];
-
-		if (data.filters.jobType && data.filters.jobType.length > 0) {
-			const jobTypeText = joinJobTypes(data.filters.jobType);
-			if (jobTypeText) parts.push(jobTypeText);
-		}
-
-		if (data.filters.workMode && data.filters.workMode.length > 0) {
-			const workModeText = joinWorkModes(data.filters.workMode);
-			if (workModeText) parts.push(workModeText);
-		}
-
-		if (data.filters.location) {
-			parts.push(data.filters.location);
-		}
-
-		return parts.join(' • ');
-	};
-
-	const filterSummary = createFilterSummary();
-
 	return (
-		<Card radius='md' shadow='none'>
-			<CardHeader className='pb-0 pt-4 px-4'>
-				<div className='flex justify-between items-start w-full'>
-					<div className='flex items-center gap-3'>
-						<div className='bg-primary/10 p-2 rounded-full flex-shrink-0'>
-							<BellIcon className='h-5 w-5 text-primary' />
+		<Card radius='md' className='hover:bg-neutral-50 transition-colors border-neutral-100 shadow-none'>
+			<CardBody className='p-6'>
+				<div className='flex flex-row items-start justify-between w-full gap-2'>
+					{/* Left Section: Alert Icon & Title */}
+					<div className='flex items-center gap-4 min-w-0 flex-1'>
+						<div className='bg-foreground-600/10 p-1.5 rounded-full flex-shrink-0'>
+							<BellIcon size={20} className='text-foreground-600' />
 						</div>
-						<div>
-							<h3 className='font-medium text-lg text-neutral-800'>{data.filters.searchTerm || 'Job Alert'}</h3>
-							{filterSummary && <p className='text-sm text-neutral-500 mt-0.5 line-clamp-1'>{filterSummary}</p>}
-						</div>
-					</div>
-					<div className='flex items-center gap-1'>
-						<Tooltip content={`${formatFrequency(data.frequency)} updates`}>
-							<Chip size='lg' startContent={<Clock size={16} />} variant='light'>
-								{formatFrequency(data.frequency)}
-							</Chip>
-						</Tooltip>
-					</div>
-				</div>
-			</CardHeader>
+						<div className='min-w-0 flex-1 flex flex-col gap-2'>
+							<div className='flex items-center gap-3'>
+								<h3 className='font-medium truncate text-lg'>{data.filters.searchTerm}</h3>
+								<Tooltip content={`${formatFrequency(data.frequency)} updates`}>
+									<Chip
+										size='lg'
+										startContent={<Clock size={14} />}
+										variant='flat'
+										className='bg-primary/10 text-primary text-xs font-medium px-1.5 py-0.5 h-auto'
+									>
+										{formatFrequency(data.frequency)}
+									</Chip>
+								</Tooltip>
+							</div>
 
-			{hasFilters && (
-				<CardBody className='py-3 px-4'>
-					<div className='grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 mt-2'>
-						{formatExperienceRange(data.filters.minExperience, data.filters.maxExperience) && (
-							<div className='flex items-center gap-2'>
+							{/* Creation Date */}
+							<div className='flex gap-6 items-center justify-start'>
+								<p className='text-xs text-neutral-400 mt-0.5'>Created {dateTimeFormat.format(new Date(data.createdAt))}</p>
+								{data.lastSentAt && (
+									<p className='text-xs text-neutral-400 mt-0.5'>Last Sent {dateTimeFormat.format(new Date(data.lastSentAt))}</p>
+								)}
+							</div>
+						</div>
+					</div>
+
+					{/* Right Section: Controls */}
+					<JobAlertControls jobAlert={data} />
+				</div>
+
+				{/* Job Filters - Grid Layout */}
+				{hasFilters && (
+					<div className='flex items-center justify-start gap-4 flex-wrap mt-8 border-t border-neutral-100 pt-2'>
+						{data.filters.jobType && data.filters.jobType.length > 0 && (
+							<div className='flex items-center gap-2 text-sm text-neutral-600'>
 								<Briefcase size={14} className='text-neutral-400 flex-shrink-0' />
-								<span className='text-sm text-neutral-600'>
-									{formatExperienceRange(data.filters.minExperience, data.filters.maxExperience)}
-								</span>
+								<span className='truncate'>{joinJobTypes(data.filters.jobType)}</span>
+							</div>
+						)}
+
+						{data.filters.workMode && data.filters.workMode.length > 0 && (
+							<div className='flex items-center gap-2 text-sm text-neutral-600'>
+								<Clock size={14} className='text-neutral-400 flex-shrink-0' />
+								<span className='truncate'>{joinWorkModes(data.filters.workMode)}</span>
+							</div>
+						)}
+
+						{data.filters.location && (
+							<div className='flex items-center gap-2 text-sm text-neutral-600'>
+								<MapPin size={14} className='text-neutral-400 flex-shrink-0' />
+								<span className='truncate'>{data.filters.location}</span>
+							</div>
+						)}
+
+						{formatExperienceRange(data.filters.minExperience, data.filters.maxExperience) && (
+							<div className='flex items-center gap-2 text-sm text-neutral-600'>
+								<Briefcase size={14} className='text-neutral-400 flex-shrink-0' />
+								<span className='truncate'>{formatExperienceRange(data.filters.minExperience, data.filters.maxExperience)}</span>
 							</div>
 						)}
 
 						{formatSalaryRange(data.filters.minSalary, data.filters.maxSalary) && (
-							<div className='flex items-center gap-2'>
+							<div className='flex items-center gap-2 text-sm text-neutral-600'>
 								<IndianRupee size={14} className='text-neutral-400 flex-shrink-0' />
-								<span className='text-sm text-neutral-600'>{formatSalaryRange(data.filters.minSalary, data.filters.maxSalary)}</span>
+								<span className='truncate'>{formatSalaryRange(data.filters.minSalary, data.filters.maxSalary)}</span>
 							</div>
 						)}
 					</div>
-				</CardBody>
-			)}
-
-			<CardFooter className='flex justify-between gap-2 border-t border-neutral-100 py-3 px-4 bg-neutral-50/50 w-full'>
-				<p className='text-xs text-neutral-400 mt-1'>Created {dateTimeFormat.format(new Date(data.createdAt))}</p>
-				<JobAlertControls jobAlert={data} />
-			</CardFooter>
+				)}
+			</CardBody>
 		</Card>
 	);
 }

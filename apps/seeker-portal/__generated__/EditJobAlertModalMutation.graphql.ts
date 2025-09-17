@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<2f89cc1f41661a5893727de5adc4f927>>
- * @relayHash cfe8e08cbb60bb8a38e1320c6c748364
+ * @generated SignedSource<<f0f7d9dead5a9828bd8c6ccd64f4ba70>>
+ * @relayHash c3fc68d9a41291bda12dda0184d3238d
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID cfe8e08cbb60bb8a38e1320c6c748364
+// @relayRequestID c3fc68d9a41291bda12dda0184d3238d
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -200,6 +200,13 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
+                "name": "lastSentAt",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
                 "name": "frequency",
                 "storageKey": null
               },
@@ -290,7 +297,7 @@ return {
     ]
   },
   "params": {
-    "id": "cfe8e08cbb60bb8a38e1320c6c748364",
+    "id": "c3fc68d9a41291bda12dda0184d3238d",
     "metadata": {},
     "name": "EditJobAlertModalMutation",
     "operationKind": "mutation",
