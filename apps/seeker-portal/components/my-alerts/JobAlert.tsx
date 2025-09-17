@@ -1,7 +1,7 @@
 import type { JobAlertFragment$key, JobAlertFrequency, JobTypeFilter, WorkMode } from '@/__generated__/JobAlertFragment.graphql';
 import { dateTimeFormat } from '@/lib/intl';
 import { Card, CardBody, Chip, Tooltip } from '@heroui/react';
-import { BellIcon, Briefcase, Clock, IndianRupee, MapPin } from 'lucide-react';
+import { BellIcon, Briefcase, Clock, MapPin, Wallet } from 'lucide-react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import JobAlertControls from './JobAlertControls';
@@ -217,7 +217,7 @@ export default function JobAlert({ jobAlert }: { jobAlert: JobAlertFragment$key 
 
 						{formatSalaryRange(data.filters.minSalary, data.filters.maxSalary) && (
 							<div className='flex items-center gap-2 text-sm text-neutral-600'>
-								<IndianRupee size={14} className='text-neutral-400 flex-shrink-0' />
+								<Wallet size={14} className='text-neutral-400 flex-shrink-0' />
 								<span className='truncate'>{formatSalaryRange(data.filters.minSalary, data.filters.maxSalary)}</span>
 							</div>
 						)}
