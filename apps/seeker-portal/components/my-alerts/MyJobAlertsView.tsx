@@ -4,14 +4,14 @@ import MyJobAlertsClientComponentQuery, {
 import type { MyJobAlertsViewFragment$key } from '@/__generated__/MyJobAlertsViewFragment.graphql';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import DashboardHeader from '../layout/DashboardHeader';
-import EnableWhatsappAlerts from './EnableWhatsappAlerts';
 import JobAlertsList from './JobAlertsList';
+import EnableWhatsappAlerts from './SetWhatsappAlerts';
 
 const MyJobAlertsViewFragment = graphql`
   fragment MyJobAlertsViewFragment on Query {
     ...DashboardHeaderFragment
     ...JobAlertsListFragment
-	...EnableWhatsappAlertsFragment
+	...SetWhatsappAlertsFragment
   }
 `;
 

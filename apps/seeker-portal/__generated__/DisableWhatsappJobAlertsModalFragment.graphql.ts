@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3c2e536c38effebed872945a84269c85>>
+ * @generated SignedSource<<3a5b114776f8006af7dc88db4be7d645>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,9 +10,10 @@
 
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type EnableWhatsappAlertsFragment$data = {
+export type DisableWhatsappJobAlertsModalFragment$data = {
   readonly viewer: {
     readonly __typename: "Account";
+    readonly id: string;
     readonly phoneNumber: string | null | undefined;
     readonly whatsappJobAlertsEnabled: boolean;
   } | {
@@ -20,18 +21,18 @@ export type EnableWhatsappAlertsFragment$data = {
     // value in case none of the concrete values match.
     readonly __typename: "%other";
   };
-  readonly " $fragmentType": "EnableWhatsappAlertsFragment";
+  readonly " $fragmentType": "DisableWhatsappJobAlertsModalFragment";
 };
-export type EnableWhatsappAlertsFragment$key = {
-  readonly " $data"?: EnableWhatsappAlertsFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"EnableWhatsappAlertsFragment">;
+export type DisableWhatsappJobAlertsModalFragment$key = {
+  readonly " $data"?: DisableWhatsappJobAlertsModalFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"DisableWhatsappJobAlertsModalFragment">;
 };
 
 const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "EnableWhatsappAlertsFragment",
+  "name": "DisableWhatsappJobAlertsModalFragment",
   "selections": [
     {
       "alias": null,
@@ -55,7 +56,7 @@ const node: ReaderFragment = {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
-              "name": "whatsappJobAlertsEnabled",
+              "name": "id",
               "storageKey": null
             },
             {
@@ -63,6 +64,13 @@ const node: ReaderFragment = {
               "args": null,
               "kind": "ScalarField",
               "name": "phoneNumber",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "whatsappJobAlertsEnabled",
               "storageKey": null
             }
           ],
@@ -77,6 +85,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "aa830ee613a8633f63859665b7dbd736";
+(node as any).hash = "e96fc9465ba48ff0116cce250c4d327f";
 
 export default node;

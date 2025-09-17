@@ -1,25 +1,23 @@
-import { env } from "./env/client";
-import links from "./links";
+import { env } from './env/client';
+import links from './links';
 
 // validate redirect to URLs to prevent open redirect attacks
 // https://thecopenhagenbook.com/open-redirect
 export function getValidRedirectURL(redirectTo: string | null): string {
-	console.log("redirectTo", redirectTo);
+	console.log('redirectTo', redirectTo);
 	if (!redirectTo) return links.seekerLanding;
 
 	// return the absolute URL, which is needed for Oauth2 redirects
-	if (redirectTo.startsWith("/")) return `${env.NEXT_PUBLIC_URL}${redirectTo}`;
+	if (redirectTo.startsWith('/')) return `${env.NEXT_PUBLIC_URL}${redirectTo}`;
 
 	// also allow https://hospitaljobs.in redirects here
-	if (redirectTo.startsWith(env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL))
-		return redirectTo;
+	if (redirectTo.startsWith(env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL)) return redirectTo;
 
 	try {
 		const url = new URL(redirectTo);
 
 		const rootDomain = env.NEXT_PUBLIC_ROOT_DOMAIN;
-		const isSubdomain =
-			url.hostname === rootDomain || url.hostname.endsWith(`.${rootDomain}`);
+		const isSubdomain = url.hostname === rootDomain || url.hostname.endsWith(`.${rootDomain}`);
 
 		if (isSubdomain) {
 			return redirectTo;
@@ -34,8 +32,9 @@ export function getValidRedirectURL(redirectTo: string | null): string {
 export function getValidSudoModeRedirectURL(redirectTo: string | null): string {
 	if (!redirectTo) return links.settings;
 
-	// only allow relative URLs or recruiter portal URLs
-	if (redirectTo.startsWith("/")) return `${env.NEXT_PUBLIC_URL}${redirectTo}`;
+	// only allow relative URLs or recruiter portal URLs or seeker portal URLs
+	if (redirectTo.startsWith('/')) return `${env.NEXT_PUBLIC_URL}${redirectTo}`;
+	if (redirectTo.startsWith(env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL)) return redirectTo;
 
 	try {
 		const url = new URL(redirectTo);
@@ -43,9 +42,9 @@ export function getValidSudoModeRedirectURL(redirectTo: string | null): string {
 		const rootDomain = env.NEXT_PUBLIC_ROOT_DOMAIN;
 		const isSubdomain = url.hostname.endsWith(`.${rootDomain}`);
 
-		console.log("is subdomain: ", isSubdomain);
+		console.log('is subdomain: ', isSubdomain);
 
-		console.log("redirect to: ", redirectTo);
+		console.log('redirect to: ', redirectTo);
 
 		if (isSubdomain) {
 			return redirectTo;

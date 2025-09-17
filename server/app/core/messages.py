@@ -84,7 +84,9 @@ class DummyMessageSender(BaseMessageSender):
         headers = {"Content-Type": "application/json"}
 
         data = {
-            "phone_number": receiver,
+            "phone_number": phonenumbers.format_number(
+                receiver, PhoneNumberFormat.E164
+            ),
             "template_name": template_name,
             "parameters": parameters,
         }
