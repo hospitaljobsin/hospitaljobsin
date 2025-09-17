@@ -223,6 +223,7 @@ async def create_search_indexes(
         for index in existing_region_indexes
     )
     if not region_atlas_search_exists:
+        # TODO: make this case insensitive
         await region_collection.create_search_index(
             model=SearchIndexModel(
                 definition={
@@ -238,7 +239,6 @@ async def create_search_indexes(
                                     "minGrams": 3,
                                     "maxGrams": 7,
                                     "foldDiacritics": False,
-                                    "analyzer": "autocomplete_lowercase",  # 👈 Custom analyzer
                                 },
                             ],
                             "aliases": [
@@ -250,7 +250,6 @@ async def create_search_indexes(
                                     "minGrams": 3,
                                     "maxGrams": 7,
                                     "foldDiacritics": False,
-                                    "analyzer": "autocomplete_lowercase",  # 👈 Custom analyzer
                                 },
                             ],
                             "level": {
@@ -258,13 +257,6 @@ async def create_search_indexes(
                             },
                         },
                     },
-                    "analyzers": [  # 👈 Add this section
-                        {
-                            "name": "autocomplete_lowercase",
-                            "tokenizer": "edgeGram",
-                            "tokenFilters": ["lowercase"],
-                        }
-                    ],
                 },
                 name=REGION_SEARCH_INDEX_NAME,
                 type="search",
