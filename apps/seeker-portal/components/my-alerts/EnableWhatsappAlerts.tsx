@@ -41,7 +41,6 @@ export default function EnableWhatsappAlerts({ query }: { query: EnableWhatsappA
 	return (
 		<Card shadow='none' className='px-6 pt-6 pb-0 sticky h-full bg-primary-400/30'>
 			<CardHeader className='flex flex-col gap-2 text-center'>
-				{' '}
 				<div className='text-lg font-medium'>Enable WhatsApp Job Alerts</div>
 				<div className='text-sm text-gray-600 mb-4'>
 					You'll receive notifications about new jobs matching your profile directly on WhatsApp.

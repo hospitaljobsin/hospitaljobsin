@@ -7,7 +7,7 @@ export default function MyJobAlertsViewSkeleton() {
 		<div className='w-full flex flex-col flex-1 h-full'>
 			<DashboardHeaderSkeleton />
 			<div className='w-full mx-auto bg-background-600'>
-				<div className='w-full px-5 max-w-7xl mx-auto py-6'>
+				<div className='w-full px-5 max-w-7xl mx-auto py-6 flex flex-col md:flex-row gap-12'>
 					<div className='flex flex-col w-full h-full gap-12'>
 						<div className='flex flex-row justify-between items-center'>
 							<div className='space-y-2'>
@@ -20,6 +20,7 @@ export default function MyJobAlertsViewSkeleton() {
 							<JobAlertsListSkeleton />
 						</div>
 					</div>
+					<Skeleton className='h-[450px] w-full md:w-[600px] rounded-lg' />
 				</div>
 			</div>
 		</div>
