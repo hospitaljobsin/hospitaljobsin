@@ -59,8 +59,8 @@ export default function EnableWhatsappAlerts({ query }: { query: EnableWhatsappA
 						className='w-auto h-full max-w-full object-cover object-bottom absolute left-0 top-0 z-10'
 						loading='eager'
 						unoptimized={false}
-						width={200}
-						height={200}
+						width={750}
+						height={750}
 					/>
 					<Image
 						src='/hero-model-2.png'
@@ -68,8 +68,8 @@ export default function EnableWhatsappAlerts({ query }: { query: EnableWhatsappA
 						className='w-auto h-full max-w-full object-cover object-bottom absolute drop-shadow-lg left-24 sm:left-48 z-20 xl:block'
 						loading='eager'
 						unoptimized={false}
-						width={200}
-						height={200}
+						width={750}
+						height={750}
 					/>
 				</div>
 			</CardFooter>
