@@ -238,6 +238,7 @@ async def create_search_indexes(
                                     "minGrams": 3,
                                     "maxGrams": 7,
                                     "foldDiacritics": False,
+                                    "analyzer": "autocomplete_lowercase",  # 👈 Custom analyzer
                                 },
                             ],
                             "aliases": [
@@ -249,13 +250,21 @@ async def create_search_indexes(
                                     "minGrams": 3,
                                     "maxGrams": 7,
                                     "foldDiacritics": False,
+                                    "analyzer": "autocomplete_lowercase",  # 👈 Custom analyzer
                                 },
                             ],
                             "level": {
                                 "type": "string",
                             },
                         },
-                    }
+                    },
+                    "analyzers": [  # 👈 Add this section
+                        {
+                            "name": "autocomplete_lowercase",
+                            "tokenizer": "edgeGram",
+                            "tokenFilters": ["lowercase"],
+                        }
+                    ],
                 },
                 name=REGION_SEARCH_INDEX_NAME,
                 type="search",
