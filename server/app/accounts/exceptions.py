@@ -29,3 +29,7 @@ class PhoneNumberVerificationTokenCooldownError:
 
     def __init__(self, remaining_seconds: int) -> None:
         self.remaining_seconds = remaining_seconds
+
+
+class PhoneNumberMissingError:
+    """Raised when an account doesn't have a phone number."""

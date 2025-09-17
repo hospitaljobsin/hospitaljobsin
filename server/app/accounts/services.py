@@ -26,6 +26,7 @@ from app.accounts.exceptions import (
     InvalidPhoneNumberVerificationTokenError,
     PhoneNumberAlreadyExistsError,
     PhoneNumberDoesNotExistError,
+    PhoneNumberMissingError,
     PhoneNumberVerificationTokenCooldownError,
 )
 from app.accounts.repositories import (
@@ -286,7 +287,23 @@ class AccountService:
         """Remove the given account's phone number."""
         if account.phone_number is None:
             return Err(PhoneNumberDoesNotExistError())
-        await self._account_repo.update(account=account, phone_number=None)
+        await self._account_repo.update(
+            account=account,
+            phone_number=None,
+            whatsapp_job_alerts_enabled=False,  # disable WhatsApp job alerts if phone number is removed
+        )
+        return Ok(account)
+
+    async def update_whatsapp_job_alerts(
+        self, account: Account, *, enabled: bool
+    ) -> Result[Account, PhoneNumberMissingError]:
+        """Update the given account's WhatsApp job alerts preference."""
+        if enabled and account.phone_number is None:
+            return Err(PhoneNumberMissingError())
+        await self._account_repo.update(
+            account=account,
+            whatsapp_job_alerts_enabled=enabled,
+        )
         return Ok(account)
 
 

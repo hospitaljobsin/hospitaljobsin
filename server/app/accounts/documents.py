@@ -198,6 +198,8 @@ class Account(Document):
 
     analytics_preference: AnalyticsPreference
 
+    whatsapp_job_alerts_enabled: bool = False
+
     webauthn_credentials: list[BackLink["WebAuthnCredential"]] = Field(  # type: ignore[call-overload]
         original_field="account"
     )

@@ -52,6 +52,11 @@ type Account implements Node {
 	has2faEnabled: Boolean!
 
 	"""
+	Whether Whatsapp job alerts have been enabled for the account.
+	"""
+	whatsappJobAlertsEnabled: Boolean!
+
+	"""
 	The terms and policy of the account.
 	"""
 	termsAndPolicy: TermsAndPolicy!
@@ -3012,6 +3017,16 @@ type Mutation {
 	removeAccountPhoneNumber: RemoveAccountPhoneNumberPayload! @isAuthenticated @requiresSudoMode
 
 	"""
+	Update the current user's whatsapp job alerts status.
+	"""
+	updateAccountWhatsappJobAlerts(
+		"""
+		Whether to enable or disable whatsapp job alerts.
+		"""
+		enabled: Boolean!
+	): UpdateAccountWhatsappJobAlertsPayload! @isAuthenticated
+
+	"""
 	Update the current user's analytics preference.
 	"""
 	updateAccountAnalyticsPreference(
@@ -4014,6 +4029,13 @@ type PhoneNumberDoesNotExistError implements Error {
 	message: String!
 }
 
+type PhoneNumberMissingError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
+}
+
 """
 Used when the phone number verification token cooldown is active.
 """
@@ -4931,6 +4953,11 @@ union UpdateAccountPayload = Account
 The update account phone number payload.
 """
 union UpdateAccountPhoneNumberPayload = Account | InvalidPhoneNumberVerificationTokenError | InvalidPhoneNumberError
+
+"""
+The update account WhatsApp job alerts payload.
+"""
+union UpdateAccountWhatsappJobAlertsPayload = Account | PhoneNumberMissingError
 
 """
 The update job alert payload.

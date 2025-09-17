@@ -1,3 +1,4 @@
+'use client';
 import type { JobDetailsFragment$key } from '@/__generated__/JobDetailsFragment.graphql';
 import type {
 	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
