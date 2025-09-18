@@ -177,8 +177,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 					url: data.organization.bannerUrl,
 					width: 1200,
 					height: 630,
-					alt: data.organization.name,
-					type: 'image/png'
+					alt: data.organization.name
 				}
 			]
 		},

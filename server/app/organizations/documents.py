@@ -80,7 +80,7 @@ class Organization(Document):
 
         banner_index = hash(self.slug) % 4
 
-        return f"{get_settings(FrontendSettings).seeker_portal_base_url}/banners/{banner_index}.png"
+        return f"{get_settings(FrontendSettings).seeker_portal_base_url}/org-banners/{banner_index}.png"
 
     @banner_url.setter
     def banner_url(self, value: str | None) -> None:
