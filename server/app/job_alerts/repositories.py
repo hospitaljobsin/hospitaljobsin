@@ -5,7 +5,7 @@ from bson import ObjectId
 from app.accounts.documents import Account
 from app.core.constants import JobAlertFrequency
 from app.database.paginator import PaginatedResult, Paginator
-from app.job_alerts.documents import JobAlert
+from app.job_alerts.documents import JobAlert, JobAlertHistory
 from app.job_alerts.models import AlertFilters
 
 
@@ -33,9 +33,11 @@ class JobAlertRepo:
         """Delete all job alerts for an account."""
         await JobAlert.find(JobAlert.account.id == account.id).delete_many()
 
-    async def get_by_id(self, job_alert_id: ObjectId) -> JobAlert | None:
+    async def get_by_id(
+        self, job_alert_id: ObjectId, *, fetch_links: bool = False
+    ) -> JobAlert | None:
         """Get a job alert by its ID."""
-        return await JobAlert.get(job_alert_id)
+        return await JobAlert.get(job_alert_id, fetch_links=fetch_links)
 
     async def get_all_by_frequency(
         self,
@@ -124,3 +126,30 @@ class JobAlertRepo:
         )
         existing_alert = await query.first_or_none()
         return existing_alert is not None
+
+
+class JobAlertHistoryRepo:
+    async def create(self, job_alert_id: ObjectId, job_id: ObjectId) -> JobAlertHistory:
+        """Create a new job alert history entry."""
+        job_alert_history = JobAlertHistory(
+            alert=job_alert_id,
+            job=job_id,
+            sent_at=datetime.now(UTC),
+        )
+        await job_alert_history.insert()
+        return job_alert_history
+
+    async def create_many(self, job_ids: list[ObjectId], alert_id: ObjectId) -> None:
+        """Create many job alert history entries."""
+        if not job_ids:
+            return
+        await JobAlertHistory.insert_many(
+            [
+                JobAlertHistory(
+                    alert=alert_id,
+                    job=job_id,
+                    sent_at=datetime.now(UTC),
+                )
+                for job_id in job_ids
+            ]
+        )

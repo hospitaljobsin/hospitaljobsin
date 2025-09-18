@@ -8,6 +8,7 @@ from beanie import (
 from app.accounts.documents import Account
 from app.core.constants import JobAlertFrequency
 from app.job_alerts.models import AlertFilters
+from app.jobs.documents import Job
 
 
 class JobAlert(Document):
@@ -18,3 +19,12 @@ class JobAlert(Document):
 
     class Settings:
         name = "job_alerts"
+
+
+class JobAlertHistory(Document):
+    job: Link[Job]
+    alert: Link[JobAlert]
+    sent_at: datetime
+
+    class Settings:
+        name = "job_alert_histories"

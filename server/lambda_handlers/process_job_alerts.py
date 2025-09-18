@@ -85,7 +85,6 @@ async def process_job_alerts(frequency: JobAlertFrequency) -> str:
         )
         has_next_page = job_alerts.page_info.has_next_page
         after = str(job_alerts.page_info.end_cursor)
-    print("DONE")
     return json.dumps({"status": "ok"})
 
 
