@@ -314,7 +314,7 @@ resource "aws_lambda_function" "worker" {
   image_uri    = "${var.aws_lambda_worker_repository_url}:${var.environment_name}-latest"
 
   image_config {
-    command = ["app.sqs_handler.lambda_handler"]
+    command = ["lambda_handlers.analyze_job_applicants.lambda_handler"]
   }
 
   # dead_letter_config {

@@ -35,9 +35,9 @@ class JobAlertRepo:
         """Get a job alert by its ID."""
         return await JobAlert.get(job_alert_id)
 
-    async def get_all_list(self, account_id: ObjectId) -> list[JobAlert]:
-        """Get all job alerts for an account."""
-        return await JobAlert.find(JobAlert.account.id == account_id).to_list()
+    async def get_all_list(self) -> list[JobAlert]:
+        """Get all job alerts."""
+        return await JobAlert.find().to_list()
 
     async def get_all_count(self, account_id: ObjectId) -> int:
         """Get the count of all job alerts for an account."""
