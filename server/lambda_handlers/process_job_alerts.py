@@ -52,6 +52,7 @@ async def send_job_alerts() -> str:
     async with container.context() as ctx:
         job_alert_repo = await ctx.resolve(JobAlertRepo)
 
-    # split job alerts into batches and put them into SQS queue.
+    # TODO: split job alerts into batches and put them into SQS queue.
+    # This is called by eventbridge with frequency as the input
     job_alerts = await job_alert_repo.get_all_list()
     return json.dumps({"status": "ok"})

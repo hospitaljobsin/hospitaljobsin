@@ -108,20 +108,11 @@ export default function SetWhatsappAlerts({ query }: { query: SetWhatsappAlertsF
 					</Button>
 				</CardBody>
 				<CardFooter className='pb-0'>
-					<div className='flex-1 md:flex items-end w-auto md:h-64 h-32 relative'>
+					<div className='flex-1 md:flex items-center justify-center w-full md:h-64 h-32 relative'>
 						<Image
-							src='/hero-model.png'
+							src='/group-doctors.png'
 							alt='Group of doctors smiling, representing healthcare professionals'
-							className='w-auto h-full max-w-full object-cover object-bottom absolute left-0 top-0 z-10'
-							loading='eager'
-							unoptimized={false}
-							width={750}
-							height={750}
-						/>
-						<Image
-							src='/hero-model-2.png'
-							alt='Group of doctors smiling, representing healthcare professionals'
-							className='w-auto h-full max-w-full object-cover object-bottom absolute drop-shadow-lg left-24 sm:left-48 z-20 xl:block'
+							className='h-full max-w-full object-contain object-bottom absolute top-0 z-10'
 							loading='eager'
 							unoptimized={false}
 							width={750}
