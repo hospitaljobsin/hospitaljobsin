@@ -94,28 +94,23 @@ async def process_alert_batch(
 ) -> None:
     entries = []
     for alert in alerts:
-        # TODO: decide if sending email here will reduce number of DB lookups. but we might need phone number too
         entries.append(
             {
                 "Id": str(alert.id),
                 "MessageBody": str(
                     {
-                        "account_id": str(alert.account.ref.id),
-                        "filters": alert.filters.model_dump(),
-                        "frequency": alert.frequency,
+                        "alert_id": str(alert.id),
                     }
                 ),
             }
         )
         # Send in batches of 10 (SQS limit)
         if len(entries) == SQS_BATCH_LIMIT:
-            # await sqs_client.send_message_batch(QueueUrl=queue_url, Entries=entries)
+            await sqs_client.send_message_batch(QueueUrl=queue_url, Entries=entries)
             entries = []
     if entries:
-        # await sqs_client.send_message_batch(QueueUrl=queue_url, Entries=entries)
-        pass
-    print(f"Processed {len(alerts)} alerts")
-    print(entries)
+        await sqs_client.send_message_batch(QueueUrl=queue_url, Entries=entries)
+    logger.info(f"Processed {len(alerts)} alerts")
 
 
 if __name__ == "__main__":
