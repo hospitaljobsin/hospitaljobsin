@@ -840,3 +840,21 @@ resource "aws_lambda_function" "send_job_alerts" {
   memory_size = 1024
   timeout     = 60
 }
+
+
+resource "aws_lambda_event_source_mapping" "send_job_alerts" {
+  count            = var.environment_name == "production" ? 1 : 0
+  event_source_arn = aws_sqs_queue.job_alerts.arn
+  function_name    = aws_lambda_function.send_job_alerts[0].arn
+  batch_size       = 10
+
+  function_response_types = ["ReportBatchItemFailures"]
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+  scaling_config {
+    maximum_concurrency = 25
+  }
+}
