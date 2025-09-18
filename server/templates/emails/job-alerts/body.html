@@ -12,13 +12,13 @@
 <p>Hi {{ job_alert.account.full_name }},</p>
 
 <p>
-  <strong>Exciting news!</strong> We've discovered
+  Exciting news! We've discovered
   {% if job_count == 1 %}
     an amazing new opportunity
   {% else %}
     {{ job_count }} fantastic new opportunities
   {% endif %}
-  that perfectly match your job alert for "<em>{{ job_alert.filters.search_term }}</em>". Your dream job might be just one click away! 🚀
+  that match your job alert for <strong>{{ job_alert.filters.search_term }}</strong>. Your dream job might be just one click away! 🚀
 </p>
 
 {% for job in jobs %}
