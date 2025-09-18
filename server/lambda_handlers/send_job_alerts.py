@@ -1,5 +1,6 @@
 import asyncio
 import json
+from datetime import UTC, datetime, timedelta
 
 from app.config import AppSettings, DatabaseSettings, EnvironmentSettings, get_settings
 from app.container import create_container
@@ -92,7 +93,16 @@ async def send_job_alerts(
                 )
                 continue
 
-            # TODO: filter here based on vacancy
+            filter_datetime: datetime
+
+            match job_alert.frequency:
+                case "daily":
+                    filter_datetime = datetime.now(UTC) - timedelta(days=1)
+                case "weekly":
+                    filter_datetime = datetime.now(UTC) - timedelta(weeks=1)
+                case "monthly":
+                    filter_datetime = datetime.now(UTC) - timedelta(weeks=4)
+
             # Get all active jobs matching the alert filters
             jobs_result = await job_repo.get_all_active(
                 work_mode=list(job_alert.filters.work_mode or []),  # type: ignore[arg-type]
@@ -104,6 +114,9 @@ async def send_job_alerts(
                 min_salary=job_alert.filters.min_salary,
                 max_salary=job_alert.filters.max_salary,
                 first=JOBS_SHOW_LIMIT,  # Get more jobs to filter out already sent ones
+                after=str(
+                    ObjectId.from_datetime(filter_datetime)
+                ),  # filter here based on frequency
             )
 
             # Limit to 10 most recent jobs for the email
