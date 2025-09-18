@@ -271,6 +271,7 @@ class AccountService:
         if (
             existing_verification_token is None
             or existing_verification_token.phone_number != formatted_number
+            or existing_verification_token.is_expired
         ):
             # get phone number verification token and ensure phone number matches
             return Err(InvalidPhoneNumberVerificationTokenError())
