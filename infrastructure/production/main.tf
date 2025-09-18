@@ -73,6 +73,7 @@ module "github" {
   actions_runner_ami_id                             = module.core.actions_runner_ami_id
   sst_jwe_secret_key                                = module.core.sst_jwe_secret_key
   sst_revalidate_secret                             = module.core.sst_revalidate_secret
+  process_job_alerts_lambda_function_arn            = module.core.process_job_alerts_lambda_function_arn
 }
 
 

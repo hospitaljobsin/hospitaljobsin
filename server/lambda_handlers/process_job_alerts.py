@@ -3,12 +3,14 @@ import json
 
 from app.config import DatabaseSettings, EnvironmentSettings, get_settings
 from app.container import create_container
+from app.core.constants import JobAlertFrequency
 from app.core.instrumentation import initialize_instrumentation
 from app.database import initialize_database
 from app.job_alerts.repositories import JobAlertRepo
 from app.logger import setup_logging
-from aws_lambda_powertools.utilities.data_classes import EventBridgeEvent, event_source
+from aws_lambda_powertools.utilities.parser import envelopes, event_parser
 from aws_lambda_powertools.utilities.typing import LambdaContext
+from pydantic import BaseModel
 from structlog import get_logger
 
 env_settings = get_settings(EnvironmentSettings)
@@ -41,13 +43,17 @@ loop = asyncio.get_event_loop()
 loop.run_until_complete(initialize_handler())
 
 
-@event_source(data_class=EventBridgeEvent)
-def lambda_handler(event: EventBridgeEvent, context: LambdaContext) -> str:
+class ProcessJobAlertsInput(BaseModel):
+    frequency: JobAlertFrequency
+
+
+@event_parser(model=ProcessJobAlertsInput, envelope=envelopes.EventBridgeEnvelope)
+def lambda_handler(data: ProcessJobAlertsInput, context: LambdaContext) -> str:
     """Lambda handler for the daily WhatsApp message generation cron job."""
-    return loop.run_until_complete(send_job_alerts())
+    return loop.run_until_complete(send_job_alerts(frequency=data.frequency))
 
 
-async def send_job_alerts() -> str:
+async def send_job_alerts(frequency: JobAlertFrequency) -> str:
     """Process the daily WhatsApp message generation job."""
     async with container.context() as ctx:
         job_alert_repo = await ctx.resolve(JobAlertRepo)
