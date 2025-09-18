@@ -107,8 +107,6 @@ async def send_job_alerts(
 
             job_type = job_alert.filters.job_type or []
 
-            print("Filters: ", job_alert.filters)
-
             # Get all active jobs matching the alert filters
             jobs_result = await job_repo.get_all_active(
                 work_mode=[JobWorkMode(val) for val in work_mode],  # type: ignore[arg-type]
@@ -125,8 +123,6 @@ async def send_job_alerts(
 
             # Limit to 10 most recent jobs for the email
             jobs_to_send = jobs_result.entities
-
-            print("jobs_to_send", jobs_to_send)
 
             if not jobs_to_send:
                 logger.info(

@@ -215,7 +215,7 @@ def register_email_sender(container: aioinject.Container) -> None:
 
     match provider_settings.email_provider:
         case "smtp":
-            container.register(aioinject.Scoped(create_smtp_client))
+            container.register(aioinject.Singleton(create_smtp_client))
             container.register(aioinject.Scoped(SMTPEmailSender, BaseEmailSender))
         case "aws_ses":
             container.register(aioinject.Scoped(create_ses_client))
