@@ -8,7 +8,7 @@ from app.core.emails import BaseEmailSender
 from app.core.instrumentation import initialize_instrumentation
 from app.database import initialize_database
 from app.job_alerts.repositories import JobAlertRepo
-from app.jobs.repositories import JobRepo
+from app.jobs.repositories import JobRepo, JobType, JobWorkMode
 from app.logger import setup_logging
 from aws_lambda_powertools.utilities.data_classes import SQSEvent, event_source
 from aws_lambda_powertools.utilities.typing import LambdaContext
@@ -103,24 +103,30 @@ async def send_job_alerts(
                 case "monthly":
                     filter_datetime = datetime.now(UTC) - timedelta(weeks=4)
 
+            work_mode = job_alert.filters.work_mode or []
+
+            job_type = job_alert.filters.job_type or []
+
+            print("Filters: ", job_alert.filters)
+
             # Get all active jobs matching the alert filters
             jobs_result = await job_repo.get_all_active(
-                work_mode=list(job_alert.filters.work_mode or []),  # type: ignore[arg-type]
-                job_type=list(job_alert.filters.job_type or []),  # type: ignore[arg-type]
+                work_mode=[JobWorkMode(val) for val in work_mode],  # type: ignore[arg-type]
+                job_type=[JobType(val) for val in job_type],  # type: ignore[arg-type]
                 search_term=job_alert.filters.search_term,
                 location=job_alert.filters.location,
                 min_experience=job_alert.filters.min_experience,
                 max_experience=job_alert.filters.max_experience,
                 min_salary=job_alert.filters.min_salary,
                 max_salary=job_alert.filters.max_salary,
-                first=JOBS_SHOW_LIMIT,  # Get more jobs to filter out already sent ones
-                after=str(
-                    ObjectId.from_datetime(filter_datetime)
-                ),  # filter here based on frequency
+                first=JOBS_SHOW_LIMIT,
+                cutoff_datetime=filter_datetime,  # filter here based on frequency
             )
 
             # Limit to 10 most recent jobs for the email
             jobs_to_send = jobs_result.entities
+
+            print("jobs_to_send", jobs_to_send)
 
             if not jobs_to_send:
                 logger.info(
@@ -168,3 +174,10 @@ async def send_job_alerts(
             )
     sqs_batch_response["batchItemFailures"] = batch_item_failures
     return json.dumps(sqs_batch_response)
+
+
+if __name__ == "__main__":
+    # for local testing only
+    loop.run_until_complete(
+        send_job_alerts([(JobAlertEventBody(alert_id="68c845ecb39f59fbae28fb28"), "1")])
+    )

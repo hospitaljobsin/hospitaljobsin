@@ -446,6 +446,7 @@ class JobRepo:
         max_experience: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
+        cutoff_datetime: datetime | None = None,
         first: int | None = None,
         last: int | None = None,
         before: str | None = None,
@@ -674,6 +675,17 @@ class JobRepo:
                             for given_type in job_type
                         ],
                         "minimumShouldMatch": 1,
+                    }
+                }
+            )
+
+        # Add cutoff datetime filter
+        if cutoff_datetime is not None:
+            search_query["compound"]["must"].append(
+                {
+                    "range": {
+                        "path": "_id",
+                        "gte": ObjectId.from_datetime(cutoff_datetime),
                     }
                 }
             )
