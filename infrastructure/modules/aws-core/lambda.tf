@@ -689,11 +689,12 @@ resource "aws_lambda_function" "process_job_alerts" {
 
   environment {
     variables = {
-      SERVER_DATABASE_URL          = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
-      SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
-      SERVER_LOG_LEVEL             = "DEBUG"
-      SERVER_ENVIRONMENT           = var.environment_name
-      SERVER_DEBUG                 = "True"
+      SERVER_SQS_JOB_ALERTS_QUEUE_URL = aws_sqs_queue.job_alerts.url
+      SERVER_DATABASE_URL             = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DEFAULT_DATABASE_NAME    = var.mongodb_database_name
+      SERVER_LOG_LEVEL                = "DEBUG"
+      SERVER_ENVIRONMENT              = var.environment_name
+      SERVER_DEBUG                    = "True"
     }
   }
 

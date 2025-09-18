@@ -49,6 +49,7 @@ from app.config import (
     EmailSettings,
     EnvironmentSettings,
     FrontendSettings,
+    JobAlertsSettings,
     Oauth2Settings,
     PosthogSettings,
     ProviderSettings,
@@ -157,6 +158,7 @@ settings_classes: list[type[BaseSettings]] = [
     TwoFactorINSettings,
     Oauth2Settings,
     RevalidateSettings,
+    JobAlertsSettings,
 ]
 
 

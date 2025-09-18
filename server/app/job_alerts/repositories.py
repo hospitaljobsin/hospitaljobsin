@@ -1,3 +1,5 @@
+from datetime import UTC, datetime, timedelta
+
 from bson import ObjectId
 
 from app.accounts.documents import Account
@@ -35,9 +37,41 @@ class JobAlertRepo:
         """Get a job alert by its ID."""
         return await JobAlert.get(job_alert_id)
 
-    async def get_all_list(self) -> list[JobAlert]:
-        """Get all job alerts."""
-        return await JobAlert.find().to_list()
+    async def get_all_by_frequency(
+        self,
+        frequency: JobAlertFrequency,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[JobAlert, ObjectId]:
+        """Get all job alerts paginated by frequency."""
+        paginator: Paginator[JobAlert, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=JobAlert,
+            paginate_by="_id",
+            entity_paginate_by="id",
+            calculate_total_count=True,
+        )
+
+        now = datetime.now(UTC)
+
+        return await paginator.paginate(
+            search_criteria=JobAlert.find(
+                JobAlert.frequency == frequency,
+                {
+                    "$or": [
+                        # {"last_sent_at": {"$exists": False}},
+                        {"last_sent_at": None},
+                        {"last_sent_at": {"$lt": now - timedelta(days=1)}},
+                    ]
+                },
+            ),
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
 
     async def get_all_count(self, account_id: ObjectId) -> int:
         """Get the count of all job alerts for an account."""
