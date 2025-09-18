@@ -3,15 +3,19 @@ import json
 
 from app.config import AppSettings, DatabaseSettings, EnvironmentSettings, get_settings
 from app.container import create_container
+from app.core.emails import BaseEmailSender
 from app.core.instrumentation import initialize_instrumentation
 from app.database import initialize_database
 from app.job_alerts.repositories import JobAlertRepo
+from app.jobs.repositories import JobRepo
 from app.logger import setup_logging
 from aws_lambda_powertools.utilities.data_classes import SQSEvent, event_source
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from bson import ObjectId
 from pydantic import BaseModel
 from structlog import get_logger
+
+JOBS_SHOW_LIMIT = 10  # Number of jobs to show in the email
 
 settings = get_settings(AppSettings)
 
@@ -71,34 +75,83 @@ async def send_job_alerts(
 
     async with container.context() as ctx:
         job_alert_repo = await ctx.resolve(JobAlertRepo)
+        job_repo = await ctx.resolve(JobRepo)
+        email_sender = await ctx.resolve(BaseEmailSender)
 
     for record, message_id in event:
-        job_alert = await job_alert_repo.get_by_id(
-            job_alert_id=ObjectId(record.alert_id),
-            fetch_links=True,
-        )
-        if job_alert is None:
-            logger.warning(
-                "Job alert not found while trying to send job alert",
-                extra={"job_alert_id": record.alert_id},
+        try:
+            # Get the job alert with account details
+            job_alert = await job_alert_repo.get_by_id(
+                job_alert_id=ObjectId(record.alert_id),
+                fetch_links=True,
             )
-            continue
+            if job_alert is None:
+                logger.warning(
+                    "Job alert not found while trying to send job alert",
+                    extra={"job_alert_id": record.alert_id},
+                )
+                continue
 
-        # TODO: process each job alert here.
-        # send job alerts via email/ whatsapp (later), then mark those jobs somehow.
-        # we shouldn't be sending redundant alerts for same jobs again and again.
+            # TODO: filter here based on vacancy
+            # Get all active jobs matching the alert filters
+            jobs_result = await job_repo.get_all_active(
+                work_mode=list(job_alert.filters.work_mode or []),  # type: ignore[arg-type]
+                job_type=list(job_alert.filters.job_type or []),  # type: ignore[arg-type]
+                search_term=job_alert.filters.search_term,
+                location=job_alert.filters.location,
+                min_experience=job_alert.filters.min_experience,
+                max_experience=job_alert.filters.max_experience,
+                min_salary=job_alert.filters.min_salary,
+                max_salary=job_alert.filters.max_salary,
+                first=JOBS_SHOW_LIMIT,  # Get more jobs to filter out already sent ones
+            )
 
-        # job_applicant = await job_applicant_analysis_service.analyse_job_applicant(
-        #     job=job_applicant.job,
-        #     job_application=job_applicant,
-        # )
+            # Limit to 10 most recent jobs for the email
+            jobs_to_send = jobs_result.entities
 
-        # if job_applicant.analysis_status == "failed":
-        #     batch_item_failures.append(
-        #         {
-        #             "itemIdentifier": message_id,
-        #         }
-        #     )
-        pass
+            if not jobs_to_send:
+                logger.info(
+                    "No new jobs found for job alert",
+                    extra={"job_alert_id": record.alert_id},
+                )
+                continue
+
+            # Send email alert
+            await email_sender.send_template_email(
+                receiver=job_alert.account.email,
+                template="job-alerts",
+                context={
+                    "jobs": jobs_to_send,
+                    "job_alert": job_alert,
+                    # TODO: use "has_more_jobs" in the template
+                    "has_more_jobs": jobs_result.page_info.has_next_page,
+                },
+            )
+
+            # Update the last sent timestamp for the alert
+            await job_alert_repo.update_last_sent_at(job_alert=job_alert)
+
+            logger.info(
+                "Successfully sent job alert",
+                extra={
+                    "job_alert_id": record.alert_id,
+                    "jobs_sent": len(jobs_to_send),
+                    "recipient_email": job_alert.account.email,
+                },
+            )
+
+        except Exception as e:
+            logger.exception(
+                "Failed to process job alert",
+                extra={
+                    "job_alert_id": record.alert_id,
+                    "error": str(e),
+                },
+            )
+            batch_item_failures.append(
+                {
+                    "itemIdentifier": message_id,
+                }
+            )
     sqs_batch_response["batchItemFailures"] = batch_item_failures
     return json.dumps(sqs_batch_response)

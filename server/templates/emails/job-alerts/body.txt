@@ -1,0 +1,45 @@
+{% extends "emails/base/body.txt" %}
+
+{% block title %}
+{% if job_count == 1 %}
+We found a new job matching your alert!
+{% else %}
+We found {{ job_count }} new jobs matching your alert!
+{% endif %}
+{% endblock %}
+
+{% block content %}
+Hi there,
+
+Great news! We found {% if job_count == 1 %}a new job{% else %}{{ job_count }} new jobs{% endif %} that match your job alert for "{{ alert_search_term }}".
+
+{% for job in jobs %}
+******************
+{{ job.title }}
+{{ job.organization_name }}
+******************
+
+{% if job.location %}Location: {{ job.location }}{% endif %}
+{% if job.work_mode %}Work Mode: {{ job.work_mode|title }}{% endif %}
+{% if job.type %}Job Type: {{ job.type|title|replace("_", " ") }}{% endif %}
+
+{% if job.min_salary and job.max_salary %}
+Salary: ₹{{ "{:,}".format(job.min_salary) }} - ₹{{ "{:,}".format(job.max_salary) }} {{ job.currency }}
+{% elif job.min_salary %}
+Salary: ₹{{ "{:,}".format(job.min_salary) }}+ {{ job.currency }}
+{% endif %}
+
+{% if job.min_experience is not none and job.max_experience is not none %}
+Experience: {{ job.min_experience }}-{{ job.max_experience }} years
+{% elif job.min_experience is not none %}
+Experience: {{ job.min_experience }}+ years
+{% endif %}
+
+Apply here: {{ app_url }}/jobs/{{ job.organization.slug }}/{{ job.slug }}
+
+{% endfor %}
+
+View all your job alerts: {{ app_url }}/my-alerts
+
+Happy job hunting!
+{% endblock %}

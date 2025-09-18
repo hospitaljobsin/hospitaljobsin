@@ -5,7 +5,7 @@ from bson import ObjectId
 from app.accounts.documents import Account
 from app.core.constants import JobAlertFrequency
 from app.database.paginator import PaginatedResult, Paginator
-from app.job_alerts.documents import JobAlert, JobAlertHistory
+from app.job_alerts.documents import JobAlert
 from app.job_alerts.models import AlertFilters
 
 
@@ -127,29 +127,7 @@ class JobAlertRepo:
         existing_alert = await query.first_or_none()
         return existing_alert is not None
 
-
-class JobAlertHistoryRepo:
-    async def create(self, job_alert_id: ObjectId, job_id: ObjectId) -> JobAlertHistory:
-        """Create a new job alert history entry."""
-        job_alert_history = JobAlertHistory(
-            alert=job_alert_id,
-            job=job_id,
-            sent_at=datetime.now(UTC),
-        )
-        await job_alert_history.insert()
-        return job_alert_history
-
-    async def create_many(self, job_ids: list[ObjectId], alert_id: ObjectId) -> None:
-        """Create many job alert history entries."""
-        if not job_ids:
-            return
-        await JobAlertHistory.insert_many(
-            [
-                JobAlertHistory(
-                    alert=alert_id,
-                    job=job_id,
-                    sent_at=datetime.now(UTC),
-                )
-                for job_id in job_ids
-            ]
-        )
+    async def update_last_sent_at(self, job_alert: JobAlert) -> None:
+        """Update the last_sent_at timestamp for a job alert."""
+        job_alert.last_sent_at = datetime.now(UTC)
+        await job_alert.save()

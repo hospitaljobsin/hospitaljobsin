@@ -1,0 +1,5 @@
+{% if job_count == 1 %}
+  New Job Alert: {{ jobs[0].title }}
+{% else %}
+  {{ job_count }} New Jobs Found for Your Alert
+{% endif %}

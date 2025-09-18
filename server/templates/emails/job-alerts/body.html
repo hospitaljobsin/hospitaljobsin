@@ -1,0 +1,100 @@
+{% extends "emails/base/body.html" %}
+
+{% block title %}
+{% if job_count == 1 %}
+  New Job Found!
+{% else %}
+  {{ job_count }} New Jobs Found!
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<p>Hi there,</p>
+
+<p>
+  <strong>Great news!</strong> We found
+  {% if job_count == 1 %}
+    a new job
+  {% else %}
+    {{ job_count }} new jobs
+  {% endif %}
+  that match your job alert for "<em>{{ alert_search_term }}</em>".
+</p>
+
+{% for job in jobs %}
+<div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 16px 0; background-color: #f8fafc;">
+  <h3 style="margin: 0 0 8px 0; color: #1a202c; font-size: 18px;">{{ job.title }}</h3>
+  <p style="margin: 0 0 12px 0; color: #4a5568; font-size: 16px; font-weight: 600;">{{ job.organization_name }}</p>
+
+  <div style="margin-bottom: 12px;">
+    {% if job.location %}
+    <span style="display: inline-block; background-color: #edf2f7; color: #2d3748; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-right: 8px; margin-bottom: 4px;">
+      📍 {{ job.location }}
+    </span>
+    {% endif %}
+
+    {% if job.work_mode %}
+    <span style="display: inline-block; background-color: #e6fffa; color: #234e52; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-right: 8px; margin-bottom: 4px;">
+      💼 {{ job.work_mode|title }}
+    </span>
+    {% endif %}
+
+    {% if job.type %}
+    <span style="display: inline-block; background-color: #f0fff4; color: #22543d; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-right: 8px; margin-bottom: 4px;">
+      ⏰ {{ job.type|title|replace("_", " ") }}
+    </span>
+    {% endif %}
+  </div>
+
+  {% if job.min_salary and job.max_salary %}
+  <p style="margin: 8px 0; color: #2d3748; font-size: 14px;">
+    <strong>💰 Salary:</strong> ₹{{ "{:,}".format(job.min_salary) }} - ₹{{ "{:,}".format(job.max_salary) }} {{ job.currency }}
+  </p>
+  {% elif job.min_salary %}
+  <p style="margin: 8px 0; color: #2d3748; font-size: 14px;">
+    <strong>💰 Salary:</strong> ₹{{ "{:,}".format(job.min_salary) }}+ {{ job.currency }}
+  </p>
+  {% endif %}
+
+  {% if job.min_experience is not none and job.max_experience is not none %}
+  <p style="margin: 8px 0; color: #2d3748; font-size: 14px;">
+    <strong>🎯 Experience:</strong> {{ job.min_experience }}-{{ job.max_experience }} years
+  </p>
+  {% elif job.min_experience is not none %}
+  <p style="margin: 8px 0; color: #2d3748; font-size: 14px;">
+    <strong>🎯 Experience:</strong> {{ job.min_experience }}+ years
+  </p>
+  {% endif %}
+
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="margin-top: 16px;">
+    <tbody>
+      <tr>
+        <td align="left">
+          <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+            <tbody>
+              <tr>
+                <td>
+                  <a href="{{ app_url }}/jobs/{{ job.organization.slug }}/{{ job.slug }}" target="_blank" style="background-color: #3182ce; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">
+                    View Job & Apply
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endfor %}
+
+<p style="margin-top: 24px;">
+  <a href="{{ app_url }}/my-alerts" target="_blank" style="color: #3182ce; text-decoration: none;">
+    Manage your job alerts
+  </a>
+</p>
+
+<p style="color: #718096; font-size: 14px; margin-top: 16px;">
+  Happy job hunting! 🎯
+</p>
+{% endblock %}

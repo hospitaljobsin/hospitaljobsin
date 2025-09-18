@@ -28,7 +28,7 @@ from app.core.constants import (
     REGION_SEARCH_INDEX_NAME,
 )
 from app.geocoding.documents import Region
-from app.job_alerts.documents import JobAlert, JobAlertHistory
+from app.job_alerts.documents import JobAlert
 from app.jobs.documents import (
     BaseJobMetric,
     CoreJobMetric,
@@ -304,7 +304,6 @@ async def initialize_database(database_url: str, default_database_name: str) -> 
                 OrganizationInvite,
                 Region,
                 JobAlert,
-                JobAlertHistory,
             ],
         )
         await create_search_indexes(client, default_database_name)
