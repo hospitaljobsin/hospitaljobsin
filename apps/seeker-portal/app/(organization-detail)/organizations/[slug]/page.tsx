@@ -98,7 +98,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		title: data.organization.name,
 		description: data.organization.description,
 		openGraph: {
-			images: [data.organization.bannerUrl]
+			images: [
+				{
+					url: data.organization.bannerUrl,
+					width: 1200,
+					height: 630,
+					alt: data.organization.name,
+					type: 'image/png'
+				}
+			]
 		},
 		robots: {
 			index: true,

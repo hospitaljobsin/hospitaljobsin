@@ -172,7 +172,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		title: data.organization.job.title,
 		description: data.organization.job.descriptionCleaned,
 		openGraph: {
-			images: [data.organization.bannerUrl]
+			images: [
+				{
+					url: data.organization.bannerUrl,
+					width: 1200,
+					height: 630,
+					alt: data.organization.name,
+					type: 'image/png'
+				}
+			]
 		},
 		robots: {
 			index: true,
