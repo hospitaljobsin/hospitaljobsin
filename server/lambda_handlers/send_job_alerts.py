@@ -1,12 +1,20 @@
 import asyncio
 import json
 from datetime import UTC, datetime, timedelta
+from urllib.parse import urlencode
 
-from app.config import AppSettings, DatabaseSettings, EnvironmentSettings, get_settings
+from app.config import (
+    AppSettings,
+    DatabaseSettings,
+    EnvironmentSettings,
+    FrontendSettings,
+    get_settings,
+)
 from app.container import create_container
 from app.core.emails import BaseEmailSender
 from app.core.instrumentation import initialize_instrumentation
 from app.database import initialize_database
+from app.job_alerts.models import AlertFilters
 from app.job_alerts.repositories import JobAlertRepo
 from app.jobs.repositories import JobRepo, JobType, JobWorkMode
 from app.logger import setup_logging
@@ -65,6 +73,47 @@ def lambda_handler(event: SQSEvent, context: LambdaContext) -> str:
         for record in event.records
     ]
     return loop.run_until_complete(send_job_alerts(processing_requests))
+
+
+def build_search_url(filters: AlertFilters) -> str:
+    """Build the job search URL based on the filters."""
+    base_url = f"{get_settings(FrontendSettings).seeker_portal_base_url}/search"
+
+    # Build the path component
+    if filters.search_term and filters.location:
+        base_url += f"/{filters.search_term.strip().replace(' ', '-')}-jobs-in-{filters.location.strip().replace(' ', '-')}"
+    elif filters.search_term:
+        base_url += f"/{filters.search_term.strip().replace(' ', '-')}-jobs"
+    elif filters.location:
+        base_url += f"/jobs-in-{filters.location.strip().replace(' ', '-')}"
+
+    # Build query parameters dictionary
+    query_params = {}
+
+    if filters.min_experience is not None:
+        query_params["minExperience"] = str(filters.min_experience)
+
+    if filters.max_experience is not None:
+        query_params["maxExperience"] = str(filters.max_experience)
+
+    if filters.min_salary is not None:
+        query_params["minSalary"] = str(filters.min_salary)
+
+    if filters.max_salary is not None:
+        query_params["maxSalary"] = str(filters.max_salary)
+
+    if filters.work_mode:
+        query_params["workMode"] = ",".join([val.upper() for val in filters.work_mode])
+
+    if filters.job_type:
+        query_params["jobType"] = ",".join([val.upper() for val in filters.job_type])
+
+    # Use urlencode to properly encode query parameters
+    if query_params:
+        query_string = urlencode(query_params)
+        return f"{base_url}?{query_string}"
+
+    return base_url
 
 
 async def send_job_alerts(
@@ -138,8 +187,8 @@ async def send_job_alerts(
                 context={
                     "jobs": jobs_to_send,
                     "job_alert": job_alert,
-                    # TODO: use "has_more_jobs" in the template
                     "has_more_jobs": jobs_result.page_info.has_next_page,
+                    "search_url": build_search_url(job_alert.filters),
                 },
             )
 

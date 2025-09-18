@@ -9,84 +9,131 @@
 {% endblock %}
 
 {% block content %}
-<p>Hi there,</p>
+<p>Hi {{ job_alert.account.full_name }},</p>
 
 <p>
-  <strong>Great news!</strong> We found
+  <strong>Exciting news!</strong> We've discovered
   {% if job_count == 1 %}
-    a new job
+    an amazing new opportunity
   {% else %}
-    {{ job_count }} new jobs
+    {{ job_count }} fantastic new opportunities
   {% endif %}
-  that match your job alert for "<em>{{ alert_search_term }}</em>".
+  that perfectly match your job alert for "<em>{{ job_alert.filters.search_term }}</em>". Your dream job might be just one click away! 🚀
 </p>
 
 {% for job in jobs %}
-<div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 16px 0; background-color: #f8fafc;">
-  <h3 style="margin: 0 0 8px 0; color: #1a202c; font-size: 18px;">{{ job.title }}</h3>
-  <p style="margin: 0 0 12px 0; color: #4a5568; font-size: 16px; font-weight: 600;">{{ job.organization_name }}</p>
+<a href="{{ app_url }}/jobs/{{ job.organization.slug }}/{{ job.slug }}" target="_blank" style="text-decoration: none; color: inherit; display: block;">
+  <div style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin: 20px 0; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); transition: box-shadow 0.2s ease-in-out; cursor: pointer;">
+    <!-- Header with logo, title, company and salary -->
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px;">
+      <div style="display: flex; align-items: flex-start; flex: 1;">
+        <!-- Company Logo -->
+        <div style="width: 48px; height: 48px; border-radius: 8px; margin-right: 16px; flex-shrink: 0; overflow: hidden;">
 
-  <div style="margin-bottom: 12px;">
-    {% if job.location %}
-    <span style="display: inline-block; background-color: #edf2f7; color: #2d3748; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-right: 8px; margin-bottom: 4px;">
-      📍 {{ job.location }}
-    </span>
-    {% endif %}
+          <img src="{{ job.organization.logo_url }}" alt="{{ job.organization.name }} logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
 
-    {% if job.work_mode %}
-    <span style="display: inline-block; background-color: #e6fffa; color: #234e52; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-right: 8px; margin-bottom: 4px;">
-      💼 {{ job.work_mode|title }}
-    </span>
-    {% endif %}
+        </div>
 
-    {% if job.type %}
-    <span style="display: inline-block; background-color: #f0fff4; color: #22543d; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-right: 8px; margin-bottom: 4px;">
-      ⏰ {{ job.type|title|replace("_", " ") }}
-    </span>
-    {% endif %}
+        <!-- Job Title and Company -->
+        <div style="flex: 1; min-width: 0;">
+          <h3 style="margin: 0 0 4px 0; color: #1f2937; font-size: 20px; font-weight: 600; line-height: 1.2;">{{ job.title }}</h3>
+          <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <span style="color: #6b7280; font-size: 16px; font-weight: 500;">{{ job.organization.name }}</span>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Salary -->
+      <div style="text-align: right; margin-left: 16px;">
+        {% if job.min_salary and job.max_salary %}
+        <div style="color: #1f2937; font-size: 18px; font-weight: 600; line-height: 1.2;">
+          ₹ {{ "{:,}".format(job.min_salary) }} - {{ "{:,}".format(job.max_salary) }}
+        </div>
+        <div style="color: #6b7280; font-size: 14px;">/ month</div>
+        {% elif job.min_salary %}
+        <div style="color: #1f2937; font-size: 18px; font-weight: 600; line-height: 1.2;">
+          ₹ {{ "{:,}".format(job.min_salary) }}+
+        </div>
+        <div style="color: #6b7280; font-size: 14px;">/ month</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Posted Date -->
+    <p style="margin: 0 0 16px 0; color: #6b7280; font-size: 14px;">
+      Posted on {{ job.id.generation_time.strftime('%B %d, %Y') if job.id and job.id.generation_time else 'Recently' }}
+    </p>
+
+    <!-- Job Details Row -->
+    <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 16px; flex-wrap: wrap;">
+      {% if job.type %}
+      <div style="display: flex; align-items: center; color: #374151; font-size: 14px;">
+        <span style="margin-right: 8px;">{{ job.type|title|replace("_", " ") }}</span>
+      </div>
+      {% endif %}
+
+      {% if job.location %}
+      <div style="display: flex; align-items: center; color: #374151; font-size: 14px;">
+        <span style="margin-right: 8px;">📍</span>
+        <span>{{ job.location }}</span>
+      </div>
+      {% endif %}
+
+      {% if job.min_experience is not none and job.max_experience is not none %}
+      <div style="display: flex; align-items: center; color: #374151; font-size: 14px;">
+        <span>{{ job.min_experience }} - {{ job.max_experience }} years</span>
+      </div>
+      {% elif job.min_experience is not none %}
+      <div style="display: flex; align-items: center; color: #374151; font-size: 14px;">
+        <span>{{ job.min_experience }}+ years</span>
+      </div>
+      {% endif %}
+
+      {% if job.work_mode %}
+      <div style="display: flex; align-items: center; color: #374151; font-size: 14px;">
+        <span>{{ job.work_mode|title }}</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Tags -->
+    <div style="margin-bottom: 0;">
+      {% if job.skills %}
+        {% for skill in job.skills[:4] %}
+        <span style="display: inline-block; background-color: #f3f4f6; color: #374151; padding: 6px 12px; border-radius: 20px; font-size: 12px; margin-right: 8px; margin-bottom: 4px;">
+          {{ skill.name if skill.name else skill }}
+        </span>
+        {% endfor %}
+      {% else %}
+        <!-- Fallback tags if no skills available -->
+        <span style="display: inline-block; background-color: #f3f4f6; color: #374151; padding: 6px 12px; border-radius: 20px; font-size: 12px; margin-right: 8px; margin-bottom: 4px;">
+          healthcare
+        </span>
+        <span style="display: inline-block; background-color: #f3f4f6; color: #374151; padding: 6px 12px; border-radius: 20px; font-size: 12px; margin-right: 8px; margin-bottom: 4px;">
+          {{ job.type|title|replace("_", " ")|lower if job.type else 'full-time' }}
+        </span>
+      {% endif %}
+    </div>
   </div>
+</a>
+{% endfor %}
 
-  {% if job.min_salary and job.max_salary %}
-  <p style="margin: 8px 0; color: #2d3748; font-size: 14px;">
-    <strong>💰 Salary:</strong> ₹{{ "{:,}".format(job.min_salary) }} - ₹{{ "{:,}".format(job.max_salary) }} {{ job.currency }}
-  </p>
-  {% elif job.min_salary %}
-  <p style="margin: 8px 0; color: #2d3748; font-size: 14px;">
-    <strong>💰 Salary:</strong> ₹{{ "{:,}".format(job.min_salary) }}+ {{ job.currency }}
-  </p>
-  {% endif %}
-
-  {% if job.min_experience is not none and job.max_experience is not none %}
-  <p style="margin: 8px 0; color: #2d3748; font-size: 14px;">
-    <strong>🎯 Experience:</strong> {{ job.min_experience }}-{{ job.max_experience }} years
-  </p>
-  {% elif job.min_experience is not none %}
-  <p style="margin: 8px 0; color: #2d3748; font-size: 14px;">
-    <strong>🎯 Experience:</strong> {{ job.min_experience }}+ years
-  </p>
-  {% endif %}
-
-  <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="margin-top: 16px;">
+{% if has_more_jobs %}
+<div style="margin: 32px 0;">
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
     <tbody>
       <tr>
-        <td align="left">
-          <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-            <tbody>
-              <tr>
-                <td>
-                  <a href="{{ app_url }}/jobs/{{ job.organization.slug }}/{{ job.slug }}" target="_blank" style="background-color: #3182ce; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">
-                    View Job & Apply
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <td align="center">
+          <a href="{{ search_url }}" target="_blank" style="background-color: #3b82f6; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: block; font-size: 16px; width: 100%; box-sizing: border-box; text-align: center;">
+            View All Jobs
+          </a>
         </td>
       </tr>
     </tbody>
   </table>
 </div>
-{% endfor %}
+{% endif %}
 
 <p style="margin-top: 24px;">
   <a href="{{ app_url }}/my-alerts" target="_blank" style="color: #3182ce; text-decoration: none;">

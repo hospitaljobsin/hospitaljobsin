@@ -11,7 +11,7 @@ We found {{ job_count }} new jobs matching your alert!
 {% block content %}
 Hi there,
 
-Great news! We found {% if job_count == 1 %}a new job{% else %}{{ job_count }} new jobs{% endif %} that match your job alert for "{{ alert_search_term }}".
+Great news! We found {% if job_count == 1 %}a new job{% else %}{{ job_count }} new jobs{% endif %} that match your job alert for "{{ job_alert.filters.search_term }}".
 
 {% for job in jobs %}
 ******************
