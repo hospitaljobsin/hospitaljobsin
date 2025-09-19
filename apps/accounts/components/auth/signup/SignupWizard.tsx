@@ -44,8 +44,7 @@ export default function SignUpWizard() {
 				{state.matches('step1') && (
 					<CardFooter className='flex flex-col w-full gap-8'>
 						<div className='w-full flex items-center justify-center gap-6'>
-							<Divider className='flex-1' />
-							<p>or</p>
+							<Divider className='flex-1' />p<p>or</p>
 							<Divider className='flex-1' />
 						</div>
 						<Button

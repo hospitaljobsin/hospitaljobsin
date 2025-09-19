@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a20aa76beac5769b4a09fcfbaad6db2c>>
+ * @generated SignedSource<<f89171e5ed4761ff9e28f3082b5e2a55>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -43,22 +43,16 @@ const node: ReaderFragment = {
     },
     {
       "alias": null,
-      "args": [
-        {
-          "kind": "Literal",
-          "name": "size",
-          "value": 120
-        }
-      ],
+      "args": null,
       "kind": "ScalarField",
       "name": "avatarUrl",
-      "storageKey": "avatarUrl(size:120)"
+      "storageKey": null
     }
   ],
   "type": "Account",
   "abstractKey": null
 };
 
-(node as any).hash = "aa5879c7e97c58c3b463a11d91f420d0";
+(node as any).hash = "ca653b65119be5fa44680b7fb2ba7d64";
 
 export default node;

@@ -63,7 +63,7 @@ export default function LandingView({ queryReference }: { queryReference: Preloa
 							alt='Group of doctors smiling, representing healthcare professionals'
 							className='w-auto h-full max-w-full object-cover object-bottom absolute left-0 top-0 z-10'
 							loading='eager'
-							unoptimized={false}
+							priority
 							width={1000}
 							height={1000}
 						/>
@@ -72,7 +72,7 @@ export default function LandingView({ queryReference }: { queryReference: Preloa
 							alt='Group of doctors smiling, representing healthcare professionals'
 							className='w-auto h-full max-w-full object-cover object-bottom absolute drop-shadow-lg left-56 z-20 hidden xl:block'
 							loading='eager'
-							unoptimized={false}
+							priority
 							width={1000}
 							height={1000}
 						/>

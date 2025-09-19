@@ -1,31 +1,15 @@
-import type { JobControlsAuthFragment$key } from "@/__generated__/JobControlsAuthFragment.graphql";
-import type { JobType } from "@/__generated__/JobDetailsInternalFragment.graphql";
-import type {
-	JobFragment$key,
-	WorkMode,
-} from "@/__generated__/JobFragment.graphql";
-import { dateFormat, salaryFormat } from "@/lib/intl";
-import links from "@/lib/links";
-import {
-	Card,
-	CardBody,
-	CardFooter,
-	CardHeader,
-	Chip,
-	Tooltip,
-} from "@heroui/react";
-import {
-	Briefcase,
-	Globe,
-	IndianRupee,
-	MapPin,
-	VerifiedIcon,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useFragment } from "react-relay";
-import { graphql } from "relay-runtime";
-import JobControls from "../job-detail/JobControls";
+import type { JobControlsAuthFragment$key } from '@/__generated__/JobControlsAuthFragment.graphql';
+import type { JobType } from '@/__generated__/JobDetailsInternalFragment.graphql';
+import type { JobFragment$key, WorkMode } from '@/__generated__/JobFragment.graphql';
+import { dateFormat, salaryFormat } from '@/lib/intl';
+import links from '@/lib/links';
+import { Card, CardBody, CardFooter, CardHeader, Chip, Tooltip } from '@heroui/react';
+import { Briefcase, Globe, IndianRupee, MapPin, VerifiedIcon } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import JobControls from '../job-detail/JobControls';
 
 export const JobFragment = graphql`
   fragment JobFragment on Job @argumentDefinitions(
@@ -83,7 +67,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 	// Map currency to icons
 	const currencyIcon = (currency: string) => {
 		switch (currency) {
-			case "INR":
+			case 'INR':
 				return <IndianRupee size={16} />;
 			default:
 				return null; // Handle other currencies or add more cases
@@ -92,16 +76,16 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 
 	const jobType = (type: JobType) => {
 		switch (type) {
-			case "CONTRACT":
-				return "Contract";
-			case "FULL_TIME":
-				return "Full Time";
-			case "INTERNSHIP":
-				return "Internship";
-			case "PART_TIME":
-				return "Part Time";
-			case "LOCUM":
-				return "Locum";
+			case 'CONTRACT':
+				return 'Contract';
+			case 'FULL_TIME':
+				return 'Full Time';
+			case 'INTERNSHIP':
+				return 'Internship';
+			case 'PART_TIME':
+				return 'Part Time';
+			case 'LOCUM':
+				return 'Locum';
 			default:
 				return null;
 		}
@@ -109,12 +93,12 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 
 	const workMode = (mode: WorkMode) => {
 		switch (mode) {
-			case "HYBRID":
-				return "Hybrid";
-			case "OFFICE":
-				return "Office";
-			case "REMOTE":
-				return "Remote";
+			case 'HYBRID':
+				return 'Hybrid';
+			case 'OFFICE':
+				return 'Office';
+			case 'REMOTE':
+				return 'Remote';
 			default:
 				return null;
 		}
@@ -122,27 +106,26 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 
 	const salaryRange =
 		data.minSalary && data.maxSalary ? (
-			<div className="flex items-center gap-2 text-xl font-medium text-nowrap">
+			<div className='flex items-center gap-2 text-xl font-medium text-nowrap'>
 				{currencyIcon(data.currency)}
-				{`${salaryFormat.format(data.minSalary ?? 0)} - ${salaryFormat.format(data.maxSalary ?? 0)}`}{" "}
-				<p className="text-foreground-500 text-sm">/ month</p>
+				{`${salaryFormat.format(data.minSalary ?? 0)} - ${salaryFormat.format(data.maxSalary ?? 0)}`}{' '}
+				<p className='text-foreground-500 text-sm'>/ month</p>
 			</div>
 		) : data.minSalary || data.maxSalary ? (
-			<div className="flex items-center gap-2 text-xl font-medium">
+			<div className='flex items-center gap-2 text-xl font-medium'>
 				{currencyIcon(data.currency)}
-				{`${salaryFormat.format(data.minSalary ?? data.maxSalary ?? 0)}`}{" "}
-				<p className="text-foreground-500 text-sm">/ month</p>
+				{`${salaryFormat.format(data.minSalary ?? data.maxSalary ?? 0)}`} <p className='text-foreground-500 text-sm'>/ month</p>
 			</div>
 		) : (
-			<div className="flex items-center gap-2 text-xl font-medium">
+			<div className='flex items-center gap-2 text-xl font-medium'>
 				{currencyIcon(data.currency)}
-				{"Not disclosed"}
+				{'Not disclosed'}
 			</div>
 		);
 
 	function formatExperienceRange({
 		minExperience,
-		maxExperience,
+		maxExperience
 	}: {
 		minExperience: number | null | undefined;
 		maxExperience: number | null | undefined;
@@ -159,111 +142,84 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 				return `Minimum ${minExperience} years`;
 			}
 		}
-		return "Not specified";
+		return 'Not specified';
 	}
 
 	return (
 		<Link href={links.jobDetail(data.organization.slug, data.slug)}>
-			<Card
-				fullWidth
-				className="p-3 sm:p-6 cursor-pointer rounded-xl bg-background"
-				isPressable
-				as="div"
-				disableRipple
-				shadow="none"
-			>
+			<Card fullWidth className='p-3 sm:p-6 cursor-pointer rounded-xl bg-background' isPressable as='div' disableRipple shadow='none'>
 				<CardHeader>
-					<div className="flex flex-col sm:flex-row w-full justify-between gap-4 sm:gap-6 items-start sm:items-center">
-						<div className="flex items-center gap-3 sm:gap-4 w-full sm:flex-1 sm:max-w-[60%] min-w-0">
+					<div className='flex flex-col sm:flex-row w-full justify-between gap-4 sm:gap-6 items-start sm:items-center'>
+						<div className='flex items-center gap-3 sm:gap-4 w-full sm:flex-1 sm:max-w-[60%] min-w-0'>
 							{data.organization.logoUrl && (
-								<div className="relative aspect-square h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0">
+								<div className='relative aspect-square h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0'>
 									<Image
-										src={data.organization.logoUrl || ""}
-										alt={data.organization?.name || ""}
+										src={data.organization.logoUrl || ''}
+										alt={data.organization?.name || ''}
 										fill
-										className="rounded-md object-cover"
+										sizes='(max-width: 640px) 48px, 56px'
+										className='rounded-md object-cover'
 									/>
 								</div>
 							)}
-							<div className="flex flex-col gap-1 items-start min-w-0 flex-1">
-								<h4 className="text-base sm:text-xl font-medium truncate w-full">
-									{data.title}
-								</h4>
-								{data.organization.name &&
-								data.organization.verificationStatus ? (
-									<div className="flex flex-row items-center gap-2 min-w-0">
-										<p className="text-xs sm:text-base font-normal text-foreground-500 truncate">
-											{data.organization.name}
-										</p>
+							<div className='flex flex-col gap-1 items-start min-w-0 flex-1'>
+								<h4 className='text-base sm:text-xl font-medium truncate w-full'>{data.title}</h4>
+								{data.organization.name && data.organization.verificationStatus ? (
+									<div className='flex flex-row items-center gap-2 min-w-0'>
+										<p className='text-xs sm:text-base font-normal text-foreground-500 truncate'>{data.organization.name}</p>
 										{data.organization.verificationStatus.verified && (
-											<Tooltip
-												content="This organization is verified"
-												placement="right"
-											>
-												<VerifiedIcon
-													className="w-4 h-4 text-primary"
-													strokeWidth={2.5}
-												/>
+											<Tooltip content='This organization is verified' placement='right'>
+												<VerifiedIcon className='w-4 h-4 text-primary' strokeWidth={2.5} />
 											</Tooltip>
 										)}
 									</div>
 								) : null}
 							</div>
 						</div>
-						<div className="mt-2 sm:mt-0 w-full sm:w-auto sm:flex-shrink-0 flex justify-start sm:justify-end">
-							{salaryRange}
-						</div>
+						<div className='mt-2 sm:mt-0 w-full sm:w-auto sm:flex-shrink-0 flex justify-start sm:justify-end'>{salaryRange}</div>
 					</div>
 				</CardHeader>
-				<CardBody className="flex flex-col gap-4 sm:gap-6 w-full">
-					<div className="flex flex-col sm:flex-row justify-between items-start gap-2 sm:gap-4 w-full text-left">
-						<p className="text-foreground-500 text-xs sm:text-base font-normal">
-							Posted on {formattedCreatedAt}
-						</p>
+				<CardBody className='flex flex-col gap-4 sm:gap-6 w-full'>
+					<div className='flex flex-col sm:flex-row justify-between items-start gap-2 sm:gap-4 w-full text-left'>
+						<p className='text-foreground-500 text-xs sm:text-base font-normal'>Posted on {formattedCreatedAt}</p>
 					</div>
-					<div className="flex flex-wrap justify-start gap-2 sm:gap-8 items-start text-foreground-600 w-full text-left sm:text-center">
+					<div className='flex flex-wrap justify-start gap-2 sm:gap-8 items-start text-foreground-600 w-full text-left sm:text-center'>
 						{data.type && (
-							<p className="text-xs sm:text-base px-2 py-1 sm:p-0 bg-default-100 rounded-md sm:bg-transparent">
-								{jobType(data.type)}
-							</p>
+							<p className='text-xs sm:text-base px-2 py-1 sm:p-0 bg-default-100 rounded-md sm:bg-transparent'>{jobType(data.type)}</p>
 						)}
 						{data.location && (
-							<div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-base px-2 py-1 sm:p-0 bg-default-100 rounded-md sm:bg-transparent">
-								<MapPin size={14} className="sm:hidden" />
-								<MapPin size={16} className="hidden sm:inline" />
+							<div className='flex items-center gap-1 sm:gap-2 text-xs sm:text-base px-2 py-1 sm:p-0 bg-default-100 rounded-md sm:bg-transparent'>
+								<MapPin size={14} className='sm:hidden' />
+								<MapPin size={16} className='hidden sm:inline' />
 								{data.location}
 							</div>
 						)}
-						<div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-base px-2 py-1 sm:p-0 bg-default-100 rounded-md sm:bg-transparent">
-							<Briefcase size={14} className="sm:hidden" />
-							<Briefcase size={16} className="hidden sm:inline" />
+						<div className='flex items-center gap-1 sm:gap-2 text-xs sm:text-base px-2 py-1 sm:p-0 bg-default-100 rounded-md sm:bg-transparent'>
+							<Briefcase size={14} className='sm:hidden' />
+							<Briefcase size={16} className='hidden sm:inline' />
 							{formatExperienceRange({
 								minExperience: data.minExperience,
-								maxExperience: data.maxExperience,
+								maxExperience: data.maxExperience
 							})}
 						</div>
 						{data.workMode && (
-							<div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-base px-2 py-1 sm:p-0 bg-default-100 rounded-md sm:bg-transparent">
-								<Globe size={14} className="sm:hidden" />
-								<Globe size={16} className="hidden sm:inline" />
+							<div className='flex items-center gap-1 sm:gap-2 text-xs sm:text-base px-2 py-1 sm:p-0 bg-default-100 rounded-md sm:bg-transparent'>
+								<Globe size={14} className='sm:hidden' />
+								<Globe size={16} className='hidden sm:inline' />
 								{workMode(data.workMode)}
 							</div>
 						)}
 					</div>
 				</CardBody>
-				<CardFooter className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-6 w-full text-left sm:text-left">
-					<div className="flex flex-wrap gap-2 sm:gap-4 mt-1 sm:mt-2 w-full sm:w-auto justify-start">
-						{data.skills.map((skill) => (
-							<Chip
-								variant="flat"
-								key={skill}
-								className="text-xs sm:text-sm px-2 py-1"
-							>
+				<CardFooter className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-6 w-full text-left sm:text-left'>
+					<div className='flex flex-wrap gap-2 sm:gap-4 mt-1 sm:mt-2 w-full sm:w-auto justify-start'>
+						{data.skills.map(skill => (
+							<Chip variant='flat' key={skill} className='text-xs sm:text-sm px-2 py-1'>
 								{skill}
 							</Chip>
 						))}
 					</div>
-					<div className="w-full sm:w-auto flex justify-end mt-2 sm:mt-0">
+					<div className='w-full sm:w-auto flex justify-end mt-2 sm:mt-0'>
 						<JobControls job={data} authQueryRef={rootQuery} />
 					</div>
 				</CardFooter>
