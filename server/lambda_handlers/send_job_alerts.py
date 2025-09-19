@@ -193,6 +193,7 @@ async def send_job_alerts(
                     "job_alert": job_alert,
                     "has_more_jobs": jobs_result.page_info.has_next_page,
                     "search_url": build_search_url(job_alert.filters),
+                    "job_alerts_url": f"{get_settings(FrontendSettings).seeker_portal_base_url}/my-alerts",
                 },
             )
 

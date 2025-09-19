@@ -134,7 +134,7 @@
 <mj-section padding="24px 0 0 0">
   <mj-column>
     <mj-text color="#3182ce" font-size="14px" margin="0" align="left">
-      <a href="{{ app_url }}/my-alerts" target="_blank" style="color: #3182ce; text-decoration: none; font-weight: 500;">
+      <a href="{{ job_alerts_url }}" target="_blank" style="color: #3182ce; text-decoration: none; font-weight: 500;">
         Manage your job alerts
       </a>
     </mj-text>

@@ -35,9 +35,9 @@ Experience: {{ job.min_experience }}-{{ job.max_experience }} years
 Experience: {{ job.min_experience }}+ years
 {% endif %}
 
-Apply here: {{ app_url }}/jobs/{{ job.organization.slug }}/{{ job.slug }}
+Apply here: {{ app_url }}/organizations/{{ job.organization.slug }}/jobs/{{ job.slug }}
 
 {% endfor %}
 
-View all your job alerts: {{ app_url }}/my-alerts
+View all your job alerts: {{ job_alerts_url }}
 {% endblock %}
