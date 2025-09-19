@@ -561,6 +561,9 @@ class OrganizationInviteService:
             email=email,
         )
 
+        print("invite_token:", invite_token)  # Debugging line
+        print("token_hash:", invite.token_hash)  # Debugging line
+
         await self._email_sender.send_template_email(
             template="organization-invite",
             receiver=email,

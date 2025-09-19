@@ -499,14 +499,17 @@ class OrganizationInviteRepo:
         self, invite_tokens: list[tuple[str, str]]
     ) -> list[OrganizationInvite | None]:
         """Get multiple active organization invites by emails and tokens."""
+        print("invite_tokens:", invite_tokens)  # Debugging line
         filters = [
-            And(
-                {"email": email},
-                {"token_hash": self.hash_token(token)},
-                # select only pending invites
-                {"status": "pending"},
-                {"is_hidden": False},
-            )
+            {
+                "$and": [
+                    {"email": email},
+                    {"token_hash": self.hash_token(token)},
+                    # select only pending invites
+                    {"status": "pending"},
+                    {"is_hidden": False},
+                ]
+            }
             for email, token in invite_tokens
         ]
 
@@ -514,6 +517,15 @@ class OrganizationInviteRepo:
         organization_invites = await OrganizationInvite.find(
             {"$or": filters}, fetch_links=True, nesting_depth=1
         ).to_list()
+
+        print("organization_invites:", organization_invites)  # Debugging line
+
+        # Use the Or operator to combine all conditions
+        organization_invites = await OrganizationInvite.find(
+            {"$or": filters}, fetch_links=True, nesting_depth=1
+        ).to_list()
+
+        print("organization_invites:", organization_invites)  # Debugging line
 
         organization_invite_by_token = {
             (

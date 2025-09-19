@@ -112,6 +112,7 @@ class OrganizationQuery:
         ],
     ) -> OrganizationInvitePayload:
         """Get a pending organization invite by token."""
+        # FIXME: the issue is here
         result = await info.context["loaders"].organization_invite_by_token.load(
             (info.context["current_user"].email, invite_token)
         )
