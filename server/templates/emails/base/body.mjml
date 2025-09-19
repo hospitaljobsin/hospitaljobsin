@@ -33,11 +33,28 @@
         color: #6b7280;
         font-size: 14px;
       }
+      .inner-wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+        border-radius: 16px;
+        overflow: hidden;
+        display: block;
+      }
+
+      .footer-wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+        overflow: hidden;
+        display: block;
+      }
     </mj-style>
   </mj-head>
 
-  <mj-body>
-    <mj-wrapper>
+  <mj-body width="100%" background-color="#E4E4E7">
+    <!-- Outer full-width grey container -->
+    <mj-section background-color="#E4E4E7" padding="24px 24px 0px 24px">
+      <mj-column width="100%">
+        <mj-wrapper padding="0" css-class="inner-wrapper">
     <!-- Header Section with Brand Colors -->
     <mj-section css-class="header-gradient" padding="0 20px">
       <mj-column width="60%" padding="16px 0">
@@ -47,7 +64,7 @@
             {{ app_name }}
           </span>
         </mj-text>
-        <mj-text align="left" padding="0" color="#ffffff" font-size="16px">
+        <mj-text align="left" padding="0" color="#F4F4F5" font-size="20px">
           {{ app_tagline }}
         </mj-text>
       </mj-column>
@@ -55,7 +72,7 @@
         <mj-text align="right" padding="0" width="100%">
           <div style="position: relative; height: 250px; overflow: hidden;">
             <img src="{{ hero_image_1_url }}" alt="Healthcare Professional 1" style="width: auto; height: 250px; max-width: 100%; object-fit: cover; object-position: bottom; position: absolute; left: 0; top: 0; z-index: 10;" />
-            <img src="{{ hero_image_2_url }}" alt="Healthcare Professional 2" style="width: auto; height: 250px; max-width: 100%; object-fit: cover; object-position: bottom; position: absolute; left: 80px; top: 0; z-index: 20; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.1));" />
+            <img src="{{ hero_image_2_url }}" alt="Healthcare Professional 2" style="width: auto; height: 250px; max-width: 100%; object-fit: cover; object-position: bottom; position: absolute; left: 120px; top: 0; z-index: 20; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.1));" />
           </div>
         </mj-text>
       </mj-column>
@@ -64,29 +81,40 @@
 
     <!-- Main Content Area -->
     <mj-section background-color="#ffffff" padding="0 20px 32px 20px" max-width="600px">
-      <mj-column width="100%" padding="64px 0">
+      <mj-column width="100%" padding="64px 24px">
         {% block content %}{% endblock %}
       </mj-column>
     </mj-section>
 
+
+    </mj-wrapper>
+      </mj-column>
+    </mj-section>
     <!-- Footer Section -->
-    <mj-section background-color="#f8fafa" padding="32px 20px 24px 20px">
-      <mj-column>
+    <mj-section padding="32px 20px 24px 20px" css-class="footer-wrapper">
+      <mj-column width="60%" vertical-align="middle">
         {% block footer %}{% endblock %}
 
         <!-- Brand Footer -->
-        <mj-text align="center" color="#9ca3af" font-size="13px" padding="16px 0 8px 0">
-          <strong style="color: #00a925;">Team {{ app_name }}</strong>
+        <mj-text align="left" color="#9ca3af" font-size="13px" padding="0">
+          Sent by Team {{ app_name }}
         </mj-text>
-
+      </mj-column>
+      <mj-column width="40%" vertical-align="middle">
         <!-- Social Media Links -->
-        <mj-social font-size="13px" icon-size="20px" mode="horizontal" padding="8px 0 0 0" align="center">
-          <mj-social-element name="linkedin" href="https://linkedin.com/company/hospitaljobsin" />
-          <mj-social-element name="facebook" href="https://facebook.com/hospitaljobsin" />
-          <mj-social-element name="instagram" href="https://instagram.com/hospitaljobsin" />
+        <mj-social font-size="13px" icon-size="20px" mode="horizontal" padding="0" align="right" icon-padding="0 4px" border-radius="3px" icon-height="20px" color="#9ca3af">
+          <mj-social-element src="https://api.iconify.design/teenyicons/linkedin-outline.svg" href="https://linkedin.com/company/hospitaljobsin" background-color="transparent" color="#9ca3af" />
+          <mj-social-element src="https://api.iconify.design/teenyicons/facebook-outline.svg" href="https://facebook.com/hospitaljobsin" background-color="transparent" color="#9ca3af"  />
+          <mj-social-element src="https://api.iconify.design/teenyicons/instagram-outline.svg" href="https://instagram.com/hospitaljobsin" background-color="transparent" color="#9ca3af" />
         </mj-social>
       </mj-column>
     </mj-section>
-    </mj-wrapper>
+    <!-- Bottom padding section -->
+    <mj-section background-color="#E4E4E7" padding="0px 24px 24px 24px">
+      <mj-column width="100%">
+        <mj-text padding="0"></mj-text>
+      </mj-column>
+    </mj-section>
+    <!-- End outer full-width grey container -->
   </mj-body>
 </mjml>
