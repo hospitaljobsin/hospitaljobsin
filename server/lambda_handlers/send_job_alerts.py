@@ -4,7 +4,6 @@ from datetime import UTC, datetime, timedelta
 from urllib.parse import urlencode
 
 from app.config import (
-    AppSettings,
     DatabaseSettings,
     EnvironmentSettings,
     FrontendSettings,
@@ -26,7 +25,6 @@ from structlog import get_logger
 
 JOBS_SHOW_LIMIT = 10  # Number of jobs to show in the email
 
-settings = get_settings(AppSettings)
 
 env_settings = get_settings(EnvironmentSettings)
 
