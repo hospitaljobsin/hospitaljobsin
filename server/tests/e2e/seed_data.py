@@ -1,6 +1,6 @@
 from app.config import DatabaseSettings, get_settings
 from app.database import initialize_database
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 
 
 async def setup_test_database() -> None:
@@ -17,7 +17,7 @@ async def teardown_test_database() -> None:
     """Remove e2e fixtures from test database."""
     # Get connection to database
     settings = get_settings(DatabaseSettings)
-    client: AsyncIOMotorClient = AsyncIOMotorClient(str(settings.database_url))
+    client: AsyncMongoClient = AsyncMongoClient(str(settings.database_url))
 
     database = client.get_default_database(default=settings.default_database_name)
 
@@ -29,4 +29,4 @@ async def teardown_test_database() -> None:
         await database.drop_collection(collection_name)
 
     # Close connection
-    client.close()
+    await client.close()

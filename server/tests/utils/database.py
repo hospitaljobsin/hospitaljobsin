@@ -1,16 +1,17 @@
 import asyncio
 import time
-from typing import Any, cast
+from typing import Any
 
-from motor.core import AgnosticDatabase
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
+from pymongo import AsyncMongoClient
+from pymongo.asynchronous.collection import AsyncCollection
+from pymongo.asynchronous.database import AsyncDatabase
 from structlog import get_logger
 
 logger = get_logger()
 
 
 async def get_index_status(
-    collection: AsyncIOMotorCollection, index_name: str
+    collection: AsyncCollection, index_name: str
 ) -> tuple[str, bool]:
     """
     Get the status and queryable state of a MongoDB Atlas Search index.
@@ -52,7 +53,7 @@ async def get_index_status(
 
 
 async def _get_index_status_fallback(
-    collection: AsyncIOMotorCollection, index_name: str
+    collection: AsyncCollection, index_name: str
 ) -> tuple[str, bool]:
     """
     Fallback method to get the index status using older API methods.
@@ -95,7 +96,7 @@ async def _get_index_status_fallback(
 
 
 async def _find_matching_indexes(
-    client: AsyncIOMotorClient,
+    client: AsyncMongoClient,
     database_name: str,
     collection_names: list[str],
     index_names: list[str],
@@ -120,19 +121,19 @@ async def _find_matching_indexes(
         collection = database.get_collection(collection_name)
 
         # Get all indexes for this collection
-        indexes = await collection.list_search_indexes().to_list(length=None)
 
-        for index in indexes:
-            index_name = index.get("name", "")
-            if index_name in index_names:
-                indexes_to_check[collection_name].append(index_name)
+        async with await collection.list_search_indexes() as cursor:
+            async for index in cursor:
+                index_name = index.get("name", "")
+                if index_name in index_names:
+                    indexes_to_check[collection_name].append(index_name)
 
     # Filter out collections with no matching indexes
     return {k: v for k, v in indexes_to_check.items() if v}
 
 
 async def _check_all_indexes_ready(
-    database: AgnosticDatabase,
+    database: AsyncDatabase,
     indexes_to_check: dict[str, list[str]],
 ) -> tuple[bool, dict[str, list[dict[str, Any]]]]:
     """
@@ -151,9 +152,7 @@ async def _check_all_indexes_ready(
     not_ready_indexes: dict[str, list[dict[str, Any]]] = {}
 
     for collection_name, collection_index_names in indexes_to_check.items():
-        collection = cast(
-            AsyncIOMotorCollection, database.get_collection(collection_name)
-        )
+        collection = database.get_collection(collection_name)
         not_ready = []
 
         # Check the status of each index
@@ -181,7 +180,7 @@ async def _check_all_indexes_ready(
 
 
 async def wait_for_search_indexes(
-    client: AsyncIOMotorClient,
+    client: AsyncMongoClient,
     database_name: str,
     collection_names: list[str],
     index_names: list[str],
