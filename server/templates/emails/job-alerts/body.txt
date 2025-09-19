@@ -40,6 +40,4 @@ Apply here: {{ app_url }}/jobs/{{ job.organization.slug }}/{{ job.slug }}
 {% endfor %}
 
 View all your job alerts: {{ app_url }}/my-alerts
-
-Happy job hunting!
 {% endblock %}

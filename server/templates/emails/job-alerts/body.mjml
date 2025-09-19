@@ -140,12 +140,4 @@
     </mj-text>
   </mj-column>
 </mj-section>
-
-<mj-section padding="16px 0 0 0">
-  <mj-column>
-    <mj-text color="#718096" font-size="14px" margin="0" line-height="1.5">
-      Happy job hunting! 🎯
-    </mj-text>
-  </mj-column>
-</mj-section>
 {% endblock %}
