@@ -9,7 +9,6 @@ import { getValidRedirectURL } from '@/lib/redirects';
 import { useRouter } from '@bprogress/next';
 import { addToast, Alert, Button, Card, CardBody, CardFooter, CardHeader, Divider, Input } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { Google } from '@lobehub/icons';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { EyeIcon, EyeOffIcon, FingerprintIcon } from 'lucide-react';
 import Link from 'next/link';
@@ -19,6 +18,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { graphql, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
+import { GoogleIcon } from '../Icons';
 import { useTurnstile } from '../TurnstileProvider';
 
 const LoginFormPasswordMutation = graphql`
@@ -305,7 +305,6 @@ export default function LoginForm() {
 					<form onSubmit={handleSubmit(onSubmit)} className='space-y-3'>
 						<div className='w-full flex flex-col gap-6'>
 							<Input
-								id='email'
 								label='Email Address'
 								autoComplete='email'
 								placeholder='Enter your email address'
@@ -318,7 +317,6 @@ export default function LoginForm() {
 							/>
 							<div className='w-full flex flex-col'>
 								<Input
-									id='password'
 									label='Password'
 									placeholder='Enter password'
 									autoComplete='current-password'
@@ -391,7 +389,7 @@ export default function LoginForm() {
 							href={`${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(redirectTo)}`}
 							target='_self'
 							variant='bordered'
-							startContent={<Google.Color size={20} />}
+							startContent={<GoogleIcon size={20} />}
 							isDisabled={
 								isPasswordLoginMutationInFlight ||
 								isPasskeyLoginMutationInFlight ||
