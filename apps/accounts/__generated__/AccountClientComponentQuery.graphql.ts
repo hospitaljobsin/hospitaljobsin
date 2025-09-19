@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0a439bb4a6a1ceb76b16307a414ab001>>
- * @relayHash c584dfdb07c8b64d794ef21e09c8ef7b
+ * @generated SignedSource<<0e395dcf408f08932ad1252a2ea7476f>>
+ * @relayHash 66f1761b128e62c486004ec43785d549
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c584dfdb07c8b64d794ef21e09c8ef7b
+// @relayRequestID 66f1761b128e62c486004ec43785d549
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -78,16 +78,10 @@ const node: ConcreteRequest = {
               },
               {
                 "alias": null,
-                "args": [
-                  {
-                    "kind": "Literal",
-                    "name": "size",
-                    "value": 120
-                  }
-                ],
+                "args": null,
                 "kind": "ScalarField",
                 "name": "avatarUrl",
-                "storageKey": "avatarUrl(size:120)"
+                "storageKey": null
               },
               {
                 "alias": null,
@@ -148,7 +142,7 @@ const node: ConcreteRequest = {
     ]
   },
   "params": {
-    "id": "c584dfdb07c8b64d794ef21e09c8ef7b",
+    "id": "66f1761b128e62c486004ec43785d549",
     "metadata": {},
     "name": "AccountClientComponentQuery",
     "operationKind": "query",

@@ -48,7 +48,7 @@ const UpdateAccountDetailsFormFragment = graphql`
   fragment UpdateAccountDetailsFormFragment on Account {
     fullName
     email
-	avatarUrl(size: 120)
+	avatarUrl
   }
 `;
 

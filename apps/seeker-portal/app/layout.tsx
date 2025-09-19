@@ -36,7 +36,7 @@ export default async function RootLayout({
 	return (
 		<html lang='en' suppressHydrationWarning>
 			<ReactScan />
-			<body className={`${workSans.variable} antialiased`}>
+			<body className={`${workSans.variable} antialiased light`}>
 				{/* Workaround to fix navigation scroll issues */}
 				<div />
 				<Providers headersPromise={headersPromise}>

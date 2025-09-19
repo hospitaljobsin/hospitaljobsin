@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<1b20b2f038dd0b22f30272ca2d14204c>>
- * @relayHash 29e689ce26cdb78d7bf90a6a3997008a
+ * @generated SignedSource<<49e2388d51e16f4d78b67de97697cc59>>
+ * @relayHash 15daf27dbe44544f9b4214a13d8544d2
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 29e689ce26cdb78d7bf90a6a3997008a
+// @relayRequestID 15daf27dbe44544f9b4214a13d8544d2
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -147,16 +147,10 @@ return {
               },
               {
                 "alias": null,
-                "args": [
-                  {
-                    "kind": "Literal",
-                    "name": "size",
-                    "value": 120
-                  }
-                ],
+                "args": null,
                 "kind": "ScalarField",
                 "name": "avatarUrl",
-                "storageKey": "avatarUrl(size:120)"
+                "storageKey": null
               }
             ],
             "type": "Account",
@@ -182,7 +176,7 @@ return {
     ]
   },
   "params": {
-    "id": "29e689ce26cdb78d7bf90a6a3997008a",
+    "id": "15daf27dbe44544f9b4214a13d8544d2",
     "metadata": {},
     "name": "UpdateAccountDetailsFormMutation",
     "operationKind": "mutation",

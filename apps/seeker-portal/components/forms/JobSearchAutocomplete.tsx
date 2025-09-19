@@ -248,6 +248,7 @@ export default function JobSearchAutocomplete({
 				autoComplete='off'
 				isVirtualized
 				itemHeight={50}
+				aria-label='Job Search'
 			>
 				{(job: SearchJob) => <AutocompleteItem key={job.jobId}>{job.displayName}</AutocompleteItem>}
 			</Autocomplete>

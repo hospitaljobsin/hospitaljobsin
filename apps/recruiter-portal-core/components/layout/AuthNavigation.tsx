@@ -107,7 +107,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 						className='hidden md:block'
 					>
 						<DropdownSection showDivider>
-							<DropdownItem key='account-info'>
+							<DropdownItem key='account-info' textValue='account-info'>
 								<div className='flex flex-row items-center gap-4 w-full'>
 									<Image src={data.avatarUrl} alt={data.fullName} width={32} height={32} className='rounded-full' />
 									<div className='flex flex-col gap-1 items-start'>
@@ -118,7 +118,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							</DropdownItem>
 						</DropdownSection>
 						<DropdownSection showDivider>
-							<DropdownItem key='account'>
+							<DropdownItem key='account-settings' textValue='account-settings'>
 								<Link
 									color='foreground'
 									href={links.accountSettings}

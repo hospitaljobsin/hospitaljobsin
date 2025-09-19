@@ -319,15 +319,15 @@ wheels = [
 
 [[package]]
 name = "beautifulsoup4"
-version = "4.13.5"
+version = "4.13.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "soupsieve" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/85/2e/3e5079847e653b1f6dc647aa24549d68c6addb4c595cc0d902d1b19308ad/beautifulsoup4-4.13.5.tar.gz", hash = "sha256:5e70131382930e7c3de33450a2f54a63d5e4b19386eab43a5b34d594268f3695", size = 622954, upload-time = "2025-08-24T14:06:13.168Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d8/e4/0c4c39e18fd76d6a628d4dd8da40543d136ce2d1752bd6eeeab0791f4d6b/beautifulsoup4-4.13.4.tar.gz", hash = "sha256:dbb3c4e1ceae6aefebdaf2423247260cd062430a410e38c66f2baa50a8437195", size = 621067, upload-time = "2025-04-15T17:05:13.836Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/04/eb/f4151e0c7377a6e08a38108609ba5cede57986802757848688aeedd1b9e8/beautifulsoup4-4.13.5-py3-none-any.whl", hash = "sha256:642085eaa22233aceadff9c69651bc51e8bf3f874fb6d7104ece2beb24b47c4a", size = 105113, upload-time = "2025-08-24T14:06:14.884Z" },
+    { url = "https://files.pythonhosted.org/packages/50/cd/30110dc0ffcf3b131156077b90e9f60ed75711223f306da4db08eff8403b/beautifulsoup4-4.13.4-py3-none-any.whl", hash = "sha256:9bbbb14bfde9d79f38b8cd5f8c7c85f4b8f2523190ebed90e950a8dea4cb1c4b", size = 187285, upload-time = "2025-04-15T17:05:12.221Z" },
 ]
 
 [[package]]
@@ -1147,11 +1147,11 @@ wheels = [
 
 [[package]]
 name = "markdown"
-version = "3.9"
+version = "3.8.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/8d/37/02347f6d6d8279247a5837082ebc26fc0d5aaeaf75aa013fcbb433c777ab/markdown-3.9.tar.gz", hash = "sha256:d2900fe1782bd33bdbbd56859defef70c2e78fc46668f8eb9df3128138f2cb6a", size = 364585, upload-time = "2025-09-04T20:25:22.885Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d7/c2/4ab49206c17f75cb08d6311171f2d65798988db4360c4d1485bd0eedd67c/markdown-3.8.2.tar.gz", hash = "sha256:247b9a70dd12e27f67431ce62523e675b866d254f900c4fe75ce3dda62237c45", size = 362071, upload-time = "2025-06-19T17:12:44.483Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/70/ae/44c4a6a4cbb496d93c6257954260fe3a6e91b7bed2240e5dad2a717f5111/markdown-3.9-py3-none-any.whl", hash = "sha256:9f4d91ed810864ea88a6f32c07ba8bee1346c0cc1f6b1f9f6c822f2a9667d280", size = 107441, upload-time = "2025-09-04T20:25:21.784Z" },
+    { url = "https://files.pythonhosted.org/packages/96/2b/34cc11786bc00d0f04d0f5fdc3a2b1ae0b6239eef72d3d345805f9ad92a1/markdown-3.8.2-py3-none-any.whl", hash = "sha256:5c83764dbd4e00bdd94d85a19b8d55ccca20fe35b2e678a1422b380324dd5f24", size = 106827, upload-time = "2025-06-19T17:12:42.994Z" },
 ]
 
 [[package]]
@@ -2362,28 +2362,28 @@ requires-dist = [
     { name = "authlib", specifier = "==1.6.0" },
     { name = "aws-lambda-powertools", extras = ["parser"], specifier = "==3.16.0" },
     { name = "beanie", specifier = "==2.0.0" },
-    { name = "beautifulsoup4", specifier = ">=4.13.4" },
-    { name = "bleach", specifier = ">=6.2.0" },
+    { name = "beautifulsoup4", specifier = "==4.13.4" },
+    { name = "bleach", specifier = "==6.2.0" },
     { name = "email-validator", specifier = "==2.2.0" },
     { name = "fastapi", specifier = "==0.116.0" },
-    { name = "filelock", specifier = ">=3.19.1" },
+    { name = "filelock", specifier = "==3.19.1" },
     { name = "geopy", specifier = "==2.4.1" },
     { name = "granian", extras = ["pname", "uvloop"], specifier = "==2.4.2" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "humanize", specifier = "==4.12.3" },
     { name = "itsdangerous", specifier = "==2.2.0" },
     { name = "jinja2", specifier = "==3.1.6" },
-    { name = "markdown", specifier = ">=3.8.2" },
-    { name = "mjml-python", specifier = ">=1.3.6" },
+    { name = "markdown", specifier = "==3.8.2" },
+    { name = "mjml-python", specifier = "==1.3.6" },
     { name = "nanoid", specifier = "==2.0.0" },
     { name = "passlib", extras = ["argon2"], specifier = "==1.7.4" },
     { name = "phonenumbers", specifier = "==9.0.10" },
     { name = "pillow", specifier = "==11.3.0" },
     { name = "posthog", specifier = "==6.3.3" },
-    { name = "pycountry", specifier = ">=24.6.1" },
+    { name = "pycountry", specifier = "==24.6.1" },
     { name = "pydantic", specifier = "==2.11.7" },
     { name = "pydantic-ai-slim", extras = ["bedrock"], specifier = "==0.4.3" },
-    { name = "pydantic-extra-types", specifier = ">=2.10.5" },
+    { name = "pydantic-extra-types", specifier = "==2.10.5" },
     { name = "pydantic-settings", extras = ["aws-secrets-manager"], specifier = "==2.10.1" },
     { name = "pymongo", extras = ["aws"], specifier = "==4.15.1" },
     { name = "pymupdf", specifier = "==1.26.3" },
@@ -2400,7 +2400,7 @@ requires-dist = [
     { name = "tesserocr", specifier = "==2.8.0" },
     { name = "types-aioboto3", extras = ["essential"], specifier = "==15.0.0" },
     { name = "types-aiobotocore-bedrock-runtime", specifier = "==2.23.0" },
-    { name = "types-aiobotocore-geo-places", specifier = ">=2.24.1" },
+    { name = "types-aiobotocore-geo-places", specifier = "==2.24.1" },
     { name = "types-aiobotocore-location", specifier = "==2.23.0" },
     { name = "types-aiobotocore-ses", specifier = "==2.23.0" },
     { name = "types-aiobotocore-textract", specifier = "==2.23.0" },
@@ -2429,11 +2429,11 @@ dev = [
     { name = "watchfiles", specifier = "==1.1.0" },
 ]
 test = [
-    { name = "anyio", specifier = ">=4.10.0" },
-    { name = "asgi-lifespan", specifier = ">=2.1.0" },
-    { name = "pytest", specifier = ">=8.4.2" },
-    { name = "pytest-sugar", specifier = ">=1.1.1" },
-    { name = "pytest-timeout", specifier = ">=2.4.0" },
+    { name = "anyio", specifier = "==4.10.0" },
+    { name = "asgi-lifespan", specifier = "==2.1.0" },
+    { name = "pytest", specifier = "==8.4.2" },
+    { name = "pytest-sugar", specifier = "==1.1.1" },
+    { name = "pytest-timeout", specifier = "==2.4.0" },
 ]
 
 [[package]]
@@ -2780,11 +2780,11 @@ wheels = [
 
 [[package]]
 name = "types-aiobotocore-geo-places"
-version = "2.24.2"
+version = "2.24.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/bf/e5/ec3f51e6a431e7d727238156e3613daac02f27e7babd09a9052b9c5b8e5c/types_aiobotocore_geo_places-2.24.2.tar.gz", hash = "sha256:9cb51a8f8759e41808f14589021daf6e4e51e47e9dfd3632e1124d8d7a2aa302", size = 19601, upload-time = "2025-09-06T01:30:48.661Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ca/97/42d1a593225035a6b11b3b3b98e9768a5bba6583a7f43c34e39b02566e9b/types_aiobotocore_geo_places-2.24.1.tar.gz", hash = "sha256:271211fea19555bba4a3dc3a7a41a0e89c7f5eff3d96da3eec5b1b11729e6746", size = 19560, upload-time = "2025-08-16T01:45:50.216Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e4/f1/450a2aeb493a758702d5943a89c052c698ae5b3cc5af4ddf19dc7b7ae0da/types_aiobotocore_geo_places-2.24.2-py3-none-any.whl", hash = "sha256:586c20ba9f50430bd88fdc668170d238205f082f3bb7e1f9745300589677664e", size = 25748, upload-time = "2025-09-06T01:30:47.065Z" },
+    { url = "https://files.pythonhosted.org/packages/4f/5e/1667c04c69cddf390e90025a0763ab1c46f86d60a72d4894948825baaefa/types_aiobotocore_geo_places-2.24.1-py3-none-any.whl", hash = "sha256:3b42dab468047d2ef0626b0961127d11d0ac05335b3921a1e4df33efb1c593d4", size = 25693, upload-time = "2025-08-16T01:45:49.399Z" },
 ]
 
 [[package]]
