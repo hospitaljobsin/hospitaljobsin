@@ -65,8 +65,8 @@ export default function JobAlertStep4({ control, errors, handleSubmit, isSubmitt
 				<Button
 					color='primary'
 					onPress={() => {
-						send({ type: 'SUBMIT' });
 						handleSubmit();
+						send({ type: 'SUBMIT' });
 					}}
 					isLoading={isSubmitting}
 					fullWidth

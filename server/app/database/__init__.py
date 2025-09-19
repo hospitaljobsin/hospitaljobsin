@@ -230,7 +230,6 @@ async def create_search_indexes(
         for index in existing_region_indexes
     )
     if not region_atlas_search_exists:
-        # TODO: make this case insensitive
         await region_collection.create_search_index(
             model=SearchIndexModel(
                 definition={
@@ -239,28 +238,35 @@ async def create_search_indexes(
                         "fields": {
                             "name": [
                                 {"type": "token"},
-                                {"type": "string"},
+                                {
+                                    "type": "string",
+                                    "analyzer": "lucene.standard",
+                                },
                                 {
                                     "type": "autocomplete",
                                     "tokenization": "edgeGram",
-                                    "minGrams": 3,
-                                    "maxGrams": 7,
-                                    "foldDiacritics": False,
+                                    "minGrams": 2,
+                                    "maxGrams": 15,
+                                    "foldDiacritics": True,
                                 },
                             ],
                             "aliases": [
                                 {"type": "token"},
-                                {"type": "string"},
+                                {
+                                    "type": "string",
+                                    "analyzer": "lucene.standard",
+                                },
                                 {
                                     "type": "autocomplete",
                                     "tokenization": "edgeGram",
                                     "minGrams": 3,
-                                    "maxGrams": 7,
-                                    "foldDiacritics": False,
+                                    "maxGrams": 15,
+                                    "foldDiacritics": True,
                                 },
                             ],
                             "level": {
                                 "type": "string",
+                                "analyzer": "lucene.standard",
                             },
                         },
                     },

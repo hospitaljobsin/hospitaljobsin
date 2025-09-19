@@ -50,3 +50,11 @@ variable "staging_db_setup_lambda_username" {
   nullable    = true
   default     = null
 }
+
+
+variable "job_alerts_lambda_username" {
+  type        = string
+  description = "Job alerts lambda username."
+  nullable    = true
+  default     = null
+}

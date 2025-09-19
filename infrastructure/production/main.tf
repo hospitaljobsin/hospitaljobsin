@@ -109,15 +109,16 @@ module "core" {
 }
 
 module "mongodb" {
-  source                = "../modules/mongodb"
-  environment_name      = "production"
-  mongodb_atlas_org_id  = var.mongodb_atlas_org_id
-  mongodb_atlas_region  = var.mongodb_atlas_region
-  mongodb_database_name = var.mongodb_database_name
-  resource_prefix       = var.resource_prefix
-  ecs_username          = module.core.ecs_username
-  lambda_username       = module.core.lambda_username
-  worker_username       = module.core.worker_username
+  source                     = "../modules/mongodb"
+  environment_name           = "production"
+  mongodb_atlas_org_id       = var.mongodb_atlas_org_id
+  mongodb_atlas_region       = var.mongodb_atlas_region
+  mongodb_database_name      = var.mongodb_database_name
+  resource_prefix            = var.resource_prefix
+  ecs_username               = module.core.ecs_username
+  lambda_username            = module.core.lambda_username
+  worker_username            = module.core.worker_username
+  job_alerts_lambda_username = module.core.job_alerts_lambda_username
 }
 
 module "redis" {

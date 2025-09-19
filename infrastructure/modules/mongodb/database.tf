@@ -108,6 +108,19 @@ resource "mongodbatlas_database_user" "staging_setup_user" {
   }
 }
 
+resource "mongodbatlas_database_user" "job_alerts_user" {
+  count              = var.environment_name == "production" ? 1 : 0
+  username           = var.job_alerts_lambda_username
+  project_id         = mongodbatlas_project.project.id
+  auth_database_name = "$external"
+  aws_iam_type       = "ROLE"
+
+  roles {
+    role_name     = "readWrite"
+    database_name = var.mongodb_database_name # The database name and collection name need not exist in the cluster before creating the user.
+  }
+}
+
 # Flexible backups are only supported on M10+ clusters
 # resource "mongodbatlas_cloud_backup_schedule" "this" {
 #   project_id   = mongodbatlas_advanced_cluster.this.project_id
