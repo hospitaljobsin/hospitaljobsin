@@ -251,6 +251,7 @@ class AuthService:
                     timedelta(seconds=EMAIL_VERIFICATION_EXPIRES_IN)
                 ),
                 "user_agent": user_agent,
+                "email": email,
             },
         )
 

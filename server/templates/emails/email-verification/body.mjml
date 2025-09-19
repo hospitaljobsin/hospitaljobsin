@@ -11,7 +11,7 @@ Verify your email address to continue - {{ app_name }}
 {% block content %}
 <!-- Welcome Message -->
 <mj-text font-size="18px" font-weight="600" color="#1f2937" padding="0 0 16px 0">
-  Hey there
+  Hey there, {{ email }}
 </mj-text>
 
 <!-- Main Message -->
