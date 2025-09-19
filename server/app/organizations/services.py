@@ -566,6 +566,7 @@ class OrganizationInviteService:
             receiver=email,
             context={
                 "invited_by_name": account.full_name,
+                "invited_by_avatar_url": account.avatar_url,
                 "organization_name": existing_organization.name,
                 "invite_link": f"{self._frontend_settings.recruiter_portal_base_url}/invites/{invite_token}",
                 "organization_logo_url": existing_organization.logo_url,
