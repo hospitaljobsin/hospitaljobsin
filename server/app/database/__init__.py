@@ -1,6 +1,6 @@
 import sentry_sdk
 from beanie import init_beanie
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from pymongo.operations import SearchIndexModel
 from structlog import get_logger
 
@@ -69,7 +69,7 @@ def rebuild_models() -> None:
 
 
 async def create_search_indexes(
-    client: AsyncIOMotorClient, default_database_name: str
+    client: AsyncMongoClient, default_database_name: str
 ) -> None:
     """Create search indexes for the database."""
     database = client.get_default_database(default=default_database_name)
@@ -78,9 +78,11 @@ async def create_search_indexes(
     job_applicant_collection = database.get_collection(
         str(JobApplicant.get_settings().name)
     )
-    existing_job_applicant_indexes = (
-        await job_applicant_collection.list_search_indexes().to_list(length=None)
-    )
+    existing_job_applicant_indexes = []
+
+    async with await job_applicant_collection.list_search_indexes() as cursor:
+        async for index in cursor:
+            existing_job_applicant_indexes.append(index)
     job_applicant_index_exists = any(
         index.get("name") == JOB_APPLICANT_EMBEDDING_INDEX_NAME
         for index in existing_job_applicant_indexes
@@ -115,9 +117,11 @@ async def create_search_indexes(
 
     # Check and create Job search index if it doesn't exist
     job_collection = database.get_collection(str(Job.get_settings().name))
-    existing_job_indexes = await job_collection.list_search_indexes().to_list(
-        length=None,
-    )
+    existing_job_indexes = []
+
+    async with await job_collection.list_search_indexes() as cursor:
+        async for index in cursor:
+            existing_job_indexes.append(index)
     # Check and create Job Atlas Search index if it doesn't exist
     job_atlas_search_exists = any(
         index.get("name") == JOB_SEARCH_INDEX_NAME for index in existing_job_indexes
@@ -214,9 +218,12 @@ async def create_search_indexes(
 
     # Check and create Job embedding index if it doesn't exist
     region_collection = database.get_collection(str(Region.get_settings().name))
-    existing_region_indexes = await region_collection.list_search_indexes().to_list(
-        length=None,
-    )
+
+    existing_region_indexes = []
+
+    async with await region_collection.list_search_indexes() as cursor:
+        async for index in cursor:
+            existing_region_indexes.append(index)
     # Check and create Job Atlas Search index if it doesn't exist
     region_atlas_search_exists = any(
         index.get("name") == REGION_SEARCH_INDEX_NAME
@@ -270,7 +277,7 @@ async def create_search_indexes(
 async def initialize_database(database_url: str, default_database_name: str) -> None:
     """Initialize the database."""
     with sentry_sdk.start_span(op="db.init", name="Initialize Database"):
-        client: AsyncIOMotorClient = AsyncIOMotorClient(
+        client: AsyncMongoClient = AsyncMongoClient(
             database_url,
             connectTimeoutMS=1000 * 15,
             socketTimeoutMS=1000 * 12,

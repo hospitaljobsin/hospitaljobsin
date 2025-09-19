@@ -14,7 +14,7 @@ from app.database import initialize_database
 from app.geocoding.documents import Region
 from app.geocoding.models import GeoJSONMultiPolygon, GeoJSONPoint, GeoJSONPolygon
 from app.jobs.documents import Job, JobApplicant
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from structlog import get_logger
 
 from tests.utils.database import wait_for_search_indexes
@@ -31,7 +31,7 @@ def db_settings() -> DatabaseSettings:
 async def initialize_test_database(
     db_settings: DatabaseSettings,
 ) -> AsyncGenerator[None]:
-    client: AsyncIOMotorClient = AsyncIOMotorClient(str(db_settings.database_url))
+    client: AsyncMongoClient = AsyncMongoClient(str(db_settings.database_url))
 
     await initialize_database(
         database_url=str(db_settings.database_url),
@@ -66,7 +66,7 @@ async def initialize_test_database(
 
     yield
 
-    client: AsyncIOMotorClient = AsyncIOMotorClient(str(db_settings.database_url))
+    client: AsyncMongoClient = AsyncMongoClient(str(db_settings.database_url))
 
     database = client.get_default_database(default=db_settings.test_database_name)
 
@@ -80,7 +80,7 @@ async def initialize_test_database(
         await database.drop_collection(collection_name)
 
     # Close connection
-    client.close()
+    await client.close()
 
 
 @pytest.fixture(autouse=True, scope="session")
