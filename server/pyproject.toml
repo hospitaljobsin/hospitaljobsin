@@ -60,6 +60,9 @@ dependencies = [
     "mjml-python==1.3.6",
 ]
 
+[tool.uv]
+add-bounds = "exact"
+
 [tool.pyright]
 include = ["app", "tests"]
 exclude = ["^.venv/"]
