@@ -6,6 +6,8 @@ SUPPORT_EMAIL = "support@hospitaljobs.in"
 
 SENDER_EMAIL = "noreply@hospitaljobs.in"
 
+COMPANY_NAME = "Vnadi"
+
 APP_NAME = "Hospital Jobs"
 
 APP_TAGLINE = "Empowering Healthcare Professionals to find their next role"

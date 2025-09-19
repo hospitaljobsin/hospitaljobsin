@@ -14,7 +14,7 @@
 </mj-text>
 
 <mj-text color="#374151" font-size="14px" line-height="1.6" padding="0 0 24px 0">
-  Exciting news! We've discovered
+  We've discovered
   {% if job_count == 1 %}
     an amazing new opportunity
   {% else %}

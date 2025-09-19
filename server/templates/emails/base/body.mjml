@@ -69,6 +69,14 @@
         .show-mobile {
           display: table-cell !important;
         }
+        .footer-mobile span {
+          display: block !important;
+          margin: 8px 0 !important;
+          text-align: center !important;
+        }
+        .footer-mobile .social-icons {
+          margin-top: 12px !important;
+        }
       }
 
       /* Desktop styles */
@@ -122,19 +130,22 @@
     </mj-section>
     <!-- Footer Section -->
     <mj-section padding="32px 20px 24px 20px" css-class="footer-wrapper">
-      <mj-column width="50%" vertical-align="middle">
-        <!-- Brand Footer -->
-        <mj-text align="center" color="#9ca3af" font-size="13px" padding="0">
-          Sent by Team {{ app_name }}
+      <mj-column width="100%" vertical-align="middle">
+        <mj-text align="center" color="#9ca3af" font-size="13px" padding="0" css-class="footer-mobile">
+          <span style="display: inline-block; margin: 0 15px;">Sent by Team {{ app_name }}</span>
+          <span style="display: inline-block; margin: 0 15px;">{{ company_name }} {{ current_year }}</span>
+          <span class="social-icons" style="display: inline-block; margin: 0 15px;">
+            <a href="https://linkedin.com/company/hospitaljobsin" style="text-decoration: none; margin: 0 3px;">
+              <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/linkedin.svg" alt="LinkedIn" style="width: 16px; height: 16px; filter: invert(0.6);" />
+            </a>
+            <a href="https://facebook.com/hospitaljobsin" style="text-decoration: none; margin: 0 3px;">
+              <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/facebook.svg" alt="Facebook" style="width: 16px; height: 16px; filter: invert(0.6);" />
+            </a>
+            <a href="https://instagram.com/hospitaljobsin" style="text-decoration: none; margin: 0 3px;">
+              <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/instagram.svg" alt="Instagram" style="width: 16px; height: 16px; filter: invert(0.6);" />
+            </a>
+          </span>
         </mj-text>
-      </mj-column>
-      <mj-column width="50%" vertical-align="middle">
-        <!-- Social Media Links -->
-        <mj-social font-size="15px" icon-size="20px" mode="horizontal" padding="0" align="center" color="#9ca3af">
-          <mj-social-element name="linkedin" href="https://linkedin.com/company/hospitaljobsin" background-color="#9ca3af" />
-          <mj-social-element name="facebook" href="https://facebook.com/hospitaljobsin" background-color="#9ca3af"  />
-          <mj-social-element name="instagram" href="https://instagram.com/hospitaljobsin" background-color="#9ca3af" />
-        </mj-social>
       </mj-column>
     </mj-section>
     <!-- Bottom padding section -->

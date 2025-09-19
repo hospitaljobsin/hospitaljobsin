@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from typing import Any
 
 import mjml
@@ -8,6 +9,7 @@ from app.core.constants import (
     APP_NAME,
     APP_TAGLINE,
     AUTOMATION_BOT_NAME,
+    COMPANY_NAME,
     SUPPORT_EMAIL,
 )
 
@@ -33,6 +35,7 @@ class MJMLEnvironment(Environment):
 def register_globals(environment: Environment, settings: FrontendSettings) -> None:
     """Register global variables for the environment."""
     environment.globals["app_name"] = APP_NAME
+    environment.globals["company_name"] = COMPANY_NAME
     environment.globals["app_logo_url"] = (
         f"{settings.seeker_portal_base_url}/favicon.ico"
     )
@@ -46,6 +49,7 @@ def register_globals(environment: Environment, settings: FrontendSettings) -> No
     environment.globals["app_url"] = settings.seeker_portal_base_url
     environment.globals["support_email"] = SUPPORT_EMAIL
     environment.globals["automation_bot_name"] = AUTOMATION_BOT_NAME
+    environment.globals["current_year"] = datetime.now(UTC).year
 
 
 def create_jinja2_mjml_environment(settings: FrontendSettings) -> MJMLEnvironment:
