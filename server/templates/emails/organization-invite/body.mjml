@@ -1,0 +1,108 @@
+{% extends "emails/base/body.mjml" %}
+
+{% block title %}
+{{ invited_by_name }} Invited you to {{ organization_name }}
+{% endblock %}
+
+{% block preview %}
+{{ invited_by_name }} has invited you to join {{ organization_name }}
+{% endblock %}
+
+{% block content %}
+<!-- Organization Logo and Welcome Header -->
+<mj-section padding="0 0 24px 0">
+  <mj-column>
+    <mj-image
+      src="{{ organization_logo_url }}"
+      alt="{{ organization_name }} Logo"
+      width="100px"
+      border-radius="8px"
+      padding="0 0 16px 0"
+    />
+    <mj-text
+      align="center"
+      font-size="28px"
+      font-weight="700"
+      color="#1f2937"
+      padding="0 0 24px 0"
+    >
+      Welcome to {{ organization_name }}!
+    </mj-text>
+  </mj-column>
+</mj-section>
+
+<!-- Invitation Message -->
+<mj-section padding="0 0 24px 0">
+  <mj-column>
+    <mj-text
+      font-size="16px"
+      line-height="1.6"
+      color="#374151"
+      padding="0 0 16px 0"
+    >
+      {{ invited_by_name }} has invited you to join <strong>{{ organization_name }}</strong>.
+    </mj-text>
+    <mj-text
+      font-size="16px"
+      font-weight="600"
+      color="#dc2626"
+      padding="0 0 24px 0"
+    >
+      This invitation will expire in {{ invite_expires_in }}.
+    </mj-text>
+  </mj-column>
+</mj-section>
+
+<!-- Call-to-Action Button -->
+<mj-section padding="0 0 32px 0">
+  <mj-column>
+    <mj-button
+      href="{{ invite_link }}"
+      background-color="#0867ec"
+      color="#ffffff"
+      font-size="16px"
+      font-weight="600"
+      border-radius="6px"
+      padding="14px 32px"
+      align="center"
+    >
+      View Invitation
+    </mj-button>
+  </mj-column>
+</mj-section>
+
+<!-- Disclaimer -->
+<mj-section padding="0 0 24px 0">
+  <mj-column>
+    <mj-text
+      font-size="14px"
+      color="#6b7280"
+      padding="0"
+    >
+      If you did not expect this invitation, you can safely ignore this email.
+    </mj-text>
+  </mj-column>
+</mj-section>
+
+<!-- Divider -->
+<mj-section padding="0 0 24px 0">
+  <mj-column>
+    <mj-divider border-color="#e5e7eb" border-width="1px" />
+  </mj-column>
+</mj-section>
+
+<!-- Footer Message -->
+<mj-section padding="0">
+  <mj-column>
+    <mj-text
+      align="center"
+      font-size="14px"
+      color="#9ca3af"
+      font-style="italic"
+      padding="0"
+    >
+      Looking forward to having you on board!
+    </mj-text>
+  </mj-column>
+</mj-section>
+{% endblock %}

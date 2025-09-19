@@ -87,7 +87,7 @@ from app.core.messages import (
 from app.core.oauth import create_oauth_client
 from app.core.ocr import BaseOCRClient, TesseractOCRClient, TextractOCRClient
 from app.core.redis_client import create_redis_client
-from app.core.templates import create_jinja2_environment
+from app.core.templates import create_jinja2_environment, create_jinja2_mjml_environment
 from app.dataloaders import create_dataloaders
 from app.embeddings.services import EmbeddingsService
 from app.geocoding.repositories import RegionRepo
@@ -258,6 +258,7 @@ def create_container() -> aioinject.Container:
     )
     for settings_cls in settings_classes:
         container.register(SettingsProvider(settings_cls))
+    container.register(aioinject.Singleton(create_jinja2_mjml_environment))
     container.register(aioinject.Singleton(create_jinja2_environment))
     register_email_sender(container)
     register_ocr_client(container)

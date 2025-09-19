@@ -1,0 +1,87 @@
+<mjml>
+  <mj-head>
+    <mj-title>{% block title %}{% endblock %}</mj-title>
+    <mj-preview>{% block preview %}Your healthcare career opportunities await{% endblock %}</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Work Sans, Open Sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif" />
+      <mj-body background-color="#f8fafa" />
+      <mj-section padding="0" />
+      <mj-text color="#1f2937" font-size="16px" line-height="1.6" padding="0" />
+      <mj-button background-color="#00a925" color="#ffffff" border="none" border-radius="8px" font-size="16px" font-weight="600" padding="12px 24px" text-transform="none" />
+    </mj-attributes>
+
+    <mj-style>
+      .header-gradient {
+        background: linear-gradient(135deg, #4db866 0%, #4db866 100%);
+      }
+      .content-card {
+        background: #ffffff;
+        border-radius: 0 0 16px 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .brand-text {
+        color: #ffffff;
+        font-weight: 700;
+        text-decoration: none;
+      }
+      .view-browser {
+        color: #ffffff;
+        text-decoration: none;
+        opacity: 0.9;
+      }
+      .footer-text {
+        color: #6b7280;
+        font-size: 14px;
+      }
+    </mj-style>
+  </mj-head>
+
+  <mj-body>
+    <!-- Header Section with Brand Colors -->
+    <mj-section css-class="header-gradient" padding="0 20px">
+      <mj-column width="60%" padding="16px 0">
+        <mj-text align="left" color="#ffffff" font-size="24px" font-weight="700" padding="0">
+          <span style="display: inline-flex; align-items: center;">
+            <img src="{{ app_logo_url }}" alt="{{ app_name }} logo" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 12px;" />
+            {{ app_name }}
+          </span>
+        </mj-text>
+      </mj-column>
+      <mj-column width="40%">
+        <mj-text align="right" padding="0" width="100%">
+          <div style="position: relative; height: 250px; overflow: hidden;">
+            <img src="{{ hero_image_1_url }}" alt="Healthcare Professional 1" style="width: auto; height: 250px; max-width: 100%; object-fit: cover; object-position: bottom; position: absolute; left: 0; top: 0; z-index: 10;" />
+            <img src="{{ hero_image_2_url }}" alt="Healthcare Professional 2" style="width: auto; height: 250px; max-width: 100%; object-fit: cover; object-position: bottom; position: absolute; left: 80px; top: 0; z-index: 20; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.1));" />
+          </div>
+        </mj-text>
+      </mj-column>
+
+    </mj-section>
+
+    <!-- Main Content Area -->
+    <mj-section background-color="#ffffff" padding="0 20px 32px 20px" max-width="600px">
+      <mj-column width="100%" padding="64px 0">
+        {% block content %}{% endblock %}
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer Section -->
+    <mj-section background-color="#f8fafa" padding="32px 20px 24px 20px">
+      <mj-column>
+        {% block footer %}{% endblock %}
+
+        <!-- Brand Footer -->
+        <mj-text align="center" color="#9ca3af" font-size="13px" padding="16px 0 8px 0">
+          <strong style="color: #00a925;">Team {{ app_name }}</strong>
+        </mj-text>
+
+        <!-- Social Media Links -->
+        <mj-social font-size="13px" icon-size="20px" mode="horizontal" padding="8px 0 0 0" align="center">
+          <mj-social-element name="linkedin" href="https://linkedin.com/company/hospitaljobsin" />
+          <mj-social-element name="facebook" href="https://facebook.com/hospitaljobsin" />
+          <mj-social-element name="instagram" href="https://instagram.com/hospitaljobsin" />
+        </mj-social>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

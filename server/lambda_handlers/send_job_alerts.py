@@ -180,6 +180,10 @@ async def send_job_alerts(
                 )
                 continue
 
+            for job in jobs_to_send:
+                # TODO: make this more efficient by batching
+                await job.fetch_all_links()
+
             # Send email alert
             await email_sender.send_template_email(
                 receiver=job_alert.account.email,

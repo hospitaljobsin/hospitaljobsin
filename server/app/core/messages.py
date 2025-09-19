@@ -1,6 +1,5 @@
 import httpx
 import phonenumbers
-from jinja2 import Environment
 from phonenumbers import PhoneNumber, PhoneNumberFormat
 
 from app.config import TwoFactorINSettings, WhatsappSettings
@@ -8,12 +7,6 @@ from app.config import TwoFactorINSettings, WhatsappSettings
 
 class BaseMessageSender:
     """Base Message sender class."""
-
-    def __init__(
-        self,
-        environment: Environment,
-    ) -> None:
-        self._environment = environment
 
     async def send_message(
         self,
@@ -38,12 +31,8 @@ class TwoFactorINSMSMessageSender(BaseMessageSender):
 
     def __init__(
         self,
-        environment: Environment,
         two_factor_in_settings: TwoFactorINSettings,
     ) -> None:
-        super().__init__(
-            environment=environment,
-        )
         self._two_factor_in_settings = two_factor_in_settings
 
     async def send_otp_message(
@@ -64,14 +53,6 @@ class TwoFactorINSMSMessageSender(BaseMessageSender):
 
 class DummyMessageSender(BaseMessageSender):
     """Dummy Message sender class."""
-
-    def __init__(
-        self,
-        environment: Environment,
-    ) -> None:
-        super().__init__(
-            environment=environment,
-        )
 
     async def send_message(
         self,
@@ -118,12 +99,8 @@ class WhatsappMessageSender(BaseMessageSender):
 
     def __init__(
         self,
-        environment: Environment,
         settings: WhatsappSettings,
     ) -> None:
-        super().__init__(
-            environment=environment,
-        )
         self._settings = settings
 
     async def send_message(
