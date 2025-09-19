@@ -102,10 +102,10 @@
       </mj-column>
       <mj-column width="40%" vertical-align="middle">
         <!-- Social Media Links -->
-        <mj-social font-size="13px" icon-size="20px" mode="horizontal" padding="0" align="right" icon-padding="0 4px" border-radius="3px" icon-height="20px" color="#9ca3af">
-          <mj-social-element src="https://api.iconify.design/teenyicons/linkedin-outline.svg" href="https://linkedin.com/company/hospitaljobsin" background-color="transparent" color="#9ca3af" />
-          <mj-social-element src="https://api.iconify.design/teenyicons/facebook-outline.svg" href="https://facebook.com/hospitaljobsin" background-color="transparent" color="#9ca3af"  />
-          <mj-social-element src="https://api.iconify.design/teenyicons/instagram-outline.svg" href="https://instagram.com/hospitaljobsin" background-color="transparent" color="#9ca3af" />
+        <mj-social font-size="15px" icon-size="20px" mode="horizontal" padding="0" align="right" color="#9ca3af">
+          <mj-social-element name="linkedin" href="https://linkedin.com/company/hospitaljobsin" background-color="#9ca3af" />
+          <mj-social-element name="facebook" href="https://facebook.com/hospitaljobsin" background-color="#9ca3af"  />
+          <mj-social-element name="instagram" href="https://instagram.com/hospitaljobsin" background-color="#9ca3af" />
         </mj-social>
       </mj-column>
     </mj-section>
