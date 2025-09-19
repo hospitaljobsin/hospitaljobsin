@@ -74,6 +74,7 @@ module "github" {
   sst_jwe_secret_key                                = module.core.sst_jwe_secret_key
   sst_revalidate_secret                             = module.core.sst_revalidate_secret
   process_job_alerts_lambda_function_arn            = module.core.process_job_alerts_lambda_function_arn
+  send_job_alerts_lambda_function_arn               = module.core.send_job_alerts_lambda_function_arn
 }
 
 
