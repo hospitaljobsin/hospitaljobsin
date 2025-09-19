@@ -12,32 +12,19 @@
 <!-- Minimalistic Centered Content -->
 <mj-section padding="40px 0 0 0">
   <mj-column>
-    <!-- Inviter Avatar and Organization Logo -->
-    <mj-section padding="0 0 32px 0">
-      <!-- Desktop: Side by side, Mobile: Stacked -->
-      <mj-column width="50%" css-class="mobile-stack">
-        <mj-image
-          src="{{ invited_by_avatar_url }}"
-          alt="{{ invited_by_name }} Avatar"
-          width="60px"
-          border-radius="50%"
-          padding="0 0 8px 0"
-          align="center"
-          css-class="mobile-center"
-        />
-      </mj-column>
-      <mj-column width="50%" css-class="mobile-stack">
-        <mj-image
-          src="{{ organization_logo_url }}"
-          alt="{{ organization_name }} Logo"
-          width="60px"
-          border-radius="12px"
-          padding="8px 0 0 0"
-          align="center"
-          css-class="mobile-center"
-        />
-      </mj-column>
-    </mj-section>
+    <!-- Inviter Avatar and Organization Logo - Inline Layout -->
+    <mj-text align="center" padding="0 0 32px 0">
+      <img
+        src="{{ invited_by_avatar_url }}"
+        alt="{{ invited_by_name }} Avatar"
+        style="width: 60px; height: 60px; border-radius: 50%; margin-right: 8px; vertical-align: middle;"
+      />
+      <img
+        src="{{ organization_logo_url }}"
+        alt="{{ organization_name }} Logo"
+        style="width: 60px; height: 60px; border-radius: 12px; margin-left: 8px; vertical-align: middle;"
+      />
+    </mj-text>
 
     <!-- Main Heading -->
     <mj-text

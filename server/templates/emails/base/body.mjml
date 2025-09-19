@@ -77,6 +77,14 @@
         .footer-mobile .social-icons {
           margin-top: 12px !important;
         }
+        /* Mobile stacking for invitation images */
+        .mobile-stack {
+          width: 100% !important;
+          display: block !important;
+        }
+        .mobile-center {
+          text-align: center !important;
+        }
       }
 
       /* Desktop styles */
