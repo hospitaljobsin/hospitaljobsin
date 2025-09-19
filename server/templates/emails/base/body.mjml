@@ -63,6 +63,19 @@
         .hero-container img {
           height: 150px !important;
         }
+        .hide-mobile {
+          display: none !important;
+        }
+        .show-mobile {
+          display: table-cell !important;
+        }
+      }
+
+      /* Desktop styles */
+      @media only screen and (min-width: 641px) {
+        .show-mobile {
+          display: none !important;
+        }
       }
     </mj-style>
   </mj-head>
@@ -109,15 +122,13 @@
     </mj-section>
     <!-- Footer Section -->
     <mj-section padding="32px 20px 24px 20px" css-class="footer-wrapper">
-      <mj-column width="60%" vertical-align="middle">
-        {% block footer %}{% endblock %}
-
+      <mj-column width="50%" vertical-align="middle">
         <!-- Brand Footer -->
         <mj-text align="center" color="#9ca3af" font-size="13px" padding="0">
           Sent by Team {{ app_name }}
         </mj-text>
       </mj-column>
-      <mj-column width="40%" vertical-align="middle">
+      <mj-column width="50%" vertical-align="middle">
         <!-- Social Media Links -->
         <mj-social font-size="15px" icon-size="20px" mode="horizontal" padding="0" align="center" color="#9ca3af">
           <mj-social-element name="linkedin" href="https://linkedin.com/company/hospitaljobsin" background-color="#9ca3af" />

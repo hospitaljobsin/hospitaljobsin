@@ -27,7 +27,7 @@
 <!-- Job Card -->
 <mj-wrapper background-color="#ffffff" border="1px solid #e5e7eb" border-radius="12px" padding="0">
 <mj-section background-color="#ffffff" padding="24px 20px">
-  <!-- Header Row: Logo, Title/Company, and Salary -->
+  <!-- Header Row: Logo and Title/Company (Desktop and Mobile) -->
   <mj-column width="15%" padding="0 16px 12px 0">
     <mj-text padding="0" margin="0">
       <a href="{{ app_url }}/organizations/{{ job.organization.slug }}/jobs/{{ job.slug }}" style="text-decoration: none; color: inherit; display: block;">
@@ -54,7 +54,8 @@
     </mj-text>
   </mj-column>
 
-  <mj-column width="25%" padding="0 0 12px 0">
+  <!-- Salary Column - Hidden on mobile, shown on desktop -->
+  <mj-column width="25%" padding="0 0 12px 0" css-class="hide-mobile">
     <mj-text padding="0" margin="0" align="right">
       <a href="{{ app_url }}/organizations/{{ job.organization.slug }}/jobs/{{ job.slug }}" style="text-decoration: none; color: inherit; display: block;">
         <div style="color: #1f2937; font-size: 18px; font-weight: 600; line-height: 1.2; text-align: right;">
@@ -92,6 +93,23 @@
             {% set _ = details.append(job.work_mode|title) %}
           {% endif %}
           {{ details | join(" • ") }}
+        </div>
+      </a>
+    </mj-text>
+  </mj-column>
+
+  <!-- Mobile Salary Row - Only visible on mobile -->
+  <mj-column width="100%" padding="8px 0 0 0" css-class="show-mobile">
+    <mj-text padding="0" margin="0">
+      <a href="{{ app_url }}/organizations/{{ job.organization.slug }}/jobs/{{ job.slug }}" style="text-decoration: none; color: inherit; display: block;">
+        <div style="color: #1f2937; font-size: 16px; font-weight: 600; line-height: 1.2; margin-top: 8px;">
+          💰 {% if job.min_salary and job.max_salary %}
+            ₹ Not disclosed
+          {% elif job.min_salary %}
+            ₹ {{ "{:,}".format(job.min_salary) }}+
+          {% else %}
+            ₹ Not disclosed
+          {% endif %}
         </div>
       </a>
     </mj-text>
