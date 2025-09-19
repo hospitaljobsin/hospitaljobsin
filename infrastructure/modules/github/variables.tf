@@ -268,6 +268,12 @@ variable "process_job_alerts_lambda_function_arn" {
   default  = null
 }
 
+variable "send_job_alerts_lambda_function_arn" {
+  type     = string
+  nullable = true
+  default  = null
+}
+
 variable "actions_runner_security_group_id" {
   type        = string
   description = "The security group ID for the actions runner."
