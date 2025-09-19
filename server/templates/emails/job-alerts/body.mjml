@@ -103,7 +103,7 @@
     <mj-text padding="0" margin="0">
       <a href="{{ app_url }}/organizations/{{ job.organization.slug }}/jobs/{{ job.slug }}" style="text-decoration: none; color: inherit; display: block;">
         <div style="color: #1f2937; font-size: 16px; font-weight: 600; line-height: 1.2; margin-top: 8px;">
-          💰 {% if job.min_salary and job.max_salary %}
+          {% if job.min_salary and job.max_salary %}
             ₹ Not disclosed
           {% elif job.min_salary %}
             ₹ {{ "{:,}".format(job.min_salary) }}+
