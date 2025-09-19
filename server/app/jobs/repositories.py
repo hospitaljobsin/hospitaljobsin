@@ -535,35 +535,101 @@ class JobRepo:
                 {
                     "compound": {
                         "should": [
+                            # Exact phrase match in title (highest priority)
                             {
-                                "text": {
+                                "phrase": {
                                     "query": search_term,
                                     "path": "title",
-                                    "score": {"boost": {"value": 10}},
+                                    "score": {"boost": {"value": 100}},
                                 }
                             },
+                            # Exact phrase match in skills (very high priority for skill-based searches)
                             {
-                                "text": {
-                                    "query": search_term,
-                                    "path": "description_cleaned",
-                                    "score": {"boost": {"value": 5}},
-                                }
-                            },
-                            {
-                                "text": {
+                                "phrase": {
                                     "query": search_term,
                                     "path": "skills",
-                                    "score": {"boost": {"value": 8}},
+                                    "score": {"boost": {"value": 80}},
                                 }
                             },
+                            # Exact phrase match in description (high priority)
+                            {
+                                "phrase": {
+                                    "query": search_term,
+                                    "path": "description_cleaned",
+                                    "score": {"boost": {"value": 40}},
+                                }
+                            },
+                            # Multi-word search: if search term has multiple words,
+                            # require ALL words to be present in the same field
+                            *(
+                                [
+                                    {
+                                        "text": {
+                                            "query": search_term,
+                                            "path": "title",
+                                            "score": {"boost": {"value": 60}},
+                                        }
+                                    },
+                                    {
+                                        "text": {
+                                            "query": search_term,
+                                            "path": "skills",
+                                            "score": {"boost": {"value": 50}},
+                                        }
+                                    },
+                                    {
+                                        "text": {
+                                            "query": search_term,
+                                            "path": "description_cleaned",
+                                            "score": {"boost": {"value": 25}},
+                                        }
+                                    },
+                                ]
+                                if len(search_term.split()) > 1
+                                else []
+                            ),
+                            # Single word or very controlled fuzzy matching (much lower priority)
+                            *(
+                                [
+                                    {
+                                        "text": {
+                                            "query": search_term,
+                                            "path": "title",
+                                            "score": {"boost": {"value": 20}},
+                                            "fuzzy": {
+                                                "maxEdits": 1,
+                                                "prefixLength": 3,
+                                                "maxExpansions": 10,
+                                            },
+                                        }
+                                    },
+                                    {
+                                        "text": {
+                                            "query": search_term,
+                                            "path": "skills",
+                                            "score": {"boost": {"value": 15}},
+                                            "fuzzy": {
+                                                "maxEdits": 1,
+                                                "prefixLength": 3,
+                                                "maxExpansions": 10,
+                                            },
+                                        }
+                                    },
+                                ]
+                                if len(search_term.split()) == 1
+                                and len(search_term) > 4
+                                else []
+                            ),
+                            # Location match (lowest priority for search relevance)
                             {
                                 "text": {
                                     "query": search_term,
                                     "path": "location",
-                                    "score": {"boost": {"value": 3}},
+                                    "score": {"boost": {"value": 5}},
                                 }
                             },
-                        ]
+                        ],
+                        "minimumShouldMatch": 1,
                     }
                 }
             )
