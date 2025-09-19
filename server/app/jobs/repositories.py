@@ -446,6 +446,7 @@ class JobRepo:
         max_experience: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
+        cutoff_datetime: datetime | None = None,
         first: int | None = None,
         last: int | None = None,
         before: str | None = None,
@@ -678,6 +679,17 @@ class JobRepo:
                 }
             )
 
+        # Add cutoff datetime filter
+        if cutoff_datetime is not None:
+            search_query["compound"]["must"].append(
+                {
+                    "range": {
+                        "path": "_id",
+                        "gte": ObjectId.from_datetime(cutoff_datetime),
+                    }
+                }
+            )
+
         return await paginator.paginate(
             search_query=search_query,
             first=first,
@@ -767,7 +779,8 @@ class JobRepo:
         paginator: Paginator[Job, ObjectId] = Paginator(
             reverse=True,
             document_cls=Job,
-            paginate_by="id",
+            paginate_by="_id",
+            entity_paginate_by="id",
             # we apply our own ordering in the query, so this isn't needed!
             apply_ordering=False,
         )
@@ -1381,7 +1394,8 @@ class JobApplicantRepo:
         paginator: Paginator[JobApplicant, ObjectId] = Paginator(
             reverse=True,
             document_cls=JobApplicant,
-            paginate_by="id",
+            paginate_by="_id",
+            entity_paginate_by="id",
             # we add ordering in the pipeline/ search criteria, so we don't need to apply ordering here
             apply_ordering=False,
         )
@@ -1522,7 +1536,8 @@ class JobApplicantRepo:
         paginator: Paginator[JobApplicant, ObjectId] = Paginator(
             reverse=True,
             document_cls=JobApplicant,
-            paginate_by="id",
+            paginate_by="_id",
+            entity_paginate_by="id",
         )
 
         search_criteria = JobApplicant.find(
@@ -1551,7 +1566,8 @@ class JobApplicantRepo:
         paginator: Paginator[JobApplicant, ObjectId] = Paginator(
             reverse=True,
             document_cls=JobApplicant,
-            paginate_by="id",
+            paginate_by="_id",
+            entity_paginate_by="id",
         )
 
         search_criteria = JobApplicant.find(

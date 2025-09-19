@@ -28,6 +28,7 @@ from app.core.constants import (
     REGION_SEARCH_INDEX_NAME,
 )
 from app.geocoding.documents import Region
+from app.job_alerts.documents import JobAlert
 from app.jobs.documents import (
     BaseJobMetric,
     CoreJobMetric,
@@ -222,6 +223,7 @@ async def create_search_indexes(
         for index in existing_region_indexes
     )
     if not region_atlas_search_exists:
+        # TODO: make this case insensitive
         await region_collection.create_search_index(
             model=SearchIndexModel(
                 definition={
@@ -254,7 +256,7 @@ async def create_search_indexes(
                                 "type": "string",
                             },
                         },
-                    }
+                    },
                 },
                 name=REGION_SEARCH_INDEX_NAME,
                 type="search",
@@ -301,6 +303,7 @@ async def initialize_database(database_url: str, default_database_name: str) -> 
                 TemporaryTwoFactorChallenge,
                 OrganizationInvite,
                 Region,
+                JobAlert,
             ],
         )
         await create_search_indexes(client, default_database_name)

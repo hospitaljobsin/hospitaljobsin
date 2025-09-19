@@ -1,3 +1,4 @@
+import hashlib
 from datetime import UTC, date, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar, Literal
 
@@ -188,7 +189,7 @@ class Account(Document):
     two_factor_secret: str | None = None
     updated_at: datetime | None = None
 
-    avatar_url: str | None = None
+    internal_avatar_url: str | None = Field(default=None, alias="avatar_url")
 
     auth_providers: list[AuthProvider]
 
@@ -197,6 +198,8 @@ class Account(Document):
     terms_and_policy: TermsAndPolicy
 
     analytics_preference: AnalyticsPreference
+
+    whatsapp_job_alerts_enabled: bool = False
 
     webauthn_credentials: list[BackLink["WebAuthnCredential"]] = Field(  # type: ignore[call-overload]
         original_field="account"
@@ -210,6 +213,19 @@ class Account(Document):
     temporary_two_factor_challenges: list[BackLink["TemporaryTwoFactorChallenge"]] = (
         Field(original_field="account")  # type: ignore[call-overload]
     )
+
+    @property
+    def avatar_url(self) -> str:
+        """Return the account's avatar URL, or a placeholder."""
+        if self.internal_avatar_url is not None:
+            return self.internal_avatar_url
+        seed_hash = hashlib.md5(self.full_name.encode()).hexdigest()
+        return f"https://api.dicebear.com/9.x/shapes/png?seed={seed_hash}"
+
+    @avatar_url.setter
+    def avatar_url(self, value: str | None) -> None:
+        """Set the internal avatar URL."""
+        self.internal_avatar_url = value
 
     @property
     def has_2fa_enabled(self) -> bool:

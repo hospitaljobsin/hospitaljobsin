@@ -223,6 +223,14 @@ resource "github_actions_environment_variable" "staging_environment_teardown_lam
   value         = var.staging_environment_teardown_lambda_function_arn
 }
 
+resource "github_actions_environment_variable" "process_job_alerts_lambda_function_arn" {
+  count         = var.environment_name == "production" ? 1 : 0
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "PROCESS_JOB_ALERTS_LAMBDA_FUNCTION_ARN"
+  value         = var.process_job_alerts_lambda_function_arn
+}
+
 resource "github_actions_environment_variable" "actions_runner_security_group_id" {
   repository    = data.github_repository.this.name
   environment   = github_repository_environment.this.environment

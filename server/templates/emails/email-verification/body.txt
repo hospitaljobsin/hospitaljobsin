@@ -7,7 +7,7 @@ Use this token to verify your email. The token is only valid for {{ token_expire
 
 {% block content %}
 ************
-Hey there,
+Hey there, {{ email }}
 ************
 
 We received an email verification request. This token is only valid for {{ token_expires_in }}.

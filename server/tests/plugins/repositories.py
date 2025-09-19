@@ -1,11 +1,16 @@
 import pytest
 from aioinject import Container
-from app.accounts.repositories import AccountRepo, EmailVerificationTokenRepo
+from app.accounts.repositories import (
+    AccountRepo,
+    EmailVerificationTokenRepo,
+    PhoneNumberVerificationTokenRepo,
+)
 from app.auth.repositories import (
     SessionRepo,
     WebAuthnChallengeRepo,
     WebAuthnCredentialRepo,
 )
+from app.job_alerts.repositories import JobAlertRepo
 from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
 
 
@@ -61,3 +66,19 @@ async def organization_member_repo(
 ) -> OrganizationMemberRepo:
     async with container.context() as ctx:
         return await ctx.resolve(OrganizationMemberRepo)
+
+
+@pytest.fixture(scope="session")
+async def job_alert_repo(
+    container: Container,
+) -> JobAlertRepo:
+    async with container.context() as ctx:
+        return await ctx.resolve(JobAlertRepo)
+
+
+@pytest.fixture(scope="session")
+async def phone_number_verification_token_repo(
+    container: Container,
+) -> PhoneNumberVerificationTokenRepo:
+    async with container.context() as ctx:
+        return await ctx.resolve(PhoneNumberVerificationTokenRepo)

@@ -3,7 +3,7 @@ import type { JobDetailViewFragment$key } from '@/__generated__/JobDetailViewFra
 import type { TrendingJobListFragment$key } from '@/__generated__/TrendingJobListFragment.graphql';
 import useJobImpressionTracker from '@/lib/hooks/useJobImpressionTracker';
 import dynamic from 'next/dynamic';
-import { graphql, useFragment } from 'react-relay';
+import { graphql, readInlineData } from 'react-relay';
 import invariant from 'tiny-invariant';
 import DashboardHeaderSkeleton from '../layout/DashboardHeaderSkeleton';
 import JobDetails from './JobDetails';
@@ -19,7 +19,7 @@ const JobDetailViewFragment = graphql`
  fragment JobDetailViewFragment on Query @argumentDefinitions(
 	slug: { type: "String!"}
 	jobSlug: { type: "String!"}
-    ) {
+    ) @inline {
 		...JobDetailsFragment @arguments(slug: $slug, jobSlug: $jobSlug)
 		organization(slug: $slug) {
 		__typename
@@ -37,7 +37,7 @@ const JobDetailViewFragment = graphql`
 `;
 
 export default function JobDetailView(props: { rootQuery: JobDetailViewFragment$key; trendingData: TrendingJobListFragment$key }) {
-	const query = useFragment(JobDetailViewFragment, props.rootQuery);
+	const query = readInlineData(JobDetailViewFragment, props.rootQuery);
 	invariant(query.organization.__typename === 'Organization', "Expected 'Organization' node type.");
 	invariant(query.organization.job.__typename === 'Job', "Expected 'Job' node type.");
 

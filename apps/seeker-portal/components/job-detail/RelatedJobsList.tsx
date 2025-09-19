@@ -1,10 +1,6 @@
-'use client';
-import type { pageJobDetailViewQuery } from '@/__generated__/pageJobDetailViewQuery.graphql';
 import type { RelatedJobsListFragment$key } from '@/__generated__/RelatedJobsListFragment.graphql';
 import { SearchIcon } from 'lucide-react';
-import { useTransition } from 'react';
-import { usePaginationFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { graphql, readInlineData } from 'relay-runtime';
 import RelatedJob from './AuxiliaryJob';
 import RelatedJobsListSkeleton from './AuxiliaryJobsListSkeleton';
 
@@ -14,7 +10,7 @@ const RelatedJobsListFragment = graphql`
   @argumentDefinitions(
     cursor: { type: "ID" }
     count: { type: "Int", defaultValue: 10 }
-  ){
+  ) @inline {
     relatedJobs(after: $cursor, first: $count)
       @connection(key: "RelatedJobsListFragment_relatedJobs") {
       edges {
@@ -31,22 +27,9 @@ const RelatedJobsListFragment = graphql`
 `;
 
 export default function RelatedJobsList({ job }: { job: RelatedJobsListFragment$key }) {
-	const [_isPending, startTransition] = useTransition();
-	const { data, loadNext, isLoadingNext } = usePaginationFragment<pageJobDetailViewQuery, RelatedJobsListFragment$key>(
-		RelatedJobsListFragment,
-		job
-	);
+	const data = readInlineData(RelatedJobsListFragment, job);
 
-	const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-		const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-		const isNearBottom = scrollTop + clientHeight >= scrollHeight - 100;
-
-		if (isNearBottom && data.relatedJobs.pageInfo.hasNextPage && !isLoadingNext) {
-			startTransition(() => {
-				loadNext(25);
-			});
-		}
-	};
+	const handleScroll = () => {};
 
 	if (data.relatedJobs.edges.length === 0 && !data.relatedJobs.pageInfo.hasNextPage) {
 		return null;

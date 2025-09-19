@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e108eba09666581a487f9caf45d76dab>>
+ * @generated SignedSource<<0973cdbee4e4101c46782215f7ac2209>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,10 +8,20 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import type { ReaderFragment } from 'relay-runtime';
+import type { ReaderInlineDataFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type TrendingJobListFragment$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"TrendingJobListInternalFragment">;
+  readonly trendingJobs: {
+    readonly edges: ReadonlyArray<{
+      readonly node: {
+        readonly id: string;
+        readonly " $fragmentSpreads": FragmentRefs<"AuxiliaryJobFragment" | "JobControlsFragment">;
+      };
+    }>;
+    readonly pageInfo: {
+      readonly hasNextPage: boolean;
+    };
+  };
   readonly " $fragmentType": "TrendingJobListFragment";
 };
 export type TrendingJobListFragment$key = {
@@ -19,22 +29,11 @@ export type TrendingJobListFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"TrendingJobListFragment">;
 };
 
-const node: ReaderFragment = {
-  "argumentDefinitions": [],
-  "kind": "Fragment",
-  "metadata": null,
-  "name": "TrendingJobListFragment",
-  "selections": [
-    {
-      "args": null,
-      "kind": "FragmentSpread",
-      "name": "TrendingJobListInternalFragment"
-    }
-  ],
-  "type": "Query",
-  "abstractKey": null
+const node: ReaderInlineDataFragment = {
+  "kind": "InlineDataFragment",
+  "name": "TrendingJobListFragment"
 };
 
-(node as any).hash = "79025a6a50b72dc9f3975dd7c75c0a9e";
+(node as any).hash = "5bd0a880cd9e93b464a77dbd3e4236e4";
 
 export default node;

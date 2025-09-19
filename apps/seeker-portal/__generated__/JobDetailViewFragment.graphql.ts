@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cb097240ab6fff9e39839f7457c1839d>>
+ * @generated SignedSource<<fc18633611ae41bd03662db4d93a5d12>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import type { ReaderFragment } from 'relay-runtime';
+import type { ReaderInlineDataFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobDetailViewFragment$data = {
   readonly organization: {
@@ -35,112 +35,11 @@ export type JobDetailViewFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"JobDetailViewFragment">;
 };
 
-const node: ReaderFragment = (function(){
-var v0 = {
-  "kind": "Variable",
-  "name": "slug",
-  "variableName": "slug"
-},
-v1 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "__typename",
-  "storageKey": null
+const node: ReaderInlineDataFragment = {
+  "kind": "InlineDataFragment",
+  "name": "JobDetailViewFragment"
 };
-return {
-  "argumentDefinitions": [
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "jobSlug"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "slug"
-    }
-  ],
-  "kind": "Fragment",
-  "metadata": null,
-  "name": "JobDetailViewFragment",
-  "selections": [
-    {
-      "args": [
-        {
-          "kind": "Variable",
-          "name": "jobSlug",
-          "variableName": "jobSlug"
-        },
-        (v0/*: any*/)
-      ],
-      "kind": "FragmentSpread",
-      "name": "JobDetailsFragment"
-    },
-    {
-      "alias": null,
-      "args": [
-        (v0/*: any*/)
-      ],
-      "concreteType": null,
-      "kind": "LinkedField",
-      "name": "organization",
-      "plural": false,
-      "selections": [
-        (v1/*: any*/),
-        {
-          "kind": "InlineFragment",
-          "selections": [
-            {
-              "alias": null,
-              "args": [
-                {
-                  "kind": "Variable",
-                  "name": "slug",
-                  "variableName": "jobSlug"
-                }
-              ],
-              "concreteType": null,
-              "kind": "LinkedField",
-              "name": "job",
-              "plural": false,
-              "selections": [
-                (v1/*: any*/),
-                {
-                  "kind": "InlineFragment",
-                  "selections": [
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "id",
-                      "storageKey": null
-                    },
-                    {
-                      "args": null,
-                      "kind": "FragmentSpread",
-                      "name": "RelatedJobsListFragment"
-                    }
-                  ],
-                  "type": "Job",
-                  "abstractKey": null
-                }
-              ],
-              "storageKey": null
-            }
-          ],
-          "type": "Organization",
-          "abstractKey": null
-        }
-      ],
-      "storageKey": null
-    }
-  ],
-  "type": "Query",
-  "abstractKey": null
-};
-})();
 
-(node as any).hash = "9af43e33caa24eb1d54c165f0286dd32";
+(node as any).hash = "f3fc49c326e9ce0afef72a0d1e0370f4";
 
 export default node;

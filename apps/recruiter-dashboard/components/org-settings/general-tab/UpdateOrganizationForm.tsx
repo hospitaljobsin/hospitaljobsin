@@ -1,12 +1,13 @@
-import type { UpdateOrganizationFormBannerPresignedUrlMutation } from "@/__generated__/UpdateOrganizationFormBannerPresignedUrlMutation.graphql";
-import type { UpdateOrganizationFormFragment$key } from "@/__generated__/UpdateOrganizationFormFragment.graphql";
-import type { UpdateOrganizationFormLogoPresignedUrlMutation } from "@/__generated__/UpdateOrganizationFormLogoPresignedUrlMutation.graphql";
-import type { UpdateOrganizationFormMutation as UpdateOrganizationFormMutationType } from "@/__generated__/UpdateOrganizationFormMutation.graphql";
-import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
-import { uploadFileToS3 } from "@/lib/presignedUrl";
+import type { UpdateOrganizationFormBannerPresignedUrlMutation } from '@/__generated__/UpdateOrganizationFormBannerPresignedUrlMutation.graphql';
+import type { UpdateOrganizationFormFragment$key } from '@/__generated__/UpdateOrganizationFormFragment.graphql';
+import type { UpdateOrganizationFormLogoPresignedUrlMutation } from '@/__generated__/UpdateOrganizationFormLogoPresignedUrlMutation.graphql';
+import type { UpdateOrganizationFormMutation as UpdateOrganizationFormMutationType } from '@/__generated__/UpdateOrganizationFormMutation.graphql';
+import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
+import { uploadFileToS3 } from '@/lib/presignedUrl';
 import {
+	addToast,
 	Button,
 	Card,
 	CardBody,
@@ -18,17 +19,16 @@ import {
 	ModalFooter,
 	ModalHeader,
 	Textarea,
-	addToast,
-	useDisclosure,
-} from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import NextImage from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import type { Area } from "react-easy-crop";
-import Cropper from "react-easy-crop";
-import { Controller, useForm } from "react-hook-form";
-import { graphql, useFragment, useMutation } from "react-relay";
-import { z } from "zod";
+	useDisclosure
+} from '@heroui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import NextImage from 'next/image';
+import { useCallback, useEffect, useState } from 'react';
+import type { Area } from 'react-easy-crop';
+import Cropper from 'react-easy-crop';
+import { Controller, useForm } from 'react-hook-form';
+import { graphql, useFragment, useMutation } from 'react-relay';
+import { z } from 'zod';
 
 const UpdateOrganizationFormMutation = graphql`
 mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $slug: String!, $location: String, $website: String, $logoUrl: String, $bannerUrl: String, $description: String) {
@@ -93,23 +93,20 @@ type Props = {
 };
 
 const formSchema = z.object({
-	name: z.string().min(1, { message: "Organization name is required" }),
-	slug: z.string().min(1, { message: "Slug is required" }),
-	website: z.union([
-		z.nullable(z.optional(z.string().url({ message: "Invalid URL" }))),
-		z.literal(""),
-	]),
+	name: z.string().min(1, { message: 'Organization name is required' }),
+	slug: z.string().min(1, { message: 'Slug is required' }),
+	website: z.union([z.nullable(z.optional(z.string().url({ message: 'Invalid URL' }))), z.literal('')]),
 	description: z.union([
 		z.nullable(
 			z.optional(
 				z.string().max(1024, {
-					message: "Description must be less than 1024 characters",
-				}),
-			),
+					message: 'Description must be less than 1024 characters'
+				})
+			)
 		),
-		z.literal(""),
+		z.literal('')
 	]),
-	location: z.nullable(z.string()),
+	location: z.nullable(z.string())
 });
 
 export default function UpdateOrganizationForm({ rootQuery }: Props) {
@@ -124,24 +121,13 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 	const [zoom, setZoom] = useState(1);
 	const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 	const [croppedImage, setCroppedImage] = useState<string | null>(null);
-	const [croppingType, setCroppingType] = useState<"logo" | "banner">("logo");
+	const [croppingType, setCroppingType] = useState<'logo' | 'banner'>('logo');
 
-	const [commitMutation, isMutationInFlight] =
-		useMutation<UpdateOrganizationFormMutationType>(
-			UpdateOrganizationFormMutation,
-		);
-	const [
-		commitCreateOrganizationLogoPresignedUrlMutation,
-		isCreateOrganizationLogoPresignedUrlMutationInflight,
-	] = useMutation<UpdateOrganizationFormLogoPresignedUrlMutation>(
-		CreateOrganizationLogoPresignedUrlMutation,
-	);
-	const [
-		commitCreateOrganizationBannerPresignedUrlMutation,
-		isCreateOrganizationBannerPresignedUrlMutationInflight,
-	] = useMutation<UpdateOrganizationFormBannerPresignedUrlMutation>(
-		CreateOrganizationBannerPresignedUrlMutation,
-	);
+	const [commitMutation, isMutationInFlight] = useMutation<UpdateOrganizationFormMutationType>(UpdateOrganizationFormMutation);
+	const [commitCreateOrganizationLogoPresignedUrlMutation, isCreateOrganizationLogoPresignedUrlMutationInflight] =
+		useMutation<UpdateOrganizationFormLogoPresignedUrlMutation>(CreateOrganizationLogoPresignedUrlMutation);
+	const [commitCreateOrganizationBannerPresignedUrlMutation, isCreateOrganizationBannerPresignedUrlMutationInflight] =
+		useMutation<UpdateOrganizationFormBannerPresignedUrlMutation>(CreateOrganizationBannerPresignedUrlMutation);
 	const data = useFragment(UpdateOrganizationFormFragment, rootQuery);
 
 	const {
@@ -150,16 +136,16 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 		setError,
 		getFieldState,
 		reset,
-		formState: { errors, isSubmitting, isDirty },
+		formState: { errors, isSubmitting, isDirty }
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			name: data.name,
 			slug: data.slug,
 			website: data.website ?? null,
-			description: data.description ?? "",
-			location: data.location ?? null,
-		},
+			description: data.description ?? '',
+			location: data.location ?? null
+		}
 	});
 
 	async function handleLogoChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -170,14 +156,12 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			const url = URL.createObjectURL(file);
 			setPreviewUrl(url);
 			// Set cropping type and open the cropper modal
-			setCroppingType("logo");
+			setCroppingType('logo');
 			onOpen();
 		}
 	}
 
-	async function handleBannerChange(
-		event: React.ChangeEvent<HTMLInputElement>,
-	) {
+	async function handleBannerChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const file = event.target.files?.[0];
 		if (file) {
 			setSelectedBanner(file);
@@ -185,101 +169,75 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			const url = URL.createObjectURL(file);
 			setBannerPreviewUrl(url);
 			// Set cropping type and open the cropper modal
-			setCroppingType("banner");
+			setCroppingType('banner');
 			onOpen();
 		}
 	}
 
-	const onCropComplete = useCallback(
-		(croppedArea: Area, croppedAreaPixels: Area) => {
-			setCroppedAreaPixels(croppedAreaPixels);
-		},
-		[],
-	);
+	const onCropComplete = useCallback((croppedArea: Area, croppedAreaPixels: Area) => {
+		setCroppedAreaPixels(croppedAreaPixels);
+	}, []);
 
-	const createCroppedImage = useCallback(
-		async (imageSrc: string, pixelCrop: Area): Promise<string> => {
-			const image = new Image();
-			image.src = imageSrc;
-			return new Promise((resolve) => {
-				image.onload = () => {
-					const canvas = document.createElement("canvas");
-					const ctx = canvas.getContext("2d");
+	const createCroppedImage = useCallback(async (imageSrc: string, pixelCrop: Area): Promise<string> => {
+		const image = new Image();
+		image.src = imageSrc;
+		return new Promise(resolve => {
+			image.onload = () => {
+				const canvas = document.createElement('canvas');
+				const ctx = canvas.getContext('2d');
 
-					if (!ctx) {
-						resolve(imageSrc);
-						return;
-					}
+				if (!ctx) {
+					resolve(imageSrc);
+					return;
+				}
 
-					canvas.width = pixelCrop.width;
-					canvas.height = pixelCrop.height;
+				canvas.width = pixelCrop.width;
+				canvas.height = pixelCrop.height;
 
-					ctx.drawImage(
-						image,
-						pixelCrop.x,
-						pixelCrop.y,
-						pixelCrop.width,
-						pixelCrop.height,
-						0,
-						0,
-						pixelCrop.width,
-						pixelCrop.height,
-					);
+				ctx.drawImage(image, pixelCrop.x, pixelCrop.y, pixelCrop.width, pixelCrop.height, 0, 0, pixelCrop.width, pixelCrop.height);
 
-					canvas.toBlob(
-						(blob) => {
-							if (blob) {
-								const croppedImageUrl = URL.createObjectURL(blob);
-								resolve(croppedImageUrl);
-							} else {
-								resolve(imageSrc);
-							}
-						},
-						"image/jpeg",
-						0.9,
-					);
-				};
-			});
-		},
-		[],
-	);
+				canvas.toBlob(
+					blob => {
+						if (blob) {
+							const croppedImageUrl = URL.createObjectURL(blob);
+							resolve(croppedImageUrl);
+						} else {
+							resolve(imageSrc);
+						}
+					},
+					'image/jpeg',
+					0.9
+				);
+			};
+		});
+	}, []);
 
 	const handleCropSave = useCallback(async () => {
-		const imageSource = croppingType === "logo" ? previewUrl : bannerPreviewUrl;
+		const imageSource = croppingType === 'logo' ? previewUrl : bannerPreviewUrl;
 		if (imageSource && croppedAreaPixels) {
 			try {
-				const croppedImageUrl = await createCroppedImage(
-					imageSource,
-					croppedAreaPixels,
-				);
+				const croppedImageUrl = await createCroppedImage(imageSource, croppedAreaPixels);
 				setCroppedImage(croppedImageUrl);
 
-				if (croppingType === "logo") {
+				if (croppingType === 'logo') {
 					setPreviewUrl(croppedImageUrl);
-				} else if (croppingType === "banner") {
+				} else if (croppingType === 'banner') {
 					setBannerPreviewUrl(croppedImageUrl);
 				}
 
 				onClose();
 			} catch (error) {
-				console.error("Error creating cropped image:", error);
+				console.error('Error creating cropped image:', error);
 			}
 		}
-	}, [
-		previewUrl,
-		bannerPreviewUrl,
-		croppedAreaPixels,
-		createCroppedImage,
-		onClose,
-		croppingType,
-	]);
+	}, [previewUrl, bannerPreviewUrl, croppedAreaPixels, createCroppedImage, onClose, croppingType]);
 
 	const handleCropCancel = useCallback(() => {
 		onClose();
-		if (croppingType === "logo") {
+		if (croppingType === 'logo') {
 			setSelectedLogo(null);
 			setPreviewUrl(null);
-		} else if (croppingType === "banner") {
+		} else if (croppingType === 'banner') {
 			setSelectedBanner(null);
 			setBannerPreviewUrl(null);
 		}
@@ -287,24 +245,22 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 		setZoom(1);
 		setCroppedAreaPixels(null);
 		setCroppedImage(null);
-		setCroppingType("logo");
+		setCroppingType('logo');
 	}, [onClose, croppingType]);
 
 	function getPresignedUrl(logo: File): Promise<string | null> {
 		return new Promise((resolve, reject) => {
 			commitCreateOrganizationLogoPresignedUrlMutation({
 				variables: {
-					contentType: logo.type,
+					contentType: logo.type
 				},
-				onCompleted: (response) => {
-					resolve(
-						response.createOrganizationLogoPresignedUrl?.presignedUrl || null,
-					);
+				onCompleted: response => {
+					resolve(response.createOrganizationLogoPresignedUrl?.presignedUrl || null);
 				},
-				onError: (error) => {
-					console.error("Error fetching presigned URL:", error);
+				onError: error => {
+					console.error('Error fetching presigned URL:', error);
 					reject(error);
-				},
+				}
 			});
 		});
 	}
@@ -313,17 +269,15 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 		return new Promise((resolve, reject) => {
 			commitCreateOrganizationBannerPresignedUrlMutation({
 				variables: {
-					contentType: banner.type,
+					contentType: banner.type
 				},
-				onCompleted: (response) => {
-					resolve(
-						response.createOrganizationBannerPresignedUrl?.presignedUrl || null,
-					);
+				onCompleted: response => {
+					resolve(response.createOrganizationBannerPresignedUrl?.presignedUrl || null);
 				},
-				onError: (error) => {
-					console.error("Error fetching banner presigned URL:", error);
+				onError: error => {
+					console.error('Error fetching banner presigned URL:', error);
 					reject(error);
-				},
+				}
 			});
 		});
 	}
@@ -337,7 +291,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			if (presignedUrl) {
 				await uploadFileToS3(presignedUrl, selectedLogo);
 				// Extract the URL from the presignedUrl
-				logoUrlResult = presignedUrl.split("?")[0];
+				logoUrlResult = presignedUrl.split('?')[0];
 			}
 		}
 
@@ -346,7 +300,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			if (presignedUrl) {
 				await uploadFileToS3(presignedUrl, selectedBanner);
 				// Extract the URL from the presignedUrl
-				bannerUrlResult = presignedUrl.split("?")[0];
+				bannerUrlResult = presignedUrl.split('?')[0];
 			}
 		}
 
@@ -359,11 +313,11 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 				logoUrl: logoUrlResult,
 				bannerUrl: bannerUrlResult,
 				description: formData.description || null,
-				location: formData.location,
+				location: formData.location
 			},
 			onCompleted(response) {
-				if (response.updateOrganization.__typename === "Organization") {
-					if (getFieldState("slug").isDirty) {
+				if (response.updateOrganization.__typename === 'Organization') {
+					if (getFieldState('slug').isDirty) {
 						// slug changed, redirect to new URL
 						window.location.href = `${links.organizationDetail(response.updateOrganization.slug)}${links.organizationDetailSettings}`;
 					} else {
@@ -373,7 +327,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 							slug: response.updateOrganization.slug,
 							website: response.updateOrganization.website,
 							description: response.updateOrganization.description,
-							location: response.updateOrganization.location,
+							location: response.updateOrganization.location
 						});
 						setSelectedLogo(null);
 						setPreviewUrl(null);
@@ -382,31 +336,23 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 						setBannerPreviewUrl(null);
 					}
 					// Handle successful update
-				} else if (
-					response.updateOrganization.__typename === "OrganizationNotFoundError"
-				) {
+				} else if (response.updateOrganization.__typename === 'OrganizationNotFoundError') {
 					addToast({
-						description: "An unexpected error occurred. Please try again.",
-						color: "danger",
+						description: 'An unexpected error occurred. Please try again.',
+						color: 'danger'
 					});
-				} else if (
-					response.updateOrganization.__typename ===
-					"OrganizationSlugInUseError"
-				) {
+				} else if (response.updateOrganization.__typename === 'OrganizationSlugInUseError') {
 					// Handle slug in use error
-					setError("slug", {
-						message: response.updateOrganization.message,
+					setError('slug', {
+						message: response.updateOrganization.message
 					});
-				} else if (
-					response.updateOrganization.__typename ===
-					"OrganizationAuthorizationError"
-				) {
+				} else if (response.updateOrganization.__typename === 'OrganizationAuthorizationError') {
 					addToast({
-						description: "You are not authorized to perform this action.",
-						color: "danger",
+						description: 'You are not authorized to perform this action.',
+						color: 'danger'
 					});
 				}
-			},
+			}
 		});
 	}
 
@@ -427,123 +373,106 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 
 	return (
 		<>
-			<form onSubmit={handleSubmit(onSubmit)} className="space-y-12 w-full">
-				<Card className="p-6 space-y-6" shadow="none">
+			<form onSubmit={handleSubmit(onSubmit)} className='space-y-12 w-full'>
+				<Card className='p-6 space-y-6' shadow='none'>
 					<CardBody>
-						<div className="w-full flex flex-col md:flex-row gap-12 mb-12 items-start">
-							<div className="w-full flex flex-col gap-12">
+						<div className='w-full flex flex-col md:flex-row gap-12 mb-12 items-start'>
+							<div className='w-full flex flex-col gap-12'>
 								<Controller
-									name="name"
+									name='name'
 									control={control}
 									render={({ field }) => (
 										<Input
 											{...field}
 											fullWidth
-											label="Organization Name"
-											placeholder="Add organization name"
+											label='Organization Name'
+											placeholder='Add organization name'
 											errorMessage={errors.name?.message}
 											isInvalid={!!errors.name}
 										/>
 									)}
 								/>
 								<Controller
-									name="slug"
+									name='slug'
 									control={control}
 									render={({ field }) => (
 										<Input
 											{...field}
 											fullWidth
-											label="Subdomain"
-											placeholder="Add subdomain"
+											label='Subdomain'
+											placeholder='Add subdomain'
 											errorMessage={errors.slug?.message}
 											isInvalid={!!errors.slug}
-											endContent={
-												<span className="text-default-400 text-md">
-													.{env.NEXT_PUBLIC_ROOT_DOMAIN}
-												</span>
-											}
+											endContent={<span className='text-default-400 text-md'>.{env.NEXT_PUBLIC_ROOT_DOMAIN}</span>}
 										/>
 									)}
 								/>
 							</div>
-							<div className="flex flex-col gap-2 flex-shrink-0">
-								<p className="text-tiny text-foreground-500">
-									Organization Logo
-								</p>
-								<div className="flex flex-col items-start gap-4">
-									<div className="relative w-28 h-28">
+							<div className='flex flex-col gap-2 flex-shrink-0'>
+								<p className='text-tiny text-foreground-500'>Organization Logo</p>
+								<div className='flex flex-col items-start gap-4'>
+									<div className='relative w-28 h-28'>
 										<NextImage
-											src={
-												previewUrl ||
-												(selectedLogo
-													? URL.createObjectURL(selectedLogo)
-													: data.logoUrl)
-											}
-											alt="Organization Logo"
-											className="object-cover rounded-md border"
+											src={previewUrl || (selectedLogo ? URL.createObjectURL(selectedLogo) : data.logoUrl)}
+											alt='Organization Logo'
+											className='object-cover rounded-md border'
 											fill
 										/>
 									</div>
-									<Button as="label" variant="bordered" size="sm">
+									<Button as='label' variant='bordered' size='sm'>
 										Upload new logo
-										<input
-											type="file"
-											accept="image/*"
-											className="hidden"
-											multiple={false}
-											onChange={handleLogoChange}
-										/>
+										<input type='file' accept='image/*' className='hidden' multiple={false} onChange={handleLogoChange} />
 									</Button>
 								</div>
 							</div>
 						</div>
 
-						<div className="mb-12">
+						<div className='mb-12'>
 							<Controller
-								name="description"
+								name='description'
 								control={control}
 								render={({ field }) => (
 									<Textarea
 										{...field}
 										fullWidth
-										label="Description"
-										placeholder="Add description"
+										label='Description'
+										placeholder='Add description'
 										errorMessage={errors.description?.message}
 										isInvalid={!!errors.description}
-										value={field.value || ""}
+										value={field.value || ''}
 									/>
 								)}
 							/>
 						</div>
-						<div className="mb-12">
+						<div className='mb-12'>
 							<Controller
-								name="website"
+								name='website'
 								control={control}
 								render={({ field }) => (
 									<Input
 										{...field}
 										fullWidth
-										label="Website"
-										placeholder="Add website URL"
+										label='Website'
+										placeholder='Add website URL'
 										errorMessage={errors.website?.message}
 										isInvalid={!!errors.website}
-										value={field.value || ""}
+										value={field.value || ''}
 									/>
 								)}
 							/>
 						</div>
 
-						<div className="mb-12">
+						<div className='mb-12'>
 							<Controller
-								name="location"
+								name='location'
 								control={control}
 								render={({ field }) => (
 									<LocationAutocomplete
-										label="Location"
-										placeholder="Add organization location"
-										value={field.value ?? ""}
+										label='Location'
+										placeholder='Add organization location'
+										value={field.value ?? ''}
 										onValueChange={field.onChange}
-										onChange={(location) => {
+										onChange={location => {
 											field.onChange(location.displayName);
 										}}
 										errorMessage={errors.location?.message}
@@ -553,35 +482,25 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 							/>
 						</div>
 
-						<div className="mb-12">
-							<div className="flex flex-col gap-4">
-								<p className="text-tiny text-foreground-500">
-									Organization Banner
-								</p>
-								<p className="text-tiny text-foreground-400">
-									Upload a horizontal landscape image that will appear on social
-									media links
-								</p>
-								<div className="flex flex-col items-start gap-4">
+						<div className='mb-12'>
+							<div className='flex flex-col gap-4'>
+								<p className='text-tiny text-foreground-500'>Organization Banner</p>
+								<p className='text-tiny text-foreground-400'>Upload a horizontal landscape image that will appear on social media links</p>
+								<div className='flex flex-col items-start gap-4'>
 									{(bannerPreviewUrl || data.bannerUrl) && (
-										<div className="relative w-full max-w-md h-32">
+										<div className='w-full max-w-md'>
 											<NextImage
 												src={bannerPreviewUrl || data.bannerUrl}
-												alt="Organization Banner"
-												className="object-cover rounded-md border"
-												fill
+												alt='Organization Banner'
+												className='object-cover rounded-md border'
+												width={1200}
+												height={630}
 											/>
 										</div>
 									)}
-									<Button as="label" variant="bordered" size="sm">
+									<Button as='label' variant='bordered' size='sm'>
 										Upload new banner
-										<input
-											type="file"
-											accept="image/*"
-											className="hidden"
-											multiple={false}
-											onChange={handleBannerChange}
-										/>
+										<input type='file' accept='image/*' className='hidden' multiple={false} onChange={handleBannerChange} />
 									</Button>
 								</div>
 							</div>
@@ -589,8 +508,8 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 					</CardBody>
 					<CardFooter>
 						<Button
-							type="submit"
-							color="primary"
+							type='submit'
+							color='primary'
 							isDisabled={!isDirty && !selectedLogo && !selectedBanner}
 							isLoading={
 								isSubmitting ||
@@ -606,40 +525,34 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			</form>
 
 			{/* Cropper Modal */}
-			<Modal isOpen={isOpen} onOpenChange={onClose} size="2xl">
+			<Modal isOpen={isOpen} onOpenChange={onClose} size='2xl'>
 				<ModalContent>
-					<ModalHeader className="flex flex-col gap-1">
-						Crop Organization {croppingType === "logo" ? "Logo" : "Banner"}
-					</ModalHeader>
+					<ModalHeader className='flex flex-col gap-1'>Crop Organization {croppingType === 'logo' ? 'Logo' : 'Banner'}</ModalHeader>
 					<ModalBody>
-						<div className="relative w-full h-80">
+						<div className='relative w-full h-80'>
 							<Cropper
-								image={
-									croppingType === "logo"
-										? previewUrl || undefined
-										: (bannerPreviewUrl ?? undefined)
-								}
+								image={croppingType === 'logo' ? previewUrl || undefined : (bannerPreviewUrl ?? undefined)}
 								crop={crop}
 								zoom={zoom}
-								aspect={croppingType === "logo" ? 1 : 16 / 9}
+								aspect={croppingType === 'logo' ? 1 : 16 / 9}
 								onCropChange={setCrop}
 								onZoomChange={setZoom}
 								onCropComplete={onCropComplete}
 								style={{
 									containerStyle: {
-										width: "100%",
-										height: "100%",
-										backgroundColor: "#000",
-									},
+										width: '100%',
+										height: '100%',
+										backgroundColor: '#000'
+									}
 								}}
 							/>
 						</div>
 					</ModalBody>
 					<ModalFooter>
-						<Button variant="light" onPress={handleCropCancel}>
+						<Button variant='light' onPress={handleCropCancel}>
 							Cancel
 						</Button>
-						<Button color="primary" onPress={handleCropSave}>
+						<Button color='primary' onPress={handleCropSave}>
 							Crop & Save
 						</Button>
 					</ModalFooter>

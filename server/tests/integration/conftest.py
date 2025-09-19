@@ -1,9 +1,11 @@
 from collections.abc import AsyncIterator
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from app.accounts.documents import Account
 from app.auth.repositories import SessionRepo
 from app.config import AuthSettings, SecretSettings
+from app.core.constants import SUDO_MODE_EXPIRES_IN
 from asgi_lifespan import LifespanManager
 from httpx import ASGITransport, AsyncClient, Cookies
 
@@ -124,5 +126,55 @@ async def password_auth_graphql_client(
 ) -> GraphQLClient:
     return GraphQLClient(
         client=password_auth_http_client,
+        endpoint="/graphql",
+    )
+
+
+@pytest.fixture
+async def password_auth_sudo_http_client(
+    lifespan_manager: LifespanManager,
+    password_account: Account,
+    session_repo,  # type: ignore[misc] # SessionRepo fixture
+    auth_settings: AuthSettings,
+    secret_settings: SecretSettings,
+) -> AsyncIterator[AsyncClient]:
+    """Create authenticated HTTP client with sudo mode enabled."""
+    session_token = await session_repo.create(
+        password_account, user_agent="test-agent", ip_address="192.168.1.1"
+    )
+
+    # Enable sudo mode
+    sudo_mode_expires_at = datetime.now(UTC) + timedelta(seconds=SUDO_MODE_EXPIRES_IN)
+
+    # Create session data with sudo mode and encrypt it as JWE cookie
+    session_data = {
+        "session_token": session_token,
+        "sudo_mode_expires_at": sudo_mode_expires_at.isoformat(),
+    }
+    encrypted_session = encrypt_session_data(secret_settings, session_data)
+
+    cookies = Cookies()
+    cookies.set(
+        auth_settings.session_user_cookie_name, encrypted_session.decode("utf-8")
+    )
+
+    async with AsyncClient(
+        transport=ASGITransport(
+            app=lifespan_manager.app,  # type: ignore[arg-type]
+        ),
+        base_url="https://localtest.me",
+        follow_redirects=True,
+        cookies=cookies,
+    ) as client:
+        yield client
+
+
+@pytest.fixture
+async def password_auth_sudo_graphql_client(
+    password_auth_sudo_http_client: AsyncClient,
+) -> GraphQLClient:
+    """Create authenticated GraphQL client with sudo mode enabled."""
+    return GraphQLClient(
+        client=password_auth_sudo_http_client,
         endpoint="/graphql",
     )

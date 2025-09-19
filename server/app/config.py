@@ -376,6 +376,10 @@ class AWSSettings(CoreSettings):
     aws_access_key_id: str | None = None
 
 
+class JobAlertsSettings(CoreSettings):
+    sqs_job_alerts_queue_url: str
+
+
 class AuthSettings(CoreSettings):
     session_user_cookie_name: str = "user_session"
 

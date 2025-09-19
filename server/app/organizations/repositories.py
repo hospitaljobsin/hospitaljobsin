@@ -4,7 +4,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Literal
 
 from beanie import PydanticObjectId
-from beanie.operators import And, In, Set
+from beanie.operators import And, In, Or, Set
 from bson import ObjectId
 from strawberry import UNSET
 
@@ -145,7 +145,8 @@ class OrganizationRepo:
         paginator: Paginator[Organization, ObjectId] = Paginator(
             reverse=True,
             document_cls=Organization,
-            paginate_by="id",
+            paginate_by="_id",
+            entity_paginate_by="id",
         )
 
         return await paginator.paginate(
@@ -468,7 +469,8 @@ class OrganizationInviteRepo:
         paginator: Paginator[OrganizationInvite, ObjectId] = Paginator(
             reverse=True,
             document_cls=OrganizationInvite,
-            paginate_by="id",
+            paginate_by="_id",
+            entity_paginate_by="id",
         )
 
         search_criteria = OrganizationInvite.find(
@@ -497,20 +499,20 @@ class OrganizationInviteRepo:
         self, invite_tokens: list[tuple[str, str]]
     ) -> list[OrganizationInvite | None]:
         """Get multiple active organization invites by emails and tokens."""
-        filters = [
+        # Build individual conditions using Beanie operators
+        conditions = [
             And(
-                {"email": email},
-                {"token_hash": self.hash_token(token)},
-                # select only pending invites
-                {"status": "pending"},
-                {"is_hidden": False},
+                OrganizationInvite.email == email,
+                OrganizationInvite.token_hash == self.hash_token(token),
+                OrganizationInvite.status == "pending",
+                OrganizationInvite.is_hidden == False,
             )
             for email, token in invite_tokens
         ]
 
         # Use the Or operator to combine all conditions
         organization_invites = await OrganizationInvite.find(
-            {"$or": filters}, fetch_links=True, nesting_depth=1
+            Or(*conditions), fetch_links=True, nesting_depth=1
         ).to_list()
 
         organization_invite_by_token = {

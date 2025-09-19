@@ -12,6 +12,7 @@ from app.accounts.exceptions import (
     InvalidPhoneNumberVerificationTokenError,
     PhoneNumberAlreadyExistsError,
     PhoneNumberDoesNotExistError,
+    PhoneNumberMissingError,
     PhoneNumberVerificationTokenCooldownError,
 )
 from app.accounts.services import AccountService, ProfileParserService, ProfileService
@@ -34,6 +35,7 @@ from .types import (
     ParseProfileDocumentPayload,
     PhoneNumberAlreadyExistsErrorType,
     PhoneNumberDoesNotExistErrorType,
+    PhoneNumberMissingErrorType,
     PhoneNumberVerificationTokenCooldownErrorType,
     ProfileType,
     RemoveAccountPhoneNumberPayload,
@@ -42,6 +44,7 @@ from .types import (
     UpdateAccountAnalyticsPreferencePayload,
     UpdateAccountPayload,
     UpdateAccountPhoneNumberPayload,
+    UpdateAccountWhatsappJobAlertsPayload,
     UpdateProfilePayload,
     WorkExperienceInputType,
 )
@@ -318,6 +321,41 @@ class AccountMutation:
                 match error:
                     case PhoneNumberDoesNotExistError():
                         return PhoneNumberDoesNotExistErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateAccountWhatsappJobAlertsPayload,
+        description="Update the current user's whatsapp job alerts status.",
+        extensions=[
+            PermissionExtension(
+                permissions=[IsAuthenticated()],
+            )
+        ],
+    )
+    @inject
+    async def update_account_whatsapp_job_alerts(
+        self,
+        info: AuthInfo,
+        account_service: Annotated[AccountService, Inject],
+        enabled: Annotated[
+            bool,
+            strawberry.argument(
+                description="Whether to enable or disable whatsapp job alerts.",
+            ),
+        ],
+    ) -> UpdateAccountWhatsappJobAlertsPayload:
+        """Update the current user's whatsapp job alerts status."""
+        match await account_service.update_whatsapp_job_alerts(
+            account=info.context["current_user"],
+            enabled=enabled,
+        ):
+            case Ok(account):
+                return AccountType.marshal(account)
+            case Err(error):
+                match error:
+                    case PhoneNumberMissingError():
+                        return PhoneNumberMissingErrorType()
             case _ as unreachable:
                 assert_never(unreachable)
 

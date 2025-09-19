@@ -64,6 +64,27 @@ resource "aws_iam_role" "lambda_exec_role" {
   })
 }
 
+resource "aws_iam_role" "lambda_job_alerts_exec_role" {
+  name = "${var.resource_prefix}-lambda-job-alerts-exec-role"
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
 
 # Custom policy to allow access to S3, Textract, and Bedrock
 resource "aws_iam_policy" "lambda_custom_policy" {
@@ -187,6 +208,34 @@ resource "aws_iam_policy" "lambda_custom_policy_worker" {
   })
 }
 
+resource "aws_iam_policy" "lambda_job_alerts_policy" {
+  name        = "${var.resource_prefix}-lambda-job-alerts-policy"
+  description = "Custom policy for Lambda to access job alerts SQS queue"
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "sqs:SendMessage",
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes"
+        ],
+        Resource = [
+          aws_sqs_queue.job_alerts.arn,
+          "${aws_sqs_queue.job_alerts.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
 # Add this inline policy to your lambda role
 resource "aws_iam_role_policy" "lambda_mongodb_aws_auth" {
   name = "${var.resource_prefix}-mongodb-aws-auth"
@@ -233,6 +282,25 @@ resource "aws_iam_role_policy" "lambda_worker_mongodb_aws_auth" {
 resource "aws_iam_role_policy" "lambda_staging_db_mongodb_aws_auth" {
   name = "${var.resource_prefix}-mongodb-aws-auth-staging-db"
   role = aws_iam_role.lambda_staging_db_exec_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "sts:AssumeRole",
+          "sts:GetCallerIdentity"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "lambda_job_alerts_mongodb_aws_auth" {
+  name = "${var.resource_prefix}-mongodb-aws-auth-job-alerts"
+  role = aws_iam_role.lambda_job_alerts_exec_role.id
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -299,6 +367,22 @@ resource "aws_iam_role_policy_attachment" "lambda_staging_db_vpc_access_policy" 
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
+# Attach policies for the job alerts lambda role
+resource "aws_iam_role_policy_attachment" "lambda_job_alerts_exec_policy" {
+  role       = aws_iam_role.lambda_job_alerts_exec_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_job_alerts_vpc_access_policy" {
+  role       = aws_iam_role.lambda_job_alerts_exec_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_job_alerts_sqs_policy_attachment" {
+  role       = aws_iam_role.lambda_job_alerts_exec_role.name
+  policy_arn = aws_iam_policy.lambda_job_alerts_policy.arn
+}
+
 
 resource "aws_lambda_function" "worker" {
   # depends_on    = [docker_registry_image.backend]
@@ -314,7 +398,7 @@ resource "aws_lambda_function" "worker" {
   image_uri    = "${var.aws_lambda_worker_repository_url}:${var.environment_name}-latest"
 
   image_config {
-    command = ["app.sqs_handler.lambda_handler"]
+    command = ["lambda_handlers.analyze_job_applicants.lambda_handler"]
   }
 
   # dead_letter_config {
@@ -330,6 +414,7 @@ resource "aws_lambda_function" "worker" {
   # }
 
   environment {
+    # TODO: remove unncessary variables here
     variables = {
       SERVER_DEBUG                     = "False"
       SERVER_ENVIRONMENT               = "production"
@@ -574,4 +659,202 @@ resource "aws_lambda_permission" "allow_eventbridge_automation_generate_wa_messa
   function_name = aws_lambda_function.automation_generate_wa_messages.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.automation_generate_wa_messages_schedule[0].arn
+}
+
+
+resource "aws_lambda_function" "process_job_alerts" {
+  # depends_on    = [docker_registry_image.backend]
+  count         = var.environment_name == "production" ? 1 : 0
+  function_name = "${var.resource_prefix}-process-job-alerts-lambda"
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+  role         = aws_iam_role.lambda_job_alerts_exec_role.arn
+  package_type = "Image"
+  image_uri    = "${var.aws_lambda_worker_repository_url}:${var.environment_name}-latest"
+
+  image_config {
+    command = ["lambda_handlers.process_job_alerts.lambda_handler"]
+  }
+
+  publish = true
+
+  # VPC Configuration - uncomment this while moving to private subnets
+  # vpc_config {
+  #   subnet_ids         = values(aws_subnet.private)[*].id
+  #   security_group_ids = [aws_security_group.lambda.id] # Security group for Lambda
+  # }
+
+  environment {
+    variables = {
+      SERVER_SQS_JOB_ALERTS_QUEUE_URL = aws_sqs_queue.job_alerts.url
+      SERVER_DATABASE_URL             = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DEFAULT_DATABASE_NAME    = var.mongodb_database_name
+      SERVER_LOG_LEVEL                = "DEBUG"
+      SERVER_ENVIRONMENT              = var.environment_name
+      SERVER_DEBUG                    = "True"
+      SERVER_SENTRY_DSN               = var.sentry_backend_dsn
+    }
+  }
+
+  memory_size = 1024
+  timeout     = 60
+}
+
+# EventBridge rules to trigger process_job_alerts lambda with different frequencies
+resource "aws_cloudwatch_event_rule" "process_job_alerts_daily_schedule" {
+  count               = var.environment_name == "production" ? 1 : 0
+  name                = "${var.resource_prefix}-process-job-alerts-daily-schedule"
+  description         = "Trigger process_job_alerts lambda function daily"
+  schedule_expression = "cron(0 6 * * ? *)" # Every day at 6 AM UTC
+  tags = {
+    Environment = var.environment_name
+  }
+}
+
+resource "aws_cloudwatch_event_rule" "process_job_alerts_weekly_schedule" {
+  count               = var.environment_name == "production" ? 1 : 0
+  name                = "${var.resource_prefix}-process-job-alerts-weekly-schedule"
+  description         = "Trigger process_job_alerts lambda function weekly"
+  schedule_expression = "cron(0 6 ? * MON *)" # Every Monday at 6 AM UTC
+  tags = {
+    Environment = var.environment_name
+  }
+}
+
+resource "aws_cloudwatch_event_rule" "process_job_alerts_monthly_schedule" {
+  count               = var.environment_name == "production" ? 1 : 0
+  name                = "${var.resource_prefix}-process-job-alerts-monthly-schedule"
+  description         = "Trigger process_job_alerts lambda function monthly"
+  schedule_expression = "cron(0 6 1 * ? *)" # First day of every month at 6 AM UTC
+  tags = {
+    Environment = var.environment_name
+  }
+}
+
+# EventBridge targets to invoke the process_job_alerts lambda function with different input data
+resource "aws_cloudwatch_event_target" "process_job_alerts_daily_target" {
+  count     = var.environment_name == "production" ? 1 : 0
+  rule      = aws_cloudwatch_event_rule.process_job_alerts_daily_schedule[0].name
+  target_id = "ProcessJobAlertsDailyTarget"
+  arn       = aws_lambda_function.process_job_alerts[0].arn
+  input = jsonencode({
+    frequency = "daily"
+  })
+}
+
+resource "aws_cloudwatch_event_target" "process_job_alerts_weekly_target" {
+  count     = var.environment_name == "production" ? 1 : 0
+  rule      = aws_cloudwatch_event_rule.process_job_alerts_weekly_schedule[0].name
+  target_id = "ProcessJobAlertsWeeklyTarget"
+  arn       = aws_lambda_function.process_job_alerts[0].arn
+  input = jsonencode({
+    frequency = "weekly"
+  })
+}
+
+resource "aws_cloudwatch_event_target" "process_job_alerts_monthly_target" {
+  count     = var.environment_name == "production" ? 1 : 0
+  rule      = aws_cloudwatch_event_rule.process_job_alerts_monthly_schedule[0].name
+  target_id = "ProcessJobAlertsMonthlyTarget"
+  arn       = aws_lambda_function.process_job_alerts[0].arn
+  input = jsonencode({
+    frequency = "monthly"
+  })
+}
+
+# Permissions for EventBridge to invoke the process_job_alerts lambda function
+resource "aws_lambda_permission" "allow_eventbridge_process_job_alerts_daily" {
+  count         = var.environment_name == "production" ? 1 : 0
+  statement_id  = "AllowExecutionFromEventBridgeDaily"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.process_job_alerts[0].function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.process_job_alerts_daily_schedule[0].arn
+}
+
+resource "aws_lambda_permission" "allow_eventbridge_process_job_alerts_weekly" {
+  count         = var.environment_name == "production" ? 1 : 0
+  statement_id  = "AllowExecutionFromEventBridgeWeekly"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.process_job_alerts[0].function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.process_job_alerts_weekly_schedule[0].arn
+}
+
+resource "aws_lambda_permission" "allow_eventbridge_process_job_alerts_monthly" {
+  count         = var.environment_name == "production" ? 1 : 0
+  statement_id  = "AllowExecutionFromEventBridgeMonthly"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.process_job_alerts[0].function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.process_job_alerts_monthly_schedule[0].arn
+}
+
+
+
+
+resource "aws_lambda_function" "send_job_alerts" {
+  # depends_on    = [docker_registry_image.backend]
+  count         = var.environment_name == "production" ? 1 : 0
+  function_name = "${var.resource_prefix}-send-job-alerts-lambda"
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+  role         = aws_iam_role.lambda_job_alerts_exec_role.arn
+  package_type = "Image"
+  image_uri    = "${var.aws_lambda_worker_repository_url}:${var.environment_name}-latest"
+
+  image_config {
+    command = ["lambda_handlers.send_job_alerts.lambda_handler"]
+  }
+
+  publish = true
+
+  # VPC Configuration - uncomment this while moving to private subnets
+  # vpc_config {
+  #   subnet_ids         = values(aws_subnet.private)[*].id
+  #   security_group_ids = [aws_security_group.lambda.id] # Security group for Lambda
+  # }
+
+  environment {
+    variables = {
+      SERVER_DATABASE_URL              = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DEFAULT_DATABASE_NAME     = var.mongodb_database_name
+      SERVER_LOG_LEVEL                 = "DEBUG"
+      SERVER_ENVIRONMENT               = var.environment_name
+      SERVER_DEBUG                     = "True"
+      SERVER_EMAIl_PROVIDER            = "aws_ses"
+      SERVER_EMAIL_FROM                = aws_ses_email_identity.this.email
+      SERVER_ACCOUNTS_BASE_URL         = "https://accounts.${var.domain_name}"
+      SERVER_RECRUITER_PORTAL_BASE_URL = "https://recruiter.${var.domain_name}"
+      SERVER_SEEKER_PORTAL_BASE_URL    = "https://${var.domain_name}"
+      SERVER_SENTRY_DSN                = var.sentry_backend_dsn
+    }
+  }
+
+  memory_size = 1024
+  timeout     = 60
+}
+
+
+resource "aws_lambda_event_source_mapping" "send_job_alerts" {
+  count            = var.environment_name == "production" ? 1 : 0
+  event_source_arn = aws_sqs_queue.job_alerts.arn
+  function_name    = aws_lambda_function.send_job_alerts[0].arn
+  batch_size       = 10
+
+  function_response_types = ["ReportBatchItemFailures"]
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+  scaling_config {
+    maximum_concurrency = 25
+  }
 }

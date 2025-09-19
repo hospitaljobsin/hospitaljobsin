@@ -1,0 +1,143 @@
+{% extends "emails/base/body.mjml" %}
+
+{% block title %}
+{% if job_count == 1 %}
+  New Job Found!
+{% else %}
+  {{ job_count }} New Jobs Found!
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<mj-text color="#1f2937" font-size="16px" line-height="1.5" padding="0 0 16px 0">
+  Hi {{ job_alert.account.full_name }},
+</mj-text>
+
+<mj-text color="#374151" font-size="14px" line-height="1.6" padding="0 0 24px 0">
+  We've discovered
+  {% if job_count == 1 %}
+    an amazing new opportunity
+  {% else %}
+    {{ job_count }} fantastic new opportunities
+  {% endif %}
+  that match your job alert for <strong>{{ job_alert.filters.search_term }}</strong>. Your dream job might be just one click away! 🚀
+</mj-text>
+
+{% for job in jobs %}
+<!-- Job Card -->
+<mj-wrapper background-color="#ffffff" border="1px solid #e5e7eb" border-radius="12px" padding="0">
+<mj-section background-color="#ffffff" padding="24px 20px">
+  <!-- Header Row: Logo and Title/Company (Desktop and Mobile) -->
+  <mj-column width="15%" padding="0 16px 12px 0">
+    <mj-text padding="0" margin="0">
+      <a href="{{ app_url }}/organizations/{{ job.organization.slug }}/jobs/{{ job.slug }}" style="text-decoration: none; color: inherit; display: block;">
+        {% if job.organization.logo_url %}
+          <img src="{{ job.organization.logo_url }}" alt="{{ job.organization.name }} logo" width="56" height="56" style="border-radius: 8px; display: block;" />
+        {% else %}
+          <div style="width: 56px; height: 56px; border-radius: 8px; background-color: #f3f4f6; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #6b7280; font-size: 18px;">
+            {{ job.organization.name[0] if job.organization.name else 'C' }}
+          </div>
+        {% endif %}
+      </a>
+    </mj-text>
+  </mj-column>
+
+  <mj-column width="60%" padding="0 16px 12px 0">
+    <mj-text padding="0" margin="0">
+      <a href="{{ app_url }}/organizations/{{ job.organization.slug }}/jobs/{{ job.slug }}" style="text-decoration: none; color: inherit; display: block;">
+        <div style="color: #1f2937; font-size: 20px; font-weight: 600; line-height: 1.3; margin-bottom: 6px;">{{ job.title }}</div>
+        <div style="color: #6b7280; font-size: 15px; font-weight: 500; margin-bottom: 8px;">{{ job.organization.name }}</div>
+        <div style="color: #9ca3af; font-size: 13px; font-weight: 500;">
+          Posted on {{ job.id.generation_time.strftime('%B %d, %Y') if job.id and job.id.generation_time else 'Recently' }}
+        </div>
+      </a>
+    </mj-text>
+  </mj-column>
+
+  <!-- Salary Column - Hidden on mobile, shown on desktop -->
+  <mj-column width="25%" padding="0 0 12px 0" css-class="hide-mobile">
+    <mj-text padding="0" margin="0" align="right">
+      <a href="{{ app_url }}/organizations/{{ job.organization.slug }}/jobs/{{ job.slug }}" style="text-decoration: none; color: inherit; display: block;">
+        <div style="color: #1f2937; font-size: 18px; font-weight: 600; line-height: 1.2; text-align: right;">
+          {% if job.min_salary and job.max_salary %}
+            ₹ Not disclosed
+          {% elif job.min_salary %}
+            ₹ {{ "{:,}".format(job.min_salary) }}+
+          {% else %}
+            ₹ Not disclosed
+          {% endif %}
+        </div>
+      </a>
+    </mj-text>
+  </mj-column>
+
+  <!-- Details Row -->
+  <mj-column width="100%" padding="8px 0 0 0">
+    <mj-text padding="0" margin="0">
+      <a href="{{ app_url }}/organizations/{{ job.organization.slug }}/jobs/{{ job.slug }}" style="text-decoration: none; color: inherit; display: block;">
+        <!-- Job Details -->
+        <div style="color: #374151; font-size: 14px; font-weight: 500; line-height: 1.5;">
+          {% set details = [] %}
+          {% if job.type %}
+            {% set _ = details.append(job.type|title|replace("_", " ")) %}
+          {% endif %}
+          {% if job.location %}
+            {% set _ = details.append("📍 " + job.location) %}
+          {% endif %}
+          {% if job.min_experience is not none and job.max_experience is not none %}
+            {% set _ = details.append(job.min_experience|string + " - " + job.max_experience|string + " years") %}
+          {% elif job.min_experience is not none %}
+            {% set _ = details.append(job.min_experience|string + "+ years") %}
+          {% endif %}
+          {% if job.work_mode %}
+            {% set _ = details.append(job.work_mode|title) %}
+          {% endif %}
+          {{ details | join(" • ") }}
+        </div>
+      </a>
+    </mj-text>
+  </mj-column>
+
+  <!-- Mobile Salary Row - Only visible on mobile -->
+  <mj-column width="100%" padding="8px 0 0 0" css-class="show-mobile">
+    <mj-text padding="0" margin="0">
+      <a href="{{ app_url }}/organizations/{{ job.organization.slug }}/jobs/{{ job.slug }}" style="text-decoration: none; color: inherit; display: block;">
+        <div style="color: #1f2937; font-size: 16px; font-weight: 600; line-height: 1.2; margin-top: 8px;">
+          {% if job.min_salary and job.max_salary %}
+            ₹ Not disclosed
+          {% elif job.min_salary %}
+            ₹ {{ "{:,}".format(job.min_salary) }}+
+          {% else %}
+            ₹ Not disclosed
+          {% endif %}
+        </div>
+      </a>
+    </mj-text>
+  </mj-column>
+</mj-section>
+</mj-wrapper>
+
+<!-- Spacer between job cards -->
+<mj-spacer height="20px" />
+{% endfor %}
+
+{% if has_more_jobs %}
+<mj-section padding="0">
+  <mj-column>
+    <mj-button href="{{ search_url }}" color="#ffffff" border-radius="10px" font-weight="500" padding="0" font-size="16px" line-height="1.3" width="100%">
+      View all jobs
+    </mj-button>
+  </mj-column>
+</mj-section>
+{% endif %}
+
+<mj-section padding="24px 0 0 0">
+  <mj-column>
+    <mj-text color="#3182ce" font-size="14px" margin="0" align="left">
+      <a href="{{ job_alerts_url }}" target="_blank" style="color: #3182ce; text-decoration: none; font-weight: 500;">
+        Manage your job alerts
+      </a>
+    </mj-text>
+  </mj-column>
+</mj-section>
+{% endblock %}

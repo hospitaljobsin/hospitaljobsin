@@ -19,8 +19,24 @@ class RegionRepo:
                     "index": REGION_SEARCH_INDEX_NAME,
                     "compound": {
                         "should": [
-                            {"text": {"query": name, "path": "name"}},
-                            {"text": {"query": name, "path": "aliases"}},
+                            {
+                                "autocomplete": {
+                                    "query": name,
+                                    "path": "name",
+                                    "score": {
+                                        "boost": {"value": 3}
+                                    },  # <-- Give higher weight to name
+                                }
+                            },
+                            {
+                                "autocomplete": {
+                                    "query": name,
+                                    "path": "aliases",
+                                    "score": {
+                                        "boost": {"value": 1}
+                                    },  # <-- Lower weight to aliases
+                                }
+                            },
                         ],
                         "minimumShouldMatch": 1,
                     },
@@ -69,8 +85,24 @@ class RegionRepo:
                     "index": REGION_SEARCH_INDEX_NAME,
                     "compound": {
                         "should": [
-                            {"autocomplete": {"query": search_term, "path": "name"}},
-                            {"autocomplete": {"query": search_term, "path": "aliases"}},
+                            {
+                                "autocomplete": {
+                                    "query": search_term,
+                                    "path": "name",
+                                    "score": {
+                                        "boost": {"value": 3}
+                                    },  # <-- Give higher weight to name
+                                }
+                            },
+                            {
+                                "autocomplete": {
+                                    "query": search_term,
+                                    "path": "aliases",
+                                    "score": {
+                                        "boost": {"value": 1}
+                                    },  # <-- Lower weight to aliases
+                                }
+                            },
                         ],
                         "minimumShouldMatch": 1,
                     },

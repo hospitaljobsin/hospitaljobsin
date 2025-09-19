@@ -176,4 +176,4 @@ ENV PYTHONPATH="/var/task:$PYTHONPATH"
 ENTRYPOINT [ "python", "-m", "awslambdaric" ]
 
 # Set the Lambda handler - can be overridden at runtime
-CMD ["app.sqs_handler.lambda_handler"]
+CMD ["lambda_handlers.analyze_job_applicants.lambda_handler"]

@@ -1,0 +1,78 @@
+{% extends "emails/base/body.mjml" %}
+
+{% block title %}
+{{ invited_by_name }} Invited you to {{ organization_name }}
+{% endblock %}
+
+{% block preview %}
+{{ invited_by_name }} has invited you to join {{ organization_name }}
+{% endblock %}
+
+{% block content %}
+<!-- Minimalistic Centered Content -->
+<mj-section padding="40px 0 0 0">
+  <mj-column>
+    <!-- Inviter Avatar and Organization Logo - Inline Layout -->
+    <mj-text align="center" padding="0 0 32px 0">
+      <img
+        src="{{ invited_by_avatar_url }}"
+        alt="{{ invited_by_name }} Avatar"
+        style="width: 60px; height: 60px; border-radius: 50%; margin-right: 8px; vertical-align: middle;"
+      />
+      <img
+        src="{{ organization_logo_url }}"
+        alt="{{ organization_name }} Logo"
+        style="width: 60px; height: 60px; border-radius: 12px; margin-left: 8px; vertical-align: middle;"
+      />
+    </mj-text>
+
+    <!-- Main Heading -->
+    <mj-text
+      align="center"
+      font-size="24px"
+      font-weight="600"
+      color="#1f2937"
+      padding="0 0 20px 0"
+      line-height="1.3"
+    >
+      You're invited to join<br/>{{ organization_name }}
+    </mj-text>
+
+    <!-- Simple invitation message -->
+    <mj-text
+      align="center"
+      font-size="16px"
+      line-height="1.5"
+      color="#6b7280"
+      padding="0 0 32px 0"
+    >
+      {{ invited_by_name }} has invited you to collaborate
+    </mj-text>
+
+    <!-- Primary CTA Button (Green) -->
+    <mj-button
+      href="{{ invite_link }}"
+      background-color="#16a34a"
+      color="#ffffff"
+      font-size="16px"
+      font-weight="600"
+      border-radius="8px"
+      padding="16px 40px"
+      align="center"
+      border="none"
+    >
+      Accept Invitation
+    </mj-button>
+
+    <!-- Expiration notice -->
+    <mj-text
+      align="center"
+      font-size="14px"
+      color="#9ca3af"
+      padding="24px 0 0 0"
+    >
+      Expires in {{ invite_expires_in }}
+    </mj-text>
+  </mj-column>
+</mj-section>
+{% endblock %}

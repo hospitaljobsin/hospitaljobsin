@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<64b780aef0007456ffcc1948ba886aab>>
- * @relayHash 1315d24973d8330a76c146d2118b5b6f
+ * @generated SignedSource<<f8cbaab9d5c0267b411d34bd9a72b6da>>
+ * @relayHash e8827c14cd7ac22b12df9833ffa56d3a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 1315d24973d8330a76c146d2118b5b6f
+// @relayRequestID e8827c14cd7ac22b12df9833ffa56d3a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -18,7 +18,7 @@ export type TrendingJobListRefetchQuery$variables = {
   cursor?: string | null | undefined;
 };
 export type TrendingJobListRefetchQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"TrendingJobListInternalFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"TrendingJobListFragment">;
 };
 export type TrendingJobListRefetchQuery = {
   response: TrendingJobListRefetchQuery$data;
@@ -38,24 +38,17 @@ var v0 = [
     "name": "cursor"
   }
 ],
-v1 = [
-  {
-    "kind": "Variable",
-    "name": "after",
-    "variableName": "cursor"
-  },
-  {
-    "kind": "Variable",
-    "name": "first",
-    "variableName": "count"
-  }
-],
-v2 = {
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
+},
+v2 = {
+  "args": null,
+  "kind": "FragmentSpread",
+  "name": "JobControlsFragment"
 },
 v3 = {
   "alias": null,
@@ -68,9 +61,151 @@ v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "title",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "type",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "workMode",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "location",
+  "storageKey": null
+},
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "skills",
+  "storageKey": null
+},
+v9 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "currency",
+  "storageKey": null
+},
+v10 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "minSalary",
+  "storageKey": null
+},
+v11 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "maxSalary",
+  "storageKey": null
+},
+v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "minExperience",
+  "storageKey": null
+},
+v13 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "maxExperience",
+  "storageKey": null
+},
+v14 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "name",
+  "storageKey": null
+},
+v15 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "logoUrl",
+  "storageKey": null
+},
+v16 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
-};
+},
+v17 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "verifiedAt",
+      "storageKey": null
+    }
+  ],
+  "type": "Verified",
+  "abstractKey": null
+},
+v18 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "cursor",
+  "storageKey": null
+},
+v19 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "PageInfo",
+  "kind": "LinkedField",
+  "name": "pageInfo",
+  "plural": false,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasNextPage",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "endCursor",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+},
+v20 = [
+  {
+    "kind": "Variable",
+    "name": "after",
+    "variableName": "cursor"
+  },
+  {
+    "kind": "Variable",
+    "name": "first",
+    "variableName": "count"
+  }
+];
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
@@ -79,6 +214,112 @@ return {
     "name": "TrendingJobListRefetchQuery",
     "selections": [
       {
+        "kind": "InlineDataFragmentSpread",
+        "name": "TrendingJobListFragment",
+        "selections": [
+          {
+            "alias": "trendingJobs",
+            "args": null,
+            "concreteType": "JobConnection",
+            "kind": "LinkedField",
+            "name": "__TrendingJobListFragment_trendingJobs_connection",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "JobEdge",
+                "kind": "LinkedField",
+                "name": "edges",
+                "plural": true,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Job",
+                    "kind": "LinkedField",
+                    "name": "node",
+                    "plural": false,
+                    "selections": [
+                      (v1/*: any*/),
+                      {
+                        "kind": "InlineDataFragmentSpread",
+                        "name": "AuxiliaryJobFragment",
+                        "selections": [
+                          (v2/*: any*/),
+                          (v3/*: any*/),
+                          (v4/*: any*/),
+                          (v5/*: any*/),
+                          (v6/*: any*/),
+                          (v7/*: any*/),
+                          (v8/*: any*/),
+                          (v9/*: any*/),
+                          (v10/*: any*/),
+                          (v11/*: any*/),
+                          (v12/*: any*/),
+                          (v13/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "Organization",
+                            "kind": "LinkedField",
+                            "name": "organization",
+                            "plural": false,
+                            "selections": [
+                              {
+                                "condition": "showOrganization",
+                                "kind": "Condition",
+                                "passingValue": true,
+                                "selections": [
+                                  (v14/*: any*/),
+                                  (v15/*: any*/)
+                                ]
+                              },
+                              (v3/*: any*/),
+                              {
+                                "alias": null,
+                                "args": null,
+                                "concreteType": null,
+                                "kind": "LinkedField",
+                                "name": "verificationStatus",
+                                "plural": false,
+                                "selections": [
+                                  (v16/*: any*/),
+                                  {
+                                    "fragment": (v17/*: any*/),
+                                    "kind": "AliasedInlineFragmentSpread",
+                                    "name": "verified"
+                                  }
+                                ],
+                                "storageKey": null
+                              }
+                            ],
+                            "storageKey": null
+                          }
+                        ],
+                        "args": null,
+                        "argumentDefinitions": [
+                          {
+                            "defaultValue": true,
+                            "kind": "LocalArgument",
+                            "name": "showOrganization"
+                          }
+                        ]
+                      },
+                      (v2/*: any*/),
+                      (v16/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  (v18/*: any*/)
+                ],
+                "storageKey": null
+              },
+              (v19/*: any*/)
+            ],
+            "storageKey": null
+          }
+        ],
         "args": [
           {
             "kind": "Variable",
@@ -91,8 +332,7 @@ return {
             "variableName": "cursor"
           }
         ],
-        "kind": "FragmentSpread",
-        "name": "TrendingJobListInternalFragment"
+        "argumentDefinitions": (v0/*: any*/)
       }
     ],
     "type": "Query",
@@ -106,7 +346,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v20/*: any*/),
         "concreteType": "JobConnection",
         "kind": "LinkedField",
         "name": "trendingJobs",
@@ -128,7 +368,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v2/*: any*/),
+                  (v1/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -137,13 +377,7 @@ return {
                     "storageKey": null
                   },
                   (v3/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "title",
-                    "storageKey": null
-                  },
+                  (v4/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -159,22 +393,10 @@ return {
                     "name": "organization",
                     "plural": false,
                     "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "name",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "logoUrl",
-                        "storageKey": null
-                      },
+                      (v14/*: any*/),
+                      (v15/*: any*/),
                       (v3/*: any*/),
-                      (v2/*: any*/),
+                      (v1/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -183,135 +405,38 @@ return {
                         "name": "verificationStatus",
                         "plural": false,
                         "selections": [
-                          (v4/*: any*/),
-                          {
-                            "kind": "InlineFragment",
-                            "selections": [
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "verifiedAt",
-                                "storageKey": null
-                              }
-                            ],
-                            "type": "Verified",
-                            "abstractKey": null
-                          }
+                          (v16/*: any*/),
+                          (v17/*: any*/)
                         ],
                         "storageKey": null
                       }
                     ],
                     "storageKey": null
                   },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "type",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "workMode",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "location",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "skills",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "currency",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "minSalary",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "maxSalary",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "minExperience",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "maxExperience",
-                    "storageKey": null
-                  },
-                  (v4/*: any*/)
+                  (v5/*: any*/),
+                  (v6/*: any*/),
+                  (v7/*: any*/),
+                  (v8/*: any*/),
+                  (v9/*: any*/),
+                  (v10/*: any*/),
+                  (v11/*: any*/),
+                  (v12/*: any*/),
+                  (v13/*: any*/),
+                  (v16/*: any*/)
                 ],
                 "storageKey": null
               },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "cursor",
-                "storageKey": null
-              }
+              (v18/*: any*/)
             ],
             "storageKey": null
           },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "PageInfo",
-            "kind": "LinkedField",
-            "name": "pageInfo",
-            "plural": false,
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "hasNextPage",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "endCursor",
-                "storageKey": null
-              }
-            ],
-            "storageKey": null
-          }
+          (v19/*: any*/)
         ],
         "storageKey": null
       },
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v20/*: any*/),
         "filters": null,
         "handle": "connection",
         "key": "TrendingJobListFragment_trendingJobs",
@@ -321,7 +446,7 @@ return {
     ]
   },
   "params": {
-    "id": "1315d24973d8330a76c146d2118b5b6f",
+    "id": "e8827c14cd7ac22b12df9833ffa56d3a",
     "metadata": {},
     "name": "TrendingJobListRefetchQuery",
     "operationKind": "query",
@@ -330,6 +455,6 @@ return {
 };
 })();
 
-(node as any).hash = "5ef6b18e6d9e7e409d8e4b2344d3519e";
+(node as any).hash = "5bd0a880cd9e93b464a77dbd3e4236e4";
 
 export default node;

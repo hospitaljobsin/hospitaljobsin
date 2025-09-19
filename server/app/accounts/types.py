@@ -1,4 +1,3 @@
-import hashlib
 from collections.abc import Iterable
 from datetime import date, datetime
 from enum import Enum
@@ -438,6 +437,9 @@ class AccountType(BaseNodeType[Account]):
     email: str = strawberry.field(
         description="The email of the account.",
     )
+    avatar_url: str = strawberry.field(
+        description="The avatar URL of the account.",
+    )
     phone_number: str | None = strawberry.field(
         description="The phone number of the account.",
     )
@@ -454,14 +456,16 @@ class AccountType(BaseNodeType[Account]):
         description="Whether the account has 2FA enabled.",
     )
 
+    whatsapp_job_alerts_enabled: bool = strawberry.field(
+        description="Whether Whatsapp job alerts have been enabled for the account."
+    )
+
     terms_and_policy: TermsAndPolicyType = strawberry.field(
         description="The terms and policy of the account.",
     )
     analytics_preference: AnalyticsPreferenceType = strawberry.field(
         description="The analytics preference of the account.",
     )
-
-    uploaded_avatar_url: strawberry.Private[str | None] = None
 
     profile_ref: strawberry.Private[ObjectId | Profile | None] = None
 
@@ -486,7 +490,7 @@ class AccountType(BaseNodeType[Account]):
             profile_ref=account.profile.ref.id
             if isinstance(account.profile, Link)
             else account.profile,
-            uploaded_avatar_url=account.avatar_url,
+            avatar_url=account.avatar_url,
             terms_and_policy=TermsAndPolicyType(
                 type=TermsAndPolicyTypeEnum(account.terms_and_policy.type.upper()),
                 updated_at=account.terms_and_policy.updated_at,
@@ -499,6 +503,7 @@ class AccountType(BaseNodeType[Account]):
                 ),
                 updated_at=account.analytics_preference.updated_at,
             ),
+            whatsapp_job_alerts_enabled=account.whatsapp_job_alerts_enabled,
         )
 
     @classmethod
@@ -529,25 +534,6 @@ class AccountType(BaseNodeType[Account]):
         if result is None:
             return None
         return ProfileType.marshal(result)
-
-    @strawberry.field(  # type: ignore[misc]
-        description="The account's avatar URL.",
-    )
-    async def avatar_url(
-        self,
-        size: Annotated[
-            int,
-            strawberry.argument(
-                description="The size of the avatar.",
-            ),
-        ] = 80,
-    ) -> str:
-        """Return the user's avatar URL."""
-        if self.uploaded_avatar_url:
-            return self.uploaded_avatar_url
-
-        seed_hash = hashlib.md5(self.full_name.encode()).hexdigest()
-        return f"https://api.dicebear.com/9.x/shapes/png?seed={seed_hash}"
 
     @strawberry.field(  # type: ignore[misc]
         description="When the user's sudo mode grant expires at.",
@@ -838,6 +824,14 @@ class PhoneNumberVerificationTokenCooldownErrorType(BaseErrorType):
     ]
 
 
+@strawberry.type(name="PhoneNumberMissingError")
+class PhoneNumberMissingErrorType(BaseErrorType):
+    message: str = field(
+        default="Account doesn't have a phone number.",
+        description="Human readable error message.",
+    )
+
+
 RequestPhoneNumberVerificationTokenPayload = Annotated[
     RequestPhoneNumberVerificationTokenSuccessType
     | PhoneNumberAlreadyExistsErrorType
@@ -859,6 +853,15 @@ UpdateAccountPhoneNumberPayload = Annotated[
         description="The update account phone number payload.",
     ),
 ]
+
+UpdateAccountWhatsappJobAlertsPayload = Annotated[
+    AccountType | PhoneNumberMissingErrorType,
+    strawberry.union(
+        name="UpdateAccountWhatsappJobAlertsPayload",
+        description="The update account WhatsApp job alerts payload.",
+    ),
+]
+
 
 RemoveAccountPhoneNumberPayload = Annotated[
     AccountType | PhoneNumberDoesNotExistErrorType,

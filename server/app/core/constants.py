@@ -6,7 +6,11 @@ SUPPORT_EMAIL = "support@hospitaljobs.in"
 
 SENDER_EMAIL = "noreply@hospitaljobs.in"
 
+COMPANY_NAME = "Vnadi"
+
 APP_NAME = "Hospital Jobs"
+
+APP_TAGLINE = "Empowering Healthcare Professionals to find their next role"
 
 AUTOMATION_BOT_NAME = "Hoppy (Automation Bot)"
 
@@ -76,11 +80,11 @@ JobApplicantAnalysisStatus = Literal["pending", "complete", "failed"]
 
 JobKindType = Literal["full_time", "part_time", "internship", "contract", "locum"]
 
-# TODO: remove neighbourhood, city later
+WorkModeType = Literal["remote", "hybrid", "office"]
 
-RegionLevel = Literal[
-    "continent", "country", "state", "locality", "city", "neighbourhood"
-]
+RegionLevel = Literal["continent", "country", "state", "locality"]
+
+JobAlertFrequency = Literal["daily", "weekly", "monthly"]
 
 # Organization names
 # (subdomains which are in use/ might be needed in the future)
@@ -119,7 +123,7 @@ RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD = 0.7
 
 TRENDING_JOBS_LIMIT = 5
 
-DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT = 5
+DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT = 10
 
 
 # terms and policy
@@ -144,3 +148,7 @@ DISPOSABLE_EMAIL_DOMAINS = {
     "chacuo.net",
     "dispostable.com",
 }
+
+
+# Job alerts
+MAX_JOB_ALERTS_PER_ACCOUNT = 10

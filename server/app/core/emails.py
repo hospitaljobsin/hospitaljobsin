@@ -12,6 +12,7 @@ from jinja2 import Environment
 from types_aiobotocore_ses import SESClient
 
 from app.config import EmailSettings
+from app.core.templates import MJMLEnvironment
 from app.mailbox.messages import DummyMailbox
 
 
@@ -40,9 +41,11 @@ class BaseEmailSender:
 
     def __init__(
         self,
+        mjml_environment: MJMLEnvironment,
         environment: Environment,
         settings: EmailSettings,
     ) -> None:
+        self._mjml_environment = mjml_environment
         self._environment = environment
         self._default_sender = settings.email_from
 
@@ -63,8 +66,8 @@ class BaseEmailSender:
             name=f"emails/{template}/body.txt",
         )
 
-        html_template = self._environment.get_template(
-            name=f"emails/{template}/body.html",
+        html_template = self._mjml_environment.get_template(
+            name=f"emails/{template}/body.mjml",
         )
 
         await self.send_email(
@@ -94,11 +97,13 @@ class DummyEmailSender(BaseEmailSender):
 
     def __init__(
         self,
+        mjml_environment: MJMLEnvironment,
         environment: Environment,
         settings: EmailSettings,
         dummy_mailbox: DummyMailbox,
     ) -> None:
         super().__init__(
+            mjml_environment=mjml_environment,
             environment=environment,
             settings=settings,
         )
@@ -148,10 +153,12 @@ class SMTPEmailSender(BaseEmailSender):
     def __init__(
         self,
         smtp_client: SMTP,
+        mjml_environment: MJMLEnvironment,
         environment: Environment,
         settings: EmailSettings,
     ) -> None:
         super().__init__(
+            mjml_environment=mjml_environment,
             environment=environment,
             settings=settings,
         )
@@ -201,10 +208,12 @@ class SESEmailSender(BaseEmailSender):
     def __init__(
         self,
         ses_client: SESClient,
+        mjml_environment: MJMLEnvironment,
         environment: Environment,
         settings: EmailSettings,
     ) -> None:
         super().__init__(
+            mjml_environment=mjml_environment,
             environment=environment,
             settings=settings,
         )

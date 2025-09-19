@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<9e2931001ddcc85f1d2249abafcae032>>
- * @relayHash a94271f4caca889a9d451d0121a7b25d
+ * @generated SignedSource<<bb6818eef56a953688987d5738cff70b>>
+ * @relayHash 97dd9376edc2aea8b62cdaa2237a5038
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID a94271f4caca889a9d451d0121a7b25d
+// @relayRequestID 97dd9376edc2aea8b62cdaa2237a5038
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -18,7 +18,7 @@ export type pageJobDetailViewQuery$variables = {
   slug: string;
 };
 export type pageJobDetailViewQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"JobDetailViewClientComponentFragment" | "pageJobDetailServerFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"pageJobDetailServerFragment">;
 };
 export type pageJobDetailViewQuery = {
   response: pageJobDetailViewQuery$data;
@@ -55,112 +55,283 @@ v5 = {
   "name": "__typename",
   "storageKey": null
 },
-v6 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "bannerUrl",
-  "storageKey": null
-},
-v7 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "logoUrl",
-  "storageKey": null
-},
-v8 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "name",
-  "storageKey": null
-},
-v9 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "location",
-  "storageKey": null
-},
-v10 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "website",
-  "storageKey": null
-},
-v11 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "description",
-  "storageKey": null
-},
-v12 = [
+v6 = [
   {
     "kind": "Variable",
     "name": "slug",
     "variableName": "jobSlug"
   }
 ],
-v13 = {
+v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "title",
   "storageKey": null
 },
-v14 = {
+v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "descriptionCleaned",
+  "name": "slug",
   "storageKey": null
 },
-v15 = {
+v9 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "description",
+  "storageKey": null
+},
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "descriptionHtml",
   "storageKey": null
 },
-v16 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "isVisible",
-  "storageKey": null
-},
-v17 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "createdAt",
-  "storageKey": null
-},
-v18 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "workMode",
-  "storageKey": null
-},
-v19 = {
+v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "type",
   "storageKey": null
 },
+v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "workMode",
+  "storageKey": null
+},
+v13 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "location",
+  "storageKey": null
+},
+v14 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "skills",
+  "storageKey": null
+},
+v15 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "currency",
+  "storageKey": null
+},
+v16 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "minSalary",
+  "storageKey": null
+},
+v17 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "maxSalary",
+  "storageKey": null
+},
+v18 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "minExperience",
+  "storageKey": null
+},
+v19 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "maxExperience",
+  "storageKey": null
+},
 v20 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "createdAt",
+  "storageKey": null
+},
+v21 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "vacancies",
+  "storageKey": null
+},
+v22 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isSalaryNegotiable",
+  "storageKey": null
+},
+v23 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "name",
+  "storageKey": null
+},
+v24 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "logoUrl",
+  "storageKey": null
+},
+v25 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "verifiedAt",
+      "storageKey": null
+    }
+  ],
+  "type": "Verified",
+  "abstractKey": null
+},
+v26 = {
+  "fragment": (v25/*: any*/),
+  "kind": "AliasedInlineFragmentSpread",
+  "name": "verified"
+},
+v27 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "rejectedAt",
+      "storageKey": null
+    }
+  ],
+  "type": "Rejected",
+  "abstractKey": null
+},
+v28 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "requestedAt",
+      "storageKey": null
+    }
+  ],
+  "type": "Pending",
+  "abstractKey": null
+},
+v29 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "message",
+      "storageKey": null
+    }
+  ],
+  "type": "NotRequested",
+  "abstractKey": null
+},
+v30 = [
+  {
+    "kind": "Variable",
+    "name": "jobSlug",
+    "variableName": "jobSlug"
+  },
+  (v3/*: any*/)
+],
+v31 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v32 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "cursor",
+  "storageKey": null
+},
+v33 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "PageInfo",
+  "kind": "LinkedField",
+  "name": "pageInfo",
+  "plural": false,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasNextPage",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "endCursor",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+},
+v34 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "bannerUrl",
+  "storageKey": null
+},
+v35 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "website",
+  "storageKey": null
+},
+v36 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "descriptionCleaned",
+  "storageKey": null
+},
+v37 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isVisible",
+  "storageKey": null
+},
+v38 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "expiresAt",
   "storageKey": null
 },
-v21 = {
+v39 = {
   "alias": null,
   "args": null,
   "concreteType": "Address",
@@ -206,102 +377,24 @@ v21 = {
   ],
   "storageKey": null
 },
-v22 = {
+v40 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "applicantLocations",
   "storageKey": null
 },
-v23 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "minSalary",
-  "storageKey": null
-},
-v24 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "maxSalary",
-  "storageKey": null
-},
-v25 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "slug",
-  "storageKey": null
-},
-v26 = [
-  {
-    "kind": "Variable",
-    "name": "jobSlug",
-    "variableName": "jobSlug"
-  },
-  (v3/*: any*/)
-],
-v27 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "skills",
-  "storageKey": null
-},
-v28 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "currency",
-  "storageKey": null
-},
-v29 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "minExperience",
-  "storageKey": null
-},
-v30 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "maxExperience",
-  "storageKey": null
-},
-v31 = {
-  "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "verifiedAt",
-      "storageKey": null
-    }
-  ],
-  "type": "Verified",
-  "abstractKey": null
-},
-v32 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-},
-v33 = [
+v41 = [
   {
     "kind": "Literal",
     "name": "first",
     "value": 10
   }
 ],
-v34 = {
+v42 = {
   "kind": "InlineFragment",
   "selections": [
-    (v32/*: any*/)
+    (v31/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -318,6 +411,275 @@ return {
         "name": "pageJobDetailServerFragment",
         "selections": [
           {
+            "kind": "InlineDataFragmentSpread",
+            "name": "JobDetailViewFragment",
+            "selections": [
+              {
+                "kind": "InlineDataFragmentSpread",
+                "name": "JobDetailsFragment",
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": (v4/*: any*/),
+                    "concreteType": null,
+                    "kind": "LinkedField",
+                    "name": "organization",
+                    "plural": false,
+                    "selections": [
+                      (v5/*: any*/),
+                      {
+                        "kind": "InlineFragment",
+                        "selections": [
+                          {
+                            "alias": null,
+                            "args": (v6/*: any*/),
+                            "concreteType": null,
+                            "kind": "LinkedField",
+                            "name": "job",
+                            "plural": false,
+                            "selections": [
+                              (v5/*: any*/),
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "kind": "InlineDataFragmentSpread",
+                                    "name": "JobDetailsInternalFragment",
+                                    "selections": [
+                                      (v7/*: any*/),
+                                      (v8/*: any*/),
+                                      (v9/*: any*/),
+                                      (v10/*: any*/),
+                                      (v11/*: any*/),
+                                      (v12/*: any*/),
+                                      (v13/*: any*/),
+                                      (v14/*: any*/),
+                                      (v15/*: any*/),
+                                      (v16/*: any*/),
+                                      (v17/*: any*/),
+                                      (v18/*: any*/),
+                                      (v19/*: any*/),
+                                      (v20/*: any*/),
+                                      (v21/*: any*/),
+                                      (v22/*: any*/),
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "concreteType": "Organization",
+                                        "kind": "LinkedField",
+                                        "name": "organization",
+                                        "plural": false,
+                                        "selections": [
+                                          (v8/*: any*/),
+                                          (v23/*: any*/),
+                                          (v9/*: any*/),
+                                          (v24/*: any*/),
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": null,
+                                            "kind": "LinkedField",
+                                            "name": "verificationStatus",
+                                            "plural": false,
+                                            "selections": [
+                                              (v5/*: any*/),
+                                              (v26/*: any*/),
+                                              (v27/*: any*/),
+                                              (v28/*: any*/),
+                                              (v29/*: any*/)
+                                            ],
+                                            "storageKey": null
+                                          }
+                                        ],
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "args": null,
+                                    "argumentDefinitions": []
+                                  }
+                                ],
+                                "type": "Job",
+                                "abstractKey": null
+                              }
+                            ],
+                            "storageKey": null
+                          }
+                        ],
+                        "type": "Organization",
+                        "abstractKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
+                ],
+                "args": (v30/*: any*/),
+                "argumentDefinitions": (v2/*: any*/)
+              },
+              {
+                "alias": null,
+                "args": (v4/*: any*/),
+                "concreteType": null,
+                "kind": "LinkedField",
+                "name": "organization",
+                "plural": false,
+                "selections": [
+                  (v5/*: any*/),
+                  {
+                    "kind": "InlineFragment",
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": (v6/*: any*/),
+                        "concreteType": null,
+                        "kind": "LinkedField",
+                        "name": "job",
+                        "plural": false,
+                        "selections": [
+                          (v5/*: any*/),
+                          {
+                            "kind": "InlineFragment",
+                            "selections": [
+                              (v31/*: any*/),
+                              {
+                                "kind": "InlineDataFragmentSpread",
+                                "name": "RelatedJobsListFragment",
+                                "selections": [
+                                  {
+                                    "alias": "relatedJobs",
+                                    "args": null,
+                                    "concreteType": "JobConnection",
+                                    "kind": "LinkedField",
+                                    "name": "__RelatedJobsListFragment_relatedJobs_connection",
+                                    "plural": false,
+                                    "selections": [
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "concreteType": "JobEdge",
+                                        "kind": "LinkedField",
+                                        "name": "edges",
+                                        "plural": true,
+                                        "selections": [
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "Job",
+                                            "kind": "LinkedField",
+                                            "name": "node",
+                                            "plural": false,
+                                            "selections": [
+                                              (v31/*: any*/),
+                                              {
+                                                "kind": "InlineDataFragmentSpread",
+                                                "name": "AuxiliaryJobFragment",
+                                                "selections": [
+                                                  {
+                                                    "args": null,
+                                                    "kind": "FragmentSpread",
+                                                    "name": "JobControlsFragment"
+                                                  },
+                                                  (v8/*: any*/),
+                                                  (v7/*: any*/),
+                                                  (v11/*: any*/),
+                                                  (v12/*: any*/),
+                                                  (v13/*: any*/),
+                                                  (v14/*: any*/),
+                                                  (v15/*: any*/),
+                                                  (v16/*: any*/),
+                                                  (v17/*: any*/),
+                                                  (v18/*: any*/),
+                                                  (v19/*: any*/),
+                                                  {
+                                                    "alias": null,
+                                                    "args": null,
+                                                    "concreteType": "Organization",
+                                                    "kind": "LinkedField",
+                                                    "name": "organization",
+                                                    "plural": false,
+                                                    "selections": [
+                                                      {
+                                                        "condition": "showOrganization",
+                                                        "kind": "Condition",
+                                                        "passingValue": true,
+                                                        "selections": [
+                                                          (v23/*: any*/),
+                                                          (v24/*: any*/)
+                                                        ]
+                                                      },
+                                                      (v8/*: any*/),
+                                                      {
+                                                        "alias": null,
+                                                        "args": null,
+                                                        "concreteType": null,
+                                                        "kind": "LinkedField",
+                                                        "name": "verificationStatus",
+                                                        "plural": false,
+                                                        "selections": [
+                                                          (v5/*: any*/),
+                                                          (v26/*: any*/)
+                                                        ],
+                                                        "storageKey": null
+                                                      }
+                                                    ],
+                                                    "storageKey": null
+                                                  }
+                                                ],
+                                                "args": null,
+                                                "argumentDefinitions": [
+                                                  {
+                                                    "defaultValue": true,
+                                                    "kind": "LocalArgument",
+                                                    "name": "showOrganization"
+                                                  }
+                                                ]
+                                              },
+                                              (v5/*: any*/)
+                                            ],
+                                            "storageKey": null
+                                          },
+                                          (v32/*: any*/)
+                                        ],
+                                        "storageKey": null
+                                      },
+                                      (v33/*: any*/)
+                                    ],
+                                    "storageKey": null
+                                  },
+                                  (v31/*: any*/)
+                                ],
+                                "args": null,
+                                "argumentDefinitions": [
+                                  {
+                                    "defaultValue": 10,
+                                    "kind": "LocalArgument",
+                                    "name": "count"
+                                  },
+                                  {
+                                    "defaultValue": null,
+                                    "kind": "LocalArgument",
+                                    "name": "cursor"
+                                  }
+                                ]
+                              }
+                            ],
+                            "type": "Job",
+                            "abstractKey": null
+                          }
+                        ],
+                        "storageKey": null
+                      }
+                    ],
+                    "type": "Organization",
+                    "abstractKey": null
+                  }
+                ],
+                "storageKey": null
+              }
+            ],
+            "args": (v30/*: any*/),
+            "argumentDefinitions": (v2/*: any*/)
+          },
+          {
             "alias": null,
             "args": (v4/*: any*/),
             "concreteType": null,
@@ -329,15 +691,15 @@ return {
               {
                 "kind": "InlineFragment",
                 "selections": [
-                  (v6/*: any*/),
-                  (v7/*: any*/),
-                  (v8/*: any*/),
+                  (v34/*: any*/),
+                  (v24/*: any*/),
+                  (v23/*: any*/),
+                  (v13/*: any*/),
+                  (v35/*: any*/),
                   (v9/*: any*/),
-                  (v10/*: any*/),
-                  (v11/*: any*/),
                   {
                     "alias": null,
-                    "args": (v12/*: any*/),
+                    "args": (v6/*: any*/),
                     "concreteType": null,
                     "kind": "LinkedField",
                     "name": "job",
@@ -347,20 +709,20 @@ return {
                       {
                         "kind": "InlineFragment",
                         "selections": [
+                          (v7/*: any*/),
+                          (v36/*: any*/),
+                          (v10/*: any*/),
+                          (v37/*: any*/),
+                          (v20/*: any*/),
+                          (v12/*: any*/),
+                          (v11/*: any*/),
+                          (v38/*: any*/),
                           (v13/*: any*/),
-                          (v14/*: any*/),
-                          (v15/*: any*/),
+                          (v39/*: any*/),
+                          (v40/*: any*/),
                           (v16/*: any*/),
                           (v17/*: any*/),
-                          (v18/*: any*/),
-                          (v19/*: any*/),
-                          (v20/*: any*/),
-                          (v9/*: any*/),
-                          (v21/*: any*/),
-                          (v22/*: any*/),
-                          (v23/*: any*/),
-                          (v24/*: any*/),
-                          (v25/*: any*/)
+                          (v8/*: any*/)
                         ],
                         "type": "Job",
                         "abstractKey": null
@@ -376,13 +738,8 @@ return {
             "storageKey": null
           }
         ],
-        "args": (v26/*: any*/),
+        "args": (v30/*: any*/),
         "argumentDefinitions": (v2/*: any*/)
-      },
-      {
-        "args": (v26/*: any*/),
-        "kind": "FragmentSpread",
-        "name": "JobDetailViewClientComponentFragment"
       }
     ],
     "type": "Query",
@@ -409,15 +766,9 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v6/*: any*/),
-              (v7/*: any*/),
-              (v8/*: any*/),
-              (v9/*: any*/),
-              (v10/*: any*/),
-              (v11/*: any*/),
               {
                 "alias": null,
-                "args": (v12/*: any*/),
+                "args": (v6/*: any*/),
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "job",
@@ -427,6 +778,12 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
+                      (v7/*: any*/),
+                      (v8/*: any*/),
+                      (v9/*: any*/),
+                      (v10/*: any*/),
+                      (v11/*: any*/),
+                      (v12/*: any*/),
                       (v13/*: any*/),
                       (v14/*: any*/),
                       (v15/*: any*/),
@@ -435,31 +792,8 @@ return {
                       (v18/*: any*/),
                       (v19/*: any*/),
                       (v20/*: any*/),
-                      (v9/*: any*/),
                       (v21/*: any*/),
                       (v22/*: any*/),
-                      (v23/*: any*/),
-                      (v24/*: any*/),
-                      (v25/*: any*/),
-                      (v11/*: any*/),
-                      (v27/*: any*/),
-                      (v28/*: any*/),
-                      (v29/*: any*/),
-                      (v30/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "vacancies",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "isSalaryNegotiable",
-                        "storageKey": null
-                      },
                       {
                         "alias": null,
                         "args": null,
@@ -468,10 +802,10 @@ return {
                         "name": "organization",
                         "plural": false,
                         "selections": [
-                          (v25/*: any*/),
                           (v8/*: any*/),
-                          (v11/*: any*/),
-                          (v7/*: any*/),
+                          (v23/*: any*/),
+                          (v9/*: any*/),
+                          (v24/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -481,60 +815,21 @@ return {
                             "plural": false,
                             "selections": [
                               (v5/*: any*/),
-                              (v31/*: any*/),
-                              {
-                                "kind": "InlineFragment",
-                                "selections": [
-                                  {
-                                    "alias": null,
-                                    "args": null,
-                                    "kind": "ScalarField",
-                                    "name": "rejectedAt",
-                                    "storageKey": null
-                                  }
-                                ],
-                                "type": "Rejected",
-                                "abstractKey": null
-                              },
-                              {
-                                "kind": "InlineFragment",
-                                "selections": [
-                                  {
-                                    "alias": null,
-                                    "args": null,
-                                    "kind": "ScalarField",
-                                    "name": "requestedAt",
-                                    "storageKey": null
-                                  }
-                                ],
-                                "type": "Pending",
-                                "abstractKey": null
-                              },
-                              {
-                                "kind": "InlineFragment",
-                                "selections": [
-                                  {
-                                    "alias": null,
-                                    "args": null,
-                                    "kind": "ScalarField",
-                                    "name": "message",
-                                    "storageKey": null
-                                  }
-                                ],
-                                "type": "NotRequested",
-                                "abstractKey": null
-                              }
+                              (v25/*: any*/),
+                              (v27/*: any*/),
+                              (v28/*: any*/),
+                              (v29/*: any*/)
                             ],
                             "storageKey": null
                           },
-                          (v32/*: any*/)
+                          (v31/*: any*/)
                         ],
                         "storageKey": null
                       },
-                      (v32/*: any*/),
+                      (v31/*: any*/),
                       {
                         "alias": null,
-                        "args": (v33/*: any*/),
+                        "args": (v41/*: any*/),
                         "concreteType": "JobConnection",
                         "kind": "LinkedField",
                         "name": "relatedJobs",
@@ -556,7 +851,7 @@ return {
                                 "name": "node",
                                 "plural": false,
                                 "selections": [
-                                  (v32/*: any*/),
+                                  (v31/*: any*/),
                                   {
                                     "alias": null,
                                     "args": null,
@@ -564,9 +859,9 @@ return {
                                     "name": "isSaved",
                                     "storageKey": null
                                   },
-                                  (v25/*: any*/),
-                                  (v13/*: any*/),
-                                  (v11/*: any*/),
+                                  (v8/*: any*/),
+                                  (v7/*: any*/),
+                                  (v9/*: any*/),
                                   {
                                     "alias": null,
                                     "args": null,
@@ -575,10 +870,10 @@ return {
                                     "name": "organization",
                                     "plural": false,
                                     "selections": [
+                                      (v23/*: any*/),
+                                      (v24/*: any*/),
                                       (v8/*: any*/),
-                                      (v7/*: any*/),
-                                      (v25/*: any*/),
-                                      (v32/*: any*/),
+                                      (v31/*: any*/),
                                       {
                                         "alias": null,
                                         "args": null,
@@ -588,93 +883,74 @@ return {
                                         "plural": false,
                                         "selections": [
                                           (v5/*: any*/),
-                                          (v31/*: any*/)
+                                          (v25/*: any*/)
                                         ],
                                         "storageKey": null
                                       }
                                     ],
                                     "storageKey": null
                                   },
-                                  (v19/*: any*/),
+                                  (v11/*: any*/),
+                                  (v12/*: any*/),
+                                  (v13/*: any*/),
+                                  (v14/*: any*/),
+                                  (v15/*: any*/),
+                                  (v16/*: any*/),
+                                  (v17/*: any*/),
                                   (v18/*: any*/),
-                                  (v9/*: any*/),
-                                  (v27/*: any*/),
-                                  (v28/*: any*/),
-                                  (v23/*: any*/),
-                                  (v24/*: any*/),
-                                  (v29/*: any*/),
-                                  (v30/*: any*/),
+                                  (v19/*: any*/),
                                   (v5/*: any*/)
                                 ],
                                 "storageKey": null
                               },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "cursor",
-                                "storageKey": null
-                              }
+                              (v32/*: any*/)
                             ],
                             "storageKey": null
                           },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "concreteType": "PageInfo",
-                            "kind": "LinkedField",
-                            "name": "pageInfo",
-                            "plural": false,
-                            "selections": [
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "hasNextPage",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "endCursor",
-                                "storageKey": null
-                              }
-                            ],
-                            "storageKey": null
-                          }
+                          (v33/*: any*/)
                         ],
                         "storageKey": "relatedJobs(first:10)"
                       },
                       {
                         "alias": null,
-                        "args": (v33/*: any*/),
+                        "args": (v41/*: any*/),
                         "filters": null,
                         "handle": "connection",
                         "key": "RelatedJobsListFragment_relatedJobs",
                         "kind": "LinkedHandle",
                         "name": "relatedJobs"
-                      }
+                      },
+                      (v36/*: any*/),
+                      (v37/*: any*/),
+                      (v38/*: any*/),
+                      (v39/*: any*/),
+                      (v40/*: any*/)
                     ],
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v34/*: any*/)
+                  (v42/*: any*/)
                 ],
                 "storageKey": null
-              }
+              },
+              (v34/*: any*/),
+              (v24/*: any*/),
+              (v23/*: any*/),
+              (v13/*: any*/),
+              (v35/*: any*/),
+              (v9/*: any*/)
             ],
             "type": "Organization",
             "abstractKey": null
           },
-          (v34/*: any*/)
+          (v42/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "a94271f4caca889a9d451d0121a7b25d",
+    "id": "97dd9376edc2aea8b62cdaa2237a5038",
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",
@@ -683,6 +959,6 @@ return {
 };
 })();
 
-(node as any).hash = "1970cc2a422164528fe9f792960dd39c";
+(node as any).hash = "33d87b912a586b9ec9b81f7ebbda1fad";
 
 export default node;

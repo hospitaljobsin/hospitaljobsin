@@ -14,6 +14,7 @@ const links = {
 	profile: '/profile',
 	savedJobs: '/saved',
 	appliedJobs: '/applied',
+	jobAlerts: '/my-alerts',
 	jobDetail: (slug: string, jobSlug: string) => `/organizations/${slug}/jobs/${jobSlug}`,
 	jobDetailApply: (slug: string, jobSlug: string) => `/organizations/${slug}/jobs/${jobSlug}/apply`,
 	organizationDetail: (slug: string) => `/organizations/${slug}`,
@@ -25,7 +26,8 @@ const links = {
 	twoFactorAuthentication: (returnTo: string | null = null) =>
 		returnTo ? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/2fa?return_to=${returnTo}` : `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/2fa`,
 	terms: '/terms',
-	privacy: '/privacy'
+	privacy: '/privacy',
+	requestSudo: (returnTo: string) => `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/request-sudo?return_to=${encodeURIComponent(returnTo)}`
 };
 
 export default links;

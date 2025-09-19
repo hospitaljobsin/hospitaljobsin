@@ -24,6 +24,7 @@ from app.core.constants import (
     JobApplicantAnalysisStatus,
     JobApplicantStatus,
     JobKindType,
+    WorkModeType,
 )
 from app.core.formatting import ensure_utc
 from app.jobs.agents.applicant_analysis import AnalysedFields
@@ -40,7 +41,7 @@ class Job(Document):
     # as Beanie doesn't directly support it
     embedding: list[float]
     type: JobKindType | None = None
-    work_mode: Literal["remote", "hybrid", "office"] | None = None
+    work_mode: WorkModeType | None = None
 
     location: str | None = None
     address: Address | None = None

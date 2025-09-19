@@ -77,7 +77,7 @@
 			"country": "IN"
 		},
 		"aliases": ["Hosur Sarjapur Road Layout"],
-		"level": "neighbourhood",
+		"level": "locality",
 		"coordinates": {
 			"type": "Point",
 			"coordinates": [77.6387, 12.9082]

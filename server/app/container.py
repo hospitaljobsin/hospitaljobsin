@@ -49,6 +49,7 @@ from app.config import (
     EmailSettings,
     EnvironmentSettings,
     FrontendSettings,
+    JobAlertsSettings,
     Oauth2Settings,
     PosthogSettings,
     ProviderSettings,
@@ -86,10 +87,12 @@ from app.core.messages import (
 from app.core.oauth import create_oauth_client
 from app.core.ocr import BaseOCRClient, TesseractOCRClient, TextractOCRClient
 from app.core.redis_client import create_redis_client
-from app.core.templates import create_jinja2_environment
+from app.core.templates import create_jinja2_environment, create_jinja2_mjml_environment
 from app.dataloaders import create_dataloaders
 from app.embeddings.services import EmbeddingsService
 from app.geocoding.repositories import RegionRepo
+from app.job_alerts.repositories import JobAlertRepo
+from app.job_alerts.services import JobAlertService
 from app.jobs.agents.applicant_analysis import (
     create_job_applicant_analyzer_agent,
 )
@@ -155,6 +158,7 @@ settings_classes: list[type[BaseSettings]] = [
     TwoFactorINSettings,
     Oauth2Settings,
     RevalidateSettings,
+    JobAlertsSettings,
 ]
 
 
@@ -211,7 +215,7 @@ def register_email_sender(container: aioinject.Container) -> None:
 
     match provider_settings.email_provider:
         case "smtp":
-            container.register(aioinject.Scoped(create_smtp_client))
+            container.register(aioinject.Singleton(create_smtp_client))
             container.register(aioinject.Scoped(SMTPEmailSender, BaseEmailSender))
         case "aws_ses":
             container.register(aioinject.Scoped(create_ses_client))
@@ -254,6 +258,7 @@ def create_container() -> aioinject.Container:
     )
     for settings_cls in settings_classes:
         container.register(SettingsProvider(settings_cls))
+    container.register(aioinject.Singleton(create_jinja2_mjml_environment))
     container.register(aioinject.Singleton(create_jinja2_environment))
     register_email_sender(container)
     register_ocr_client(container)
@@ -302,6 +307,8 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(OrganizationInviteService))
     container.register(aioinject.Scoped(JobApplicantService))
     container.register(aioinject.Singleton(JobMetricRepo))
+    container.register(aioinject.Singleton(JobAlertRepo))
+    container.register(aioinject.Scoped(JobAlertService))
     container.register(aioinject.Scoped(create_account_by_id_dataloader))
     container.register(aioinject.Scoped(create_profile_by_id_dataloader))
     container.register(aioinject.Scoped(create_job_by_id_dataloader))

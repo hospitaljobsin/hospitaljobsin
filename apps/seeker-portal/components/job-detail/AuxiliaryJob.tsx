@@ -5,13 +5,12 @@ import { Card, CardBody, CardHeader, Tooltip } from '@heroui/react';
 import { Briefcase, Globe, MapPin, VerifiedIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { graphql, readInlineData } from 'relay-runtime';
 
 export const AuxiliaryJobFragment = graphql`
   fragment AuxiliaryJobFragment on Job @argumentDefinitions(
 		showOrganization: { type: "Boolean!", defaultValue: true }
-	) {
+	) @inline {
 	...JobControlsFragment
     slug
     title
@@ -24,7 +23,7 @@ export const AuxiliaryJobFragment = graphql`
     maxSalary
     minExperience
     maxExperience
-    organization @required(action: THROW) {
+    organization {
       name @include(if: $showOrganization)
       logoUrl @include(if: $showOrganization)
 	  slug
@@ -43,7 +42,7 @@ type Props = {
 };
 
 export default function AuxiliaryJob({ job }: Props) {
-	const data = useFragment(AuxiliaryJobFragment, job);
+	const data = readInlineData(AuxiliaryJobFragment, job);
 
 	const jobType = (type: JobType) => {
 		switch (type) {

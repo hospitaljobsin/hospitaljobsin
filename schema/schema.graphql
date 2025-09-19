@@ -52,6 +52,11 @@ type Account implements Node {
 	has2faEnabled: Boolean!
 
 	"""
+	Whether Whatsapp job alerts have been enabled for the account.
+	"""
+	whatsappJobAlertsEnabled: Boolean!
+
+	"""
 	The terms and policy of the account.
 	"""
 	termsAndPolicy: TermsAndPolicy!
@@ -249,6 +254,96 @@ enum AddressProof {
 	RENTAL_AGREEMENT
 	BANK_STATEMENT
 	OTHER
+}
+
+"""
+Filters for the job alert.
+"""
+type AlertFilters {
+	"""
+	Search term to filter job listings.
+	"""
+	searchTerm: String!
+
+	"""
+	Location to filter job listings.
+	"""
+	location: String
+
+	"""
+	Minimum experience to filter job listings.
+	"""
+	minExperience: Int
+
+	"""
+	Maximum experience to filter job listings.
+	"""
+	maxExperience: Int
+
+	"""
+	Minimum salary to filter job listings.
+	"""
+	minSalary: Int
+
+	"""
+	Maximum salary to filter job listings.
+	"""
+	maxSalary: Int
+
+	"""
+	Job types to filter job listings.
+	"""
+	jobType: [JobTypeFilter!]
+
+	"""
+	Work modes to filter job listings.
+	"""
+	workMode: [WorkMode!]
+}
+
+"""
+Filters for the job alert.
+"""
+input AlertFiltersInput {
+	"""
+	Search term to filter job listings.
+	"""
+	searchTerm: String!
+
+	"""
+	Location to filter job listings.
+	"""
+	location: String = null
+
+	"""
+	Minimum experience to filter job listings.
+	"""
+	minExperience: Int = null
+
+	"""
+	Maximum experience to filter job listings.
+	"""
+	maxExperience: Int = null
+
+	"""
+	Minimum salary to filter job listings.
+	"""
+	minSalary: Int = null
+
+	"""
+	Maximum salary to filter job listings.
+	"""
+	maxSalary: Int = null
+
+	"""
+	Job types to filter job listings.
+	"""
+	jobType: [JobTypeFilter!] = null
+
+	"""
+	Work modes to filter job listings.
+	"""
+	workMode: [WorkMode!] = null
 }
 
 """
@@ -554,6 +649,11 @@ type CheckOrganizationSlugAvailabilityPayload {
 }
 
 """
+The create job alert payload.
+"""
+union CreateJobAlertPayload = JobAlert | JobAlertAlreadyExistsError | MaxJobAlertsReachedError
+
+"""
 The create job application payload.
 """
 union CreateJobApplicantPayload =
@@ -666,6 +766,11 @@ scalar DateTime
 The decline organization invite payload.
 """
 union DeclineOrganizationInvitePayload = OrganizationInviteEdge | OrganizationInviteNotFoundError
+
+"""
+The delete job alert payload.
+"""
+union DeleteJobAlertPayload = JobAlert | JobAlertNotFoundError
 
 """
 The delete job payload.
@@ -1391,6 +1496,94 @@ type Job implements Node {
 }
 
 """
+A job alert.
+"""
+type JobAlert implements Node {
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
+
+	"""
+	The filters for the job alert.
+	"""
+	filters: AlertFilters!
+
+	"""
+	The frequency of the job alert.
+	"""
+	frequency: JobAlertFrequency!
+
+	"""
+	The creation time of the job alert.
+	"""
+	createdAt: DateTime!
+
+	"""
+	The last time the job alert was sent.
+	"""
+	lastSentAt: DateTime
+}
+
+"""
+Error when the job alert already exists.
+"""
+type JobAlertAlreadyExistsError implements Error {
+	"""
+	The error message.
+	"""
+	message: String!
+}
+
+type JobAlertConnection {
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
+
+	"""
+	A list of edges.
+	"""
+	edges: [JobAlertEdge!]!
+
+	"""
+	The total number of items in the connection.
+	"""
+	totalCount: Int
+}
+
+type JobAlertEdge {
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
+
+	"""
+	The item at the end of the edge
+	"""
+	node: JobAlert!
+}
+
+"""
+Job alert frequency type.
+"""
+enum JobAlertFrequency {
+	DAILY
+	WEEKLY
+	MONTHLY
+}
+
+"""
+Error when the job alert is not found.
+"""
+type JobAlertNotFoundError implements Error {
+	"""
+	The error message.
+	"""
+	message: String!
+}
+
+"""
 A job application for a posting.
 """
 type JobApplicant implements Node {
@@ -1950,6 +2143,16 @@ Marital status type.
 enum MaritalStatusType {
 	MARRIED
 	SINGLE
+}
+
+"""
+Error when the maximum number of job alerts is reached.
+"""
+type MaxJobAlertsReachedError implements Error {
+	"""
+	The error message.
+	"""
+	message: String!
 }
 
 """
@@ -2814,6 +3017,16 @@ type Mutation {
 	removeAccountPhoneNumber: RemoveAccountPhoneNumberPayload! @isAuthenticated @requiresSudoMode
 
 	"""
+	Update the current user's whatsapp job alerts status.
+	"""
+	updateAccountWhatsappJobAlerts(
+		"""
+		Whether to enable or disable whatsapp job alerts.
+		"""
+		enabled: Boolean!
+	): UpdateAccountWhatsappJobAlertsPayload! @isAuthenticated
+
+	"""
 	Update the current user's analytics preference.
 	"""
 	updateAccountAnalyticsPreference(
@@ -3192,6 +3405,51 @@ type Mutation {
 		"""
 		accountId: ID!
 	): DemoteOrganizationMemberPayload! @isAuthenticated @requiresSudoMode
+
+	"""
+	Create a job alert.
+	"""
+	createJobAlert(
+		"""
+		The filters for the job alert.
+		"""
+		filters: AlertFiltersInput!
+
+		"""
+		The frequency of the job alert.
+		"""
+		frequency: JobAlertFrequency!
+	): CreateJobAlertPayload! @isAuthenticated
+
+	"""
+	Update a job alert.
+	"""
+	updateJobAlert(
+		"""
+		The ID of the job alert to update.
+		"""
+		jobAlertId: ID!
+
+		"""
+		The filters for the job alert.
+		"""
+		filters: AlertFiltersInput!
+
+		"""
+		The frequency of the job alert.
+		"""
+		frequency: JobAlertFrequency!
+	): UpdateJobAlertPayload! @isAuthenticated
+
+	"""
+	Delete a job alert.
+	"""
+	deleteJobAlert(
+		"""
+		The ID of the job alert to delete.
+		"""
+		jobAlertId: ID!
+	): DeleteJobAlertPayload! @isAuthenticated
 }
 
 """
@@ -3771,6 +4029,13 @@ type PhoneNumberDoesNotExistError implements Error {
 	message: String!
 }
 
+type PhoneNumberMissingError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
+}
+
 """
 Used when the phone number verification token cooldown is active.
 """
@@ -4237,6 +4502,31 @@ type Query {
 		"""
 		searchTerm: String!
 	): AutocompleteLocationsPayload!
+
+	"""
+	Get all the job alerts for the current user.
+	"""
+	jobAlerts(
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
+
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
+
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
+
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): JobAlertConnection! @isAuthenticated
 }
 
 """
@@ -4247,8 +4537,6 @@ enum RegionLevel {
 	COUNTRY
 	STATE
 	LOCALITY
-	CITY
-	NEIGHBOURHOOD
 }
 
 """
@@ -4665,6 +4953,16 @@ union UpdateAccountPayload = Account
 The update account phone number payload.
 """
 union UpdateAccountPhoneNumberPayload = Account | InvalidPhoneNumberVerificationTokenError | InvalidPhoneNumberError
+
+"""
+The update account WhatsApp job alerts payload.
+"""
+union UpdateAccountWhatsappJobAlertsPayload = Account | PhoneNumberMissingError
+
+"""
+The update job alert payload.
+"""
+union UpdateJobAlertPayload = JobAlert | JobAlertAlreadyExistsError | JobAlertNotFoundError
 
 """
 The update job applicants status payload.

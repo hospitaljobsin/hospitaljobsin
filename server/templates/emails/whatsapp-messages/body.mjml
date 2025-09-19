@@ -1,0 +1,99 @@
+{% extends "emails/base/body.mjml" %}
+
+{% block title %}
+{{ message_count }} WhatsApp {% if message_count == 1 %}Message{% else %}Messages{% endif %} Ready for {{ app_name }} Channel
+{% endblock %}
+
+{% block preview %}
+{{ message_count }} new WhatsApp messages ready for {{ app_name }} Channel posting
+{% endblock %}
+
+{% block content %}
+<mj-text color="#00a925" font-size="24px" font-weight="700" align="center" padding="0 0 25px 0">
+  🚨 URGENT ACTION REQUIRED 🚨
+</mj-text>
+
+<mj-text font-size="16px" color="#333333" padding="0 0 20px 0">
+  Hello Support Team,
+</mj-text>
+
+<mj-section background-color="#f3faf4" border-radius="8px" padding="20px">
+  <mj-column>
+    <mj-text color="#006614" font-size="16px" font-weight="600" line-height="1.5" padding="0">
+      {{ message_count }} new WhatsApp {% if message_count == 1 %}message{% else %}messages{% endif %} {% if message_count == 1 %}is{% else %}are{% endif %} ready to be posted in the <strong style="color: #00a925;">{{ app_name }} WhatsApp Channel</strong>.
+    </mj-text>
+  </mj-column>
+</mj-section>
+
+<mj-text color="#00a925" font-size="20px" font-weight="700" padding="30px 0 20px 0">
+  📋 STEP-BY-STEP INSTRUCTIONS:
+</mj-text>
+
+<mj-text color="#333333" font-size="16px" line-height="1.6" padding="0 0 20px 0">
+  <strong style="color: #00a925;">1. Download &amp; Extract:</strong>
+</mj-text>
+<mj-text color="#333333" font-size="14px" line-height="1.6" padding="0 0 20px 25px">
+  • Download the attached ZIP file<br/>
+  • Extract it to a folder on your computer<br/>
+  • You'll find {{ message_count }} individual text file{% if message_count != 1 %}s{% endif %}
+</mj-text>
+
+<mj-text color="#333333" font-size="16px" line-height="1.6" padding="0 0 20px 0">
+  <strong style="color: #00a925;">2. Review Content:</strong>
+</mj-text>
+<mj-text color="#333333" font-size="14px" line-height="1.6" padding="0 0 20px 25px">
+  • Each file contains a complete WhatsApp message<br/>
+  • Files are named with job details for easy identification<br/>
+  • Review each message before posting
+</mj-text>
+
+<mj-text color="#333333" font-size="16px" line-height="1.6" padding="0 0 20px 0">
+  <strong style="color: #00a925;">3. Post to {{ app_name }} WhatsApp Channel:</strong>
+</mj-text>
+<mj-text color="#333333" font-size="14px" line-height="1.6" padding="0 0 20px 25px">
+  • Copy the content from each text file<br/>
+  • Post each message individually in the {{ app_name }} WhatsApp Channel<br/>
+  • Ensure proper formatting and spacing<br/>
+  • Wait for the WhatsApp image preview to appear before posting each message
+</mj-text>
+
+<mj-text color="#333333" font-size="16px" line-height="1.6" padding="0 0 20px 0">
+  <strong style="color: #00a925;">4. Verification:</strong>
+</mj-text>
+<mj-text color="#333333" font-size="14px" line-height="1.6" padding="0 0 20px 25px">
+  • Confirm all {{ message_count }} message{% if message_count != 1 %}s{% endif %} have been posted<br/>
+  • Check for any formatting issues
+</mj-text>
+
+<mj-section background-color="#f3faf4" border-radius="8px" padding="20px" margin="25px 0">
+  <mj-column>
+    <mj-text color="#006614" font-size="18px" font-weight="700" padding="0 0 12px 0">
+      ⚠️ IMPORTANT NOTES:
+    </mj-text>
+    <mj-text color="#333333" font-size="14px" line-height="1.6" padding="0">
+      • These messages contain time-sensitive job postings<br/>
+      • Post them promptly to maximize reach<br/>
+      • Each message is pre-formatted and ready to use<br/>
+      • Contact the development team if you encounter any issues
+    </mj-text>
+  </mj-column>
+</mj-section>
+
+<mj-section background-color="#f3faf4" border-radius="8px" padding="20px" margin="25px 0">
+  <mj-column>
+    <mj-text color="#006614" font-size="18px" font-weight="700" padding="0 0 12px 0">
+      📎 ATTACHMENT:
+    </mj-text>
+    <mj-text color="#333333" font-size="14px" line-height="1.6" padding="0">
+      ZIP file containing {{ message_count }} text file{% if message_count != 1 %}s{% endif %} with individual messages
+    </mj-text>
+  </mj-column>
+</mj-section>
+
+<mj-divider border-width="1px" border-style="solid" border-color="#e5e7eb" padding="20px 0" />
+
+<mj-text font-size="16px" color="#333333" padding="0">
+  Best regards,<br/>
+  <strong style="color: #00a925;">{{ automation_bot_name }}</strong>
+</mj-text>
+{% endblock %}

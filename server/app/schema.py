@@ -22,6 +22,8 @@ from app.auth.query import AuthQuery
 from app.config import AppSettings, EnvironmentSettings, get_settings
 from app.core.schema.extensions.persisted_queries import PersistedQueriesExtension
 from app.geocoding.query import GeocodingQuery
+from app.job_alerts.mutation import JobAlertMutation
+from app.job_alerts.query import JobAlertQuery
 from app.jobs.mutation import JobMutation
 from app.jobs.query import JobQuery
 from app.organizations.mutation import OrganizationMutation
@@ -40,6 +42,7 @@ query = merge_types(
         JobQuery,
         OrganizationQuery,
         GeocodingQuery,
+        JobAlertQuery,
     ),
 )
 
@@ -51,6 +54,7 @@ mutation = merge_types(
         JobMutation,
         AccountMutation,
         OrganizationMutation,
+        JobAlertMutation,
     ),
 )
 
