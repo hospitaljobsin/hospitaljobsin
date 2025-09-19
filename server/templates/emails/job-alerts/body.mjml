@@ -25,15 +25,15 @@
 
 {% for job in jobs %}
 <!-- Job Card -->
-<mj-section background-color="#ffffff" border="1px solid #e5e7eb" border-radius="12px">
-  <!-- Logo and Job Info -->
-  <mj-column width="20%" padding="24px 24px 24px 24px">
+<mj-section background-color="#ffffff" border="1px solid #e5e7eb" border-radius="12px" padding="24px 20px">
+  <!-- Header Row: Logo, Title/Company, and Salary -->
+  <mj-column width="15%" padding="0 16px 12px 0">
     <mj-text padding="0" margin="0">
       <a href="{{ app_url }}/organizations/{{ job.organization.slug }}/jobs/{{ job.slug }}" style="text-decoration: none; color: inherit; display: block;">
         {% if job.organization.logo_url %}
-          <img src="{{ job.organization.logo_url }}" alt="{{ job.organization.name }} logo" width="48" height="48" style="border-radius: 8px; display: block;" />
+          <img src="{{ job.organization.logo_url }}" alt="{{ job.organization.name }} logo" width="56" height="56" style="border-radius: 8px; display: block;" />
         {% else %}
-          <div style="width: 48px; height: 48px; border-radius: 8px; background-color: #f3f4f6; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #6b7280; font-size: 16px;">
+          <div style="width: 56px; height: 56px; border-radius: 8px; background-color: #f3f4f6; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #6b7280; font-size: 18px;">
             {{ job.organization.name[0] if job.organization.name else 'C' }}
           </div>
         {% endif %}
@@ -41,21 +41,22 @@
     </mj-text>
   </mj-column>
 
-  <!-- Job Title and Company -->
-  <mj-column width="55%" padding="8px 24px 24px 24px">
-    <mj-text>
+  <mj-column width="60%" padding="0 16px 12px 0">
+    <mj-text padding="0" margin="0">
       <a href="{{ app_url }}/organizations/{{ job.organization.slug }}/jobs/{{ job.slug }}" style="text-decoration: none; color: inherit; display: block;">
-        <div style="color: #1f2937; font-size: 18px; font-weight: 600; line-height: 1.3; margin-bottom: 4px;">{{ job.title }}</div>
-        <div style="color: #6b7280; font-size: 14px; font-weight: 500;">{{ job.organization.name }}</div>
+        <div style="color: #1f2937; font-size: 20px; font-weight: 600; line-height: 1.3; margin-bottom: 6px;">{{ job.title }}</div>
+        <div style="color: #6b7280; font-size: 15px; font-weight: 500; margin-bottom: 8px;">{{ job.organization.name }}</div>
+        <div style="color: #9ca3af; font-size: 13px; font-weight: 500;">
+          Posted on {{ job.id.generation_time.strftime('%B %d, %Y') if job.id and job.id.generation_time else 'Recently' }}
+        </div>
       </a>
     </mj-text>
   </mj-column>
 
-  <!-- Salary -->
-  <mj-column width="25%" padding="8px 24px 24px 24px">
-    <mj-text align="left">
+  <mj-column width="25%" padding="0 0 12px 0">
+    <mj-text padding="0" margin="0" align="right">
       <a href="{{ app_url }}/organizations/{{ job.organization.slug }}/jobs/{{ job.slug }}" style="text-decoration: none; color: inherit; display: block;">
-        <div style="color: #1f2937; font-size: 16px; font-weight: 600; line-height: 1.2; text-align: left;">
+        <div style="color: #1f2937; font-size: 18px; font-weight: 600; line-height: 1.2; text-align: right;">
           {% if job.min_salary and job.max_salary %}
             ₹ Not disclosed
           {% elif job.min_salary %}
@@ -68,18 +69,12 @@
     </mj-text>
   </mj-column>
 
-  <!-- Job Details Row -->
-  <mj-column padding="8px 24px 24px 24px">
+  <!-- Details Row -->
+  <mj-column width="100%" padding="8px 0 0 0">
     <mj-text padding="0" margin="0">
       <a href="{{ app_url }}/organizations/{{ job.organization.slug }}/jobs/{{ job.slug }}" style="text-decoration: none; color: inherit; display: block;">
-
-        <!-- Posted Date -->
-        <div style="color: #9ca3af; font-size: 13px; font-weight: 500; margin-bottom: 12px;">
-          Posted on {{ job.id.generation_time.strftime('%B %d, %Y') if job.id and job.id.generation_time else 'Recently' }}
-        </div>
-
         <!-- Job Details -->
-        <div style="color: #374151; font-size: 14px; font-weight: 500; margin-bottom: 16px; line-height: 1.4;">
+        <div style="color: #374151; font-size: 14px; font-weight: 500; line-height: 1.5;">
           {% set details = [] %}
           {% if job.type %}
             {% set _ = details.append(job.type|title|replace("_", " ")) %}
@@ -96,33 +91,6 @@
             {% set _ = details.append(job.work_mode|title) %}
           {% endif %}
           {{ details | join(" • ") }}
-        </div>
-
-        <!-- Skills Tags -->
-        <div style="line-height: 1.4;">
-          {% if job.skills %}
-            {% for skill in job.skills[:5] %}
-              <span style="display: inline-block; background-color: #f1f5f9; color: #475569; padding: 6px 10px; border-radius: 16px; font-size: 12px; font-weight: 500; margin: 0 6px 6px 0; border: 1px solid #e2e8f0; white-space: nowrap;">
-                {{ skill.name if skill.name else skill }}
-              </span>
-            {% endfor %}
-          {% else %}
-            <span style="display: inline-block; background-color: #f1f5f9; color: #475569; padding: 6px 10px; border-radius: 16px; font-size: 12px; font-weight: 500; margin: 0 6px 6px 0; border: 1px solid #e2e8f0; white-space: nowrap;">
-              Packaging
-            </span>
-            <span style="display: inline-block; background-color: #f1f5f9; color: #475569; padding: 6px 10px; border-radius: 16px; font-size: 12px; font-weight: 500; margin: 0 6px 6px 0; border: 1px solid #e2e8f0; white-space: nowrap;">
-              Dispatch
-            </span>
-            <span style="display: inline-block; background-color: #f1f5f9; color: #475569; padding: 6px 10px; border-radius: 16px; font-size: 12px; font-weight: 500; margin: 0 6px 6px 0; border: 1px solid #e2e8f0; white-space: nowrap;">
-              Documentation
-            </span>
-            <span style="display: inline-block; background-color: #f1f5f9; color: #475569; padding: 6px 10px; border-radius: 16px; font-size: 12px; font-weight: 500; margin: 0 6px 6px 0; border: 1px solid #e2e8f0; white-space: nowrap;">
-              Accuracy
-            </span>
-            <span style="display: inline-block; background-color: #f1f5f9; color: #475569; padding: 6px 10px; border-radius: 16px; font-size: 12px; font-weight: 500; margin: 0 6px 6px 0; border: 1px solid #e2e8f0; white-space: nowrap;">
-              Multitasking
-            </span>
-          {% endif %}
         </div>
       </a>
     </mj-text>
