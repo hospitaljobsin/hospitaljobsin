@@ -1,6 +1,6 @@
 import type { SetWhatsappAlertsFragment$key } from '@/__generated__/SetWhatsappAlertsFragment.graphql';
 import { useCheckSudoMode } from '@/lib/hooks/useCheckSudoMode';
-import { Button, Card, CardBody, CardFooter, CardHeader } from '@heroui/react';
+import { Button, Card, CardBody, CardFooter, CardHeader, Tooltip } from '@heroui/react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { useFragment } from 'react-relay';
@@ -103,9 +103,13 @@ export default function SetWhatsappAlerts({ query }: { query: SetWhatsappAlertsF
 					</div>
 				</CardHeader>
 				<CardBody>
-					<Button color='primary' startContent={<WhatsappIcon size={20} />} onPress={handleEnableWhatsappAlerts}>
-						Enable Alerts
-					</Button>
+					<Tooltip content='Coming Soon!'>
+						<span className='w-full'>
+							<Button color='primary' startContent={<WhatsappIcon size={20} />} onPress={handleEnableWhatsappAlerts} isDisabled fullWidth>
+								Enable Alerts
+							</Button>
+						</span>
+					</Tooltip>
 				</CardBody>
 				<CardFooter className='pb-0'>
 					<div className='flex-1 md:flex items-center justify-center w-full md:h-64 h-32 relative'>
