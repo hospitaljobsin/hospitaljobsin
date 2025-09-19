@@ -37,14 +37,18 @@
   </mj-head>
 
   <mj-body>
+    <mj-wrapper>
     <!-- Header Section with Brand Colors -->
     <mj-section css-class="header-gradient" padding="0 20px">
       <mj-column width="60%" padding="16px 0">
-        <mj-text align="left" color="#ffffff" font-size="24px" font-weight="700" padding="0">
+        <mj-text align="left" color="#ffffff" font-size="24px" font-weight="600" padding="0">
           <span style="display: inline-flex; align-items: center;">
             <img src="{{ app_logo_url }}" alt="{{ app_name }} logo" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 12px;" />
             {{ app_name }}
           </span>
+        </mj-text>
+        <mj-text align="left" padding="0" color="#ffffff" font-size="16px">
+          {{ app_tagline }}
         </mj-text>
       </mj-column>
       <mj-column width="40%">
@@ -83,5 +87,6 @@
         </mj-social>
       </mj-column>
     </mj-section>
+    </mj-wrapper>
   </mj-body>
 </mjml>

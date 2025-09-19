@@ -6,6 +6,7 @@ from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
 from app.config import FrontendSettings
 from app.core.constants import (
     APP_NAME,
+    APP_TAGLINE,
     AUTOMATION_BOT_NAME,
     SUPPORT_EMAIL,
 )
@@ -41,6 +42,7 @@ def register_globals(environment: Environment, settings: FrontendSettings) -> No
     environment.globals["hero_image_2_url"] = (
         f"{settings.seeker_portal_base_url}/hero-model-2.png"
     )
+    environment.globals["app_tagline"] = APP_TAGLINE
     environment.globals["app_url"] = settings.seeker_portal_base_url
     environment.globals["support_email"] = SUPPORT_EMAIL
     environment.globals["automation_bot_name"] = AUTOMATION_BOT_NAME

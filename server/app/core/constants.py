@@ -8,6 +8,8 @@ SENDER_EMAIL = "noreply@hospitaljobs.in"
 
 APP_NAME = "Hospital Jobs"
 
+APP_TAGLINE = "Empowering Healthcare Professionals to find their next role"
+
 AUTOMATION_BOT_NAME = "Hoppy (Automation Bot)"
 
 # pagination
