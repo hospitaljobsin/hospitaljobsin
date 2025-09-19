@@ -82,6 +82,7 @@ from app.core.emails import (
 from app.core.messages import (
     BaseMessageSender,
     DummyMessageSender,
+    SMSCatcherMessageSender,
     TwoFactorINSMSMessageSender,
 )
 from app.core.oauth import create_oauth_client
@@ -243,8 +244,12 @@ def register_message_sender(container: aioinject.Container) -> None:
             aioinject.Scoped(TwoFactorINSMSMessageSender, BaseMessageSender)
         )
         # container.register(aioinject.Scoped(WhatsappMessageSender, BaseMessageSender))
-    else:
+    if env_settings.is_testing:
         container.register(aioinject.Singleton(DummyMessageSender, BaseMessageSender))
+    else:
+        container.register(
+            aioinject.Singleton(SMSCatcherMessageSender, BaseMessageSender)
+        )
 
 
 @lru_cache

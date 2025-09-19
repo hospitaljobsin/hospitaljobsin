@@ -51,8 +51,8 @@ class TwoFactorINSMSMessageSender(BaseMessageSender):
             response.raise_for_status()
 
 
-class DummyMessageSender(BaseMessageSender):
-    """Dummy Message sender class."""
+class SMSCatcherMessageSender(BaseMessageSender):
+    """SMS catcher Message sender class."""
 
     async def send_message(
         self,
@@ -74,6 +74,37 @@ class DummyMessageSender(BaseMessageSender):
         async with httpx.AsyncClient() as client:
             response = await client.post(url, headers=headers, json=data)
             response.raise_for_status()
+
+    async def send_otp_message(
+        self,
+        receiver: PhoneNumber,
+        otp: str,
+    ) -> None:
+        """Send an OTP message."""
+        await self.send_message(
+            receiver=receiver,
+            template_name="login_code",
+            parameters=[
+                {
+                    "type": "text",
+                    "parameter_name": "code",
+                    "text": otp,
+                },
+            ],
+        )
+
+
+class DummyMessageSender(BaseMessageSender):
+    """Dummy Message sender class."""
+
+    async def send_message(
+        self,
+        receiver: PhoneNumber,
+        template_name: str,
+        parameters: list[dict[str, str]],
+    ) -> None:
+        """Send a dummy message."""
+        pass
 
     async def send_otp_message(
         self,
