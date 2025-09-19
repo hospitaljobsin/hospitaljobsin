@@ -4,7 +4,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Literal
 
 from beanie import PydanticObjectId
-from beanie.operators import And, In, Set
+from beanie.operators import And, In, Or, Set
 from bson import ObjectId
 from strawberry import UNSET
 
@@ -499,33 +499,21 @@ class OrganizationInviteRepo:
         self, invite_tokens: list[tuple[str, str]]
     ) -> list[OrganizationInvite | None]:
         """Get multiple active organization invites by emails and tokens."""
-        print("invite_tokens:", invite_tokens)  # Debugging line
-        filters = [
-            {
-                "$and": [
-                    {"email": email},
-                    {"token_hash": self.hash_token(token)},
-                    # select only pending invites
-                    {"status": "pending"},
-                    {"is_hidden": False},
-                ]
-            }
+        # Build individual conditions using Beanie operators
+        conditions = [
+            And(
+                OrganizationInvite.email == email,
+                OrganizationInvite.token_hash == self.hash_token(token),
+                OrganizationInvite.status == "pending",
+                OrganizationInvite.is_hidden == False,
+            )
             for email, token in invite_tokens
         ]
 
         # Use the Or operator to combine all conditions
         organization_invites = await OrganizationInvite.find(
-            {"$or": filters}, fetch_links=True, nesting_depth=1
+            Or(*conditions), fetch_links=True, nesting_depth=1
         ).to_list()
-
-        print("organization_invites:", organization_invites)  # Debugging line
-
-        # Use the Or operator to combine all conditions
-        organization_invites = await OrganizationInvite.find(
-            {"$or": filters}, fetch_links=True, nesting_depth=1
-        ).to_list()
-
-        print("organization_invites:", organization_invites)  # Debugging line
 
         organization_invite_by_token = {
             (
