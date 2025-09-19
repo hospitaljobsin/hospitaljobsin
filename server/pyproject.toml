@@ -63,7 +63,7 @@ dependencies = [
 [tool.pyright]
 include = ["app", "tests"]
 exclude = ["^.venv/"]
-pythonVersion = "3.12"
+pythonVersion = "3.13"
 typeCheckingMode = "strict"
 reportMissingImports = true
 reportMissingTypeStubs = false

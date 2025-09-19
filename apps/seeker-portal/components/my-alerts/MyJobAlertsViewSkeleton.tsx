@@ -9,12 +9,12 @@ export default function MyJobAlertsViewSkeleton() {
 			<div className='w-full mx-auto bg-background-600'>
 				<div className='w-full px-5 max-w-7xl mx-auto py-6 flex flex-col md:flex-row gap-12'>
 					<div className='flex flex-col w-full h-full gap-12'>
-						<div className='flex flex-row justify-between items-center'>
+						<div className='flex flex-col sm:flex-row justify-between sm:items-center gap-4'>
 							<div className='space-y-2'>
 								<h2 className='text-2xl font-medium'>My Job Alerts</h2>
 								<p className='text-sm text-foreground-600'>Get notified when new jobs match your preferences, directly in your inbox</p>
 							</div>
-							<Skeleton className='h-12 w-48 rounded-md' />
+							<Skeleton className='h-12 w-full rounded-lg sm:w-48' />
 						</div>
 						<div className='w-full flex flex-col gap-8 pb-6'>
 							<JobAlertsListSkeleton />
