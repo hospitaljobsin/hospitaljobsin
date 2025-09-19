@@ -25,7 +25,8 @@
 
 {% for job in jobs %}
 <!-- Job Card -->
-<mj-section background-color="#ffffff" border="1px solid #e5e7eb" border-radius="12px" padding="24px 20px">
+<mj-wrapper background-color="#ffffff" border="1px solid #e5e7eb" border-radius="12px" padding="0">
+<mj-section background-color="#ffffff" padding="24px 20px">
   <!-- Header Row: Logo, Title/Company, and Salary -->
   <mj-column width="15%" padding="0 16px 12px 0">
     <mj-text padding="0" margin="0">
@@ -96,6 +97,7 @@
     </mj-text>
   </mj-column>
 </mj-section>
+</mj-wrapper>
 
 <!-- Spacer between job cards -->
 <mj-spacer height="20px" />

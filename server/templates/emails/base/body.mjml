@@ -48,6 +48,22 @@
         overflow: hidden;
         display: block;
       }
+
+      /* Mobile responsive styles */
+      @media only screen and (max-width: 640px) {
+        .app-name-text {
+          font-size: 16px !important;
+        }
+        .app-tagline-text {
+          display: none !important;
+        }
+        .hero-container {
+          height: 150px !important;
+        }
+        .hero-container img {
+          height: 150px !important;
+        }
+      }
     </mj-style>
   </mj-head>
 
@@ -60,18 +76,18 @@
     <mj-section css-class="header-gradient" padding="0 20px">
       <mj-column width="60%" padding="16px 0">
         <mj-text align="left" color="#ffffff" font-size="24px" font-weight="600" padding="0">
-          <span style="display: inline-flex; align-items: center;">
+          <span style="display: inline-flex; align-items: center; font-size: 24px;">
             <img src="{{ app_logo_url }}" alt="{{ app_name }} logo" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 12px;" />
-            {{ app_name }}
+            <span class="app-name-text">{{ app_name }}</span>
           </span>
         </mj-text>
         <mj-text align="left" padding="0" color="#F4F4F5" font-size="20px">
-          {{ app_tagline }}
+          <span class="app-tagline-text">{{ app_tagline }}</span>
         </mj-text>
       </mj-column>
       <mj-column width="40%">
         <mj-text align="right" padding="0" width="100%">
-          <div style="position: relative; height: 250px; overflow: hidden;">
+          <div class="hero-container" style="position: relative; height: 250px; overflow: hidden;">
             <img src="{{ hero_image_1_url }}" alt="Healthcare Professional 1" style="width: auto; height: 250px; max-width: 100%; object-fit: cover; object-position: bottom; position: absolute; left: 0; top: 0; z-index: 10;" />
             <img src="{{ hero_image_2_url }}" alt="Healthcare Professional 2" style="width: auto; height: 250px; max-width: 100%; object-fit: cover; object-position: bottom; position: absolute; left: 120px; top: 0; z-index: 20; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.1));" />
           </div>
@@ -97,13 +113,13 @@
         {% block footer %}{% endblock %}
 
         <!-- Brand Footer -->
-        <mj-text align="left" color="#9ca3af" font-size="13px" padding="0">
+        <mj-text align="center" color="#9ca3af" font-size="13px" padding="0">
           Sent by Team {{ app_name }}
         </mj-text>
       </mj-column>
       <mj-column width="40%" vertical-align="middle">
         <!-- Social Media Links -->
-        <mj-social font-size="15px" icon-size="20px" mode="horizontal" padding="0" align="right" color="#9ca3af">
+        <mj-social font-size="15px" icon-size="20px" mode="horizontal" padding="0" align="center" color="#9ca3af">
           <mj-social-element name="linkedin" href="https://linkedin.com/company/hospitaljobsin" background-color="#9ca3af" />
           <mj-social-element name="facebook" href="https://facebook.com/hospitaljobsin" background-color="#9ca3af"  />
           <mj-social-element name="instagram" href="https://instagram.com/hospitaljobsin" background-color="#9ca3af" />
