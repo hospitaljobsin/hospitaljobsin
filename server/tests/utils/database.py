@@ -24,74 +24,24 @@ async def get_index_status(
         Tuple of (status, queryable) where:
             status: Status of the index (e.g., "READY", "BUILDING", etc.)
             queryable: Boolean indicating if the index is queryable
+
     """
     try:
-        # Use the $listSearchIndexes aggregation to get detailed index information
-        # This is the recommended way according to MongoDB documentation
-        pipeline = [{"$listSearchIndexes": {"name": index_name}}]
+        # Use list_search_indexes API directly as it's more reliable with PyMongo async
+        cursor = await collection.list_search_indexes()
+        indexes = await cursor.to_list(length=None)
 
-        try:
-            # Try the modern approach using aggregation
-            result = await collection.aggregate(pipeline).to_list(length=None)
-
-            if result and len(result) > 0:
-                index_info = result[0]
-                return index_info.get("status", "UNKNOWN"), index_info.get(
-                    "queryable", False
-                )
-        except (AttributeError, TypeError, ValueError, KeyError) as agg_error:
-            # If aggregation fails, log it and try fallback methods
-            logger.debug(
-                "Error using $listSearchIndexes aggregation", error=str(agg_error)
-            )
-
-        # Try fallback methods
-        return await _get_index_status_fallback(collection, index_name)
-    except (ConnectionError, TimeoutError) as e:
-        logger.exception("Connection error checking index status", error=str(e))
-        return "ERROR", False
-
-
-async def _get_index_status_fallback(
-    collection: AsyncCollection, index_name: str
-) -> tuple[str, bool]:
-    """
-    Fallback method to get the index status using older API methods.
-
-    Args:
-        collection: MongoDB collection
-        index_name: Name of the index
-
-    Returns:
-        Tuple of (status, queryable) where:
-            status: Status of the index
-            queryable: Boolean indicating if the index is queryable
-    """
-    # Fallback 1: Check using collStats command
-    try:
-        result = await collection.database.command("collStats", collection.name)
-        search_indexes = result.get("searchIndexes", [])
-
-        for index in search_indexes:
-            if index.get("name") == index_name:
-                # For older MongoDB versions, indexes with READY status are considered queryable
-                status = index.get("status", "UNKNOWN")
-                return status, status == "READY"
-    except (AttributeError, KeyError, TypeError) as e:
-        logger.debug("Error using collStats command", error=str(e))
-
-    # Fallback 2: Use list_search_indexes API
-    try:
-        indexes = await collection.list_search_indexes().to_list(length=None)
         for index in indexes:
             if index.get("name") == index_name:
                 status = index.get("status", "READY")
-                # Consider READY indexes as queryable
-                return status, status == "READY"
-    except (AttributeError, KeyError, TypeError) as e:
-        logger.debug("Error using list_search_indexes API", error=str(e))
+                queryable = index.get("queryable", status == "READY")
+                return status, queryable
 
-    # If we get here, the index wasn't found
+    except (AttributeError, KeyError, TypeError, ConnectionError, TimeoutError) as e:
+        logger.debug("Error checking index status", error=str(e))
+        return "ERROR", False
+
+    # If index not found by name, return NOT_FOUND
     return "NOT_FOUND", False
 
 
@@ -121,12 +71,24 @@ async def _find_matching_indexes(
         collection = database.get_collection(collection_name)
 
         # Get all indexes for this collection
-
-        async with await collection.list_search_indexes() as cursor:
+        try:
+            cursor = await collection.list_search_indexes()
             async for index in cursor:
                 index_name = index.get("name", "")
                 if index_name in index_names:
                     indexes_to_check[collection_name].append(index_name)
+        except (
+            AttributeError,
+            KeyError,
+            TypeError,
+            ConnectionError,
+            TimeoutError,
+        ) as e:
+            logger.debug(
+                "Error listing search indexes for collection",
+                collection=collection_name,
+                error=str(e),
+            )
 
     # Filter out collections with no matching indexes
     return {k: v for k, v in indexes_to_check.items() if v}
