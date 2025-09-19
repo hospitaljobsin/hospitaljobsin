@@ -2428,7 +2428,6 @@ dev = [
     { name = "types-python-jose", specifier = "==3.5.0.20250531" },
     { name = "watchfiles", specifier = "==1.1.0" },
 ]
-staging = []
 test = [
     { name = "anyio", specifier = ">=4.10.0" },
     { name = "asgi-lifespan", specifier = ">=2.1.0" },

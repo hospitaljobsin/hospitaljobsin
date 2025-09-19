@@ -151,6 +151,9 @@ output "staging_db_setup_lambda_username" {
   value = aws_iam_role.lambda_staging_db_exec_role.arn
 }
 
+output "job_alerts_lambda_username" {
+  value = try(aws_iam_role.lambda_job_alerts_exec_role.arn, null)
+}
 
 output "basic_auth_username" {
   value = random_string.basic_auth_username.result

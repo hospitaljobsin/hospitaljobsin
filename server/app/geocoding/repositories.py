@@ -19,22 +19,28 @@ class RegionRepo:
                     "index": REGION_SEARCH_INDEX_NAME,
                     "compound": {
                         "should": [
+                            # Exact match on name (highest priority)
+                            {
+                                "text": {
+                                    "query": name,
+                                    "path": "name",
+                                    "score": {"boost": {"value": 10}},
+                                }
+                            },
+                            # Autocomplete match on name (high priority)
                             {
                                 "autocomplete": {
                                     "query": name,
                                     "path": "name",
-                                    "score": {
-                                        "boost": {"value": 3}
-                                    },  # <-- Give higher weight to name
+                                    "score": {"boost": {"value": 5}},
                                 }
                             },
+                            # Autocomplete match on aliases (lower priority)
                             {
                                 "autocomplete": {
                                     "query": name,
                                     "path": "aliases",
-                                    "score": {
-                                        "boost": {"value": 1}
-                                    },  # <-- Lower weight to aliases
+                                    "score": {"boost": {"value": 1}},
                                 }
                             },
                         ],
@@ -62,11 +68,24 @@ class RegionRepo:
                             "default": 7,  # Any other level gets lowest priority
                         }
                     },
+                    # Add exact match bonus for the primary name
+                    "exactMatchBonus": {
+                        "$cond": {
+                            "if": {"$eq": [{"$toLower": "$name"}, {"$toLower": name}]},
+                            "then": 1000,  # High bonus for exact matches
+                            "else": 0,
+                        }
+                    },
                 }
             },
             {
-                "$sort": {"levelPriority": 1, "searchScore": -1}
-            },  # Sort by level priority first, then search relevance
+                "$addFields": {
+                    "finalScore": {"$add": ["$searchScore", "$exactMatchBonus"]}
+                }
+            },
+            {
+                "$sort": {"finalScore": -1, "levelPriority": 1}
+            },  # Sort by final score first, then level priority
             {"$limit": 1},  # Get the highest priority match
         ]
 
@@ -85,22 +104,28 @@ class RegionRepo:
                     "index": REGION_SEARCH_INDEX_NAME,
                     "compound": {
                         "should": [
+                            # Exact match on name (highest priority)
+                            {
+                                "text": {
+                                    "query": search_term,
+                                    "path": "name",
+                                    "score": {"boost": {"value": 10}},
+                                }
+                            },
+                            # Autocomplete match on name (high priority)
                             {
                                 "autocomplete": {
                                     "query": search_term,
                                     "path": "name",
-                                    "score": {
-                                        "boost": {"value": 3}
-                                    },  # <-- Give higher weight to name
+                                    "score": {"boost": {"value": 5}},
                                 }
                             },
+                            # Autocomplete match on aliases (lower priority)
                             {
                                 "autocomplete": {
                                     "query": search_term,
                                     "path": "aliases",
-                                    "score": {
-                                        "boost": {"value": 1}
-                                    },  # <-- Lower weight to aliases
+                                    "score": {"boost": {"value": 1}},
                                 }
                             },
                         ],
@@ -122,51 +147,56 @@ class RegionRepo:
                             "default": 5,
                         }
                     },
+                    # Add exact match bonus for the primary name
+                    "exactMatchBonus": {
+                        "$cond": {
+                            "if": {
+                                "$eq": [
+                                    {"$toLower": "$name"},
+                                    {"$toLower": search_term},
+                                ]
+                            },
+                            "then": 1000,  # High bonus for exact matches
+                            "else": 0,
+                        }
+                    },
+                    # Add starts-with bonus for the primary name
+                    "startsWithBonus": {
+                        "$cond": {
+                            "if": {
+                                "$regexMatch": {
+                                    "input": {"$toLower": "$name"},
+                                    "regex": f"^{search_term.lower()}",
+                                }
+                            },
+                            "then": 100,  # Medium bonus for starts-with matches
+                            "else": 0,
+                        }
+                    },
+                }
+            },
+            {
+                "$addFields": {
+                    "finalScore": {
+                        "$add": ["$searchScore", "$exactMatchBonus", "$startsWithBonus"]
+                    }
                 }
             },
             {
                 "$project": {
                     "searchScore": 1,
                     "levelPriority": 1,
+                    "finalScore": 1,
                     "level": 1,
+                    "name": 1,
+                    "aliases": 1,
                     "coordinates": 1,
                     "geometry": 1,
-                    "address": {
-                        "street_address": "$address.street_address",
-                        "address_locality": "$address.address_locality",
-                        "address_region": "$address.address_region",
-                        "country": "$address.country",
-                        "postal_code": "$address.postal_code",
-                    },
-                    "names": {"$setUnion": [["$name"], {"$ifNull": ["$aliases", []]}]},
+                    "address": 1,
                 }
             },
-            {"$unwind": "$names"},
-            {
-                "$group": {
-                    "_id": {
-                        "name": "$names",
-                        "country": "$address.country",
-                        "region": "$address.address_region",
-                        "locality": "$address.address_locality",
-                        "street": "$address.street_address",
-                        "level": "$level",
-                    },
-                    "doc": {
-                        "$first": {
-                            "name": "$names",
-                            "coordinates": "$coordinates",
-                            "geometry": "$geometry",
-                            "address": "$address",
-                            "level": "$level",
-                            "levelPriority": "$levelPriority",
-                            "searchScore": "$searchScore",
-                        }
-                    },
-                }
-            },
-            {"$replaceRoot": {"newRoot": "$doc"}},
-            {"$sort": {"levelPriority": 1, "searchScore": -1}},
+            # Sort by final score (including bonuses) and then by level priority
+            {"$sort": {"finalScore": -1, "levelPriority": 1}},
             {"$limit": DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT},
         ]
 

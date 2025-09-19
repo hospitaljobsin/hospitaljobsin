@@ -383,6 +383,12 @@ resource "aws_iam_role_policy_attachment" "lambda_job_alerts_sqs_policy_attachme
   policy_arn = aws_iam_policy.lambda_job_alerts_policy.arn
 }
 
+# TODO: separate permissions later
+resource "aws_iam_role_policy_attachment" "lambda_job_alerts_custom_policy_attachment" {
+  role       = aws_iam_role.lambda_job_alerts_exec_role.name
+  policy_arn = aws_iam_policy.lambda_custom_policy.arn
+}
+
 
 resource "aws_lambda_function" "worker" {
   # depends_on    = [docker_registry_image.backend]
