@@ -75,14 +75,12 @@ export default function JobList({ rootQuery }: Props) {
 
 	return (
 		<div
+			className='w-full overflow-y-auto max-h-min'
 			style={{
-				width: '100%',
-				scrollbarWidth: 'none',
-				msOverflowStyle: 'none',
-				scrollBehavior: 'smooth'
+				scrollbarWidth: 'none'
 			}}
 		>
-			<WindowVirtualizer count={data.jobs.edges.length}>
+			<WindowVirtualizer ssrCount={data.jobs.edges.length}>
 				{data.jobs.edges.map(jobEdge => (
 					<div key={jobEdge.node.id} className='pb-4 sm:pb-6'>
 						<Job job={jobEdge.node} authQueryRef={root.viewer} />
