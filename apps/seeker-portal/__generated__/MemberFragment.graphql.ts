@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c081ce9b3a83c493c8a2fd532e8dea13>>
+ * @generated SignedSource<<7ffc2391b5455e6758bfe3510dfad33a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,13 +9,14 @@
 // @ts-nocheck
 
 import type { ReaderFragment } from 'relay-runtime';
+export type OrganizationMemberRole = "ADMIN" | "MEMBER" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type MemberFragment$data = {
   readonly node: {
     readonly avatarUrl: string;
     readonly fullName: string;
   };
-  readonly role: string;
+  readonly role: OrganizationMemberRole;
   readonly " $fragmentType": "MemberFragment";
 };
 export type MemberFragment$key = {

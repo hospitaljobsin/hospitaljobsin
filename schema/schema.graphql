@@ -27,6 +27,11 @@ type Account implements Node {
 	email: String!
 
 	"""
+	The avatar URL of the account.
+	"""
+	avatarUrl: String!
+
+	"""
 	The phone number of the account.
 	"""
 	phoneNumber: String
@@ -70,16 +75,6 @@ type Account implements Node {
 	The account's profile.
 	"""
 	profile: Profile
-
-	"""
-	The account's avatar URL.
-	"""
-	avatarUrl(
-		"""
-		The size of the avatar.
-		"""
-		size: Int! = 80
-	): String!
 
 	"""
 	When the user's sudo mode grant expires at.
@@ -3324,6 +3319,11 @@ type Mutation {
 		The email address of the invite.
 		"""
 		email: String!
+
+		"""
+		The role of the user in the organization.
+		"""
+		memberRole: OrganizationMemberRole! = MEMBER
 	): CreateOrganizationInvitePayload! @isAuthenticated
 
 	"""
@@ -3856,7 +3856,7 @@ type OrganizationMemberEdge {
 	"""
 	The role of the user in the organization.
 	"""
-	role: String!
+	role: OrganizationMemberRole!
 
 	"""
 	When the user joined the organization.
@@ -3872,6 +3872,14 @@ type OrganizationMemberNotFoundError implements Error {
 	Human readable error message.
 	"""
 	message: String!
+}
+
+"""
+Role of the user in the organization.
+"""
+enum OrganizationMemberRole {
+	ADMIN
+	MEMBER
 }
 
 """

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<baa77d429e6516e173ab275915e6d937>>
- * @relayHash 98395d8bd6bb770a498d4f4071009fbc
+ * @generated SignedSource<<ce3d8ee6079dc3eb0b9fdf0199bc8edb>>
+ * @relayHash 366395923789ca174b268b88106581b1
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,12 +9,14 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 98395d8bd6bb770a498d4f4071009fbc
+// @relayRequestID 366395923789ca174b268b88106581b1
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
+export type OrganizationMemberRole = "ADMIN" | "MEMBER" | "%future added value";
 export type InviteMemberModalMutation$variables = {
   email: string;
+  memberRole: OrganizationMemberRole;
   organizationId: string;
 };
 export type InviteMemberModalMutation$data = {
@@ -56,9 +58,14 @@ var v0 = {
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
+  "name": "memberRole"
+},
+v2 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
   "name": "organizationId"
 },
-v2 = [
+v3 = [
   {
     "kind": "Variable",
     "name": "email",
@@ -66,25 +73,30 @@ v2 = [
   },
   {
     "kind": "Variable",
+    "name": "memberRole",
+    "variableName": "memberRole"
+  },
+  {
+    "kind": "Variable",
     "name": "organizationId",
     "variableName": "organizationId"
   }
 ],
-v3 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v4 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v5 = [
+v6 = [
   {
     "alias": null,
     "args": null,
@@ -93,15 +105,15 @@ v5 = [
     "storageKey": null
   }
 ],
-v6 = {
+v7 = {
   "kind": "InlineFragment",
-  "selections": (v5/*: any*/),
+  "selections": (v6/*: any*/),
   "type": "InvalidEmailError",
   "abstractKey": null
 },
-v7 = {
+v8 = {
   "kind": "InlineFragment",
-  "selections": (v5/*: any*/),
+  "selections": (v6/*: any*/),
   "type": "MemberAlreadyExistsError",
   "abstractKey": null
 };
@@ -109,7 +121,8 @@ return {
   "fragment": {
     "argumentDefinitions": [
       (v0/*: any*/),
-      (v1/*: any*/)
+      (v1/*: any*/),
+      (v2/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -117,17 +130,17 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "createOrganizationInvite",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
+          (v4/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              (v4/*: any*/),
+              (v5/*: any*/),
               {
                 "args": null,
                 "kind": "FragmentSpread",
@@ -137,8 +150,8 @@ return {
             "type": "OrganizationInvite",
             "abstractKey": null
           },
-          (v6/*: any*/),
-          (v7/*: any*/)
+          (v7/*: any*/),
+          (v8/*: any*/)
         ],
         "storageKey": null
       }
@@ -149,25 +162,26 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v1/*: any*/),
-      (v0/*: any*/)
+      (v2/*: any*/),
+      (v0/*: any*/),
+      (v1/*: any*/)
     ],
     "kind": "Operation",
     "name": "InviteMemberModalMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "createOrganizationInvite",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
+          (v4/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              (v4/*: any*/),
+              (v5/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -211,7 +225,7 @@ return {
                     "name": "avatarUrl",
                     "storageKey": null
                   },
-                  (v4/*: any*/)
+                  (v5/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -226,12 +240,12 @@ return {
             "type": "OrganizationInvite",
             "abstractKey": null
           },
-          (v6/*: any*/),
           (v7/*: any*/),
+          (v8/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              (v4/*: any*/)
+              (v5/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -242,7 +256,7 @@ return {
     ]
   },
   "params": {
-    "id": "98395d8bd6bb770a498d4f4071009fbc",
+    "id": "366395923789ca174b268b88106581b1",
     "metadata": {},
     "name": "InviteMemberModalMutation",
     "operationKind": "mutation",
@@ -251,6 +265,6 @@ return {
 };
 })();
 
-(node as any).hash = "473fdeb540707888373e554b5d0cd19c";
+(node as any).hash = "260857e48179636148982c3ca00a50f8";
 
 export default node;

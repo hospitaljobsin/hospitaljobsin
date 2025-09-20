@@ -18,6 +18,7 @@ from app.config import AppSettings, AWSSettings, FrontendSettings
 from app.core.constants import (
     ORGANIZATION_INVITE_EXPIRES_IN,
     RESERVED_ORGANIZATION_NAMES,
+    OrganizationMemberRoleType,
 )
 from app.core.emails import BaseEmailSender
 from app.dataloaders import Dataloaders
@@ -517,6 +518,7 @@ class OrganizationInviteService:
         account: Account,
         organization_id: ObjectId,
         email: str,
+        member_role: OrganizationMemberRoleType,
     ) -> Result[
         OrganizationInvite,
         InvalidEmailError
@@ -559,10 +561,8 @@ class OrganizationInviteService:
             organization=existing_organization,
             account=account,
             email=email,
+            member_role=member_role,
         )
-
-        print("invite_token:", invite_token)  # Debugging line
-        print("token_hash:", invite.token_hash)  # Debugging line
 
         await self._email_sender.send_template_email(
             template="organization-invite",
@@ -647,7 +647,7 @@ class OrganizationInviteService:
         await self._organization_member_repo.create(
             organization_id=existing_invite.organization.id,
             account=account,
-            role="member",
+            role=existing_invite.member_role,
         )
 
         await self._revalidation_service.revalidate_tag(
