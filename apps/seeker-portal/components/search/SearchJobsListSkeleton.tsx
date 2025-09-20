@@ -5,7 +5,7 @@ import JobListSkeleton from '../landing/JobListSkeleton';
 export default function SearchJobsListSkeleton() {
 	return (
 		<div
-			className='h-full w-full scroll-smooth overflow-y-auto lg:min-h-0'
+			className='h-full w-full scroll-smooth overflow-y-auto'
 			style={{
 				scrollbarWidth: 'none'
 			}}
@@ -19,7 +19,7 @@ export default function SearchJobsListSkeleton() {
 					</Select>
 				</div>
 			</div>
-			<div className='w-full flex flex-col'>
+			<div className='w-full flex flex-col h-full'>
 				{Array.from({ length: 10 }, (_, index) => `skeleton-job-${index}`).map(key => (
 					<div key={key} className='pb-4 sm:pb-6'>
 						<JobListSkeleton />

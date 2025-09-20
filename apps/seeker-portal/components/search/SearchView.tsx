@@ -4,12 +4,13 @@ import { FILTER_DEFAULTS } from '@/lib/constants';
 import { Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, useDisclosure } from '@heroui/react';
 import { FilterIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import type { FilterValues } from './FilterSidebar';
 import FilterSidebar from './FilterSidebar';
 import SearchHeaderSkeleton from './SearchHeaderSkeleton';
 import SearchJobsList from './SearchJobsList';
+import SearchJobsListSkeleton from './SearchJobsListSkeleton';
 
 const SearchHeaderClientComponent = dynamic(() => import('./SearchHeaderClientComponent'), {
 	ssr: false,
@@ -161,19 +162,21 @@ export default function SearchView({
 					/>
 				</div>
 				<div className='flex-1 w-full h-full'>
-					<SearchJobsList
-						rootQuery={data}
-						searchTerm={speciality}
-						location={location}
-						proximityKm={filters.proximityKm}
-						minExperience={filters.minExperience ?? null}
-						minSalary={filters.minSalary ?? null}
-						maxSalary={filters.maxSalary ?? null}
-						workMode={validatedWorkMode}
-						jobType={validatedJobType}
-						sortBy={validatedSortBy}
-						setFilters={setFilters as (filters: unknown) => void}
-					/>
+					<Suspense fallback={<SearchJobsListSkeleton />}>
+						<SearchJobsList
+							rootQuery={data}
+							searchTerm={speciality}
+							location={location}
+							proximityKm={filters.proximityKm}
+							minExperience={filters.minExperience ?? null}
+							minSalary={filters.minSalary ?? null}
+							maxSalary={filters.maxSalary ?? null}
+							workMode={validatedWorkMode}
+							jobType={validatedJobType}
+							sortBy={validatedSortBy}
+							setFilters={setFilters as (filters: unknown) => void}
+						/>
+					</Suspense>
 				</div>
 			</div>
 		</div>

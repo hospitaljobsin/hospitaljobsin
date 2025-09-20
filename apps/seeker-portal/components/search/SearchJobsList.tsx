@@ -46,7 +46,7 @@ const SearchJobsListInternalFragment = graphql`
     cursor: { type: "ID" }
 	proximityKm: { type: "Float", defaultValue: null }
     searchTerm: { type: "String", defaultValue: null }
-    count: { type: "Int", defaultValue: 5 }
+    count: { type: "Int", defaultValue: 25 }
 	minExperience: { type: "Int", defaultValue: null }
 	minSalary: { type: "Int", defaultValue: null }
 	maxSalary: { type: "Int", defaultValue: null }
@@ -246,10 +246,11 @@ export default function SearchJobsList({
 					</Select>
 				</div>
 			</div>
-			<div className='w-full scroll-smooth overflow-y-auto'>
+			<div className='w-full'>
 				<WindowVirtualizer
 					onScrollEnd={handleScrollEnd}
 					ssrCount={10}
+					overscan={5}
 					count={data.jobs.totalCount}
 					shift={false}
 					item='div'
