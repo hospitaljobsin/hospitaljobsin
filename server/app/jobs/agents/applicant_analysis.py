@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from pydantic_ai import Agent
 
 
@@ -20,6 +20,10 @@ class FieldAnalysis(BaseModel):
         le=1.0,
         description="Numeric score (0-1) representing the degree of match for this criterion.",
     )
+
+    @field_validator("score", mode="after")
+    def round_score(cls, v):
+        return round(v, 4)
 
 
 class AnalysedFields(BaseModel):

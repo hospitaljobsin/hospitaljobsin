@@ -11,7 +11,7 @@ from beanie import (
     TimeSeriesConfig,
     UnionDoc,
 )
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from pydantic_extra_types.country import CountryAlpha2
 from pymongo import IndexModel
 from pymongo.operations import SearchIndexModel
@@ -199,6 +199,10 @@ class JobApplicant(Document):
         default="pending",
         description="Status of the analysis process for this applicant ('pending', 'complete', or 'failed').",
     )
+
+    @field_validator("overall_score", mode="after")
+    def round_overall_score(cls, v):
+        return round(v, 4)
 
     class Settings:
         name = "job_applicants"
