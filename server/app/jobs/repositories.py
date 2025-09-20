@@ -503,7 +503,6 @@ class JobRepo:
             max_distance_meters = (proximity_km or 1.0) * 1000.0
 
             if region.geometry is not None:
-                print("region.geometry: ", region.geometry)
                 # TODO: we should use proximity-KM here
                 search_query["compound"]["must"].append(
                     {
