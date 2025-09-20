@@ -3,10 +3,12 @@ import type { JobControlsClientComponentQuery as JobControlsClientComponentQuery
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import invariant from 'tiny-invariant';
+import JobApplyButton from './JobApplyButton';
 import JobControls from './JobControls';
 
 export const JobControlsClientComponentQuery = graphql`
   query JobControlsClientComponentQuery($slug: String!, $jobSlug: String!) {
+	...JobApplyButtonFragment @arguments(slug: $slug, jobSlug: $jobSlug)
 		organization(slug: $slug) {
 		__typename
 		... on Organization {
@@ -39,5 +41,10 @@ export default function JobControlsClientComponent({ slug, jobSlug }: { slug: st
 	invariant(data.organization.__typename === 'Organization', "Expected 'Organization' node type");
 
 	invariant(data.organization.job.__typename === 'Job', "Expected 'Job' node type");
-	return <JobControls authQueryRef={data.viewer} job={data.organization.job} />;
+	return (
+		<div className='w-full sm:w-auto flex flex-col-reverse sm:flex-row justify-end gap-6 sm:items-center'>
+			<JobControls authQueryRef={data.viewer} job={data.organization.job} />
+			<JobApplyButton query={data} />
+		</div>
+	);
 }

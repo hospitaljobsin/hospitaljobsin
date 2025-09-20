@@ -8,7 +8,7 @@ import { graphql, useFragment } from 'react-relay';
 
 const JobControlsClientComponent = dynamic(() => import('./JobControlsClientComponent'), { ssr: false });
 
-const JobApplyButtonClientComponent = dynamic(() => import('./JobApplyButtonClientComponent'), {
+const JobApplyButtonClientComponent = dynamic(() => import('./JobApplyButton'), {
 	ssr: false,
 	loading: () => <Skeleton className='h-12 rounded-lg w-full sm:w-32' />
 });

@@ -7,19 +7,18 @@ import type {
 } from '@/__generated__/JobDetailsInternalFragment.graphql';
 import { dateFormat, salaryFormat } from '@/lib/intl';
 import links from '@/lib/links';
-import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Skeleton, Tooltip } from '@heroui/react';
+import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Tooltip } from '@heroui/react';
 import { Briefcase, Clock, ExternalLinkIcon, Globe, HandshakeIcon, IndianRupee, MapPin, Users, VerifiedIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 import { graphql, readInlineData } from 'react-relay';
 import invariant from 'tiny-invariant';
+import JobControlsSkeleton from './JobControlsSkeleton';
 
-const JobControlsClientComponent = dynamic(() => import('./JobControlsClientComponent'), { ssr: false });
-
-const JobApplyButtonClientComponent = dynamic(() => import('./JobApplyButtonClientComponent'), {
+const JobControlsClientComponent = dynamic(() => import('./JobControlsClientComponent'), {
 	ssr: false,
-	loading: () => <Skeleton className='h-12 rounded-lg w-full sm:w-32' />
+	loading: () => <JobControlsSkeleton />
 });
 
 const JobDetailsFragment = graphql`
@@ -196,10 +195,7 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 						<h2 className='text-lg sm:text-xl md:text-2xl font-medium break-words max-w-full leading-snug text-foreground-900'>
 							{data.title}
 						</h2>
-						<div className='w-full sm:w-auto flex flex-col-reverse sm:flex-row justify-end gap-6 sm:items-center'>
-							<JobControlsClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
-							<JobApplyButtonClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
-						</div>
+						<JobControlsClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
 					</div>
 				</CardHeader>
 				<CardBody className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full'>
@@ -231,7 +227,7 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 						)}
 					</div>
 				</CardBody>
-				<Divider className='mt-4' />
+				<Divider />
 				<CardFooter className='flex flex-col w-full items-start gap-2'>
 					<div className='flex flex-col sm:flex-row justify-between items-end sm:items-center w-full gap-4 sm:gap-6'>
 						<div className='justify-between w-full gap-8 items-center hidden sm:flex'>
@@ -292,12 +288,13 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 							className='text-base sm:text-lg font-medium flex items-center gap-2'
 						>
 							{data.organization?.name}
-							<ExternalLinkIcon className='w-3 h-3' />
+
 							{data.organization?.verificationStatus.verified && (
 								<Tooltip content='This organization is verified' placement='right'>
 									<VerifiedIcon className='w-4 h-4 text-primary' strokeWidth={2.5} />
 								</Tooltip>
 							)}
+							<ExternalLinkIcon className='w-4 h-4 text-foreground-600' />
 						</Link>
 						{data.organization?.description && (
 							<p className='text-xs sm:text-base text-default-500 leading-tight line-clamp-2'>{data.organization.description}</p>

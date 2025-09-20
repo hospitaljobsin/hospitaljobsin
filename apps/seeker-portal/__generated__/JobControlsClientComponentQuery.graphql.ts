@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<1cb353cdc49e5e4cb073a60a3feadf43>>
- * @relayHash 02f64400d9f706738be8679a6912a6da
+ * @generated SignedSource<<8ee92a69a6bd9249f69754020887b98f>>
+ * @relayHash 04d611f1fc917688720e583633205697
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 02f64400d9f706738be8679a6912a6da
+// @relayRequestID 04d611f1fc917688720e583633205697
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -40,6 +40,7 @@ export type JobControlsClientComponentQuery$data = {
     };
     readonly " $fragmentSpreads": FragmentRefs<"JobControlsAuthFragment">;
   };
+  readonly " $fragmentSpreads": FragmentRefs<"JobApplyButtonFragment">;
 };
 export type JobControlsClientComponentQuery = {
   response: JobControlsClientComponentQuery$data;
@@ -57,39 +58,33 @@ v1 = {
   "kind": "LocalArgument",
   "name": "slug"
 },
-v2 = [
-  {
-    "kind": "Variable",
-    "name": "slug",
-    "variableName": "slug"
-  }
+v2 = {
+  "kind": "Variable",
+  "name": "slug",
+  "variableName": "slug"
+},
+v3 = [
+  (v2/*: any*/)
 ],
-v3 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v4 = [
+v5 = [
   {
     "kind": "Variable",
     "name": "slug",
     "variableName": "jobSlug"
   }
 ],
-v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "isComplete",
-  "storageKey": null
-},
 v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "id",
+  "name": "isComplete",
   "storageKey": null
 },
 v7 = {
@@ -100,9 +95,16 @@ v7 = {
   "storageKey": null
 },
 v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v9 = {
   "kind": "InlineFragment",
   "selections": [
-    (v6/*: any*/)
+    (v8/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -118,26 +120,38 @@ return {
     "name": "JobControlsClientComponentQuery",
     "selections": [
       {
+        "args": [
+          {
+            "kind": "Variable",
+            "name": "jobSlug",
+            "variableName": "jobSlug"
+          },
+          (v2/*: any*/)
+        ],
+        "kind": "FragmentSpread",
+        "name": "JobApplyButtonFragment"
+      },
+      {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "organization",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
+          (v4/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
               {
                 "alias": null,
-                "args": (v4/*: any*/),
+                "args": (v5/*: any*/),
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "job",
                 "plural": false,
                 "selections": [
-                  (v3/*: any*/),
+                  (v4/*: any*/),
                   {
                     "kind": "InlineFragment",
                     "selections": [
@@ -168,7 +182,7 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
+          (v4/*: any*/),
           {
             "args": null,
             "kind": "FragmentSpread",
@@ -187,7 +201,7 @@ return {
                   "name": "profile",
                   "plural": false,
                   "selections": [
-                    (v5/*: any*/)
+                    (v6/*: any*/)
                   ],
                   "storageKey": null
                 },
@@ -215,29 +229,45 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "organization",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
+          (v4/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
+              (v7/*: any*/),
               {
                 "alias": null,
-                "args": (v4/*: any*/),
+                "args": (v5/*: any*/),
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "job",
                 "plural": false,
                 "selections": [
-                  (v3/*: any*/),
+                  (v4/*: any*/),
                   {
                     "kind": "InlineFragment",
                     "selections": [
-                      (v6/*: any*/),
+                      (v8/*: any*/),
+                      (v7/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "externalApplicationUrl",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "isApplied",
+                        "storageKey": null
+                      },
                       {
                         "alias": null,
                         "args": null,
@@ -245,7 +275,6 @@ return {
                         "name": "isSaved",
                         "storageKey": null
                       },
-                      (v7/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -283,7 +312,7 @@ return {
                             "storageKey": null
                           },
                           (v7/*: any*/),
-                          (v6/*: any*/)
+                          (v8/*: any*/)
                         ],
                         "storageKey": null
                       }
@@ -291,7 +320,7 @@ return {
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v8/*: any*/)
+                  (v9/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -299,7 +328,7 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v8/*: any*/)
+          (v9/*: any*/)
         ],
         "storageKey": null
       },
@@ -311,11 +340,7 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
-          {
-            "kind": "TypeDiscriminator",
-            "abstractKey": "__isViewerPayload"
-          },
+          (v4/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -327,8 +352,8 @@ return {
                 "name": "profile",
                 "plural": false,
                 "selections": [
-                  (v5/*: any*/),
-                  (v6/*: any*/)
+                  (v6/*: any*/),
+                  (v8/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -336,14 +361,18 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v8/*: any*/)
+          (v9/*: any*/),
+          {
+            "kind": "TypeDiscriminator",
+            "abstractKey": "__isViewerPayload"
+          }
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "02f64400d9f706738be8679a6912a6da",
+    "id": "04d611f1fc917688720e583633205697",
     "metadata": {},
     "name": "JobControlsClientComponentQuery",
     "operationKind": "query",
@@ -352,6 +381,6 @@ return {
 };
 })();
 
-(node as any).hash = "8c8f2ae05ac6f77b7af30ca049146240";
+(node as any).hash = "304c0951ea0b0f99c963a3d82a8815fd";
 
 export default node;
