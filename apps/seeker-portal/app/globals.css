@@ -18,6 +18,5 @@
 		@apply h-full;
 		@apply w-full;
 		@apply bg-background-600;
-		@apply overflow-auto;
 	}
 }

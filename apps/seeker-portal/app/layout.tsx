@@ -37,8 +37,6 @@ export default function RootLayout({
 		<html lang='en' suppressHydrationWarning>
 			<ReactScan />
 			<body className={`${workSans.variable} antialiased light`}>
-				{/* Workaround to fix navigation scroll issues */}
-				<div />
 				<Providers headersPromise={headersPromise}>
 					<PostHogIdentifier />
 					<CookieBanner />

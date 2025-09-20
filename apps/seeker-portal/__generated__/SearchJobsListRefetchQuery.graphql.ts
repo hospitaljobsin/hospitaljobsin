@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<8a28cb2f481769111f60c1b4943e080a>>
- * @relayHash dc4a75be746f7bf3c3f88f7b7e823eaf
+ * @generated SignedSource<<24f905adeebbc4617f33c647d4b2927d>>
+ * @relayHash df79d8c7e8da14bd0614b620369b8748
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID dc4a75be746f7bf3c3f88f7b7e823eaf
+// @relayRequestID df79d8c7e8da14bd0614b620369b8748
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -40,7 +40,7 @@ export type SearchJobsListRefetchQuery = {
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
-    "defaultValue": 25,
+    "defaultValue": 5,
     "kind": "LocalArgument",
     "name": "count"
   },
@@ -494,7 +494,7 @@ return {
     ]
   },
   "params": {
-    "id": "dc4a75be746f7bf3c3f88f7b7e823eaf",
+    "id": "df79d8c7e8da14bd0614b620369b8748",
     "metadata": {},
     "name": "SearchJobsListRefetchQuery",
     "operationKind": "query",
@@ -503,6 +503,6 @@ return {
 };
 })();
 
-(node as any).hash = "277fdc1cc83a9a046484b60a0006c253";
+(node as any).hash = "9b6be3f107bd3f7bc028bb9446c8590f";
 
 export default node;
