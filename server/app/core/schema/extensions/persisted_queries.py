@@ -27,7 +27,6 @@ class PersistedQueriesExtension(SchemaExtension):
             document_id = body.get("document_id")
         persisted_query = self.cache.get(document_id)
         print("document_id", document_id)
-        print(f"persisted_query: {persisted_query}")
         if persisted_query is None:
             self.execution_context.result = ExecutionResult(
                 data=None,

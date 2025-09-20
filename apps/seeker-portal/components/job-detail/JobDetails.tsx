@@ -253,7 +253,13 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 			<Card fullWidth className='p-4 sm:p-6' shadow='none'>
 				<CardBody className='flex items-center gap-4 sm:gap-6 flex-row w-full'>
 					<div className='relative aspect-square h-12 w-12 sm:h-14 sm:w-14 min-w-[3rem] sm:min-w-[3.5rem]'>
-						<Image src={data.organization?.logoUrl || ''} alt={data.organization?.name || ''} fill className='rounded-md object-cover' />
+						<Image
+							src={data.organization?.logoUrl || ''}
+							alt={data.organization?.name || ''}
+							fill
+							className='rounded-md object-cover'
+							sizes='(max-width: 640px) 48px, 56px'
+						/>
 					</div>
 
 					<div className='w-full flex flex-col gap-1 sm:gap-2'>

@@ -59,12 +59,10 @@ class EmbeddingsService:
         )
 
         response_body = json.loads(await response.get("body").read())
-        print("body: ", response_body)
         if response_body.get("embedding") is None:
             raise ValueError("No embeddings found")
 
         result = response_body.get("embedding")
-        print("Embeddings: ", result)
         if use_cache:
             await self._set_embedding_in_cache(text, task_type, model, result)
         return result

@@ -101,15 +101,21 @@ export default function AuxiliaryJob({ job }: Props) {
 			className='p-4 sm:p-6 cursor-pointer w-full lg:max-w-sm'
 			isPressable
 			as={Link}
-			href={links.jobDetail(data.organization.slug, data.slug)}
+			href={links.jobDetail(data.organization?.slug || '', data.slug)}
 			shadow='none'
 		>
 			<CardHeader>
 				<div className='flex flex-col sm:flex-row w-full justify-between gap-6 items-start sm:items-center'>
 					<div className='flex items-center gap-4'>
-						{data.organization.logoUrl && (
+						{data.organization?.logoUrl && (
 							<div className='relative aspect-square h-8 w-8'>
-								<Image src={data.organization.logoUrl || ''} alt={data.organization?.name || ''} fill className='rounded-md object-cover' />
+								<Image
+									src={data.organization?.logoUrl || ''}
+									alt={data.organization?.name || ''}
+									fill
+									className='rounded-md object-cover'
+									sizes='(max-width: 640px) 48px, 56px'
+								/>
 							</div>
 						)}
 						<div className='flex flex-col gap-2 items-start'>

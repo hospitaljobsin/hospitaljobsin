@@ -7,9 +7,9 @@ export default function useIsAuthenticated() {
 	const headersMap = new Map(headersList);
 	const isAuthenticated = headersMap.get('x-is-authenticated');
 
-	// TODO: don't error here, this won't be available during prefetches
 	if (!isAuthenticated) {
-		throw new Error('Is authenticated header is required in headers');
+		// don't error here, this won't be available during prefetches
+		return { isAuthenticated: false };
 	}
 
 	return { isAuthenticated: isAuthenticated === 'true' };
