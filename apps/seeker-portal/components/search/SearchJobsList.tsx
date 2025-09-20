@@ -109,8 +109,6 @@ export default function SearchJobsList({
 
 	const hasMountedRef = useRef(false);
 
-	console.log('search term', searchTerm);
-
 	// Flatten all job edges for virtualizer
 	const allJobEdges = data.jobs.edges;
 	const hasNextPage = data.jobs.pageInfo.hasNextPage;
@@ -246,28 +244,30 @@ export default function SearchJobsList({
 					</Select>
 				</div>
 			</div>
-			<div className='w-full'>
+			<div className='w-full h-full overflow-y-auto'>
 				<WindowVirtualizer
 					onScrollEnd={handleScrollEnd}
 					ssrCount={10}
+					count={hasNextPage ? allJobEdges.length + 1 : allJobEdges.length}
 					overscan={5}
-					count={data.jobs.totalCount}
-					shift={false}
-					item='div'
 					onScroll={() => {
 						console.log('SCROLLING>>>>');
 					}}
+					shift={false}
+					itemSize={350}
 				>
-					{allJobEdges.map(jobEdge => (
-						<div key={jobEdge.node.id} className='pb-4 sm:pb-6'>
-							<Job job={jobEdge.node} authQueryRef={root.viewer} />
-						</div>
-					))}
-					{hasNextPage && isLoadingNext && (
-						<div className='pb-4 sm:pb-6'>
-							<JobListSkeleton />
-						</div>
-					)}
+					{index => {
+						const jobEdge = allJobEdges[index];
+						if (index === allJobEdges.length) {
+							return <JobListSkeleton />;
+						}
+
+						return (
+							<div key={jobEdge.node.id} className='pb-4 sm:pb-6'>
+								<Job job={jobEdge.node} authQueryRef={root.viewer} />
+							</div>
+						);
+					}}
 				</WindowVirtualizer>
 			</div>
 		</div>
