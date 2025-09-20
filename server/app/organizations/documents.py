@@ -10,6 +10,7 @@ from pymongo import IndexModel
 from app.accounts.documents import Account
 from app.base.models import Address
 from app.config import FrontendSettings, get_settings
+from app.core.constants import OrganizationMemberRoleType
 
 
 class OrganizationVerificationRequest(BaseModel):
@@ -97,7 +98,7 @@ class OrganizationMember(Document):
     account_full_name: (
         str  # denormalized from the account document for full-text search
     )
-    role: Literal["admin", "member"]
+    role: OrganizationMemberRoleType
 
     class Settings:
         name = "organization_members"
@@ -122,6 +123,7 @@ class OrganizationInvite(Document):
     organization: Link[Organization]
     created_by: Link[Account]
     token_hash: Annotated[str, Indexed(unique=True)]
+    member_role: OrganizationMemberRoleType
     status: Literal["pending", "accepted", "declined"]
     is_hidden: bool = False
     expires_at: datetime | None = None

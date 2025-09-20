@@ -146,17 +146,6 @@ export default function SearchJobsList({
 			hasMountedRef.current = true;
 			return;
 		}
-		console.log('refetching with new filters', {
-			searchTerm,
-			location,
-			proximityKm,
-			minExperience,
-			minSalary,
-			maxSalary,
-			workMode,
-			jobType,
-			sortBy
-		});
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
 				// Only include defined variables
@@ -226,12 +215,7 @@ export default function SearchJobsList({
 	}
 
 	return (
-		<div
-			className='w-full scroll-smooth h-full overflow-y-auto'
-			style={{
-				scrollbarWidth: 'none'
-			}}
-		>
+		<div className='w-full h-full'>
 			<div className='w-full flex gap-12 justify-between items-center mb-6 sm:mb-8'>
 				<h2 className='text-base sm:text-lg text-foreground-600 whitespace-nowrap'>
 					<span className='font-medium'>{data.jobs.totalCount}</span>{' '}
@@ -262,18 +246,30 @@ export default function SearchJobsList({
 					</Select>
 				</div>
 			</div>
-			<WindowVirtualizer onScrollEnd={handleScrollEnd} ssrCount={10} count={data.jobs.totalCount} shift={false} item='div' itemSize={350}>
-				{allJobEdges.map(jobEdge => (
-					<div key={jobEdge.node.id} className='pb-4 sm:pb-6'>
-						<Job job={jobEdge.node} authQueryRef={root.viewer} />
-					</div>
-				))}
-				{hasNextPage && (
-					<div className='pb-4 sm:pb-6'>
-						<JobListSkeleton />
-					</div>
-				)}
-			</WindowVirtualizer>
+			<div className='w-full'>
+				<WindowVirtualizer
+					onScrollEnd={handleScrollEnd}
+					ssrCount={10}
+					overscan={5}
+					count={data.jobs.totalCount}
+					shift={false}
+					item='div'
+					onScroll={() => {
+						console.log('SCROLLING>>>>');
+					}}
+				>
+					{allJobEdges.map(jobEdge => (
+						<div key={jobEdge.node.id} className='pb-4 sm:pb-6'>
+							<Job job={jobEdge.node} authQueryRef={root.viewer} />
+						</div>
+					))}
+					{hasNextPage && isLoadingNext && (
+						<div className='pb-4 sm:pb-6'>
+							<JobListSkeleton />
+						</div>
+					)}
+				</WindowVirtualizer>
+			</div>
 		</div>
 	);
 }

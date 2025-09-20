@@ -53,6 +53,7 @@ from .types import (
     OrganizationInviteType,
     OrganizationMemberEdgeType,
     OrganizationMemberNotFoundErrorType,
+    OrganizationMemberRoleTypeEnum,
     OrganizationNotFoundErrorType,
     OrganizationSlugInUseErrorType,
     OrganizationType,
@@ -428,12 +429,19 @@ class OrganizationMutation:
         email: Annotated[
             str, strawberry.argument(description="The email address of the invite.")
         ],
+        member_role: Annotated[
+            OrganizationMemberRoleTypeEnum,
+            strawberry.argument(
+                description="The role of the user in the organization.",
+            ),
+        ] = OrganizationMemberRoleTypeEnum.MEMBER,
     ) -> CreateOrganizationInvitePayload:
         """Create an organization invite."""
         match await organization_invite_service.create(
             account=info.context["current_user"],
             organization_id=ObjectId(organization_id.node_id),
             email=email,
+            member_role=member_role.value.lower(),
         ):
             case Err(error):
                 match error:

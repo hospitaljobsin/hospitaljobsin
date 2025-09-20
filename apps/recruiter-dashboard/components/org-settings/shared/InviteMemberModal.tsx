@@ -1,10 +1,16 @@
 import type { InviteMemberModalFragment$key } from '@/__generated__/InviteMemberModalFragment.graphql';
 import type { InviteMemberModalMutation as InviteMemberModalMutationType } from '@/__generated__/InviteMemberModalMutation.graphql';
-import { addToast, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
+import { addToast, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useForm } from 'react-hook-form';
 import { ConnectionHandler, graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
+
+// Enum for organization member roles
+const ORGANIZATION_MEMBER_ROLES = [
+	{ label: 'Member', value: 'MEMBER' },
+	{ label: 'Admin', value: 'ADMIN' }
+];
 
 type Props = {
 	isOpen: boolean;
@@ -14,12 +20,13 @@ type Props = {
 };
 
 const inviteMemberSchema = z.object({
-	email: z.string().check(z.minLength(1, 'This field is required'), z.email('Invalid email address'))
+	email: z.string().check(z.minLength(1, 'This field is required'), z.email('Invalid email address')),
+	memberRole: z.string()
 });
 
 const InviteMemberModalMutation = graphql`
-  mutation InviteMemberModalMutation($organizationId: ID!, $email: String!) {
-    createOrganizationInvite(organizationId: $organizationId, email: $email) {
+  mutation InviteMemberModalMutation($organizationId: ID!, $email: String!, $memberRole: OrganizationMemberRole!) {
+    createOrganizationInvite(organizationId: $organizationId, email: $email, memberRole: $memberRole) {
       __typename
       ... on OrganizationInvite {
         id
@@ -55,12 +62,12 @@ export default function InviteMemberModal({ isOpen, onOpenChange, onClose, organ
 
 	const { register, handleSubmit, formState, setError } = useForm({
 		resolver: standardSchemaResolver(inviteMemberSchema),
-		defaultValues: { email: '' }
+		defaultValues: { email: '', memberRole: 'MEMBER' }
 	});
 
 	function onSubmit(values: z.infer<typeof inviteMemberSchema>) {
 		commitMutation({
-			variables: { email: values.email, organizationId: data.id },
+			variables: { email: values.email, organizationId: data.id, memberRole: values.memberRole },
 			updater: (store, responseData) => {
 				if (responseData && responseData.createOrganizationInvite.__typename === 'OrganizationInvite') {
 					// Retrieve the connection from the store
@@ -127,6 +134,17 @@ export default function InviteMemberModal({ isOpen, onOpenChange, onClose, organ
 								errorMessage={formState.errors.email?.message}
 								isInvalid={!!formState.errors.email}
 							/>
+							<Select
+								{...register('memberRole')}
+								label='Member Role'
+								defaultValue='MEMBER'
+								errorMessage={formState.errors.memberRole?.message}
+								isInvalid={!!formState.errors.memberRole}
+							>
+								{ORGANIZATION_MEMBER_ROLES.map(role => (
+									<SelectItem key={role.value}>{role.label}</SelectItem>
+								))}
+							</Select>
 						</div>
 					</ModalBody>
 					<ModalFooter>

@@ -12,6 +12,7 @@ from app.accounts.documents import Account
 from app.base.models import Address
 from app.core.constants import (
     ORGANIZATION_INVITE_EXPIRES_IN,
+    OrganizationMemberRoleType,
 )
 from app.core.formatting import slugify
 from app.database.paginator import PaginatedResult, Paginator
@@ -244,7 +245,7 @@ class OrganizationMemberRepo:
         self,
         organization_id: ObjectId,
         account: Account,
-        role: str,
+        role: OrganizationMemberRoleType,
     ) -> OrganizationMember:
         """Create a new organization member."""
         organization_member = OrganizationMember(
@@ -389,6 +390,7 @@ class OrganizationInviteRepo:
         organization: Organization,
         account: Account,
         email: str,
+        member_role: OrganizationMemberRoleType,
     ) -> tuple[OrganizationInvite, str]:
         """Create a new organization invite."""
         invite_token = self.generate_token()
@@ -399,6 +401,7 @@ class OrganizationInviteRepo:
             organization=organization,
             created_by=account,
             email=email,
+            member_role=member_role,
             token_hash=self.hash_token(invite_token),
             status="pending",
             expires_at=datetime.now(UTC)

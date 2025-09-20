@@ -46,6 +46,15 @@ from app.organizations.services import OrganizationMemberService
 
 
 @strawberry.enum(
+    name="OrganizationMemberRole",
+    description="Role of the user in the organization.",
+)
+class OrganizationMemberRoleTypeEnum(Enum):
+    ADMIN = "ADMIN"
+    MEMBER = "MEMBER"
+
+
+@strawberry.enum(
     name="InviteStatus",
     description="Invite status type.",
 )
@@ -226,7 +235,7 @@ class InviteConnectionType(
 
 @strawberry.type(name="OrganizationMemberEdge")
 class OrganizationMemberEdgeType(BaseEdgeType[AccountType, OrganizationMember]):
-    role: str = strawberry.field(
+    role: OrganizationMemberRoleTypeEnum = strawberry.field(
         description="The role of the user in the organization.",
     )
     created_at: datetime = strawberry.field(
@@ -240,7 +249,7 @@ class OrganizationMemberEdgeType(BaseEdgeType[AccountType, OrganizationMember]):
             node=AccountType.marshal(organization_member.account),
             cursor=relay.to_base64(AccountType, organization_member.account.id),
             created_at=organization_member.id.generation_time,
-            role=organization_member.role,
+            role=OrganizationMemberRoleTypeEnum(organization_member.role.upper()),
         )
 
 

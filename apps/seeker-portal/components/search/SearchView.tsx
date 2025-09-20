@@ -1,3 +1,4 @@
+'use client';
 import type { SearchView_query$key } from '@/__generated__/SearchView_query.graphql';
 import { FILTER_DEFAULTS } from '@/lib/constants';
 import { Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, useDisclosure } from '@heroui/react';
@@ -116,9 +117,9 @@ export default function SearchView({
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	return (
-		<div className='w-full flex flex-col h-full min-h-screen lg:min-h-0 bg-background-600'>
+		<div className='w-full flex flex-col h-full bg-background-600'>
 			<SearchHeaderClientComponent searchTerm={speciality} location={location} />
-			<div className='flex flex-col lg:flex-row w-full gap-4 lg:gap-8 mx-auto max-w-7xl py-6 px-4 bg-background-600 flex-1 min-h-0'>
+			<div className='flex flex-col lg:flex-row w-full gap-4 lg:gap-8 mx-auto max-w-7xl py-6 px-4 bg-background-600 flex-1'>
 				{/* Mobile filter button */}
 				<div className='block lg:hidden mb-4'>
 					<Button variant='solid' startContent={<FilterIcon size={18} />} onPress={onOpen} fullWidth>
@@ -150,7 +151,7 @@ export default function SearchView({
 					</Drawer>
 				</div>
 				{/* Desktop sidebar */}
-				<div className='hidden lg:block lg:w-auto lg:sticky lg:top-0 lg:self-start lg:max-h-screen lg:overflow-y-auto h-full'>
+				<div className='hidden lg:block lg:w-auto lg:sticky lg:top-0 lg:self-start lg:overflow-y-auto h-full'>
 					<FilterSidebar
 						location={location}
 						speciality={speciality}
@@ -160,7 +161,7 @@ export default function SearchView({
 						filters={filters}
 					/>
 				</div>
-				<div className='flex-1 min-w-0 min-h-0'>
+				<div className='flex-1 w-full h-full'>
 					<Suspense fallback={<SearchJobsListSkeleton />}>
 						<SearchJobsList
 							rootQuery={data}

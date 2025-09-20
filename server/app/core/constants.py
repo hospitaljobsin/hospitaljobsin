@@ -86,6 +86,8 @@ RegionLevel = Literal["continent", "country", "state", "locality"]
 
 JobAlertFrequency = Literal["daily", "weekly", "monthly"]
 
+OrganizationMemberRoleType = Literal["admin", "member"]
+
 # Organization names
 # (subdomains which are in use/ might be needed in the future)
 RESERVED_ORGANIZATION_NAMES = [
