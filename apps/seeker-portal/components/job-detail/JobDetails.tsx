@@ -194,7 +194,7 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 			{/* Job Title and Company */}
 			<Card fullWidth className='p-4 sm:p-6 gap-4' shadow='none'>
 				<CardHeader>
-					<div className='flex flex-col sm:flex-row w-full justify-between gap-3 sm:gap-4 items-start sm:items-center'>
+					<div className='flex flex-col sm:flex-row w-full justify-between gap-6 sm:gap-4 items-start sm:items-center'>
 						<h2 className='text-lg sm:text-xl md:text-2xl font-medium break-words leading-snug text-foreground-900 max-w-96'>
 							{data.title}
 						</h2>
@@ -244,18 +244,16 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 								</div>
 							)}
 						</div>
-						<div className='w-full sm:w-auto flex justify-end items-center gap-4 sm:hidden'>
-							<div className='flex-col gap-4 items-center flex w-full'>
-								<p className='text-foreground-500 text-xs block sm:hidden w-full'>{formattedCreatedAt}</p>
-								{typeof data.vacancies === 'number' && (
-									<div className='flex items-center gap-2 text-xs font-medium text-foreground-500 w-full'>
-										<Users size={14} />
-										<span>
-											{data.vacancies} {data.vacancies === 1 ? 'Vacancy' : 'Vacancies'}
-										</span>
-									</div>
-								)}
-							</div>
+						<div className='w-full sm:w-auto flex justify-between items-center gap-4 sm:hidden'>
+							<p className='text-foreground-500 text-xs block sm:hidden w-full'>{formattedCreatedAt}</p>
+							{typeof data.vacancies === 'number' && (
+								<div className='flex items-center gap-2 text-xs font-medium text-foreground-500 min-w-min'>
+									<Users size={14} />
+									<span className='whitespace-nowrap'>
+										{data.vacancies} {data.vacancies === 1 ? 'Vacancy' : 'Vacancies'}
+									</span>
+								</div>
+							)}
 						</div>
 					</div>
 				</CardFooter>
