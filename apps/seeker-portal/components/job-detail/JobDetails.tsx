@@ -100,7 +100,7 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 	const currencyIcon = (currency: string) => {
 		switch (currency) {
 			case 'INR':
-				return <IndianRupee size={14} />;
+				return <IndianRupee size={16} />;
 			default:
 				return null; // Handle other currencies or add more cases
 		}
@@ -160,7 +160,7 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 
 	const salaryRange =
 		data.minSalary && data.maxSalary ? (
-			<div className='flex flex-col sm:flex-row sm:items-center gap-2 text-md sm:text-xl text-foreground-500'>
+			<div className='flex flex-col sm:flex-row sm:items-center gap-2 text-sm sm:text-base text-foreground-600'>
 				<div className='w-full flex items-center flex-wrap gap-2'>
 					{currencyIcon(data.currency)}
 					{`${salaryFormat.format(data.minSalary)} - ${salaryFormat.format(data.maxSalary)}`} <p className='text-xs sm:text-sm'>/ month</p>
@@ -174,14 +174,14 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 				</div>
 			</div>
 		) : data.minSalary || data.maxSalary ? (
-			<div className='flex flex-col sm:flex-row sm:items-center gap-2 text-md sm:text-xl text-foreground-500'>
+			<div className='flex flex-col sm:flex-row sm:items-center gap-2 text-sm sm:text-base text-foreground-600'>
 				<div className='w-full flex items-center flex-wrap gap-2'>
 					{currencyIcon(data.currency)}
 					{`${salaryFormat.format(data.minSalary ?? data.maxSalary ?? 0)}`} <p className='text-xs sm:text-sm'>/ month</p>
 				</div>
 			</div>
 		) : (
-			<div className='flex items-center gap-2 text-sm sm:text-base text-foreground-500'>
+			<div className='flex items-center gap-2 text-sm sm:text-base text-foreground-600'>
 				{currencyIcon(data.currency)}
 				Not disclosed
 			</div>
@@ -198,24 +198,18 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 					</div>
 				</CardHeader>
 				<CardBody className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full'>
-					<div className='flex flex-col sm:flex-row justify-start items-start sm:items-center gap-3 sm:gap-8 w-full'>
-						<p className='text-foreground-500 text-base font-normal hidden sm:block'>Posted on {formattedCreatedAt}</p>
+					<div className='flex flex-col border-t border-foreground-300 sm:border-none sm:pt-0 pt-8 sm:flex-row flex-wrap gap-x-4 sm:gap-x-6 gap-y-4 items-start sm:items-center text-foreground-600 w-full sm:max-w-3/5'>
 						{salaryRange}
-					</div>
-				</CardBody>
-				<CardFooter className='flex flex-col sm:flex-row justify-between items-end sm:items-center w-full gap-4 sm:gap-6'>
-					<div className='flex flex-col border-t border-foreground-300 sm:border-none sm:pt-0 pt-8 sm:flex-row flex-wrap gap-4 sm:gap-8 items-start sm:items-center text-foreground-600 w-full'>
-						{data.type && (
-							<div className='flex items-center gap-2 text-sm sm:text-base'>
-								<Clock size={16} />
-								{jobType(data.type)}
-							</div>
-						)}
-
 						{data.location && (
 							<div className='flex items-center gap-2 text-sm sm:text-base'>
 								<MapPin size={16} />
 								{data.location}
+							</div>
+						)}
+						{data.type && (
+							<div className='flex items-center gap-2 text-sm sm:text-base'>
+								<Clock size={16} />
+								{jobType(data.type)}
 							</div>
 						)}
 						<div className='flex items-center gap-2 text-sm sm:text-base'>
@@ -230,19 +224,36 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 								<Globe size={16} /> {workMode(data.workMode)}
 							</div>
 						)}
-						{typeof data.vacancies === 'number' && (
-							<div className='flex items-center gap-2 text-sm sm:text-base font-medium text-foreground-500'>
-								<Users size={16} />
-								<span>
-									{data.vacancies} {data.vacancies === 1 ? 'Vacancy' : 'Vacancies'}
-								</span>
-							</div>
-						)}
 					</div>
-					<div className='w-full sm:w-auto flex justify-end items-center gap-4'>
-						<p className='text-foreground-500 text-xs block sm:hidden w-full'>{formattedCreatedAt}</p>
-						<div className='w-full sm:w-auto flex justify-end'>
-							<JobControlsClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
+				</CardBody>
+				<CardFooter className='flex flex-col w-full items-start gap-4 sm:gap-6'>
+					<div className='flex flex-col sm:flex-row justify-between items-end sm:items-center w-full gap-4 sm:gap-6'>
+						<div className='flex-wrap gap-8 items-center  hidden sm:flex'>
+							<p className='text-foreground-500 text-base font-normal'>Posted on {formattedCreatedAt}</p>
+							{typeof data.vacancies === 'number' && (
+								<div className='flex items-center gap-2 text-sm sm:text-base font-medium text-foreground-500'>
+									<Users size={16} />
+									<span>
+										{data.vacancies} {data.vacancies === 1 ? 'Vacancy' : 'Vacancies'}
+									</span>
+								</div>
+							)}
+						</div>
+						<div className='w-full sm:w-auto flex justify-end items-center gap-4'>
+							<div className='flex-col gap-4 items-center sm:hidden flex w-full'>
+								<p className='text-foreground-500 text-xs block sm:hidden w-full'>{formattedCreatedAt}</p>
+								{typeof data.vacancies === 'number' && (
+									<div className='flex items-center gap-2 text-xs font-medium text-foreground-500 w-full'>
+										<Users size={14} />
+										<span>
+											{data.vacancies} {data.vacancies === 1 ? 'Vacancy' : 'Vacancies'}
+										</span>
+									</div>
+								)}
+							</div>
+							<div className='w-full sm:w-auto flex justify-end'>
+								<JobControlsClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
+							</div>
 						</div>
 					</div>
 				</CardFooter>
