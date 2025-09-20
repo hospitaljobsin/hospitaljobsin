@@ -1,18 +1,22 @@
-import type { JobApplyButtonClientComponentQuery as JobApplyButtonClientComponentQueryType } from '@/__generated__/JobApplyButtonClientComponentQuery.graphql';
+import type { JobApplyButtonFragment$key } from '@/__generated__/JobApplyButtonFragment.graphql';
 import { env } from '@/lib/env/client';
 import links from '@/lib/links';
 import { Button, Tooltip } from '@heroui/react';
 import { ExternalLinkIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useLazyLoadQuery } from 'react-relay';
+import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import invariant from 'tiny-invariant';
 
-const JobApplyButtonClientComponentQuery = graphql`
-  query JobApplyButtonClientComponentQuery($slug: String!, $jobSlug: String!) {
+const JobApplyButtonFragment = graphql`
+  fragment JobApplyButtonFragment on Query  @argumentDefinitions(
+    slug: { type: "String!" }
+    jobSlug: { type: "String!", }
+  ){
     organization(slug: $slug) {
         __typename
         ... on Organization {
+			slug
             job (slug: $jobSlug) {
                 __typename
                 ... on Job {
@@ -35,15 +39,14 @@ const JobApplyButtonClientComponentQuery = graphql`
   }
 }
   `;
-export default function JobApplyButtonClientComponent({ slug, jobSlug }: { slug: string; jobSlug: string }) {
-	const root = useLazyLoadQuery<JobApplyButtonClientComponentQueryType>(JobApplyButtonClientComponentQuery, {
-		slug,
-		jobSlug
-	});
+
+export default function JobApplyButton({ query }: { query: JobApplyButtonFragment$key }) {
+	const root = useFragment(JobApplyButtonFragment, query);
 
 	invariant(root.organization.__typename === 'Organization', "Expected 'Organization' node type");
 
 	invariant(root.organization.job.__typename === 'Job', "Expected 'Job' node type");
+
 	const isAuthenticated = root.viewer.__typename === 'Account';
 	const isProfileIncomplete = isAuthenticated && !root.viewer.profile.isComplete;
 
@@ -78,7 +81,7 @@ export default function JobApplyButtonClientComponent({ slug, jobSlug }: { slug:
 					<span className='w-full sm:w-auto'>
 						<Button
 							as={Link}
-							href={links.jobDetailApply(slug, jobSlug)}
+							href={links.jobDetailApply(root.organization.slug, root.organization.job.slug)}
 							size='lg'
 							color='primary'
 							className='w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3'
@@ -93,8 +96,8 @@ export default function JobApplyButtonClientComponent({ slug, jobSlug }: { slug:
 					as={Link}
 					href={
 						isAuthenticated
-							? links.jobDetailApply(slug, jobSlug)
-							: links.login(`${env.NEXT_PUBLIC_URL}${links.jobDetailApply(slug, jobSlug)}`)
+							? links.jobDetailApply(root.organization.slug, root.organization.job.slug)
+							: links.login(`${env.NEXT_PUBLIC_URL}${links.jobDetailApply(root.organization.slug, root.organization.job.slug)}`)
 					}
 					size='lg'
 					color='primary'

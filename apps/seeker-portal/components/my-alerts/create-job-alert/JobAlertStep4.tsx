@@ -62,15 +62,7 @@ export default function JobAlertStep4({ control, errors, handleSubmit, isSubmitt
 				<Button variant='flat' onPress={() => send({ type: 'BACK' })} fullWidth>
 					Back
 				</Button>
-				<Button
-					color='primary'
-					onPress={() => {
-						handleSubmit();
-						send({ type: 'SUBMIT' });
-					}}
-					isLoading={isSubmitting}
-					fullWidth
-				>
+				<Button color='primary' onPress={handleSubmit} isLoading={isSubmitting} fullWidth>
 					Create Alert
 				</Button>
 			</div>

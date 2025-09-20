@@ -19,7 +19,7 @@ import {
 	SelectItem
 } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { BellIcon, BriefcaseIcon, Clock, CompassIcon, Globe, IndianRupee, StarIcon } from 'lucide-react';
+import { BellIcon, BriefcaseIcon, CompassIcon, Globe, IndianRupee } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { useFragment, useMutation } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -252,7 +252,7 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 		<Modal
 			isOpen={isOpen}
 			onOpenChange={handleOpenChange}
-			size='4xl'
+			size='3xl'
 			scrollBehavior='inside'
 			classNames={{
 				base: 'overflow-auto'
@@ -268,14 +268,9 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 						<p className='text-sm text-foreground-500 font-normal mt-1'>Update your preferences to receive more relevant job matches</p>
 					</ModalHeader>
 
-					<ModalBody className='py-6 gap-12'>
+					<ModalBody className='py-6 gap-6'>
 						{/* Essential Fields Section */}
 						<div className='flex flex-col gap-8'>
-							<div className='flex items-center mb-1'>
-								<StarIcon className='mr-2 h-5 w-5 text-foreground-700' />
-								<h3 className='text-md font-medium text-foreground-700'>Primary Job Criteria</h3>
-							</div>
-
 							<div className='flex flex-col gap-6'>
 								<Controller
 									name='searchTerm'
@@ -318,18 +313,16 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 								/>
 							</div>
 						</div>
+
 						{/* Alert Frequency */}
 						<div className='flex flex-col gap-6'>
-							<div className='flex items-center mb-1'>
-								<Clock className='mr-2 h-5 w-5 text-foreground-700' />
-								<h3 className='text-md font-medium text-foreground-700'>Alert Frequency</h3>
-							</div>
 							<Controller
 								name='frequency'
 								control={control}
 								render={({ field }) => (
 									<RadioGroup
 										orientation='horizontal'
+										label='How often should we send alerts?'
 										value={field.value}
 										onValueChange={field.onChange}
 										errorMessage={errors.frequency?.message}

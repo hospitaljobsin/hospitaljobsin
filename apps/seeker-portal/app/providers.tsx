@@ -5,6 +5,7 @@ import { getCurrentEnvironment } from '@/lib/relay/environments';
 import { AppProgressProvider as ProgressProvider } from '@bprogress/next';
 import { HeroUIProvider, ToastProvider } from '@heroui/react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { NavigationGuardProvider } from 'next-navigation-guard';
 import { ThemeProvider } from 'next-themes';
 import type { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
 import { useRouter } from 'next/navigation';
@@ -24,27 +25,29 @@ export default function Providers({ children, headersPromise }: { children: Reac
 	const nonce = headersMap.get('x-nonce');
 
 	return (
-		<GoogleOAuthProvider clientId={env.NEXT_PUBLIC_GOOGLE_CLIENT_ID} nonce={nonce}>
-			<HeroUIProvider navigate={router.push}>
-				<NuqsAdapter>
-					<ToastProvider placement='bottom-left' toastOffset={15} />
-					<ThemeProvider attribute='class' forcedTheme='light' enableSystem={false}>
-						<RelayEnvironmentProvider environment={environment}>
-							<ProgressProvider
-								height='4px'
-								color='hsl(var(--heroui-primary-300))'
-								nonce={nonce}
-								options={{ showSpinner: false, positionUsing: 'margin' }}
-								shallowRouting
-								disableSameURL
-								shouldCompareComplexProps
-							>
-								<HeadersProvider headersPromise={headersPromise}>{children}</HeadersProvider>
-							</ProgressProvider>
-						</RelayEnvironmentProvider>
-					</ThemeProvider>
-				</NuqsAdapter>
-			</HeroUIProvider>
-		</GoogleOAuthProvider>
+		<NavigationGuardProvider>
+			<GoogleOAuthProvider clientId={env.NEXT_PUBLIC_GOOGLE_CLIENT_ID} nonce={nonce}>
+				<HeroUIProvider navigate={router.push}>
+					<NuqsAdapter>
+						<ToastProvider placement='bottom-left' toastOffset={15} />
+						<ThemeProvider attribute='class' forcedTheme='light' enableSystem={false}>
+							<RelayEnvironmentProvider environment={environment}>
+								<ProgressProvider
+									height='4px'
+									color='hsl(var(--heroui-primary-300))'
+									nonce={nonce}
+									options={{ showSpinner: false, positionUsing: 'margin' }}
+									shallowRouting
+									disableSameURL
+									shouldCompareComplexProps
+								>
+									<HeadersProvider headersPromise={headersPromise}>{children}</HeadersProvider>
+								</ProgressProvider>
+							</RelayEnvironmentProvider>
+						</ThemeProvider>
+					</NuqsAdapter>
+				</HeroUIProvider>
+			</GoogleOAuthProvider>
+		</NavigationGuardProvider>
 	);
 }

@@ -7,19 +7,20 @@ import type {
 } from '@/__generated__/JobDetailsInternalFragment.graphql';
 import { dateFormat, salaryFormat } from '@/lib/intl';
 import links from '@/lib/links';
-import { Card, CardBody, CardFooter, CardHeader, Chip, Divider, Skeleton, Tooltip } from '@heroui/react';
+import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Tooltip } from '@heroui/react';
 import { Briefcase, Clock, ExternalLinkIcon, Globe, HandshakeIcon, IndianRupee, MapPin, Users, VerifiedIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 import { graphql, readInlineData } from 'react-relay';
 import invariant from 'tiny-invariant';
+import OneStepCreateJobAlertModal from '../shared/OneStepCreateJobAlertModal';
+import JobControlsSkeleton from './JobControlsSkeleton';
 
-const JobControlsClientComponent = dynamic(() => import('./JobControlsClientComponent'), { ssr: false });
-
-const JobApplyButtonClientComponent = dynamic(() => import('./JobApplyButtonClientComponent'), {
+const JobControlsClientComponent = dynamic(() => import('./JobControlsClientComponent'), {
 	ssr: false,
-	loading: () => <Skeleton className='h-12 rounded-lg w-full sm:w-32' />
+	loading: () => <JobControlsSkeleton />
 });
 
 const JobDetailsFragment = graphql`
@@ -84,6 +85,7 @@ const JobDetailsInternalFragment = graphql`
 `;
 
 export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragment$key }) {
+	const [showAlertModal, setShowAlertModal] = useState(false);
 	const root = readInlineData(JobDetailsFragment, rootQuery);
 
 	invariant(root.organization, 'Organization not found');
@@ -100,7 +102,7 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 	const currencyIcon = (currency: string) => {
 		switch (currency) {
 			case 'INR':
-				return <IndianRupee size={14} />;
+				return <IndianRupee size={16} />;
 			default:
 				return null; // Handle other currencies or add more cases
 		}
@@ -160,7 +162,7 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 
 	const salaryRange =
 		data.minSalary && data.maxSalary ? (
-			<div className='flex flex-col sm:flex-row sm:items-center gap-2 text-md sm:text-xl text-foreground-500'>
+			<div className='flex flex-col sm:flex-row sm:items-center gap-2 text-sm sm:text-base text-foreground-600'>
 				<div className='w-full flex items-center flex-wrap gap-2'>
 					{currencyIcon(data.currency)}
 					{`${salaryFormat.format(data.minSalary)} - ${salaryFormat.format(data.maxSalary)}`} <p className='text-xs sm:text-sm'>/ month</p>
@@ -174,14 +176,14 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 				</div>
 			</div>
 		) : data.minSalary || data.maxSalary ? (
-			<div className='flex flex-col sm:flex-row sm:items-center gap-2 text-md sm:text-xl text-foreground-500'>
+			<div className='flex flex-col sm:flex-row sm:items-center gap-2 text-sm sm:text-base text-foreground-600'>
 				<div className='w-full flex items-center flex-wrap gap-2'>
 					{currencyIcon(data.currency)}
 					{`${salaryFormat.format(data.minSalary ?? data.maxSalary ?? 0)}`} <p className='text-xs sm:text-sm'>/ month</p>
 				</div>
 			</div>
 		) : (
-			<div className='flex items-center gap-2 text-sm sm:text-base text-foreground-500'>
+			<div className='flex items-center gap-2 text-sm sm:text-base text-foreground-600'>
 				{currencyIcon(data.currency)}
 				Not disclosed
 			</div>
@@ -190,32 +192,28 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 	return (
 		<div className='w-full h-full flex flex-col gap-6 flex-1'>
 			{/* Job Title and Company */}
-			<Card fullWidth className='p-4 sm:p-6' shadow='none'>
+			<Card fullWidth className='p-4 sm:p-6 gap-4' shadow='none'>
 				<CardHeader>
-					<div className='flex flex-col sm:flex-row w-full justify-between gap-3 sm:gap-4 items-start sm:items-center'>
-						<h4 className='text-lg sm:text-xl font-medium break-words max-w-full leading-snug text-foreground-900'>{data.title}</h4>
-						<JobApplyButtonClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
+					<div className='flex flex-col sm:flex-row w-full justify-between gap-6 sm:gap-4 items-start sm:items-center'>
+						<h2 className='text-lg sm:text-xl md:text-2xl font-medium break-words leading-snug text-foreground-900 max-w-96'>
+							{data.title}
+						</h2>
+						<JobControlsClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
 					</div>
 				</CardHeader>
 				<CardBody className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full'>
-					<div className='flex flex-col sm:flex-row justify-start items-start sm:items-center gap-3 sm:gap-8 w-full'>
-						<p className='text-foreground-500 text-base font-normal hidden sm:block'>Posted on {formattedCreatedAt}</p>
+					<div className='flex flex-col border-t border-foreground-300 sm:border-none sm:pt-0 pt-8 sm:flex-row flex-wrap gap-x-4 sm:gap-x-12 gap-y-6 items-start sm:items-center text-foreground-600 w-full'>
 						{salaryRange}
-					</div>
-				</CardBody>
-				<CardFooter className='flex flex-col sm:flex-row justify-between items-end sm:items-center w-full gap-4 sm:gap-6'>
-					<div className='flex flex-col border-t border-foreground-300 sm:border-none sm:pt-0 pt-8 sm:flex-row flex-wrap gap-4 sm:gap-8 items-start sm:items-center text-foreground-600 w-full'>
-						{data.type && (
-							<div className='flex items-center gap-2 text-sm sm:text-base'>
-								<Clock size={16} />
-								{jobType(data.type)}
-							</div>
-						)}
-
 						{data.location && (
 							<div className='flex items-center gap-2 text-sm sm:text-base'>
 								<MapPin size={16} />
 								{data.location}
+							</div>
+						)}
+						{data.type && (
+							<div className='flex items-center gap-2 text-sm sm:text-base'>
+								<Clock size={16} />
+								{jobType(data.type)}
 							</div>
 						)}
 						<div className='flex items-center gap-2 text-sm sm:text-base'>
@@ -230,24 +228,58 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 								<Globe size={16} /> {workMode(data.workMode)}
 							</div>
 						)}
-						{typeof data.vacancies === 'number' && (
-							<div className='flex items-center gap-2 text-sm sm:text-base font-medium text-foreground-500'>
-								<Users size={16} />
-								<span>
-									{data.vacancies} {data.vacancies === 1 ? 'Vacancy' : 'Vacancies'}
-								</span>
-							</div>
-						)}
 					</div>
-					<div className='w-full sm:w-auto flex justify-end items-center gap-4'>
-						<p className='text-foreground-500 text-xs block sm:hidden w-full'>{formattedCreatedAt}</p>
-						<div className='w-full sm:w-auto flex justify-end'>
-							<JobControlsClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
+				</CardBody>
+				<Divider />
+				<CardFooter className='flex flex-col w-full items-start gap-2'>
+					<div className='flex flex-col sm:flex-row justify-between items-end sm:items-center w-full gap-4 sm:gap-6'>
+						<div className='justify-between w-full gap-8 items-center hidden sm:flex'>
+							<p className='text-foreground-500 text-base font-normal'>Posted on {formattedCreatedAt}</p>
+							{typeof data.vacancies === 'number' && (
+								<div className='flex items-center gap-2 text-sm sm:text-base font-normal text-foreground-500'>
+									<Users size={16} />
+									<span>
+										{data.vacancies} {data.vacancies === 1 ? 'Vacancy' : 'Vacancies'}
+									</span>
+								</div>
+							)}
+						</div>
+						<div className='w-full sm:w-auto flex justify-between items-center gap-4 sm:hidden'>
+							<p className='text-foreground-500 text-xs block sm:hidden w-full'>{formattedCreatedAt}</p>
+							{typeof data.vacancies === 'number' && (
+								<div className='flex items-center gap-2 text-xs font-medium text-foreground-500 min-w-min'>
+									<Users size={14} />
+									<span className='whitespace-nowrap'>
+										{data.vacancies} {data.vacancies === 1 ? 'Vacancy' : 'Vacancies'}
+									</span>
+								</div>
+							)}
 						</div>
 					</div>
 				</CardFooter>
 			</Card>
-
+			<Card shadow='none' className='px-6 py-4'>
+				<CardBody className='w-full flex flex-row items-center justify-between gap-6'>
+					<p className='text-sm sm:text-base text-foreground-600'>Send me jobs like this</p>
+					<Button type='button' variant='flat' size='md' onPress={() => setShowAlertModal(true)}>
+						Create alert
+					</Button>
+				</CardBody>
+			</Card>
+			<OneStepCreateJobAlertModal
+				filters={{
+					jobType: data.type ? [data.type] : [],
+					workMode: data.workMode ? [data.workMode] : [],
+					minExperience: data.minExperience ?? undefined,
+					maxExperience: data.maxExperience ?? undefined,
+					minSalary: data.minSalary ?? undefined,
+					maxSalary: data.maxSalary ?? undefined,
+					location: data.location,
+					searchTerm: data.title
+				}}
+				isOpen={showAlertModal}
+				onOpenChange={setShowAlertModal}
+			/>
 			{/* Job and Company Details */}
 
 			<Card fullWidth className='p-4 sm:p-6' shadow='none'>
@@ -271,12 +303,13 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 							className='text-base sm:text-lg font-medium flex items-center gap-2'
 						>
 							{data.organization?.name}
-							<ExternalLinkIcon className='w-3 h-3' />
+
 							{data.organization?.verificationStatus.verified && (
 								<Tooltip content='This organization is verified' placement='right'>
 									<VerifiedIcon className='w-4 h-4 text-primary' strokeWidth={2.5} />
 								</Tooltip>
 							)}
+							<ExternalLinkIcon className='w-4 h-4 text-foreground-600' />
 						</Link>
 						{data.organization?.description && (
 							<p className='text-xs sm:text-base text-default-500 leading-tight line-clamp-2'>{data.organization.description}</p>
