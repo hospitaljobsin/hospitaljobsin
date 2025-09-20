@@ -12,8 +12,10 @@ import { Briefcase, Clock, ExternalLinkIcon, Globe, HandshakeIcon, IndianRupee, 
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 import { graphql, readInlineData } from 'react-relay';
 import invariant from 'tiny-invariant';
+import OneStepCreateJobAlertModal from '../shared/OneStepCreateJobAlertModal';
 import JobControlsSkeleton from './JobControlsSkeleton';
 
 const JobControlsClientComponent = dynamic(() => import('./JobControlsClientComponent'), {
@@ -83,6 +85,7 @@ const JobDetailsInternalFragment = graphql`
 `;
 
 export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragment$key }) {
+	const [showAlertModal, setShowAlertModal] = useState(false);
 	const root = readInlineData(JobDetailsFragment, rootQuery);
 
 	invariant(root.organization, 'Organization not found');
@@ -260,11 +263,25 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 			<Card shadow='none' className='px-6 py-4'>
 				<CardBody className='w-full flex flex-row items-center justify-between gap-6'>
 					<p className='text-sm sm:text-base text-foreground-600'>Send me jobs like this</p>
-					<Button type='button' variant='flat' size='md'>
+					<Button type='button' variant='flat' size='md' onPress={() => setShowAlertModal(true)}>
 						Create alert
 					</Button>
 				</CardBody>
 			</Card>
+			<OneStepCreateJobAlertModal
+				filters={{
+					jobType: data.type ? [data.type] : [],
+					workMode: data.workMode ? [data.workMode] : [],
+					minExperience: data.minExperience ?? undefined,
+					maxExperience: data.maxExperience ?? undefined,
+					minSalary: data.minSalary ?? undefined,
+					maxSalary: data.maxSalary ?? undefined,
+					location: data.location,
+					searchTerm: data.title
+				}}
+				isOpen={showAlertModal}
+				onOpenChange={setShowAlertModal}
+			/>
 			{/* Job and Company Details */}
 
 			<Card fullWidth className='p-4 sm:p-6' shadow='none'>
