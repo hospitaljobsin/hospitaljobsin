@@ -231,7 +231,7 @@ export default function OneStepCreateJobAlertModal({ isOpen, onOpenChange, filte
 					});
 				} else if (response.createJobAlert.__typename === 'MaxJobAlertsReachedError') {
 					addToast({
-						title: 'Error',
+						title: 'Maximum Alerts Reached',
 						description: response.createJobAlert.message,
 						color: 'danger'
 					});
@@ -274,6 +274,7 @@ export default function OneStepCreateJobAlertModal({ isOpen, onOpenChange, filte
 										errorMessage={errors.searchTerm?.message}
 										isInvalid={!!errors.searchTerm}
 										isRequired
+										validationBehavior='aria'
 									/>
 								)}
 							/>
@@ -490,7 +491,7 @@ export default function OneStepCreateJobAlertModal({ isOpen, onOpenChange, filte
 						<Button variant='flat' onPress={() => onOpenChange(false)}>
 							Cancel
 						</Button>
-						<Button color='primary' type='submit' isLoading={isCreatingJobAlert} isDisabled={!isValid || isCreatingJobAlert}>
+						<Button color='primary' type='submit' isLoading={isCreatingJobAlert}>
 							Create Job Alert
 						</Button>
 					</ModalFooter>
