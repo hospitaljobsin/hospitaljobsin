@@ -82,19 +82,8 @@ function CreateJobAlertModalContent({ isOpen, onOpenChange }: CreateJobAlertModa
 		if (!open) {
 			reset();
 			// Reset the state machine to step 1 directly
-			// If we're in 'complete' state, use RESET, otherwise use BACK
-			if (currentState === 'complete') {
-				send({ type: 'RESET' });
-			} else if (currentState !== 'step1') {
-				// If we're in any other state, navigate back to step1
-				send({ type: 'BACK' });
-				if (currentState !== 'step1') {
-					send({ type: 'BACK' });
-					if (currentState !== 'step1') {
-						send({ type: 'BACK' });
-					}
-				}
-			}
+			// Always use RESET to go back to step1 when modal closes
+			send({ type: 'RESET' });
 		}
 		onOpenChange(open);
 	};
@@ -144,9 +133,8 @@ function CreateJobAlertModalContent({ isOpen, onOpenChange }: CreateJobAlertModa
 						description: 'Job alert created successfully',
 						color: 'success'
 					});
-					// Reset the state machine to step1 before closing the modal
-					send({ type: 'RESET' });
-					handleOpenChange(false);
+					// Close the modal immediately without state machine transitions
+					onOpenChange(false);
 				} else if (response.createJobAlert.__typename === 'JobAlertAlreadyExistsError') {
 					addToast({
 						title: 'Error',
