@@ -7,7 +7,7 @@ import type {
 } from '@/__generated__/JobDetailsInternalFragment.graphql';
 import { dateFormat, salaryFormat } from '@/lib/intl';
 import links from '@/lib/links';
-import { Card, CardBody, CardFooter, CardHeader, Chip, Divider, Skeleton, Tooltip } from '@heroui/react';
+import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Skeleton, Tooltip } from '@heroui/react';
 import { Briefcase, Clock, ExternalLinkIcon, Globe, HandshakeIcon, IndianRupee, MapPin, Users, VerifiedIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
@@ -190,15 +190,20 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 	return (
 		<div className='w-full h-full flex flex-col gap-6 flex-1'>
 			{/* Job Title and Company */}
-			<Card fullWidth className='p-4 sm:p-6' shadow='none'>
+			<Card fullWidth className='p-4 sm:p-6 gap-4' shadow='none'>
 				<CardHeader>
 					<div className='flex flex-col sm:flex-row w-full justify-between gap-3 sm:gap-4 items-start sm:items-center'>
-						<h4 className='text-lg sm:text-xl font-medium break-words max-w-full leading-snug text-foreground-900'>{data.title}</h4>
-						<JobApplyButtonClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
+						<h2 className='text-lg sm:text-xl md:text-2xl font-medium break-words max-w-full leading-snug text-foreground-900'>
+							{data.title}
+						</h2>
+						<div className='w-full sm:w-auto flex flex-col-reverse sm:flex-row justify-end gap-6 sm:items-center'>
+							<JobControlsClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
+							<JobApplyButtonClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
+						</div>
 					</div>
 				</CardHeader>
 				<CardBody className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full'>
-					<div className='flex flex-col border-t border-foreground-300 sm:border-none sm:pt-0 pt-8 sm:flex-row flex-wrap gap-x-4 sm:gap-x-6 gap-y-4 items-start sm:items-center text-foreground-600 w-full sm:max-w-3/5'>
+					<div className='flex flex-col border-t border-foreground-300 sm:border-none sm:pt-0 pt-8 sm:flex-row flex-wrap gap-x-4 sm:gap-x-12 gap-y-6 items-start sm:items-center text-foreground-600 w-full'>
 						{salaryRange}
 						{data.location && (
 							<div className='flex items-center gap-2 text-sm sm:text-base'>
@@ -226,12 +231,13 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 						)}
 					</div>
 				</CardBody>
-				<CardFooter className='flex flex-col w-full items-start gap-4 sm:gap-6'>
+				<Divider className='mt-4' />
+				<CardFooter className='flex flex-col w-full items-start gap-2'>
 					<div className='flex flex-col sm:flex-row justify-between items-end sm:items-center w-full gap-4 sm:gap-6'>
-						<div className='flex-wrap gap-8 items-center  hidden sm:flex'>
+						<div className='justify-between w-full gap-8 items-center hidden sm:flex'>
 							<p className='text-foreground-500 text-base font-normal'>Posted on {formattedCreatedAt}</p>
 							{typeof data.vacancies === 'number' && (
-								<div className='flex items-center gap-2 text-sm sm:text-base font-medium text-foreground-500'>
+								<div className='flex items-center gap-2 text-sm sm:text-base font-normal text-foreground-500'>
 									<Users size={16} />
 									<span>
 										{data.vacancies} {data.vacancies === 1 ? 'Vacancy' : 'Vacancies'}
@@ -239,8 +245,8 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 								</div>
 							)}
 						</div>
-						<div className='w-full sm:w-auto flex justify-end items-center gap-4'>
-							<div className='flex-col gap-4 items-center sm:hidden flex w-full'>
+						<div className='w-full sm:w-auto flex justify-end items-center gap-4 sm:hidden'>
+							<div className='flex-col gap-4 items-center flex w-full'>
 								<p className='text-foreground-500 text-xs block sm:hidden w-full'>{formattedCreatedAt}</p>
 								{typeof data.vacancies === 'number' && (
 									<div className='flex items-center gap-2 text-xs font-medium text-foreground-500 w-full'>
@@ -251,14 +257,18 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 									</div>
 								)}
 							</div>
-							<div className='w-full sm:w-auto flex justify-end'>
-								<JobControlsClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
-							</div>
 						</div>
 					</div>
 				</CardFooter>
 			</Card>
-
+			<Card shadow='none' className='px-6 py-4'>
+				<CardBody className='w-full flex flex-row items-center justify-between gap-6'>
+					<p className='text-sm sm:text-base text-foreground-600'>Send me jobs like this</p>
+					<Button type='button' variant='flat' size='md'>
+						Create alert
+					</Button>
+				</CardBody>
+			</Card>
 			{/* Job and Company Details */}
 
 			<Card fullWidth className='p-4 sm:p-6' shadow='none'>
