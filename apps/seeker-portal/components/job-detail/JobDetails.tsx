@@ -63,7 +63,7 @@ const JobDetailsInternalFragment = graphql`
     organization {
       slug
       name
-      description
+      descriptionHtml
       logoUrl
 	  verificationStatus {
 		__typename
@@ -311,8 +311,12 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 							)}
 							<ExternalLinkIcon className='w-4 h-4 text-foreground-600' />
 						</Link>
-						{data.organization?.description && (
-							<p className='text-xs sm:text-base text-default-500 leading-tight line-clamp-2'>{data.organization.description}</p>
+						{data.organization?.descriptionHtml && (
+							<div
+								// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+								dangerouslySetInnerHTML={{ __html: data.organization?.descriptionHtml }}
+								className='leading-tight line-clamp-2 prose prose-foreground prose-sm max-w-none prose-headings:mt-6 prose-headings:mb-4 prose-p:mt-0 prose-p:mb-3 prose-ul:mt-1 prose-ul:mb-2 prose-li:mt-1 prose-li:mb-2 prose-strong:font-semibold prose-blockquote:mt-1 prose-blockquote:mb-2 prose-code:mt-1 prose-code:mb-2 prose-pre:mt-1 prose-pre:mb-2 prose-table:mt-1 prose-table:mb-2 prose-thead:mt-1 prose-thead:mb-2 prose-tbody:mt-1 prose-tbody:mb-2 prose-tfoot:mt-1 prose-tfoot:mb-2 prose-tr:mt-1 prose-tr:mb-2 prose-th:mt-1 prose-th:mb-2 prose-td:mt-1 prose-td:mb-2'
+							/>
 						)}
 					</div>
 				</CardBody>

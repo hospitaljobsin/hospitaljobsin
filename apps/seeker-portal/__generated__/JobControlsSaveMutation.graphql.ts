@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c72362edacb57dda8b15b7f10374475a>>
- * @relayHash 2db8e1d8ad9456e6b1db4f35cc7bcb5d
+ * @generated SignedSource<<3e3040705761445598a398535d0f66b1>>
+ * @relayHash 543e540c9d5dc57bbb40881f3fff332d
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 2db8e1d8ad9456e6b1db4f35cc7bcb5d
+// @relayRequestID 543e540c9d5dc57bbb40881f3fff332d
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -307,7 +307,7 @@ return {
                             "selections": [
                               (v4/*: any*/),
                               (v19/*: any*/),
-                              (v5/*: any*/),
+                              (v6/*: any*/),
                               (v20/*: any*/),
                               {
                                 "alias": null,
@@ -419,7 +419,7 @@ return {
                         "selections": [
                           (v4/*: any*/),
                           (v19/*: any*/),
-                          (v5/*: any*/),
+                          (v6/*: any*/),
                           (v20/*: any*/),
                           {
                             "alias": null,
@@ -464,7 +464,7 @@ return {
     ]
   },
   "params": {
-    "id": "2db8e1d8ad9456e6b1db4f35cc7bcb5d",
+    "id": "543e540c9d5dc57bbb40881f3fff332d",
     "metadata": {},
     "name": "JobControlsSaveMutation",
     "operationKind": "mutation",
