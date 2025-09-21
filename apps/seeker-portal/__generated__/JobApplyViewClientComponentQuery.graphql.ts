@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<5b5f9728d292b9f0f069a2f2d30e0359>>
- * @relayHash 09cc5766c1b13f225bb3c09da6669208
+ * @generated SignedSource<<9e0d0bab96bdeb56893639e234344da1>>
+ * @relayHash cb545b48902132cb0b2d6722624fbb1b
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 09cc5766c1b13f225bb3c09da6669208
+// @relayRequestID cb545b48902132cb0b2d6722624fbb1b
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -74,7 +74,7 @@ v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "description",
+  "name": "descriptionHtml",
   "storageKey": null
 };
 return {
@@ -431,14 +431,14 @@ return {
                         "name": "maxExperience",
                         "storageKey": null
                       },
-                      (v7/*: any*/),
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "descriptionHtml",
+                        "name": "description",
                         "storageKey": null
                       },
+                      (v7/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -479,7 +479,7 @@ return {
     ]
   },
   "params": {
-    "id": "09cc5766c1b13f225bb3c09da6669208",
+    "id": "cb545b48902132cb0b2d6722624fbb1b",
     "metadata": {},
     "name": "JobApplyViewClientComponentQuery",
     "operationKind": "query",
