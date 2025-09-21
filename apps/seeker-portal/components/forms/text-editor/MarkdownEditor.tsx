@@ -1,12 +1,18 @@
 import { cn } from '@heroui/theme';
-import { $convertFromMarkdownString, $convertToMarkdownString, TRANSFORMERS } from '@lexical/markdown';
+import { CodeNode } from '@lexical/code';
+import { LinkNode } from '@lexical/link';
+import { ListItemNode, ListNode } from '@lexical/list';
+import { $convertFromMarkdownString, $convertToMarkdownString, type TextFormatTransformer, TRANSFORMERS } from '@lexical/markdown';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin'; // Add ListPlugin
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { HeadingNode } from '@lexical/rich-text';
+import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import {
 	$isTextNode,
 	type DOMConversionMap,
@@ -21,8 +27,17 @@ import {
 	ParagraphNode,
 	TextNode
 } from 'lexical';
-import { type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import ToolbarPlugin from './ToolbarPlugin';
+
+// Define a custom underline transformer
+const UNDERLINE_TRANSFORMER: TextFormatTransformer = {
+	format: ['underline'],
+	tag: '__', // choose any marker (Markdown doesn’t have underline, so use something custom)
+	type: 'text-format'
+};
+
+const CUSTOM_TRANSFORMERS = [...TRANSFORMERS, UNDERLINE_TRANSFORMER];
 
 // Remove styles from exported DOM for ParagraphNode and TextNode
 const removeStylesExportDOM = (editor: LexicalEditor, target: LexicalNode): DOMExportOutput => {
@@ -41,7 +56,7 @@ const exportMap: DOMExportOutputMap = new Map<Klass<LexicalNode>, (editor: Lexic
 	[TextNode, removeStylesExportDOM]
 ]);
 
-const getExtraStyles = (element: HTMLElement): string => {
+const getExtraStyles = (_element: HTMLElement): string => {
 	let extraStyles = '';
 	// Example: parseAllowedFontSize, parseAllowedColor could be implemented as needed
 	// For now, just return ''
@@ -89,21 +104,24 @@ export default function MarkdownEditor({
 	description,
 	isInvalid,
 	onValueChange,
-	initialValue
+	initialValue,
+	editable = true
 }: {
-	description: ReactNode;
-	isInvalid: boolean;
-	onValueChange: (value: string) => void;
+	description?: ReactNode;
+	isInvalid?: boolean;
+	onValueChange?: (value: string) => void;
 	initialValue: string;
+	editable?: boolean;
 }) {
 	const editorConfig = {
-		editorState: () => $convertFromMarkdownString(initialValue, TRANSFORMERS),
+		editable,
+		editorState: () => $convertFromMarkdownString(initialValue, CUSTOM_TRANSFORMERS),
 		html: {
 			export: exportMap,
 			import: constructImportMap()
 		},
 		namespace: 'MarkdownEditor',
-		nodes: [ParagraphNode, TextNode, HeadingNode],
+		nodes: [ParagraphNode, TextNode, HeadingNode, HorizontalRuleNode, CodeNode, LinkNode, ListNode, ListItemNode, QuoteNode],
 		onError(error: Error) {
 			throw error;
 		},
@@ -116,7 +134,10 @@ export default function MarkdownEditor({
 			},
 			list: {
 				ul: 'list-disc list-inside',
-				ol: 'list-decimal list-inside'
+				ol: 'list-decimal list-inside',
+				nested: {
+					listitem: 'list-none'
+				}
 			},
 			quote: 'border-l-4 border-gray-300 pl-4 italic',
 			text: {
@@ -129,28 +150,32 @@ export default function MarkdownEditor({
 
 	function handleOnChange(_editorState: EditorState, editor: LexicalEditor) {
 		editor.update(() => {
-			const markdown = $convertToMarkdownString(TRANSFORMERS);
-			onValueChange(markdown);
+			const markdown = $convertToMarkdownString(CUSTOM_TRANSFORMERS);
+			onValueChange?.(markdown);
 		});
 	}
+
 	return (
 		<LexicalComposer initialConfig={editorConfig}>
 			<div className='w-full flex flex-col gap-6'>
-				<ToolbarPlugin />
+				{editable ? <ToolbarPlugin /> : null}
 				<div className='w-full flex flex-col gap-4'>
 					<div className='w-full'>
 						<RichTextPlugin
 							contentEditable={
 								<ContentEditable
-									className={cn('min-h-32 p-2 border rounded-md focus:outline-none', {
+									className={cn('min-h-32 rounded-md focus:outline-none', {
 										'border-danger': isInvalid,
-										'border-gray-300': !isInvalid
+										'border-gray-300': !isInvalid,
+										'border p-2': editable
 									})}
 								/>
 							}
 							ErrorBoundary={LexicalErrorBoundary}
 						/>
+						<MarkdownShortcutPlugin transformers={CUSTOM_TRANSFORMERS} />
 						<HistoryPlugin />
+						<ListPlugin /> {/* Add ListPlugin to handle list commands */}
 						<OnChangePlugin onChange={handleOnChange} />
 					</div>
 					{description}

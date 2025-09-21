@@ -1,11 +1,5 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
 import { Button, Divider } from '@heroui/react';
+import { $isListNode, INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, ListNode, REMOVE_LIST_COMMAND } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $createHeadingNode, type HeadingTagType } from '@lexical/rich-text';
 import { $setBlocksType } from '@lexical/selection';
@@ -17,23 +11,12 @@ import {
 	CAN_REDO_COMMAND,
 	CAN_UNDO_COMMAND,
 	COMMAND_PRIORITY_LOW,
-	FORMAT_ELEMENT_COMMAND,
 	FORMAT_TEXT_COMMAND,
 	REDO_COMMAND,
 	SELECTION_CHANGE_COMMAND,
 	UNDO_COMMAND
 } from 'lexical';
-import {
-	BoldIcon,
-	ItalicIcon,
-	RedoIcon,
-	TextAlignCenterIcon,
-	TextAlignEndIcon,
-	TextAlignJustifyIcon,
-	TextAlignStartIcon,
-	UnderlineIcon,
-	UndoIcon
-} from 'lucide-react';
+import { BoldIcon, ItalicIcon, ListIcon, ListOrderedIcon, RedoIcon, UnderlineIcon, UndoIcon } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 function HeadingToolbarPlugin() {
@@ -88,6 +71,8 @@ export default function ToolbarPlugin() {
 	const [isBold, setIsBold] = useState(false);
 	const [isItalic, setIsItalic] = useState(false);
 	const [isUnderline, setIsUnderline] = useState(false);
+	const [isBullet, setIsBullet] = useState(false);
+	const [isNumbered, setIsNumbered] = useState(false);
 
 	const $updateToolbar = useCallback(() => {
 		const selection = $getSelection();
@@ -96,6 +81,19 @@ export default function ToolbarPlugin() {
 			setIsBold(selection.hasFormat('bold'));
 			setIsItalic(selection.hasFormat('italic'));
 			setIsUnderline(selection.hasFormat('underline'));
+
+			// Update block type for lists
+			const anchorNode = selection.anchor.getNode();
+			const topLevelElement = anchorNode.getTopLevelElementOrThrow();
+			if ($isListNode(topLevelElement)) {
+				const listNode = topLevelElement as ListNode;
+				const listType = listNode.getListType();
+				setIsBullet(listType === 'bullet');
+				setIsNumbered(listType === 'number');
+			} else {
+				setIsBullet(false);
+				setIsNumbered(false);
+			}
 		}
 	}, []);
 
@@ -219,44 +217,32 @@ export default function ToolbarPlugin() {
 				size='sm'
 				variant='flat'
 				onPress={() => {
-					editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
+					editor.dispatchCommand(isBullet ? REMOVE_LIST_COMMAND : INSERT_UNORDERED_LIST_COMMAND, undefined);
 				}}
-				aria-label='Left Align'
+				className={`toolbar-item spaced ${
+					isBullet
+						? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-200 border border-primary-400'
+						: 'hover:bg-primary-50 dark:hover:bg-primary-800'
+				}`}
+				aria-label='Bullet List'
 			>
-				<TextAlignStartIcon size={16} />
+				<ListIcon size={16} />
 			</Button>
 			<Button
 				isIconOnly
 				size='sm'
 				variant='flat'
 				onPress={() => {
-					editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
+					editor.dispatchCommand(isNumbered ? REMOVE_LIST_COMMAND : INSERT_ORDERED_LIST_COMMAND, undefined);
 				}}
-				aria-label='Center Align'
+				className={`toolbar-item spaced ${
+					isNumbered
+						? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-200 border border-primary-400'
+						: 'hover:bg-primary-50 dark:hover:bg-primary-800'
+				}`}
+				aria-label='Numbered List'
 			>
-				<TextAlignCenterIcon size={16} />
-			</Button>
-			<Button
-				isIconOnly
-				size='sm'
-				variant='flat'
-				onPress={() => {
-					editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
-				}}
-				aria-label='Right Align'
-			>
-				<TextAlignEndIcon size={16} />
-			</Button>
-			<Button
-				isIconOnly
-				size='sm'
-				variant='flat'
-				onPress={() => {
-					editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
-				}}
-				aria-label='Justify Align'
-			>
-				<TextAlignJustifyIcon size={16} />
+				<ListOrderedIcon size={16} />
 			</Button>
 		</div>
 	);

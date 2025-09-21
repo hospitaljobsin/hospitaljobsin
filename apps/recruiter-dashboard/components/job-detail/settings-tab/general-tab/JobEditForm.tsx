@@ -1,19 +1,21 @@
-"use client";
-import type { JobEditFormFragment$key } from "@/__generated__/JobEditFormFragment.graphql";
-import type { JobEditFormMutation } from "@/__generated__/JobEditFormMutation.graphql";
-import { ChipsInput } from "@/components/forms/ChipsInput";
-import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
-import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
-import { useNavigationGuard } from "@/lib/hooks/useNavigationGuard";
-import links from "@/lib/links";
-import { useRouter } from "@bprogress/next";
+'use client';
+import type { JobEditFormFragment$key } from '@/__generated__/JobEditFormFragment.graphql';
+import type { JobEditFormMutation } from '@/__generated__/JobEditFormMutation.graphql';
+import { ChipsInput } from '@/components/forms/ChipsInput';
+import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
+import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
+import { useNavigationGuard } from '@/lib/hooks/useNavigationGuard';
+import links from '@/lib/links';
+import { useRouter } from '@bprogress/next';
 import {
 	Accordion,
 	AccordionItem,
+	addToast,
 	Button,
 	Card,
 	CardBody,
 	CardFooter,
+	cn,
 	DatePicker,
 	Input,
 	Kbd,
@@ -29,26 +31,20 @@ import {
 	Select,
 	SelectItem,
 	Switch,
-	addToast,
-	cn,
-	useDisclosure,
-} from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-	CalendarDateTime,
-	parseAbsoluteToLocal,
-	toCalendarDateTime,
-} from "@internationalized/date";
-import type { Key } from "@react-types/shared";
-import { countries } from "countries-list";
-import { BriefcaseBusiness, IndianRupee, TimerIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import type { SubmitHandler } from "react-hook-form";
-import { Controller, useForm } from "react-hook-form";
-import { useFragment, useMutation } from "react-relay";
-import { graphql } from "relay-runtime";
-import { z } from "zod";
-import CancelEditJobModal from "./CancelEditJobModal";
+	useDisclosure
+} from '@heroui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CalendarDateTime, parseAbsoluteToLocal, toCalendarDateTime } from '@internationalized/date';
+import type { Key } from '@react-types/shared';
+import { countries } from 'countries-list';
+import { BriefcaseBusiness, IndianRupee, TimerIcon } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import type { SubmitHandler } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
+import { useFragment, useMutation } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { z } from 'zod';
+import CancelEditJobModal from './CancelEditJobModal';
 
 const JobEditFormFragment = graphql`
   fragment JobEditFormFragment on Job {
@@ -155,62 +151,51 @@ mutation JobEditFormMutation(
 
 const formSchema = z
 	.object({
-		title: z.string().min(1, "This field is required").max(75),
-		description: z.string().min(1, "This field is required").max(4000),
+		title: z.string().min(1, 'This field is required').max(75),
+		description: z.string().min(1, 'This field is required').max(4000),
 		vacancies: z.number().nonnegative().nullable(),
 		skills: z.array(z.object({ value: z.string() })),
 		location: z.string().optional(),
-		applicantLocations: z.array(z.string().min(1, "This field is required")),
+		applicantLocations: z.array(z.string().min(1, 'This field is required')),
 		minSalary: z.number().positive().nullable().optional(),
 		maxSalary: z.number().positive().nullable().optional(),
 		minExperience: z.number().nonnegative().nullable().optional(),
 		maxExperience: z.number().positive().nullable().optional(),
 		expiresAt: z
-			.custom<CalendarDateTime>((data) => {
+			.custom<CalendarDateTime>(data => {
 				console.log(data);
 				console.log(typeof data, data instanceof CalendarDateTime);
 				return data instanceof CalendarDateTime;
 			})
 			.nullable(),
-		jobType: z
-			.enum([
-				"CONTRACT",
-				"FULL_TIME",
-				"INTERNSHIP",
-				"PART_TIME",
-				"LOCUM",
-				"UNSPECIFIED",
-			])
-			.nullable(),
-		workMode: z.enum(["HYBRID", "OFFICE", "REMOTE", "UNSPECIFIED"]).nullable(),
-		isSalaryNegotiable: z.boolean(),
+		jobType: z.enum(['CONTRACT', 'FULL_TIME', 'INTERNSHIP', 'PART_TIME', 'LOCUM', 'UNSPECIFIED']).nullable(),
+		workMode: z.enum(['HYBRID', 'OFFICE', 'REMOTE', 'UNSPECIFIED']).nullable(),
+		isSalaryNegotiable: z.boolean()
 	})
 	.refine(
-		(data) => {
+		data => {
 			// If work mode is REMOTE, applicantLocations must have at least one non-empty location
-			if (data.workMode === "REMOTE") {
-				return data.applicantLocations.some(
-					(location) => location.trim().length > 0,
-				);
+			if (data.workMode === 'REMOTE') {
+				return data.applicantLocations.some(location => location.trim().length > 0);
 			}
 			return true;
 		},
 		{
-			message: "At least one eligible country is required for remote jobs",
-			path: ["applicantLocations"],
-		},
+			message: 'At least one eligible country is required for remote jobs',
+			path: ['applicantLocations']
+		}
 	)
 	.refine(
-		(data) => {
-			if (data.workMode !== "REMOTE" && !data.location) {
+		data => {
+			if (data.workMode !== 'REMOTE' && !data.location) {
 				return false;
 			}
 			return true;
 		},
 		{
-			message: "Location is required",
-			path: ["location"],
-		},
+			message: 'Location is required',
+			path: ['location']
+		}
 	);
 
 type Props = {
@@ -218,14 +203,8 @@ type Props = {
 };
 
 // Helper types for jobType and workMode
-type JobType =
-	| "CONTRACT"
-	| "FULL_TIME"
-	| "INTERNSHIP"
-	| "PART_TIME"
-	| "LOCUM"
-	| "UNSPECIFIED";
-type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "UNSPECIFIED";
+type JobType = 'CONTRACT' | 'FULL_TIME' | 'INTERNSHIP' | 'PART_TIME' | 'LOCUM' | 'UNSPECIFIED';
+type WorkMode = 'HYBRID' | 'OFFICE' | 'REMOTE' | 'UNSPECIFIED';
 
 export default function JobEditForm({ rootQuery }: Props) {
 	const router = useRouter();
@@ -234,8 +213,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 
 	const jobData = useFragment(JobEditFormFragment, rootQuery);
 
-	const [commitMutation, isMutationInFlight] =
-		useMutation<JobEditFormMutation>(UpdateJobMutation);
+	const [commitMutation, isMutationInFlight] = useMutation<JobEditFormMutation>(UpdateJobMutation);
 
 	const {
 		control,
@@ -244,44 +222,37 @@ export default function JobEditForm({ rootQuery }: Props) {
 		watch,
 		reset,
 		setError,
-		register,
+		register
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			title: jobData.title ?? "",
-			description: jobData.description ?? "",
+			title: jobData.title ?? '',
+			description: jobData.description ?? '',
 			vacancies: jobData.vacancies ?? null,
 			skills:
-				jobData.skills?.map((skill) => ({
-					value: skill,
+				jobData.skills?.map(skill => ({
+					value: skill
 				})) ?? [],
 			location: jobData.location || undefined,
-			applicantLocations: jobData.applicantLocations.map(
-				(location) => location,
-			),
+			applicantLocations: jobData.applicantLocations.map(location => location),
 			minSalary: jobData.minSalary ?? null,
 			maxSalary: jobData.maxSalary ?? null,
 			minExperience: jobData.minExperience ?? null,
 			maxExperience: jobData.maxExperience ?? null,
 			expiresAt: jobData.expiresAt ?? null,
-			jobType: jobData.type === null ? "UNSPECIFIED" : jobData.type,
-			workMode: jobData.workMode === null ? "UNSPECIFIED" : jobData.workMode,
-			isSalaryNegotiable: jobData.isSalaryNegotiable ?? false,
-		},
+			jobType: jobData.type === null ? 'UNSPECIFIED' : jobData.type,
+			workMode: jobData.workMode === null ? 'UNSPECIFIED' : jobData.workMode,
+			isSalaryNegotiable: jobData.isSalaryNegotiable ?? false
+		}
 	});
 
 	useNavigationGuard({
 		enabled: () => isDirty && !isNavigatingAfterUpdate.current,
-		confirm: () =>
-			window.confirm(
-				"You have unsaved changes. Are you sure you want to leave?",
-			),
+		confirm: () => window.confirm('You have unsaved changes. Are you sure you want to leave?')
 	});
 
 	// Track which accordions should be open
-	const [accordionSelectedKeys, setAccordionSelectedKeys] = useState<
-		Iterable<Key>
-	>(new Set([]));
+	const [accordionSelectedKeys, setAccordionSelectedKeys] = useState<Iterable<Key>>(new Set([]));
 
 	// Update accordions when errors change
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -289,32 +260,23 @@ export default function JobEditForm({ rootQuery }: Props) {
 		const newOpenAccordions = new Set<Key>([...accordionSelectedKeys]);
 
 		if (errors.location) {
-			newOpenAccordions.add("address");
+			newOpenAccordions.add('address');
 		}
 		if (errors.minSalary || errors.maxSalary) {
-			newOpenAccordions.add("salary-range");
+			newOpenAccordions.add('salary-range');
 		}
 		if (errors.minExperience || errors.maxExperience) {
-			newOpenAccordions.add("experience-range");
+			newOpenAccordions.add('experience-range');
 		}
 		if (errors.expiresAt) {
-			newOpenAccordions.add("expires-at");
+			newOpenAccordions.add('expires-at');
 		}
 
 		setAccordionSelectedKeys(newOpenAccordions);
-	}, [
-		errors.location,
-		errors.minSalary,
-		errors.maxSalary,
-		errors.minExperience,
-		errors.maxExperience,
-		errors.expiresAt,
-	]);
+	}, [errors.location, errors.minSalary, errors.maxSalary, errors.minExperience, errors.maxExperience, errors.expiresAt]);
 
 	const [showVacancyZeroModal, setShowVacancyZeroModal] = useState(false);
-	const [pendingFormData, setPendingFormData] = useState<z.infer<
-		typeof formSchema
-	> | null>(null);
+	const [pendingFormData, setPendingFormData] = useState<z.infer<typeof formSchema> | null>(null);
 
 	function handleCancel() {
 		if (isDirty) {
@@ -332,74 +294,59 @@ export default function JobEditForm({ rootQuery }: Props) {
 				title: formData.title,
 				description: formData.description,
 				vacancies: formData.vacancies ?? undefined,
-				skills: formData.skills.flatMap((skill) => skill.value),
-				location:
-					formData.workMode === "REMOTE" ? undefined : formData.location,
-				applicantLocations:
-					formData.workMode === "REMOTE" ? formData.applicantLocations : [],
+				skills: formData.skills.flatMap(skill => skill.value),
+				location: formData.workMode === 'REMOTE' ? undefined : formData.location,
+				applicantLocations: formData.workMode === 'REMOTE' ? formData.applicantLocations : [],
 				minSalary: formData.minSalary,
 				maxSalary: formData.maxSalary,
 				minExperience: formData.minExperience,
 				maxExperience: formData.maxExperience,
 				expiresAt: formData.expiresAt ? formData.expiresAt.toString() : null,
-				jobType: formData.jobType === "UNSPECIFIED" ? null : formData.jobType,
-				workMode:
-					formData.workMode === "UNSPECIFIED" ? null : formData.workMode,
-				isSalaryNegotiable: !!formData.isSalaryNegotiable,
+				jobType: formData.jobType === 'UNSPECIFIED' ? null : formData.jobType,
+				workMode: formData.workMode === 'UNSPECIFIED' ? null : formData.workMode,
+				isSalaryNegotiable: !!formData.isSalaryNegotiable
 			},
 			onCompleted(response) {
-				if (response.updateJob.__typename === "JobNotFoundError") {
+				if (response.updateJob.__typename === 'JobNotFoundError') {
 					addToast({
-						color: "danger",
-						title: "An unexpected error occurred. Please try again.",
+						color: 'danger',
+						title: 'An unexpected error occurred. Please try again.'
 					});
-				} else if (response.updateJob.__typename === "InvalidLocationError") {
-					setError("location", {
+				} else if (response.updateJob.__typename === 'InvalidLocationError') {
+					setError('location', {
 						message: response.updateJob.message,
-						type: "manual",
+						type: 'manual'
 					});
-				} else if (
-					response.updateJob.__typename === "InvalidApplicantLocationsError"
-				) {
-					setError("applicantLocations", {
+				} else if (response.updateJob.__typename === 'InvalidApplicantLocationsError') {
+					setError('applicantLocations', {
 						message: response.updateJob.message,
-						type: "manual",
+						type: 'manual'
 					});
-				} else if (response.updateJob.__typename === "UpdateJobSuccess") {
+				} else if (response.updateJob.__typename === 'UpdateJobSuccess') {
 					// handle success
 
 					reset({
 						title: response.updateJob.job.title,
-						description: response.updateJob.job.description ?? "",
+						description: response.updateJob.job.description ?? '',
 						vacancies: response.updateJob.job.vacancies ?? null,
-						skills: response.updateJob.job.skills.map((skill) => ({
-							value: skill,
+						skills: response.updateJob.job.skills.map(skill => ({
+							value: skill
 						})),
-						location: response.updateJob.job.location ?? "",
-						applicantLocations: response.updateJob.job.applicantLocations.map(
-							(location) => location,
-						),
+						location: response.updateJob.job.location ?? '',
+						applicantLocations: response.updateJob.job.applicantLocations.map(location => location),
 						minSalary: response.updateJob.job.minSalary,
 						maxSalary: response.updateJob.job.maxSalary,
 						minExperience: response.updateJob.job.minExperience,
 						maxExperience: response.updateJob.job.maxExperience,
-						expiresAt: response.updateJob.job.expiresAt
-							? toCalendarDateTime(
-									parseAbsoluteToLocal(response.updateJob.job.expiresAt),
-								)
-							: null,
-						jobType: response.updateJob.job.type
-							? (response.updateJob.job.type as JobType)
-							: "UNSPECIFIED",
-						workMode: response.updateJob.job.workMode
-							? (response.updateJob.job.workMode as WorkMode)
-							: "UNSPECIFIED",
-						isSalaryNegotiable: response.updateJob.job.isSalaryNegotiable,
+						expiresAt: response.updateJob.job.expiresAt ? toCalendarDateTime(parseAbsoluteToLocal(response.updateJob.job.expiresAt)) : null,
+						jobType: response.updateJob.job.type ? (response.updateJob.job.type as JobType) : 'UNSPECIFIED',
+						workMode: response.updateJob.job.workMode ? (response.updateJob.job.workMode as WorkMode) : 'UNSPECIFIED',
+						isSalaryNegotiable: response.updateJob.job.isSalaryNegotiable
 					});
 
 					addToast({
-						color: "success",
-						title: "Job updated successfully.",
+						color: 'success',
+						title: 'Job updated successfully.'
 					});
 
 					if (response.updateJob.job.slug !== jobData.slug) {
@@ -407,37 +354,27 @@ export default function JobEditForm({ rootQuery }: Props) {
 						isNavigatingAfterUpdate.current = true;
 						router.push(links.jobDetailSettings(response.updateJob.job.slug));
 					}
-				} else if (
-					response.updateJob.__typename === "OrganizationAuthorizationError"
-				) {
+				} else if (response.updateJob.__typename === 'OrganizationAuthorizationError') {
 					addToast({
-						color: "danger",
-						title: "You are not authorized to perform this action.",
+						color: 'danger',
+						title: 'You are not authorized to perform this action.'
 					});
 				}
-			},
+			}
 		});
 	}
 
-	const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = (formData) => {
+	const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = formData => {
 		let hasValidationErrors = false;
-		if (
-			formData.minSalary != null &&
-			formData.maxSalary != null &&
-			formData.maxSalary < formData.minSalary
-		) {
-			setError("maxSalary", {
-				message: "Maximum salary cannot be less than minimum salary.",
+		if (formData.minSalary != null && formData.maxSalary != null && formData.maxSalary < formData.minSalary) {
+			setError('maxSalary', {
+				message: 'Maximum salary cannot be less than minimum salary.'
 			});
 			hasValidationErrors = true;
 		}
-		if (
-			formData.minExperience != null &&
-			formData.maxExperience != null &&
-			formData.maxExperience < formData.minExperience
-		) {
-			setError("maxExperience", {
-				message: "Maximum experience cannot be less than minimum experience.",
+		if (formData.minExperience != null && formData.maxExperience != null && formData.maxExperience < formData.minExperience) {
+			setError('maxExperience', {
+				message: 'Maximum experience cannot be less than minimum experience.'
 			});
 			hasValidationErrors = true;
 		}
@@ -458,51 +395,49 @@ export default function JobEditForm({ rootQuery }: Props) {
 
 	return (
 		<>
-			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full">
-				<Card shadow="none" className="p-6 gap-12 flex flex-col">
-					<CardBody className="flex flex-col gap-12 overflow-y-hidden">
+			<form onSubmit={handleSubmit(onSubmit)} className='space-y-6 w-full'>
+				<Card shadow='none' className='p-6 gap-12 flex flex-col'>
+					<CardBody className='flex flex-col gap-12 overflow-y-hidden'>
 						<Input
-							{...register("title")}
-							label="Job Title"
-							labelPlacement="outside"
-							placeholder="My Job Title"
+							{...register('title')}
+							label='Job Title'
+							labelPlacement='outside'
+							placeholder='My Job Title'
 							errorMessage={errors.title?.message}
 							isInvalid={!!errors.title}
 							isRequired
-							validationBehavior="aria"
+							validationBehavior='aria'
 						/>
 						<Controller
 							control={control}
-							name="description"
+							name='description'
 							render={({ field }) => (
-								<div className="flex flex-col gap-4 w-full">
+								<div className='flex flex-col gap-4 w-full'>
 									<h2
-										className={cn("text-small inline-flex gap-0.5", {
-											"text-danger": errors.description,
+										className={cn('text-small inline-flex gap-0.5', {
+											'text-danger': errors.description
 										})}
 									>
-										Job Description <p className="text-danger">*</p>
+										Job Description <p className='text-danger'>*</p>
 									</h2>
 									<MarkdownEditor
 										initialValue={field.value}
-										onValueChange={(value) => {
+										onValueChange={value => {
 											field.onChange(value);
 										}}
 										isInvalid={errors.description != null}
 										description={
 											errors.description ? (
-												<p className="text-tiny text-danger">
-													{errors.description.message}
-												</p>
+												<p className='text-tiny text-danger'>{errors.description.message}</p>
 											) : (
-												<p className="text-tiny text-foreground-400">
-													Markdown editing is supported.{" "}
+												<p className='text-tiny text-foreground-400'>
+													Rich text editing is supported.{' '}
 													<Link
 														isExternal
 														showAnchorIcon
-														href="https://www.markdownguide.org/getting-started/"
-														size="sm"
-														className="text-tiny"
+														href='https://www.markdownguide.org/getting-started/'
+														size='sm'
+														className='text-tiny'
 													>
 														Learn more
 													</Link>
@@ -514,42 +449,38 @@ export default function JobEditForm({ rootQuery }: Props) {
 							)}
 						/>
 
-						<ChipsInput<z.infer<typeof formSchema>, "skills">
-							name="skills"
-							label="Job Skills"
-							delimiters={[",", "Enter"]}
+						<ChipsInput<z.infer<typeof formSchema>, 'skills'>
+							name='skills'
+							label='Job Skills'
+							delimiters={[',', 'Enter']}
 							control={control}
 							chipProps={{
-								variant: "flat",
+								variant: 'flat'
 							}}
 							inputProps={{
-								placeholder: "Enter skills...",
+								placeholder: 'Enter skills...',
 								description: (
-									<p className="mt-2">
-										Separate skills with commas or Enter{" "}
-										<Kbd
-											keys={["enter"]}
-											classNames={{ base: "p-0 px-2 shadow-none" }}
-										/>
+									<p className='mt-2'>
+										Separate skills with commas or Enter <Kbd keys={['enter']} classNames={{ base: 'p-0 px-2 shadow-none' }} />
 									</p>
-								),
+								)
 							}}
 						/>
 
 						<Controller
 							control={control}
-							name="vacancies"
+							name='vacancies'
 							render={({ field }) => {
 								return (
 									<NumberInput
 										errorMessage={errors.vacancies?.message}
 										isInvalid={!!errors.vacancies}
-										label="Vacancies"
-										placeholder="Enter vacancies"
-										labelPlacement="outside"
+										label='Vacancies'
+										placeholder='Enter vacancies'
+										labelPlacement='outside'
 										minValue={0}
 										value={field.value as number | undefined}
-										onValueChange={(value) => {
+										onValueChange={value => {
 											if (Number.isNaN(value)) {
 												field.onChange(null);
 											} else {
@@ -565,27 +496,27 @@ export default function JobEditForm({ rootQuery }: Props) {
 								);
 							}}
 						/>
-						<div className="w-full flex flex-col sm:flex-row gap-12 items-start justify-start">
+						<div className='w-full flex flex-col sm:flex-row gap-12 items-start justify-start'>
 							{/* Job Type */}
 							<Controller
 								control={control}
-								name="jobType"
+								name='jobType'
 								render={({ field }) => {
 									return (
 										<RadioGroup
-											label="Select Job Type"
+											label='Select Job Type'
 											value={field.value}
 											onValueChange={field.onChange}
-											className="flex-1 w-full"
+											className='flex-1 w-full'
 											errorMessage={errors.jobType?.message}
 											isInvalid={!!errors.jobType}
 										>
-											<Radio value="UNSPECIFIED">Unspecified</Radio>
-											<Radio value="CONTRACT">Contract</Radio>
-											<Radio value="FULL_TIME">Full Time</Radio>
-											<Radio value="INTERNSHIP">Internship</Radio>
-											<Radio value="PART_TIME">Part Time</Radio>
-											<Radio value="LOCUM">Locum</Radio>
+											<Radio value='UNSPECIFIED'>Unspecified</Radio>
+											<Radio value='CONTRACT'>Contract</Radio>
+											<Radio value='FULL_TIME'>Full Time</Radio>
+											<Radio value='INTERNSHIP'>Internship</Radio>
+											<Radio value='PART_TIME'>Part Time</Radio>
+											<Radio value='LOCUM'>Locum</Radio>
 										</RadioGroup>
 									);
 								}}
@@ -593,47 +524,47 @@ export default function JobEditForm({ rootQuery }: Props) {
 							{/* Work Mode */}
 							<Controller
 								control={control}
-								name="workMode"
+								name='workMode'
 								render={({ field }) => {
 									return (
 										<RadioGroup
-											label="Select Work Mode"
+											label='Select Work Mode'
 											value={field.value}
 											onValueChange={field.onChange}
-											className="flex-1 w-full"
+											className='flex-1 w-full'
 											errorMessage={errors.workMode?.message}
 											isInvalid={!!errors.workMode}
 										>
-											<Radio value="UNSPECIFIED">Unspecified</Radio>
-											<Radio value="HYBRID">Hybrid</Radio>
-											<Radio value="OFFICE">Office</Radio>
-											<Radio value="REMOTE">Remote</Radio>
+											<Radio value='UNSPECIFIED'>Unspecified</Radio>
+											<Radio value='HYBRID'>Hybrid</Radio>
+											<Radio value='OFFICE'>Office</Radio>
+											<Radio value='REMOTE'>Remote</Radio>
 										</RadioGroup>
 									);
 								}}
 							/>
 						</div>
-						{watch("workMode") === "REMOTE" && (
+						{watch('workMode') === 'REMOTE' && (
 							<Controller
-								name="applicantLocations"
+								name='applicantLocations'
 								control={control}
 								render={({ field }) => (
 									<Select
-										label="Eligible Countries"
-										labelPlacement="outside"
-										placeholder="Select countries"
-										selectionMode="multiple"
+										label='Eligible Countries'
+										labelPlacement='outside'
+										placeholder='Select countries'
+										selectionMode='multiple'
 										selectedKeys={new Set(field.value)}
-										onSelectionChange={(keys) => {
+										onSelectionChange={keys => {
 											const selectedCountries = Array.from(keys as Set<string>);
 											field.onChange(selectedCountries);
 										}}
-										className="w-full"
+										className='w-full'
 										errorMessage={errors.applicantLocations?.message}
 										isInvalid={!!errors.applicantLocations}
 										isRequired
-										validationBehavior="aria"
-										description="Select countries where remote applicants can be located. This helps with job visibility in search results and ensures compliance with local employment laws."
+										validationBehavior='aria'
+										description='Select countries where remote applicants can be located. This helps with job visibility in search results and ensures compliance with local employment laws.'
 									>
 										{Object.entries(countries).map(([code, country]) => (
 											<SelectItem key={code}>{country.name}</SelectItem>
@@ -642,69 +573,69 @@ export default function JobEditForm({ rootQuery }: Props) {
 								)}
 							/>
 						)}
-						{watch("workMode") !== "REMOTE" && (
+						{watch('workMode') !== 'REMOTE' && (
 							<Controller
-								name="location"
+								name='location'
 								control={control}
 								render={({ field }) => (
 									<LocationAutocomplete
-										label="Job Location"
-										labelPlacement="outside"
-										placeholder="Add job location"
-										value={field.value ?? ""}
-										onChange={(value) => {
+										label='Job Location'
+										labelPlacement='outside'
+										placeholder='Add job location'
+										value={field.value ?? ''}
+										onChange={value => {
 											field.onChange(value.displayName);
 										}}
-										onValueChange={(value) => {
+										onValueChange={value => {
 											field.onChange(value);
 										}}
 										errorMessage={errors.location?.message}
 										isInvalid={!!errors.location}
 										isRequired
-										validationBehavior="aria"
+										validationBehavior='aria'
 									/>
 								)}
 							/>
 						)}
 						<Accordion
-							selectionMode="multiple"
-							variant="light"
+							selectionMode='multiple'
+							variant='light'
 							keepContentMounted
 							fullWidth
-							itemClasses={{ base: "pb-8" }}
+							itemClasses={{ base: 'pb-8' }}
 							selectedKeys={accordionSelectedKeys}
-							onSelectionChange={(keys) => {
+							onSelectionChange={keys => {
 								setAccordionSelectedKeys(keys);
 							}}
 						>
 							<AccordionItem
-								key="salary-range"
-								aria-label="Salary range"
-								title="Salary range"
+								key='salary-range'
+								aria-label='Salary range'
+								title='Salary range'
 								startContent={<IndianRupee size={20} />}
 								classNames={{
-									content: "flex flex-col gap-6",
+									content: 'flex flex-col gap-6'
 								}}
 							>
-								<div className="w-full flex gap-6 items-start">
+								<div className='w-full flex gap-6 items-start'>
 									<Controller
 										control={control}
-										name="minSalary"
+										name='minSalary'
 										render={({ field }) => {
 											return (
 												<NumberInput
 													errorMessage={errors.minSalary?.message}
 													isInvalid={!!errors.minSalary}
-													label="Minimum Salary"
-													placeholder="Enter minimum salary"
+													label='Minimum Salary'
+													placeholder='Enter minimum salary'
 													formatOptions={{
-														style: "currency",
-														currency: "INR",
-														currencyDisplay: "code",
-														currencySign: "accounting",
+														style: 'currency',
+														currency: 'INR',
+														currencyDisplay: 'code',
+														currencySign: 'accounting'
 													}}
 													value={field.value as number | undefined}
-													onValueChange={(value) => {
+													onValueChange={value => {
 														if (Number.isNaN(value) || value === undefined) {
 															field.onChange(null);
 														} else {
@@ -722,22 +653,22 @@ export default function JobEditForm({ rootQuery }: Props) {
 									/>
 									<Controller
 										control={control}
-										name="maxSalary"
+										name='maxSalary'
 										render={({ field }) => {
 											return (
 												<NumberInput
 													errorMessage={errors.maxSalary?.message}
 													isInvalid={!!errors.maxSalary}
-													label="Maximum Salary"
-													placeholder="Enter maximum salary"
+													label='Maximum Salary'
+													placeholder='Enter maximum salary'
 													formatOptions={{
-														style: "currency",
-														currency: "INR",
-														currencyDisplay: "code",
-														currencySign: "accounting",
+														style: 'currency',
+														currency: 'INR',
+														currencyDisplay: 'code',
+														currencySign: 'accounting'
 													}}
 													value={field.value as number | undefined}
-													onValueChange={(value) => {
+													onValueChange={value => {
 														if (Number.isNaN(value) || value === undefined) {
 															field.onChange(null);
 														} else {
@@ -756,44 +687,44 @@ export default function JobEditForm({ rootQuery }: Props) {
 								</div>
 								<Controller
 									control={control}
-									name="isSalaryNegotiable"
+									name='isSalaryNegotiable'
 									render={({ field }) => (
-										<div className="flex items-center gap-3 mt-4">
+										<div className='flex items-center gap-3 mt-4'>
 											<Switch
 												isSelected={field.value}
 												onChange={field.onChange}
-												name="isSalaryNegotiable"
-												aria-label="Salary is negotiable"
+												name='isSalaryNegotiable'
+												aria-label='Salary is negotiable'
 											/>
-											<span className="text-sm">Salary is negotiable</span>
+											<span className='text-sm'>Salary is negotiable</span>
 										</div>
 									)}
 								/>
 							</AccordionItem>
 							<AccordionItem
-								key="experience-range"
-								aria-label="Experience range"
-								title="Experience range"
+								key='experience-range'
+								aria-label='Experience range'
+								title='Experience range'
 								startContent={<BriefcaseBusiness size={20} />}
 							>
-								<div className="w-full flex gap-6 items-start">
+								<div className='w-full flex gap-6 items-start'>
 									<Controller
 										control={control}
-										name="minExperience"
+										name='minExperience'
 										render={({ field }) => {
 											return (
 												<NumberInput
 													errorMessage={errors.minExperience?.message}
 													isInvalid={!!errors.minExperience}
-													label="Minimum Experience"
-													placeholder="Enter minimum experience"
+													label='Minimum Experience'
+													placeholder='Enter minimum experience'
 													formatOptions={{
-														style: "unit",
-														unit: "year",
-														unitDisplay: "long",
+														style: 'unit',
+														unit: 'year',
+														unitDisplay: 'long'
 													}}
 													value={field.value as number | undefined}
-													onValueChange={(value) => {
+													onValueChange={value => {
 														if (Number.isNaN(value) || value === undefined) {
 															field.onChange(null);
 														} else {
@@ -810,21 +741,21 @@ export default function JobEditForm({ rootQuery }: Props) {
 									/>
 									<Controller
 										control={control}
-										name="maxExperience"
+										name='maxExperience'
 										render={({ field }) => {
 											return (
 												<NumberInput
 													errorMessage={errors.maxExperience?.message}
 													isInvalid={!!errors.maxExperience}
-													label="Maximum Experience"
-													placeholder="Enter maximum experience"
+													label='Maximum Experience'
+													placeholder='Enter maximum experience'
 													formatOptions={{
-														style: "unit",
-														unit: "year",
-														unitDisplay: "long",
+														style: 'unit',
+														unit: 'year',
+														unitDisplay: 'long'
 													}}
 													value={field.value as number | undefined}
-													onValueChange={(value) => {
+													onValueChange={value => {
 														if (Number.isNaN(value) || value === undefined) {
 															field.onChange(null);
 														} else {
@@ -842,14 +773,14 @@ export default function JobEditForm({ rootQuery }: Props) {
 								</div>
 							</AccordionItem>
 							<AccordionItem
-								key="expires-at"
-								aria-label="Posting expires at"
-								title="Posting expires at"
+								key='expires-at'
+								aria-label='Posting expires at'
+								title='Posting expires at'
 								startContent={<TimerIcon size={20} />}
 							>
 								<Controller
 									control={control}
-									name="expiresAt"
+									name='expiresAt'
 									render={({ field }) => {
 										return (
 											<DatePicker
@@ -867,16 +798,11 @@ export default function JobEditForm({ rootQuery }: Props) {
 							</AccordionItem>
 						</Accordion>
 					</CardBody>
-					<CardFooter className="w-full justify-end gap-6">
-						<Button type="button" variant="bordered" onPress={handleCancel}>
+					<CardFooter className='w-full justify-end gap-6'>
+						<Button type='button' variant='bordered' onPress={handleCancel}>
 							Cancel
 						</Button>
-						<Button
-							type="submit"
-							color="primary"
-							isLoading={isSubmitting || isMutationInFlight}
-							isDisabled={!isDirty}
-						>
+						<Button type='submit' color='primary' isLoading={isSubmitting || isMutationInFlight} isDisabled={!isDirty}>
 							Update Job
 						</Button>
 					</CardFooter>
@@ -890,29 +816,22 @@ export default function JobEditForm({ rootQuery }: Props) {
 				}}
 			/>
 			{/* Vacancy Zero Modal */}
-			<Modal
-				isOpen={showVacancyZeroModal}
-				onOpenChange={setShowVacancyZeroModal}
-				placement="center"
-				hideCloseButton
-			>
+			<Modal isOpen={showVacancyZeroModal} onOpenChange={setShowVacancyZeroModal} placement='center' hideCloseButton>
 				<ModalContent>
-					{(onClose) => (
+					{onClose => (
 						<>
 							<ModalHeader>Unpublish Warning</ModalHeader>
 							<ModalBody>
 								<p>
-									This job will automatically be unpublished as vacancies are
-									zero.
-									<br className="my-2" />
-									To keep this job published, either clear the field or add at
-									least 1 vacancy before updating the job.
+									This job will automatically be unpublished as vacancies are zero.
+									<br className='my-2' />
+									To keep this job published, either clear the field or add at least 1 vacancy before updating the job.
 								</p>
 							</ModalBody>
 							<ModalFooter>
 								<Button
-									color="default"
-									variant="flat"
+									color='default'
+									variant='flat'
 									onPress={() => {
 										setShowVacancyZeroModal(false);
 										onClose();
@@ -921,7 +840,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 									Cancel
 								</Button>
 								<Button
-									color="danger"
+									color='danger'
 									onPress={() => {
 										setShowVacancyZeroModal(false);
 										onClose();
