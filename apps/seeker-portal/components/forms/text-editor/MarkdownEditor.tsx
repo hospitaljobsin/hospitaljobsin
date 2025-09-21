@@ -142,7 +142,7 @@ export default function MarkdownEditor({
 						<RichTextPlugin
 							contentEditable={
 								<ContentEditable
-									className={cn('min-h-32 p-2 border rounded-md', {
+									className={cn('min-h-32 p-2 border rounded-md focus:outline-none', {
 										'border-danger': isInvalid,
 										'border-gray-300': !isInvalid
 									})}
