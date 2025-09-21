@@ -50,6 +50,7 @@ def markdown_to_clean_html(md_text: str) -> str:
         "code",
         "em",
         "i",
+        "u",
         "li",
         "ol",
         "strong",

@@ -321,7 +321,7 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 										errors.description ? (
 											<p className='text-tiny text-danger'>{errors.description.message}</p>
 										) : (
-											<p className='text-tiny text-foreground-400'>Markdown editing is supported.</p>
+											<p className='text-tiny text-foreground-400'>Rich text editing is supported.</p>
 										)
 									}
 								/>

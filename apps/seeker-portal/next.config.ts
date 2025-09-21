@@ -1,70 +1,71 @@
-import createMDX from "@next/mdx";
-import { withSentryConfig } from "@sentry/nextjs";
-import { createJiti } from "jiti";
-import type { NextConfig } from "next";
-import { fileURLToPath } from "node:url";
-import { env } from "./lib/env/client";
+import createMDX from '@next/mdx';
+import { withSentryConfig } from '@sentry/nextjs';
+import { createJiti } from 'jiti';
+import type { NextConfig } from 'next';
+import { fileURLToPath } from 'node:url';
+import { env } from './lib/env/client';
 
 const jiti = createJiti(fileURLToPath(import.meta.url));
 
 // Import env here to validate during build. Using jiti we can import .ts files :)
-jiti.esmResolve("./lib/env/client");
+jiti.esmResolve('./lib/env/client');
 
 const nextConfig: NextConfig = {
 	/* config options here */
 	logging: {
 		fetches: {
-			fullUrl: true,
-		},
+			fullUrl: true
+		}
 	},
+
 	typedRoutes: true,
 	poweredByHeader: false,
-	pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+	pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
 	experimental: {
 		mdxRs: true,
-		reactCompiler: true,
+		reactCompiler: true
 	},
 	reactStrictMode: true,
 	compiler: {
-		removeConsole: process.env.NODE_ENV === "production",
+		removeConsole: process.env.NODE_ENV === 'production',
 		relay: {
-			src: "./",
-			language: "typescript",
-			artifactDirectory: "__generated__",
-		},
+			src: './',
+			language: 'typescript',
+			artifactDirectory: '__generated__'
+		}
 	},
-	allowedDevOrigins: ["localtest.me"],
+	allowedDevOrigins: ['localtest.me'],
 	typescript: {
-		ignoreBuildErrors: true,
+		ignoreBuildErrors: true
 	},
 	eslint: {
-		ignoreDuringBuilds: true,
+		ignoreDuringBuilds: true
 	},
 	images: {
-		loader: "default",
+		loader: 'default',
 		unoptimized: false,
-		formats: ["image/webp", "image/avif"],
+		formats: ['image/webp', 'image/avif'],
 		deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
 		imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
 		minimumCacheTTL: 86400, // 1 day (more reasonable for user content)
 		dangerouslyAllowSVG: true,
-		contentDispositionType: "attachment",
+		contentDispositionType: 'attachment',
 		remotePatterns: [
 			{
-				protocol: "https",
-				hostname: "**.amazonaws.com",
+				protocol: 'https',
+				hostname: '**.amazonaws.com'
 			},
 			{
-				protocol: "https",
-				hostname: "**.s3.*.amazonaws.com",
+				protocol: 'https',
+				hostname: '**.s3.*.amazonaws.com'
 			},
 			{
-				protocol: "https",
-				hostname: "**.s3.amazonaws.com",
+				protocol: 'https',
+				hostname: '**.s3.amazonaws.com'
 			},
 			{
-				protocol: "https",
-				hostname: "api.dicebear.com",
+				protocol: 'https',
+				hostname: 'api.dicebear.com'
 			},
 			// Add your specific S3 bucket domain here
 			// {
@@ -72,113 +73,118 @@ const nextConfig: NextConfig = {
 			//   hostname: "your-bucket-name.s3.us-east-1.amazonaws.com",
 			// },
 			{
-				protocol: "https",
-				hostname: env.NEXT_PUBLIC_ROOT_DOMAIN,
+				protocol: 'https',
+				hostname: env.NEXT_PUBLIC_ROOT_DOMAIN
 			},
-			...(env.NEXT_PUBLIC_ENVIRONMENT === "development"
+			...(env.NEXT_PUBLIC_ENVIRONMENT === 'development'
 				? [
 						{
-							protocol: "http" as const,
-							hostname: "localhost",
-							port: "9000",
-						},
+							protocol: 'http' as const,
+							hostname: 'localhost',
+							port: '9000'
+						}
 					]
-				: []),
-		],
+				: [])
+		]
+	},
+	turbopack: {
+		resolveAlias: {
+			lexical: 'lexical/Lexical.dev.mjs'
+		}
 	},
 	async rewrites() {
 		return [
 			{
-				source: "/search/jobs-in-:location",
-				destination: "/search/jobs-in/:location?via_rewrite=true",
+				source: '/search/jobs-in-:location',
+				destination: '/search/jobs-in/:location?via_rewrite=true'
 			},
 			{
-				source: "/search/:speciality-jobs",
-				destination: "/search/:speciality/jobs?via_rewrite=true",
+				source: '/search/:speciality-jobs',
+				destination: '/search/:speciality/jobs?via_rewrite=true'
 			},
 			{
-				source: "/search/:speciality-jobs-in-:location",
-				destination: "/search/:speciality/jobs-in/:location?via_rewrite=true",
-			},
+				source: '/search/:speciality-jobs-in-:location',
+				destination: '/search/:speciality/jobs-in/:location?via_rewrite=true'
+			}
 		];
 	},
 	async redirects() {
 		return [
 			{
-				source: "/search/jobs-in/:location",
+				source: '/search/jobs-in/:location',
 				has: [
 					{
-						type: "query",
-						key: "via_rewrite",
-						value: undefined,
-					},
+						type: 'query',
+						key: 'via_rewrite',
+						value: undefined
+					}
 				],
-				destination: "/search/jobs-in-:location",
-				permanent: false,
+				destination: '/search/jobs-in-:location',
+				permanent: false
 			},
 			{
-				source: "/search/:speciality/jobs",
+				source: '/search/:speciality/jobs',
 				has: [
 					{
-						type: "query",
-						key: "via_rewrite",
-						value: undefined,
-					},
+						type: 'query',
+						key: 'via_rewrite',
+						value: undefined
+					}
 				],
-				destination: "/search/:speciality-jobs",
-				permanent: false,
+				destination: '/search/:speciality-jobs',
+				permanent: false
 			},
 			{
-				source: "/search/:speciality/jobs-in/:location",
+				source: '/search/:speciality/jobs-in/:location',
 				has: [
 					{
-						type: "query",
-						key: "via_rewrite",
-						value: undefined,
-					},
+						type: 'query',
+						key: 'via_rewrite',
+						value: undefined
+					}
 				],
-				destination: "/search/:speciality-jobs-in-:location",
-				permanent: false,
-			},
+				destination: '/search/:speciality-jobs-in-:location',
+				permanent: false
+			}
 		];
 	},
 	async headers() {
 		return [
 			{
-				source: "/(.*)",
+				source: '/(.*)',
 				headers: [
 					{
-						key: "X-Content-Type-Options",
-						value: "nosniff",
+						key: 'X-Content-Type-Options',
+						value: 'nosniff'
 					},
 					{
-						key: "X-Frame-Options",
-						value: "DENY",
+						key: 'X-Frame-Options',
+						value: 'DENY'
 					},
 					{
-						key: "Referrer-Policy",
-						value: "strict-origin-when-cross-origin",
-					},
-				],
+						key: 'Referrer-Policy',
+						value: 'strict-origin-when-cross-origin'
+					}
+				]
 			},
 			{
-				source: "/_next/image(.*)",
+				source: '/_next/image(.*)',
 				headers: [
 					{
-						key: "Cache-Control",
-						value: "public, max-age=604800", // 7 days for user-generated images
-					},
-				],
+						key: 'Cache-Control',
+						value: 'public, max-age=604800' // 7 days for user-generated images
+					}
+				]
 			},
 			{
-				source: "/_next/static/media/(.*)",
+				source: '/_next/static/media/(.*)',
 				headers: [
 					{
-						key: "Cache-Control",
-						value: "public, max-age=31536000, immutable",
-					},
-				],
-			},
+						key: 'Cache-Control',
+						value: 'public, max-age=31536000, immutable'
+					}
+				]
+			}
 			// {
 			// 	source: "/sw.js",
 			// 	headers: [
@@ -197,15 +203,15 @@ const nextConfig: NextConfig = {
 			// 	],
 			// },
 		];
-	},
+	}
 };
 
 const withMDX = createMDX({
 	// Add markdown plugins here, as desired
 });
 
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-	enabled: process.env.ANALYZE === "true",
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+	enabled: process.env.ANALYZE === 'true'
 });
 
 // Merge MDX config with Next.js config
@@ -239,6 +245,6 @@ export default withBundleAnalyzer(
 		// See the following for more information:
 		// https://docs.sentry.io/product/crons/
 		// https://vercel.com/docs/cron-jobs
-		automaticVercelMonitors: true,
-	}),
+		automaticVercelMonitors: true
+	})
 );
