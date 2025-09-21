@@ -124,7 +124,7 @@ class OrganizationInvite(Document):
     organization: Link[Organization]
     created_by: Link[Account]
     token_hash: Annotated[str, Indexed(unique=True)]
-    member_role: OrganizationMemberRoleType
+    member_role: OrganizationMemberRoleType = "member"
     status: Literal["pending", "accepted", "declined"]
     is_hidden: bool = False
     expires_at: datetime | None = None
