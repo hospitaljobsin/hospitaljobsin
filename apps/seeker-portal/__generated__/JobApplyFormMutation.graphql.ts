@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<1a443b891690a3fc81b767f89ce8c5c0>>
- * @relayHash e2406c13f6b4add2fd46aefcbaf72920
+ * @generated SignedSource<<26d5e9174c43cce70015334b35641899>>
+ * @relayHash 7649be83004956cd3b268ef700832299
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID e2406c13f6b4add2fd46aefcbaf72920
+// @relayRequestID 7649be83004956cd3b268ef700832299
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -209,10 +209,17 @@ v21 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "logoUrl",
+  "name": "descriptionCleaned",
   "storageKey": null
 },
 v22 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "logoUrl",
+  "storageKey": null
+},
+v23 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -226,7 +233,7 @@ v22 = {
   "type": "Verified",
   "abstractKey": null
 },
-v23 = {
+v24 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -240,7 +247,7 @@ v23 = {
   "type": "Rejected",
   "abstractKey": null
 },
-v24 = {
+v25 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -254,7 +261,7 @@ v24 = {
   "type": "Pending",
   "abstractKey": null
 },
-v25 = {
+v26 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -268,7 +275,7 @@ v25 = {
   "type": "NotRequested",
   "abstractKey": null
 },
-v26 = {
+v27 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -343,8 +350,8 @@ return {
                             "selections": [
                               (v5/*: any*/),
                               (v20/*: any*/),
-                              (v7/*: any*/),
                               (v21/*: any*/),
+                              (v22/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,
@@ -355,13 +362,13 @@ return {
                                 "selections": [
                                   (v3/*: any*/),
                                   {
-                                    "fragment": (v22/*: any*/),
+                                    "fragment": (v23/*: any*/),
                                     "kind": "AliasedInlineFragmentSpread",
                                     "name": "verified"
                                   },
-                                  (v23/*: any*/),
                                   (v24/*: any*/),
-                                  (v25/*: any*/)
+                                  (v25/*: any*/),
+                                  (v26/*: any*/)
                                 ],
                                 "storageKey": null
                               }
@@ -452,8 +459,8 @@ return {
                         "selections": [
                           (v5/*: any*/),
                           (v20/*: any*/),
-                          (v7/*: any*/),
                           (v21/*: any*/),
+                          (v22/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -463,22 +470,22 @@ return {
                             "plural": false,
                             "selections": [
                               (v3/*: any*/),
-                              (v22/*: any*/),
                               (v23/*: any*/),
                               (v24/*: any*/),
-                              (v25/*: any*/)
+                              (v25/*: any*/),
+                              (v26/*: any*/)
                             ],
                             "storageKey": null
                           },
-                          (v26/*: any*/)
+                          (v27/*: any*/)
                         ],
                         "storageKey": null
                       },
-                      (v26/*: any*/)
+                      (v27/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v26/*: any*/)
+                  (v27/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -492,7 +499,7 @@ return {
     ]
   },
   "params": {
-    "id": "e2406c13f6b4add2fd46aefcbaf72920",
+    "id": "7649be83004956cd3b268ef700832299",
     "metadata": {},
     "name": "JobApplyFormMutation",
     "operationKind": "mutation",

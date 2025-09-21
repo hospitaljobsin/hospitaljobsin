@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<8c891dd4ce261c26e967fea30aaab49d>>
- * @relayHash 33b233f2256edc478987d63e84be716e
+ * @generated SignedSource<<7c3e7df85c69e5d9d1f1819d8682b66f>>
+ * @relayHash b6f62dfe27d135d53ee3962bd1282469
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 33b233f2256edc478987d63e84be716e
+// @relayRequestID b6f62dfe27d135d53ee3962bd1282469
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -185,10 +185,17 @@ v24 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "logoUrl",
+  "name": "descriptionCleaned",
   "storageKey": null
 },
 v25 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "logoUrl",
+  "storageKey": null
+},
+v26 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -202,12 +209,12 @@ v25 = {
   "type": "Verified",
   "abstractKey": null
 },
-v26 = {
-  "fragment": (v25/*: any*/),
+v27 = {
+  "fragment": (v26/*: any*/),
   "kind": "AliasedInlineFragmentSpread",
   "name": "verified"
 },
-v27 = {
+v28 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -221,7 +228,7 @@ v27 = {
   "type": "Rejected",
   "abstractKey": null
 },
-v28 = {
+v29 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -235,7 +242,7 @@ v28 = {
   "type": "Pending",
   "abstractKey": null
 },
-v29 = {
+v30 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -249,7 +256,7 @@ v29 = {
   "type": "NotRequested",
   "abstractKey": null
 },
-v30 = [
+v31 = [
   {
     "kind": "Variable",
     "name": "jobSlug",
@@ -257,21 +264,21 @@ v30 = [
   },
   (v3/*: any*/)
 ],
-v31 = {
+v32 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v32 = {
+v33 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "cursor",
   "storageKey": null
 },
-v33 = {
+v34 = {
   "alias": null,
   "args": null,
   "concreteType": "PageInfo",
@@ -296,25 +303,18 @@ v33 = {
   ],
   "storageKey": null
 },
-v34 = {
+v35 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "bannerUrl",
   "storageKey": null
 },
-v35 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "website",
-  "storageKey": null
-},
 v36 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "descriptionCleaned",
+  "name": "website",
   "storageKey": null
 },
 v37 = {
@@ -394,7 +394,7 @@ v41 = [
 v42 = {
   "kind": "InlineFragment",
   "selections": [
-    (v31/*: any*/)
+    (v32/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -472,8 +472,8 @@ return {
                                         "selections": [
                                           (v8/*: any*/),
                                           (v23/*: any*/),
-                                          (v10/*: any*/),
                                           (v24/*: any*/),
+                                          (v25/*: any*/),
                                           {
                                             "alias": null,
                                             "args": null,
@@ -483,10 +483,10 @@ return {
                                             "plural": false,
                                             "selections": [
                                               (v5/*: any*/),
-                                              (v26/*: any*/),
                                               (v27/*: any*/),
                                               (v28/*: any*/),
-                                              (v29/*: any*/)
+                                              (v29/*: any*/),
+                                              (v30/*: any*/)
                                             ],
                                             "storageKey": null
                                           }
@@ -512,7 +512,7 @@ return {
                     "storageKey": null
                   }
                 ],
-                "args": (v30/*: any*/),
+                "args": (v31/*: any*/),
                 "argumentDefinitions": (v2/*: any*/)
               },
               {
@@ -539,7 +539,7 @@ return {
                           {
                             "kind": "InlineFragment",
                             "selections": [
-                              (v31/*: any*/),
+                              (v32/*: any*/),
                               {
                                 "kind": "InlineDataFragmentSpread",
                                 "name": "RelatedJobsListFragment",
@@ -568,7 +568,7 @@ return {
                                             "name": "node",
                                             "plural": false,
                                             "selections": [
-                                              (v31/*: any*/),
+                                              (v32/*: any*/),
                                               {
                                                 "kind": "InlineDataFragmentSpread",
                                                 "name": "AuxiliaryJobFragment",
@@ -603,7 +603,7 @@ return {
                                                         "passingValue": true,
                                                         "selections": [
                                                           (v23/*: any*/),
-                                                          (v24/*: any*/)
+                                                          (v25/*: any*/)
                                                         ]
                                                       },
                                                       (v8/*: any*/),
@@ -616,7 +616,7 @@ return {
                                                         "plural": false,
                                                         "selections": [
                                                           (v5/*: any*/),
-                                                          (v26/*: any*/)
+                                                          (v27/*: any*/)
                                                         ],
                                                         "storageKey": null
                                                       }
@@ -637,15 +637,15 @@ return {
                                             ],
                                             "storageKey": null
                                           },
-                                          (v32/*: any*/)
+                                          (v33/*: any*/)
                                         ],
                                         "storageKey": null
                                       },
-                                      (v33/*: any*/)
+                                      (v34/*: any*/)
                                     ],
                                     "storageKey": null
                                   },
-                                  (v31/*: any*/)
+                                  (v32/*: any*/)
                                 ],
                                 "args": null,
                                 "argumentDefinitions": [
@@ -676,7 +676,7 @@ return {
                 "storageKey": null
               }
             ],
-            "args": (v30/*: any*/),
+            "args": (v31/*: any*/),
             "argumentDefinitions": (v2/*: any*/)
           },
           {
@@ -691,11 +691,11 @@ return {
               {
                 "kind": "InlineFragment",
                 "selections": [
-                  (v34/*: any*/),
-                  (v24/*: any*/),
+                  (v35/*: any*/),
+                  (v25/*: any*/),
                   (v23/*: any*/),
                   (v13/*: any*/),
-                  (v35/*: any*/),
+                  (v36/*: any*/),
                   (v9/*: any*/),
                   {
                     "alias": null,
@@ -710,7 +710,7 @@ return {
                         "kind": "InlineFragment",
                         "selections": [
                           (v7/*: any*/),
-                          (v36/*: any*/),
+                          (v24/*: any*/),
                           (v10/*: any*/),
                           (v37/*: any*/),
                           (v20/*: any*/),
@@ -738,7 +738,7 @@ return {
             "storageKey": null
           }
         ],
-        "args": (v30/*: any*/),
+        "args": (v31/*: any*/),
         "argumentDefinitions": (v2/*: any*/)
       }
     ],
@@ -804,8 +804,8 @@ return {
                         "selections": [
                           (v8/*: any*/),
                           (v23/*: any*/),
-                          (v10/*: any*/),
                           (v24/*: any*/),
+                          (v25/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -815,18 +815,18 @@ return {
                             "plural": false,
                             "selections": [
                               (v5/*: any*/),
-                              (v25/*: any*/),
-                              (v27/*: any*/),
+                              (v26/*: any*/),
                               (v28/*: any*/),
-                              (v29/*: any*/)
+                              (v29/*: any*/),
+                              (v30/*: any*/)
                             ],
                             "storageKey": null
                           },
-                          (v31/*: any*/)
+                          (v32/*: any*/)
                         ],
                         "storageKey": null
                       },
-                      (v31/*: any*/),
+                      (v32/*: any*/),
                       {
                         "alias": null,
                         "args": (v41/*: any*/),
@@ -851,7 +851,7 @@ return {
                                 "name": "node",
                                 "plural": false,
                                 "selections": [
-                                  (v31/*: any*/),
+                                  (v32/*: any*/),
                                   {
                                     "alias": null,
                                     "args": null,
@@ -871,9 +871,9 @@ return {
                                     "plural": false,
                                     "selections": [
                                       (v23/*: any*/),
-                                      (v24/*: any*/),
+                                      (v25/*: any*/),
                                       (v8/*: any*/),
-                                      (v31/*: any*/),
+                                      (v32/*: any*/),
                                       {
                                         "alias": null,
                                         "args": null,
@@ -883,7 +883,7 @@ return {
                                         "plural": false,
                                         "selections": [
                                           (v5/*: any*/),
-                                          (v25/*: any*/)
+                                          (v26/*: any*/)
                                         ],
                                         "storageKey": null
                                       }
@@ -903,11 +903,11 @@ return {
                                 ],
                                 "storageKey": null
                               },
-                              (v32/*: any*/)
+                              (v33/*: any*/)
                             ],
                             "storageKey": null
                           },
-                          (v33/*: any*/)
+                          (v34/*: any*/)
                         ],
                         "storageKey": "relatedJobs(first:10)"
                       },
@@ -920,7 +920,7 @@ return {
                         "kind": "LinkedHandle",
                         "name": "relatedJobs"
                       },
-                      (v36/*: any*/),
+                      (v24/*: any*/),
                       (v37/*: any*/),
                       (v38/*: any*/),
                       (v39/*: any*/),
@@ -933,11 +933,11 @@ return {
                 ],
                 "storageKey": null
               },
-              (v34/*: any*/),
-              (v24/*: any*/),
+              (v35/*: any*/),
+              (v25/*: any*/),
               (v23/*: any*/),
               (v13/*: any*/),
-              (v35/*: any*/),
+              (v36/*: any*/),
               (v9/*: any*/)
             ],
             "type": "Organization",
@@ -950,7 +950,7 @@ return {
     ]
   },
   "params": {
-    "id": "33b233f2256edc478987d63e84be716e",
+    "id": "b6f62dfe27d135d53ee3962bd1282469",
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",
