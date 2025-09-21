@@ -120,7 +120,9 @@ export default function MarkdownEditor({
 			},
 			quote: 'border-l-4 border-gray-300 pl-4 italic',
 			text: {
-				underline: 'underline'
+				underline: 'underline',
+				bold: 'font-bold',
+				italic: 'italic'
 			}
 		} satisfies EditorThemeClasses
 	};

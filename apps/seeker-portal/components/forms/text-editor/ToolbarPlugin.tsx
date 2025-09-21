@@ -172,7 +172,11 @@ export default function ToolbarPlugin() {
 				onPress={() => {
 					editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
 				}}
-				className={'toolbar-item spaced ' + (isBold ? 'active' : '')}
+				className={`toolbar-item spaced ${
+					isBold
+						? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-200 border border-primary-400'
+						: 'hover:bg-primary-50 dark:hover:bg-primary-800'
+				}`}
 				aria-label='Format Bold'
 			>
 				<BoldIcon size={16} />
@@ -184,7 +188,11 @@ export default function ToolbarPlugin() {
 				onPress={() => {
 					editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
 				}}
-				className={'toolbar-item spaced ' + (isItalic ? 'active' : '')}
+				className={`toolbar-item spaced ${
+					isItalic
+						? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-200 border border-primary-400'
+						: 'hover:bg-primary-50 dark:hover:bg-primary-800'
+				}`}
 				aria-label='Format Italics'
 			>
 				<ItalicIcon size={16} />
@@ -196,7 +204,11 @@ export default function ToolbarPlugin() {
 				onPress={() => {
 					editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
 				}}
-				className={'toolbar-item spaced ' + (isUnderline ? 'active' : '')}
+				className={`toolbar-item spaced ${
+					isUnderline
+						? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-200 border border-primary-400'
+						: 'hover:bg-primary-50 dark:hover:bg-primary-800'
+				}`}
 				aria-label='Format Underline'
 			>
 				<UnderlineIcon size={16} />
