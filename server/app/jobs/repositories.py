@@ -7,7 +7,7 @@ from enum import Enum
 from typing import Any, Literal, get_args
 
 import pymongo
-from beanie import DeleteRules, PydanticObjectId, WriteRules
+from beanie import DeleteRules, Link, PydanticObjectId, WriteRules
 from beanie.odm.queries.aggregation import AggregationQuery
 from beanie.operators import And, In, Or, Set
 from bson import ObjectId
@@ -259,7 +259,12 @@ class JobRepo:
 
         # Update fields
         if job.title != title:
-            job.slug = await self.generate_slug(title, job.organization.ref.id)
+            job.slug = await self.generate_slug(
+                title,
+                job.organization.ref.id
+                if isinstance(job.organization, Link)
+                else job.organization.id,
+            )
         job.title = title
         job.description = description
         job.description_cleaned = clean_markdown_text(description)
