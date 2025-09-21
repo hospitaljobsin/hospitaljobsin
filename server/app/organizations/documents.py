@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Annotated, ClassVar, Literal
 
 import pymongo
-from beanie import BackLink, Document, Indexed, Link
+from beanie import Document, Indexed, Link
 from pydantic import BaseModel, Field
 from pymongo import IndexModel
 
@@ -48,13 +48,14 @@ class Organization(Document):
     name: str
     slug: Annotated[str, Indexed(unique=True)]
     description: str | None = None
+    description_cleaned: str | None = None  # plain text version of description
+    description_html: str | None = None
     location: str | None = None
     email: str | None = None
     website: str | None = None
     verification_request: OrganizationVerificationRequest | None = None
     internal_logo_url: str | None = Field(default=None, alias="logo_url")
     internal_banner_url: str | None = Field(default=None, alias="banner_url")
-    members: list[BackLink["OrganizationMember"]] = Field(original_field="organization")  # type: ignore[call-overload]
 
     @property
     def logo_url(self) -> str:
