@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<3e3040705761445598a398535d0f66b1>>
- * @relayHash 543e540c9d5dc57bbb40881f3fff332d
+ * @generated SignedSource<<652c5c6076a3b407c99ed69a27f703c9>>
+ * @relayHash b3760f91ce8d84a2e96822addf7ddc3e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 543e540c9d5dc57bbb40881f3fff332d
+// @relayRequestID b3760f91ce8d84a2e96822addf7ddc3e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -176,17 +176,24 @@ v20 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "logoUrl",
+  "name": "descriptionCleaned",
   "storageKey": null
 },
 v21 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "__typename",
+  "name": "logoUrl",
   "storageKey": null
 },
 v22 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v23 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -200,7 +207,7 @@ v22 = {
   "type": "Verified",
   "abstractKey": null
 },
-v23 = {
+v24 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -214,7 +221,7 @@ v23 = {
   "type": "Rejected",
   "abstractKey": null
 },
-v24 = {
+v25 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -228,7 +235,7 @@ v24 = {
   "type": "Pending",
   "abstractKey": null
 },
-v25 = {
+v26 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -307,8 +314,8 @@ return {
                             "selections": [
                               (v4/*: any*/),
                               (v19/*: any*/),
-                              (v6/*: any*/),
                               (v20/*: any*/),
+                              (v21/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,
@@ -317,15 +324,15 @@ return {
                                 "name": "verificationStatus",
                                 "plural": false,
                                 "selections": [
-                                  (v21/*: any*/),
+                                  (v22/*: any*/),
                                   {
-                                    "fragment": (v22/*: any*/),
+                                    "fragment": (v23/*: any*/),
                                     "kind": "AliasedInlineFragmentSpread",
                                     "name": "verified"
                                   },
-                                  (v23/*: any*/),
                                   (v24/*: any*/),
-                                  (v25/*: any*/)
+                                  (v25/*: any*/),
+                                  (v26/*: any*/)
                                 ],
                                 "storageKey": null
                               }
@@ -372,7 +379,7 @@ return {
         "name": "saveJob",
         "plural": false,
         "selections": [
-          (v21/*: any*/),
+          (v22/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -419,8 +426,8 @@ return {
                         "selections": [
                           (v4/*: any*/),
                           (v19/*: any*/),
-                          (v6/*: any*/),
                           (v20/*: any*/),
+                          (v21/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -429,11 +436,11 @@ return {
                             "name": "verificationStatus",
                             "plural": false,
                             "selections": [
-                              (v21/*: any*/),
                               (v22/*: any*/),
                               (v23/*: any*/),
                               (v24/*: any*/),
-                              (v25/*: any*/)
+                              (v25/*: any*/),
+                              (v26/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -464,7 +471,7 @@ return {
     ]
   },
   "params": {
-    "id": "543e540c9d5dc57bbb40881f3fff332d",
+    "id": "b3760f91ce8d84a2e96822addf7ddc3e",
     "metadata": {},
     "name": "JobControlsSaveMutation",
     "operationKind": "mutation",

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<9e0d0bab96bdeb56893639e234344da1>>
- * @relayHash cb545b48902132cb0b2d6722624fbb1b
+ * @generated SignedSource<<34d8213a1bbde6f6a743264ffcf22f2e>>
+ * @relayHash 8fe5693441b816c56da134d086c4101e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID cb545b48902132cb0b2d6722624fbb1b
+// @relayRequestID 8fe5693441b816c56da134d086c4101e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -68,13 +68,6 @@ v6 = {
   "args": null,
   "kind": "ScalarField",
   "name": "slug",
-  "storageKey": null
-},
-v7 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "descriptionHtml",
   "storageKey": null
 };
 return {
@@ -296,7 +289,13 @@ return {
                           },
                           (v6/*: any*/),
                           (v4/*: any*/),
-                          (v7/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "descriptionCleaned",
+                            "storageKey": null
+                          },
                           {
                             "alias": null,
                             "args": null,
@@ -438,7 +437,13 @@ return {
                         "name": "description",
                         "storageKey": null
                       },
-                      (v7/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "descriptionHtml",
+                        "storageKey": null
+                      },
                       {
                         "alias": null,
                         "args": null,
@@ -479,7 +484,7 @@ return {
     ]
   },
   "params": {
-    "id": "cb545b48902132cb0b2d6722624fbb1b",
+    "id": "8fe5693441b816c56da134d086c4101e",
     "metadata": {},
     "name": "JobApplyViewClientComponentQuery",
     "operationKind": "query",

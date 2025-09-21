@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<05e96b12118fab7223ecf52de3100b16>>
+ * @generated SignedSource<<304e969d7d0137f756909163191a6266>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -25,7 +25,7 @@ export type JobDetailsInternalFragment$data = {
   readonly minExperience: number | null | undefined;
   readonly minSalary: number | null | undefined;
   readonly organization: {
-    readonly descriptionHtml: string | null | undefined;
+    readonly descriptionCleaned: string | null | undefined;
     readonly logoUrl: string;
     readonly name: string;
     readonly slug: string;
@@ -57,6 +57,6 @@ const node: ReaderInlineDataFragment = {
   "name": "JobDetailsInternalFragment"
 };
 
-(node as any).hash = "70aba4e2094c7f05e0b16a9afc1dbd0c";
+(node as any).hash = "6ff8b9be22545cc95656d70fb0a8ce22";
 
 export default node;
