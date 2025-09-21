@@ -523,7 +523,10 @@ class JobRepo:
                 geo_query = {
                     "geoWithin": {
                         "circle": {
-                            "center": region.coordinates.model_dump(),
+                            "center": {
+                                "type": "Point",
+                                "coordinates": region.coordinates.coordinates,
+                            },
                             "radius": max_distance_meters,
                         },
                         "path": "geo",
@@ -728,7 +731,7 @@ class JobRepo:
                 {
                     "compound": {
                         "should": [
-                            {"text": {"query": mode.value, "path": "work_mode"}}
+                            {"text": {"query": mode.value.lower(), "path": "work_mode"}}
                             for mode in work_mode
                         ],
                         "minimumShouldMatch": 1,
@@ -742,7 +745,12 @@ class JobRepo:
                 {
                     "compound": {
                         "should": [
-                            {"text": {"query": given_type.value, "path": "type"}}
+                            {
+                                "text": {
+                                    "query": given_type.value.lower(),
+                                    "path": "type",
+                                }
+                            }
                             for given_type in job_type
                         ],
                         "minimumShouldMatch": 1,

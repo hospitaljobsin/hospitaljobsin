@@ -256,7 +256,9 @@ class JobService:
 
         if work_mode == "remote" and len(applicant_locations) == 0:
             return Err(InvalidApplicantLocationsError())
-        if work_mode != "remote" and location is None:
+        if work_mode != "remote" and len(applicant_locations) > 0:
+            return Err(InvalidApplicantLocationsError())
+        if location is None:
             return Err(InvalidLocationError())
 
         country_validator = TypeAdapter(list[CountryAlpha2])
@@ -881,7 +883,6 @@ class JobMetricService:
         end_date: datetime | None = None,
     ) -> Result[int, OrganizationAuthorizationError]:
         """Get the count of job metrics for a given organization ID and event type."""
-
         if not await self._organization_member_service.is_member(
             account_id=account.id,
             organization_id=organization_id,
@@ -906,7 +907,6 @@ class JobMetricService:
         end_date: datetime | None = None,
     ) -> Result[int, OrganizationAuthorizationError]:
         """Get the count of job metrics for a given job ID and event type."""
-
         if not await self._organization_member_service.is_member(
             account_id=account.id,
             organization_id=organization_id,

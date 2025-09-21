@@ -1,3 +1,4 @@
+from collections.abc import AsyncGenerator
 from datetime import UTC, datetime
 from typing import Any
 
@@ -93,18 +94,20 @@ async def valid_organization(
     password_account: Account,
     organization_repo: OrganizationRepo,
     organization_member_repo: OrganizationMemberRepo,
-) -> Organization:
+) -> AsyncGenerator[Organization]:
     """Create an organization where the user is a member."""
     org = await organization_repo.create(
         name="Valid Org",
         slug=generate_test_slug(),
     )
-    await organization_member_repo.create(
+    org_member = await organization_member_repo.create(
         account=password_account,
         organization_id=org.id,
         role="admin",
     )
-    return org
+    yield org
+    await organization_member_repo.delete(org_member)
+    await organization_repo.delete(org)
 
 
 @pytest.fixture
@@ -112,27 +115,29 @@ async def invalid_organization(
     foreign_password_account: Account,
     organization_repo: OrganizationRepo,
     organization_member_repo: OrganizationMemberRepo,
-) -> Organization:
+) -> AsyncGenerator[Organization]:
     """Create an organization where the user is not a member."""
     org = await organization_repo.create(
         name="Invalid Org",
         slug=generate_test_slug(),
     )
-    await organization_member_repo.create(
+    org_member = await organization_member_repo.create(
         account=foreign_password_account,
         organization_id=org.id,
         role="admin",
     )
-    return org
+    yield org
+    await organization_member_repo.delete(org_member)
+    await organization_repo.delete(org)
 
 
 @pytest.fixture
 async def test_job(
     valid_organization: Organization,
     job_repo: JobRepo,
-) -> Job:
+) -> AsyncGenerator[Job]:
     """Create a test job for updating."""
-    return await job_repo.create(
+    job = await job_repo.create(
         organization=valid_organization,
         title="Original Job Title",
         description="Original job description",
@@ -149,6 +154,8 @@ async def test_job(
         work_mode="office",
         currency="INR",
     )
+    yield job
+    await job_repo.delete(job)
 
 
 async def test_update_job_successful_basic_fields(

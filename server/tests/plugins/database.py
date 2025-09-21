@@ -21,6 +21,9 @@ from tests.utils.database import wait_for_search_indexes
 
 logger = get_logger()
 
+# TODO: isolate tests. we don't want test data polluting other tests
+# but we need pre-made fixtures like regions to persist always
+
 
 @pytest.fixture(scope="session")
 def db_settings() -> DatabaseSettings:
