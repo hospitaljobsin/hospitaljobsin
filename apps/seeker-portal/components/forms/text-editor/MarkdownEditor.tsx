@@ -8,7 +8,7 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
-import { ListPlugin } from '@lexical/react/LexicalListPlugin'; // Add ListPlugin
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
@@ -33,7 +33,7 @@ import ToolbarPlugin from './ToolbarPlugin';
 // Define a custom underline transformer
 const UNDERLINE_TRANSFORMER: TextFormatTransformer = {
 	format: ['underline'],
-	tag: '__', // choose any marker (Markdown doesn’t have underline, so use something custom)
+	tag: '__',
 	type: 'text-format'
 };
 
@@ -59,7 +59,6 @@ const exportMap: DOMExportOutputMap = new Map<Klass<LexicalNode>, (editor: Lexic
 const getExtraStyles = (_element: HTMLElement): string => {
 	let extraStyles = '';
 	// Example: parseAllowedFontSize, parseAllowedColor could be implemented as needed
-	// For now, just return ''
 	return extraStyles;
 };
 
@@ -105,6 +104,7 @@ export default function MarkdownEditor({
 	isInvalid,
 	onValueChange,
 	initialValue,
+	className,
 	editable = true
 }: {
 	description?: ReactNode;
@@ -112,6 +112,7 @@ export default function MarkdownEditor({
 	onValueChange?: (value: string) => void;
 	initialValue: string;
 	editable?: boolean;
+	className?: string;
 }) {
 	const editorConfig = {
 		editable,
@@ -126,20 +127,7 @@ export default function MarkdownEditor({
 			throw error;
 		},
 		theme: {
-			paragraph: 'w-full min-w-full text-foreground-800',
-			heading: {
-				h1: 'text-2xl font-medium',
-				h2: 'text-xl font-medium',
-				h3: 'text-lg font-medium'
-			},
-			list: {
-				ul: 'list-disc list-inside',
-				ol: 'list-decimal list-inside',
-				nested: {
-					listitem: 'list-none'
-				}
-			},
-			quote: 'border-l-4 border-gray-300 pl-4 italic',
+			// Minimal theme to avoid conflicts with prose-sm
 			text: {
 				underline: 'underline',
 				bold: 'font-bold',
@@ -164,18 +152,22 @@ export default function MarkdownEditor({
 						<RichTextPlugin
 							contentEditable={
 								<ContentEditable
-									className={cn('min-h-32 rounded-md focus:outline-none', {
-										'border-danger': isInvalid,
-										'border-gray-300': !isInvalid,
-										'border p-2': editable
-									})}
+									className={cn(
+										'prose prose-sm prose-foreground max-w-full min-h-32 rounded-md focus:outline-none',
+										{
+											'border-danger': isInvalid,
+											'border-gray-300': !isInvalid,
+											'border p-4': editable
+										},
+										className
+									)}
 								/>
 							}
 							ErrorBoundary={LexicalErrorBoundary}
 						/>
 						<MarkdownShortcutPlugin transformers={CUSTOM_TRANSFORMERS} />
 						<HistoryPlugin />
-						<ListPlugin /> {/* Add ListPlugin to handle list commands */}
+						<ListPlugin />
 						<OnChangePlugin onChange={handleOnChange} />
 					</div>
 					{description}
