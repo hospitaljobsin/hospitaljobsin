@@ -23,6 +23,7 @@ import {
 } from 'lexical';
 import { type ReactNode } from 'react';
 import ToolbarPlugin from './ToolbarPlugin';
+
 // Remove styles from exported DOM for ParagraphNode and TextNode
 const removeStylesExportDOM = (editor: LexicalEditor, target: LexicalNode): DOMExportOutput => {
 	const output = target.exportDOM(editor);
@@ -107,21 +108,24 @@ export default function MarkdownEditor({
 			throw error;
 		},
 		theme: {
-			paragraph: 'w-full min-w-full text-foreground',
+			paragraph: 'w-full min-w-full text-foreground-800',
 			heading: {
-				h1: 'text-2xl font-bold',
-				h2: 'text-xl font-bold',
-				h3: 'text-lg font-bold'
+				h1: 'text-2xl font-medium',
+				h2: 'text-xl font-medium',
+				h3: 'text-lg font-medium'
 			},
 			list: {
 				ul: 'list-disc list-inside',
 				ol: 'list-decimal list-inside'
 			},
-			quote: 'border-l-4 border-gray-300 pl-4 italic'
+			quote: 'border-l-4 border-gray-300 pl-4 italic',
+			text: {
+				underline: 'underline'
+			}
 		} satisfies EditorThemeClasses
 	};
 
-	function handleOnChange(editorState: EditorState, editor: LexicalEditor) {
+	function handleOnChange(_editorState: EditorState, editor: LexicalEditor) {
 		editor.update(() => {
 			const markdown = $convertToMarkdownString(TRANSFORMERS);
 			onValueChange(markdown);

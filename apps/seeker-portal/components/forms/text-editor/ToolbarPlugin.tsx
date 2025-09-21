@@ -27,7 +27,6 @@ import {
 	BoldIcon,
 	ItalicIcon,
 	RedoIcon,
-	StrikethroughIcon,
 	TextAlignCenterIcon,
 	TextAlignEndIcon,
 	TextAlignJustifyIcon,
@@ -88,7 +87,6 @@ export default function ToolbarPlugin() {
 	const [isBold, setIsBold] = useState(false);
 	const [isItalic, setIsItalic] = useState(false);
 	const [isUnderline, setIsUnderline] = useState(false);
-	const [isStrikethrough, setIsStrikethrough] = useState(false);
 
 	const $updateToolbar = useCallback(() => {
 		const selection = $getSelection();
@@ -97,7 +95,6 @@ export default function ToolbarPlugin() {
 			setIsBold(selection.hasFormat('bold'));
 			setIsItalic(selection.hasFormat('italic'));
 			setIsUnderline(selection.hasFormat('underline'));
-			setIsStrikethrough(selection.hasFormat('strikethrough'));
 		}
 	}, []);
 
@@ -139,7 +136,7 @@ export default function ToolbarPlugin() {
 	}, [editor, $updateToolbar]);
 
 	return (
-		<div className='flex gap-2 w-full items-center' ref={toolbarRef}>
+		<div className='flex gap-2 w-full items-center overflow-x-auto' ref={toolbarRef}>
 			<Button
 				isIconOnly
 				size='sm'
@@ -198,17 +195,6 @@ export default function ToolbarPlugin() {
 				aria-label='Format Underline'
 			>
 				<UnderlineIcon size={16} />
-			</Button>
-			<Button
-				isIconOnly
-				size='sm'
-				onPress={() => {
-					editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
-				}}
-				className={'toolbar-item spaced ' + (isStrikethrough ? 'active' : '')}
-				aria-label='Format Strikethrough'
-			>
-				<StrikethroughIcon size={16} />
 			</Button>
 			<Divider orientation='vertical' className='py-4 mx-2 h-full' />
 			<Button
