@@ -47,6 +47,7 @@ function HeadingToolbarPlugin() {
 					key={tag}
 					isIconOnly
 					size='sm'
+					variant='flat'
 					onPress={() => {
 						editor.update(() => {
 							const selection = $getSelection();
@@ -140,6 +141,7 @@ export default function ToolbarPlugin() {
 			<Button
 				isIconOnly
 				size='sm'
+				variant='flat'
 				isDisabled={!canUndo}
 				onPress={() => {
 					editor.dispatchCommand(UNDO_COMMAND, undefined);
@@ -151,11 +153,11 @@ export default function ToolbarPlugin() {
 			<Button
 				isIconOnly
 				size='sm'
+				variant='flat'
 				isDisabled={!canRedo}
 				onPress={() => {
 					editor.dispatchCommand(REDO_COMMAND, undefined);
 				}}
-				className='toolbar-item'
 				aria-label='Redo'
 			>
 				<RedoIcon size={16} />
@@ -166,6 +168,7 @@ export default function ToolbarPlugin() {
 			<Button
 				isIconOnly
 				size='sm'
+				variant='flat'
 				onPress={() => {
 					editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
 				}}
@@ -177,6 +180,7 @@ export default function ToolbarPlugin() {
 			<Button
 				isIconOnly
 				size='sm'
+				variant='flat'
 				onPress={() => {
 					editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
 				}}
@@ -188,6 +192,7 @@ export default function ToolbarPlugin() {
 			<Button
 				isIconOnly
 				size='sm'
+				variant='flat'
 				onPress={() => {
 					editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
 				}}
@@ -200,6 +205,7 @@ export default function ToolbarPlugin() {
 			<Button
 				isIconOnly
 				size='sm'
+				variant='flat'
 				onPress={() => {
 					editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
 				}}
@@ -210,6 +216,7 @@ export default function ToolbarPlugin() {
 			<Button
 				isIconOnly
 				size='sm'
+				variant='flat'
 				onPress={() => {
 					editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
 				}}
@@ -220,6 +227,7 @@ export default function ToolbarPlugin() {
 			<Button
 				isIconOnly
 				size='sm'
+				variant='flat'
 				onPress={() => {
 					editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
 				}}
@@ -230,10 +238,10 @@ export default function ToolbarPlugin() {
 			<Button
 				isIconOnly
 				size='sm'
+				variant='flat'
 				onPress={() => {
 					editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
 				}}
-				className='toolbar-item'
 				aria-label='Justify Align'
 			>
 				<TextAlignJustifyIcon size={16} />
