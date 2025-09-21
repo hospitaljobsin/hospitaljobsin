@@ -7,8 +7,11 @@
  */
 import { Button, Divider } from '@heroui/react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $createHeadingNode, type HeadingTagType } from '@lexical/rich-text';
+import { $setBlocksType } from '@lexical/selection';
 import { mergeRegister } from '@lexical/utils';
 import {
+	$createParagraphNode,
 	$getSelection,
 	$isRangeSelection,
 	CAN_REDO_COMMAND,
@@ -33,6 +36,49 @@ import {
 	UndoIcon
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+
+function HeadingToolbarPlugin() {
+	const [editor] = useLexicalComposerContext();
+	const headingTags: HeadingTagType[] = ['h1', 'h2', 'h3'];
+
+	return (
+		<>
+			{headingTags.map(tag => (
+				<Button
+					key={tag}
+					isIconOnly
+					size='sm'
+					onPress={() => {
+						editor.update(() => {
+							const selection = $getSelection();
+							if ($isRangeSelection(selection)) {
+								// Check if the selection is already in an H1 node
+								const anchorNode = selection.anchor.getNode();
+								const topLevelElement = anchorNode.getTopLevelElementOrThrow();
+								// Use type guard for HeadingNode
+								if (
+									topLevelElement.getType() === 'heading' &&
+									'getTag' in topLevelElement &&
+									typeof (topLevelElement as { getTag: () => string }).getTag === 'function' &&
+									(topLevelElement as { getTag: () => string }).getTag() === tag
+								) {
+									// If already H1, convert to paragraph
+									$setBlocksType(selection, () => $createParagraphNode());
+								} else {
+									// Otherwise, set to H1
+									$setBlocksType(selection, () => $createHeadingNode(tag));
+								}
+							}
+						});
+					}}
+					aria-label={`Format ${tag.toUpperCase()}`}
+				>
+					{tag.toUpperCase()}
+				</Button>
+			))}
+		</>
+	);
+}
 
 export default function ToolbarPlugin() {
 	const [editor] = useLexicalComposerContext();
@@ -117,7 +163,9 @@ export default function ToolbarPlugin() {
 			>
 				<RedoIcon size={16} />
 			</Button>
-			<Divider orientation='vertical' className='text-foreground-600' />
+			<Divider orientation='vertical' className='py-4 mx-2 h-full' />
+			<HeadingToolbarPlugin />
+			<Divider orientation='vertical' className='py-4 mx-2 h-full' />
 			<Button
 				isIconOnly
 				size='sm'
@@ -162,7 +210,7 @@ export default function ToolbarPlugin() {
 			>
 				<StrikethroughIcon size={16} />
 			</Button>
-			<Divider orientation='vertical' className='text-foreground-600' />
+			<Divider orientation='vertical' className='py-4 mx-2 h-full' />
 			<Button
 				isIconOnly
 				size='sm'

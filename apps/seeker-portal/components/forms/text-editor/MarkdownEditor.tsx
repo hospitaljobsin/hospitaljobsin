@@ -6,6 +6,7 @@ import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { HeadingNode } from '@lexical/rich-text';
 import {
 	$isTextNode,
 	type DOMConversionMap,
@@ -101,7 +102,7 @@ export default function MarkdownEditor({
 			import: constructImportMap()
 		},
 		namespace: 'MarkdownEditor',
-		nodes: [ParagraphNode, TextNode],
+		nodes: [ParagraphNode, TextNode, HeadingNode],
 		onError(error: Error) {
 			throw error;
 		},
