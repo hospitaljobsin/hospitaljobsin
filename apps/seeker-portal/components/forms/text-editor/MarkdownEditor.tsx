@@ -1,60 +1,91 @@
-import { cn } from "@heroui/react";
-import Heading from "@tiptap/extension-heading";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import type { ReactNode } from "react";
-import { Markdown } from "tiptap-markdown";
-import FixedMenu from "./FixedMenu";
+import { cn } from '@heroui/react';
+import { CodeNode } from '@lexical/code';
+import { LinkNode } from '@lexical/link';
+import { ListItemNode, ListNode } from '@lexical/list';
+import { $convertFromMarkdownString, $convertToMarkdownString, TRANSFORMERS } from '@lexical/markdown';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { ContentEditable } from '@lexical/react/LexicalContentEditable';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { HeadingNode, QuoteNode } from '@lexical/rich-text';
+import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
+import type { LexicalEditor } from 'lexical';
+import type { ReactNode } from 'react';
+import ToolbarPlugin from './ToolbarPlugin';
 
 export default function MarkdownEditor({
 	description,
 	isInvalid,
 	onValueChange,
-	initialValue,
+	initialValue
 }: {
 	description: ReactNode;
 	isInvalid: boolean;
 	onValueChange: (value: string) => void;
 	initialValue: string;
 }) {
-	const editor = useEditor({
-		extensions: [
-			StarterKit.configure({
-				heading: false, // Disable default heading
-			}),
-			Heading.configure({
-				levels: [1, 2, 3], // Allow only H1, H2, and H3
-			}),
-			Markdown,
-		],
-		content: initialValue,
-		immediatelyRender: false,
-		shouldRerenderOnTransaction: false,
-		injectCSS: false,
-		editorProps: {
-			attributes: {
-				class: cn(
-					"p-4 prose prose-foreground prose-sm focus:outline-none border-2 w-full min-w-full rounded-md min-h-56 whitespace-pre-wrap",
-					{
-						"border-danger": isInvalid,
-						"border-background-700": !isInvalid,
-					},
-				),
+	const initialConfig = {
+		namespace: 'MarkdownEditor',
+		theme: {
+			paragraph: 'prose prose-foreground prose-sm w-full',
+			heading: {
+				h1: 'text-2xl font-bold',
+				h2: 'text-xl font-bold',
+				h3: 'text-lg font-bold'
 			},
+			list: {
+				ul: 'list-disc list-inside',
+				ol: 'list-decimal list-inside'
+			},
+			quote: 'border-l-4 border-gray-300 pl-4 italic'
 		},
-		onUpdate({ editor }) {
-			// convert the editor's JSON to markdown
-			const markdown = editor.storage.markdown.getMarkdown();
-			onValueChange(markdown);
+		nodes: [HeadingNode, ListNode, ListItemNode, QuoteNode, CodeNode, LinkNode, HorizontalRuleNode, TableNode, TableCellNode, TableRowNode],
+		onError: (error: Error) => {
+			console.error(error);
 		},
-	});
+		editorState: initialValue ? () => $convertFromMarkdownString(initialValue, TRANSFORMERS) : undefined
+	};
+
+	const handleChange = (editorState: any, editor: LexicalEditor) => {
+		editorState.read(
+			() => {
+				const markdown = $convertToMarkdownString(TRANSFORMERS);
+				onValueChange(markdown);
+			},
+			{ editor }
+		);
+	};
+
 	return (
-		<div className="w-full flex flex-col gap-4">
-			<FixedMenu editor={editor} />
-			<div className="flex flex-col w-full gap-1">
-				<EditorContent editor={editor} className="w-full" />
-				{description}
+		<LexicalComposer initialConfig={initialConfig}>
+			{' '}
+			<div className='relative rounded-md w-full text-left'>
+				<ToolbarPlugin />
+				<div className='w-full relative bg-background'>
+					<RichTextPlugin
+						contentEditable={
+							<ContentEditable
+								className={cn(
+									'p-4 prose prose-foreground prose-sm focus:outline-none border-2 w-full min-w-full rounded-md min-h-56 whitespace-pre-wrap',
+									{
+										'border-danger': isInvalid,
+										'border-background-700': !isInvalid
+									}
+								)}
+							/>
+						}
+						placeholder={<div className='p-4 text-gray-500'>Enter some text...</div>}
+						ErrorBoundary={() => <div>Something went wrong.</div>}
+					/>
+					{description}
+				</div>
+				<OnChangePlugin onChange={handleChange} />
+				<HistoryPlugin />
+				<MarkdownShortcutPlugin transformers={TRANSFORMERS} />
 			</div>
-		</div>
+		</LexicalComposer>
 	);
 }
