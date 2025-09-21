@@ -502,6 +502,7 @@ class JobRepo:
         # Add geospatial search if coordinates provided
         if location:
             region = await self._region_repo.get_by_name(location)
+            print(f"DEBUG: Found region for location '{location}': {region}")
             if region is None:
                 return paginator.empty()
 
