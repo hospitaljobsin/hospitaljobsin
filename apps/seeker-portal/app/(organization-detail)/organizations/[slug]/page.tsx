@@ -50,7 +50,7 @@ const PageOrganizationDetailMetadataFragment = graphql`
 	  __typename
 	  ... on Organization {
 		name
-		description
+		descriptionCleaned
 		bannerUrl
 	  }
 
@@ -96,7 +96,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 	return {
 		title: data.organization.name,
-		description: data.organization.description,
+		description: data.organization.descriptionCleaned,
 		openGraph: {
 			images: [
 				{

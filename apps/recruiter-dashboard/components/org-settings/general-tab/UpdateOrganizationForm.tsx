@@ -3,6 +3,7 @@ import type { UpdateOrganizationFormFragment$key } from '@/__generated__/UpdateO
 import type { UpdateOrganizationFormLogoPresignedUrlMutation } from '@/__generated__/UpdateOrganizationFormLogoPresignedUrlMutation.graphql';
 import type { UpdateOrganizationFormMutation as UpdateOrganizationFormMutationType } from '@/__generated__/UpdateOrganizationFormMutation.graphql';
 import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
+import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
 import { env } from '@/lib/env/client';
 import links from '@/lib/links';
 import { uploadFileToS3 } from '@/lib/presignedUrl';
@@ -18,7 +19,6 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	Textarea,
 	useDisclosure
 } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -426,24 +426,30 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 								</div>
 							</div>
 						</div>
-
-						<div className='mb-12'>
-							<Controller
-								name='description'
-								control={control}
-								render={({ field }) => (
-									<Textarea
-										{...field}
-										fullWidth
-										label='Description'
-										placeholder='Add description'
-										errorMessage={errors.description?.message}
+						<Controller
+							control={control}
+							name='description'
+							render={({ field }) => (
+								<div className='flex flex-col gap-4 w-full mb-12'>
+									<h2 className={`text-small inline-flex gap-0.5${errors.description ? ' text-danger' : ''}`}>
+										Description <span className='text-danger'>*</span>
+									</h2>
+									<MarkdownEditor
+										initialValue={field.value || ''}
+										onValueChange={field.onChange}
 										isInvalid={!!errors.description}
-										value={field.value || ''}
+										description={
+											errors.description ? (
+												<p className='text-tiny text-danger'>{errors.description.message}</p>
+											) : (
+												<p className='text-tiny text-foreground-400'>Rich text editing is supported.</p>
+											)
+										}
 									/>
-								)}
-							/>
-						</div>
+								</div>
+							)}
+						/>
+
 						<div className='mb-12'>
 							<Controller
 								name='website'

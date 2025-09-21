@@ -274,6 +274,12 @@ class OrganizationType(BaseNodeType[Organization]):
     description: str | None = strawberry.field(
         description="The description of the organization.",
     )
+    description_cleaned: str | None = strawberry.field(
+        description="The cleaned plain text description of the organization.",
+    )
+    description_html: str | None = strawberry.field(
+        description="The cleaned HTML description of the organization.",
+    )
     location: str | None = strawberry.field(
         description="The location of the organization.",
     )
@@ -364,6 +370,8 @@ class OrganizationType(BaseNodeType[Organization]):
             slug=organization.slug,
             name=organization.name,
             description=organization.description,
+            description_cleaned=organization.description_cleaned,
+            description_html=organization.description_html,
             location=organization.location,
             email=organization.email,
             website=organization.website,

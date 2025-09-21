@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5571f11e391f9bfe5cfba518bd9ade83>>
+ * @generated SignedSource<<eb78a4cebdfbad637230630b524b098c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,7 +14,7 @@ export type pageOrganizationMembersMetadataFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";
     readonly bannerUrl: string;
-    readonly description: string | null | undefined;
+    readonly descriptionCleaned: string | null | undefined;
     readonly name: string;
   } | {
     // This will never be '%other', but we need some
@@ -33,6 +33,6 @@ const node: ReaderInlineDataFragment = {
   "name": "pageOrganizationMembersMetadataFragment"
 };
 
-(node as any).hash = "67b3ac51c5f01f982ee4e8ac343cfeff";
+(node as any).hash = "8bd6e5a09ecce52dc25e3934e4ba030c";
 
 export default node;

@@ -14,7 +14,7 @@ from app.core.constants import (
     ORGANIZATION_INVITE_EXPIRES_IN,
     OrganizationMemberRoleType,
 )
-from app.core.formatting import slugify
+from app.core.formatting import clean_markdown_text, markdown_to_clean_html, slugify
 from app.database.paginator import PaginatedResult, Paginator
 from app.jobs.documents import Job, JobApplicant, SavedJob
 
@@ -41,6 +41,12 @@ class OrganizationRepo:
             slug=slugify(slug),
             name=name,
             description=description,
+            description_cleaned=clean_markdown_text(description)
+            if description
+            else None,
+            description_html=markdown_to_clean_html(description)
+            if description
+            else None,
             location=location,
             website=website,
             logo_url=logo_url,
@@ -76,6 +82,12 @@ class OrganizationRepo:
             organization.slug = slugify(slug)
         if description is not UNSET:
             organization.description = description
+            organization.description_cleaned = (
+                clean_markdown_text(description) if description else None
+            )
+            organization.description_html = (
+                markdown_to_clean_html(description) if description else None
+            )
         if location is not UNSET:
             organization.location = location
         if website is not UNSET:

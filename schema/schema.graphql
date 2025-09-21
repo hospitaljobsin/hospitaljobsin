@@ -3504,6 +3504,16 @@ type Organization implements Node {
 	description: String
 
 	"""
+	The cleaned plain text description of the organization.
+	"""
+	descriptionCleaned: String
+
+	"""
+	The cleaned HTML description of the organization.
+	"""
+	descriptionHtml: String
+
+	"""
 	The location of the organization.
 	"""
 	location: String
