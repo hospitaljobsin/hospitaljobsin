@@ -67,7 +67,7 @@ from app.organizations.exceptions import (
 )
 from app.organizations.repositories import OrganizationRepo
 from app.organizations.services import OrganizationMemberService
-from app.revalidation.services import RevalidationService
+from app.revalidation.services import BaseRevalidationService
 
 
 class SavedJobService:
@@ -151,7 +151,7 @@ class JobService:
         job_application_form_repo: JobApplicationFormRepo,
         job_metric_repo: JobMetricRepo,
         region_repo: RegionRepo,
-        revalidation_service: RevalidationService,
+        revalidation_service: BaseRevalidationService,
     ) -> None:
         self._job_repo = job_repo
         self._organization_repo = organization_repo
