@@ -10,7 +10,7 @@ from webauthn.helpers.structs import AuthenticatorTransport
 from tests.utils.emails import generate_test_email
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 async def password_account(account_repo: AccountRepo) -> AsyncGenerator[Account]:
     account = await account_repo.create(
         full_name="Aryan Iyappan",
@@ -23,7 +23,7 @@ async def password_account(account_repo: AccountRepo) -> AsyncGenerator[Account]
     await account_repo.delete(account)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 async def foreign_password_account(
     account_repo: AccountRepo,
 ) -> AsyncGenerator[Account]:
@@ -38,7 +38,7 @@ async def foreign_password_account(
     await account_repo.delete(account)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 async def webauthn_account(
     account_repo: AccountRepo,
     webauthn_credential_repo: WebAuthnCredentialRepo,

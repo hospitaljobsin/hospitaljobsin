@@ -151,3 +151,28 @@ async def import_region_data(
 
     yield None
     await Region.delete_all()
+
+
+@pytest.fixture(autouse=True, scope="module")
+async def cleanup_database(
+    initialize_test_database, import_region_data, db_settings: DatabaseSettings
+) -> AsyncGenerator[None]:
+    yield
+
+    client: AsyncMongoClient = AsyncMongoClient(str(db_settings.database_url))
+
+    database = client.get_default_database(default=db_settings.test_database_name)
+
+    collections = await database.list_collection_names()
+
+    for collection_name in collections:
+        if collection_name.startswith("system."):
+            continue
+        if collection_name in [Region.get_settings().name]:
+            continue
+        collection = database.get_collection(collection_name)
+        logger.info(f"Cleaning up collection: {collection_name}")
+        await collection.delete_many({})
+
+    # Close connection
+    await client.close()

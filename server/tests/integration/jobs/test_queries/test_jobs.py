@@ -254,8 +254,8 @@ async def test_basic_query_all_jobs(
     response = await graphql_client(
         JOBS_QUERY,
         variables={
-            "workMode": ["REMOTE", "HYBRID", "OFFICE"],
-            "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
+            "workMode": [],
+            "jobType": [],
             "first": 10,
         },
     )
