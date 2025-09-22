@@ -1,4 +1,3 @@
-import asyncio
 from collections.abc import AsyncGenerator
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -6,12 +5,16 @@ from typing import Any
 import pytest
 from app.accounts.documents import Account
 from app.base.models import GeoObject
+from app.config import DatabaseSettings
+from app.core.constants import JOB_SEARCH_INDEX_NAME
 from app.jobs.documents import Job
 from app.jobs.repositories import JobRepo
 from app.organizations.documents import Organization
 from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
+from pymongo import AsyncMongoClient
 
 from tests.integration.graphql_client import GraphQLClient
+from tests.utils.database import wait_for_search_indexes
 from tests.utils.slugs import generate_test_slug
 
 JOBS_QUERY = """
@@ -103,6 +106,8 @@ async def test_organization(
 async def sample_jobs(
     test_organization: Organization,
     job_repo: JobRepo,
+    db_settings: DatabaseSettings,
+    db_client: AsyncMongoClient,
 ) -> AsyncGenerator[Job]:
     """Create sample jobs for testing."""
     jobs = []
@@ -241,8 +246,20 @@ async def sample_jobs(
     job7.is_active = True
     await job7.save()
     jobs.append(job7)
+
     # wait to ensure search indexes are updated
-    await asyncio.sleep(1.5)
+    await wait_for_search_indexes(
+        client=db_client,
+        database_name=db_settings.test_database_name,
+        collection_names=[
+            str(Job.get_settings().name),
+        ],
+        index_names=[
+            JOB_SEARCH_INDEX_NAME,
+        ],
+        wait_time=60,  # wait up to 60 seconds for indexes to be ready
+        check_interval=0.5,  # check every half second
+    )
     yield jobs
     for job in jobs:
         await job_repo.delete(job)

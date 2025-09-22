@@ -27,12 +27,17 @@ def db_settings() -> DatabaseSettings:
     return get_settings(DatabaseSettings)
 
 
+@pytest.fixture(scope="session")
+async def db_client(db_settings: DatabaseSettings) -> AsyncGenerator[AsyncMongoClient]:
+    client: AsyncMongoClient = AsyncMongoClient(str(db_settings.database_url))
+    yield client
+    await client.close()
+
+
 @pytest.fixture(autouse=True, scope="session")
 async def initialize_test_database(
-    db_settings: DatabaseSettings,
+    db_settings: DatabaseSettings, db_client: AsyncMongoClient
 ) -> AsyncGenerator[None]:
-    client: AsyncMongoClient = AsyncMongoClient(str(db_settings.database_url))
-
     await initialize_database(
         database_url=str(db_settings.database_url),
         default_database_name=db_settings.test_database_name,
@@ -45,7 +50,7 @@ async def initialize_test_database(
     )
 
     await wait_for_search_indexes(
-        client=client,
+        client=db_client,
         database_name=db_settings.test_database_name,
         collection_names=[
             str(JobApplicant.get_settings().name),
@@ -66,9 +71,7 @@ async def initialize_test_database(
 
     yield
 
-    client: AsyncMongoClient = AsyncMongoClient(str(db_settings.database_url))
-
-    database = client.get_default_database(default=db_settings.test_database_name)
+    database = db_client.get_default_database(default=db_settings.test_database_name)
 
     collections = await database.list_collection_names()
 
@@ -78,9 +81,6 @@ async def initialize_test_database(
         if collection_name.startswith("system."):
             continue
         await database.drop_collection(collection_name)
-
-    # Close connection
-    await client.close()
 
 
 @pytest.fixture(autouse=True, scope="session")
@@ -152,13 +152,14 @@ async def import_region_data(
 
 @pytest.fixture(autouse=True, scope="module")
 async def cleanup_database(
-    initialize_test_database, import_region_data, db_settings: DatabaseSettings
+    initialize_test_database,
+    import_region_data,
+    db_settings: DatabaseSettings,
+    db_client: AsyncMongoClient,
 ) -> AsyncGenerator[None]:
     yield
 
-    client: AsyncMongoClient = AsyncMongoClient(str(db_settings.database_url))
-
-    database = client.get_default_database(default=db_settings.test_database_name)
+    database = db_client.get_default_database(default=db_settings.test_database_name)
 
     collections = await database.list_collection_names()
 
@@ -170,6 +171,3 @@ async def cleanup_database(
         collection = database.get_collection(collection_name)
         logger.info(f"Cleaning up collection: {collection_name}")
         await collection.delete_many({})
-
-    # Close connection
-    await client.close()
