@@ -1,3 +1,4 @@
+import asyncio
 from collections.abc import AsyncGenerator
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -240,7 +241,8 @@ async def sample_jobs(
     job7.is_active = True
     await job7.save()
     jobs.append(job7)
-
+    # wait to ensure search indexes are updated
+    await asyncio.sleep(1.5)
     yield jobs
     for job in jobs:
         await job_repo.delete(job)
