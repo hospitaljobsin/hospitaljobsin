@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.13"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -672,16 +672,16 @@ wheels = [
 
 [[package]]
 name = "fastapi"
-version = "0.116.0"
+version = "0.117.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
     { name = "starlette" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/20/38/e1da78736143fd885c36213a3ccc493c384ae8fea6a0f0bc272ef42ebea8/fastapi-0.116.0.tar.gz", hash = "sha256:80dc0794627af0390353a6d1171618276616310d37d24faba6648398e57d687a", size = 296518, upload-time = "2025-07-07T15:09:27.82Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7e/7e/d9788300deaf416178f61fb3c2ceb16b7d0dc9f82a08fdb87a5e64ee3cc7/fastapi-0.117.1.tar.gz", hash = "sha256:fb2d42082d22b185f904ca0ecad2e195b851030bd6c5e4c032d1c981240c631a", size = 307155, upload-time = "2025-09-20T20:16:56.663Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2f/68/d80347fe2360445b5f58cf290e588a4729746e7501080947e6cdae114b1f/fastapi-0.116.0-py3-none-any.whl", hash = "sha256:fdcc9ed272eaef038952923bef2b735c02372402d1203ee1210af4eea7a78d2b", size = 95625, upload-time = "2025-07-07T15:09:26.348Z" },
+    { url = "https://files.pythonhosted.org/packages/6d/45/d9d3e8eeefbe93be1c50060a9d9a9f366dba66f288bb518a9566a23a8631/fastapi-0.117.1-py3-none-any.whl", hash = "sha256:33c51a0d21cab2b9722d4e56dbb9316f3687155be6b276191790d8da03507552", size = 95959, upload-time = "2025-09-20T20:16:53.661Z" },
 ]
 
 [[package]]
@@ -2365,7 +2365,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "bleach", specifier = "==6.2.0" },
     { name = "email-validator", specifier = "==2.2.0" },
-    { name = "fastapi", specifier = "==0.116.0" },
+    { name = "fastapi", specifier = "==0.117.1" },
     { name = "filelock", specifier = "==3.19.1" },
     { name = "geopy", specifier = "==2.4.1" },
     { name = "granian", extras = ["pname", "uvloop"], specifier = "==2.4.2" },
