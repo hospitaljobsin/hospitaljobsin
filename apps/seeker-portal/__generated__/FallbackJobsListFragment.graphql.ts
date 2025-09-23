@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ca3875de8e0edc8376f1eeae39fc0d95>>
+ * @generated SignedSource<<baf6e89624c818ab05db38160b24a5aa>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -85,7 +85,7 @@ return {
         {
           "kind": "Literal",
           "name": "sortBy",
-          "value": "RELEVANCE"
+          "value": "UPDATED_AT"
         },
         {
           "kind": "Literal",
@@ -172,7 +172,7 @@ return {
           "storageKey": null
         }
       ],
-      "storageKey": "__FallbackJobsListFragment_jobs_connection(jobType:[],sortBy:\"RELEVANCE\",workMode:[])"
+      "storageKey": "__FallbackJobsListFragment_jobs_connection(jobType:[],sortBy:\"UPDATED_AT\",workMode:[])"
     }
   ],
   "type": "Query",
@@ -180,6 +180,6 @@ return {
 };
 })();
 
-(node as any).hash = "7b0e28a40ecd67a9ce03aa54a22257e9";
+(node as any).hash = "6e4b72e4ee78cce57641b9da44d666e1";
 
 export default node;

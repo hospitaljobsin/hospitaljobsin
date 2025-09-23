@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<18d3c5415255f804acd0976510b4e0b3>>
- * @relayHash 1e7d5ccf9e2b3a704416bf703ce54062
+ * @generated SignedSource<<ceb3b263932591ac2c707da0b817e445>>
+ * @relayHash 840829ef6b9be484486d9a8479767ab8
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 1e7d5ccf9e2b3a704416bf703ce54062
+// @relayRequestID 840829ef6b9be484486d9a8479767ab8
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -37,7 +37,7 @@ var v0 = [
   {
     "kind": "Literal",
     "name": "sortBy",
-    "value": "RELEVANCE"
+    "value": "UPDATED_AT"
   },
   {
     "kind": "Literal",
@@ -326,7 +326,7 @@ return {
             "storageKey": null
           }
         ],
-        "storageKey": "jobs(first:25,jobType:[],sortBy:\"RELEVANCE\",workMode:[])"
+        "storageKey": "jobs(first:25,jobType:[],sortBy:\"UPDATED_AT\",workMode:[])"
       },
       {
         "alias": null,
@@ -344,7 +344,7 @@ return {
     ]
   },
   "params": {
-    "id": "1e7d5ccf9e2b3a704416bf703ce54062",
+    "id": "840829ef6b9be484486d9a8479767ab8",
     "metadata": {},
     "name": "FallbackJobsListQuery",
     "operationKind": "query",
