@@ -57,31 +57,34 @@ export default function FallbackJobsList({ viewer }: { viewer: FallbackJobsListA
 		}
 	};
 	return (
-		<div className='w-full h-full overflow-y-auto'>
-			<WindowVirtualizer
-				onScrollEnd={handleScrollEnd}
-				ssrCount={10}
-				count={hasNextPage ? allJobEdges.length + 1 : allJobEdges.length}
-				overscan={5}
-				onScroll={() => {
-					console.log('SCROLLING>>>>');
-				}}
-				shift={false}
-				itemSize={350}
-			>
-				{index => {
-					const jobEdge = allJobEdges[index];
-					if (index === allJobEdges.length) {
-						return <JobListSkeleton />;
-					}
+		<div className='w-full h-full flex flex-col gap-6'>
+			<p className='text-foreground-400 text-sm'>Meanwhile, here are the latest jobs you might like.</p>
+			<div className='w-full h-full overflow-y-auto'>
+				<WindowVirtualizer
+					onScrollEnd={handleScrollEnd}
+					ssrCount={10}
+					count={hasNextPage ? allJobEdges.length + 1 : allJobEdges.length}
+					overscan={5}
+					onScroll={() => {
+						console.log('SCROLLING>>>>');
+					}}
+					shift={false}
+					itemSize={350}
+				>
+					{index => {
+						const jobEdge = allJobEdges[index];
+						if (index === allJobEdges.length) {
+							return <JobListSkeleton />;
+						}
 
-					return (
-						<div key={jobEdge.node.id} className='pb-4 sm:pb-6'>
-							<Job job={jobEdge.node} authQueryRef={accountData} />
-						</div>
-					);
-				}}
-			</WindowVirtualizer>
+						return (
+							<div key={jobEdge.node.id} className='pb-4 sm:pb-6'>
+								<Job job={jobEdge.node} authQueryRef={accountData} />
+							</div>
+						);
+					}}
+				</WindowVirtualizer>
+			</div>
 		</div>
 	);
 }

@@ -20,10 +20,11 @@ import { useFragment, usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { WindowVirtualizer } from 'virtua';
 import OneStepCreateJobAlertModal from '../shared/OneStepCreateJobAlertModal';
+import FallbackJobsListSkeleton from './FallbackJobsListSkeleton';
 
 const FallbackJobsList = dynamic(() => import('./FallbackJobsList'), {
 	ssr: false,
-	loading: () => <JobListSkeleton />
+	loading: () => <FallbackJobsListSkeleton />
 });
 
 const SearchJobsListFragment = graphql`
@@ -204,7 +205,7 @@ export default function SearchJobsList({
 							</div>
 						</CardBody>
 					</Card>
-					<Suspense fallback={<JobListSkeleton />}>
+					<Suspense fallback={<FallbackJobsListSkeleton />}>
 						<FallbackJobsList viewer={root.viewer} />
 					</Suspense>
 				</div>
