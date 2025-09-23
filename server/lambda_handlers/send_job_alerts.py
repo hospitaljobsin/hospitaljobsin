@@ -227,5 +227,5 @@ async def send_job_alerts(
 if __name__ == "__main__":
     # for local testing only
     loop.run_until_complete(
-        send_job_alerts([(JobAlertEventBody(alert_id="68c845ecb39f59fbae28fb28"), "1")])
+        send_job_alerts([(JobAlertEventBody(alert_id="68ce92ba3921b9135ab59732"), "1")])
     )

@@ -292,14 +292,12 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
         *,
         document_cls: type[ModelType],
         projection_model: type[SearchProjectionModelType],
-        search_index_name: str,
         calculate_total_count: bool = False,
         minimum_score: float | None = None,
     ) -> None:
         super().__init__(calculate_total_count=calculate_total_count)
         self._document_cls = document_cls
         self._projection_model = projection_model
-        self._search_index_name = search_index_name
         self._minimum_score = minimum_score
 
     def __build_search_pipeline(
@@ -312,26 +310,19 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
     ) -> list[dict[str, Any]]:
         """Build the Atlas Search aggregation pipeline with pagination."""
         # Extract the search query components
-        search_stage: dict[str, Any] = {
-            "index": self._search_index_name,
-        }
+        search_stage = search_query
 
         if self.calculate_total_count:
-            search_stage["count"] = {"type": "total"}
-
-        # Add search query fields (compound, text, etc.)
-        for key, value in search_query.items():
-            if key not in ["count"]:  # Exclude count as its handled separately
-                search_stage[str(key)] = value
+            search_stage["$search"]["count"] = {"type": "total"}
 
         # Add pagination tokens
         if after:
-            search_stage["searchAfter"] = after
+            search_stage["$search"]["searchAfter"] = after
         if before:
-            search_stage["searchBefore"] = before
+            search_stage["$search"]["searchBefore"] = before
 
         base_pipeline = [
-            {"$search": search_stage},
+            search_stage,
             {"$addFields": {"pagination_token": {"$meta": "searchSequenceToken"}}},
         ]
 

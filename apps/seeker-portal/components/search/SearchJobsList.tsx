@@ -13,12 +13,19 @@ import JobListSkeleton from '@/components/landing/JobListSkeleton';
 import { APP_TITLE, REASONABLE_JOB_COUNT } from '@/lib/constants';
 import usePageTitle from '@/lib/hooks/usePageTitle';
 import { Card, CardBody, Select, SelectItem } from '@heroui/react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { useEffect, useRef, useState, useTransition } from 'react';
+import { Suspense, useEffect, useRef, useState, useTransition } from 'react';
 import { useFragment, usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { WindowVirtualizer } from 'virtua';
 import OneStepCreateJobAlertModal from '../shared/OneStepCreateJobAlertModal';
+import FallbackJobsListSkeleton from './FallbackJobsListSkeleton';
+
+const FallbackJobsList = dynamic(() => import('./FallbackJobsList'), {
+	ssr: false,
+	loading: () => <FallbackJobsListSkeleton />
+});
 
 const SearchJobsListFragment = graphql`
 fragment SearchJobsListFragment on Query @argumentDefinitions(
@@ -35,6 +42,7 @@ fragment SearchJobsListFragment on Query @argumentDefinitions(
 	...SearchJobsListInternalFragment @arguments(searchTerm: $searchTerm, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType, sortBy: $sortBy, location: $location)
 	viewer {
 		...JobControlsAuthFragment
+		...FallbackJobsListAccountFragment
 	}
 }
 `;
@@ -167,34 +175,40 @@ export default function SearchJobsList({
 	if (allJobEdges.length === 0 && !hasNextPage) {
 		return (
 			<>
-				<Card className='p-4' fullWidth shadow='none'>
-					<CardBody className='flex flex-col sm:flex-row gap-6 w-full items-center justify-center'>
-						<Image src='/illustrations/empty.svg' alt='No jobs found' width={200} height={200} />
-						<div className='flex flex-col gap-4 items-center'>
-							<h2 className='font-medium text-muted-foreground text-base text-center'>
-								No jobs found {searchTerm ? `for "${searchTerm}"` : ''} {location ? `in ${location}` : ''}.
-							</h2>
-							<p className='text-muted-foreground text-sm text-center max-w-xs'>
-								Try searching for another keyword or check for spelling errors in your search query.
-							</p>
-							<p className='text-muted-foreground text-sm text-center max-w-xs'>
-								<span>
-									<button
-										type='button'
-										onClick={() => {
-											setShowAlertModal(true);
-										}}
-										className='cursor-pointer font-medium text-primary underline underline-offset-2 hover:text-primary/80 focus:text-primary/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded transition-colors duration-200 ease-in-out px-0 py-0 bg-transparent border-0 align-baseline'
-										aria-label='Create a job alert to get notified when new jobs are posted'
-									>
-										Create a job alert
-									</button>{' '}
-									to get notified when new jobs are posted.
-								</span>
-							</p>
-						</div>
-					</CardBody>
-				</Card>
+				<div className='w-full h-full flex flex-col gap-12'>
+					<Card className='p-4' fullWidth shadow='none'>
+						<CardBody className='flex flex-col sm:flex-row gap-6 w-full items-center justify-center'>
+							<Image src='/illustrations/empty.svg' alt='No jobs found' width={200} height={200} />
+							<div className='flex flex-col gap-4 items-center'>
+								<h2 className='font-medium text-muted-foreground text-base text-center'>
+									No jobs found{searchTerm ? ` for "${searchTerm}"` : ''}
+									{location ? ` in ${location}` : ''}.
+								</h2>
+								<p className='text-muted-foreground text-sm text-center max-w-xs'>
+									Try searching for another keyword or check for spelling errors in your search query.
+								</p>
+								<p className='text-muted-foreground text-sm text-center max-w-xs'>
+									<span>
+										<button
+											type='button'
+											onClick={() => {
+												setShowAlertModal(true);
+											}}
+											className='cursor-pointer font-medium text-primary underline underline-offset-2 hover:text-primary/80 focus:text-primary/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded transition-colors duration-200 ease-in-out px-0 py-0 bg-transparent border-0 align-baseline'
+											aria-label='Create a job alert to get notified when new jobs are posted'
+										>
+											Create a job alert
+										</button>{' '}
+										to get notified when new jobs are posted.
+									</span>
+								</p>
+							</div>
+						</CardBody>
+					</Card>
+					<Suspense fallback={<FallbackJobsListSkeleton />}>
+						<FallbackJobsList viewer={root.viewer} />
+					</Suspense>
+				</div>
 				<OneStepCreateJobAlertModal
 					isOpen={showAlertModal}
 					onOpenChange={setShowAlertModal}

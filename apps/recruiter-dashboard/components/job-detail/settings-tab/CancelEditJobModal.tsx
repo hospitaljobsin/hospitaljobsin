@@ -1,11 +1,4 @@
-import {
-	Button,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-} from "@heroui/react";
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
 
 type Props = {
 	isOpen: boolean;
@@ -13,11 +6,7 @@ type Props = {
 	onCancel: () => void;
 };
 
-export default function CancelEditJobModal({
-	isOpen,
-	onOpenChange,
-	onCancel,
-}: Props) {
+export default function CancelEditJobModal({ isOpen, onOpenChange, onCancel }: Props) {
 	function handleDiscardChanges() {
 		onCancel();
 		onOpenChange(false);
@@ -29,25 +18,21 @@ export default function CancelEditJobModal({
 			isKeyboardDismissDisabled={true}
 			isOpen={isOpen}
 			onOpenChange={onOpenChange}
-			placement="center"
+			placement='center'
 			hideCloseButton
 		>
 			<ModalContent>
-				{(onClose) => (
+				{onClose => (
 					<>
-						<ModalHeader className="flex flex-col gap-1">
-							Discard changes?
-						</ModalHeader>
+						<ModalHeader className='flex flex-col gap-1'>Discard changes?</ModalHeader>
 						<ModalBody>
-							<p>
-								You have unsaved changes. Are you sure you want to discard them?
-							</p>
+							<p>You have unsaved changes. Are you sure you want to discard them?</p>
 						</ModalBody>
 						<ModalFooter>
-							<Button variant="light" onPress={onClose}>
+							<Button variant='light' onPress={onClose}>
 								Keep editing
 							</Button>
-							<Button color="danger" onPress={handleDiscardChanges}>
+							<Button color='danger' onPress={handleDiscardChanges}>
 								Close and discard
 							</Button>
 						</ModalFooter>
