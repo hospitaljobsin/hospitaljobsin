@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<beaf1e0a225c3fa92b9d9979756b316b>>
- * @relayHash 452408a587fe2f35bf18a82328dd7789
+ * @generated SignedSource<<8c8bc3d7677f53d146f9a00308648d01>>
+ * @relayHash 910104d4b07b4f00f75dedd9503de2e0
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 452408a587fe2f35bf18a82328dd7789
+// @relayRequestID 910104d4b07b4f00f75dedd9503de2e0
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -57,7 +57,7 @@ v1 = [
   {
     "kind": "Literal",
     "name": "sortBy",
-    "value": "RELEVANCE"
+    "value": "UPDATED_AT"
   },
   {
     "kind": "Literal",
@@ -375,7 +375,7 @@ return {
     ]
   },
   "params": {
-    "id": "452408a587fe2f35bf18a82328dd7789",
+    "id": "910104d4b07b4f00f75dedd9503de2e0",
     "metadata": {},
     "name": "FallbackJobsListRefetchQuery",
     "operationKind": "query",
@@ -384,6 +384,6 @@ return {
 };
 })();
 
-(node as any).hash = "7b0e28a40ecd67a9ce03aa54a22257e9";
+(node as any).hash = "6e4b72e4ee78cce57641b9da44d666e1";
 
 export default node;

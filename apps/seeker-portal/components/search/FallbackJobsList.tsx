@@ -20,7 +20,7 @@ fragment FallbackJobsListFragment on Query @refetchable(queryName: "FallbackJobs
     count: { type: "Int", defaultValue: 25 }
 
   ) {
-  jobs(workMode: [], jobType: [], sortBy: RELEVANCE, first: $count, after: $cursor) @connection(key: "FallbackJobsListFragment_jobs") {
+  jobs(workMode: [], jobType: [], sortBy: UPDATED_AT, first: $count, after: $cursor) @connection(key: "FallbackJobsListFragment_jobs") {
     edges {
       node {
         id

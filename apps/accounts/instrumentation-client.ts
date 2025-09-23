@@ -2,31 +2,30 @@
 // The added config here will be used whenever a users loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-import * as Sentry from "@sentry/nextjs";
-import posthog from "posthog-js";
-import { cookieConsentGiven } from "./lib/cookie-consent";
-import { env } from "./lib/env/client";
+import * as Sentry from '@sentry/nextjs';
+import posthog from 'posthog-js';
+import { cookieConsentGiven } from './lib/cookie-consent';
+import { env } from './lib/env/client';
 
 posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
 	api_host: env.NEXT_PUBLIC_POSTHOG_HOST,
-	defaults: "2025-05-24",
-	autocapture: env.NEXT_PUBLIC_ENVIRONMENT === "production",
+	defaults: '2025-05-24',
+	autocapture: env.NEXT_PUBLIC_ENVIRONMENT === 'production',
 	cross_subdomain_cookie: true,
 	secure_cookie: true,
-	persistence:
-		cookieConsentGiven() === "yes" ? "localStorage+cookie" : "memory",
+	persistence: cookieConsentGiven() === 'yes' ? 'localStorage+cookie' : 'memory',
 	loaded: function (ph) {
-		if (env.NEXT_PUBLIC_ENVIRONMENT !== "production") {
+		if (env.NEXT_PUBLIC_ENVIRONMENT !== 'production') {
 			ph.opt_out_capturing(); // opts a user out of event capture
 			ph.set_config({ disable_session_recording: true });
 		}
-	},
+	}
 });
 
 // Register portal-specific property
 posthog.register({
-	app: "accounts",
-	env: env.NEXT_PUBLIC_ENVIRONMENT,
+	app: 'accounts',
+	env: env.NEXT_PUBLIC_ENVIRONMENT
 });
 
 Sentry.init({
@@ -37,9 +36,9 @@ Sentry.init({
 	integrations: [
 		Sentry.replayIntegration(),
 		Sentry.graphqlClientIntegration({
-			endpoints: [env.NEXT_PUBLIC_API_URL, /\/graphql$/],
+			endpoints: [env.NEXT_PUBLIC_API_URL, /\/graphql$/]
 		}),
-		Sentry.browserTracingIntegration(),
+		Sentry.browserTracingIntegration()
 	],
 
 	// Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
@@ -54,7 +53,7 @@ Sentry.init({
 	replaysOnErrorSampleRate: 1.0,
 
 	// Setting this option to true will print useful information to the console while you're setting up Sentry.
-	debug: false,
+	debug: false
 });
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
