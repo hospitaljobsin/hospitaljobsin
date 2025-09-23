@@ -43,7 +43,7 @@ export function SteppableNumberInput({
 	const parseNumber = useCallback((str: string) => {
 		const cleaned = str.replace(/[^\d.-]/g, '');
 		const parsed = Number.parseFloat(cleaned);
-		return isNaN(parsed) ? null : parsed;
+		return Number.isNaN(parsed) ? null : parsed;
 	}, []);
 
 	const handleInputChange = useCallback(
