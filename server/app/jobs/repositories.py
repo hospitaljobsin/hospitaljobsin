@@ -887,43 +887,45 @@ class JobRepo:
         paginator: SearchPaginator[Job, SearchableJob] = SearchPaginator(
             document_cls=Job,
             projection_model=SearchableJob,
-            search_index_name=JOB_SEARCH_INDEX_NAME,
             minimum_score=RELATED_JOBS_SIMILARITY_THRESHOLD,
         )
 
         search_query = {
-            "knnBeta": {
-                "vector": job_embedding,
-                "path": "embedding",
-                "k": 50,
-                "filter": {
-                    "compound": {
-                        "mustNot": [
-                            {"equals": {"value": job_id, "path": "_id"}},
-                        ],
-                        "must": [
-                            {"equals": {"value": True, "path": "is_active"}},
-                            {
-                                "compound": {
-                                    "should": [
-                                        {
-                                            "equals": {
-                                                "value": None,
-                                                "path": "expires_at",
-                                            }
-                                        },
-                                        {
-                                            "range": {
-                                                "path": "expires_at",
-                                                "gt": datetime.now(UTC),
-                                            }
-                                        },
-                                    ],
-                                    "minimumShouldMatch": 1,
-                                }
-                            },
-                        ],
-                    }
+            "$search": {
+                "index": JOB_SEARCH_INDEX_NAME,
+                "knnBeta": {
+                    "vector": job_embedding,
+                    "path": "embedding",
+                    "k": 50,
+                    "filter": {
+                        "compound": {
+                            "mustNot": [
+                                {"equals": {"value": job_id, "path": "_id"}},
+                            ],
+                            "must": [
+                                {"equals": {"value": True, "path": "is_active"}},
+                                {
+                                    "compound": {
+                                        "should": [
+                                            {
+                                                "equals": {
+                                                    "value": None,
+                                                    "path": "expires_at",
+                                                }
+                                            },
+                                            {
+                                                "range": {
+                                                    "path": "expires_at",
+                                                    "gt": datetime.now(UTC),
+                                                }
+                                            },
+                                        ],
+                                        "minimumShouldMatch": 1,
+                                    }
+                                },
+                            ],
+                        }
+                    },
                 },
             }
         }
