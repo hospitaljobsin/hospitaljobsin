@@ -7,7 +7,7 @@ from enum import Enum
 from typing import Any, Literal, get_args
 
 import pymongo
-from beanie import DeleteRules, PydanticObjectId, WriteRules
+from beanie import DeleteRules, Link, PydanticObjectId, WriteRules
 from beanie.odm.queries.aggregation import AggregationQuery
 from beanie.operators import And, In, Or, Set
 from bson import ObjectId
@@ -204,6 +204,7 @@ class JobRepo:
             max_experience=max_experience,
             expires_at=expires_at,
             organization=organization.id,
+            organization_name=organization.name,
             type=job_type,
             work_mode=work_mode,
             skills=skills,
@@ -259,7 +260,12 @@ class JobRepo:
 
         # Update fields
         if job.title != title:
-            job.slug = await self.generate_slug(title, job.organization.ref.id)
+            job.slug = await self.generate_slug(
+                title,
+                job.organization.ref.id
+                if isinstance(job.organization, Link)
+                else job.organization.id,
+            )
         job.title = title
         job.description = description
         job.description_cleaned = clean_markdown_text(description)
@@ -497,6 +503,7 @@ class JobRepo:
         # Add geospatial search if coordinates provided
         if location:
             region = await self._region_repo.get_by_name(location)
+            print(f"DEBUG: Found region for location '{location}': {region}")
             if region is None:
                 return paginator.empty()
 
@@ -517,7 +524,10 @@ class JobRepo:
                 geo_query = {
                     "geoWithin": {
                         "circle": {
-                            "center": region.coordinates.model_dump(),
+                            "center": {
+                                "type": "Point",
+                                "coordinates": region.coordinates.coordinates,
+                            },
                             "radius": max_distance_meters,
                         },
                         "path": "geo",
@@ -722,7 +732,7 @@ class JobRepo:
                 {
                     "compound": {
                         "should": [
-                            {"text": {"query": mode.value, "path": "work_mode"}}
+                            {"text": {"query": mode.value.lower(), "path": "work_mode"}}
                             for mode in work_mode
                         ],
                         "minimumShouldMatch": 1,
@@ -736,7 +746,12 @@ class JobRepo:
                 {
                     "compound": {
                         "should": [
-                            {"text": {"query": given_type.value, "path": "type"}}
+                            {
+                                "text": {
+                                    "query": given_type.value.lower(),
+                                    "path": "type",
+                                }
+                            }
                             for given_type in job_type
                         ],
                         "minimumShouldMatch": 1,

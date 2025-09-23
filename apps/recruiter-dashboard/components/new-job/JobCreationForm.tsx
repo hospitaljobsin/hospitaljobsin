@@ -43,7 +43,7 @@ const jobFormSchema = z
 		description: z.string().min(1, 'This field is required').max(4000),
 		vacancies: z.number().positive().nullable().optional(),
 		skills: z.array(z.object({ value: z.string() })),
-		location: z.string().optional(),
+		location: z.string().min(1, 'This field is required'),
 		applicantLocations: z.array(z.string()),
 		minSalary: z.number().positive().nullable(),
 		maxSalary: z.number().positive().nullable(),
@@ -65,18 +65,6 @@ const jobFormSchema = z
 		{
 			message: 'At least one eligible country is required for remote jobs',
 			path: ['applicantLocations']
-		}
-	)
-	.refine(
-		data => {
-			if (data.workMode !== 'REMOTE' && !data.location) {
-				return false;
-			}
-			return true;
-		},
-		{
-			message: 'Location is required',
-			path: ['location']
 		}
 	);
 
@@ -238,7 +226,7 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 				description: formData.description,
 				vacancies: formData.vacancies ?? undefined,
 				skills: formData.skills.map(s => s.value),
-				location: formData.workMode === 'REMOTE' ? null : formData.location,
+				location: formData.location,
 				applicantLocations: formData.workMode === 'REMOTE' ? formData.applicantLocations : [],
 				minSalary: formData.minSalary || null,
 				maxSalary: formData.maxSalary || null,
@@ -415,7 +403,25 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 							)}
 						/>
 					</div>
-
+					<Controller
+						name='location'
+						control={control}
+						render={({ field }) => (
+							<LocationAutocomplete
+								label='Job Location'
+								labelPlacement='outside'
+								placeholder='Enter job location'
+								value={field.value ?? ''}
+								onChange={value => field.onChange(value.displayName)}
+								onValueChange={field.onChange}
+								description={workMode === 'REMOTE' ? 'Location of the hiring office for the job' : undefined}
+								errorMessage={errors.location?.message}
+								isInvalid={!!errors.location}
+								isRequired
+								validationBehavior='aria'
+							/>
+						)}
+					/>
 					{workMode === 'REMOTE' && (
 						<Controller
 							name='applicantLocations'
@@ -423,7 +429,6 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 							render={({ field }) => (
 								<Select
 									label='Eligible Countries'
-									labelPlacement='outside'
 									placeholder='Select countries'
 									selectionMode='multiple'
 									selectedKeys={new Set(field.value)}
@@ -445,26 +450,7 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 							)}
 						/>
 					)}
-					{workMode !== 'REMOTE' && (
-						<Controller
-							name='location'
-							control={control}
-							render={({ field }) => (
-								<LocationAutocomplete
-									label='Job Location'
-									labelPlacement='outside'
-									placeholder='Enter job location'
-									value={field.value ?? ''}
-									onChange={value => field.onChange(value.displayName)}
-									onValueChange={field.onChange}
-									errorMessage={errors.location?.message}
-									isInvalid={!!errors.location}
-									isRequired
-									validationBehavior='aria'
-								/>
-							)}
-						/>
-					)}
+
 					<Accordion
 						selectionMode='multiple'
 						variant='light'

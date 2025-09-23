@@ -67,7 +67,7 @@ from app.organizations.exceptions import (
 )
 from app.organizations.repositories import OrganizationRepo
 from app.organizations.services import OrganizationMemberService
-from app.revalidation.services import RevalidationService
+from app.revalidation.services import BaseRevalidationService
 
 
 class SavedJobService:
@@ -151,7 +151,7 @@ class JobService:
         job_application_form_repo: JobApplicationFormRepo,
         job_metric_repo: JobMetricRepo,
         region_repo: RegionRepo,
-        revalidation_service: RevalidationService,
+        revalidation_service: BaseRevalidationService,
     ) -> None:
         self._job_repo = job_repo
         self._organization_repo = organization_repo
@@ -256,7 +256,9 @@ class JobService:
 
         if work_mode == "remote" and len(applicant_locations) == 0:
             return Err(InvalidApplicantLocationsError())
-        if work_mode != "remote" and location is None:
+        if work_mode != "remote" and len(applicant_locations) > 0:
+            return Err(InvalidApplicantLocationsError())
+        if location is None:
             return Err(InvalidLocationError())
 
         country_validator = TypeAdapter(list[CountryAlpha2])
@@ -881,7 +883,6 @@ class JobMetricService:
         end_date: datetime | None = None,
     ) -> Result[int, OrganizationAuthorizationError]:
         """Get the count of job metrics for a given organization ID and event type."""
-
         if not await self._organization_member_service.is_member(
             account_id=account.id,
             organization_id=organization_id,
@@ -906,7 +907,6 @@ class JobMetricService:
         end_date: datetime | None = None,
     ) -> Result[int, OrganizationAuthorizationError]:
         """Get the count of job metrics for a given job ID and event type."""
-
         if not await self._organization_member_service.is_member(
             account_id=account.id,
             organization_id=organization_id,

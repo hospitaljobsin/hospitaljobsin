@@ -43,7 +43,7 @@ from app.organizations.repositories import (
     OrganizationMemberRepo,
     OrganizationRepo,
 )
-from app.revalidation.services import RevalidationService
+from app.revalidation.services import BaseRevalidationService
 
 
 class OrganizationMemberService:
@@ -52,7 +52,7 @@ class OrganizationMemberService:
         organization_member_repo: OrganizationMemberRepo,
         organization_repo: OrganizationRepo,
         dataloaders: Dataloaders,
-        revalidation_service: RevalidationService,
+        revalidation_service: BaseRevalidationService,
     ) -> None:
         self._organization_member_repo = organization_member_repo
         self._organization_repo = organization_repo
@@ -230,7 +230,7 @@ class OrganizationService:
         organization_member_service: OrganizationMemberService,
         s3_client: S3Client,
         aws_settings: AWSSettings,
-        revalidation_service: RevalidationService,
+        revalidation_service: BaseRevalidationService,
     ) -> None:
         self._organization_repo = organization_repo
         self._organization_member_repo = organization_member_repo
@@ -501,7 +501,7 @@ class OrganizationInviteService:
         email_sender: BaseEmailSender,
         app_settings: AppSettings,
         frontend_settings: FrontendSettings,
-        revalidation_service: RevalidationService,
+        revalidation_service: BaseRevalidationService,
     ) -> None:
         self._invite_repo = invite_repo
         self._organization_repo = organization_repo

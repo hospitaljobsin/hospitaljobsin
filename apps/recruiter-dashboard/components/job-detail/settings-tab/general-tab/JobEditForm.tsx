@@ -155,7 +155,7 @@ const formSchema = z
 		description: z.string().min(1, 'This field is required').max(4000),
 		vacancies: z.number().nonnegative().nullable(),
 		skills: z.array(z.object({ value: z.string() })),
-		location: z.string().optional(),
+		location: z.string().min(1, 'This field is required'),
 		applicantLocations: z.array(z.string().min(1, 'This field is required')),
 		minSalary: z.number().positive().nullable().optional(),
 		maxSalary: z.number().positive().nullable().optional(),
@@ -183,18 +183,6 @@ const formSchema = z
 		{
 			message: 'At least one eligible country is required for remote jobs',
 			path: ['applicantLocations']
-		}
-	)
-	.refine(
-		data => {
-			if (data.workMode !== 'REMOTE' && !data.location) {
-				return false;
-			}
-			return true;
-		},
-		{
-			message: 'Location is required',
-			path: ['location']
 		}
 	);
 
@@ -234,7 +222,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 					value: skill
 				})) ?? [],
 			location: jobData.location || undefined,
-			applicantLocations: jobData.applicantLocations.map(location => location),
+			applicantLocations: jobData.applicantLocations.length > 0 ? jobData.applicantLocations.map(location => location) : ['IN'],
 			minSalary: jobData.minSalary ?? null,
 			maxSalary: jobData.maxSalary ?? null,
 			minExperience: jobData.minExperience ?? null,
@@ -295,7 +283,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 				description: formData.description,
 				vacancies: formData.vacancies ?? undefined,
 				skills: formData.skills.flatMap(skill => skill.value),
-				location: formData.workMode === 'REMOTE' ? undefined : formData.location,
+				location: formData.location,
 				applicantLocations: formData.workMode === 'REMOTE' ? formData.applicantLocations : [],
 				minSalary: formData.minSalary,
 				maxSalary: formData.maxSalary,
@@ -544,6 +532,29 @@ export default function JobEditForm({ rootQuery }: Props) {
 								}}
 							/>
 						</div>
+						<Controller
+							name='location'
+							control={control}
+							render={({ field }) => (
+								<LocationAutocomplete
+									label='Job Location'
+									labelPlacement='outside'
+									placeholder='Add job location'
+									value={field.value ?? ''}
+									onChange={value => {
+										field.onChange(value.displayName);
+									}}
+									onValueChange={value => {
+										field.onChange(value);
+									}}
+									description={watch('workMode') === 'REMOTE' ? 'Location of the hiring office for the job' : undefined}
+									errorMessage={errors.location?.message}
+									isInvalid={!!errors.location}
+									isRequired
+									validationBehavior='aria'
+								/>
+							)}
+						/>
 						{watch('workMode') === 'REMOTE' && (
 							<Controller
 								name='applicantLocations'
@@ -551,7 +562,6 @@ export default function JobEditForm({ rootQuery }: Props) {
 								render={({ field }) => (
 									<Select
 										label='Eligible Countries'
-										labelPlacement='outside'
 										placeholder='Select countries'
 										selectionMode='multiple'
 										selectedKeys={new Set(field.value)}
@@ -573,30 +583,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 								)}
 							/>
 						)}
-						{watch('workMode') !== 'REMOTE' && (
-							<Controller
-								name='location'
-								control={control}
-								render={({ field }) => (
-									<LocationAutocomplete
-										label='Job Location'
-										labelPlacement='outside'
-										placeholder='Add job location'
-										value={field.value ?? ''}
-										onChange={value => {
-											field.onChange(value.displayName);
-										}}
-										onValueChange={value => {
-											field.onChange(value);
-										}}
-										errorMessage={errors.location?.message}
-										isInvalid={!!errors.location}
-										isRequired
-										validationBehavior='aria'
-									/>
-								)}
-							/>
-						)}
+
 						<Accordion
 							selectionMode='multiple'
 							variant='light'

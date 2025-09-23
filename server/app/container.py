@@ -139,7 +139,11 @@ from app.organizations.services import (
     OrganizationMemberService,
     OrganizationService,
 )
-from app.revalidation.services import RevalidationService
+from app.revalidation.services import (
+    BaseRevalidationService,
+    DummyRevalidationService,
+    RevalidationService,
+)
 from app.testing.services import TestSetupService
 
 settings_classes: list[type[BaseSettings]] = [
@@ -252,6 +256,18 @@ def register_message_sender(container: aioinject.Container) -> None:
         )
 
 
+def register_revalidation_service(container: aioinject.Container) -> None:
+    env_settings = get_settings(EnvironmentSettings)
+    if env_settings.is_production or env_settings.is_staging:
+        container.register(
+            aioinject.Scoped(RevalidationService, BaseRevalidationService)
+        )
+    else:
+        container.register(
+            aioinject.Singleton(DummyRevalidationService, BaseRevalidationService)
+        )
+
+
 @lru_cache
 def create_container() -> aioinject.Container:
     """Create a container instance."""
@@ -268,6 +284,7 @@ def create_container() -> aioinject.Container:
     register_email_sender(container)
     register_ocr_client(container)
     register_message_sender(container)
+    register_revalidation_service(container)
     env_settings = get_settings(EnvironmentSettings)
     if env_settings.is_testing or env_settings.is_staging:
         container.register(aioinject.Scoped(TestSetupService))
@@ -333,5 +350,4 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(create_profile_parser_agent))
     container.register(aioinject.Singleton(JobApplicantAnalysisService))
     container.register(aioinject.Singleton(ProfileParserService))
-    container.register(aioinject.Singleton(RevalidationService))
     return container

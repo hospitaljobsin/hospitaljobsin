@@ -141,7 +141,7 @@ async def test_create_job_successful_remote_type(
             "title": "Software Engineer",
             "description": "A great software engineering position",
             "skills": ["Python", "FastAPI"],
-            "location": None,
+            "location": "Mumbai",
             "workMode": "REMOTE",
             "applicantLocations": ["IN"],
         },
@@ -154,7 +154,7 @@ async def test_create_job_successful_remote_type(
     assert job["title"] == "Software Engineer"
     assert job["description"] == "A great software engineering position"
     assert job["skills"] == ["Python", "FastAPI"]
-    assert job["location"] is None
+    assert job["location"] == "Mumbai"
     assert job["applicantLocations"] == ["IN"]
     assert job["currency"] == "INR"  # default value
     assert job["isSalaryNegotiable"] is False  # default value
@@ -172,13 +172,13 @@ async def test_create_job_invalid_remote_type(
             "title": "Software Engineer",
             "description": "A great software engineering position",
             "skills": ["Python", "FastAPI"],
-            "location": None,
+            "location": "Mumbai",
             "applicantLocations": ["IN"],
         },
     )
 
     data = response["data"]["createJob"]
-    assert data["__typename"] == "InvalidLocationError"
+    assert data["__typename"] == "InvalidApplicantLocationsError"
 
 
 async def test_create_job_successful_all_fields(
@@ -309,6 +309,7 @@ async def test_create_job_invalid_applicant_locations(
             "title": "Software Engineer",
             "description": "A great software engineering position",
             "skills": ["Python"],
+            "location": "Mumbai",
             "workMode": "REMOTE",
             "applicantLocations": ["InvalidCity123", "AnotherInvalidCity456"],
         },

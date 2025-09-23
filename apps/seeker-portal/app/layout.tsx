@@ -4,6 +4,7 @@ import PostHogIdentifier from '@/components/PostHogIdentifier';
 import { ReactScan } from '@/components/ReactScanComponent';
 import { APP_DESCRIPTION, APP_TITLE } from '@/lib/constants';
 import { env } from '@/lib/env/client';
+import { GoogleTagManager } from '@next/third-parties/google';
 import type { Metadata } from 'next';
 import { Work_Sans } from 'next/font/google';
 import { headers } from 'next/headers';
@@ -36,6 +37,7 @@ export default function RootLayout({
 	return (
 		<html lang='en' suppressHydrationWarning>
 			<ReactScan />
+			<GoogleTagManager gtmId='GTM-TKGSDM8M' />
 			<body className={`${workSans.variable} antialiased light`}>
 				<Providers headersPromise={headersPromise}>
 					<PostHogIdentifier />

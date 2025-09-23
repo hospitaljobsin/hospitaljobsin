@@ -3,7 +3,13 @@ import httpx
 from app.config import EnvironmentSettings, RevalidateSettings
 
 
-class RevalidationService:
+class BaseRevalidationService:
+    async def revalidate_tag(self, tag: str) -> None:
+        """Revalidate frontend data cache with the given tag."""
+        raise NotImplementedError
+
+
+class RevalidationService(BaseRevalidationService):
     def __init__(
         self, revalidate_settings: RevalidateSettings, env_settings: EnvironmentSettings
     ) -> None:
@@ -22,3 +28,8 @@ class RevalidationService:
             )
 
         response.raise_for_status()
+
+
+class DummyRevalidationService(BaseRevalidationService):
+    async def revalidate_tag(self, tag: str) -> None:
+        """Dummy revalidation service that does nothing."""
