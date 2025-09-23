@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<415724fb8fd8b782d1bcfa06524fab35>>
+ * @generated SignedSource<<e2e090f146316079b8e57c098a1316a9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,7 @@ import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type SearchJobsListFragment$data = {
   readonly viewer: {
-    readonly " $fragmentSpreads": FragmentRefs<"JobControlsAuthFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"FallbackJobsListAccountFragment" | "JobControlsAuthFragment">;
   };
   readonly " $fragmentSpreads": FragmentRefs<"SearchJobsListInternalFragment">;
   readonly " $fragmentType": "SearchJobsListFragment";
@@ -137,6 +137,11 @@ const node: ReaderFragment = {
           "args": null,
           "kind": "FragmentSpread",
           "name": "JobControlsAuthFragment"
+        },
+        {
+          "args": null,
+          "kind": "FragmentSpread",
+          "name": "FallbackJobsListAccountFragment"
         }
       ],
       "storageKey": null
@@ -146,6 +151,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "9ae9b84bf5dfce0ba07ca31a2f110bcb";
+(node as any).hash = "35cfed5810d4481f9dedd26a3e26768c";
 
 export default node;
