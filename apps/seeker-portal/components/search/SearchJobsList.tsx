@@ -180,7 +180,8 @@ export default function SearchJobsList({
 							<Image src='/illustrations/empty.svg' alt='No jobs found' width={200} height={200} />
 							<div className='flex flex-col gap-4 items-center'>
 								<h2 className='font-medium text-muted-foreground text-base text-center'>
-									No jobs found {searchTerm ? `for "${searchTerm}"` : ''} {location ? `in ${location}` : ''}.
+									No jobs found{searchTerm ? ` for "${searchTerm}"` : ''}
+									{location ? ` in ${location}` : ''}.
 								</h2>
 								<p className='text-muted-foreground text-sm text-center max-w-xs'>
 									Try searching for another keyword or check for spelling errors in your search query.
