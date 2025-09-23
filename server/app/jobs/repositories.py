@@ -21,6 +21,7 @@ from app.core.constants import (
     JOB_APPLICANT_EMBEDDING_DIMENSIONS,
     JOB_APPLICANT_EMBEDDING_INDEX_NAME,
     JOB_EMBEDDING_DIMENSIONS,
+    JOB_EMBEDDING_INDEX_NAME,
     JOB_SEARCH_INDEX_NAME,
     RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD,
     RELATED_JOBS_SIMILARITY_THRESHOLD,
@@ -128,6 +129,10 @@ class JobRepo:
             f"Type: {job_type or 'N/A'}\n"
             f"Work Mode: {work_mode or 'N/A'}"
         )
+
+    @staticmethod
+    def format_search_term_for_embedding(search_term: str) -> str:
+        return f"Search Term: {search_term}"
 
     async def get_for_whatsapp_message_generation(self) -> list[Job]:
         """Get all jobs that are active and haven't been posted already, for whatsapp message generation."""
@@ -459,59 +464,50 @@ class JobRepo:
         after: str | None = None,
         sort_by: JobSearchSortBy = JobSearchSortBy.RELEVANCE,
     ) -> PaginatedResult[SearchableJob, str]:
-        """Get a paginated result of active jobs with advanced search capabilities."""
-        paginator: SearchPaginator[Job, SearchableJob] = SearchPaginator(
+        """
+        Get a paginated result of active jobs.
+
+        If a 'search_term' is provided, it performs a vector search and applies all other
+        parameters as pre-filters.
+
+        If 'search_term' is None, it performs a standard filtered search.
+        """
+        paginator = SearchPaginator(
             document_cls=Job,
             projection_model=SearchableJob,
-            search_index_name=JOB_SEARCH_INDEX_NAME,
-            calculate_total_count=True,  # Disable for now to debug
+            calculate_total_count=True,
         )
 
-        # Build Atlas Search query
-        search_query = {
-            "compound": {
-                "must": [
-                    # Always filter for active jobs
-                    {"equals": {"value": True, "path": "is_active"}},
-                    # Filter for non-expired jobs (either null or greater than current date)
-                    {
-                        "compound": {
-                            "should": [
-                                {"equals": {"value": None, "path": "expires_at"}},
-                                {
-                                    "range": {
-                                        "path": "expires_at",
-                                        "gt": datetime.now(UTC),
-                                    }
-                                },
-                            ],
-                            "minimumShouldMatch": 1,
-                        }
-                    },
-                ],
-                "should": [],
-                "filter": [],
-            },
-        }
+        # --- Build Filter Clauses ---
+        # These clauses are used for pre-filtering in vector search
+        # or as the main query in a standard search.
+        must_clauses = []
+        filter_clauses = []  # Clauses that don't affect scoring in standard search
 
-        match sort_by:
-            case JobSearchSortBy.RELEVANCE:
-                search_query["sort"] = {"score": {"order": -1}}
-            case JobSearchSortBy.UPDATED_AT:
-                search_query["sort"] = {"updated_at": {"order": -1}}
+        # Always filter for active jobs
+        must_clauses.append({"equals": {"path": "is_active", "value": True}})
 
-        # Add geospatial search if coordinates provided
+        # Filter for non-expired jobs
+        must_clauses.append(
+            {
+                "compound": {
+                    "should": [
+                        {"equals": {"path": "expires_at", "value": None}},
+                        {"range": {"path": "expires_at", "gt": datetime.now(UTC)}},
+                    ],
+                    "minimumShouldMatch": 1,
+                }
+            }
+        )
+
+        # Geospatial filter
         if location:
             region = await self._region_repo.get_by_name(location)
-            print(f"DEBUG: Found region for location '{location}': {region}")
-            if region is None:
+            if not region:
                 return paginator.empty()
 
-            max_distance_meters = (proximity_km or 1.0) * 1000.0
-
-            if region.geometry is not None:
-                # TODO: we should use proximity-KM here
-                search_query["compound"]["must"].append(
+            if region.geometry:
+                must_clauses.append(
                     {
                         "geoWithin": {
                             "path": "geo",
@@ -520,135 +516,25 @@ class JobRepo:
                     }
                 )
             else:
-                # Use geoWithin for strict distance filtering
-                geo_query = {
-                    "geoWithin": {
-                        "circle": {
-                            "center": {
-                                "type": "Point",
-                                "coordinates": region.coordinates.coordinates,
+                max_distance_meters = (proximity_km or 1.0) * 1000.0
+                must_clauses.append(
+                    {
+                        "geoWithin": {
+                            "circle": {
+                                "center": {
+                                    "type": "Point",
+                                    "coordinates": region.coordinates.coordinates,
+                                },
+                                "radius": max_distance_meters,
                             },
-                            "radius": max_distance_meters,
-                        },
-                        "path": "geo",
+                            "path": "geo",
+                        }
                     }
-                }
-                print(
-                    f"DEBUG: Adding geo query with radius {max_distance_meters} radians ({max_distance_meters}m): {geo_query}"
                 )
-                search_query["compound"]["must"].append(geo_query)
 
-        # Add text search if provided
-        if search_term:
-            search_query["compound"]["must"].append(
-                {
-                    "compound": {
-                        "should": [
-                            # Exact phrase match in title (highest priority)
-                            {
-                                "phrase": {
-                                    "query": search_term,
-                                    "path": "title",
-                                    "score": {"boost": {"value": 100}},
-                                }
-                            },
-                            # Exact phrase match in skills (very high priority for skill-based searches)
-                            {
-                                "phrase": {
-                                    "query": search_term,
-                                    "path": "skills",
-                                    "score": {"boost": {"value": 80}},
-                                }
-                            },
-                            # Exact phrase match in description (high priority)
-                            {
-                                "phrase": {
-                                    "query": search_term,
-                                    "path": "description_cleaned",
-                                    "score": {"boost": {"value": 40}},
-                                }
-                            },
-                            # Multi-word search: if search term has multiple words,
-                            # require ALL words to be present in the same field
-                            *(
-                                [
-                                    {
-                                        "text": {
-                                            "query": search_term,
-                                            "path": "title",
-                                            "score": {"boost": {"value": 60}},
-                                        }
-                                    },
-                                    {
-                                        "text": {
-                                            "query": search_term,
-                                            "path": "skills",
-                                            "score": {"boost": {"value": 50}},
-                                        }
-                                    },
-                                    {
-                                        "text": {
-                                            "query": search_term,
-                                            "path": "description_cleaned",
-                                            "score": {"boost": {"value": 25}},
-                                        }
-                                    },
-                                ]
-                                if len(search_term.split()) > 1
-                                else []
-                            ),
-                            # Single word or very controlled fuzzy matching (much lower priority)
-                            *(
-                                [
-                                    {
-                                        "text": {
-                                            "query": search_term,
-                                            "path": "title",
-                                            "score": {"boost": {"value": 20}},
-                                            "fuzzy": {
-                                                "maxEdits": 1,
-                                                "prefixLength": 3,
-                                                "maxExpansions": 10,
-                                            },
-                                        }
-                                    },
-                                    {
-                                        "text": {
-                                            "query": search_term,
-                                            "path": "skills",
-                                            "score": {"boost": {"value": 15}},
-                                            "fuzzy": {
-                                                "maxEdits": 1,
-                                                "prefixLength": 3,
-                                                "maxExpansions": 10,
-                                            },
-                                        }
-                                    },
-                                ]
-                                if len(search_term.split()) == 1
-                                and len(search_term) > 4
-                                else []
-                            ),
-                            # Location match (lowest priority for search relevance)
-                            {
-                                "text": {
-                                    "query": search_term,
-                                    "path": "location",
-                                    "score": {"boost": {"value": 5}},
-                                }
-                            },
-                        ],
-                        "minimumShouldMatch": 1,
-                    }
-                }
-            )
-
-        # Add experience filters
+        # Experience filters
         if min_experience is not None:
-            # Job should either:
-            # 1. Have max_experience >= min_experience, OR
-            # 2. Have min_experience >= min_experience (if max_experience is not set)
-            search_query["compound"]["must"].append(
+            must_clauses.append(
                 {
                     "compound": {
                         "should": [
@@ -668,12 +554,8 @@ class JobRepo:
                     }
                 }
             )
-
         if max_experience is not None:
-            # Job should either:
-            # 1. Have min_experience <= max_experience, OR
-            # 2. Have max_experience <= max_experience (if min_experience is not set)
-            search_query["compound"]["must"].append(
+            must_clauses.append(
                 {
                     "compound": {
                         "should": [
@@ -694,12 +576,9 @@ class JobRepo:
                 }
             )
 
-        # Add salary filters
+        # Salary filters
         if min_salary is not None:
-            # Job should either:
-            # 1. Have max_salary >= min_salary, OR
-            # 2. Have min_salary >= min_salary (if max_salary is not set)
-            search_query["compound"]["must"].append(
+            must_clauses.append(
                 {
                     "compound": {
                         "should": [
@@ -709,12 +588,8 @@ class JobRepo:
                     }
                 }
             )
-
         if max_salary is not None:
-            # Job should either:
-            # 1. Have min_salary <= max_salary, OR
-            # 2. Have max_salary <= max_salary (if min_salary is not set)
-            search_query["compound"]["must"].append(
+            must_clauses.append(
                 {
                     "compound": {
                         "should": [
@@ -725,43 +600,24 @@ class JobRepo:
                 }
             )
 
-        # Add work mode filter
-        if work_mode and len(work_mode) > 0:
-            # Use multiple values
-            search_query["compound"]["filter"].append(
+        # Work mode and Job type filters (placed in 'filter' context for non-vector search)
+        if work_mode:
+            filter_clauses.append(
                 {
-                    "compound": {
-                        "should": [
-                            {"text": {"query": mode.value.lower(), "path": "work_mode"}}
-                            for mode in work_mode
-                        ],
-                        "minimumShouldMatch": 1,
+                    "text": {
+                        "query": [mode.value.lower() for mode in work_mode],
+                        "path": "work_mode",
                     }
                 }
             )
-
-        # Add job type filter
-        if job_type and len(job_type) > 0:
-            search_query["compound"]["filter"].append(
-                {
-                    "compound": {
-                        "should": [
-                            {
-                                "text": {
-                                    "query": given_type.value.lower(),
-                                    "path": "type",
-                                }
-                            }
-                            for given_type in job_type
-                        ],
-                        "minimumShouldMatch": 1,
-                    }
-                }
+        if job_type:
+            filter_clauses.append(
+                {"text": {"query": [t.value.lower() for t in job_type], "path": "type"}}
             )
 
-        # Add cutoff datetime filter
-        if cutoff_datetime is not None:
-            search_query["compound"]["must"].append(
+        # Cutoff datetime filter
+        if cutoff_datetime:
+            must_clauses.append(
                 {
                     "range": {
                         "path": "_id",
@@ -770,12 +626,59 @@ class JobRepo:
                 }
             )
 
+        # --- Construct Final Search Query ---
+        search_query: dict[str, Any]
+
+        if search_term:
+            # --- VECTOR SEARCH PATH ---
+            # Generate embeddings for the search term
+            embedding = await self._embeddings_service.generate_embeddings(
+                text=self.format_search_term_for_embedding(search_term),
+                dimensions=JOB_EMBEDDING_DIMENSIONS,
+            )
+
+            # Combine all clauses for pre-filtering
+            all_pre_filters = must_clauses + filter_clauses
+
+            search_query = {
+                "vectorSearch": {
+                    "index": JOB_EMBEDDING_INDEX_NAME,
+                    "vector": embedding,
+                    "path": "embedding",  # CRITICAL: Replace with your vector field name in MongoDB
+                    "k": 50,  # Number of nearest neighbors to return
+                    "numCandidates": 150,  # Number of candidates to consider (must be >= k)
+                    "filter": {"compound": {"must": all_pre_filters}},
+                }
+            }
+            # Note: When using vectorSearch, results are automatically sorted by relevance score.
+            # The 'sort_by' parameter is ignored.
+
+        else:
+            # --- STANDARD FILTER-ONLY SEARCH PATH ---
+            search_query = {
+                "$search": {
+                    "index": JOB_SEARCH_INDEX_NAME,
+                    "compound": {
+                        "must": must_clauses,
+                        "filter": filter_clauses,
+                    },
+                }
+            }
+
+            # Apply sorting only for non-vector search
+            if sort_by == JobSearchSortBy.UPDATED_AT:
+                search_query["$search"]["sort"] = {"updated_at": {"order": -1}}
+            # If RELEVANCE is chosen without a search term, Atlas will use a default
+            # scoring, or we can default to sorting by date.
+            else:
+                search_query["$search"]["sort"] = {"score": {"order": -1}}
+
         return await paginator.paginate(
             search_query=search_query,
             first=first,
             last=last,
-            before=before if before else None,
-            after=after if after else None,
+            before=before,
+            after=after,
         )
 
     async def get_all_trending(
