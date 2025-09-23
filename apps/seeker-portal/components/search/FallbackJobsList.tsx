@@ -1,4 +1,5 @@
 import type { FallbackJobsListAccountFragment$key } from '@/__generated__/FallbackJobsListAccountFragment.graphql';
+import type { FallbackJobsListFragment$key } from '@/__generated__/FallbackJobsListFragment.graphql';
 import type { FallbackJobsListQuery as FallbackJobsListQueryType } from '@/__generated__/FallbackJobsListQuery.graphql';
 import { useFragment, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -26,6 +27,10 @@ fragment FallbackJobsListFragment on Query @refetchable(queryName: "FallbackJobs
         ...JobFragment
       }
     }
+    pageInfo {
+        endCursor
+        hasNextPage
+    }
   }
 }
 `;
@@ -39,7 +44,10 @@ const FallbackJobsListAccountFragment = graphql`
 export default function FallbackJobsList({ viewer }: { viewer: FallbackJobsListAccountFragment$key }) {
 	const accountData = useFragment(FallbackJobsListAccountFragment, viewer);
 	const root = useLazyLoadQuery<FallbackJobsListQueryType>(FallbackJobsListQuery, {}, { fetchPolicy: 'store-or-network' });
-	const { data, loadNext, isLoadingNext } = usePaginationFragment(FallbackJobsListFragment, root);
+	const { data, loadNext, isLoadingNext } = usePaginationFragment<FallbackJobsListQueryType, FallbackJobsListFragment$key>(
+		FallbackJobsListFragment,
+		root
+	);
 	const allJobEdges = data?.jobs?.edges ?? [];
 	const hasNextPage = data.jobs.pageInfo.hasNextPage;
 	// Handle infinite scroll when reaching the end

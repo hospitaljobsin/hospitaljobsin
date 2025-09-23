@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8aa01352d04ff0d19f870b12f1f2a1ff>>
+ * @generated SignedSource<<ca3875de8e0edc8376f1eeae39fc0d95>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,6 +18,10 @@ export type FallbackJobsListFragment$data = {
         readonly " $fragmentSpreads": FragmentRefs<"JobFragment">;
       };
     }>;
+    readonly pageInfo: {
+      readonly endCursor: string | null | undefined;
+      readonly hasNextPage: boolean;
+    };
   };
   readonly " $fragmentType": "FallbackJobsListFragment";
 };
@@ -176,6 +180,6 @@ return {
 };
 })();
 
-(node as any).hash = "813bb43908eb64835f88ebd86b25f1de";
+(node as any).hash = "7b0e28a40ecd67a9ce03aa54a22257e9";
 
 export default node;
