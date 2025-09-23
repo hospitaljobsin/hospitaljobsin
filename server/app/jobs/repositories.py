@@ -21,7 +21,6 @@ from app.core.constants import (
     JOB_APPLICANT_EMBEDDING_DIMENSIONS,
     JOB_APPLICANT_EMBEDDING_INDEX_NAME,
     JOB_EMBEDDING_DIMENSIONS,
-    JOB_EMBEDDING_INDEX_NAME,
     JOB_SEARCH_INDEX_NAME,
     RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD,
     RELATED_JOBS_SIMILARITY_THRESHOLD,
@@ -630,48 +629,126 @@ class JobRepo:
         search_query: dict[str, Any]
 
         if search_term:
-            # --- VECTOR SEARCH PATH ---
-            # Generate embeddings for the search term
-            embedding = await self._embeddings_service.generate_embeddings(
-                text=self.format_search_term_for_embedding(search_term),
-                dimensions=JOB_EMBEDDING_DIMENSIONS,
+            must_clauses.append(
+                {
+                    "compound": {
+                        "should": [
+                            # Exact phrase match in title (highest priority)
+                            {
+                                "phrase": {
+                                    "query": search_term,
+                                    "path": "title",
+                                    "score": {"boost": {"value": 100}},
+                                }
+                            },
+                            # Exact phrase match in skills (very high priority for skill-based searches)
+                            {
+                                "phrase": {
+                                    "query": search_term,
+                                    "path": "skills",
+                                    "score": {"boost": {"value": 80}},
+                                }
+                            },
+                            # Exact phrase match in description (high priority)
+                            {
+                                "phrase": {
+                                    "query": search_term,
+                                    "path": "description_cleaned",
+                                    "score": {"boost": {"value": 40}},
+                                }
+                            },
+                            # Multi-word search: if search term has multiple words,
+                            # require ALL words to be present in the same field
+                            *(
+                                [
+                                    {
+                                        "text": {
+                                            "query": search_term,
+                                            "path": "title",
+                                            "score": {"boost": {"value": 60}},
+                                        }
+                                    },
+                                    {
+                                        "text": {
+                                            "query": search_term,
+                                            "path": "skills",
+                                            "score": {"boost": {"value": 50}},
+                                        }
+                                    },
+                                    {
+                                        "text": {
+                                            "query": search_term,
+                                            "path": "description_cleaned",
+                                            "score": {"boost": {"value": 25}},
+                                        }
+                                    },
+                                ]
+                                if len(search_term.split()) > 1
+                                else []
+                            ),
+                            # Single word or very controlled fuzzy matching (much lower priority)
+                            *(
+                                [
+                                    {
+                                        "text": {
+                                            "query": search_term,
+                                            "path": "title",
+                                            "score": {"boost": {"value": 20}},
+                                            "fuzzy": {
+                                                "maxEdits": 1,
+                                                "prefixLength": 3,
+                                                "maxExpansions": 10,
+                                            },
+                                        }
+                                    },
+                                    {
+                                        "text": {
+                                            "query": search_term,
+                                            "path": "skills",
+                                            "score": {"boost": {"value": 15}},
+                                            "fuzzy": {
+                                                "maxEdits": 1,
+                                                "prefixLength": 3,
+                                                "maxExpansions": 10,
+                                            },
+                                        }
+                                    },
+                                ]
+                                if len(search_term.split()) == 1
+                                and len(search_term) > 4
+                                else []
+                            ),
+                            # Location match (lowest priority for search relevance)
+                            {
+                                "text": {
+                                    "query": search_term,
+                                    "path": "location",
+                                    "score": {"boost": {"value": 5}},
+                                }
+                            },
+                        ],
+                        "minimumShouldMatch": 1,
+                    }
+                }
             )
 
-            # Combine all clauses for pre-filtering
-            all_pre_filters = must_clauses + filter_clauses
-
-            search_query = {
-                "vectorSearch": {
-                    "index": JOB_EMBEDDING_INDEX_NAME,
-                    "vector": embedding,
-                    "path": "embedding",  # CRITICAL: Replace with your vector field name in MongoDB
-                    "k": 50,  # Number of nearest neighbors to return
-                    "numCandidates": 150,  # Number of candidates to consider (must be >= k)
-                    "filter": {"compound": {"must": all_pre_filters}},
-                }
+        search_query = {
+            "$search": {
+                "index": JOB_SEARCH_INDEX_NAME,
+                "compound": {
+                    "must": must_clauses,
+                    "filter": filter_clauses,
+                },
             }
-            # Note: When using vectorSearch, results are automatically sorted by relevance score.
-            # The 'sort_by' parameter is ignored.
+        }
 
+        # Apply sorting only for non-vector search
+        if sort_by == JobSearchSortBy.UPDATED_AT:
+            search_query["$search"]["sort"] = {"updated_at": {"order": -1}}
+        # If RELEVANCE is chosen without a search term, Atlas will use a default
+        # scoring, or we can default to sorting by date.
         else:
-            # --- STANDARD FILTER-ONLY SEARCH PATH ---
-            search_query = {
-                "$search": {
-                    "index": JOB_SEARCH_INDEX_NAME,
-                    "compound": {
-                        "must": must_clauses,
-                        "filter": filter_clauses,
-                    },
-                }
-            }
-
-            # Apply sorting only for non-vector search
-            if sort_by == JobSearchSortBy.UPDATED_AT:
-                search_query["$search"]["sort"] = {"updated_at": {"order": -1}}
-            # If RELEVANCE is chosen without a search term, Atlas will use a default
-            # scoring, or we can default to sorting by date.
-            else:
-                search_query["$search"]["sort"] = {"score": {"order": -1}}
+            search_query["$search"]["sort"] = {"score": {"order": -1}}
 
         return await paginator.paginate(
             search_query=search_query,

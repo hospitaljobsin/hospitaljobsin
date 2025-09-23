@@ -103,25 +103,18 @@
         <mj-wrapper padding="0" css-class="inner-wrapper">
     <!-- Header Section with Brand Colors -->
     <mj-section css-class="header-gradient" padding="0 20px">
-      <mj-column width="60%" padding="16px 0">
+      <mj-column width="100%" padding="16px 0">
         <mj-text align="left" color="#ffffff" font-size="24px" font-weight="600" padding="0">
           <span style="display: inline-flex; align-items: center; font-size: 24px;">
             <img src="{{ app_logo_url }}" alt="{{ app_name }} logo" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 12px;" />
             <span class="app-name-text">{{ app_name }}</span>
           </span>
         </mj-text>
-        <mj-text align="left" padding="0" color="#F4F4F5" font-size="20px">
+        <mj-text align="left" padding="0" color="#F4F4F5" font-size="14px">
           <span class="app-tagline-text">{{ app_tagline }}</span>
         </mj-text>
       </mj-column>
-      <mj-column width="40%">
-        <mj-text align="right" padding="0" width="100%">
-          <div class="hero-container" style="position: relative; height: 250px; overflow: hidden;">
-            <img src="{{ hero_image_1_url }}" alt="Healthcare Professional 1" style="width: auto; height: 250px; max-width: 100%; object-fit: cover; object-position: bottom; position: absolute; left: 0; top: 0; z-index: 10;" />
-            <img src="{{ hero_image_2_url }}" alt="Healthcare Professional 2" style="width: auto; height: 250px; max-width: 100%; object-fit: cover; object-position: bottom; position: absolute; left: 120px; top: 0; z-index: 20; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.1));" />
-          </div>
-        </mj-text>
-      </mj-column>
+
 
     </mj-section>
 
@@ -143,14 +136,14 @@
           <span style="display: inline-block; margin: 0 15px;">Sent by Team {{ app_name }}</span>
           <span style="display: inline-block; margin: 0 15px;">{{ company_name }} {{ current_year }}</span>
           <span class="social-icons" style="display: inline-block; margin: 0 15px;">
-            <a href="https://linkedin.com/company/hospitaljobsin" style="text-decoration: none; margin: 0 3px;">
-              <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/linkedin.svg" alt="LinkedIn" style="width: 16px; height: 16px; filter: invert(0.6);" />
+            <a href="https://linkedin.com/company/hospitaljobsin" style="text-decoration: none; margin: 0 3px; color: #9ca3af;">
+              <mj-text>Linkedin</mj-text>
             </a>
-            <a href="https://facebook.com/hospitaljobsin" style="text-decoration: none; margin: 0 3px;">
-              <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/facebook.svg" alt="Facebook" style="width: 16px; height: 16px; filter: invert(0.6);" />
+            <a href="https://facebook.com/hospitaljobsin" style="text-decoration: none; margin: 0 3px; color: #9ca3af;">
+              <mj-text>Facebook</mj-text>
             </a>
-            <a href="https://instagram.com/hospitaljobsin" style="text-decoration: none; margin: 0 3px;">
-              <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/instagram.svg" alt="Instagram" style="width: 16px; height: 16px; filter: invert(0.6);" />
+            <a href="https://instagram.com/hospitaljobsin" style="text-decoration: none; margin: 0 3px; color: #9ca3af;">
+              <mj-text>Instagram</mj-text>
             </a>
           </span>
         </mj-text>
