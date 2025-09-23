@@ -78,6 +78,7 @@ class OrganizationRepo:
         """Update the given organization."""
         if name is not UNSET:
             organization.name = name
+            # TODO: change organization name in all jobs as well
         if slug is not UNSET:
             organization.slug = slugify(slug)
         if description is not UNSET:

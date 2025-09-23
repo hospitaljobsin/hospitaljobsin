@@ -32,6 +32,9 @@ importers:
       '@next/bundle-analyzer':
         specifier: 15.3.5
         version: 15.3.5
+      '@next/third-parties':
+        specifier: 15.5.3
+        version: 15.5.3(next@15.5.3(@opentelemetry/api@1.9.0)(@playwright/test@1.55.0)(babel-plugin-react-compiler@19.1.0-rc.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
       '@opennextjs/aws':
         specifier: 3.7.7
         version: 3.7.7
@@ -267,6 +270,9 @@ importers:
       '@next/mdx':
         specifier: 15.3.3
         version: 15.3.3(@mdx-js/loader@3.1.0(webpack@5.101.3))(@mdx-js/react@3.1.0(@types/react@19.1.13)(react@19.1.1))
+      '@next/third-parties':
+        specifier: 15.5.3
+        version: 15.5.3(next@15.5.3(@opentelemetry/api@1.9.0)(@playwright/test@1.55.0)(babel-plugin-react-compiler@19.1.0-rc.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
       '@opennextjs/aws':
         specifier: 3.7.7
         version: 3.7.7
@@ -529,6 +535,9 @@ importers:
       '@next/mdx':
         specifier: 15.3.3
         version: 15.3.3(@mdx-js/loader@3.1.0(webpack@5.101.3))(@mdx-js/react@3.1.0(@types/react@19.1.13)(react@19.1.1))
+      '@next/third-parties':
+        specifier: 15.5.3
+        version: 15.5.3(next@15.5.3(@opentelemetry/api@1.9.0)(@playwright/test@1.55.0)(babel-plugin-react-compiler@19.1.0-rc.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
       '@opennextjs/aws':
         specifier: 3.7.7
         version: 3.7.7
@@ -743,6 +752,9 @@ importers:
       '@next/mdx':
         specifier: 15.5.3
         version: 15.5.3(@mdx-js/loader@3.1.1(webpack@5.101.3))(@mdx-js/react@3.1.1(@types/react@19.1.13)(react@19.1.1))
+      '@next/third-parties':
+        specifier: 15.5.3
+        version: 15.5.3(next@15.5.3(@opentelemetry/api@1.9.0)(@playwright/test@1.55.0)(babel-plugin-react-compiler@19.1.0-rc.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
       '@opennextjs/aws':
         specifier: 3.7.7
         version: 3.7.7
@@ -3536,6 +3548,12 @@ packages:
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
+
+  '@next/third-parties@15.5.3':
+    resolution: {integrity: sha512-DSKz1N6/WmacV8JAPizHt8dqTP6RljcOgtrnLDEIEI7TGpX1lSfoHwY0TxXVhVoN1WwUHGDo6XUJsSjaLpcMoQ==}
+    peerDependencies:
+      next: ^13.0.0 || ^14.0.0 || ^15.0.0
+      react: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
 
   '@node-minify/core@8.0.6':
     resolution: {integrity: sha512-/vxN46ieWDLU67CmgbArEvOb41zlYFOkOtr9QW9CnTrBLuTyGgkyNWC2y5+khvRw3Br58p2B5ZVSx/PxCTru6g==}
@@ -9210,6 +9228,9 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  third-party-capital@1.0.20:
+    resolution: {integrity: sha512-oB7yIimd8SuGptespDAZnNkzIz+NWaJCu2RMsbs4Wmp9zSDUM8Nhi3s2OOcqYuv3mN4hitXc8DVx+LyUmbUDiA==}
+
   thirty-two@1.0.2:
     resolution: {integrity: sha512-OEI0IWCe+Dw46019YLl6V10Us5bi574EvlJEOcAkB29IzQ/mYD1A6RyNHLjZPiHCmuodxvgF6U+vZO1L15lxVA==}
     engines: {node: '>=0.2.6'}
@@ -13679,6 +13700,12 @@ snapshots:
 
   '@next/swc-win32-x64-msvc@15.5.3':
     optional: true
+
+  '@next/third-parties@15.5.3(next@15.5.3(@opentelemetry/api@1.9.0)(@playwright/test@1.55.0)(babel-plugin-react-compiler@19.1.0-rc.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)':
+    dependencies:
+      next: 15.5.3(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.55.0)(babel-plugin-react-compiler@19.1.0-rc.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      react: 19.1.1
+      third-party-capital: 1.0.20
 
   '@node-minify/core@8.0.6':
     dependencies:
@@ -21212,6 +21239,8 @@ snapshots:
       acorn: 8.15.0
       commander: 2.20.3
       source-map-support: 0.5.21
+
+  third-party-capital@1.0.20: {}
 
   thirty-two@1.0.2: {}
 

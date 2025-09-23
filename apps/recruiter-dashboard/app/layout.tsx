@@ -3,6 +3,7 @@ import PostHogIdentifier from '@/components/PostHogIdentifier';
 import { ReactScan } from '@/components/ReactScanComponent';
 import { env } from '@/lib/env/client';
 import '@copilotkit/react-ui/styles.css';
+import { GoogleTagManager } from '@next/third-parties/google';
 import type { Metadata } from 'next';
 import { Work_Sans } from 'next/font/google';
 import { headers } from 'next/headers';
@@ -29,6 +30,7 @@ export default function RootLayout({
 	return (
 		<html lang='en' suppressHydrationWarning>
 			<ReactScan />
+			<GoogleTagManager gtmId='GTM-TKGSDM8M' />
 			<body className={`${workSans.variable} antialiased h-full w-full`}>
 				{/* Workaround to fix navigation scroll issues */}
 				<div />

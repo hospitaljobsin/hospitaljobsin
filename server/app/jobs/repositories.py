@@ -204,6 +204,7 @@ class JobRepo:
             max_experience=max_experience,
             expires_at=expires_at,
             organization=organization.id,
+            organization_name=organization.name,
             type=job_type,
             work_mode=work_mode,
             skills=skills,

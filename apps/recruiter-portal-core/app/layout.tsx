@@ -1,9 +1,10 @@
 import CookieBanner from '@/components/CookieBanner';
+import Footer from '@/components/layout/Footer';
 import PostHogIdentifier from '@/components/PostHogIdentifier';
 import { ReactScan } from '@/components/ReactScanComponent';
-import Footer from '@/components/layout/Footer';
 import { APP_NAME, APP_TAGLINE } from '@/lib/constants';
 import { env } from '@/lib/env/client';
+import { GoogleTagManager } from '@next/third-parties/google';
 import type { Metadata } from 'next';
 import { Work_Sans } from 'next/font/google';
 import { headers } from 'next/headers';
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
 	metadataBase: new URL(env.NEXT_PUBLIC_URL)
 };
 
-export default async function RootLayout({
+export default function RootLayout({
 	children
 }: Readonly<{
 	children: React.ReactNode;
@@ -35,6 +36,7 @@ export default async function RootLayout({
 	return (
 		<html lang='en' suppressHydrationWarning>
 			<ReactScan />
+			<GoogleTagManager gtmId='GTM-TKGSDM8M' />
 			<body className={`${workSans.variable} antialiased h-full w-full`}>
 				{/* Workaround to fix navigation scroll issues */}
 				<div />
