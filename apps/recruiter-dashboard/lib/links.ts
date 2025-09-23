@@ -1,31 +1,25 @@
-import { env } from "./env/client";
+import { env } from './env/client';
 
-const protocol =
-	env.NEXT_PUBLIC_ENVIRONMENT === "production" ? "https" : "http";
+const protocol = env.NEXT_PUBLIC_ENVIRONMENT === 'production' ? 'https' : 'http';
 
 const links = {
 	landing: env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL,
 	recruiterPortalSelect: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/select`,
-	dashboard: "/",
+	dashboard: '/',
 	createOrganization: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/new`,
-	organizationDetail: (slug: string) =>
-		`${protocol}://${slug}.${env.NEXT_PUBLIC_ROOT_DOMAIN}`,
+	organizationDetail: (slug: string) => `${protocol}://${slug}.${env.NEXT_PUBLIC_ROOT_DOMAIN}`,
 	jobDetailAnalytics: (jobSlug: string) => `/jobs/${jobSlug}/analytics`,
-	organizationDetailMembers: "/settings/members",
-	organizationDetailMemberInvites: "/settings/invites",
-	organizationDetailVerification: "/settings/verification",
-	organizationCreateJob: "/new-job",
-	organizationDetailSettings: "/settings",
-	jobDetailSettingsApplicationForm: (jobSlug: string) =>
-		`/jobs/${jobSlug}/settings/application-form`,
+	organizationDetailMembers: '/settings/members',
+	organizationDetailMemberInvites: '/settings/invites',
+	organizationDetailVerification: '/settings/verification',
+	organizationCreateJob: '/new-job',
+	organizationDetailSettings: '/settings',
+	jobDetailSettingsApplicationForm: (jobSlug: string) => `/jobs/${jobSlug}/screening-questions`,
 	jobDetailSettings: (jobSlug: string) => `/jobs/${jobSlug}/settings`,
 	jobDetailApplicants: (jobSlug: string) => `/jobs/${jobSlug}`,
-	applicantDetail: (jobSlug: string, applicantSlug: string) =>
-		`/jobs/${jobSlug}/applicants/${applicantSlug}`,
+	applicantDetail: (jobSlug: string, applicantSlug: string) => `/jobs/${jobSlug}/applicants/${applicantSlug}`,
 	login: (returnTo: string | undefined = undefined) =>
-		returnTo
-			? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login?return_to=${returnTo}`
-			: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login`,
+		returnTo ? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login?return_to=${returnTo}` : `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login`,
 	signup: (returnTo: string | undefined = undefined) =>
 		returnTo
 			? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/signup?return_to=${returnTo}`
@@ -38,8 +32,7 @@ const links = {
 	terms: `${env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL}/terms`,
 	privacy: `${env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL}/privacy`,
 	aiGenerateJob: `${env.NEXT_PUBLIC_API_URL}/api/ai/generate-job`,
-	aiGenerateJobStatus: (kickoffId: string) =>
-		`${env.NEXT_PUBLIC_API_URL}/api/ai/generate-job/status/${kickoffId}`,
+	aiGenerateJobStatus: (kickoffId: string) => `${env.NEXT_PUBLIC_API_URL}/api/ai/generate-job/status/${kickoffId}`
 };
 
 export default links;

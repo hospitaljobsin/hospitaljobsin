@@ -1,11 +1,11 @@
-"use client";
-import type { JobTabsFragment$key } from "@/__generated__/JobTabsFragment.graphql";
-import links from "@/lib/links";
-import { Tab, Tabs } from "@heroui/react";
-import { ChartNoAxesCombinedIcon, SquarePenIcon, Users } from "lucide-react";
-import { useParams, usePathname } from "next/navigation";
-import { useFragment } from "react-relay";
-import { graphql } from "relay-runtime";
+'use client';
+import type { JobTabsFragment$key } from '@/__generated__/JobTabsFragment.graphql';
+import links from '@/lib/links';
+import { Tab, Tabs } from '@heroui/react';
+import { ChartNoAxesCombinedIcon, FileTextIcon, SquarePenIcon, Users } from 'lucide-react';
+import { useParams, usePathname } from 'next/navigation';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 
 const JobTabsFragment = graphql`
 fragment JobTabsFragment on Job {
@@ -21,28 +21,21 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 	const data = useFragment(JobTabsFragment, job);
 
 	function getSelectedKey(pathname: string) {
-		if (pathname === links.jobDetailSettingsApplicationForm(params.slug)) {
-			return links.jobDetailSettings(params.slug);
-		}
-
-		if (
-			params.applicantSlug &&
-			pathname === links.applicantDetail(params.slug, params.applicantSlug)
-		) {
+		if (params.applicantSlug && pathname === links.applicantDetail(params.slug, params.applicantSlug)) {
 			return links.jobDetailApplicants(params.slug);
 		}
 		return pathname;
 	}
 
 	return (
-		<div className="flex w-full flex-col">
+		<div className='flex w-full flex-col'>
 			<Tabs
-				aria-label="Organization Detail Menu"
-				color="default"
-				variant="underlined"
+				aria-label='Organization Detail Menu'
+				color='default'
+				variant='underlined'
 				classNames={{
-					tabList: "py-0",
-					tab: "py-6",
+					tabList: 'py-0',
+					tab: 'py-6'
 				}}
 				selectedKey={getSelectedKey(pathname)}
 			>
@@ -51,7 +44,7 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 						key={links.jobDetailApplicants(params.slug)}
 						href={links.jobDetailApplicants(params.slug)}
 						title={
-							<div className="flex items-center space-x-2">
+							<div className='flex items-center space-x-2'>
 								<Users />
 								<span>Applicants</span>
 							</div>
@@ -62,7 +55,7 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 					key={links.jobDetailAnalytics(params.slug)}
 					href={links.jobDetailAnalytics(params.slug)}
 					title={
-						<div className="flex items-center space-x-2">
+						<div className='flex items-center space-x-2'>
 							<ChartNoAxesCombinedIcon />
 							<span>Analytics</span>
 						</div>
@@ -72,9 +65,19 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 					key={links.jobDetailSettings(params.slug)}
 					href={links.jobDetailSettings(params.slug)}
 					title={
-						<div className="flex items-center space-x-2">
+						<div className='flex items-center space-x-2'>
 							<SquarePenIcon />
 							<span>Edit Job</span>
+						</div>
+					}
+				/>
+				<Tab
+					key={links.jobDetailSettingsApplicationForm(params.slug)}
+					href={links.jobDetailSettingsApplicationForm(params.slug)}
+					title={
+						<div className='flex items-center space-x-2'>
+							<FileTextIcon />
+							<span>Edit Screening Questions</span>
 						</div>
 					}
 				/>
