@@ -2,6 +2,7 @@ import type { JobCreationFormFragment$key } from '@/__generated__/JobCreationFor
 import type { JobCreationFormMutation } from '@/__generated__/JobCreationFormMutation.graphql';
 import { ChipsInput } from '@/components/forms/ChipsInput';
 import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
+import { SteppableNumberInput } from '@/components/forms/SteppableNumberInput';
 import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
 import { useNavigationGuard } from '@/lib/hooks/useNavigationGuard';
 import links from '@/lib/links';
@@ -475,7 +476,7 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 									name='minSalary'
 									render={({ field }) => (
 										<div className='flex flex-col gap-2 flex-1'>
-											<NumberInput
+											<SteppableNumberInput
 												label='Minimum Salary'
 												placeholder='Enter minimum salary'
 												formatOptions={{
@@ -485,20 +486,12 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 													currencySign: 'accounting'
 												}}
 												value={field.value as number | undefined}
-												onValueChange={value => {
-													if (Number.isNaN(value) || value === undefined) {
-														field.onChange(null);
-													} else {
-														field.onChange(value);
-													}
-												}}
+												onValueChange={field.onChange}
 												errorMessage={errors.minSalary?.message}
 												isInvalid={!!errors.minSalary}
 												step={1000}
 												isClearable
-												onClear={() => {
-													field.onChange(null);
-												}}
+												onClear={() => field.onChange(null)}
 											/>
 										</div>
 									)}
@@ -508,7 +501,7 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 									name='maxSalary'
 									render={({ field }) => (
 										<div className='flex flex-col gap-2 flex-1'>
-											<NumberInput
+											<SteppableNumberInput
 												label='Maximum Salary'
 												placeholder='Enter maximum salary'
 												formatOptions={{
@@ -518,20 +511,12 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 													currencySign: 'accounting'
 												}}
 												value={field.value as number | undefined}
-												onValueChange={value => {
-													if (Number.isNaN(value) || value === undefined) {
-														field.onChange(null);
-													} else {
-														field.onChange(value);
-													}
-												}}
+												onValueChange={field.onChange}
 												errorMessage={errors.maxSalary?.message}
 												isInvalid={!!errors.maxSalary}
 												step={1000}
 												isClearable
-												onClear={() => {
-													field.onChange(null);
-												}}
+												onClear={() => field.onChange(null)}
 											/>
 										</div>
 									)}
@@ -565,7 +550,7 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 									name='minExperience'
 									render={({ field }) => (
 										<div className='flex flex-col gap-2 flex-1'>
-											<NumberInput
+											<SteppableNumberInput
 												label='Minimum Experience'
 												placeholder='Enter minimum experience'
 												formatOptions={{
@@ -574,19 +559,11 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 													unitDisplay: 'long'
 												}}
 												value={field.value as number | undefined}
-												onValueChange={value => {
-													if (Number.isNaN(value) || value === undefined) {
-														field.onChange(null);
-													} else {
-														field.onChange(value);
-													}
-												}}
+												onValueChange={field.onChange}
 												errorMessage={errors.minExperience?.message}
 												isInvalid={!!errors.minExperience}
 												isClearable
-												onClear={() => {
-													field.onChange(null);
-												}}
+												onClear={() => field.onChange(null)}
 											/>
 										</div>
 									)}
@@ -596,7 +573,7 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 									name='maxExperience'
 									render={({ field }) => (
 										<div className='flex flex-col gap-2 flex-1'>
-											<NumberInput
+											<SteppableNumberInput
 												label='Maximum Experience'
 												placeholder='Enter maximum experience'
 												formatOptions={{
@@ -605,19 +582,11 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 													unitDisplay: 'long'
 												}}
 												value={field.value as number | undefined}
-												onValueChange={value => {
-													if (Number.isNaN(value) || value === undefined) {
-														field.onChange(null);
-													} else {
-														field.onChange(value);
-													}
-												}}
+												onValueChange={field.onChange}
 												errorMessage={errors.maxExperience?.message}
 												isInvalid={!!errors.maxExperience}
 												isClearable
-												onClear={() => {
-													field.onChange(null);
-												}}
+												onClear={() => field.onChange(null)}
 											/>
 										</div>
 									)}

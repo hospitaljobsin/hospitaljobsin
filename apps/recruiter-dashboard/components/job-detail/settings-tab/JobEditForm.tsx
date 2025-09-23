@@ -3,6 +3,7 @@ import type { JobEditFormFragment$key } from '@/__generated__/JobEditFormFragmen
 import type { JobEditFormMutation } from '@/__generated__/JobEditFormMutation.graphql';
 import { ChipsInput } from '@/components/forms/ChipsInput';
 import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
+import { SteppableNumberInput } from '@/components/forms/SteppableNumberInput';
 import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
 import { useNavigationGuard } from '@/lib/hooks/useNavigationGuard';
 import links from '@/lib/links';
@@ -610,7 +611,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 										name='minSalary'
 										render={({ field }) => {
 											return (
-												<NumberInput
+												<SteppableNumberInput
 													errorMessage={errors.minSalary?.message}
 													isInvalid={!!errors.minSalary}
 													label='Minimum Salary'
@@ -622,18 +623,10 @@ export default function JobEditForm({ rootQuery }: Props) {
 														currencySign: 'accounting'
 													}}
 													value={field.value as number | undefined}
-													onValueChange={value => {
-														if (Number.isNaN(value) || value === undefined) {
-															field.onChange(null);
-														} else {
-															field.onChange(value);
-														}
-													}}
+													onValueChange={field.onChange}
 													step={1000}
 													isClearable
-													onClear={() => {
-														field.onChange(null);
-													}}
+													onClear={() => field.onChange(null)}
 												/>
 											);
 										}}
@@ -643,7 +636,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 										name='maxSalary'
 										render={({ field }) => {
 											return (
-												<NumberInput
+												<SteppableNumberInput
 													errorMessage={errors.maxSalary?.message}
 													isInvalid={!!errors.maxSalary}
 													label='Maximum Salary'
@@ -655,18 +648,10 @@ export default function JobEditForm({ rootQuery }: Props) {
 														currencySign: 'accounting'
 													}}
 													value={field.value as number | undefined}
-													onValueChange={value => {
-														if (Number.isNaN(value) || value === undefined) {
-															field.onChange(null);
-														} else {
-															field.onChange(value);
-														}
-													}}
+													onValueChange={field.onChange}
 													step={1000}
 													isClearable
-													onClear={() => {
-														field.onChange(null);
-													}}
+													onClear={() => field.onChange(null)}
 												/>
 											);
 										}}
@@ -700,7 +685,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 										name='minExperience'
 										render={({ field }) => {
 											return (
-												<NumberInput
+												<SteppableNumberInput
 													errorMessage={errors.minExperience?.message}
 													isInvalid={!!errors.minExperience}
 													label='Minimum Experience'
@@ -711,17 +696,9 @@ export default function JobEditForm({ rootQuery }: Props) {
 														unitDisplay: 'long'
 													}}
 													value={field.value as number | undefined}
-													onValueChange={value => {
-														if (Number.isNaN(value) || value === undefined) {
-															field.onChange(null);
-														} else {
-															field.onChange(value);
-														}
-													}}
+													onValueChange={field.onChange}
 													isClearable
-													onClear={() => {
-														field.onChange(null);
-													}}
+													onClear={() => field.onChange(null)}
 												/>
 											);
 										}}
@@ -731,7 +708,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 										name='maxExperience'
 										render={({ field }) => {
 											return (
-												<NumberInput
+												<SteppableNumberInput
 													errorMessage={errors.maxExperience?.message}
 													isInvalid={!!errors.maxExperience}
 													label='Maximum Experience'
@@ -742,17 +719,9 @@ export default function JobEditForm({ rootQuery }: Props) {
 														unitDisplay: 'long'
 													}}
 													value={field.value as number | undefined}
-													onValueChange={value => {
-														if (Number.isNaN(value) || value === undefined) {
-															field.onChange(null);
-														} else {
-															field.onChange(value);
-														}
-													}}
+													onValueChange={field.onChange}
 													isClearable
-													onClear={() => {
-														field.onChange(null);
-													}}
+													onClear={() => field.onChange(null)}
 												/>
 											);
 										}}
