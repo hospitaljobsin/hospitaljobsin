@@ -538,6 +538,9 @@ class ProfileParserService:
         if overwrite:
             profile = await self._profile_repo.update(
                 profile=profile,
+                source_document_urls=[file_key]
+                if overwrite
+                else [*profile.source_document_urls, file_key],
                 address=profile_output.address,
                 date_of_birth=profile_output.date_of_birth,
                 gender=profile_output.gender,
