@@ -13,7 +13,10 @@ from app.accounts.types import InvalidPhoneNumberErrorType
 from app.auth.exceptions import InvalidEmailError
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
 from app.auth.types import InvalidEmailErrorType
-from app.base.types import AddressInputType, CreatePresignedURLPayloadType
+from app.base.types import (
+    AddressInputType,
+    CreatePresignedURLPayloadType,
+)
 from app.context import AuthInfo
 from app.jobs.exceptions import OrganizationNotFoundError
 from app.organizations.exceptions import (

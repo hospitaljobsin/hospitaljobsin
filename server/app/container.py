@@ -6,6 +6,7 @@ from typing import Any, assert_never
 import aioinject
 import sentry_sdk
 from aioinject import Scope
+from aioinject._internal.type_sources import TypeResolver
 from aioinject.context import ProviderRecord
 from aioinject.extensions import (
     OnResolveContextExtension,
@@ -188,6 +189,7 @@ class SettingsProviderExtension(
         self,
         provider: SettingsProvider[TSettings],
         type_context: Mapping[str, type[object]],  # noqa: ARG002
+        type_resolver: TypeResolver,  # noqa: ARG002
     ) -> ProviderInfo[TSettings]:
         return ProviderInfo(
             interface=provider.implementation,

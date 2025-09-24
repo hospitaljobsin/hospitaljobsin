@@ -2,6 +2,7 @@ from typing import Generic, Self, TypeVar, get_args, get_origin
 
 import strawberry
 from beanie import Document
+from pydantic import ValidationError
 from strawberry import field, relay
 
 from app.base.models import Address
@@ -111,6 +112,33 @@ class NotAuthenticatedErrorType(BaseErrorType):
         default="Not authenticated.",
         description="Human readable error message.",
     )
+
+
+@strawberry.type(
+    name="InvalidUserInputError",
+    description="Used when user input fails validation rules.",
+)
+class InvalidUserInputErrorType(BaseErrorType):
+    field: str = strawberry.field(
+        description="The name of the field that failed validation."
+    )
+    message: str = strawberry.field(
+        description="Human readable error message explaining the validation failure."
+    )
+    code: str | None = strawberry.field(
+        description="Optional machine-readable error code (e.g. 'too_short', 'too_long').",
+        default=None,
+    )
+
+    @classmethod
+    def marshal(cls, error: ValidationError) -> Self:
+        """Marshal into an error instance."""
+        first = error.errors()[0]
+        return cls(
+            field=".".join(map(str, first["loc"])),
+            message=first["msg"],
+            code=first.get("type"),
+        )
 
 
 @strawberry.type(name="Address")

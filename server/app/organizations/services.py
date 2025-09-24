@@ -6,6 +6,7 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from email_validator import EmailNotValidError, validate_email
 from humanize import naturaldelta
+from pydantic import validate_call
 from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
 
@@ -239,6 +240,7 @@ class OrganizationService:
         self._aws_settings = aws_settings
         self._revalidation_service = revalidation_service
 
+    @validate_call
     async def create(
         self,
         admin: Account,
@@ -248,6 +250,8 @@ class OrganizationService:
         website: str | None = None,
         logo_url: str | None = None,
     ) -> Result[Organization, OrganizationSlugInUseError]:
+        # TODO: add user input validation error handling here.
+        # make each service a separate class. this has DI benefits too- we don't instantiate unwanted deps for each call
         if slug in RESERVED_ORGANIZATION_NAMES:
             return Err(OrganizationSlugInUseError())
         existing_organization = await self._organization_repo.get_by_slug(
