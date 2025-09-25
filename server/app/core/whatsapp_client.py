@@ -2,7 +2,8 @@ from typing import Any
 
 import httpx
 from phonenumbers import PhoneNumber
-from server.app.config import WhatsappSettings
+
+from app.config import WhatsappSettings
 
 
 class WhatsappClient:
