@@ -103,13 +103,9 @@ export default function SetWhatsappAlerts({ query }: { query: SetWhatsappAlertsF
 					</div>
 				</CardHeader>
 				<CardBody>
-					<Tooltip content='Coming Soon!'>
-						<span className='w-full'>
-							<Button color='primary' startContent={<WhatsappIcon size={20} />} onPress={handleEnableWhatsappAlerts} isDisabled fullWidth>
-								Enable Alerts
-							</Button>
-						</span>
-					</Tooltip>
+					<Button color='primary' startContent={<WhatsappIcon size={20} />} onPress={handleEnableWhatsappAlerts} fullWidth>
+						Enable Alerts
+					</Button>
 				</CardBody>
 				<CardFooter className='pb-0'>
 					<div className='flex-1 md:flex items-center justify-center w-full md:h-64 h-32 relative'>

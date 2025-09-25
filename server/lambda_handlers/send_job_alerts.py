@@ -3,6 +3,7 @@ import json
 from datetime import UTC, datetime, timedelta
 from urllib.parse import urlencode
 
+import phonenumbers
 from app.config import (
     DatabaseSettings,
     EnvironmentSettings,
@@ -12,10 +13,16 @@ from app.config import (
 from app.container import create_container
 from app.core.emails import BaseEmailSender
 from app.core.instrumentation import initialize_instrumentation
+from app.core.whatsapp_client import WhatsappClient
 from app.database import initialize_database
 from app.job_alerts.models import AlertFilters
 from app.job_alerts.repositories import JobAlertRepo
-from app.jobs.repositories import JobRepo, JobType, JobWorkMode
+from app.jobs.repositories import (
+    JobRepo,
+    JobSearchSortBy,
+    JobType,
+    JobWorkMode,
+)
 from app.logger import setup_logging
 from aws_lambda_powertools.utilities.data_classes import SQSEvent, event_source
 from aws_lambda_powertools.utilities.typing import LambdaContext
@@ -125,6 +132,7 @@ async def send_job_alerts(
         job_alert_repo = await ctx.resolve(JobAlertRepo)
         job_repo = await ctx.resolve(JobRepo)
         email_sender = await ctx.resolve(BaseEmailSender)
+        whatsapp_client = await ctx.resolve(WhatsappClient)
 
     for record, message_id in event:
         try:
@@ -166,6 +174,7 @@ async def send_job_alerts(
                 max_salary=job_alert.filters.max_salary,
                 first=JOBS_SHOW_LIMIT,
                 cutoff_datetime=filter_datetime,  # filter here based on frequency
+                sort_by=JobSearchSortBy.RELEVANCE,
             )
 
             # Limit to 10 most recent jobs for the email
@@ -194,6 +203,23 @@ async def send_job_alerts(
                     "job_alerts_url": f"{get_settings(FrontendSettings).seeker_portal_base_url}/my-alerts",
                 },
             )
+
+            if (
+                job_alert.account.whatsapp_job_alerts_enabled
+                and job_alert.account.phone_number is not None
+            ):
+                # send whatsapp job alerts highlighting most relevant job
+                most_relevant_job = jobs_to_send[0]
+                await whatsapp_client.send_job_alerts(
+                    receiver=phonenumbers.parse(job_alert.account.phone_number),
+                    name=job_alert.account.full_name,
+                    organization_name=most_relevant_job.organization.name,
+                    location=most_relevant_job.location,
+                    other_jobs_count=f"{len(jobs_to_send) - 1}+"
+                    if len(jobs_to_send) > 1
+                    else "many",
+                    search_jobs_url=build_search_url(job_alert.filters),
+                )
 
             # Update the last sent timestamp for the alert
             await job_alert_repo.update_last_sent_at(job_alert=job_alert)

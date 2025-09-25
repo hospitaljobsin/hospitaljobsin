@@ -2,6 +2,12 @@ from pydantic import BaseModel
 from pydantic_extra_types.country import CountryAlpha2
 
 
+class BaseInputModel(BaseModel):
+    model_config = {
+        "extra": "allow",
+    }
+
+
 class GeoObject(BaseModel):
     type: str = "Point"
     coordinates: tuple[float, float]

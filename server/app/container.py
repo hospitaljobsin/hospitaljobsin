@@ -90,6 +90,7 @@ from app.core.oauth import create_oauth_client
 from app.core.ocr import BaseOCRClient, TesseractOCRClient, TextractOCRClient
 from app.core.redis_client import create_redis_client
 from app.core.templates import create_jinja2_environment, create_jinja2_mjml_environment
+from app.core.whatsapp_client import WhatsappClient
 from app.dataloaders import create_dataloaders
 from app.embeddings.services import EmbeddingsService
 from app.geocoding.repositories import RegionRepo
@@ -249,7 +250,6 @@ def register_message_sender(container: aioinject.Container) -> None:
         container.register(
             aioinject.Scoped(TwoFactorINSMSMessageSender, BaseMessageSender)
         )
-        # container.register(aioinject.Scoped(WhatsappMessageSender, BaseMessageSender))
     if env_settings.is_testing:
         container.register(aioinject.Singleton(DummyMessageSender, BaseMessageSender))
     else:
@@ -352,4 +352,5 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(create_profile_parser_agent))
     container.register(aioinject.Singleton(JobApplicantAnalysisService))
     container.register(aioinject.Singleton(ProfileParserService))
+    container.register(aioinject.Singleton(WhatsappClient))
     return container

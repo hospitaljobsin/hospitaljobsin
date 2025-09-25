@@ -6,7 +6,6 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from email_validator import EmailNotValidError, validate_email
 from humanize import naturaldelta
-from pydantic import validate_call
 from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
 
@@ -240,7 +239,6 @@ class OrganizationService:
         self._aws_settings = aws_settings
         self._revalidation_service = revalidation_service
 
-    @validate_call
     async def create(
         self,
         admin: Account,
