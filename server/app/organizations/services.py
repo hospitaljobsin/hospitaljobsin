@@ -248,6 +248,8 @@ class OrganizationService:
         website: str | None = None,
         logo_url: str | None = None,
     ) -> Result[Organization, OrganizationSlugInUseError]:
+        # TODO: add user input validation error handling here.
+        # make each service a separate class. this has DI benefits too- we don't instantiate unwanted deps for each call
         if slug in RESERVED_ORGANIZATION_NAMES:
             return Err(OrganizationSlugInUseError())
         existing_organization = await self._organization_repo.get_by_slug(
@@ -513,6 +515,10 @@ class OrganizationInviteService:
         self._frontend_settings = frontend_settings
         self._revalidation_service = revalidation_service
 
+    def _normalize_email(self, email: str) -> str:
+        """Normalize an email address."""
+        return email.lower().strip()
+
     async def create(
         self,
         account: Account,
@@ -542,7 +548,7 @@ class OrganizationInviteService:
 
         try:
             email_info = validate_email(
-                email,
+                self._normalize_email(email=email),
                 check_deliverability=True,
             )
             email = email_info.normalized

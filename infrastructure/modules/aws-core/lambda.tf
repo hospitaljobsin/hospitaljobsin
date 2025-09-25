@@ -844,6 +844,8 @@ resource "aws_lambda_function" "send_job_alerts" {
       SERVER_RECRUITER_PORTAL_BASE_URL = "https://recruiter.${var.domain_name}"
       SERVER_SEEKER_PORTAL_BASE_URL    = "https://${var.domain_name}"
       SERVER_SENTRY_DSN                = var.sentry_backend_dsn
+      SERVER_WHATSAPP_ACCESS_TOKEN     = var.whatsapp_access_token
+      SERVER_WHATSAPP_PHONE_NUMBER_ID  = var.whatsapp_phone_number_id
     }
   }
 

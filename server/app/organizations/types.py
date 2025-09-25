@@ -20,6 +20,7 @@ from app.base.types import (
     BaseEdgeType,
     BaseErrorType,
     BaseNodeType,
+    InvalidUserInputErrorType,
 )
 from app.context import AuthInfo
 from app.jobs.repositories import JobApplicantRepo, JobRepo, JobSortBy
@@ -785,7 +786,7 @@ class OrganizationAuthorizationErrorType(BaseErrorType):
 
 
 CreateOrganizationPayload = Annotated[
-    OrganizationType | OrganizationSlugInUseErrorType,
+    OrganizationType | OrganizationSlugInUseErrorType | InvalidUserInputErrorType,
     strawberry.union(
         name="CreateOrganizationPayload",
         description="The create organization payload.",
