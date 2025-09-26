@@ -8,6 +8,7 @@ import sentry_sdk
 from aioinject import Scope
 from aioinject._internal.type_sources import TypeResolver
 from aioinject.context import ProviderRecord
+from aioinject.ext.fastapi import FastAPIExtension
 from aioinject.extensions import (
     OnResolveContextExtension,
     ProviderExtension,
@@ -277,6 +278,7 @@ def create_container() -> aioinject.Container:
         extensions=[
             SettingsProviderExtension(),
             SentryInstrumentation(),
+            FastAPIExtension(),
         ]
     )
     for settings_cls in settings_classes:
