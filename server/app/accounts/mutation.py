@@ -15,6 +15,7 @@ from app.accounts.exceptions import (
     PhoneNumberMissingError,
     PhoneNumberVerificationTokenCooldownError,
 )
+from app.accounts.repositories import AccountRepo
 from app.accounts.services import AccountService, ProfileParserService, ProfileService
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
 from app.base.types import CreatePresignedURLPayloadType
@@ -657,7 +658,6 @@ class AccountMutation:
     @inject
     async def generate_profile_document_presigned_url(
         self,
-        info: AuthInfo,
         profile_parser_service: Annotated[ProfileParserService, Inject],
         content_type: Annotated[
             str,
@@ -675,3 +675,25 @@ class AccountMutation:
                 )
             case _ as unreachable:
                 assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=AccountType,
+        description="Remove the avatar from the current user account.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def remove_account_avatar(
+        self,
+        info: AuthInfo,
+        account_repo: Annotated[AccountRepo, Inject],
+    ) -> AccountType:
+        """Remove the avatar from the current user account."""
+        match await account_repo.delete_avatar(account=info.context["current_user"]):
+            case result:
+                return AccountType.marshal(result)

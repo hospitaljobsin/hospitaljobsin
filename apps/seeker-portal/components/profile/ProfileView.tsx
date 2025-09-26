@@ -1,35 +1,30 @@
-"use client";
-import type { ProfileClientComponentQuery as ProfileClientComponentQueryType } from "@/__generated__/ProfileClientComponentQuery.graphql";
-import ProfileClientComponentQuery from "@/__generated__/ProfileClientComponentQuery.graphql";
-import type { ProfileViewFragment$key } from "@/__generated__/ProfileViewFragment.graphql";
-import { useState } from "react";
-import {
-	type PreloadedQuery,
-	graphql,
-	useFragment,
-	usePreloadedQuery,
-} from "react-relay";
-import invariant from "tiny-invariant";
-import DashboardHeader from "../layout/DashboardHeader";
-import ProfessionalSummary from "./AboutMe";
-import AutofillWithAISection from "./AutofillWithAISection";
-import Certifications from "./Certifications";
-import Education from "./Education";
-import Languages from "./Languages";
-import Licenses from "./Licenses";
-import LocationPreferences from "./LocationPreferences";
-import ProfileDetails from "./PersonalDetails";
-import ProfileBanner from "./ProfileBanner";
-import ProfileCompletionMeter from "./ProfileCompletionMeter";
-import UpdateProfessionalSummaryForm from "./UpdateAboutMeForm";
-import UpdateCertificationsForm from "./UpdateCertificationsForm";
-import UpdateEducationForm from "./UpdateEducationForm";
-import UpdateLanguagesForm from "./UpdateLanguagesForm";
-import UpdateLicensesForm from "./UpdateLicensesForm";
-import UpdateLocationPreferencesForm from "./UpdateLocationPreferencesForm";
-import UpdateProfileDetailsForm from "./UpdatePersonalDetailsForm";
-import UpdateWorkExperienceForm from "./UpdateWorkExperienceForm";
-import WorkExperience from "./WorkExperience";
+'use client';
+import type { ProfileClientComponentQuery as ProfileClientComponentQueryType } from '@/__generated__/ProfileClientComponentQuery.graphql';
+import ProfileClientComponentQuery from '@/__generated__/ProfileClientComponentQuery.graphql';
+import type { ProfileViewFragment$key } from '@/__generated__/ProfileViewFragment.graphql';
+import { useState } from 'react';
+import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
+import invariant from 'tiny-invariant';
+import DashboardHeader from '../layout/DashboardHeader';
+import ProfessionalSummary from './AboutMe';
+import AutofillWithAISection from './AutofillWithAISection';
+import Certifications from './Certifications';
+import Education from './Education';
+import Languages from './Languages';
+import Licenses from './Licenses';
+import LocationPreferences from './LocationPreferences';
+import ProfileDetails from './PersonalDetails';
+import ProfileBanner from './ProfileBanner';
+import ProfileCompletionMeter from './ProfileCompletionMeter';
+import UpdateProfessionalSummaryForm from './UpdateAboutMeForm';
+import UpdateCertificationsForm from './UpdateCertificationsForm';
+import UpdateEducationForm from './UpdateEducationForm';
+import UpdateLanguagesForm from './UpdateLanguagesForm';
+import UpdateLicensesForm from './UpdateLicensesForm';
+import UpdateLocationPreferencesForm from './UpdateLocationPreferencesForm';
+import UpdateProfileDetailsForm from './UpdatePersonalDetailsForm';
+import UpdateWorkExperienceForm from './UpdateWorkExperienceForm';
+import WorkExperience from './WorkExperience';
 
 const ProfileViewFragment = graphql`
   fragment ProfileViewFragment on Query {
@@ -74,34 +69,19 @@ const ProfileViewFragment = graphql`
   }
 `;
 
-export default function ProfileView({
-	queryReference,
-}: {
-	queryReference: PreloadedQuery<ProfileClientComponentQueryType>;
-}) {
-	const rootData = usePreloadedQuery(
-		ProfileClientComponentQuery,
-		queryReference,
-	);
+export default function ProfileView({ queryReference }: { queryReference: PreloadedQuery<ProfileClientComponentQueryType> }) {
+	const rootData = usePreloadedQuery(ProfileClientComponentQuery, queryReference);
 
-	const data = useFragment<ProfileViewFragment$key>(
-		ProfileViewFragment,
-		rootData,
-	);
-	invariant(
-		data.viewer.__typename === "Account",
-		"Expected 'Account' node type",
-	);
+	const data = useFragment<ProfileViewFragment$key>(ProfileViewFragment, rootData);
+	invariant(data.viewer.__typename === 'Account', "Expected 'Account' node type");
 	const [isEditingProfile, setIsEditingProfile] = useState(false);
 	const [isEditingLanguages, setIsEditingLanguages] = useState(false);
-	const [isEditingLocationPreferences, setIsEditingLocationPreferences] =
-		useState(false);
+	const [isEditingLocationPreferences, setIsEditingLocationPreferences] = useState(false);
 	const [isEditingEducation, setIsEditingEducation] = useState(false);
 	const [isEditingWorkExperience, setIsEditingWorkExperience] = useState(false);
 	const [isEditingCertifications, setIsEditingCertifications] = useState(false);
 	const [isEditingLicenses, setIsEditingLicenses] = useState(false);
 	const [isEditingAboutMe, setIsEditingAboutMe] = useState(false);
-	const [isAutofillModalOpen, setIsAutofillModalOpen] = useState(false);
 
 	const completionStatus = {
 		personalDetails: !!data.viewer.profile.dateOfBirth,
@@ -109,20 +89,17 @@ export default function ProfileView({
 		education: data.viewer.profile.education.length > 0,
 		locationPreferences: !!(
 			data.viewer.profile.address &&
-			(data.viewer.profile.locationsOpenToWork.length > 0 ||
-				data.viewer.profile.openToRelocationAnywhere)
+			(data.viewer.profile.locationsOpenToWork.length > 0 || data.viewer.profile.openToRelocationAnywhere)
 		),
-		aboutMe:
-			!!data.viewer.profile.professionalSummary &&
-			!!data.viewer.profile.headline,
+		aboutMe: !!data.viewer.profile.professionalSummary && !!data.viewer.profile.headline
 	};
 
 	return (
-		<div className="w-full flex flex-col flex-1 h-full">
+		<div className='w-full flex flex-col flex-1 h-full'>
 			<DashboardHeader query={data} />
-			<div className="w-full mx-auto bg-background-600">
-				<div className="w-full px-5 max-w-7xl mx-auto">
-					<div className="w-full h-full space-y-16 py-8">
+			<div className='w-full mx-auto bg-background-600'>
+				<div className='w-full px-5 max-w-7xl mx-auto'>
+					<div className='w-full h-full space-y-16 py-8'>
 						<ProfileBanner account={data.viewer} />
 						<ProfileCompletionMeter status={completionStatus} />
 						<AutofillWithAISection />

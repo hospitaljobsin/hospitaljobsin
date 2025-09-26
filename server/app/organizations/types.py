@@ -826,6 +826,16 @@ DeleteOrganizationPayload = Annotated[
     ),
 ]
 
+RemoveOrganizationMediaPayload = Annotated[
+    OrganizationType
+    | OrganizationNotFoundErrorType
+    | OrganizationAuthorizationErrorType,
+    strawberry.union(
+        name="RemoveOrganizationMediaPayload",
+        description="The remove organization media payload (logo or banner).",
+    ),
+]
+
 
 @strawberry.type(
     name="OrganizationAlreadyVerifiedError",

@@ -63,6 +63,7 @@ from .types import (
     OrganizationVerificationRequestAlreadyExistsErrorType,
     PromoteOrganizationMemberPayload,
     PromoteOrganizationMemberSuccessType,
+    RemoveOrganizationMediaPayload,
     RemoveOrganizationMemberPayload,
     RemoveOrganizationMemberSuccessType,
     RequestOrganizationVerificationPayload,
@@ -122,6 +123,84 @@ class OrganizationMutation:
                         return OrganizationSlugInUseErrorType()
             case Ok(organization):
                 return OrganizationType.marshal(organization)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=RemoveOrganizationMediaPayload,
+        description="Remove the logo from the given organization.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def remove_organization_logo(
+        self,
+        info: AuthInfo,
+        organization_service: Annotated[OrganizationService, Inject],
+        organization_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the organization to remove the logo from.",
+            ),
+        ],
+    ) -> RemoveOrganizationMediaPayload:
+        """Remove the logo from the given organization."""
+        match await organization_service.remove_logo(
+            account=info.context["current_user"],
+            organization_id=ObjectId(organization_id.node_id),
+        ):
+            case Ok(result):
+                return OrganizationType.marshal(result)
+            case Err(error):
+                match error:
+                    case OrganizationNotFoundError():
+                        return OrganizationNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=RemoveOrganizationMediaPayload,
+        description="Remove the banner from the given organization.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def remove_organization_banner(
+        self,
+        info: AuthInfo,
+        organization_service: Annotated[OrganizationService, Inject],
+        organization_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the organization to remove the banner from.",
+            ),
+        ],
+    ) -> RemoveOrganizationMediaPayload:
+        """Remove the banner from the given organization."""
+        match await organization_service.remove_banner(
+            account=info.context["current_user"],
+            organization_id=ObjectId(organization_id.node_id),
+        ):
+            case Ok(result):
+                return OrganizationType.marshal(result)
+            case Err(error):
+                match error:
+                    case OrganizationNotFoundError():
+                        return OrganizationNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
             case _ as unreachable:
                 assert_never(unreachable)
 
