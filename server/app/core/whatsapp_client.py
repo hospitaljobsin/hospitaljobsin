@@ -32,7 +32,7 @@ class WhatsappClient:
             "type": "template",
             "template": {
                 "name": template_name,
-                "language": {"code": "en_US"},
+                "language": {"code": "en"},
                 "components": [
                     {
                         "type": "body",
@@ -44,12 +44,14 @@ class WhatsappClient:
         }
         async with httpx.AsyncClient() as client:
             response = await client.post(url, headers=headers, json=data)
+            print(response.text)
             response.raise_for_status()
 
     async def send_job_alerts(
         self,
         receiver: PhoneNumber,
         name: str,
+        role_name: str,
         organization_name: str,
         location: str,
         other_jobs_count: str,
@@ -64,6 +66,11 @@ class WhatsappClient:
                     "type": "text",
                     "parameter_name": "name",
                     "text": name,
+                },
+                {
+                    "type": "text",
+                    "parameter_name": "role_name",
+                    "text": role_name,
                 },
                 {
                     "type": "text",
@@ -86,6 +93,17 @@ class WhatsappClient:
                             "type": "text",
                             "text": search_jobs_url,
                         },
+                    ],
+                },
+                {
+                    "type": "header",
+                    "parameters": [
+                        {
+                            "type": "image",
+                            "image": {
+                                "link": "https://hospitaljobs.in/wa-alert-banner.png"
+                            },
+                        }
                     ],
                 },
             ],

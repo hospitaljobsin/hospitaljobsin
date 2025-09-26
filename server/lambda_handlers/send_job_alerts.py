@@ -80,9 +80,13 @@ def lambda_handler(event: SQSEvent, context: LambdaContext) -> str:
     return loop.run_until_complete(send_job_alerts(processing_requests))
 
 
-def build_search_url(filters: AlertFilters) -> str:
+def build_search_url(filters: AlertFilters, *, include_base_url: bool = True) -> str:
     """Build the job search URL based on the filters."""
-    base_url = f"{get_settings(FrontendSettings).seeker_portal_base_url}/search"
+    base_url = (
+        ""
+        if not include_base_url
+        else f"{get_settings(FrontendSettings).seeker_portal_base_url}/search"
+    )
 
     # Build the path component
     if filters.search_term and filters.location:
@@ -213,12 +217,15 @@ async def send_job_alerts(
                 await whatsapp_client.send_job_alerts(
                     receiver=phonenumbers.parse(job_alert.account.phone_number),
                     name=job_alert.account.full_name,
+                    role_name=most_relevant_job.title,
                     organization_name=most_relevant_job.organization.name,
                     location=most_relevant_job.location,
                     other_jobs_count=f"{len(jobs_to_send) - 1}+"
                     if len(jobs_to_send) > 1
                     else "many",
-                    search_jobs_url=build_search_url(job_alert.filters),
+                    search_jobs_url=build_search_url(
+                        job_alert.filters, include_base_url=False
+                    ),
                 )
 
             # Update the last sent timestamp for the alert
@@ -253,5 +260,5 @@ async def send_job_alerts(
 if __name__ == "__main__":
     # for local testing only
     loop.run_until_complete(
-        send_job_alerts([(JobAlertEventBody(alert_id="68ce92ba3921b9135ab59732"), "1")])
+        send_job_alerts([(JobAlertEventBody(alert_id="68d68b7ba2f783b10c174021"), "1")])
     )

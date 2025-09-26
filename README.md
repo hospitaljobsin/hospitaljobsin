@@ -278,12 +278,53 @@ Follow these steps to deploy the project to the cloud:
 - Copy the project API key and host
 
 ### 9. Whatsapp Business Setup
-- Create a Meta Developer Account
-- Go to the [Whatsapp Business Console](https://business.facebook.com)
-- Create a new business account
-- Copy the business account ID
-- Copy the business account access token
-- Copy the business account phone number ID (Whatsapp Business Phone Number)
+To set up a WhatsApp Business API account using Meta's developer tools, follow these updated instructions based on the latest Meta documentation. The process involves creating a Meta Developer Account, setting up a WhatsApp Business Account, and configuring the necessary components for API access.
+
+1. **Create a Meta Developer Account**
+   - Visit the [Meta for Developers](https://developers.facebook.com/) website.
+   - Sign in with your Facebook account or create a new one. If you don’t have a Facebook account, you’ll need to create one.
+   - Once logged in, register as a developer by following the prompts to set up your Meta Developer Account.
+
+2. **Access the Meta Business Manager**
+   - Go to [Meta Business Manager](https://business.facebook.com).
+   - If you don’t have a Business Manager account, click **Create Account** and follow the steps to set up a new business account.
+   - Provide the required business details (e.g., business name, address, and contact information).
+   - Once created, note down the **Business Manager ID** (found in the Business Settings under **Business Info**).
+
+3. **Create a System User in Business Manager**
+   - In the Meta Business Manager, navigate to **Settings** > **Business Settings** > **Users** > **System Users**.
+   - Click **Add** to create a new system user.
+   - Assign a name to the system user and select the **Admin** role for full access to WhatsApp-related assets.
+   - Save the system user and generate an access token later in the process.
+
+4. **Create a New Meta App in the Developer Portal**
+   - Go to the [Meta for Developers](https://developers.facebook.com/apps/) portal.
+   - Click **Create App**, select **Business** as the app type, and provide the required details (e.g., app name and contact email).
+   - Once the app is created, go to the app’s dashboard and add the **WhatsApp** product by clicking **Set Up** under the WhatsApp option.
+
+5. **Assign the App to the System User and Generate an Access Token**
+   - In Business Manager, go to **Settings** > **Business Settings** > **Users** > **System Users**.
+   - Select the system user created in Step 3.
+   - Click **Assign Assets**, choose the app created in Step 4, and assign the appropriate permissions (e.g., **Manage App**).
+   - Click **Generate New Token**, select the app, and ensure all WhatsApp-related permissions are enabled (e.g., `whatsapp_business_management`, `whatsapp_business_messaging`).
+   - Copy the **System User Access Token** and store it securely, as it will be used for API authentication.
+
+6. **Set Up a WhatsApp Business Account**
+   - In the Meta Business Manager, navigate to **Settings** > **Business Settings** > **Accounts** > **WhatsApp Accounts**.
+   - Click **Add** to create a new WhatsApp Business Account.
+   - Follow the prompts to link it to your Business Manager account. This may involve verifying your business details.
+
+7. **Add a Phone Number to the WhatsApp Business Account**
+   - In the WhatsApp Accounts section of Business Manager, select the newly created WhatsApp Business Account.
+   - Click **Add Phone Number** and provide a phone number that hasn’t been used with WhatsApp before (it cannot be linked to an existing WhatsApp account).
+   - Verify the phone number via SMS or voice call as prompted.
+   - Configure the phone number settings, such as the display name and business profile details, following Meta’s guidelines.
+
+8. **Obtain the WhatsApp Business Phone Number ID**
+   - Once the phone number is added and verified, go to **Settings** > **Business Settings** > **Accounts** > **WhatsApp Accounts**.
+   - Select the WhatsApp Business Account and locate the **Phone Number ID** (also called the WhatsApp Business Phone Number ID).
+   - Copy the **Phone Number ID** for use in API requests.
+
 
 
 ### 10. Two Factor IN Setup
