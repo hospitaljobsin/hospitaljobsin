@@ -9,6 +9,7 @@ const DeleteAvatarMutation = graphql`
         __typename
         ... on Account {
             ...AccountDetailsFragment
+            ...UpdateAccountDetailsFormFragment
             ...AuthNavigationFragment
         }
     }

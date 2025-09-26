@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<d24c07c2c8ef92a543806afc912d5527>>
- * @relayHash 646df2213c92adbb6e4a7765f576add3
+ * @generated SignedSource<<2b658921337643d7e4356c23559a17b7>>
+ * @relayHash 2010c3a831766e30891050afd89ebbdb
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 646df2213c92adbb6e4a7765f576add3
+// @relayRequestID 2010c3a831766e30891050afd89ebbdb
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -17,7 +17,7 @@ export type DeleteAvatarModalMutation$variables = Record<PropertyKey, never>;
 export type DeleteAvatarModalMutation$data = {
   readonly removeAccountAvatar: {
     readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"AccountDetailsFragment" | "AuthNavigationFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"AccountDetailsFragment" | "AuthNavigationFragment" | "UpdateAccountDetailsFormFragment">;
   };
 };
 export type DeleteAvatarModalMutation = {
@@ -53,6 +53,11 @@ return {
             "args": null,
             "kind": "FragmentSpread",
             "name": "AccountDetailsFragment"
+          },
+          {
+            "args": null,
+            "kind": "FragmentSpread",
+            "name": "UpdateAccountDetailsFormFragment"
           },
           {
             "args": null,
@@ -115,7 +120,7 @@ return {
     ]
   },
   "params": {
-    "id": "646df2213c92adbb6e4a7765f576add3",
+    "id": "2010c3a831766e30891050afd89ebbdb",
     "metadata": {},
     "name": "DeleteAvatarModalMutation",
     "operationKind": "mutation",
@@ -124,6 +129,6 @@ return {
 };
 })();
 
-(node as any).hash = "8382656c5e44418fda3083020622acf6";
+(node as any).hash = "ab6ec35e270e5e7ff318299dfc25b7fc";
 
 export default node;

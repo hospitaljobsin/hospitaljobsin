@@ -45,19 +45,6 @@ mutation UpdateAccountDetailsFormCreateProfilePicturePresignedUrlMutation($conte
 	}
 }`;
 
-const DeleteProfilePictureMutation = graphql`
-mutation UpdateAccountDetailsFormDeleteProfilePictureMutation {
-	removeAccountAvatar {
-		__typename
-		... on Account {
-			...UpdateAccountDetailsFormFragment
-			...AccountDetailsFragment
-			...AuthNavigationFragment
-		}
-	}
-}
-`;
-
 const UpdateAccountDetailsFormFragment = graphql`
   fragment UpdateAccountDetailsFormFragment on Account {
     fullName
