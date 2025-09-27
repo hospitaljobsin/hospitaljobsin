@@ -11,7 +11,7 @@ interface ResumeBuilderLayoutProps {
 export const ResumeBuilderLayout: React.FC<ResumeBuilderLayoutProps> = ({ children }) => {
 	return (
 		<div className='w-full max-w-7xl mx-auto bg-background-600 flex flex-col flex-1 h-full'>
-			<main className='flex flex-col lg:grid lg:grid-cols-12 gap-4 lg:gap-8 p-4 lg:p-8'>
+			<main className='flex flex-col lg:grid lg:grid-cols-12 gap-4 lg:gap-8 py-4 lg:py-8 px-4'>
 				<div className='lg:col-span-3 order-1'>
 					<Sidebar />
 				</div>
