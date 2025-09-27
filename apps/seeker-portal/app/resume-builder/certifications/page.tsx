@@ -1,5 +1,5 @@
-import { CertificationsView } from '../../../components/resume-builder/CertificationsView';
+import CertificationsClientComponent from './CertificationsClientComponent';
 
 export default function CertificationsPage() {
-	return <CertificationsView />;
+	return <CertificationsClientComponent />;
 }

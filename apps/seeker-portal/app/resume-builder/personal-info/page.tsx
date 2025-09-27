@@ -1,5 +1,5 @@
-import { PersonalInfoView } from '../../../components/resume-builder/PersonalInfoView';
+import PersonalInfoClientComponent from './PersonalInfoClientComponent';
 
 export default function PersonalInfoPage() {
-	return <PersonalInfoView />;
+	return <PersonalInfoClientComponent />;
 }

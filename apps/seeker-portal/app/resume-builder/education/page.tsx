@@ -1,5 +1,5 @@
-import { EducationView } from '../../../components/resume-builder/EducationView';
+import EducationClientComponent from './EducationClientComponent';
 
 export default function EducationPage() {
-	return <EducationView />;
+	return <EducationClientComponent />;
 }

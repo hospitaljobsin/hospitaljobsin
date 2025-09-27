@@ -1,5 +1,5 @@
-import { AdditionalView } from '../../../components/resume-builder/AdditionalView';
+import AdditionalClientComponent from './AdditionalClientComponent';
 
 export default function AdditionalPage() {
-	return <AdditionalView />;
+	return <AdditionalClientComponent />;
 }

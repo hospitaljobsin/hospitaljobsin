@@ -1,5 +1,5 @@
-import { SkillsView } from '../../../components/resume-builder/SkillsView';
+import SkillsClientComponent from './SkillsClientComponent';
 
 export default function SkillsPage() {
-	return <SkillsView />;
+	return <SkillsClientComponent />;
 }

@@ -1,5 +1,5 @@
-import { SummaryView } from '../../../components/resume-builder/SummaryView';
+import SummaryClientComponent from './SummaryClientComponent';
 
 export default function SummaryPage() {
-	return <SummaryView />;
+	return <SummaryClientComponent />;
 }

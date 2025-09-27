@@ -1,5 +1,5 @@
-import { WorkExperienceView } from '../../../components/resume-builder/WorkExperienceView';
+import WorkExperienceClientComponent from './WorkExperienceClientComponent';
 
 export default function WorkExperiencePage() {
-	return <WorkExperienceView />;
+	return <WorkExperienceClientComponent />;
 }
