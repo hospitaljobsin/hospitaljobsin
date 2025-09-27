@@ -2,9 +2,9 @@ import React from 'react';
 
 export const ResumePreview: React.FC = () => {
 	return (
-		<div className='sticky top-8 h-fit rounded-xl bg-background-light shadow-lg shadow-primary/5 ring-1 ring-inset ring-primary/10 dark:bg-background-dark dark:shadow-primary/10 dark:ring-primary/20'>
-			<div className='flex flex-col gap-4 p-6'>
-				<h2 className='text-xl font-bold'>Resume Preview</h2>
+		<div className='lg:sticky lg:top-8 h-fit rounded-xl bg-background-light shadow-lg shadow-primary/5 ring-1 ring-inset ring-primary/10 dark:bg-background-dark dark:shadow-primary/10 dark:ring-primary/20'>
+			<div className='flex flex-col gap-4 p-4 lg:p-6'>
+				<h2 className='text-lg lg:text-xl font-bold'>Resume Preview</h2>
 				<div
 					className='aspect-[8.5/11] w-full rounded-lg bg-cover bg-center bg-no-repeat ring-1 ring-inset ring-primary/10'
 					style={{

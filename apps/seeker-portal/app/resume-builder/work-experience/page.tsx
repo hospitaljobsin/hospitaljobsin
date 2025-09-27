@@ -1,10 +1,11 @@
-import { ResumeBuilderLayout } from '../../../components/resume-builder/ResumeBuilderLayout';
+import { ResponsiveResumeBuilder } from '../../../components/resume-builder/ResponsiveResumeBuilder';
 import { WorkExperienceView } from '../../../components/resume-builder/WorkExperienceForm';
+import { MobileWorkExperienceView } from '../../../components/resume-builder/MobileWorkExperienceView';
 
 export default function WorkExperiencePage() {
 	return (
-		<ResumeBuilderLayout>
+		<ResponsiveResumeBuilder mobileChildren={<MobileWorkExperienceView />}>
 			<WorkExperienceView />
-		</ResumeBuilderLayout>
+		</ResponsiveResumeBuilder>
 	);
 }

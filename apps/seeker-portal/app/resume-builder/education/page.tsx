@@ -1,10 +1,11 @@
-import { ResumeBuilderLayout } from '../../../components/resume-builder/ResumeBuilderLayout';
+import { ResponsiveResumeBuilder } from '../../../components/resume-builder/ResponsiveResumeBuilder';
 import { EducationView } from '../../../components/resume-builder/EducationView';
+import { MobileEducationView } from '../../../components/resume-builder/MobileEducationView';
 
 export default function EducationPage() {
 	return (
-		<ResumeBuilderLayout>
+		<ResponsiveResumeBuilder mobileChildren={<MobileEducationView />}>
 			<EducationView />
-		</ResumeBuilderLayout>
+		</ResponsiveResumeBuilder>
 	);
 }

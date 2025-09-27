@@ -1,10 +1,11 @@
-import { ResumeBuilderLayout } from '../../../components/resume-builder/ResumeBuilderLayout';
+import { ResponsiveResumeBuilder } from '../../../components/resume-builder/ResponsiveResumeBuilder';
 import { SummaryView } from '../../../components/resume-builder/SummaryView';
+import { MobileSummaryView } from '../../../components/resume-builder/MobileSummaryView';
 
 export default function SummaryPage() {
 	return (
-		<ResumeBuilderLayout>
+		<ResponsiveResumeBuilder mobileChildren={<MobileSummaryView />}>
 			<SummaryView />
-		</ResumeBuilderLayout>
+		</ResponsiveResumeBuilder>
 	);
 }

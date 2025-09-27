@@ -13,7 +13,7 @@ const NavItem: React.FC<NavItemProps> = ({ href, children }) => {
 	const pathname = usePathname();
 	const isActive = pathname === href;
 
-	const baseClasses = 'flex items-center gap-3 rounded-lg px-4 py-3 font-medium';
+	const baseClasses = 'flex items-center gap-3 rounded-lg px-4 py-3 font-medium whitespace-nowrap';
 	const activeClasses = 'bg-primary/10 font-semibold text-primary dark:bg-primary/20';
 	const inactiveClasses = 'text-background-dark/60 hover:bg-primary/10 dark:text-background-light/60 dark:hover:bg-primary/20';
 
@@ -26,7 +26,7 @@ const NavItem: React.FC<NavItemProps> = ({ href, children }) => {
 
 export const Sidebar: React.FC = () => {
 	return (
-		<nav className='flex flex-col gap-1'>
+		<nav className='flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0'>
 			<NavItem href='/resume-builder/personal-info'>Personal Info</NavItem>
 			<NavItem href='/resume-builder/summary'>Summary</NavItem>
 			<NavItem href='/resume-builder/work-experience'>Work Experience</NavItem>
