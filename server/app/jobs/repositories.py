@@ -463,14 +463,7 @@ class JobRepo:
         after: str | None = None,
         sort_by: JobSearchSortBy = JobSearchSortBy.RELEVANCE,
     ) -> PaginatedResult[SearchableJob, str]:
-        """
-        Get a paginated result of active jobs.
-
-        If a 'search_term' is provided, it performs a vector search and applies all other
-        parameters as pre-filters.
-
-        If 'search_term' is None, it performs a standard filtered search.
-        """
+        """Get a paginated result of active jobs."""
         paginator = SearchPaginator(
             document_cls=Job,
             projection_model=SearchableJob,
@@ -657,35 +650,6 @@ class JobRepo:
                                     "score": {"boost": {"value": 40}},
                                 }
                             },
-                            # Multi-word search: if search term has multiple words,
-                            # require ALL words to be present in the same field
-                            *(
-                                [
-                                    {
-                                        "text": {
-                                            "query": search_term,
-                                            "path": "title",
-                                            "score": {"boost": {"value": 60}},
-                                        }
-                                    },
-                                    {
-                                        "text": {
-                                            "query": search_term,
-                                            "path": "skills",
-                                            "score": {"boost": {"value": 50}},
-                                        }
-                                    },
-                                    {
-                                        "text": {
-                                            "query": search_term,
-                                            "path": "description_cleaned",
-                                            "score": {"boost": {"value": 25}},
-                                        }
-                                    },
-                                ]
-                                if len(search_term.split()) > 1
-                                else []
-                            ),
                             # Single word or very controlled fuzzy matching (much lower priority)
                             *(
                                 [
