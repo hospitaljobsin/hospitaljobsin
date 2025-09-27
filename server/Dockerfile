@@ -8,7 +8,6 @@ RUN apt-get update && \
     apt-get install -y build-essential curl && \
     rm -rf /var/lib/apt/lists/*
 
-
 # install UV
 COPY --from=ghcr.io/astral-sh/uv:0.7.21 /uv /uvx /bin/
 
