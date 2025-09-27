@@ -1,7 +1,8 @@
+'use client';
 import React from 'react';
-import { Sidebar } from './Sidebar';
-import { ResumePreview } from './ResumePreview';
 import { ProgressBar } from './ProgressBar';
+import { ResumePreview } from './ResumePreview';
+import { Sidebar } from './Sidebar';
 
 interface ResumeBuilderLayoutProps {
 	children: React.ReactNode;

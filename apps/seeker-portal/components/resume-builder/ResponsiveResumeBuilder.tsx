@@ -5,11 +5,14 @@ import { MobileResumeBuilderLayout } from './mobile/MobileResumeBuilderLayout';
 import { ResumeBuilderLayout } from './ResumeBuilderLayout';
 
 interface ResponsiveResumeBuilderProps {
-	children: React.ReactNode;
-	mobileChildren: React.ReactNode;
+	desktopComponent: React.ComponentType;
+	mobileComponent: React.ComponentType;
 }
 
-export const ResponsiveResumeBuilder: React.FC<ResponsiveResumeBuilderProps> = ({ children, mobileChildren }) => {
+export const ResponsiveResumeBuilder: React.FC<ResponsiveResumeBuilderProps> = ({
+	desktopComponent: DesktopComponent,
+	mobileComponent: MobileComponent
+}) => {
 	const [isMobile, setIsMobile] = useState(false);
 
 	useEffect(() => {
@@ -23,8 +26,16 @@ export const ResponsiveResumeBuilder: React.FC<ResponsiveResumeBuilderProps> = (
 	}, []);
 
 	if (isMobile) {
-		return <MobileResumeBuilderLayout>{mobileChildren}</MobileResumeBuilderLayout>;
+		return (
+			<MobileResumeBuilderLayout>
+				<MobileComponent />
+			</MobileResumeBuilderLayout>
+		);
 	}
 
-	return <ResumeBuilderLayout>{children}</ResumeBuilderLayout>;
+	return (
+		<ResumeBuilderLayout>
+			<DesktopComponent />
+		</ResumeBuilderLayout>
+	);
 };
