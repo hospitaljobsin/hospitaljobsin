@@ -47,27 +47,6 @@ from app.organizations.documents import (
 logger = get_logger()
 
 
-def rebuild_models() -> None:
-    """Rebuild models to update forward references."""
-    from app.accounts.documents import Account
-    from app.auth.documents import (
-        OAuthCredential,
-        RecoveryCode,
-        TemporaryTwoFactorChallenge,
-        WebAuthnCredential,
-    )
-
-    Account.model_rebuild()
-
-    WebAuthnCredential.model_rebuild()
-
-    OAuthCredential.model_rebuild()
-
-    RecoveryCode.model_rebuild()
-
-    TemporaryTwoFactorChallenge.model_rebuild()
-
-
 async def create_search_indexes(
     client: AsyncMongoClient, default_database_name: str
 ) -> None:
@@ -289,9 +268,8 @@ async def initialize_database(database_url: str, default_database_name: str) -> 
             socketTimeoutMS=1000 * 12,
             serverSelectionTimeoutMS=1000 * 15,
         )
-        rebuild_models()
         await init_beanie(
-            database=client.get_default_database(default=default_database_name),
+            database=client.get_database(name=default_database_name),
             document_models=[
                 Job,
                 JobApplicant,

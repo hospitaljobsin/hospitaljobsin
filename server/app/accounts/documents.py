@@ -205,19 +205,6 @@ class Account(Document):
 
     whatsapp_job_alerts_enabled: bool = False
 
-    webauthn_credentials: list[BackLink["WebAuthnCredential"]] = Field(  # type: ignore[call-overload]
-        original_field="account"
-    )
-    oauth_credentials: list[BackLink["OAuthCredential"]] = Field(  # type: ignore[call-overload]
-        original_field="account"
-    )
-
-    recovery_codes: list[BackLink["RecoveryCode"]] = Field(original_field="account")  # type: ignore[call-overload]
-
-    temporary_two_factor_challenges: list[BackLink["TemporaryTwoFactorChallenge"]] = (
-        Field(original_field="account")  # type: ignore[call-overload]
-    )
-
     @property
     def avatar_url(self) -> str:
         """Return the account's avatar URL, or a placeholder."""
