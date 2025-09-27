@@ -1,7 +1,7 @@
 import React from 'react';
 import { ResumePreview } from './ResumePreview';
 import { Sidebar } from './Sidebar';
-import { WorkExperienceForm } from './WorkExperienceForm';
+import { WorkExperienceForm } from './WorkExperienceView';
 
 export const ResumeBuilderView: React.FC = () => {
 	return (
