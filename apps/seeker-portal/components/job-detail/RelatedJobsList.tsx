@@ -9,7 +9,7 @@ const RelatedJobsListFragment = graphql`
   @refetchable(queryName: "RelatedJobsListRefetchQuery")
   @argumentDefinitions(
     cursor: { type: "ID" }
-    count: { type: "Int", defaultValue: 10 }
+    count: { type: "Int", defaultValue: 4 }
   ) @inline {
     relatedJobs(after: $cursor, first: $count)
       @connection(key: "RelatedJobsListFragment_relatedJobs") {
