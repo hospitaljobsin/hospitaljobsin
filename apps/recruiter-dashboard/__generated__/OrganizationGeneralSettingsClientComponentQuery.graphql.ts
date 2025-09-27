@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<de5af1eb36ae49626edcb621b86ac0fb>>
- * @relayHash 34d23f55469c96e7ff118a6ffbb32ab1
+ * @generated SignedSource<<7b0495081e8d51663dd3eaa4bc0e8728>>
+ * @relayHash 8337e0842318042831c39a9f8d56691f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 34d23f55469c96e7ff118a6ffbb32ab1
+// @relayRequestID 8337e0842318042831c39a9f8d56691f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -191,7 +191,7 @@ return {
     ]
   },
   "params": {
-    "id": "34d23f55469c96e7ff118a6ffbb32ab1",
+    "id": "8337e0842318042831c39a9f8d56691f",
     "metadata": {},
     "name": "OrganizationGeneralSettingsClientComponentQuery",
     "operationKind": "query",

@@ -315,6 +315,52 @@ class OrganizationService:
             HttpMethod="PUT",
         )
 
+    async def remove_logo(
+        self,
+        organization_id: ObjectId,
+        account: Account,
+    ) -> Result[
+        Organization, OrganizationAuthorizationError | OrganizationNotFoundError
+    ]:
+        """Remove the logo from an organization."""
+        existing_organization = await self._organization_repo.get(
+            organization_id=organization_id,
+        )
+
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
+        org = await self._organization_repo.delete_logo(existing_organization)
+        return Ok(org)
+
+    async def remove_banner(
+        self,
+        organization_id: ObjectId,
+        account: Account,
+    ) -> Result[
+        Organization, OrganizationAuthorizationError | OrganizationNotFoundError
+    ]:
+        """Remove the banner from an organization."""
+        existing_organization = await self._organization_repo.get(
+            organization_id=organization_id,
+        )
+
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
+        org = await self._organization_repo.delete_banner(existing_organization)
+        return Ok(org)
+
     async def update(
         self,
         account: Account,

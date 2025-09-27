@@ -148,6 +148,16 @@ class OrganizationRepo:
         ).delete()
         await organization.delete()
 
+    async def delete_logo(self, organization: Organization) -> Organization:
+        """Delete the given organization's logo."""
+        organization.logo_url = None
+        return await organization.save()
+
+    async def delete_banner(self, organization: Organization) -> Organization:
+        """Delete the given organization's banner."""
+        organization.banner_url = None
+        return await organization.save()
+
     async def get_all(
         self,
         first: int | None = None,

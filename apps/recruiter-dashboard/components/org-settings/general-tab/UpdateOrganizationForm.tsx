@@ -1,3 +1,12 @@
+import type { UpdateOrganizationFormBannerPresignedUrlMutation } from '@/__generated__/UpdateOrganizationFormBannerPresignedUrlMutation.graphql';
+import type { UpdateOrganizationFormFragment$key } from '@/__generated__/UpdateOrganizationFormFragment.graphql';
+import type { UpdateOrganizationFormLogoPresignedUrlMutation } from '@/__generated__/UpdateOrganizationFormLogoPresignedUrlMutation.graphql';
+import type { UpdateOrganizationFormMutation as UpdateOrganizationFormMutationType } from '@/__generated__/UpdateOrganizationFormMutation.graphql';
+import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
+import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
+import { uploadFileToS3 } from '@/lib/presignedUrl';
 import {
 	addToast,
 	Button,
@@ -10,9 +19,11 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
+	Tooltip,
 	useDisclosure
 } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { EditIcon, TrashIcon } from 'lucide-react';
 import NextImage from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import type { Area } from 'react-easy-crop';
@@ -20,15 +31,8 @@ import Cropper from 'react-easy-crop';
 import { Controller, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod';
-import type { UpdateOrganizationFormBannerPresignedUrlMutation } from '@/__generated__/UpdateOrganizationFormBannerPresignedUrlMutation.graphql';
-import type { UpdateOrganizationFormFragment$key } from '@/__generated__/UpdateOrganizationFormFragment.graphql';
-import type { UpdateOrganizationFormLogoPresignedUrlMutation } from '@/__generated__/UpdateOrganizationFormLogoPresignedUrlMutation.graphql';
-import type { UpdateOrganizationFormMutation as UpdateOrganizationFormMutationType } from '@/__generated__/UpdateOrganizationFormMutation.graphql';
-import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
-import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
-import { env } from '@/lib/env/client';
-import links from '@/lib/links';
-import { uploadFileToS3 } from '@/lib/presignedUrl';
+import DeleteOrganizationBannerModal from './DeleteOrganizationBannerModal';
+import DeleteOrganizationLogoModal from './DeleteOrganizationLogoModal';
 
 const UpdateOrganizationFormMutation = graphql`
 mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $slug: String!, $location: String, $website: String, $logoUrl: String, $bannerUrl: String, $description: String) {
@@ -85,6 +89,8 @@ const UpdateOrganizationFormFragment = graphql`
 	bannerUrl
 	description
 	location
+	...DeleteOrganizationLogoModalFragment
+	...DeleteOrganizationBannerModalFragment
   }
 `;
 
@@ -114,6 +120,9 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [selectedBanner, setSelectedBanner] = useState<File | null>(null);
 	const [bannerPreviewUrl, setBannerPreviewUrl] = useState<string | null>(null);
+
+	const [showDeleteOrganizationLogoModal, setShowDeleteOrganizationLogoModal] = useState(false);
+	const [showDeleteOrganizationBannerModal, setShowDeleteOrganizationBannerModal] = useState(false);
 
 	// Cropper state
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -419,10 +428,25 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 											fill
 										/>
 									</div>
-									<Button as='label' variant='bordered' size='sm'>
-										Upload new logo
-										<input type='file' accept='image/*' className='hidden' multiple={false} onChange={handleLogoChange} />
-									</Button>
+									<div className='flex gap-2 items-center'>
+										<Button as='label' variant='bordered' size='sm' startContent={<EditIcon size={14} />}>
+											Edit
+											<input type='file' accept='image/*' className='hidden' multiple={false} onChange={handleLogoChange} />
+										</Button>
+										<Tooltip content={data.logoUrl || previewUrl ? 'Delete logo' : 'No logo to delete'}>
+											<Button
+												onPress={() => setShowDeleteOrganizationLogoModal(true)}
+												variant='light'
+												size='sm'
+												// TODO: get data whether this logo is default, and accordingly disable this button.
+												// need a custom avatar/ image class for this
+												isDisabled={!data.logoUrl && !previewUrl}
+												isIconOnly
+											>
+												<TrashIcon size={14} />
+											</Button>
+										</Tooltip>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -502,10 +526,24 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 											/>
 										</div>
 									)}
-									<Button as='label' variant='bordered' size='sm'>
-										Upload new banner
-										<input type='file' accept='image/*' className='hidden' multiple={false} onChange={handleBannerChange} />
-									</Button>
+									<div className='flex gap-2 items-center'>
+										<Button as='label' variant='bordered' size='sm' startContent={<EditIcon size={14} />}>
+											Edit
+											<input type='file' accept='image/*' className='hidden' multiple={false} onChange={handleBannerChange} />
+										</Button>
+										<Button
+											as='label'
+											variant='light'
+											size='sm'
+											isIconOnly
+											// TODO: get data whether this logo is default, and accordingly disable this button.
+											// need a custom avatar/ image class for this
+											onPress={() => setShowDeleteOrganizationBannerModal(true)}
+											isDisabled={!data.bannerUrl && !bannerPreviewUrl}
+										>
+											<TrashIcon size={14} />
+										</Button>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -562,6 +600,18 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 					</ModalFooter>
 				</ModalContent>
 			</Modal>
+			<DeleteOrganizationLogoModal
+				isOpen={showDeleteOrganizationLogoModal}
+				onOpenChange={setShowDeleteOrganizationLogoModal}
+				onClose={() => setShowDeleteOrganizationLogoModal(false)}
+				organization={data}
+			/>
+			<DeleteOrganizationBannerModal
+				isOpen={showDeleteOrganizationBannerModal}
+				onOpenChange={setShowDeleteOrganizationBannerModal}
+				onClose={() => setShowDeleteOrganizationBannerModal(false)}
+				organization={data}
+			/>
 		</>
 	);
 }

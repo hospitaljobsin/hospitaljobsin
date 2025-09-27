@@ -24,6 +24,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useFragment, useMutation } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { z } from 'zod/v4-mini';
+import DeleteAvatarModal from './DeleteAvatarModal';
 
 const UpdateAccountDetailsFormMutation = graphql`
 mutation UpdateAccountDetailsFormMutation($fullName: String!, $avatarUrl: String)  {
@@ -76,6 +77,7 @@ export default function UpdateAccountDetailsForm({ rootQuery, onSaveChanges }: P
 	const [zoom, setZoom] = useState(1);
 	const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 	const [croppedImage, setCroppedImage] = useState<string | null>(null);
+	const [showDeleteAvatarModal, setShowDeleteAvatarModal] = useState(false);
 
 	const {
 		handleSubmit,
@@ -243,36 +245,47 @@ export default function UpdateAccountDetailsForm({ rootQuery, onSaveChanges }: P
 				<Card className='p-6 space-y-6' shadow='none'>
 					<CardHeader className='flex gap-6 w-full items-center justify-between'>
 						<div className='flex gap-6 w-full items-start sm:items-center justify-start flex-col sm:flex-row'>
-							<div className='relative'>
-								<Badge
-									placement='bottom-right'
-									variant='solid'
-									content={
-										<Tooltip
-											content={
-												<div className='px-1 py-2 max-w-52 flex flex-col gap-2'>
-													<div className='text-small'>Change your profile picture</div>
-													<div className='text-tiny'>Click your avatar to upload a new profile picture</div>
-												</div>
-											}
-										>
-											<PenIcon size={18} className='m-2' />
-										</Tooltip>
-									}
-									size='lg'
-									shape='circle'
-									showOutline={false}
+							<div className='flex flex-col gap-6 justify-center'>
+								<div className='relative'>
+									<Badge
+										placement='bottom-right'
+										variant='solid'
+										content={
+											<Tooltip
+												content={
+													<div className='px-1 py-2 max-w-52 flex flex-col gap-2'>
+														<div className='text-small'>Change your profile picture</div>
+														<div className='text-tiny'>Click your avatar to upload a new profile picture</div>
+													</div>
+												}
+											>
+												<PenIcon size={18} className='m-2' />
+											</Tooltip>
+										}
+										size='lg'
+										shape='circle'
+										showOutline={false}
+									>
+										<Avatar
+											showFallback
+											name={data.fullName}
+											radius='full'
+											className='w-32 h-32 cursor-pointer hover:brightness-75 transition-all duration-200'
+											src={previewUrl || data.avatarUrl}
+											onClick={() => fileInputRef.current?.click()}
+										/>
+									</Badge>
+									<input ref={fileInputRef} type='file' accept='image/*' onChange={handleFileSelect} className='hidden' />
+								</div>
+								<Button
+									onPress={() => {
+										setShowDeleteAvatarModal(true);
+									}}
+									size='sm'
+									variant='light'
 								>
-									<Avatar
-										showFallback
-										name={data.fullName}
-										radius='full'
-										className='w-32 h-32 cursor-pointer hover:brightness-75 transition-all duration-200'
-										src={previewUrl || data.avatarUrl}
-										onClick={() => fileInputRef.current?.click()}
-									/>
-								</Badge>
-								<input ref={fileInputRef} type='file' accept='image/*' onChange={handleFileSelect} className='hidden' />
+									Remove Avatar
+								</Button>
 							</div>
 							<div className='flex flex-col gap-8 w-full items-center justify-start'>
 								<div className='flex flex-col w-full space-y-4'>
@@ -345,6 +358,13 @@ export default function UpdateAccountDetailsForm({ rootQuery, onSaveChanges }: P
 					</ModalFooter>
 				</ModalContent>
 			</Modal>
+			<DeleteAvatarModal
+				isOpen={showDeleteAvatarModal}
+				onOpenChange={setShowDeleteAvatarModal}
+				onClose={() => {
+					setShowDeleteAvatarModal(false);
+				}}
+			/>
 		</>
 	);
 }

@@ -713,7 +713,7 @@ union CreateOrganizationInvitePayload =
 """
 The create organization payload.
 """
-union CreateOrganizationPayload = Organization | OrganizationSlugInUseError
+union CreateOrganizationPayload = Organization | OrganizationSlugInUseError | InvalidUserInputError
 
 """
 The payload for creating a presigned URL.
@@ -1211,6 +1211,26 @@ type InvalidPhoneNumberVerificationTokenError implements Error {
 	Human readable error message.
 	"""
 	message: String!
+}
+
+"""
+Used when user input fails validation rules.
+"""
+type InvalidUserInputError implements Error {
+	"""
+	Human readable error message explaining the validation failure.
+	"""
+	message: String!
+
+	"""
+	The name of the field that failed validation.
+	"""
+	field: String!
+
+	"""
+	Optional machine-readable error code (e.g. 'too_short', 'too_long').
+	"""
+	code: String
 }
 
 type InviteConnection {
@@ -3132,6 +3152,11 @@ type Mutation {
 	): GenerateProfileDocumentPresignedURLPayload! @isAuthenticated
 
 	"""
+	Remove the avatar from the current user account.
+	"""
+	removeAccountAvatar: Account! @isAuthenticated
+
+	"""
 	Create an organization.
 	"""
 	createOrganization(
@@ -3160,6 +3185,26 @@ type Mutation {
 		"""
 		logoUrl: String = null
 	): CreateOrganizationPayload! @isAuthenticated
+
+	"""
+	Remove the logo from the given organization.
+	"""
+	removeOrganizationLogo(
+		"""
+		The ID of the organization to remove the logo from.
+		"""
+		organizationId: ID!
+	): RemoveOrganizationMediaPayload! @isAuthenticated
+
+	"""
+	Remove the banner from the given organization.
+	"""
+	removeOrganizationBanner(
+		"""
+		The ID of the organization to remove the banner from.
+		"""
+		organizationId: ID!
+	): RemoveOrganizationMediaPayload! @isAuthenticated
 
 	"""
 	Check if a slug is available.
@@ -4591,6 +4636,11 @@ type Rejected {
 The remove account phone number payload.
 """
 union RemoveAccountPhoneNumberPayload = Account | PhoneNumberDoesNotExistError
+
+"""
+The remove organization media payload (logo or banner).
+"""
+union RemoveOrganizationMediaPayload = Organization | OrganizationNotFoundError | OrganizationAuthorizationError
 
 """
 The remove organization member payload.
