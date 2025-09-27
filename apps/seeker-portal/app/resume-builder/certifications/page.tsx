@@ -1,6 +1,6 @@
-import { ResponsiveResumeBuilder } from '../../../components/resume-builder/ResponsiveResumeBuilder';
 import { CertificationsView } from '../../../components/resume-builder/CertificationsView';
-import { MobileCertificationsView } from '../../../components/resume-builder/MobileCertificationsView';
+import { MobileCertificationsView } from '../../../components/resume-builder/mobile/MobileCertificationsView';
+import { ResponsiveResumeBuilder } from '../../../components/resume-builder/ResponsiveResumeBuilder';
 
 export default function CertificationsPage() {
 	return (

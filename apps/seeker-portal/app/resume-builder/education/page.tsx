@@ -1,6 +1,6 @@
-import { ResponsiveResumeBuilder } from '../../../components/resume-builder/ResponsiveResumeBuilder';
 import { EducationView } from '../../../components/resume-builder/EducationView';
-import { MobileEducationView } from '../../../components/resume-builder/MobileEducationView';
+import { MobileEducationView } from '../../../components/resume-builder/mobile/MobileEducationView';
+import { ResponsiveResumeBuilder } from '../../../components/resume-builder/ResponsiveResumeBuilder';
 
 export default function EducationPage() {
 	return (

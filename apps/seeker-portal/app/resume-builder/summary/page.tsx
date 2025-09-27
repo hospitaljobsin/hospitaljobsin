@@ -1,6 +1,6 @@
+import { MobileSummaryView } from '../../../components/resume-builder/mobile/MobileSummaryView';
 import { ResponsiveResumeBuilder } from '../../../components/resume-builder/ResponsiveResumeBuilder';
 import { SummaryView } from '../../../components/resume-builder/SummaryView';
-import { MobileSummaryView } from '../../../components/resume-builder/MobileSummaryView';
 
 export default function SummaryPage() {
 	return (

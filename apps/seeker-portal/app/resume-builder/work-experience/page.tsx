@@ -1,6 +1,6 @@
+import { MobileWorkExperienceView } from '../../../components/resume-builder/mobile/MobileWorkExperienceView';
 import { ResponsiveResumeBuilder } from '../../../components/resume-builder/ResponsiveResumeBuilder';
 import { WorkExperienceView } from '../../../components/resume-builder/WorkExperienceForm';
-import { MobileWorkExperienceView } from '../../../components/resume-builder/MobileWorkExperienceView';
 
 export default function WorkExperiencePage() {
 	return (

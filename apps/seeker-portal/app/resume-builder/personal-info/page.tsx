@@ -1,6 +1,6 @@
-import { ResponsiveResumeBuilder } from '../../../components/resume-builder/ResponsiveResumeBuilder';
+import { MobilePersonalInfoView } from '../../../components/resume-builder/mobile/MobilePersonalInfoView';
 import { PersonalInfoView } from '../../../components/resume-builder/PersonalInfoView';
-import { MobilePersonalInfoView } from '../../../components/resume-builder/MobilePersonalInfoView';
+import { ResponsiveResumeBuilder } from '../../../components/resume-builder/ResponsiveResumeBuilder';
 
 export default function PersonalInfoPage() {
 	return (

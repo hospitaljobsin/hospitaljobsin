@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import { ProgressBar } from '../ProgressBar';
 import { MobileSidebar } from './MobileSidebar';
-import { ProgressBar } from './ProgressBar';
 
 interface MobileResumeBuilderLayoutProps {
 	children: React.ReactNode;

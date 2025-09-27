@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { MobileResumeBuilderLayout } from './mobile/MobileResumeBuilderLayout';
 import { ResumeBuilderLayout } from './ResumeBuilderLayout';
-import { MobileResumeBuilderLayout } from './MobileResumeBuilderLayout';
 
 interface ResponsiveResumeBuilderProps {
 	children: React.ReactNode;
