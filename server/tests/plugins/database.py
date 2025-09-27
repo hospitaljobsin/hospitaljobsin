@@ -159,7 +159,7 @@ async def cleanup_database(
 ) -> AsyncGenerator[None]:
     yield
 
-    database = db_client.get_database(default=db_settings.test_database_name)
+    database = db_client.get_database(name=db_settings.test_database_name)
 
     collections = await database.list_collection_names()
 
