@@ -75,10 +75,6 @@ class AccountRepo:
                 type=analytics_preference,
                 updated_at=datetime.now(UTC),
             ),
-            webauthn_credentials=[],
-            oauth_credentials=[],
-            recovery_codes=[],
-            temporary_two_factor_challenges=[],
         )
 
         return await account.insert()

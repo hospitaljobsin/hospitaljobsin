@@ -29,7 +29,7 @@ def db_settings() -> DatabaseSettings:
 
 @pytest.fixture(scope="session")
 async def db_client(db_settings: DatabaseSettings) -> AsyncGenerator[AsyncMongoClient]:
-    client: AsyncMongoClient = AsyncMongoClient(str(db_settings.database_url))
+    client = AsyncMongoClient(str(db_settings.database_url))
     yield client
     await client.close()
 
@@ -71,7 +71,7 @@ async def initialize_test_database(
 
     yield
 
-    database = db_client.get_default_database(default=db_settings.test_database_name)
+    database = db_client.get_database(name=db_settings.test_database_name)
 
     collections = await database.list_collection_names()
 
@@ -159,7 +159,7 @@ async def cleanup_database(
 ) -> AsyncGenerator[None]:
     yield
 
-    database = db_client.get_default_database(default=db_settings.test_database_name)
+    database = db_client.get_database(name=db_settings.test_database_name)
 
     collections = await database.list_collection_names()
 
