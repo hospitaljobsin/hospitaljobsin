@@ -927,6 +927,7 @@ class JobRepo:
                         }
                     },
                 },
+                "sort": [{"score": {"order": "desc"}}],  # Explicitly sort by relevance
             }
         }
 

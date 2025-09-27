@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<7c3e7df85c69e5d9d1f1819d8682b66f>>
- * @relayHash b6f62dfe27d135d53ee3962bd1282469
+ * @generated SignedSource<<dbf65bb1ba15ab04cd921cb1d70f55a4>>
+ * @relayHash 3107f7d4ccf41e932c1d51a6a96ffa9c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b6f62dfe27d135d53ee3962bd1282469
+// @relayRequestID 3107f7d4ccf41e932c1d51a6a96ffa9c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -388,7 +388,7 @@ v41 = [
   {
     "kind": "Literal",
     "name": "first",
-    "value": 10
+    "value": 4
   }
 ],
 v42 = {
@@ -650,7 +650,7 @@ return {
                                 "args": null,
                                 "argumentDefinitions": [
                                   {
-                                    "defaultValue": 10,
+                                    "defaultValue": 4,
                                     "kind": "LocalArgument",
                                     "name": "count"
                                   },
@@ -909,7 +909,7 @@ return {
                           },
                           (v34/*: any*/)
                         ],
-                        "storageKey": "relatedJobs(first:10)"
+                        "storageKey": "relatedJobs(first:4)"
                       },
                       {
                         "alias": null,
@@ -950,7 +950,7 @@ return {
     ]
   },
   "params": {
-    "id": "b6f62dfe27d135d53ee3962bd1282469",
+    "id": "3107f7d4ccf41e932c1d51a6a96ffa9c",
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",
