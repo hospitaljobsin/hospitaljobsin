@@ -67,7 +67,7 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 		control,
 		setError,
 		reset,
-		formState: { errors, isSubmitting, isDirty }
+		formState: { errors, isSubmitting, isDirty, isValid }
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
 		defaultValues:
@@ -149,13 +149,16 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 					createdAt: toDateString(cert.createdAt),
 					expiresAt: cert.expiresAt ? toDateString(cert.expiresAt) : null
 				}))
+			},
+			onCompleted() {
+				reset(formData);
+				onSaveChanges();
 			}
 		});
-		onSaveChanges();
 	}
 
 	return (
-		<UnsavedChangesFormWrapper isDirty={isDirty} onSave={() => handleSubmit(onSubmit)()} onCancel={() => reset()}>
+		<UnsavedChangesFormWrapper isDirty={isDirty} isValid={isValid} onSave={() => handleSubmit(onSubmit)()} onCancel={() => reset()}>
 			<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
 				<div className='pb-6 space-y-6'>
 					<h1 className='w-full text-xl text-foreground-500 font-medium'>Certifications</h1>
@@ -309,12 +312,6 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 							)}
 						</div>
 					</div>
-				</div>
-
-				<div className='flex flex-col-reverse sm:flex-row justify-end gap-4 w-full'>
-					<Button type='submit' isLoading={isMutationInFlight || isSubmitting} className='w-full sm:w-auto'>
-						Save Changes
-					</Button>
 				</div>
 			</form>
 		</UnsavedChangesFormWrapper>

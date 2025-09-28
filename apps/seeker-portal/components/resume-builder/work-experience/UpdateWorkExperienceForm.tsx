@@ -152,7 +152,7 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 	const {
 		handleSubmit,
 		control,
-		formState: { errors, isSubmitting, isDirty },
+		formState: { errors, isSubmitting, isDirty, isValid },
 		setError,
 		reset
 	} = useForm<WorkExperienceFormType>({
@@ -232,14 +232,17 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 					skills: exp.skills.flatMap(skill => skill.value),
 					startedAt: toDateString(exp.startedAt),
 					completedAt: exp.isCurrentRole ? null : toDateString(exp.completedAt)
-				}))
+				})),
+				onCompleted() {
+					reset(formData);
+					onSaveChanges();
+				}
 			}
 		});
-		onSaveChanges();
 	}
 
 	return (
-		<UnsavedChangesFormWrapper isDirty={isDirty} onSave={() => handleSubmit(onSubmit)()} onCancel={() => reset()}>
+		<UnsavedChangesFormWrapper isDirty={isDirty} isValid={isValid} onSave={() => handleSubmit(onSubmit)()} onCancel={() => reset()}>
 			<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
 				<div className='pb-6 space-y-6'>
 					<h1 className='w-full text-xl text-foreground-500 font-medium'>Work Experience</h1>
@@ -445,11 +448,6 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 							</>
 						)}
 					</div>
-				</div>
-				<div className='flex gap-4 justify-end'>
-					<Button type='submit' isLoading={isSubmitting || isMutationInFlight}>
-						Save Changes
-					</Button>
 				</div>
 			</form>
 		</UnsavedChangesFormWrapper>

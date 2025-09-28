@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useUnsavedChanges } from './UnsavedChangesContext';
 
-export const useUnsavedChangesForm = (isDirty: boolean, onSave: () => void, onCancel: () => void) => {
+export const useUnsavedChangesForm = (isDirty: boolean, isValid: boolean, onSave: () => void, onCancel: () => void) => {
 	const { setHasUnsavedChanges, setCallbacks } = useUnsavedChanges();
 
 	useEffect(() => {
@@ -9,6 +9,12 @@ export const useUnsavedChangesForm = (isDirty: boolean, onSave: () => void, onCa
 	}, [isDirty, setHasUnsavedChanges]);
 
 	useEffect(() => {
-		setCallbacks(onSave, onCancel);
-	}, [onSave, onCancel, setCallbacks]);
+		const handleSave = async () => {
+			await onSave();
+			if (isValid) {
+				setHasUnsavedChanges(false);
+			}
+		};
+		setCallbacks(handleSave, onCancel);
+	}, [onSave, onCancel, setCallbacks, setHasUnsavedChanges, isValid]);
 };

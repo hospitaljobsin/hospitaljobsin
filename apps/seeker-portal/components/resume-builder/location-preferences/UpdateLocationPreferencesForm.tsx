@@ -1,5 +1,5 @@
 import type { UpdateLocationPreferencesFormFragment$key } from '@/__generated__/UpdateLocationPreferencesFormFragment.graphql';
-import { Button, Chip, Switch } from '@heroui/react';
+import { Chip, Switch } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -58,7 +58,7 @@ export default function UpdateLocationPreferencesForm({
 		control,
 		setValue,
 		reset,
-		formState: { errors, isSubmitting, isDirty }
+		formState: { errors, isSubmitting, isDirty, isValid }
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
 		defaultValues
@@ -74,6 +74,7 @@ export default function UpdateLocationPreferencesForm({
 				address: formData.address
 			},
 			onCompleted() {
+				reset(formData);
 				onSaveChanges();
 			}
 		});
@@ -84,7 +85,7 @@ export default function UpdateLocationPreferencesForm({
 	}
 
 	return (
-		<UnsavedChangesFormWrapper isDirty={isDirty} onSave={() => handleSubmit(onSubmit)()} onCancel={() => reset()}>
+		<UnsavedChangesFormWrapper isDirty={isDirty} isValid={isValid} onSave={() => handleSubmit(onSubmit)()} onCancel={() => reset()}>
 			<form className='space-y-12' onSubmit={handleSubmit(onSubmit)}>
 				<div className='pb-4 sm:pb-6 space-y-4 sm:space-y-6 w-full'>
 					<h1 className='w-full text-xl text-foreground-500 font-medium'>Location Preferences</h1>
@@ -153,11 +154,6 @@ export default function UpdateLocationPreferencesForm({
 							/>
 						</div>
 					</div>
-				</div>
-				<div className='flex flex-col-reverse sm:flex-row justify-end gap-4 w-full'>
-					<Button type='submit' isLoading={isSubmitting || isInFlight} className='w-full sm:w-auto'>
-						Save Changes
-					</Button>
 				</div>
 			</form>
 		</UnsavedChangesFormWrapper>
