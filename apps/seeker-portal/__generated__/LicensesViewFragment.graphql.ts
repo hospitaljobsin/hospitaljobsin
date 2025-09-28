@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4aaa8fdb9e21d8da1c378963b6fbe569>>
+ * @generated SignedSource<<bbd4ad14f3c1841e36a3230e1147e6a5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,20 +10,20 @@
 
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type AdditionalViewFragment$data = {
+export type LicensesViewFragment$data = {
   readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderFragment">;
-  readonly " $fragmentType": "AdditionalViewFragment";
+  readonly " $fragmentType": "LicensesViewFragment";
 };
-export type AdditionalViewFragment$key = {
-  readonly " $data"?: AdditionalViewFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"AdditionalViewFragment">;
+export type LicensesViewFragment$key = {
+  readonly " $data"?: LicensesViewFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"LicensesViewFragment">;
 };
 
 const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "AdditionalViewFragment",
+  "name": "LicensesViewFragment",
   "selections": [
     {
       "args": null,
@@ -35,6 +35,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "a2bed1752b59d0883a19641c380da67a";
+(node as any).hash = "f84991266ab5333abd1726a323c57fda";
 
 export default node;

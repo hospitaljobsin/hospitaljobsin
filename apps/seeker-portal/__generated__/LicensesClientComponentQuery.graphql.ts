@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a6d7c9e6ce2c3f7284674a258eb4b2ac>>
- * @relayHash 6acc99be86bfb272c10e79df4c421a85
+ * @generated SignedSource<<38e0ce02c5dcf79368f976fd3a3f138e>>
+ * @relayHash b5721a952a224b98efbaa6fe4b4077b0
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 6acc99be86bfb272c10e79df4c421a85
+// @relayRequestID b5721a952a224b98efbaa6fe4b4077b0
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type SummaryClientComponentQuery$variables = Record<PropertyKey, never>;
-export type SummaryClientComponentQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"SummaryViewFragment">;
+export type LicensesClientComponentQuery$variables = Record<PropertyKey, never>;
+export type LicensesClientComponentQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"LicensesViewFragment">;
 };
-export type SummaryClientComponentQuery = {
-  response: SummaryClientComponentQuery$data;
-  variables: SummaryClientComponentQuery$variables;
+export type LicensesClientComponentQuery = {
+  response: LicensesClientComponentQuery$data;
+  variables: LicensesClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -35,12 +35,12 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "SummaryClientComponentQuery",
+    "name": "LicensesClientComponentQuery",
     "selections": [
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "SummaryViewFragment"
+        "name": "LicensesViewFragment"
       }
     ],
     "type": "Query",
@@ -50,7 +50,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "SummaryClientComponentQuery",
+    "name": "LicensesClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -122,15 +122,15 @@ return {
     ]
   },
   "params": {
-    "id": "6acc99be86bfb272c10e79df4c421a85",
+    "id": "b5721a952a224b98efbaa6fe4b4077b0",
     "metadata": {},
-    "name": "SummaryClientComponentQuery",
+    "name": "LicensesClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "9b30772c278787118afb9355e049f63f";
+(node as any).hash = "a6c48d7208c0305a9cd73d863499da8e";
 
 export default node;

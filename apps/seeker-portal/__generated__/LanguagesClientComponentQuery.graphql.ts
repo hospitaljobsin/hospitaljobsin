@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<8f82e119a9ef63cfe5abadfa290138ea>>
- * @relayHash 1e6dc5dd28ef68b8c09972e374d17b29
+ * @generated SignedSource<<efb4588dd091d888c5dccf2c38fb70b7>>
+ * @relayHash 6aeb5b6e687d7e0c3cf2e1320b225f12
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 1e6dc5dd28ef68b8c09972e374d17b29
+// @relayRequestID 6aeb5b6e687d7e0c3cf2e1320b225f12
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type SkillsClientComponentQuery$variables = Record<PropertyKey, never>;
-export type SkillsClientComponentQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"SkillsViewFragment">;
+export type LanguagesClientComponentQuery$variables = Record<PropertyKey, never>;
+export type LanguagesClientComponentQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"LanguagesViewFragment">;
 };
-export type SkillsClientComponentQuery = {
-  response: SkillsClientComponentQuery$data;
-  variables: SkillsClientComponentQuery$variables;
+export type LanguagesClientComponentQuery = {
+  response: LanguagesClientComponentQuery$data;
+  variables: LanguagesClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -35,12 +35,12 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "SkillsClientComponentQuery",
+    "name": "LanguagesClientComponentQuery",
     "selections": [
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "SkillsViewFragment"
+        "name": "LanguagesViewFragment"
       }
     ],
     "type": "Query",
@@ -50,7 +50,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "SkillsClientComponentQuery",
+    "name": "LanguagesClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -122,15 +122,15 @@ return {
     ]
   },
   "params": {
-    "id": "1e6dc5dd28ef68b8c09972e374d17b29",
+    "id": "6aeb5b6e687d7e0c3cf2e1320b225f12",
     "metadata": {},
-    "name": "SkillsClientComponentQuery",
+    "name": "LanguagesClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "9191479180d496f330850dc7a1ced299";
+(node as any).hash = "43073be616d0817d01666c31ba7e4c62";
 
 export default node;

@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import links from '@/lib/links';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import React from 'react';
 
 interface NavItemProps {
 	href: string;
@@ -27,13 +28,13 @@ const NavItem: React.FC<NavItemProps> = ({ href, children }) => {
 export const Sidebar: React.FC = () => {
 	return (
 		<nav className='flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0'>
-			<NavItem href='/resume-builder/personal-info'>Personal Info</NavItem>
-			<NavItem href='/resume-builder/summary'>Summary</NavItem>
-			<NavItem href='/resume-builder/work-experience'>Work Experience</NavItem>
-			<NavItem href='/resume-builder/education'>Education</NavItem>
-			<NavItem href='/resume-builder/skills'>Skills</NavItem>
-			<NavItem href='/resume-builder/certifications'>Certifications</NavItem>
-			<NavItem href='/resume-builder/additional'>Additional</NavItem>
+			<NavItem href={links.resumeBuilderPersonalInfo}>Personal Info</NavItem>
+			<NavItem href={links.resumeBuilderWorkExperience}>Work Experience</NavItem>
+			<NavItem href={links.resumeBuilderEducation}>Education</NavItem>
+			<NavItem href={links.resumeBuilderCertifications}>Certifications</NavItem>
+			<NavItem href={links.resumeBuilderLicenses}>Licenses</NavItem>
+			<NavItem href={links.resumeBuilderLocationPreferences}>Location Preferences</NavItem>
+			<NavItem href={links.resumeBuilderLanguages}>Languages</NavItem>
 		</nav>
 	);
 };

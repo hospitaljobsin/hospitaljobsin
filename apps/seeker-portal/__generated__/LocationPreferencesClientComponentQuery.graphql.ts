@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<9ca13130bdc5d0d33eec2db05b4a338a>>
- * @relayHash 58d4edfee630325508518c0dc4716060
+ * @generated SignedSource<<5ee9fce6ff5566ebd408a1d09a356f7d>>
+ * @relayHash d8fdd62794522a796e598479faa6a17a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 58d4edfee630325508518c0dc4716060
+// @relayRequestID d8fdd62794522a796e598479faa6a17a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type AdditionalClientComponentQuery$variables = Record<PropertyKey, never>;
-export type AdditionalClientComponentQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"AdditionalViewFragment">;
+export type LocationPreferencesClientComponentQuery$variables = Record<PropertyKey, never>;
+export type LocationPreferencesClientComponentQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"LocationPreferencesViewFragment">;
 };
-export type AdditionalClientComponentQuery = {
-  response: AdditionalClientComponentQuery$data;
-  variables: AdditionalClientComponentQuery$variables;
+export type LocationPreferencesClientComponentQuery = {
+  response: LocationPreferencesClientComponentQuery$data;
+  variables: LocationPreferencesClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -35,12 +35,12 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "AdditionalClientComponentQuery",
+    "name": "LocationPreferencesClientComponentQuery",
     "selections": [
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "AdditionalViewFragment"
+        "name": "LocationPreferencesViewFragment"
       }
     ],
     "type": "Query",
@@ -50,7 +50,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "AdditionalClientComponentQuery",
+    "name": "LocationPreferencesClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -122,15 +122,15 @@ return {
     ]
   },
   "params": {
-    "id": "58d4edfee630325508518c0dc4716060",
+    "id": "d8fdd62794522a796e598479faa6a17a",
     "metadata": {},
-    "name": "AdditionalClientComponentQuery",
+    "name": "LocationPreferencesClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "7ab6a8d9414ab33ca543c3992fc373ec";
+(node as any).hash = "c47016d66a39388b3bbf276963be84ff";
 
 export default node;
