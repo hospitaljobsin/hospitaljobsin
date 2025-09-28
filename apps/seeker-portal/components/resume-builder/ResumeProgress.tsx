@@ -30,7 +30,7 @@ export default function ResumeProgress({ query }: { query: ResumeProgressFragmen
 	invariant(account.viewer.__typename === 'Account', 'Expected profile data to be present');
 	const data = useFragment<ResumeProgressAccountFragment$key>(ResumeProgressAccountFragment, account.viewer);
 	return (
-		<div className='w-full max-w-7xl mx-auto px-4 pb-6 pt-12 lg:px-8 mb-4'>
+		<div className='w-full max-w-7xl mx-auto px-4 pb-6 pt-6 md:pt-12 lg:px-8 mb-4'>
 			<Progress
 				label='Resume Progress'
 				size='md'

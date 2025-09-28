@@ -1,6 +1,6 @@
 'use client';
 
-import { Progress } from '@heroui/react';
+import { Tab, Tabs } from '@heroui/react';
 import React, { useState } from 'react';
 import { MobileSidebar } from './MobileSidebar';
 
@@ -14,28 +14,22 @@ export const MobileResumeBuilderLayout: React.FC<MobileResumeBuilderLayoutProps>
 	return (
 		<div className='flex flex-col h-screen bg-background-light dark:bg-background-dark'>
 			{/* Fixed Header */}
-			<div className='bg-white dark:bg-background-dark border-b border-primary/20 p-4'>
-				<div className='flex items-center justify-between mb-4'>
-					<h1 className='text-xl font-bold'>Resume Builder</h1>
-					<button onClick={() => setShowPreview(!showPreview)} className='px-3 py-1.5 text-sm bg-primary/20 text-primary rounded-lg'>
-						{showPreview ? 'Edit' : 'Preview'}
-					</button>
-				</div>
-				<Progress
-					value={60}
-					className='w-full'
-					classNames={{ label: 'text-foreground-600 text-sm', value: 'text-foreground-600' }}
-					showValueLabel
-					disableAnimation
-				/>
+			<div className='w-full pb-6 px-4'>
+				<Tabs
+					selectedKey={showPreview ? 'preview' : 'edit'}
+					onSelectionChange={key => setShowPreview(key === 'preview')}
+					fullWidth
+					classNames={{
+						cursor: 'shadow-none'
+					}}
+				>
+					<Tab key='edit' title='Edit' />
+					<Tab key='preview' title='Preview' />
+				</Tabs>
 			</div>
 
 			{/* Navigation */}
-			{!showPreview && (
-				<div className='border-b border-primary/20 bg-white dark:bg-background-dark'>
-					<MobileSidebar />
-				</div>
-			)}
+			{!showPreview && <MobileSidebar />}
 
 			{/* Content Area */}
 			<div className='flex-1 overflow-y-auto'>
@@ -56,11 +50,6 @@ export const MobileResumeBuilderLayout: React.FC<MobileResumeBuilderLayoutProps>
 				) : (
 					<div className='p-4'>{children}</div>
 				)}
-			</div>
-
-			{/* Fixed Bottom Save Button */}
-			<div className='p-4 bg-white dark:bg-background-dark border-t border-primary/20'>
-				<button className='w-full bg-primary text-white py-3 rounded-lg font-semibold'>Save Changes</button>
 			</div>
 		</div>
 	);
