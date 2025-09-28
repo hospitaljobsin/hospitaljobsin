@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<794d8648a5e2dffa64d28c5f10c35475>>
- * @relayHash ba86748f8aaf36837e9a241cdf945f22
+ * @generated SignedSource<<5a3b089ff1be08aef2ea4e52e7311b1a>>
+ * @relayHash 61584bebdc7e955faebf742f7af55a97
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ba86748f8aaf36837e9a241cdf945f22
+// @relayRequestID 61584bebdc7e955faebf742f7af55a97
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -23,7 +23,7 @@ export type UpdateLocationPreferencesFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateLocationPreferencesFormFragment">;
     } | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment" | "ResumeProgressAccountFragment">;
   };
 };
 export type UpdateLocationPreferencesFormMutation = {
@@ -97,6 +97,11 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "IncompleteProfileBannerFragment"
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "ResumeProgressAccountFragment"
               },
               {
                 "alias": null,
@@ -174,6 +179,13 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
                     "name": "locationsOpenToWork",
                     "storageKey": null
                   },
@@ -212,7 +224,7 @@ return {
     ]
   },
   "params": {
-    "id": "ba86748f8aaf36837e9a241cdf945f22",
+    "id": "61584bebdc7e955faebf742f7af55a97",
     "metadata": {},
     "name": "UpdateLocationPreferencesFormMutation",
     "operationKind": "mutation",
@@ -221,6 +233,6 @@ return {
 };
 })();
 
-(node as any).hash = "7e31e7e746b3933ec176fb2eb7d2aa5c";
+(node as any).hash = "78acd121136ca28860f7b2564bbee510";
 
 export default node;

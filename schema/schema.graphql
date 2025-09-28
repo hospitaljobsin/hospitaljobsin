@@ -4208,6 +4208,11 @@ type Profile implements BaseProfile & Node {
 	Whether the profile is complete.
 	"""
 	isComplete: Boolean!
+
+	"""
+	The profile completion percentage.
+	"""
+	progressPercentage: Float!
 }
 
 """

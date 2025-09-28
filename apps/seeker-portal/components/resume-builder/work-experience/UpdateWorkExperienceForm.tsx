@@ -14,6 +14,7 @@ mutation UpdateWorkExperienceFormMutation($workExperience: [WorkExperienceInput!
   updateProfileExperience(workExperience: $workExperience) {
     ...on Account {
 		...IncompleteProfileBannerFragment
+		...ResumeProgressAccountFragment
       profile {
           ...UpdateWorkExperienceFormFragment
       }

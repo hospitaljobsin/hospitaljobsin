@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<80d7ff0089e8a6d4aa0c4d5e6a143c1a>>
- * @relayHash b8bd7ce6a5899a6f66a0596517e837cc
+ * @generated SignedSource<<7e38a246494b9b2c9552429748265b4b>>
+ * @relayHash b293947fa1852d50f047ceb50c777339
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b8bd7ce6a5899a6f66a0596517e837cc
+// @relayRequestID b293947fa1852d50f047ceb50c777339
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -102,6 +102,13 @@ return {
                     "storageKey": null
                   },
                   (v1/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
                   (v0/*: any*/),
                   {
                     "alias": null,
@@ -184,7 +191,7 @@ return {
     ]
   },
   "params": {
-    "id": "b8bd7ce6a5899a6f66a0596517e837cc",
+    "id": "b293947fa1852d50f047ceb50c777339",
     "metadata": {},
     "name": "WorkExperienceClientComponentQuery",
     "operationKind": "query",

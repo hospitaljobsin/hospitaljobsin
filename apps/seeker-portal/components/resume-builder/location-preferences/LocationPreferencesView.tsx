@@ -5,12 +5,14 @@ import type { LocationPreferencesViewFragment$key } from '@/__generated__/Locati
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import DashboardHeader from '../../layout/DashboardHeader';
 import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
+import ResumeProgress from '../ResumeProgress';
 import { DesktopLocationPreferencesView } from './DesktopLocationPreferencesView';
 import { MobileLocationPreferencesView } from './MobileLocationPreferencesView';
 
 const LocationPreferencesViewFragment = graphql`
   fragment LocationPreferencesViewFragment on Query {
     ...DashboardHeaderFragment
+	...ResumeProgressFragment
     ...DesktopLocationPreferencesViewFragment
 	...MobileLocationPreferencesViewFragment
   }
@@ -27,6 +29,7 @@ export default function LocationPreferencesView({
 	return (
 		<div className='w-full flex flex-col flex-1 h-full'>
 			<DashboardHeader query={data} />
+			<ResumeProgress query={data} />
 			<ResponsiveResumeBuilder
 				desktopComponent={() => <DesktopLocationPreferencesView data={data} />}
 				mobileComponent={() => <MobileLocationPreferencesView data={data} />}

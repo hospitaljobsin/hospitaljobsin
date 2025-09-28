@@ -310,6 +310,10 @@ class ProfileType(BaseProfileType, BaseNodeType[Profile]):
         description="Whether the profile is complete.",
     )
 
+    progress_percentage: float = strawberry.field(
+        description="The profile completion percentage.",
+    )
+
     @classmethod
     def marshal(cls, model: Profile) -> Self:
         """Marshal into a node instance."""
@@ -343,6 +347,7 @@ class ProfileType(BaseProfileType, BaseNodeType[Profile]):
             is_complete=model.is_complete,
             professional_summary=model.professional_summary,
             headline=model.headline,
+            progress_percentage=model.progress_percentage,
         )
 
     @classmethod

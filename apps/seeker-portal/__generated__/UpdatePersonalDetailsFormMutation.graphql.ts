@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<aab92781551fca04abb4ec9312897897>>
- * @relayHash 20f47e349664e708b7cdff8ca22c48dc
+ * @generated SignedSource<<f9e5916b7e7d26784f42db277a10579a>>
+ * @relayHash 4562c23f8591bad9d3e42c00b38aa135
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 20f47e349664e708b7cdff8ca22c48dc
+// @relayRequestID 4562c23f8591bad9d3e42c00b38aa135
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -26,7 +26,7 @@ export type UpdatePersonalDetailsFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdatePersonalDetailsFormFragment">;
     } | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment" | "ResumeProgressAccountFragment">;
   };
 };
 export type UpdatePersonalDetailsFormMutation = {
@@ -113,6 +113,11 @@ return {
                 "name": "IncompleteProfileBannerFragment"
               },
               {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "ResumeProgressAccountFragment"
+              },
+              {
                 "alias": null,
                 "args": null,
                 "concreteType": "Profile",
@@ -189,6 +194,13 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
                     "name": "gender",
                     "storageKey": null
                   },
@@ -234,7 +246,7 @@ return {
     ]
   },
   "params": {
-    "id": "20f47e349664e708b7cdff8ca22c48dc",
+    "id": "4562c23f8591bad9d3e42c00b38aa135",
     "metadata": {},
     "name": "UpdatePersonalDetailsFormMutation",
     "operationKind": "mutation",
@@ -243,6 +255,6 @@ return {
 };
 })();
 
-(node as any).hash = "e3b2c9c1e01053ecf50fc378c952e0d8";
+(node as any).hash = "5d26dde9ca020889710838b2abfd859f";
 
 export default node;

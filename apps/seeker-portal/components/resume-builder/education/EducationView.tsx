@@ -5,12 +5,14 @@ import type { EducationViewFragment$key } from '@/__generated__/EducationViewFra
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import DashboardHeader from '../../layout/DashboardHeader';
 import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
+import ResumeProgress from '../ResumeProgress';
 import { DesktopEducationView } from './DesktopEducationView';
 import { MobileEducationView } from './MobileEducationView';
 
 const EducationViewFragment = graphql`
   fragment EducationViewFragment on Query {
     ...DashboardHeaderFragment
+	...ResumeProgressFragment
     ...DesktopEducationViewFragment
 	...MobileEducationViewFragment
   }
@@ -23,6 +25,7 @@ export default function EducationView({ queryReference }: { queryReference: Prel
 	return (
 		<div className='w-full flex flex-col flex-1 h-full'>
 			<DashboardHeader query={data} />
+			<ResumeProgress query={data} />
 			<ResponsiveResumeBuilder
 				desktopComponent={() => <DesktopEducationView data={data} />}
 				mobileComponent={() => <MobileEducationView data={data} />}

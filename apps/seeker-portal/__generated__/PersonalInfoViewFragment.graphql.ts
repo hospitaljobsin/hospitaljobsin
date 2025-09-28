@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bbf902c5d5cf87055089721810ddab9e>>
+ * @generated SignedSource<<6e1e16e5c14536ea35d8d009a35d03f8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type PersonalInfoViewFragment$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderFragment" | "DesktopPersonalInfoViewFragment" | "MobilePersonalInfoViewFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderFragment" | "DesktopPersonalInfoViewFragment" | "MobilePersonalInfoViewFragment" | "ResumeProgressFragment">;
   readonly " $fragmentType": "PersonalInfoViewFragment";
 };
 export type PersonalInfoViewFragment$key = {
@@ -33,6 +33,11 @@ const node: ReaderFragment = {
     {
       "args": null,
       "kind": "FragmentSpread",
+      "name": "ResumeProgressFragment"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
       "name": "DesktopPersonalInfoViewFragment"
     },
     {
@@ -45,6 +50,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "a3b676ce3659b16d648e1ff18b94f3f3";
+(node as any).hash = "5f85986aab95252faba4fd84983bc408";
 
 export default node;

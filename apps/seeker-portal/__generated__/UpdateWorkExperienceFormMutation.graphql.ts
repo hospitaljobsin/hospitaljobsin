@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<dbacada58c23fb3567598ad2dc83a1fb>>
- * @relayHash 6c415ae8ece26678f921022af92dc224
+ * @generated SignedSource<<6ac7bc803b23e3eae51ab510c3215c14>>
+ * @relayHash f41a15f7673fa3a7605512c6b78a7bf6
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 6c415ae8ece26678f921022af92dc224
+// @relayRequestID f41a15f7673fa3a7605512c6b78a7bf6
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -31,7 +31,7 @@ export type UpdateWorkExperienceFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateWorkExperienceFormFragment">;
     } | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment" | "ResumeProgressAccountFragment">;
   };
 };
 export type UpdateWorkExperienceFormMutation = {
@@ -90,6 +90,11 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "IncompleteProfileBannerFragment"
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "ResumeProgressAccountFragment"
               },
               {
                 "alias": null,
@@ -153,6 +158,13 @@ return {
                     "storageKey": null
                   },
                   (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
                   (v2/*: any*/),
                   {
                     "alias": null,
@@ -235,7 +247,7 @@ return {
     ]
   },
   "params": {
-    "id": "6c415ae8ece26678f921022af92dc224",
+    "id": "f41a15f7673fa3a7605512c6b78a7bf6",
     "metadata": {},
     "name": "UpdateWorkExperienceFormMutation",
     "operationKind": "mutation",
@@ -244,6 +256,6 @@ return {
 };
 })();
 
-(node as any).hash = "b27ef5f864afebf6549e3bcde5853b90";
+(node as any).hash = "155954f2e77f8edee63ad8787eaafad9";
 
 export default node;

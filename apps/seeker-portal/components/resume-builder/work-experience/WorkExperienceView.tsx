@@ -5,12 +5,14 @@ import type { WorkExperienceViewFragment$key } from '@/__generated__/WorkExperie
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import DashboardHeader from '../../layout/DashboardHeader';
 import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
+import ResumeProgress from '../ResumeProgress';
 import { DesktopWorkExperienceView } from './DesktopWorkExperienceView';
 import { MobileWorkExperienceView } from './MobileWorkExperienceView';
 
 const WorkExperienceViewFragment = graphql`
   fragment WorkExperienceViewFragment on Query {
     ...DashboardHeaderFragment
+	...ResumeProgressFragment
     ...DesktopWorkExperienceViewFragment
 	...MobileWorkExperienceViewFragment
   }
@@ -23,6 +25,7 @@ export default function WorkExperienceView({ queryReference }: { queryReference:
 	return (
 		<div className='w-full flex flex-col flex-1 h-full'>
 			<DashboardHeader query={data} />
+			<ResumeProgress query={data} />
 			<ResponsiveResumeBuilder
 				desktopComponent={() => <DesktopWorkExperienceView data={data} />}
 				mobileComponent={() => <MobileWorkExperienceView data={data} />}

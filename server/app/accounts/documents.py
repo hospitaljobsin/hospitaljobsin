@@ -3,7 +3,7 @@ from datetime import UTC, date, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar, Literal
 
 import pymongo
-from beanie import BackLink, Document, Indexed, Link
+from beanie import Document, Indexed, Link
 from pydantic import BaseModel, Field
 from pymongo import IndexModel
 
@@ -14,12 +14,7 @@ from app.core.constants import (
 )
 
 if TYPE_CHECKING:
-    from app.auth.documents import (
-        OAuthCredential,
-        RecoveryCode,
-        TemporaryTwoFactorChallenge,
-        WebAuthnCredential,
-    )
+    pass
 
 
 # ENUMS
@@ -164,6 +159,23 @@ class Profile(BaseProfile, Document):
                 self.headline,
             ]
         )
+
+    @property
+    def progress_percentage(self) -> int:
+        """Calculates the profile completion percentage based on filled fields."""
+        total_fields = 8  # Total number of key fields to check
+        filled_fields = sum(
+            [
+                bool(self.date_of_birth),
+                bool(self.address),
+                bool(self.work_experience),
+                bool(self.education),
+                bool(self.locations_open_to_work or self.open_to_relocation_anywhere),
+                bool(self.professional_summary),
+                bool(self.headline),
+            ]
+        )
+        return int((filled_fields / total_fields) * 100)
 
     def __str__(self) -> str:
         """LLM friendly text representation of a job."""

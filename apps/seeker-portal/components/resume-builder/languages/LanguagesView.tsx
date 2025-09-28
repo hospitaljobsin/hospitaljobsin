@@ -5,12 +5,14 @@ import type { LanguagesViewFragment$key } from '@/__generated__/LanguagesViewFra
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import DashboardHeader from '../../layout/DashboardHeader';
 import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
+import ResumeProgress from '../ResumeProgress';
 import { DesktopLanguagesView } from './DesktopLanguagesView';
 import { MobileLanguagesView } from './MobileLanguagesView';
 
 const LanguagesViewFragment = graphql`
   fragment LanguagesViewFragment on Query {
     ...DashboardHeaderFragment
+	...ResumeProgressFragment
     ...DesktopLanguagesViewFragment
 	...MobileLanguagesViewFragment
   }
@@ -23,6 +25,7 @@ export default function LanguagesView({ queryReference }: { queryReference: Prel
 	return (
 		<div className='w-full flex flex-col flex-1 h-full'>
 			<DashboardHeader query={data} />
+			<ResumeProgress query={data} />
 			<ResponsiveResumeBuilder
 				desktopComponent={() => <DesktopLanguagesView data={data} />}
 				mobileComponent={() => <MobileLanguagesView data={data} />}

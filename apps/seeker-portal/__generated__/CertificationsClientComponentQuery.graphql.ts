@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<71d71ccb492511d6beea78b1e73de515>>
- * @relayHash 02b1dd2ad3c547ea2c6a8fea8239f648
+ * @generated SignedSource<<9b5cc7630d9cc585499d48410db56a72>>
+ * @relayHash 7c2ba691326e4afa86381f18c862251d
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 02b1dd2ad3c547ea2c6a8fea8239f648
+// @relayRequestID 7c2ba691326e4afa86381f18c862251d
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -102,6 +102,13 @@ return {
                     "storageKey": null
                   },
                   (v1/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
                   (v0/*: any*/),
                   {
                     "alias": null,
@@ -170,7 +177,7 @@ return {
     ]
   },
   "params": {
-    "id": "02b1dd2ad3c547ea2c6a8fea8239f648",
+    "id": "7c2ba691326e4afa86381f18c862251d",
     "metadata": {},
     "name": "CertificationsClientComponentQuery",
     "operationKind": "query",

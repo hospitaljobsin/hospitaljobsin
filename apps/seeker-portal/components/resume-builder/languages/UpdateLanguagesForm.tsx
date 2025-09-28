@@ -11,6 +11,7 @@ mutation UpdateLanguagesFormMutation($languages: [LanguageInput!]!) {
 	updateProfileLanguages(languages: $languages) {
 		...on Account {
 			...IncompleteProfileBannerFragment
+			...ResumeProgressAccountFragment
 			profile {
 				...UpdateLanguagesFormFragment
 			}

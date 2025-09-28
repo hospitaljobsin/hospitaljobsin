@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<80dba50d9c215b16003f74ee5cd8be4e>>
- * @relayHash a2ce01bd7dcf5c9dfac25a5c0abcee04
+ * @generated SignedSource<<5e4d17d403ccdcd015ef992ee9c0a690>>
+ * @relayHash d7482efeee8fed707ea724909a1a79f3
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID a2ce01bd7dcf5c9dfac25a5c0abcee04
+// @relayRequestID d7482efeee8fed707ea724909a1a79f3
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -105,6 +105,13 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
                     "name": "gender",
                     "storageKey": null
                   },
@@ -150,7 +157,7 @@ return {
     ]
   },
   "params": {
-    "id": "a2ce01bd7dcf5c9dfac25a5c0abcee04",
+    "id": "d7482efeee8fed707ea724909a1a79f3",
     "metadata": {},
     "name": "PersonalInfoClientComponentQuery",
     "operationKind": "query",

@@ -12,6 +12,7 @@ mutation UpdateEducationFormMutation($education: [EducationInput!]!) {
   updateProfileEducation(education: $education) {
     ...on Account {
 		...IncompleteProfileBannerFragment
+		...ResumeProgressAccountFragment
       profile  {
           ...UpdateEducationFormFragment
       }

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<29ed440c7bc1d1fd796d5ea444c9992b>>
- * @relayHash 45850f0965a6630581cff5631c6fa302
+ * @generated SignedSource<<1a609c666a05b06e96f711ddeba2572e>>
+ * @relayHash d5c8b27943ce4c79d8dbd46a022d01a5
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 45850f0965a6630581cff5631c6fa302
+// @relayRequestID d5c8b27943ce4c79d8dbd46a022d01a5
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -27,7 +27,7 @@ export type UpdateLicensesFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateLicensesFormFragment">;
     } | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment" | "ResumeProgressAccountFragment">;
   };
 };
 export type UpdateLicensesFormMutation = {
@@ -86,6 +86,11 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "IncompleteProfileBannerFragment"
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "ResumeProgressAccountFragment"
               },
               {
                 "alias": null,
@@ -149,6 +154,13 @@ return {
                     "storageKey": null
                   },
                   (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
                   (v2/*: any*/),
                   {
                     "alias": null,
@@ -210,7 +222,7 @@ return {
     ]
   },
   "params": {
-    "id": "45850f0965a6630581cff5631c6fa302",
+    "id": "d5c8b27943ce4c79d8dbd46a022d01a5",
     "metadata": {},
     "name": "UpdateLicensesFormMutation",
     "operationKind": "mutation",
@@ -219,6 +231,6 @@ return {
 };
 })();
 
-(node as any).hash = "476d817ebfb3d0fcd92c5f7409ca5497";
+(node as any).hash = "8f896a23618d64a30543b48adec4e030";
 
 export default node;

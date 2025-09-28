@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<114e5588715b5385c19e77d2ce1784bd>>
- * @relayHash 40ac9732b8f1e9bdbe0032a10bc594bb
+ * @generated SignedSource<<2924edf1c87932e636eda4b3e72b3f7d>>
+ * @relayHash 259facd8931690065974487588171fa7
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 40ac9732b8f1e9bdbe0032a10bc594bb
+// @relayRequestID 259facd8931690065974487588171fa7
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -28,7 +28,7 @@ export type UpdateCertificationsFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateCertificationsFormFragment">;
     } | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment" | "ResumeProgressAccountFragment">;
   };
 };
 export type UpdateCertificationsFormMutation = {
@@ -87,6 +87,11 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "IncompleteProfileBannerFragment"
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "ResumeProgressAccountFragment"
               },
               {
                 "alias": null,
@@ -150,6 +155,13 @@ return {
                     "storageKey": null
                   },
                   (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
                   (v2/*: any*/),
                   {
                     "alias": null,
@@ -218,7 +230,7 @@ return {
     ]
   },
   "params": {
-    "id": "40ac9732b8f1e9bdbe0032a10bc594bb",
+    "id": "259facd8931690065974487588171fa7",
     "metadata": {},
     "name": "UpdateCertificationsFormMutation",
     "operationKind": "mutation",
@@ -227,6 +239,6 @@ return {
 };
 })();
 
-(node as any).hash = "ddbde3b73d956e24fc370eadd5b44cb0";
+(node as any).hash = "f9015189062369f34a60d2a4a8f6038e";
 
 export default node;

@@ -5,12 +5,14 @@ import type { PersonalInfoViewFragment$key } from '@/__generated__/PersonalInfoV
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import DashboardHeader from '../../layout/DashboardHeader';
 import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
+import ResumeProgress from '../ResumeProgress';
 import { DesktopPersonalInfoView } from './DesktopPersonalInfoView';
 import { MobilePersonalInfoView } from './MobilePersonalInfoView';
 
 const PersonalInfoViewFragment = graphql`
   fragment PersonalInfoViewFragment on Query {
     ...DashboardHeaderFragment
+	...ResumeProgressFragment
     ...DesktopPersonalInfoViewFragment
 	...MobilePersonalInfoViewFragment
   }
@@ -23,6 +25,7 @@ export default function PersonalInfoView({ queryReference }: { queryReference: P
 	return (
 		<div className='w-full flex flex-col flex-1 h-full'>
 			<DashboardHeader query={data} />
+			<ResumeProgress query={data} />
 			<ResponsiveResumeBuilder
 				desktopComponent={() => <DesktopPersonalInfoView data={data} />}
 				mobileComponent={() => <MobilePersonalInfoView data={data} />}

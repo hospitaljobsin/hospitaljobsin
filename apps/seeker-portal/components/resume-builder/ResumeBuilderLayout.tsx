@@ -1,5 +1,4 @@
 'use client';
-import { Progress } from '@heroui/react';
 import React from 'react';
 import { ResumePreview } from './ResumePreview';
 import { Sidebar } from './Sidebar';
@@ -16,18 +15,7 @@ export const ResumeBuilderLayout: React.FC<ResumeBuilderLayoutProps> = ({ childr
 					<div className='lg:col-span-3 order-1 sticky'>
 						<Sidebar />
 					</div>
-					<div className='lg:col-span-6 flex flex-col gap-10 order-2'>
-						<Progress
-							label='Resume Progress'
-							size='md'
-							value={60}
-							className='w-full'
-							classNames={{ label: 'text-foreground-600 text-sm', value: 'text-foreground-600' }}
-							showValueLabel
-							disableAnimation
-						/>
-						{children}
-					</div>
+					<div className='lg:col-span-6 flex flex-col gap-10 order-2'>{children}</div>
 					<div className='lg:col-span-3 order-3'>
 						<ResumePreview />
 					</div>

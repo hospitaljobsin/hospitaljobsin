@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<16081b9db1c58e210a68d5d33bdce5e5>>
- * @relayHash 3269c286ad0ac2975091b21696473fd1
+ * @generated SignedSource<<b47120cc982e0fa50406e5558db85f93>>
+ * @relayHash 24e551dd64ad4d1e5aa85f1f8b2bc744
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 3269c286ad0ac2975091b21696473fd1
+// @relayRequestID 24e551dd64ad4d1e5aa85f1f8b2bc744
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -26,7 +26,7 @@ export type UpdateLanguagesFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateLanguagesFormFragment">;
     } | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment" | "ResumeProgressAccountFragment">;
   };
 };
 export type UpdateLanguagesFormMutation = {
@@ -85,6 +85,11 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "IncompleteProfileBannerFragment"
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "ResumeProgressAccountFragment"
               },
               {
                 "alias": null,
@@ -148,6 +153,13 @@ return {
                     "storageKey": null
                   },
                   (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
                   (v2/*: any*/),
                   {
                     "alias": null,
@@ -195,7 +207,7 @@ return {
     ]
   },
   "params": {
-    "id": "3269c286ad0ac2975091b21696473fd1",
+    "id": "24e551dd64ad4d1e5aa85f1f8b2bc744",
     "metadata": {},
     "name": "UpdateLanguagesFormMutation",
     "operationKind": "mutation",
@@ -204,6 +216,6 @@ return {
 };
 })();
 
-(node as any).hash = "97f32d1721dd84b862f958de2f9ea81d";
+(node as any).hash = "bdf828f688be7dba068c2e65e4d7efc3";
 
 export default node;

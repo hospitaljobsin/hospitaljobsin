@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<82b8a2bca8f7a2054d193c288a81652f>>
- * @relayHash 2d58f1c7f7f413affa5763de6706ae8a
+ * @generated SignedSource<<cda79f96b463865d739e5f25c68229b4>>
+ * @relayHash eca5b15afadf4bdcd7ad347281fc590a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 2d58f1c7f7f413affa5763de6706ae8a
+// @relayRequestID eca5b15afadf4bdcd7ad347281fc590a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -27,7 +27,7 @@ export type UpdateEducationFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateEducationFormFragment">;
     } | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment" | "ResumeProgressAccountFragment">;
   };
 };
 export type UpdateEducationFormMutation = {
@@ -86,6 +86,11 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "IncompleteProfileBannerFragment"
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "ResumeProgressAccountFragment"
               },
               {
                 "alias": null,
@@ -149,6 +154,13 @@ return {
                     "storageKey": null
                   },
                   (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
                   (v2/*: any*/),
                   {
                     "alias": null,
@@ -210,7 +222,7 @@ return {
     ]
   },
   "params": {
-    "id": "2d58f1c7f7f413affa5763de6706ae8a",
+    "id": "eca5b15afadf4bdcd7ad347281fc590a",
     "metadata": {},
     "name": "UpdateEducationFormMutation",
     "operationKind": "mutation",
@@ -219,6 +231,6 @@ return {
 };
 })();
 
-(node as any).hash = "82540f3f0eeb03fda3e968a0a5df115d";
+(node as any).hash = "b7c9af792605ddc5d4fb79edcb44bba9";
 
 export default node;

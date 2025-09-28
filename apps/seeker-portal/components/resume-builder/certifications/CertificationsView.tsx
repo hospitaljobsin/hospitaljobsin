@@ -5,12 +5,14 @@ import type { CertificationsViewFragment$key } from '@/__generated__/Certificati
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import DashboardHeader from '../../layout/DashboardHeader';
 import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
+import ResumeProgress from '../ResumeProgress';
 import { DesktopCertificationsView } from './DesktopCertificationsView';
 import { MobileCertificationsView } from './MobileCertificationsView';
 
 const CertificationsViewFragment = graphql`
   fragment CertificationsViewFragment on Query {
     ...DashboardHeaderFragment
+	...ResumeProgressFragment
     ...DesktopCertificationsViewFragment
 	...MobileCertificationsViewFragment
   }
@@ -23,6 +25,7 @@ export default function CertificationsView({ queryReference }: { queryReference:
 	return (
 		<div className='w-full flex flex-col flex-1 h-full'>
 			<DashboardHeader query={data} />
+			<ResumeProgress query={data} />
 			<ResponsiveResumeBuilder
 				desktopComponent={() => <DesktopCertificationsView data={data} />}
 				mobileComponent={() => <MobileCertificationsView data={data} />}

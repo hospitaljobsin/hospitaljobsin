@@ -12,6 +12,7 @@ mutation UpdateLicensesFormMutation($licenses: [LicenseInput!]!) {
   updateProfileLicenses(licenses: $licenses) {
     ...on Account {
 		...IncompleteProfileBannerFragment
+		...ResumeProgressAccountFragment
       profile {
           ...UpdateLicensesFormFragment
       }
