@@ -236,10 +236,6 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 		onSaveChanges();
 	}
 
-	function handleCancel() {
-		onSaveChanges();
-	}
-
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
 			<div className='pb-6 space-y-6'>
@@ -448,9 +444,6 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 				</div>
 			</div>
 			<div className='flex gap-4 justify-end'>
-				<Button type='button' variant='light' onPress={handleCancel}>
-					Cancel
-				</Button>
 				<Button type='submit' isLoading={isSubmitting || isMutationInFlight}>
 					Save Changes
 				</Button>

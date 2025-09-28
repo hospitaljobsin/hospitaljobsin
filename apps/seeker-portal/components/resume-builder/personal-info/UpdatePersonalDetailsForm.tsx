@@ -72,10 +72,6 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 		onSaveChanges();
 	}
 
-	function handleCancel() {
-		onSaveChanges();
-	}
-
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
 			<div className='pb-6 space-y-6'>
@@ -181,9 +177,6 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 			</div>
 
 			<div className='flex flex-col-reverse sm:flex-row justify-end gap-4 w-full'>
-				<Button type='button' variant='bordered' onPress={handleCancel} isLoading={isSubmitting || isMutationInFlight}>
-					Cancel
-				</Button>
 				<Button type='submit' isLoading={isSubmitting || isMutationInFlight} className='w-full sm:w-auto'>
 					Save Changes
 				</Button>

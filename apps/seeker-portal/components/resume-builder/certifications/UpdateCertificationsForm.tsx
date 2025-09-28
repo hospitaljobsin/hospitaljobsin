@@ -152,10 +152,6 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 		onSaveChanges();
 	}
 
-	function handleCancel() {
-		onSaveChanges();
-	}
-
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
 			<div className='pb-6 space-y-6'>
@@ -313,9 +309,6 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 			</div>
 
 			<div className='flex flex-col-reverse sm:flex-row justify-end gap-4 w-full'>
-				<Button variant='bordered' onPress={onSaveChanges} className='w-full sm:w-auto'>
-					Cancel
-				</Button>
 				<Button type='submit' isLoading={isMutationInFlight || isSubmitting} className='w-full sm:w-auto'>
 					Save Changes
 				</Button>

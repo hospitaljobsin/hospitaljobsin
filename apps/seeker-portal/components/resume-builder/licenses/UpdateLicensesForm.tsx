@@ -104,10 +104,6 @@ export default function UpdateLicensesForm({ rootQuery, onSaveChanges }: Props) 
 		onSaveChanges();
 	}
 
-	function handleCancel() {
-		onSaveChanges();
-	}
-
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
 			<div className='pb-4 sm:pb-6 space-y-4 sm:space-y-6 w-full'>
@@ -245,9 +241,6 @@ export default function UpdateLicensesForm({ rootQuery, onSaveChanges }: Props) 
 				</div>
 			</div>
 			<div className='flex flex-col-reverse sm:flex-row justify-end gap-4 w-full'>
-				<Button type='button' variant='bordered' onPress={handleCancel} className='w-full sm:w-auto'>
-					Cancel
-				</Button>
 				<Button type='submit' isLoading={isSubmitting || isMutationInFlight} className='w-full sm:w-auto'>
 					Save Changes
 				</Button>

@@ -81,10 +81,6 @@ export default function UpdateLocationPreferencesForm({
 		setValue('locationsOpenToWork', locations.filter((l: string) => l !== loc) as string[]);
 	}
 
-	function handleCancel() {
-		onSaveChanges();
-	}
-
 	return (
 		<form className='space-y-12' onSubmit={handleSubmit(onSubmit)}>
 			<div className='pb-4 sm:pb-6 space-y-4 sm:space-y-6 w-full'>
@@ -156,9 +152,6 @@ export default function UpdateLocationPreferencesForm({
 				</div>
 			</div>
 			<div className='flex flex-col-reverse sm:flex-row justify-end gap-4 w-full'>
-				<Button type='button' variant='bordered' onPress={handleCancel} isLoading={isSubmitting || isInFlight}>
-					Cancel
-				</Button>
 				<Button type='submit' isLoading={isSubmitting || isInFlight} className='w-full sm:w-auto'>
 					Save Changes
 				</Button>
