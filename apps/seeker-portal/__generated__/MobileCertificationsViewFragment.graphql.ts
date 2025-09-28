@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bd241c692ea956a864dbd35ca097217d>>
+ * @generated SignedSource<<3722d2852448e67ef608f030207aa2c6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,7 @@ export type MobileCertificationsViewFragment$data = {
     readonly __typename: "Account";
     readonly profile: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateCertificationsFormFragment">;
-    } | null | undefined;
+    };
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -53,20 +53,24 @@ const node: ReaderFragment = {
           "kind": "InlineFragment",
           "selections": [
             {
-              "alias": null,
-              "args": null,
-              "concreteType": "Profile",
-              "kind": "LinkedField",
-              "name": "profile",
-              "plural": false,
-              "selections": [
-                {
-                  "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "UpdateCertificationsFormFragment"
-                }
-              ],
-              "storageKey": null
+              "kind": "RequiredField",
+              "field": {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "UpdateCertificationsFormFragment"
+                  }
+                ],
+                "storageKey": null
+              },
+              "action": "THROW"
             }
           ],
           "type": "Account",
@@ -80,6 +84,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "d367cb5c84559acdb23b42142dadc944";
+(node as any).hash = "690a5bba0ae0feb8794955011bdf88a7";
 
 export default node;

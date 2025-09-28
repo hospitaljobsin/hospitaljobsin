@@ -1,6 +1,7 @@
 'use client';
 import type { CertificationsClientComponentQuery as CertificationsClientComponentQueryType } from '@/__generated__/CertificationsClientComponentQuery.graphql';
 import CertificationsView from '@/components/resume-builder/certifications/CertificationsView';
+import ResumeBuilderViewSkeleton from '@/components/resume-builder/ResumeBuilderViewSkeleton';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -21,7 +22,7 @@ export default function CertificationsClientComponent() {
 	);
 
 	return (
-		<Suspense fallback={<div>Loading...</div>}>
+		<Suspense fallback={<ResumeBuilderViewSkeleton />}>
 			<CertificationsView queryReference={queryReference} />
 		</Suspense>
 	);

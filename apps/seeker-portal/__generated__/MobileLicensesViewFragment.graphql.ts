@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<010ab377ec907ee8e7e52df916cf8a13>>
+ * @generated SignedSource<<6bd6b2b4db91e344ddf3358aeac6b58a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,7 @@ export type MobileLicensesViewFragment$data = {
     readonly __typename: "Account";
     readonly profile: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateLicensesFormFragment">;
-    } | null | undefined;
+    };
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -53,20 +53,24 @@ const node: ReaderFragment = {
           "kind": "InlineFragment",
           "selections": [
             {
-              "alias": null,
-              "args": null,
-              "concreteType": "Profile",
-              "kind": "LinkedField",
-              "name": "profile",
-              "plural": false,
-              "selections": [
-                {
-                  "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "UpdateLicensesFormFragment"
-                }
-              ],
-              "storageKey": null
+              "kind": "RequiredField",
+              "field": {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "UpdateLicensesFormFragment"
+                  }
+                ],
+                "storageKey": null
+              },
+              "action": "THROW"
             }
           ],
           "type": "Account",
@@ -80,6 +84,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "cdfcf2a8335a51aa9ceb15836bb6cbff";
+(node as any).hash = "fe091b2780fc3c65f81c722c7281a7ca";
 
 export default node;

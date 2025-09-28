@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1962e7ce4a492914474aecd58a9644db>>
+ * @generated SignedSource<<66970ddd310ff8dd1239d2287a389fcd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,7 @@ export type MobilePersonalInfoViewFragment$data = {
     readonly __typename: "Account";
     readonly profile: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdatePersonalDetailsFormFragment">;
-    } | null | undefined;
+    };
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -53,20 +53,24 @@ const node: ReaderFragment = {
           "kind": "InlineFragment",
           "selections": [
             {
-              "alias": null,
-              "args": null,
-              "concreteType": "Profile",
-              "kind": "LinkedField",
-              "name": "profile",
-              "plural": false,
-              "selections": [
-                {
-                  "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "UpdatePersonalDetailsFormFragment"
-                }
-              ],
-              "storageKey": null
+              "kind": "RequiredField",
+              "field": {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "UpdatePersonalDetailsFormFragment"
+                  }
+                ],
+                "storageKey": null
+              },
+              "action": "THROW"
             }
           ],
           "type": "Account",
@@ -80,6 +84,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "520fe6d830c85cbb2cef8515ebe3ee08";
+(node as any).hash = "7030f350db2078af05f7b476f386b2c3";
 
 export default node;

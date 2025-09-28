@@ -9,7 +9,7 @@ const MobilePersonalInfoViewFragment = graphql`
     viewer {
 		__typename
       ... on Account {
-        profile {
+        profile @required(action: THROW) {
           ...UpdatePersonalDetailsFormFragment
         }
       }
@@ -19,7 +19,7 @@ const MobilePersonalInfoViewFragment = graphql`
 
 export const MobilePersonalInfoView: React.FC<{ data: MobilePersonalInfoViewFragment$key }> = ({ data }) => {
 	const fragmentData = useFragment(MobilePersonalInfoViewFragment, data);
-	invariant(fragmentData.viewer.__typename === 'Account' && fragmentData.viewer.profile, 'Expected profile data to be present');
+	invariant(fragmentData.viewer.__typename === 'Account', 'Expected profile data to be present');
 
 	return <UpdatePersonalDetailsForm rootQuery={fragmentData.viewer.profile} onSaveChanges={() => {}} />;
 };

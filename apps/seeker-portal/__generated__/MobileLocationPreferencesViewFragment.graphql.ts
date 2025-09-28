@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0a5b474fbd049cf7f39337ca7aae9542>>
+ * @generated SignedSource<<77ce83148b21a77a37a75cf9e711b202>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,7 @@ export type MobileLocationPreferencesViewFragment$data = {
     readonly __typename: "Account";
     readonly profile: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateLocationPreferencesFormFragment">;
-    } | null | undefined;
+    };
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -53,20 +53,24 @@ const node: ReaderFragment = {
           "kind": "InlineFragment",
           "selections": [
             {
-              "alias": null,
-              "args": null,
-              "concreteType": "Profile",
-              "kind": "LinkedField",
-              "name": "profile",
-              "plural": false,
-              "selections": [
-                {
-                  "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "UpdateLocationPreferencesFormFragment"
-                }
-              ],
-              "storageKey": null
+              "kind": "RequiredField",
+              "field": {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "UpdateLocationPreferencesFormFragment"
+                  }
+                ],
+                "storageKey": null
+              },
+              "action": "THROW"
             }
           ],
           "type": "Account",
@@ -80,6 +84,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "db71b41e6de5e8abe34d67a8f3963ea7";
+(node as any).hash = "1914379445cf5a0f595153ddd829e69d";
 
 export default node;

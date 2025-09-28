@@ -9,7 +9,7 @@ const MobileLocationPreferencesViewFragment = graphql`
     viewer {
 		__typename
       ... on Account {
-        profile {
+        profile @required(action: THROW) {
           ...UpdateLocationPreferencesFormFragment
         }
       }
@@ -19,6 +19,6 @@ const MobileLocationPreferencesViewFragment = graphql`
 
 export const MobileLocationPreferencesView: React.FC<{ data: MobileLocationPreferencesViewFragment$key }> = ({ data }) => {
 	const fragmentData = useFragment(MobileLocationPreferencesViewFragment, data);
-	invariant(fragmentData.viewer.__typename === 'Account' && fragmentData.viewer.profile, 'Expected profile data to be present');
+	invariant(fragmentData.viewer.__typename === 'Account', 'Expected profile data to be present');
 	return <UpdateLocationPreferencesForm rootQuery={fragmentData.viewer.profile} onSaveChanges={() => {}} />;
 };

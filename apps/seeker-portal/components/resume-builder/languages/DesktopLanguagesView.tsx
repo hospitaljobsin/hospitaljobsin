@@ -10,7 +10,7 @@ const DesktopLanguagesViewFragment = graphql`
     viewer {
 		__typename
       ... on Account {
-        profile {
+        profile @required(action: THROW) {
           ...UpdateLanguagesFormFragment
         }
       }
@@ -20,7 +20,7 @@ const DesktopLanguagesViewFragment = graphql`
 
 export const DesktopLanguagesView: React.FC<{ data: DesktopLanguagesViewFragment$key }> = ({ data }) => {
 	const fragmentData = useFragment(DesktopLanguagesViewFragment, data);
-	invariant(fragmentData.viewer.__typename === 'Account' && fragmentData.viewer.profile, 'Expected profile data to be present');
+	invariant(fragmentData.viewer.__typename === 'Account', 'Expected profile data to be present');
 
 	return <UpdateLanguagesForm rootQuery={fragmentData.viewer.profile} onSaveChanges={() => {}} />;
 };

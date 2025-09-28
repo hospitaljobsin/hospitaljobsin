@@ -1,6 +1,7 @@
 'use client';
 import type { EducationClientComponentQuery as EducationClientComponentQueryType } from '@/__generated__/EducationClientComponentQuery.graphql';
 import EducationView from '@/components/resume-builder/education/EducationView';
+import ResumeBuilderViewSkeleton from '@/components/resume-builder/ResumeBuilderViewSkeleton';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -21,7 +22,7 @@ export default function EducationClientComponent() {
 	);
 
 	return (
-		<Suspense fallback={<div>Loading...</div>}>
+		<Suspense fallback={<ResumeBuilderViewSkeleton />}>
 			<EducationView queryReference={queryReference} />
 		</Suspense>
 	);

@@ -10,7 +10,7 @@ const DesktopEducationViewFragment = graphql`
     viewer {
 		__typename
       ... on Account {
-        profile {
+        profile @required(action: THROW) {
           ...UpdateEducationFormFragment
         }
       }
@@ -20,6 +20,6 @@ const DesktopEducationViewFragment = graphql`
 
 export const DesktopEducationView: React.FC<{ data: DesktopEducationViewFragment$key }> = ({ data }) => {
 	const fragmentData = useFragment(DesktopEducationViewFragment, data);
-	invariant(fragmentData.viewer.__typename === 'Account' && fragmentData.viewer.profile, 'Expected profile data to be present');
+	invariant(fragmentData.viewer.__typename === 'Account', 'Expected profile data to be present');
 	return <UpdateEducationForm rootQuery={fragmentData.viewer.profile} onSaveChanges={() => {}} />;
 };

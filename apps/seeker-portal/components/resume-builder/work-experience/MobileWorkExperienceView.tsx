@@ -9,7 +9,7 @@ const MobileWorkExperienceViewFragment = graphql`
     viewer {
 		__typename
       ... on Account {
-        profile {
+        profile @required(action: THROW) {
           ...UpdateWorkExperienceFormFragment
         }
       }
@@ -19,6 +19,6 @@ const MobileWorkExperienceViewFragment = graphql`
 
 export const MobileWorkExperienceView: React.FC<{ data: MobileWorkExperienceViewFragment$key }> = ({ data }) => {
 	const fragmentData = useFragment(MobileWorkExperienceViewFragment, data);
-	invariant(fragmentData.viewer.__typename === 'Account' && fragmentData.viewer.profile, 'Expected profile data to be present');
+	invariant(fragmentData.viewer.__typename === 'Account', 'Expected profile data to be present');
 	return <UpdateWorkExperienceForm rootQuery={fragmentData.viewer.profile} onSaveChanges={() => {}} />;
 };

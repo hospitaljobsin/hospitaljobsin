@@ -10,7 +10,7 @@ const DesktopCertificationsViewFragment = graphql`
     viewer {
 		__typename
       ... on Account {
-        profile {
+        profile @required(action: THROW) {
           ...UpdateCertificationsFormFragment
         }
       }
@@ -20,7 +20,7 @@ const DesktopCertificationsViewFragment = graphql`
 
 export const DesktopCertificationsView: React.FC<{ data: DesktopCertificationsViewFragment$key }> = ({ data }) => {
 	const fragmentData = useFragment(DesktopCertificationsViewFragment, data);
-	invariant(fragmentData.viewer.__typename === 'Account' && fragmentData.viewer.profile, 'Expected profile data to be present');
+	invariant(fragmentData.viewer.__typename === 'Account', 'Expected profile data to be present');
 
 	return <UpdateCertificationsForm rootQuery={fragmentData.viewer.profile} onSaveChanges={() => {}} />;
 };

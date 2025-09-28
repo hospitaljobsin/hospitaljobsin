@@ -10,7 +10,7 @@ const DesktopPersonalInfoViewFragment = graphql`
     viewer {
 		__typename
       ... on Account {
-        profile {
+        profile @required(action: THROW) {
           ...UpdatePersonalDetailsFormFragment
         }
       }
@@ -21,7 +21,7 @@ const DesktopPersonalInfoViewFragment = graphql`
 export const DesktopPersonalInfoView: React.FC<{ data: DesktopPersonalInfoViewFragment$key }> = ({ data }) => {
 	const fragmentData = useFragment(DesktopPersonalInfoViewFragment, data);
 
-	invariant(fragmentData.viewer.__typename === 'Account' && fragmentData.viewer.profile, 'Expected profile data to be present');
+	invariant(fragmentData.viewer.__typename === 'Account', 'Expected profile data to be present');
 
 	return <UpdatePersonalDetailsForm rootQuery={fragmentData.viewer.profile} onSaveChanges={() => {}} />;
 };
