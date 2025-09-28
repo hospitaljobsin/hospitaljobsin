@@ -1,7 +1,6 @@
 import type { UpdateLocationPreferencesFormFragment$key } from '@/__generated__/UpdateLocationPreferencesFormFragment.graphql';
 import { Button, Chip, Switch } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { MapPinHouseIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
@@ -89,13 +88,8 @@ export default function UpdateLocationPreferencesForm({
 
 	return (
 		<form className='space-y-12' onSubmit={handleSubmit(onSubmit)}>
-			<div className='py-4 sm:py-6 space-y-4 sm:space-y-6 w-full'>
-				<div className='flex flex-col sm:flex-row gap-4 sm:gap-6 w-full items-start sm:items-center justify-between'>
-					<div className='flex items-center gap-2 text-foreground-400 w-full'>
-						<MapPinHouseIcon />
-						<h1 className='w-full text-base sm:text-sm font-medium'>Editing Location Preferences</h1>
-					</div>
-				</div>
+			<div className='pb-4 sm:pb-6 space-y-4 sm:space-y-6 w-full'>
+				<h1 className='w-full text-xl text-foreground-500 font-medium'>Location Preferences</h1>
 				<div className='w-full flex flex-col gap-8'>
 					<div className='mb-12'>
 						<Controller

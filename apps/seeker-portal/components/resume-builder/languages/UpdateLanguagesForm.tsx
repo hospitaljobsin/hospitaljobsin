@@ -1,7 +1,7 @@
 import type { UpdateLanguagesFormFragment$key } from '@/__generated__/UpdateLanguagesFormFragment.graphql';
 import { Button, Input, Select, SelectItem } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { LanguagesIcon, Plus, Trash } from 'lucide-react';
+import { Plus, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
@@ -91,13 +91,8 @@ export default function UpdateLanguagesForm({ rootQuery, onSaveChanges }: Props)
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
-			<div className='py-4 sm:py-6 space-y-4 sm:space-y-6 w-full'>
-				<div className='flex flex-col sm:flex-row gap-4 sm:gap-6 w-full items-start sm:items-center justify-between'>
-					<div className='flex items-center gap-2 text-foreground-400 w-full'>
-						<LanguagesIcon />
-						<h1 className='w-full text-base sm:text-sm font-medium'>Editing Languages</h1>
-					</div>
-				</div>
+			<div className='pb-4 sm:pb-6 space-y-4 sm:space-y-6 w-full'>
+				<h1 className='w-full text-xl text-foreground-500 font-medium'>Languages</h1>
 				<div className='w-full space-y-12 items-center'>
 					{fields.length === 0 ? (
 						<div className='flex flex-col items-center gap-4'>

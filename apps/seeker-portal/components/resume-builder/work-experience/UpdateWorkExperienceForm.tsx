@@ -1,7 +1,7 @@
 import type { UpdateWorkExperienceFormFragment$key } from '@/__generated__/UpdateWorkExperienceFormFragment.graphql';
 import { Button, Checkbox, Input, Kbd, Select, SelectItem, Textarea } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { BriefcaseIcon, Plus, Trash } from 'lucide-react';
+import { Plus, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
@@ -241,11 +241,8 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
-			<div className='py-6 space-y-6'>
-				<div className='flex items-center gap-2 text-foreground-400'>
-					<BriefcaseIcon />
-					<h1 className='w-full text-sm font-medium'>Editing Work Experience</h1>
-				</div>
+			<div className='pb-6 space-y-6'>
+				<h1 className='w-full text-xl text-foreground-500 font-medium'>Work Experience</h1>
 				<div className='w-full space-y-12 items-center'>
 					{fields.length === 0 ? (
 						<div className='flex flex-col items-center gap-4'>

@@ -1,7 +1,7 @@
 import type { UpdateCertificationsFormFragment$key } from '@/__generated__/UpdateCertificationsFormFragment.graphql';
 import { Button, Input } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { Plus, ShieldCheckIcon, Trash } from 'lucide-react';
+import { Plus, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
@@ -157,11 +157,8 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
-			<div className='py-6 space-y-6'>
-				<div className='flex items-center gap-2 text-foreground-400'>
-					<ShieldCheckIcon />
-					<h1 className='w-full text-sm font-medium'>Editing Certifications</h1>
-				</div>
+			<div className='pb-6 space-y-6'>
+				<h1 className='w-full text-xl text-foreground-500 font-medium'>Certifications</h1>
 				<div className='w-full flex flex-col'>
 					<div className='w-full space-y-12 items-center'>
 						{fields.length === 0 ? (
