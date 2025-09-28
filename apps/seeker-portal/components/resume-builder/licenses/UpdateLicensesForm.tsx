@@ -6,6 +6,7 @@ import { Plus, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
+import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 
 const UpdateLicensesFormMutation = graphql`
 mutation UpdateLicensesFormMutation($licenses: [LicenseInput!]!) {
@@ -60,7 +61,8 @@ export default function UpdateLicensesForm({ rootQuery, onSaveChanges }: Props) 
 	const {
 		handleSubmit,
 		control,
-		formState: { errors, isSubmitting }
+		reset,
+		formState: { errors, isSubmitting, isDirty }
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
 		defaultValues:
@@ -105,146 +107,148 @@ export default function UpdateLicensesForm({ rootQuery, onSaveChanges }: Props) 
 	}
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
-			<div className='pb-4 sm:pb-6 space-y-4 sm:space-y-6 w-full'>
-				<h1 className='w-full text-xl text-foreground-500 font-medium'>Licenses</h1>
-				<div className='w-full flex flex-col'>
-					<div className='w-full space-y-12 items-center'>
-						{fields.length === 0 ? (
-							<div className='flex flex-col items-center gap-4'>
-								<p className='text-foreground-500'>No license entries. Add your licenses.</p>
-								<Button
-									type='button'
-									variant='bordered'
-									startContent={<Plus size={18} />}
-									onPress={() =>
-										append({
-											name: '',
-											issuer: '',
-											licenseNumber: '',
-											registrationYear: new Date().getFullYear()
-										})
-									}
-								>
-									Add License
-								</Button>
-							</div>
-						) : (
-							<>
-								{fields.map((item, index) => (
-									<div key={`field-${item.name}-${index}`} className='flex gap-8 items-end w-full flex-col'>
-										<div className='w-full space-y-4'>
-											<Controller
-												name={`licenses.${index}.name`}
-												control={control}
-												defaultValue=''
-												render={({ field }) => (
-													<Input
-														{...field}
-														fullWidth
-														label='Name'
-														placeholder='License name'
-														errorMessage={errors.licenses?.[index]?.name?.message}
-														isInvalid={!!errors.licenses?.[index]?.name}
-														classNames={{
-															inputWrapper: 'bg-background'
-														}}
-													/>
-												)}
-											/>
-										</div>
-										<div className='w-full space-y-4'>
-											<Controller
-												name={`licenses.${index}.issuer`}
-												control={control}
-												defaultValue=''
-												render={({ field }) => (
-													<Input
-														{...field}
-														fullWidth
-														label='Issuer'
-														placeholder='License issuer'
-														errorMessage={errors.licenses?.[index]?.issuer?.message}
-														isInvalid={!!errors.licenses?.[index]?.issuer}
-														classNames={{
-															inputWrapper: 'bg-background'
-														}}
-													/>
-												)}
-											/>
-										</div>
-										<div className='w-full space-y-4'>
-											<Controller
-												name={`licenses.${index}.licenseNumber`}
-												control={control}
-												defaultValue=''
-												render={({ field }) => (
-													<Input
-														{...field}
-														fullWidth
-														label='License Number'
-														placeholder='License number'
-														errorMessage={errors.licenses?.[index]?.licenseNumber?.message}
-														isInvalid={!!errors.licenses?.[index]?.licenseNumber}
-														classNames={{
-															inputWrapper: 'bg-background'
-														}}
-													/>
-												)}
-											/>
-										</div>
-										<div className='w-full space-y-4'>
-											<Controller
-												name={`licenses.${index}.registrationYear`}
-												control={control}
-												defaultValue={undefined}
-												render={({ field }) => (
-													<YearPicker
-														{...field}
-														label='Registration Year'
-														errorMessage={errors.licenses?.[index]?.registrationYear?.message}
-														isInvalid={!!errors.licenses?.[index]?.registrationYear}
-														selectProps={{
-															classNames: {
-																trigger: 'bg-background'
-															}
-														}}
-													/>
-												)}
-											/>
-										</div>
+		<UnsavedChangesFormWrapper isDirty={isDirty} onSave={() => handleSubmit(onSubmit)()} onCancel={() => reset()}>
+			<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
+				<div className='pb-4 sm:pb-6 space-y-4 sm:space-y-6 w-full'>
+					<h1 className='w-full text-xl text-foreground-500 font-medium'>Licenses</h1>
+					<div className='w-full flex flex-col'>
+						<div className='w-full space-y-12 items-center'>
+							{fields.length === 0 ? (
+								<div className='flex flex-col items-center gap-4'>
+									<p className='text-foreground-500'>No license entries. Add your licenses.</p>
+									<Button
+										type='button'
+										variant='bordered'
+										startContent={<Plus size={18} />}
+										onPress={() =>
+											append({
+												name: '',
+												issuer: '',
+												licenseNumber: '',
+												registrationYear: new Date().getFullYear()
+											})
+										}
+									>
+										Add License
+									</Button>
+								</div>
+							) : (
+								<>
+									{fields.map((item, index) => (
+										<div key={`field-${item.name}-${index}`} className='flex gap-8 items-end w-full flex-col'>
+											<div className='w-full space-y-4'>
+												<Controller
+													name={`licenses.${index}.name`}
+													control={control}
+													defaultValue=''
+													render={({ field }) => (
+														<Input
+															{...field}
+															fullWidth
+															label='Name'
+															placeholder='License name'
+															errorMessage={errors.licenses?.[index]?.name?.message}
+															isInvalid={!!errors.licenses?.[index]?.name}
+															classNames={{
+																inputWrapper: 'bg-background'
+															}}
+														/>
+													)}
+												/>
+											</div>
+											<div className='w-full space-y-4'>
+												<Controller
+													name={`licenses.${index}.issuer`}
+													control={control}
+													defaultValue=''
+													render={({ field }) => (
+														<Input
+															{...field}
+															fullWidth
+															label='Issuer'
+															placeholder='License issuer'
+															errorMessage={errors.licenses?.[index]?.issuer?.message}
+															isInvalid={!!errors.licenses?.[index]?.issuer}
+															classNames={{
+																inputWrapper: 'bg-background'
+															}}
+														/>
+													)}
+												/>
+											</div>
+											<div className='w-full space-y-4'>
+												<Controller
+													name={`licenses.${index}.licenseNumber`}
+													control={control}
+													defaultValue=''
+													render={({ field }) => (
+														<Input
+															{...field}
+															fullWidth
+															label='License Number'
+															placeholder='License number'
+															errorMessage={errors.licenses?.[index]?.licenseNumber?.message}
+															isInvalid={!!errors.licenses?.[index]?.licenseNumber}
+															classNames={{
+																inputWrapper: 'bg-background'
+															}}
+														/>
+													)}
+												/>
+											</div>
+											<div className='w-full space-y-4'>
+												<Controller
+													name={`licenses.${index}.registrationYear`}
+													control={control}
+													defaultValue={undefined}
+													render={({ field }) => (
+														<YearPicker
+															{...field}
+															label='Registration Year'
+															errorMessage={errors.licenses?.[index]?.registrationYear?.message}
+															isInvalid={!!errors.licenses?.[index]?.registrationYear}
+															selectProps={{
+																classNames: {
+																	trigger: 'bg-background'
+																}
+															}}
+														/>
+													)}
+												/>
+											</div>
 
-										<Button type='button' variant='bordered' startContent={<Trash size={18} />} onPress={() => remove(index)}>
-											Delete License
-										</Button>
-									</div>
-								))}
-								<Button
-									type='button'
-									variant='bordered'
-									className='w-full sm:w-auto'
-									startContent={<Plus size={18} />}
-									onPress={() =>
-										append({
-											name: '',
-											issuer: '',
-											licenseNumber: '',
-											registrationYear: new Date().getFullYear()
-										})
-									}
-								>
-									Add License
-								</Button>
-							</>
-						)}
+											<Button type='button' variant='bordered' startContent={<Trash size={18} />} onPress={() => remove(index)}>
+												Delete License
+											</Button>
+										</div>
+									))}
+									<Button
+										type='button'
+										variant='bordered'
+										className='w-full sm:w-auto'
+										startContent={<Plus size={18} />}
+										onPress={() =>
+											append({
+												name: '',
+												issuer: '',
+												licenseNumber: '',
+												registrationYear: new Date().getFullYear()
+											})
+										}
+									>
+										Add License
+									</Button>
+								</>
+							)}
+						</div>
 					</div>
 				</div>
-			</div>
-			<div className='flex flex-col-reverse sm:flex-row justify-end gap-4 w-full'>
-				<Button type='submit' isLoading={isSubmitting || isMutationInFlight} className='w-full sm:w-auto'>
-					Save Changes
-				</Button>
-			</div>
-		</form>
+				<div className='flex flex-col-reverse sm:flex-row justify-end gap-4 w-full'>
+					<Button type='submit' isLoading={isSubmitting || isMutationInFlight} className='w-full sm:w-auto'>
+						Save Changes
+					</Button>
+				</div>
+			</form>
+		</UnsavedChangesFormWrapper>
 	);
 }

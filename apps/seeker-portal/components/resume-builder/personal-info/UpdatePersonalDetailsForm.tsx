@@ -5,6 +5,7 @@ import { CalendarDate, parseDate } from '@internationalized/date';
 import { Controller, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
+import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 
 const UpdatePersonalDetailsFormMutation = graphql`
 mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $maritalStatus: MaritalStatusType, $category: String) {
@@ -54,7 +55,8 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 	const {
 		handleSubmit,
 		control,
-		formState: { errors, isSubmitting }
+		reset,
+		formState: { errors, isSubmitting, isDirty }
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
 		defaultValues
@@ -73,114 +75,116 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 	}
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
-			<div className='pb-6 space-y-6'>
-				<h1 className='w-full text-xl text-foreground-500 font-medium'>Personal Details</h1>
-				<div className='mb-12'>
-					<Controller
-						name='gender'
-						control={control}
-						render={({ field }) => (
-							<Select
-								{...field}
-								fullWidth
-								label='Gender'
-								placeholder='Add your gender'
-								selectionMode='single'
-								value={field.value ?? ''}
-								selectedKeys={[field.value ?? '']}
-								defaultSelectedKeys={[field.value ?? '']}
-								onSelectionChange={field.onChange}
-								errorMessage={errors.gender?.message}
-								isInvalid={!!errors.gender}
-								classNames={{
-									trigger: 'bg-background'
-								}}
-							>
-								<SelectItem key={'MALE'}>Male</SelectItem>
-								<SelectItem key={'FEMALE'}>Female</SelectItem>
-								<SelectItem key={'OTHER'}>Other</SelectItem>
-							</Select>
-						)}
-					/>
-				</div>
-				<div className='mb-12'>
-					<Controller
-						name='dateOfBirth'
-						control={control}
-						render={({ field }) => {
-							return (
-								<DatePicker
-									fullWidth
-									showMonthAndYearPickers
-									label='Date of Birth'
+		<UnsavedChangesFormWrapper isDirty={isDirty} onSave={() => handleSubmit(onSubmit)()} onCancel={() => reset()}>
+			<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
+				<div className='pb-6 space-y-6'>
+					<h1 className='w-full text-xl text-foreground-500 font-medium'>Personal Details</h1>
+					<div className='mb-12'>
+						<Controller
+							name='gender'
+							control={control}
+							render={({ field }) => (
+								<Select
 									{...field}
-									value={field.value as any}
-									onChange={field.onChange}
-									errorMessage={errors.dateOfBirth?.message}
-									isInvalid={!!errors.dateOfBirth}
+									fullWidth
+									label='Gender'
+									placeholder='Add your gender'
+									selectionMode='single'
+									value={field.value ?? ''}
+									selectedKeys={[field.value ?? '']}
+									defaultSelectedKeys={[field.value ?? '']}
+									onSelectionChange={field.onChange}
+									errorMessage={errors.gender?.message}
+									isInvalid={!!errors.gender}
+									classNames={{
+										trigger: 'bg-background'
+									}}
+								>
+									<SelectItem key={'MALE'}>Male</SelectItem>
+									<SelectItem key={'FEMALE'}>Female</SelectItem>
+									<SelectItem key={'OTHER'}>Other</SelectItem>
+								</Select>
+							)}
+						/>
+					</div>
+					<div className='mb-12'>
+						<Controller
+							name='dateOfBirth'
+							control={control}
+							render={({ field }) => {
+								return (
+									<DatePicker
+										fullWidth
+										showMonthAndYearPickers
+										label='Date of Birth'
+										{...field}
+										value={field.value as any}
+										onChange={field.onChange}
+										errorMessage={errors.dateOfBirth?.message}
+										isInvalid={!!errors.dateOfBirth}
+										classNames={{
+											inputWrapper: 'bg-background'
+										}}
+									/>
+								);
+							}}
+						/>
+					</div>
+					<div className='mb-12'>
+						<Controller
+							name='maritalStatus'
+							control={control}
+							render={({ field }) => (
+								<Select
+									{...field}
+									fullWidth
+									label='Marital Status'
+									placeholder='Add your marital status'
+									selectionMode='single'
+									value={field.value ?? ''}
+									selectedKeys={[field.value ?? '']}
+									defaultSelectedKeys={[field.value ?? '']}
+									onSelectionChange={field.onChange}
+									errorMessage={errors.maritalStatus?.message}
+									isInvalid={!!errors.maritalStatus}
+									classNames={{
+										trigger: 'bg-background'
+									}}
+								>
+									<SelectItem key={'SINGLE'}>Single</SelectItem>
+									<SelectItem key={'MARRIED'}>Married</SelectItem>
+								</Select>
+							)}
+						/>
+					</div>
+					<div className='mb-12'>
+						<Controller
+							name='category'
+							control={control}
+							defaultValue=''
+							render={({ field }) => (
+								<Input
+									{...field}
+									label='Category'
+									placeholder='Add your category'
+									value={field.value ?? ''}
+									errorMessage={errors.category?.message}
+									isInvalid={!!errors.category}
 									classNames={{
 										inputWrapper: 'bg-background'
 									}}
 								/>
-							);
-						}}
-					/>
+							)}
+						/>
+					</div>
 				</div>
-				<div className='mb-12'>
-					<Controller
-						name='maritalStatus'
-						control={control}
-						render={({ field }) => (
-							<Select
-								{...field}
-								fullWidth
-								label='Marital Status'
-								placeholder='Add your marital status'
-								selectionMode='single'
-								value={field.value ?? ''}
-								selectedKeys={[field.value ?? '']}
-								defaultSelectedKeys={[field.value ?? '']}
-								onSelectionChange={field.onChange}
-								errorMessage={errors.maritalStatus?.message}
-								isInvalid={!!errors.maritalStatus}
-								classNames={{
-									trigger: 'bg-background'
-								}}
-							>
-								<SelectItem key={'SINGLE'}>Single</SelectItem>
-								<SelectItem key={'MARRIED'}>Married</SelectItem>
-							</Select>
-						)}
-					/>
-				</div>
-				<div className='mb-12'>
-					<Controller
-						name='category'
-						control={control}
-						defaultValue=''
-						render={({ field }) => (
-							<Input
-								{...field}
-								label='Category'
-								placeholder='Add your category'
-								value={field.value ?? ''}
-								errorMessage={errors.category?.message}
-								isInvalid={!!errors.category}
-								classNames={{
-									inputWrapper: 'bg-background'
-								}}
-							/>
-						)}
-					/>
-				</div>
-			</div>
 
-			<div className='flex flex-col-reverse sm:flex-row justify-end gap-4 w-full'>
-				<Button type='submit' isLoading={isSubmitting || isMutationInFlight} className='w-full sm:w-auto'>
-					Save Changes
-				</Button>
-			</div>
-		</form>
+				<div className='flex flex-col-reverse sm:flex-row justify-end gap-4 w-full'>
+					<Button type='submit' isLoading={isSubmitting || isMutationInFlight} className='w-full sm:w-auto'>
+						Save Changes
+					</Button>
+				</div>
+			</form>
+		</UnsavedChangesFormWrapper>
 	);
 }

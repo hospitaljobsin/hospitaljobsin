@@ -6,6 +6,7 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
 import { MonthYearPicker, parseMonthYear, toDateString } from '../../forms/MonthYearPicker';
+import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 
 const UpdateEducationFormMutation = graphql`
 mutation UpdateEducationFormMutation($education: [EducationInput!]!) {
@@ -60,7 +61,8 @@ export default function UpdateEducationForm({ rootQuery, onSaveChanges }: Props)
 		handleSubmit,
 		control,
 		setError,
-		formState: { errors, isSubmitting }
+		reset,
+		formState: { errors, isSubmitting, isDirty }
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
 		defaultValues:
@@ -142,85 +144,105 @@ export default function UpdateEducationForm({ rootQuery, onSaveChanges }: Props)
 	}
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
-			<div className='pb-4 sm:pb-6 space-y-4 sm:space-y-6 w-full'>
-				<h1 className='w-full text-xl text-foreground-500 font-medium'>Education</h1>
-				<div className='w-full space-y-12 items-center'>
-					{fields.length === 0 ? (
-						<div className='flex flex-col items-center gap-4'>
-							<p className='text-foreground-500'>No education entries. Add your education history.</p>
-							<Button
-								type='button'
-								variant='bordered'
-								startContent={<Plus size={18} />}
-								onPress={() =>
-									append({
-										degree: '',
-										institution: '',
-										startedAt: { month: 1, year: 2000 },
-										completedAt: { month: 1, year: 2000 }
-									})
-								}
-							>
-								Add Education
-							</Button>
-						</div>
-					) : (
-						<>
-							{fields.map((item, index) => (
-								<div key={`field-${item.degree}-${item.institution}-${index}`} className='flex flex-col gap-8 items-end w-full'>
-									<div className='w-full space-y-4'>
-										<Controller
-											name={`education.${index}.degree`}
-											control={control}
-											defaultValue=''
-											render={({ field }) => (
-												<Input
-													{...field}
-													fullWidth
-													label='Degree'
-													placeholder='Add degree'
-													errorMessage={errors.education?.[index]?.degree?.message}
-													isInvalid={!!errors.education?.[index]?.degree}
-													classNames={{
-														inputWrapper: 'bg-background'
-													}}
+		<UnsavedChangesFormWrapper isDirty={isDirty} onSave={() => handleSubmit(onSubmit)()} onCancel={() => reset()}>
+			<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
+				<div className='pb-4 sm:pb-6 space-y-4 sm:space-y-6 w-full'>
+					<h1 className='w-full text-xl text-foreground-500 font-medium'>Education</h1>
+					<div className='w-full space-y-12 items-center'>
+						{fields.length === 0 ? (
+							<div className='flex flex-col items-center gap-4'>
+								<p className='text-foreground-500'>No education entries. Add your education history.</p>
+								<Button
+									type='button'
+									variant='bordered'
+									startContent={<Plus size={18} />}
+									onPress={() =>
+										append({
+											degree: '',
+											institution: '',
+											startedAt: { month: 1, year: 2000 },
+											completedAt: { month: 1, year: 2000 }
+										})
+									}
+								>
+									Add Education
+								</Button>
+							</div>
+						) : (
+							<>
+								{fields.map((item, index) => (
+									<div key={`field-${item.degree}-${item.institution}-${index}`} className='flex flex-col gap-8 items-end w-full'>
+										<div className='w-full space-y-4'>
+											<Controller
+												name={`education.${index}.degree`}
+												control={control}
+												defaultValue=''
+												render={({ field }) => (
+													<Input
+														{...field}
+														fullWidth
+														label='Degree'
+														placeholder='Add degree'
+														errorMessage={errors.education?.[index]?.degree?.message}
+														isInvalid={!!errors.education?.[index]?.degree}
+														classNames={{
+															inputWrapper: 'bg-background'
+														}}
+													/>
+												)}
+											/>
+										</div>
+										<div className='w-full space-y-4'>
+											<Controller
+												name={`education.${index}.institution`}
+												control={control}
+												defaultValue=''
+												render={({ field }) => (
+													<Input
+														{...field}
+														fullWidth
+														label='Institution'
+														placeholder='Add institution'
+														errorMessage={errors.education?.[index]?.institution?.message}
+														isInvalid={!!errors.education?.[index]?.institution}
+														classNames={{
+															inputWrapper: 'bg-background'
+														}}
+													/>
+												)}
+											/>
+										</div>
+										<div className='w-full flex gap-4 flex-col sm:flex-row'>
+											<div className='flex gap-2 w-full'>
+												<Controller
+													control={control}
+													name={`education.${index}.startedAt`}
+													render={({ field }) => (
+														<MonthYearPicker
+															label='Start Date'
+															value={field.value}
+															onChange={field.onChange}
+															errorMessage={errors.education?.[index]?.startedAt?.message}
+															isInvalid={!!errors.education?.[index]?.startedAt}
+															selectProps={{
+																classNames: {
+																	trigger: 'bg-background'
+																}
+															}}
+														/>
+													)}
 												/>
-											)}
-										/>
-									</div>
-									<div className='w-full space-y-4'>
-										<Controller
-											name={`education.${index}.institution`}
-											control={control}
-											defaultValue=''
-											render={({ field }) => (
-												<Input
-													{...field}
-													fullWidth
-													label='Institution'
-													placeholder='Add institution'
-													errorMessage={errors.education?.[index]?.institution?.message}
-													isInvalid={!!errors.education?.[index]?.institution}
-													classNames={{
-														inputWrapper: 'bg-background'
-													}}
-												/>
-											)}
-										/>
-									</div>
-									<div className='w-full flex gap-4 flex-col sm:flex-row'>
-										<div className='flex gap-2 w-full'>
+											</div>
 											<Controller
 												control={control}
-												name={`education.${index}.startedAt`}
+												name={`education.${index}.completedAt`}
 												render={({ field }) => (
 													<MonthYearPicker
-														label='Start Date'
+														label='End Date'
 														value={field.value}
 														onChange={field.onChange}
-														errorMessage={errors.education?.[index]?.startedAt?.message}
-														isInvalid={!!errors.education?.[index]?.startedAt}
+														errorMessage={errors.education?.[index]?.completedAt?.message}
+														isInvalid={!!errors.education?.[index]?.completedAt}
 														selectProps={{
 															classNames: {
 																trigger: 'bg-background'
@@ -230,55 +252,37 @@ export default function UpdateEducationForm({ rootQuery, onSaveChanges }: Props)
 												)}
 											/>
 										</div>
-										<Controller
-											control={control}
-											name={`education.${index}.completedAt`}
-											render={({ field }) => (
-												<MonthYearPicker
-													label='End Date'
-													value={field.value}
-													onChange={field.onChange}
-													errorMessage={errors.education?.[index]?.completedAt?.message}
-													isInvalid={!!errors.education?.[index]?.completedAt}
-													selectProps={{
-														classNames: {
-															trigger: 'bg-background'
-														}
-													}}
-												/>
-											)}
-										/>
+										<Button type='button' variant='bordered' startContent={<Trash size={18} />} onPress={() => remove(index)}>
+											Delete Education
+										</Button>
 									</div>
-									<Button type='button' variant='bordered' startContent={<Trash size={18} />} onPress={() => remove(index)}>
-										Delete Education
-									</Button>
-								</div>
-							))}
-							<Button
-								type='button'
-								variant='bordered'
-								className='w-full sm:w-auto'
-								startContent={<Plus size={18} />}
-								onPress={() =>
-									append({
-										degree: '',
-										institution: '',
-										startedAt: { month: 1, year: 2000 },
-										completedAt: { month: 1, year: 2000 }
-									})
-								}
-							>
-								Add Education
-							</Button>
-						</>
-					)}
+								))}
+								<Button
+									type='button'
+									variant='bordered'
+									className='w-full sm:w-auto'
+									startContent={<Plus size={18} />}
+									onPress={() =>
+										append({
+											degree: '',
+											institution: '',
+											startedAt: { month: 1, year: 2000 },
+											completedAt: { month: 1, year: 2000 }
+										})
+									}
+								>
+									Add Education
+								</Button>
+							</>
+						)}
+					</div>
 				</div>
-			</div>
-			<div className='flex flex-col-reverse sm:flex-row justify-end gap-4 w-full'>
-				<Button type='submit' isLoading={isMutationInFlight || isSubmitting} className='w-full sm:w-auto'>
-					Save Changes
-				</Button>
-			</div>
-		</form>
+				<div className='flex flex-col-reverse sm:flex-row justify-end gap-4 w-full'>
+					<Button type='submit' isLoading={isMutationInFlight || isSubmitting} className='w-full sm:w-auto'>
+						Save Changes
+					</Button>
+				</div>
+			</form>
+		</UnsavedChangesFormWrapper>
 	);
 }
