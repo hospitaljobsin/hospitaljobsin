@@ -1,9 +1,7 @@
-import { Select, SelectItem } from "@heroui/react";
-import React from "react";
+import { Select, SelectItem } from '@heroui/react';
+import React from 'react';
 
-export function parseMonthYear(
-	dateStr: string | null | undefined,
-): MonthYearValue {
+export function parseMonthYear(dateStr: string | null | undefined): MonthYearValue {
 	if (!dateStr) return null;
 	const d = new Date(dateStr);
 	if (Number.isNaN(d.getTime())) return null;
@@ -11,24 +9,23 @@ export function parseMonthYear(
 }
 
 export function toDateString(val: MonthYearValue): string | null {
-	if (!val || typeof val.month !== "number" || typeof val.year !== "number")
-		return null;
-	return `${val.year}-${String(val.month).padStart(2, "0")}-01`;
+	if (!val || typeof val.month !== 'number' || typeof val.year !== 'number') return null;
+	return `${val.year}-${String(val.month).padStart(2, '0')}-01`;
 }
 
 const MONTHS = [
-	{ value: 1, label: "January" },
-	{ value: 2, label: "February" },
-	{ value: 3, label: "March" },
-	{ value: 4, label: "April" },
-	{ value: 5, label: "May" },
-	{ value: 6, label: "June" },
-	{ value: 7, label: "July" },
-	{ value: 8, label: "August" },
-	{ value: 9, label: "September" },
-	{ value: 10, label: "October" },
-	{ value: 11, label: "November" },
-	{ value: 12, label: "December" },
+	{ value: 1, label: 'January' },
+	{ value: 2, label: 'February' },
+	{ value: 3, label: 'March' },
+	{ value: 4, label: 'April' },
+	{ value: 5, label: 'May' },
+	{ value: 6, label: 'June' },
+	{ value: 7, label: 'July' },
+	{ value: 8, label: 'August' },
+	{ value: 9, label: 'September' },
+	{ value: 10, label: 'October' },
+	{ value: 11, label: 'November' },
+	{ value: 12, label: 'December' }
 ];
 
 const getYearRange = (start: number, end: number) => {
@@ -60,9 +57,9 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
 	isInvalid,
 	isDisabled,
 	minYear = 1950,
-	maxYear = new Date().getFullYear() + 5,
+	maxYear = new Date().getFullYear() + 5
 }) => {
-	console.log("value: ", value);
+	console.log('value: ', value);
 	console.log(value?.year ? [String(value.year)] : []);
 	const years = getYearRange(minYear, maxYear);
 	const monthId = React.useId();
@@ -90,51 +87,49 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
 	};
 
 	return (
-		<div className="flex flex-col gap-2 w-full">
+		<div className='flex flex-col gap-2 w-full'>
 			{label && (
-				<label htmlFor={monthId} className="text-sm font-medium mb-1">
+				<label htmlFor={monthId} className='text-sm font-medium mb-1'>
 					{label}
 				</label>
 			)}
-			<div className="flex gap-4 w-full flex-col sm:flex-row">
+			<div className='flex gap-4 w-full flex-col sm:flex-row'>
 				<Select
 					id={monthId}
-					label="Month"
-					placeholder="Month"
+					label='Month'
+					placeholder='Month'
 					selectedKeys={value?.month ? [String(value.month)] : []}
-					onSelectionChange={(keys) => {
+					onSelectionChange={keys => {
 						const m = Number(Array.from(keys)[0]);
 						handleMonthChange(Number.isNaN(m) ? null : m);
 					}}
 					isInvalid={isInvalid}
 					isDisabled={isDisabled}
-					className="flex-1"
+					className='flex-1'
 				>
-					{MONTHS.map((m) => (
+					{MONTHS.map(m => (
 						<SelectItem key={String(m.value)}>{m.label}</SelectItem>
 					))}
 				</Select>
 				<Select
-					label="Year"
-					placeholder="Year"
+					label='Year'
+					placeholder='Year'
 					selectedKeys={value?.year ? [String(value.year)] : []}
-					onSelectionChange={(keys) => {
+					onSelectionChange={keys => {
 						const yStr = Array.from(keys)[0];
 						const y = Number(yStr);
 						handleYearChange(Number.isNaN(y) ? null : y);
 					}}
 					isInvalid={isInvalid}
 					isDisabled={isDisabled}
-					className="flex-1"
+					className='flex-1'
 				>
-					{years.map((y) => {
+					{years.map(y => {
 						return <SelectItem key={String(y)}>{y.toString()}</SelectItem>;
 					})}
 				</Select>
 			</div>
-			{errorMessage && (
-				<span className="text-xs text-danger-500 mt-1">{errorMessage}</span>
-			)}
+			{errorMessage && <span className='text-xs text-danger-500 mt-1'>{errorMessage}</span>}
 		</div>
 	);
 };

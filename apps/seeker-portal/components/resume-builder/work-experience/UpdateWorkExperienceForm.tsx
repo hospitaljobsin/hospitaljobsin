@@ -273,6 +273,9 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 													placeholder='Add job title'
 													errorMessage={errors.workExperience?.[index]?.title?.message}
 													isInvalid={!!errors.workExperience?.[index]?.title}
+													classNames={{
+														inputWrapper: 'bg-background'
+													}}
 												/>
 											)}
 										/>
@@ -290,6 +293,9 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 													placeholder='Add organization'
 													errorMessage={errors.workExperience?.[index]?.organization?.message}
 													isInvalid={!!errors.workExperience?.[index]?.organization}
+													classNames={{
+														inputWrapper: 'bg-background'
+													}}
 												/>
 											)}
 										/>
@@ -313,6 +319,9 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 													}}
 													errorMessage={errors.workExperience?.[index]?.employmentType?.message}
 													isInvalid={!!errors.workExperience?.[index]?.employmentType}
+													classNames={{
+														trigger: 'bg-background'
+													}}
 												>
 													{EMPLOYMENT_TYPE_OPTIONS.map(option => (
 														<SelectItem key={option.value}>{option.label}</SelectItem>

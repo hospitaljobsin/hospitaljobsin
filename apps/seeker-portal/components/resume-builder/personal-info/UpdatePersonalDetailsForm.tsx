@@ -96,6 +96,9 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 								onSelectionChange={field.onChange}
 								errorMessage={errors.gender?.message}
 								isInvalid={!!errors.gender}
+								classNames={{
+									trigger: 'bg-background'
+								}}
 							>
 								<SelectItem key={'MALE'}>Male</SelectItem>
 								<SelectItem key={'FEMALE'}>Female</SelectItem>
@@ -119,6 +122,9 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 									onChange={field.onChange}
 									errorMessage={errors.dateOfBirth?.message}
 									isInvalid={!!errors.dateOfBirth}
+									classNames={{
+										inputWrapper: 'bg-background'
+									}}
 								/>
 							);
 						}}
@@ -141,6 +147,9 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 								onSelectionChange={field.onChange}
 								errorMessage={errors.maritalStatus?.message}
 								isInvalid={!!errors.maritalStatus}
+								classNames={{
+									trigger: 'bg-background'
+								}}
 							>
 								<SelectItem key={'SINGLE'}>Single</SelectItem>
 								<SelectItem key={'MARRIED'}>Married</SelectItem>
@@ -161,6 +170,9 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 								value={field.value ?? ''}
 								errorMessage={errors.category?.message}
 								isInvalid={!!errors.category}
+								classNames={{
+									inputWrapper: 'bg-background'
+								}}
 							/>
 						)}
 					/>
