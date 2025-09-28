@@ -1,6 +1,5 @@
 'use client';
 
-import { Tab, Tabs } from '@heroui/react';
 import React, { useState } from 'react';
 import { MobileSidebar } from './MobileSidebar';
 
@@ -13,21 +12,6 @@ export const MobileResumeBuilderLayout: React.FC<MobileResumeBuilderLayoutProps>
 
 	return (
 		<div className='flex flex-col h-screen bg-background-light dark:bg-background-dark'>
-			{/* Fixed Header */}
-			<div className='w-full pb-6 px-4'>
-				<Tabs
-					selectedKey={showPreview ? 'preview' : 'edit'}
-					onSelectionChange={key => setShowPreview(key === 'preview')}
-					fullWidth
-					classNames={{
-						cursor: 'shadow-none'
-					}}
-				>
-					<Tab key='edit' title='Edit' />
-					<Tab key='preview' title='Preview' />
-				</Tabs>
-			</div>
-
 			{/* Navigation */}
 			{!showPreview && <MobileSidebar />}
 
