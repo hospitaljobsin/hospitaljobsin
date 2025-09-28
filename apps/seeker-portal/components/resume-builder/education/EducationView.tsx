@@ -4,9 +4,9 @@ import EducationClientComponentQuery from '@/__generated__/EducationClientCompon
 import type { EducationViewFragment$key } from '@/__generated__/EducationViewFragment.graphql';
 import React from 'react';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import DashboardHeader from '../layout/DashboardHeader';
-import { MobileEducationView } from './mobile/MobileEducationView';
-import { ResponsiveResumeBuilder } from './ResponsiveResumeBuilder';
+import DashboardHeader from '../../layout/DashboardHeader';
+import { MobileEducationView } from './MobileEducationView';
+import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
 
 const EducationViewFragment = graphql`
   fragment EducationViewFragment on Query {

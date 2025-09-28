@@ -4,9 +4,9 @@ import CertificationsClientComponentQuery from '@/__generated__/CertificationsCl
 import type { CertificationsViewFragment$key } from '@/__generated__/CertificationsViewFragment.graphql';
 import React from 'react';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import DashboardHeader from '../layout/DashboardHeader';
-import { MobileCertificationsView } from './mobile/MobileCertificationsView';
-import { ResponsiveResumeBuilder } from './ResponsiveResumeBuilder';
+import DashboardHeader from '../../layout/DashboardHeader';
+import { MobileCertificationsView } from './MobileCertificationsView';
+import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
 
 const CertificationsViewFragment = graphql`
   fragment CertificationsViewFragment on Query {

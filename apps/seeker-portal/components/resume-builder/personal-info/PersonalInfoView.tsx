@@ -4,9 +4,9 @@ import PersonalInfoClientComponentQuery from '@/__generated__/PersonalInfoClient
 import type { PersonalInfoViewFragment$key } from '@/__generated__/PersonalInfoViewFragment.graphql';
 import React from 'react';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import DashboardHeader from '../layout/DashboardHeader';
-import { MobilePersonalInfoView } from './mobile/MobilePersonalInfoView';
-import { ResponsiveResumeBuilder } from './ResponsiveResumeBuilder';
+import DashboardHeader from '../../layout/DashboardHeader';
+import { MobilePersonalInfoView } from './MobilePersonalInfoView';
+import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
 
 const PersonalInfoViewFragment = graphql`
   fragment PersonalInfoViewFragment on Query {

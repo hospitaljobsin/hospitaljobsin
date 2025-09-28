@@ -4,9 +4,9 @@ import LanguagesClientComponentQuery from '@/__generated__/LanguagesClientCompon
 import type { LanguagesViewFragment$key } from '@/__generated__/LanguagesViewFragment.graphql';
 import React from 'react';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import DashboardHeader from '../layout/DashboardHeader';
-import { MobileLanguagesView } from './mobile/MobileLanguagesView';
-import { ResponsiveResumeBuilder } from './ResponsiveResumeBuilder';
+import DashboardHeader from '../../layout/DashboardHeader';
+import { MobileLanguagesView } from './MobileLanguagesView';
+import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
 
 const LanguagesViewFragment = graphql`
   fragment LanguagesViewFragment on Query {

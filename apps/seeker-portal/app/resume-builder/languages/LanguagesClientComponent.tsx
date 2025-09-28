@@ -1,6 +1,6 @@
 'use client';
 import type { LanguagesClientComponentQuery as LanguagesClientComponentQueryType } from '@/__generated__/LanguagesClientComponentQuery.graphql';
-import SummaryView from '@/components/resume-builder/LanguagesView';
+import LanguagesView from '@/components/resume-builder/languages/LanguagesView';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -22,7 +22,7 @@ export default function LanguagesClientComponent() {
 
 	return (
 		<Suspense fallback={<div>Loading...</div>}>
-			<SummaryView queryReference={queryReference} />
+			<LanguagesView queryReference={queryReference} />
 		</Suspense>
 	);
 }

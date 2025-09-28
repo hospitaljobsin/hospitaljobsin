@@ -4,9 +4,9 @@ import WorkExperienceClientComponentQuery from '@/__generated__/WorkExperienceCl
 import type { WorkExperienceViewFragment$key } from '@/__generated__/WorkExperienceViewFragment.graphql';
 import React from 'react';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import DashboardHeader from '../layout/DashboardHeader';
-import { MobileWorkExperienceView } from './mobile/MobileWorkExperienceView';
-import { ResponsiveResumeBuilder } from './ResponsiveResumeBuilder';
+import DashboardHeader from '../../layout/DashboardHeader';
+import { MobileWorkExperienceView } from './MobileWorkExperienceView';
+import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
 
 const WorkExperienceViewFragment = graphql`
   fragment WorkExperienceViewFragment on Query {

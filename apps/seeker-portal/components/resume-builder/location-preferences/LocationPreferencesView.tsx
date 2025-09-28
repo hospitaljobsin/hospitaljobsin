@@ -4,9 +4,9 @@ import LocationPreferencesClientComponentQuery from '@/__generated__/LocationPre
 import type { LocationPreferencesViewFragment$key } from '@/__generated__/LocationPreferencesViewFragment.graphql';
 import React from 'react';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import DashboardHeader from '../layout/DashboardHeader';
-import { MobileLocationPreferencesView } from './mobile/MobileLocationPreferencesView';
-import { ResponsiveResumeBuilder } from './ResponsiveResumeBuilder';
+import DashboardHeader from '../../layout/DashboardHeader';
+import { MobileLocationPreferencesView } from './MobileLocationPreferencesView';
+import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
 
 const LocationPreferencesViewFragment = graphql`
   fragment LocationPreferencesViewFragment on Query {

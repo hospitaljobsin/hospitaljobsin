@@ -1,6 +1,6 @@
 'use client';
 import type { LocationPreferencesClientComponentQuery as LocationPreferencesClientComponentQueryType } from '@/__generated__/LocationPreferencesClientComponentQuery.graphql';
-import SkillsView from '@/components/resume-builder/LocationPreferencesView';
+import LocationPreferencesView from '@/components/resume-builder/location-preferences/LocationPreferencesView';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -22,7 +22,7 @@ export default function LocationPreferencesClientComponent() {
 
 	return (
 		<Suspense fallback={<div>Loading...</div>}>
-			<SkillsView queryReference={queryReference} />
+			<LocationPreferencesView queryReference={queryReference} />
 		</Suspense>
 	);
 }

@@ -1,6 +1,6 @@
 'use client';
 import type { LicensesClientComponentQuery as LicensesClientComponentQueryType } from '@/__generated__/LicensesClientComponentQuery.graphql';
-import AdditionalView from '@/components/resume-builder/LicensesView';
+import LicensesView from '@/components/resume-builder/licenses/LicensesView';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -22,7 +22,7 @@ export default function LicensesClientComponent() {
 
 	return (
 		<Suspense fallback={<div>Loading...</div>}>
-			<AdditionalView queryReference={queryReference} />
+			<LicensesView queryReference={queryReference} />
 		</Suspense>
 	);
 }

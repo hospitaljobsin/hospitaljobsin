@@ -1,6 +1,6 @@
 'use client';
 import type { CertificationsClientComponentQuery as CertificationsClientComponentQueryType } from '@/__generated__/CertificationsClientComponentQuery.graphql';
-import CertificationsView from '@/components/resume-builder/CertificationsView';
+import CertificationsView from '@/components/resume-builder/certifications/CertificationsView';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';

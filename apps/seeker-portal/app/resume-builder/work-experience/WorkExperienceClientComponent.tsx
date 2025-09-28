@@ -1,6 +1,6 @@
 'use client';
 import type { WorkExperienceClientComponentQuery as WorkExperienceClientComponentQueryType } from '@/__generated__/WorkExperienceClientComponentQuery.graphql';
-import WorkExperienceView from '@/components/resume-builder/WorkExperienceView';
+import WorkExperienceView from '@/components/resume-builder/work-experience/WorkExperienceView';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';

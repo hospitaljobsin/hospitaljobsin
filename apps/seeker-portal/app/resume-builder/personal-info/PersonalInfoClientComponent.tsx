@@ -1,6 +1,6 @@
 'use client';
 import type { PersonalInfoClientComponentQuery as PersonalInfoClientComponentQueryType } from '@/__generated__/PersonalInfoClientComponentQuery.graphql';
-import PersonalInfoView from '@/components/resume-builder/PersonalInfoView';
+import PersonalInfoView from '@/components/resume-builder/personal-info/PersonalInfoView';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';

@@ -4,9 +4,9 @@ import LicensesClientComponentQuery from '@/__generated__/LicensesClientComponen
 import type { LicensesViewFragment$key } from '@/__generated__/LicensesViewFragment.graphql';
 import React from 'react';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import DashboardHeader from '../layout/DashboardHeader';
-import { MobileLicensesView } from './mobile/MobileLicensesView';
-import { ResponsiveResumeBuilder } from './ResponsiveResumeBuilder';
+import DashboardHeader from '../../layout/DashboardHeader';
+import { MobileLicensesView } from './MobileLicensesView';
+import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
 
 const LicensesViewFragment = graphql`
   fragment LicensesViewFragment on Query {

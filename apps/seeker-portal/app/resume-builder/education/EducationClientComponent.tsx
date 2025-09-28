@@ -1,6 +1,6 @@
 'use client';
 import type { EducationClientComponentQuery as EducationClientComponentQueryType } from '@/__generated__/EducationClientComponentQuery.graphql';
-import EducationView from '@/components/resume-builder/EducationView';
+import EducationView from '@/components/resume-builder/education/EducationView';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';

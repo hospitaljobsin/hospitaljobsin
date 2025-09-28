@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { MobileResumeBuilderLayout } from './mobile/MobileResumeBuilderLayout';
+import { MobileResumeBuilderLayout } from './MobileResumeBuilderLayout';
 import { ResumeBuilderLayout } from './ResumeBuilderLayout';
 
 interface ResponsiveResumeBuilderProps {
