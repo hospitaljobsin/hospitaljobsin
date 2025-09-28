@@ -4,6 +4,7 @@ import { createJiti } from 'jiti';
 import type { NextConfig } from 'next';
 import { fileURLToPath } from 'node:url';
 import { env } from './lib/env/client';
+import links from './lib/links';
 
 const jiti = createJiti(fileURLToPath(import.meta.url));
 
@@ -110,6 +111,11 @@ const nextConfig: NextConfig = {
 	},
 	async redirects() {
 		return [
+			{
+				source: links.resumeBuilder,
+				destination: links.resumeBuilderPersonalInfo,
+				permanent: false
+			},
 			{
 				source: '/search/jobs-in/:location',
 				has: [
