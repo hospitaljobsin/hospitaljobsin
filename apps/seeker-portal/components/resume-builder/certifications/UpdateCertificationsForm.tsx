@@ -198,6 +198,9 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 														placeholder='Certification name'
 														errorMessage={errors.certifications?.[index]?.name?.message}
 														isInvalid={!!errors.certifications?.[index]?.name}
+														classNames={{
+															inputWrapper: 'bg-background'
+														}}
 													/>
 												)}
 											/>
@@ -215,6 +218,9 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 														placeholder='Certification issuer'
 														errorMessage={errors.certifications?.[index]?.issuer?.message}
 														isInvalid={!!errors.certifications?.[index]?.issuer}
+														classNames={{
+															inputWrapper: 'bg-background'
+														}}
 													/>
 												)}
 											/>
@@ -232,6 +238,9 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 														placeholder='https://...'
 														errorMessage={errors.certifications?.[index]?.certificationUrl?.message}
 														isInvalid={!!errors.certifications?.[index]?.certificationUrl}
+														classNames={{
+															inputWrapper: 'bg-background'
+														}}
 													/>
 												)}
 											/>
@@ -247,6 +256,11 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 														onChange={field.onChange}
 														errorMessage={errors.certifications?.[index]?.createdAt?.message}
 														isInvalid={!!errors.certifications?.[index]?.createdAt}
+														selectProps={{
+															classNames: {
+																trigger: 'bg-background'
+															}
+														}}
 													/>
 												)}
 											/>
@@ -260,6 +274,11 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 														onChange={field.onChange}
 														errorMessage={errors.certifications?.[index]?.expiresAt?.message}
 														isInvalid={!!errors.certifications?.[index]?.expiresAt}
+														selectProps={{
+															classNames: {
+																trigger: 'bg-background'
+															}
+														}}
 													/>
 												)}
 											/>

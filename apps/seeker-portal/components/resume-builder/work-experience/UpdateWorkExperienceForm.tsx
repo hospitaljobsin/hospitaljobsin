@@ -357,6 +357,11 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 													onChange={field.onChange}
 													errorMessage={errors.workExperience?.[index]?.startedAt?.message}
 													isInvalid={!!errors.workExperience?.[index]?.startedAt}
+													selectProps={{
+														classNames: {
+															trigger: 'bg-background'
+														}
+													}}
 												/>
 											)}
 										/>
@@ -373,6 +378,11 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 														isDisabled={isCurrentRole}
 														errorMessage={errors.workExperience?.[index]?.completedAt?.message}
 														isInvalid={!!errors.workExperience?.[index]?.completedAt}
+														selectProps={{
+															classNames: {
+																trigger: 'bg-background'
+															}
+														}}
 													/>
 												);
 											}}
@@ -391,6 +401,9 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 													placeholder='List your major responsibilities and achievements, highlighting standout projects.'
 													errorMessage={errors.workExperience?.[index]?.description?.message}
 													isInvalid={!!errors.workExperience?.[index]?.description}
+													classNames={{
+														inputWrapper: 'bg-background'
+													}}
 												/>
 											)}
 										/>
@@ -407,7 +420,10 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 													<p className='mt-2'>
 														Separate skills with commas or Enter <Kbd keys={['enter']} classNames={{ base: 'p-0 px-2 shadow-none' }} />
 													</p>
-												)
+												),
+												classNames: {
+													inputWrapper: 'bg-background'
+												}
 											}}
 										/>
 									</div>

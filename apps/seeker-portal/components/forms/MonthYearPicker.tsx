@@ -1,4 +1,4 @@
-import { Select, SelectItem } from '@heroui/react';
+import { Select, SelectItem, type SelectProps } from '@heroui/react';
 import React from 'react';
 
 export function parseMonthYear(dateStr: string | null | undefined): MonthYearValue {
@@ -29,7 +29,7 @@ const MONTHS = [
 ];
 
 const getYearRange = (start: number, end: number) => {
-	const years = [];
+	const years: number[] = [];
 	for (let y = end; y >= start; y--) {
 		years.push(y);
 	}
@@ -47,6 +47,7 @@ interface MonthYearPickerProps {
 	isDisabled?: boolean;
 	minYear?: number;
 	maxYear?: number;
+	selectProps?: Partial<SelectProps>;
 }
 
 export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
@@ -57,7 +58,8 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
 	isInvalid,
 	isDisabled,
 	minYear = 1950,
-	maxYear = new Date().getFullYear() + 5
+	maxYear = new Date().getFullYear() + 5,
+	selectProps
 }) => {
 	console.log('value: ', value);
 	console.log(value?.year ? [String(value.year)] : []);
@@ -106,6 +108,7 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
 					isInvalid={isInvalid}
 					isDisabled={isDisabled}
 					className='flex-1'
+					{...selectProps}
 				>
 					{MONTHS.map(m => (
 						<SelectItem key={String(m.value)}>{m.label}</SelectItem>
@@ -123,6 +126,7 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
 					isInvalid={isInvalid}
 					isDisabled={isDisabled}
 					className='flex-1'
+					{...selectProps}
 				>
 					{years.map(y => {
 						return <SelectItem key={String(y)}>{y.toString()}</SelectItem>;

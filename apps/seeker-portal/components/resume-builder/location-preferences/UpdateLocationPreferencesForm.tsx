@@ -100,11 +100,16 @@ export default function UpdateLocationPreferencesForm({
 									value={field.value || ''}
 									onValueChange={field.onChange}
 									onChange={location => {
-										field.onChange(location.displayName);
+										if (location.address.displayName) field.onChange(location.address.displayName);
 									}}
 									placeholder='Enter your address'
 									errorMessage={errors.address?.message}
 									isInvalid={!!errors.address}
+									inputProps={{
+										classNames: {
+											inputWrapper: 'bg-background'
+										}
+									}}
 								/>
 							)}
 						/>
@@ -131,7 +136,7 @@ export default function UpdateLocationPreferencesForm({
 							value={inputValue}
 							onValueChange={setInputValue}
 							onChange={location => {
-								if (!locations.includes(location.address.displayName)) {
+								if (location.address.displayName && !locations.includes(location.address.displayName)) {
 									setValue('locationsOpenToWork', [...locations, location.address.displayName] as string[], {
 										shouldValidate: true,
 										shouldDirty: true
@@ -140,6 +145,11 @@ export default function UpdateLocationPreferencesForm({
 								setInputValue('');
 							}}
 							placeholder='Add a location'
+							inputProps={{
+								classNames: {
+									inputWrapper: 'bg-background'
+								}
+							}}
 						/>
 					</div>
 				</div>

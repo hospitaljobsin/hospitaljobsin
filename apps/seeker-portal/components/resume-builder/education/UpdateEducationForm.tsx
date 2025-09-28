@@ -185,6 +185,9 @@ export default function UpdateEducationForm({ rootQuery, onSaveChanges }: Props)
 													placeholder='Add degree'
 													errorMessage={errors.education?.[index]?.degree?.message}
 													isInvalid={!!errors.education?.[index]?.degree}
+													classNames={{
+														inputWrapper: 'bg-background'
+													}}
 												/>
 											)}
 										/>
@@ -202,6 +205,9 @@ export default function UpdateEducationForm({ rootQuery, onSaveChanges }: Props)
 													placeholder='Add institution'
 													errorMessage={errors.education?.[index]?.institution?.message}
 													isInvalid={!!errors.education?.[index]?.institution}
+													classNames={{
+														inputWrapper: 'bg-background'
+													}}
 												/>
 											)}
 										/>
@@ -218,6 +224,11 @@ export default function UpdateEducationForm({ rootQuery, onSaveChanges }: Props)
 														onChange={field.onChange}
 														errorMessage={errors.education?.[index]?.startedAt?.message}
 														isInvalid={!!errors.education?.[index]?.startedAt}
+														selectProps={{
+															classNames: {
+																trigger: 'bg-background'
+															}
+														}}
 													/>
 												)}
 											/>
@@ -232,6 +243,11 @@ export default function UpdateEducationForm({ rootQuery, onSaveChanges }: Props)
 													onChange={field.onChange}
 													errorMessage={errors.education?.[index]?.completedAt?.message}
 													isInvalid={!!errors.education?.[index]?.completedAt}
+													selectProps={{
+														classNames: {
+															trigger: 'bg-background'
+														}
+													}}
 												/>
 											)}
 										/>

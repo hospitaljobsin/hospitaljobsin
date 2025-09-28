@@ -128,6 +128,9 @@ export default function UpdateLanguagesForm({ rootQuery, onSaveChanges }: Props)
 													placeholder='Add language name'
 													errorMessage={errors.languages?.[index]?.name?.message}
 													isInvalid={!!errors.languages?.[index]?.name}
+													classNames={{
+														inputWrapper: 'bg-background'
+													}}
 												/>
 											)}
 										/>
@@ -152,6 +155,9 @@ export default function UpdateLanguagesForm({ rootQuery, onSaveChanges }: Props)
 													}}
 													errorMessage={errors.languages?.[index]?.proficiency?.message}
 													isInvalid={!!errors.languages?.[index]?.proficiency}
+													classNames={{
+														trigger: 'bg-background'
+													}}
 												>
 													{LANGUAGE_PROFICIENCY_OPTIONS.map(option => (
 														<SelectItem key={option.key}>{option.label}</SelectItem>

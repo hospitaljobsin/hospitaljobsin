@@ -149,6 +149,9 @@ export default function UpdateLicensesForm({ rootQuery, onSaveChanges }: Props) 
 														placeholder='License name'
 														errorMessage={errors.licenses?.[index]?.name?.message}
 														isInvalid={!!errors.licenses?.[index]?.name}
+														classNames={{
+															inputWrapper: 'bg-background'
+														}}
 													/>
 												)}
 											/>
@@ -166,6 +169,9 @@ export default function UpdateLicensesForm({ rootQuery, onSaveChanges }: Props) 
 														placeholder='License issuer'
 														errorMessage={errors.licenses?.[index]?.issuer?.message}
 														isInvalid={!!errors.licenses?.[index]?.issuer}
+														classNames={{
+															inputWrapper: 'bg-background'
+														}}
 													/>
 												)}
 											/>
@@ -183,6 +189,9 @@ export default function UpdateLicensesForm({ rootQuery, onSaveChanges }: Props) 
 														placeholder='License number'
 														errorMessage={errors.licenses?.[index]?.licenseNumber?.message}
 														isInvalid={!!errors.licenses?.[index]?.licenseNumber}
+														classNames={{
+															inputWrapper: 'bg-background'
+														}}
 													/>
 												)}
 											/>
@@ -198,6 +207,11 @@ export default function UpdateLicensesForm({ rootQuery, onSaveChanges }: Props) 
 														label='Registration Year'
 														errorMessage={errors.licenses?.[index]?.registrationYear?.message}
 														isInvalid={!!errors.licenses?.[index]?.registrationYear}
+														selectProps={{
+															classNames: {
+																trigger: 'bg-background'
+															}
+														}}
 													/>
 												)}
 											/>
