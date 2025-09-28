@@ -1,5 +1,6 @@
 'use client';
 import type { AuthNavigationFragment$key } from '@/__generated__/AuthNavigationFragment.graphql';
+import { getResumeProgressColor } from '@/lib/color';
 import links from '@/lib/links';
 import {
 	Button,
@@ -98,7 +99,12 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							<DropdownItem key='profile' startContent={<UserIcon className='h-4 w-4' />} href={links.resumeBuilder}>
 								<div className='w-full flex flex-col gap-2'>
 									<p>My Resume</p>
-									<Progress value={data.profile.progressPercentage} disableAnimation size='sm' />
+									<Progress
+										value={data.profile.progressPercentage}
+										disableAnimation
+										size='sm'
+										color={getResumeProgressColor(data.profile.progressPercentage)}
+									/>
 								</div>
 							</DropdownItem>
 							<DropdownItem key='saved' startContent={<BriefcaseBusiness className='h-4 w-4' />} href={links.savedJobs}>
@@ -155,7 +161,12 @@ export default function AuthNavigation({ rootQuery }: Props) {
 						>
 							<div className='w-full flex flex-col gap-2'>
 								<p>My Resume</p>
-								<Progress value={data.profile.progressPercentage} disableAnimation size='sm' />
+								<Progress
+									value={data.profile.progressPercentage}
+									disableAnimation
+									size='sm'
+									color={getResumeProgressColor(data.profile.progressPercentage)}
+								/>
 							</div>
 						</Button>
 						<Button

@@ -1,5 +1,6 @@
 import type { ResumeProgressAccountFragment$key } from '@/__generated__/ResumeProgressAccountFragment.graphql';
 import type { ResumeProgressFragment$key } from '@/__generated__/ResumeProgressFragment.graphql';
+import { getResumeProgressColor } from '@/lib/color';
 import { Progress } from '@heroui/react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -34,6 +35,7 @@ export default function ResumeProgress({ query }: { query: ResumeProgressFragmen
 				label='Resume Progress'
 				size='md'
 				value={data.profile.progressPercentage}
+				color={getResumeProgressColor(data.profile.progressPercentage)}
 				className='w-full'
 				classNames={{ label: 'text-foreground-600 text-sm', value: 'text-foreground-600' }}
 				showValueLabel
