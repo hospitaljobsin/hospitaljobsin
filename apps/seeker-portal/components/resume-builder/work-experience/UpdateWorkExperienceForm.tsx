@@ -157,7 +157,9 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 		reset
 	} = useForm<WorkExperienceFormType>({
 		resolver: standardSchemaResolver(formSchema),
-		defaultValues
+		defaultValues,
+		mode: 'onChange',
+		reValidateMode: 'onChange'
 	});
 
 	const value = useWatch({
@@ -431,7 +433,19 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 											/>
 										</div>
 
-										<Button type='button' variant='bordered' startContent={<Trash size={18} />} onPress={() => remove(index)}>
+										<Button
+											type='button'
+											variant='bordered'
+											startContent={<Trash size={18} />}
+											onPress={() => {
+												if (index > 0) {
+													remove(index);
+													return;
+												}
+												remove(0);
+												append({ ...defaultWorkExperience });
+											}}
+										>
 											Delete Experience
 										</Button>
 									</div>

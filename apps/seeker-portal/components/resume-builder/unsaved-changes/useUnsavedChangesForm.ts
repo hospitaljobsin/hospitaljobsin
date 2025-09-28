@@ -4,6 +4,10 @@ import { useUnsavedChanges } from './UnsavedChangesContext';
 export const useUnsavedChangesForm = (isDirty: boolean, isValid: boolean, onSave: () => void, onCancel: () => void) => {
 	const { setHasUnsavedChanges, setCallbacks } = useUnsavedChanges();
 
+	const markAsChanged = () => {
+		setHasUnsavedChanges(true);
+	};
+
 	useEffect(() => {
 		setHasUnsavedChanges(isDirty);
 	}, [isDirty, setHasUnsavedChanges]);
@@ -17,4 +21,6 @@ export const useUnsavedChangesForm = (isDirty: boolean, isValid: boolean, onSave
 		};
 		setCallbacks(handleSave, onCancel);
 	}, [onSave, onCancel, setCallbacks, setHasUnsavedChanges, isValid]);
+
+	return { markAsChanged };
 };
