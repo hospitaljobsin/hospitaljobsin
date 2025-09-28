@@ -55,8 +55,6 @@ export default function UpdateLocationPreferencesForm({
 		handleSubmit,
 		control,
 		setValue,
-		setError,
-		watch,
 		formState: { errors, isSubmitting }
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
@@ -133,8 +131,8 @@ export default function UpdateLocationPreferencesForm({
 							value={inputValue}
 							onValueChange={setInputValue}
 							onChange={location => {
-								if (!locations.includes(location.displayName)) {
-									setValue('locationsOpenToWork', [...locations, location.displayName] as string[], {
+								if (!locations.includes(location.address.displayName)) {
+									setValue('locationsOpenToWork', [...locations, location.address.displayName] as string[], {
 										shouldValidate: true,
 										shouldDirty: true
 									});
