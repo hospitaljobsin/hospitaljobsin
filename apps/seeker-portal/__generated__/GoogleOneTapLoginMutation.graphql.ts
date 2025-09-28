@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a02a4ea43e2f314cafb17c4821b8b894>>
- * @relayHash bacca3a9aef45c9aa7b7b4691940e959
+ * @generated SignedSource<<d04bdc64a454a45d4bccd8e408238159>>
+ * @relayHash 9b1d49c908b7293338038f0a19878075
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID bacca3a9aef45c9aa7b7b4691940e959
+// @relayRequestID 9b1d49c908b7293338038f0a19878075
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -207,10 +207,17 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "isComplete",
+                    "name": "progressPercentage",
                     "storageKey": null
                   },
-                  (v3/*: any*/)
+                  (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  }
                 ],
                 "storageKey": null
               },
@@ -239,7 +246,7 @@ return {
     ]
   },
   "params": {
-    "id": "bacca3a9aef45c9aa7b7b4691940e959",
+    "id": "9b1d49c908b7293338038f0a19878075",
     "metadata": {},
     "name": "GoogleOneTapLoginMutation",
     "operationKind": "mutation",

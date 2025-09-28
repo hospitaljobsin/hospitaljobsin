@@ -73,7 +73,7 @@ export default function JobApplyButton({ query }: { query: JobApplyButtonFragmen
 					content={
 						<div className='px-1 py-2'>
 							<div className='text-sm'>
-								<Link href={links.profile}>Complete your profile</Link> to apply for this job
+								<Link href={links.resumeBuilder}>Complete your profile</Link> to apply for this job
 							</div>
 						</div>
 					}

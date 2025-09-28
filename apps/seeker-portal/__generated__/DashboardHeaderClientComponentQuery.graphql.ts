@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<42b69fe00593c348156113792d458db2>>
- * @relayHash 8952923ed6a3ad42cf4f1beb8646bfec
+ * @generated SignedSource<<8f358ae468cf9f8a7cbd90648d750499>>
+ * @relayHash 0cf98705f023ddee30adee1f0f77853a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 8952923ed6a3ad42cf4f1beb8646bfec
+// @relayRequestID 0cf98705f023ddee30adee1f0f77853a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -84,7 +84,6 @@ return {
                 "name": "avatarUrl",
                 "storageKey": null
               },
-              (v0/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -97,13 +96,21 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "isComplete",
+                    "name": "progressPercentage",
                     "storageKey": null
                   },
-                  (v0/*: any*/)
+                  (v0/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  }
                 ],
                 "storageKey": null
-              }
+              },
+              (v0/*: any*/)
             ],
             "type": "Account",
             "abstractKey": null
@@ -122,7 +129,7 @@ return {
     ]
   },
   "params": {
-    "id": "8952923ed6a3ad42cf4f1beb8646bfec",
+    "id": "0cf98705f023ddee30adee1f0f77853a",
     "metadata": {},
     "name": "DashboardHeaderClientComponentQuery",
     "operationKind": "query",

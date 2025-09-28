@@ -25,17 +25,17 @@ export default function IncompleteProfileBanner({
 }) {
 	const pathName = usePathname();
 	const data = useFragment(IncompleteProfileBannerFragment, account);
-	if (data.profile.isComplete || pathName === links.profile || pathName.startsWith(links.resumeBuilder)) return null;
+	if (data.profile.isComplete || pathName === links.resumeBuilder || pathName.startsWith(links.resumeBuilder)) return null;
 
 	if (!animate) {
 		return (
 			<div className='w-full bg-primary-200 py-4'>
 				<div className='max-w-7xl mx-auto px-5 flex items-center justify-between gap-6 text-shadow-primary-foreground text-xs sm:text-base'>
 					<p>Please complete your profile to apply for jobs.</p>
-					<Button variant='solid' size='sm' className='min-w-36 text-xs sm:hidden' color='primary' as={Link} href={links.profile}>
+					<Button variant='solid' size='sm' className='min-w-36 text-xs sm:hidden' color='primary' as={Link} href={links.resumeBuilder}>
 						Complete Profile
 					</Button>
-					<Button variant='solid' className='min-w-36 hidden sm:flex' color='primary' as={Link} href={links.profile}>
+					<Button variant='solid' className='min-w-36 hidden sm:flex' color='primary' as={Link} href={links.resumeBuilder}>
 						Complete Profile
 					</Button>
 				</div>
@@ -53,10 +53,10 @@ export default function IncompleteProfileBanner({
 		>
 			<div className='max-w-7xl mx-auto px-5 flex items-center justify-between gap-6 text-shadow-primary-foreground text-xs sm:text-base'>
 				<p>Please complete your profile to apply for jobs.</p>
-				<Button variant='solid' size='sm' className='min-w-36 text-xs sm:hidden' color='primary' as={Link} href={links.profile}>
+				<Button variant='solid' size='sm' className='min-w-36 text-xs sm:hidden' color='primary' as={Link} href={links.resumeBuilder}>
 					Complete Profile
 				</Button>
-				<Button variant='solid' className='min-w-36 hidden sm:flex' color='primary' as={Link} href={links.profile}>
+				<Button variant='solid' className='min-w-36 hidden sm:flex' color='primary' as={Link} href={links.resumeBuilder}>
 					Complete Profile
 				</Button>
 			</div>
