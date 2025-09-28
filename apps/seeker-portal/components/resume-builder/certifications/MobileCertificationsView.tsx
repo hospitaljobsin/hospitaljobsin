@@ -1,9 +1,25 @@
+import type { MobileCertificationsViewFragment$key } from '@/__generated__/MobileCertificationsViewFragment.graphql';
 import React from 'react';
+import { graphql, useFragment } from 'react-relay';
+import invariant from 'tiny-invariant';
+import UpdateCertificationsForm from './UpdateCertificationsForm';
 
-export const MobileCertificationsView: React.FC = () => {
-	return (
-		<div className='space-y-6'>
-			<h2 className='text-xl font-bold'>Certifications</h2>
-		</div>
-	);
+const MobileCertificationsViewFragment = graphql`
+  fragment MobileCertificationsViewFragment on Query {
+    viewer {
+		__typename
+      ... on Account {
+        profile {
+          ...UpdateCertificationsFormFragment
+        }
+      }
+    }
+  }
+`;
+
+export const MobileCertificationsView: React.FC<{ data: MobileCertificationsViewFragment$key }> = ({ data }) => {
+	const fragmentData = useFragment(MobileCertificationsViewFragment, data);
+	invariant(fragmentData.viewer.__typename === 'Account' && fragmentData.viewer.profile, 'Expected profile data to be present');
+
+	return <UpdateCertificationsForm rootQuery={fragmentData.viewer.profile} onSaveChanges={() => {}} />;
 };

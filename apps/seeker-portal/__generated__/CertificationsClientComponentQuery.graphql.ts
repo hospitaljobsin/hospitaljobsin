@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<dc76e965f5bac045d8815a0072c88913>>
- * @relayHash 3a321e6292a58fc883ab6c22af3a600a
+ * @generated SignedSource<<71d71ccb492511d6beea78b1e73de515>>
+ * @relayHash 02b1dd2ad3c547ea2c6a8fea8239f648
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 3a321e6292a58fc883ab6c22af3a600a
+// @relayRequestID 02b1dd2ad3c547ea2c6a8fea8239f648
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -24,6 +24,13 @@ export type CertificationsClientComponentQuery = {
 
 const node: ConcreteRequest = (function(){
 var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -60,13 +67,7 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "__typename",
-            "storageKey": null
-          },
+          (v0/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -84,7 +85,7 @@ return {
                 "name": "avatarUrl",
                 "storageKey": null
               },
-              (v0/*: any*/),
+              (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -100,7 +101,54 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v0/*: any*/)
+                  (v1/*: any*/),
+                  (v0/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Certification",
+                    "kind": "LinkedField",
+                    "name": "certifications",
+                    "plural": true,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "name",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "issuer",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "certificationUrl",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "createdAt",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "expiresAt",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
                 ],
                 "storageKey": null
               }
@@ -111,7 +159,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v0/*: any*/)
+              (v1/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -122,7 +170,7 @@ return {
     ]
   },
   "params": {
-    "id": "3a321e6292a58fc883ab6c22af3a600a",
+    "id": "02b1dd2ad3c547ea2c6a8fea8239f648",
     "metadata": {},
     "name": "CertificationsClientComponentQuery",
     "operationKind": "query",

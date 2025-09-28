@@ -2,21 +2,19 @@
 import type { WorkExperienceClientComponentQuery as WorkExperienceClientComponentQueryType } from '@/__generated__/WorkExperienceClientComponentQuery.graphql';
 import WorkExperienceClientComponentQuery from '@/__generated__/WorkExperienceClientComponentQuery.graphql';
 import type { WorkExperienceViewFragment$key } from '@/__generated__/WorkExperienceViewFragment.graphql';
-import React from 'react';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import DashboardHeader from '../../layout/DashboardHeader';
-import { MobileWorkExperienceView } from './MobileWorkExperienceView';
 import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
+import { DesktopWorkExperienceView } from './DesktopWorkExperienceView';
+import { MobileWorkExperienceView } from './MobileWorkExperienceView';
 
 const WorkExperienceViewFragment = graphql`
   fragment WorkExperienceViewFragment on Query {
     ...DashboardHeaderFragment
+    ...DesktopWorkExperienceViewFragment
+	...MobileWorkExperienceViewFragment
   }
 `;
-
-const DesktopWorkExperienceView: React.FC = () => {
-	return <h1 className='text-2xl sm:text-3xl font-bold tracking-tight'>Work Experience</h1>;
-};
 
 export default function WorkExperienceView({ queryReference }: { queryReference: PreloadedQuery<WorkExperienceClientComponentQueryType> }) {
 	const rootData = usePreloadedQuery(WorkExperienceClientComponentQuery, queryReference);
@@ -25,7 +23,10 @@ export default function WorkExperienceView({ queryReference }: { queryReference:
 	return (
 		<div className='w-full flex flex-col flex-1 h-full'>
 			<DashboardHeader query={data} />
-			<ResponsiveResumeBuilder desktopComponent={DesktopWorkExperienceView} mobileComponent={MobileWorkExperienceView} />
+			<ResponsiveResumeBuilder
+				desktopComponent={() => <DesktopWorkExperienceView data={data} />}
+				mobileComponent={() => <MobileWorkExperienceView data={data} />}
+			/>
 		</div>
 	);
 }

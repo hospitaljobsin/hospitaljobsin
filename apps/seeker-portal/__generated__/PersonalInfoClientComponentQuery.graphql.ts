@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a5ae8f6cc7dc27b2b19b06e05b34f58a>>
- * @relayHash c35dccb6272e9dca7e01bd7e448fd0b1
+ * @generated SignedSource<<80dba50d9c215b16003f74ee5cd8be4e>>
+ * @relayHash a2ce01bd7dcf5c9dfac25a5c0abcee04
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c35dccb6272e9dca7e01bd7e448fd0b1
+// @relayRequestID a2ce01bd7dcf5c9dfac25a5c0abcee04
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -100,7 +100,35 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v0/*: any*/)
+                  (v0/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "gender",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "dateOfBirth",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "maritalStatus",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "category",
+                    "storageKey": null
+                  }
                 ],
                 "storageKey": null
               }
@@ -122,7 +150,7 @@ return {
     ]
   },
   "params": {
-    "id": "c35dccb6272e9dca7e01bd7e448fd0b1",
+    "id": "a2ce01bd7dcf5c9dfac25a5c0abcee04",
     "metadata": {},
     "name": "PersonalInfoClientComponentQuery",
     "operationKind": "query",

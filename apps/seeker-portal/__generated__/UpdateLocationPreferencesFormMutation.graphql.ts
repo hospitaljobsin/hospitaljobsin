@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<8644bb03d46d474e9fa0ee58ef9796f3>>
- * @relayHash 53fbcf44d9ab26b5026cb4a62d7c49b6
+ * @generated SignedSource<<794d8648a5e2dffa64d28c5f10c35475>>
+ * @relayHash ba86748f8aaf36837e9a241cdf945f22
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 53fbcf44d9ab26b5026cb4a62d7c49b6
+// @relayRequestID ba86748f8aaf36837e9a241cdf945f22
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -21,7 +21,7 @@ export type UpdateLocationPreferencesFormMutation$variables = {
 export type UpdateLocationPreferencesFormMutation$data = {
   readonly updateProfileLocationPreferences: {
     readonly profile?: {
-      readonly " $fragmentSpreads": FragmentRefs<"LocationPreferencesFragment" | "UpdateLocationPreferencesFormFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"UpdateLocationPreferencesFormFragment">;
     } | null | undefined;
     readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment">;
   };
@@ -110,11 +110,6 @@ return {
                     "args": null,
                     "kind": "FragmentSpread",
                     "name": "UpdateLocationPreferencesFormFragment"
-                  },
-                  {
-                    "args": null,
-                    "kind": "FragmentSpread",
-                    "name": "LocationPreferencesFragment"
                   }
                 ],
                 "storageKey": null
@@ -217,7 +212,7 @@ return {
     ]
   },
   "params": {
-    "id": "53fbcf44d9ab26b5026cb4a62d7c49b6",
+    "id": "ba86748f8aaf36837e9a241cdf945f22",
     "metadata": {},
     "name": "UpdateLocationPreferencesFormMutation",
     "operationKind": "mutation",
@@ -226,6 +221,6 @@ return {
 };
 })();
 
-(node as any).hash = "46fb4a252497e08fe4462524fdc6c693";
+(node as any).hash = "7e31e7e746b3933ec176fb2eb7d2aa5c";
 
 export default node;

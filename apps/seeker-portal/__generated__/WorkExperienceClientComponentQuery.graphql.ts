@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<5d82fceaf40734fdcdb2fcc8a33c0cb3>>
- * @relayHash 802508cd8e078d0eb0723c43d5a11aa3
+ * @generated SignedSource<<80d7ff0089e8a6d4aa0c4d5e6a143c1a>>
+ * @relayHash b8bd7ce6a5899a6f66a0596517e837cc
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 802508cd8e078d0eb0723c43d5a11aa3
+// @relayRequestID b8bd7ce6a5899a6f66a0596517e837cc
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -24,6 +24,13 @@ export type WorkExperienceClientComponentQuery = {
 
 const node: ConcreteRequest = (function(){
 var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -60,13 +67,7 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "__typename",
-            "storageKey": null
-          },
+          (v0/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -84,7 +85,7 @@ return {
                 "name": "avatarUrl",
                 "storageKey": null
               },
-              (v0/*: any*/),
+              (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -100,7 +101,68 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v0/*: any*/)
+                  (v1/*: any*/),
+                  (v0/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "WorkExperience",
+                    "kind": "LinkedField",
+                    "name": "workExperience",
+                    "plural": true,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "title",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "description",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "organization",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "startedAt",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "completedAt",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "employmentType",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "skills",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
                 ],
                 "storageKey": null
               }
@@ -111,7 +173,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v0/*: any*/)
+              (v1/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -122,7 +184,7 @@ return {
     ]
   },
   "params": {
-    "id": "802508cd8e078d0eb0723c43d5a11aa3",
+    "id": "b8bd7ce6a5899a6f66a0596517e837cc",
     "metadata": {},
     "name": "WorkExperienceClientComponentQuery",
     "operationKind": "query",

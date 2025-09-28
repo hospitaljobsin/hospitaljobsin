@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<113a58c104c35566cd765d0a7936fec5>>
- * @relayHash f46eec0df59d202745cfd2f633f0735b
+ * @generated SignedSource<<799006fa9b035d8abd9fdd490b4a1a41>>
+ * @relayHash 6e93b225752ae02ddb45cda8fee04ea4
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID f46eec0df59d202745cfd2f633f0735b
+// @relayRequestID 6e93b225752ae02ddb45cda8fee04ea4
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -24,6 +24,13 @@ export type EducationClientComponentQuery = {
 
 const node: ConcreteRequest = (function(){
 var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -60,13 +67,7 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "__typename",
-            "storageKey": null
-          },
+          (v0/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -84,7 +85,7 @@ return {
                 "name": "avatarUrl",
                 "storageKey": null
               },
-              (v0/*: any*/),
+              (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -100,7 +101,47 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v0/*: any*/)
+                  (v1/*: any*/),
+                  (v0/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Education",
+                    "kind": "LinkedField",
+                    "name": "education",
+                    "plural": true,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "degree",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "institution",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "startedAt",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "completedAt",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
                 ],
                 "storageKey": null
               }
@@ -111,7 +152,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v0/*: any*/)
+              (v1/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -122,7 +163,7 @@ return {
     ]
   },
   "params": {
-    "id": "f46eec0df59d202745cfd2f633f0735b",
+    "id": "6e93b225752ae02ddb45cda8fee04ea4",
     "metadata": {},
     "name": "EducationClientComponentQuery",
     "operationKind": "query",

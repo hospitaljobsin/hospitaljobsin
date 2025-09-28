@@ -1,8 +1,8 @@
 'use client';
 
+import { Progress } from '@heroui/react';
 import React, { useState } from 'react';
 import { MobileSidebar } from './MobileSidebar';
-import { ProgressBar } from './ProgressBar';
 
 interface MobileResumeBuilderLayoutProps {
 	children: React.ReactNode;
@@ -21,7 +21,13 @@ export const MobileResumeBuilderLayout: React.FC<MobileResumeBuilderLayoutProps>
 						{showPreview ? 'Edit' : 'Preview'}
 					</button>
 				</div>
-				<ProgressBar label='Progress' percentage={60} />
+				<Progress
+					value={60}
+					className='w-full'
+					classNames={{ label: 'text-foreground-600 text-sm', value: 'text-foreground-600' }}
+					showValueLabel
+					disableAnimation
+				/>
 			</div>
 
 			{/* Navigation */}

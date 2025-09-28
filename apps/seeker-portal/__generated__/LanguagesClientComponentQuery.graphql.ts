@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<efb4588dd091d888c5dccf2c38fb70b7>>
- * @relayHash 6aeb5b6e687d7e0c3cf2e1320b225f12
+ * @generated SignedSource<<c675a62bd8e648740a99278841cba9ef>>
+ * @relayHash fb7f1dfedf1e73754e87573dfe1f731b
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 6aeb5b6e687d7e0c3cf2e1320b225f12
+// @relayRequestID fb7f1dfedf1e73754e87573dfe1f731b
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -24,6 +24,13 @@ export type LanguagesClientComponentQuery = {
 
 const node: ConcreteRequest = (function(){
 var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -60,13 +67,7 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "__typename",
-            "storageKey": null
-          },
+          (v0/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -84,7 +85,7 @@ return {
                 "name": "avatarUrl",
                 "storageKey": null
               },
-              (v0/*: any*/),
+              (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -100,7 +101,33 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v0/*: any*/)
+                  (v1/*: any*/),
+                  (v0/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Language",
+                    "kind": "LinkedField",
+                    "name": "languages",
+                    "plural": true,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "name",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "proficiency",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
                 ],
                 "storageKey": null
               }
@@ -111,7 +138,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v0/*: any*/)
+              (v1/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -122,7 +149,7 @@ return {
     ]
   },
   "params": {
-    "id": "6aeb5b6e687d7e0c3cf2e1320b225f12",
+    "id": "fb7f1dfedf1e73754e87573dfe1f731b",
     "metadata": {},
     "name": "LanguagesClientComponentQuery",
     "operationKind": "query",

@@ -2,21 +2,19 @@
 import type { LocationPreferencesClientComponentQuery as LocationPreferencesClientComponentQueryType } from '@/__generated__/LocationPreferencesClientComponentQuery.graphql';
 import LocationPreferencesClientComponentQuery from '@/__generated__/LocationPreferencesClientComponentQuery.graphql';
 import type { LocationPreferencesViewFragment$key } from '@/__generated__/LocationPreferencesViewFragment.graphql';
-import React from 'react';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
 import DashboardHeader from '../../layout/DashboardHeader';
-import { MobileLocationPreferencesView } from './MobileLocationPreferencesView';
 import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
+import { DesktopLocationPreferencesView } from './DesktopLocationPreferencesView';
+import { MobileLocationPreferencesView } from './MobileLocationPreferencesView';
 
 const LocationPreferencesViewFragment = graphql`
   fragment LocationPreferencesViewFragment on Query {
     ...DashboardHeaderFragment
+    ...DesktopLocationPreferencesViewFragment
+	...MobileLocationPreferencesViewFragment
   }
 `;
-
-const DesktopLocationPreferencesView: React.FC = () => {
-	return <h1 className='text-2xl sm:text-3xl font-bold tracking-tight'>Location Preferences</h1>;
-};
 
 export default function LocationPreferencesView({
 	queryReference
@@ -29,7 +27,10 @@ export default function LocationPreferencesView({
 	return (
 		<div className='w-full flex flex-col flex-1 h-full'>
 			<DashboardHeader query={data} />
-			<ResponsiveResumeBuilder desktopComponent={DesktopLocationPreferencesView} mobileComponent={MobileLocationPreferencesView} />
+			<ResponsiveResumeBuilder
+				desktopComponent={() => <DesktopLocationPreferencesView data={data} />}
+				mobileComponent={() => <MobileLocationPreferencesView data={data} />}
+			/>
 		</div>
 	);
 }

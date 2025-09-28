@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<38e0ce02c5dcf79368f976fd3a3f138e>>
- * @relayHash b5721a952a224b98efbaa6fe4b4077b0
+ * @generated SignedSource<<87652923320f2f20d2d6ab4905db5144>>
+ * @relayHash 0d12a04d8f5621eef7d9cd8bf156c1cd
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b5721a952a224b98efbaa6fe4b4077b0
+// @relayRequestID 0d12a04d8f5621eef7d9cd8bf156c1cd
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -24,6 +24,13 @@ export type LicensesClientComponentQuery = {
 
 const node: ConcreteRequest = (function(){
 var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -60,13 +67,7 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "__typename",
-            "storageKey": null
-          },
+          (v0/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -84,7 +85,7 @@ return {
                 "name": "avatarUrl",
                 "storageKey": null
               },
-              (v0/*: any*/),
+              (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -100,7 +101,47 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v0/*: any*/)
+                  (v1/*: any*/),
+                  (v0/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "License",
+                    "kind": "LinkedField",
+                    "name": "licenses",
+                    "plural": true,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "name",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "issuer",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "licenseNumber",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "registrationYear",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
                 ],
                 "storageKey": null
               }
@@ -111,7 +152,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v0/*: any*/)
+              (v1/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -122,7 +163,7 @@ return {
     ]
   },
   "params": {
-    "id": "b5721a952a224b98efbaa6fe4b4077b0",
+    "id": "0d12a04d8f5621eef7d9cd8bf156c1cd",
     "metadata": {},
     "name": "LicensesClientComponentQuery",
     "operationKind": "query",

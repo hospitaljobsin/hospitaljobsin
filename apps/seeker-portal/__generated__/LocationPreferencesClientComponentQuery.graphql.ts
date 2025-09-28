@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<5ee9fce6ff5566ebd408a1d09a356f7d>>
- * @relayHash d8fdd62794522a796e598479faa6a17a
+ * @generated SignedSource<<484c7cd702b7749ab25087bacefaf152>>
+ * @relayHash 3008dc2cfacaf60e16091a4168923fe1
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d8fdd62794522a796e598479faa6a17a
+// @relayRequestID 3008dc2cfacaf60e16091a4168923fe1
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -100,7 +100,28 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v0/*: any*/)
+                  (v0/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "locationsOpenToWork",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "openToRelocationAnywhere",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "address",
+                    "storageKey": null
+                  }
                 ],
                 "storageKey": null
               }
@@ -122,7 +143,7 @@ return {
     ]
   },
   "params": {
-    "id": "d8fdd62794522a796e598479faa6a17a",
+    "id": "3008dc2cfacaf60e16091a4168923fe1",
     "metadata": {},
     "name": "LocationPreferencesClientComponentQuery",
     "operationKind": "query",
