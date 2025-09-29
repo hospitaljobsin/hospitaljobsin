@@ -18,7 +18,7 @@ export const MobileResumeBuilderLayout: React.FC<MobileResumeBuilderLayoutProps>
 				{!showPreview && <MobileSidebar />}
 
 				{/* Content Area */}
-				<div className='flex-1 overflow-y-auto'>
+				<div className='flex-1 overflow-y-auto bg-background-600'>
 					{showPreview ? (
 						<div className='p-4'>
 							<div
