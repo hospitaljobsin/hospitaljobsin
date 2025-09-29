@@ -1,6 +1,7 @@
 'use client';
 import type { WorkExperienceClientComponentQuery as WorkExperienceClientComponentQueryType } from '@/__generated__/WorkExperienceClientComponentQuery.graphql';
-import ResumeBuilderViewSkeleton from '@/components/resume-builder/ResumeBuilderViewSkeleton';
+import ResumeBuilderSharedLayout from '@/components/resume-builder/ResumeBuilderSharedLayout';
+import ContentSkeleton from '@/components/resume-builder/ContentSkeleton';
 import WorkExperienceView from '@/components/resume-builder/work-experience/WorkExperienceView';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
@@ -22,7 +23,9 @@ export default function WorkExperienceClientComponent() {
 	);
 
 	return (
-		<Suspense fallback={<ResumeBuilderViewSkeleton />}>
+		<Suspense
+			fallback={<ResumeBuilderSharedLayout desktopComponent={() => <ContentSkeleton />} mobileComponent={() => <ContentSkeleton />} />}
+		>
 			<WorkExperienceView queryReference={queryReference} />
 		</Suspense>
 	);

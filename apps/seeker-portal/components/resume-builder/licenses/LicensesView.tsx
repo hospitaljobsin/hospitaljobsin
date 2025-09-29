@@ -3,9 +3,7 @@ import type { LicensesClientComponentQuery as LicensesClientComponentQueryType }
 import LicensesClientComponentQuery from '@/__generated__/LicensesClientComponentQuery.graphql';
 import type { LicensesViewFragment$key } from '@/__generated__/LicensesViewFragment.graphql';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import DashboardHeader from '../../layout/DashboardHeader';
-import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
-import ResumeProgress from '../ResumeProgress';
+import ResumeBuilderSharedLayout from '../ResumeBuilderSharedLayout';
 import { DesktopLicensesView } from './DesktopLicensesView';
 import { MobileLicensesView } from './MobileLicensesView';
 
@@ -23,13 +21,11 @@ export default function LicensesView({ queryReference }: { queryReference: Prelo
 	const data = useFragment<LicensesViewFragment$key>(LicensesViewFragment, rootData);
 
 	return (
-		<div className='w-full flex flex-col flex-1 h-full'>
-			<DashboardHeader query={data} />
-			<ResumeProgress query={data} />
-			<ResponsiveResumeBuilder
-				desktopComponent={() => <DesktopLicensesView data={data} />}
-				mobileComponent={() => <MobileLicensesView data={data} />}
-			/>
-		</div>
+		<ResumeBuilderSharedLayout
+			headerQuery={data}
+			progressQuery={data}
+			desktopComponent={() => <DesktopLicensesView data={data} />}
+			mobileComponent={() => <MobileLicensesView data={data} />}
+		/>
 	);
 }

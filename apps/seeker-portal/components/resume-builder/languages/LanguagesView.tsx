@@ -3,9 +3,7 @@ import type { LanguagesClientComponentQuery as LanguagesClientComponentQueryType
 import LanguagesClientComponentQuery from '@/__generated__/LanguagesClientComponentQuery.graphql';
 import type { LanguagesViewFragment$key } from '@/__generated__/LanguagesViewFragment.graphql';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import DashboardHeader from '../../layout/DashboardHeader';
-import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
-import ResumeProgress from '../ResumeProgress';
+import ResumeBuilderSharedLayout from '../ResumeBuilderSharedLayout';
 import { DesktopLanguagesView } from './DesktopLanguagesView';
 import { MobileLanguagesView } from './MobileLanguagesView';
 
@@ -23,13 +21,11 @@ export default function LanguagesView({ queryReference }: { queryReference: Prel
 	const data = useFragment<LanguagesViewFragment$key>(LanguagesViewFragment, rootData);
 
 	return (
-		<div className='w-full flex flex-col flex-1 h-full'>
-			<DashboardHeader query={data} />
-			<ResumeProgress query={data} />
-			<ResponsiveResumeBuilder
-				desktopComponent={() => <DesktopLanguagesView data={data} />}
-				mobileComponent={() => <MobileLanguagesView data={data} />}
-			/>
-		</div>
+		<ResumeBuilderSharedLayout
+			headerQuery={data}
+			progressQuery={data}
+			desktopComponent={() => <DesktopLanguagesView data={data} />}
+			mobileComponent={() => <MobileLanguagesView data={data} />}
+		/>
 	);
 }

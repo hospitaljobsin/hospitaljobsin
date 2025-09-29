@@ -1,7 +1,8 @@
 'use client';
 import type { LocationPreferencesClientComponentQuery as LocationPreferencesClientComponentQueryType } from '@/__generated__/LocationPreferencesClientComponentQuery.graphql';
 import LocationPreferencesView from '@/components/resume-builder/location-preferences/LocationPreferencesView';
-import ResumeBuilderViewSkeleton from '@/components/resume-builder/ResumeBuilderViewSkeleton';
+import ResumeBuilderSharedLayout from '@/components/resume-builder/ResumeBuilderSharedLayout';
+import ContentSkeleton from '@/components/resume-builder/ContentSkeleton';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -22,7 +23,9 @@ export default function LocationPreferencesClientComponent() {
 	);
 
 	return (
-		<Suspense fallback={<ResumeBuilderViewSkeleton />}>
+		<Suspense
+			fallback={<ResumeBuilderSharedLayout desktopComponent={() => <ContentSkeleton />} mobileComponent={() => <ContentSkeleton />} />}
+		>
 			<LocationPreferencesView queryReference={queryReference} />
 		</Suspense>
 	);

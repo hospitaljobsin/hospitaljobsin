@@ -3,9 +3,7 @@ import type { EducationClientComponentQuery as EducationClientComponentQueryType
 import EducationClientComponentQuery from '@/__generated__/EducationClientComponentQuery.graphql';
 import type { EducationViewFragment$key } from '@/__generated__/EducationViewFragment.graphql';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import DashboardHeader from '../../layout/DashboardHeader';
-import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
-import ResumeProgress from '../ResumeProgress';
+import ResumeBuilderSharedLayout from '../ResumeBuilderSharedLayout';
 import { DesktopEducationView } from './DesktopEducationView';
 import { MobileEducationView } from './MobileEducationView';
 
@@ -23,13 +21,11 @@ export default function EducationView({ queryReference }: { queryReference: Prel
 	const data = useFragment<EducationViewFragment$key>(EducationViewFragment, rootData);
 
 	return (
-		<div className='w-full flex flex-col flex-1 h-full'>
-			<DashboardHeader query={data} />
-			<ResumeProgress query={data} />
-			<ResponsiveResumeBuilder
-				desktopComponent={() => <DesktopEducationView data={data} />}
-				mobileComponent={() => <MobileEducationView data={data} />}
-			/>
-		</div>
+		<ResumeBuilderSharedLayout
+			headerQuery={data}
+			progressQuery={data}
+			desktopComponent={() => <DesktopEducationView data={data} />}
+			mobileComponent={() => <MobileEducationView data={data} />}
+		/>
 	);
 }

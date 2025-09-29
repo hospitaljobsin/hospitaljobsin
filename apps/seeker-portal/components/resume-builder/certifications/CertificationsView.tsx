@@ -3,9 +3,7 @@ import type { CertificationsClientComponentQuery as CertificationsClientComponen
 import CertificationsClientComponentQuery from '@/__generated__/CertificationsClientComponentQuery.graphql';
 import type { CertificationsViewFragment$key } from '@/__generated__/CertificationsViewFragment.graphql';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import DashboardHeader from '../../layout/DashboardHeader';
-import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
-import ResumeProgress from '../ResumeProgress';
+import ResumeBuilderSharedLayout from '../ResumeBuilderSharedLayout';
 import { DesktopCertificationsView } from './DesktopCertificationsView';
 import { MobileCertificationsView } from './MobileCertificationsView';
 
@@ -23,13 +21,11 @@ export default function CertificationsView({ queryReference }: { queryReference:
 	const data = useFragment<CertificationsViewFragment$key>(CertificationsViewFragment, rootData);
 
 	return (
-		<div className='w-full flex flex-col flex-1 h-full'>
-			<DashboardHeader query={data} />
-			<ResumeProgress query={data} />
-			<ResponsiveResumeBuilder
-				desktopComponent={() => <DesktopCertificationsView data={data} />}
-				mobileComponent={() => <MobileCertificationsView data={data} />}
-			/>
-		</div>
+		<ResumeBuilderSharedLayout
+			headerQuery={data}
+			progressQuery={data}
+			desktopComponent={() => <DesktopCertificationsView data={data} />}
+			mobileComponent={() => <MobileCertificationsView data={data} />}
+		/>
 	);
 }

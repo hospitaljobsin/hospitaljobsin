@@ -3,9 +3,7 @@ import type { PersonalInfoClientComponentQuery as PersonalInfoClientComponentQue
 import PersonalInfoClientComponentQuery from '@/__generated__/PersonalInfoClientComponentQuery.graphql';
 import type { PersonalInfoViewFragment$key } from '@/__generated__/PersonalInfoViewFragment.graphql';
 import { graphql, type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import DashboardHeader from '../../layout/DashboardHeader';
-import { ResponsiveResumeBuilder } from '../ResponsiveResumeBuilder';
-import ResumeProgress from '../ResumeProgress';
+import ResumeBuilderSharedLayout from '../ResumeBuilderSharedLayout';
 import { DesktopPersonalInfoView } from './DesktopPersonalInfoView';
 import { MobilePersonalInfoView } from './MobilePersonalInfoView';
 
@@ -23,13 +21,11 @@ export default function PersonalInfoView({ queryReference }: { queryReference: P
 	const data = useFragment<PersonalInfoViewFragment$key>(PersonalInfoViewFragment, rootData);
 
 	return (
-		<div className='w-full flex flex-col flex-1 h-full'>
-			<DashboardHeader query={data} />
-			<ResumeProgress query={data} />
-			<ResponsiveResumeBuilder
-				desktopComponent={() => <DesktopPersonalInfoView data={data} />}
-				mobileComponent={() => <MobilePersonalInfoView data={data} />}
-			/>
-		</div>
+		<ResumeBuilderSharedLayout
+			headerQuery={data}
+			progressQuery={data}
+			desktopComponent={() => <DesktopPersonalInfoView data={data} />}
+			mobileComponent={() => <MobilePersonalInfoView data={data} />}
+		/>
 	);
 }
