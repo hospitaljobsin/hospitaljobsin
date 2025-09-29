@@ -9,7 +9,6 @@ import { MobileLanguagesView } from './MobileLanguagesView';
 
 const LanguagesViewFragment = graphql`
   fragment LanguagesViewFragment on Query {
-	...ResumeProgressFragment
     ...DesktopLanguagesViewFragment
 	...MobileLanguagesViewFragment
   }
@@ -21,7 +20,6 @@ export default function LanguagesView({ queryReference }: { queryReference: Prel
 
 	return (
 		<ResumeBuilderSharedLayout
-			progressQuery={data}
 			desktopComponent={() => <DesktopLanguagesView data={data} />}
 			mobileComponent={() => <MobileLanguagesView data={data} />}
 		/>

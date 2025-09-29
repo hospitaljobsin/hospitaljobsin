@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<1384fa8d1f2092f3fb0ac9a56e9c18c6>>
- * @relayHash 75ddeb5c72ee491cd3f43117116c07d4
+ * @generated SignedSource<<9b1fa7e48cc54107fe89c5eec1ed1bd0>>
+ * @relayHash 3b6c46deb091f7af94c604919ff98f4c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 75ddeb5c72ee491cd3f43117116c07d4
+// @relayRequestID 3b6c46deb091f7af94c604919ff98f4c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -79,14 +79,6 @@ return {
                 "name": "profile",
                 "plural": false,
                 "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "progressPercentage",
-                    "storageKey": null
-                  },
-                  (v1/*: any*/),
                   (v0/*: any*/),
                   {
                     "alias": null,
@@ -112,7 +104,8 @@ return {
                       }
                     ],
                     "storageKey": null
-                  }
+                  },
+                  (v1/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -134,7 +127,7 @@ return {
     ]
   },
   "params": {
-    "id": "75ddeb5c72ee491cd3f43117116c07d4",
+    "id": "3b6c46deb091f7af94c604919ff98f4c",
     "metadata": {},
     "name": "LanguagesClientComponentQuery",
     "operationKind": "query",

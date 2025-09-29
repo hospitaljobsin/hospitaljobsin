@@ -21,7 +21,6 @@ export default function WorkExperienceView({ queryReference }: { queryReference:
 
 	return (
 		<ResumeBuilderSharedLayout
-			progressQuery={data}
 			desktopComponent={() => <DesktopWorkExperienceView data={data} />}
 			mobileComponent={() => <MobileWorkExperienceView data={data} />}
 		/>

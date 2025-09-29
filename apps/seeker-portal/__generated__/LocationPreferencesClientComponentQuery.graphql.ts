@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<f51f4d2cb428113cacf33a185b0ec19a>>
- * @relayHash b8f59c11a4b57451dd32123dbaa88edf
+ * @generated SignedSource<<6174f3d7db26555ab5bef0e60801fdae>>
+ * @relayHash 6fc5aafc3b6990ca394e349f89c881c1
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b8f59c11a4b57451dd32123dbaa88edf
+// @relayRequestID 6fc5aafc3b6990ca394e349f89c881c1
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -82,14 +82,6 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "progressPercentage",
-                    "storageKey": null
-                  },
-                  (v0/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
                     "name": "locationsOpenToWork",
                     "storageKey": null
                   },
@@ -106,7 +98,8 @@ return {
                     "kind": "ScalarField",
                     "name": "address",
                     "storageKey": null
-                  }
+                  },
+                  (v0/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -128,7 +121,7 @@ return {
     ]
   },
   "params": {
-    "id": "b8f59c11a4b57451dd32123dbaa88edf",
+    "id": "6fc5aafc3b6990ca394e349f89c881c1",
     "metadata": {},
     "name": "LocationPreferencesClientComponentQuery",
     "operationKind": "query",

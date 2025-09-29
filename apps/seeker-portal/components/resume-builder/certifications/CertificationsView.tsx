@@ -9,7 +9,6 @@ import { MobileCertificationsView } from './MobileCertificationsView';
 
 const CertificationsViewFragment = graphql`
   fragment CertificationsViewFragment on Query {
-	...ResumeProgressFragment
     ...DesktopCertificationsViewFragment
 	...MobileCertificationsViewFragment
   }
@@ -21,7 +20,6 @@ export default function CertificationsView({ queryReference }: { queryReference:
 
 	return (
 		<ResumeBuilderSharedLayout
-			progressQuery={data}
 			desktopComponent={() => <DesktopCertificationsView data={data} />}
 			mobileComponent={() => <MobileCertificationsView data={data} />}
 		/>

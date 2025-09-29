@@ -9,7 +9,6 @@ import { MobileLicensesView } from './MobileLicensesView';
 
 const LicensesViewFragment = graphql`
   fragment LicensesViewFragment on Query {
-	...ResumeProgressFragment
     ...DesktopLicensesViewFragment
 	...MobileLicensesViewFragment
   }
@@ -21,7 +20,6 @@ export default function LicensesView({ queryReference }: { queryReference: Prelo
 
 	return (
 		<ResumeBuilderSharedLayout
-			progressQuery={data}
 			desktopComponent={() => <DesktopLicensesView data={data} />}
 			mobileComponent={() => <MobileLicensesView data={data} />}
 		/>

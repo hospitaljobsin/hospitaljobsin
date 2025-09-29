@@ -9,7 +9,6 @@ import { MobileEducationView } from './MobileEducationView';
 
 const EducationViewFragment = graphql`
   fragment EducationViewFragment on Query {
-	...ResumeProgressFragment
     ...DesktopEducationViewFragment
 	...MobileEducationViewFragment
   }
@@ -21,7 +20,6 @@ export default function EducationView({ queryReference }: { queryReference: Prel
 
 	return (
 		<ResumeBuilderSharedLayout
-			progressQuery={data}
 			desktopComponent={() => <DesktopEducationView data={data} />}
 			mobileComponent={() => <MobileEducationView data={data} />}
 		/>

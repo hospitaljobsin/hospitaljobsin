@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<810e5942c5feca05a694f331da1e1937>>
- * @relayHash 1271f0ba3a191019448b1283d5a805b2
+ * @generated SignedSource<<26fcf17554356561303382e806c5f8f4>>
+ * @relayHash d20205bfd6df015d8e9e999ac55c0d48
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 1271f0ba3a191019448b1283d5a805b2
+// @relayRequestID d20205bfd6df015d8e9e999ac55c0d48
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -79,14 +79,6 @@ return {
                 "name": "profile",
                 "plural": false,
                 "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "progressPercentage",
-                    "storageKey": null
-                  },
-                  (v1/*: any*/),
                   (v0/*: any*/),
                   {
                     "alias": null,
@@ -126,7 +118,8 @@ return {
                       }
                     ],
                     "storageKey": null
-                  }
+                  },
+                  (v1/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -148,7 +141,7 @@ return {
     ]
   },
   "params": {
-    "id": "1271f0ba3a191019448b1283d5a805b2",
+    "id": "d20205bfd6df015d8e9e999ac55c0d48",
     "metadata": {},
     "name": "EducationClientComponentQuery",
     "operationKind": "query",
