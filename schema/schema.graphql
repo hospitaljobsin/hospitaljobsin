@@ -2081,7 +2081,7 @@ input LicenseInput {
 	"""
 	The year when the license was issued.
 	"""
-	registrationYear: Date!
+	registrationYear: Int!
 }
 
 """

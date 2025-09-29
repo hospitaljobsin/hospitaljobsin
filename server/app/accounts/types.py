@@ -988,7 +988,7 @@ class LicenseInputType:
     name: str = strawberry.field(description="The name of the license.")
     issuer: str = strawberry.field(description="The issuer of the license.")
     license_number: str = strawberry.field(description="The license number.")
-    registration_year: date = strawberry.field(
+    registration_year: int = strawberry.field(
         description="The year when the license was issued."
     )
 

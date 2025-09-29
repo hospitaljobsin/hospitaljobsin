@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1a609c666a05b06e96f711ddeba2572e>>
+ * @generated SignedSource<<19e1e78510aced2a888dd45323ba620f>>
  * @relayHash d5c8b27943ce4c79d8dbd46a022d01a5
  * @lightSyntaxTransform
  * @nogrep
@@ -17,7 +17,7 @@ export type LicenseInput = {
   issuer: string;
   licenseNumber: string;
   name: string;
-  registrationYear: any;
+  registrationYear: number;
 };
 export type UpdateLicensesFormMutation$variables = {
   licenses: ReadonlyArray<LicenseInput>;
