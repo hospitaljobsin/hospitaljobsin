@@ -5,6 +5,8 @@ import { ResponsiveResumeBuilder } from '@/components/resume-builder/ResponsiveR
 import ResumeProgressSkeleton from '@/components/resume-builder/ResumeProgressSkeleton';
 import dynamic from 'next/dynamic';
 
+// TODO: add upload with AI and compulsory fields list to complete profile
+
 const CertificationsClientComponent = dynamic(() => import('./CertificationsClientComponent'), {
 	ssr: false,
 	loading: () => <ResponsiveResumeBuilder desktopComponent={() => <ContentSkeleton />} mobileComponent={() => <ContentSkeleton />} />

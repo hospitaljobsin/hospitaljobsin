@@ -225,8 +225,8 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 	}
 
 	return (
-		<UnsavedChangesFormWrapper isDirty={isDirty} isValid={isValid} onSave={() => handleSubmit(onSubmit)()} onCancel={() => reset()}>
-			<form onSubmit={handleSubmit(onSubmit)} className='space-y-12'>
+		<UnsavedChangesFormWrapper isDirty={isDirty} isValid={isValid} onSave={handleSubmit(onSubmit)} onCancel={() => reset()}>
+			<form className='space-y-12'>
 				<div className='pb-6 space-y-6'>
 					<h1 className='w-full text-xl text-foreground-500 font-medium'>Work Experience</h1>
 					<div className='w-full space-y-12 items-center'>

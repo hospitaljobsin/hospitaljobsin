@@ -85,8 +85,8 @@ export default function UpdateLocationPreferencesForm({
 	}
 
 	return (
-		<UnsavedChangesFormWrapper isDirty={isDirty} isValid={isValid} onSave={() => handleSubmit(onSubmit)()} onCancel={() => reset()}>
-			<form className='space-y-12' onSubmit={handleSubmit(onSubmit)}>
+		<UnsavedChangesFormWrapper isDirty={isDirty} isValid={isValid} onSave={handleSubmit(onSubmit)} onCancel={() => reset()}>
+			<form className='space-y-12'>
 				<div className='pb-4 sm:pb-6 space-y-4 sm:space-y-6 w-full'>
 					<h1 className='w-full text-xl text-foreground-500 font-medium'>Location Preferences</h1>
 					<div className='w-full flex flex-col gap-8'>
