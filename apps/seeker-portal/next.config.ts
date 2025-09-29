@@ -18,7 +18,6 @@ const nextConfig: NextConfig = {
 			fullUrl: true
 		}
 	},
-
 	typedRoutes: true,
 	poweredByHeader: false,
 	pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],

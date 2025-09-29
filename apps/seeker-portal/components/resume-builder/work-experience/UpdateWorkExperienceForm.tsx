@@ -3,7 +3,6 @@ import { Button, Checkbox, Input, Kbd, Select, SelectItem, Textarea } from '@her
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { Plus, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { useEffect } from 'react';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
 import { ChipsInput } from '../../forms/ChipsInput';
@@ -173,11 +172,6 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 		name: 'workExperience'
 	});
 
-	// Reset form when server data changes
-	useEffect(() => {
-		reset(getDefaultValues());
-	}, [data, reset]);
-
 	function onSubmit(formData: WorkExperienceFormType) {
 		let hasValidationErrors = false;
 		for (let index = 0; index < formData.workExperience.length; index++) {
@@ -240,10 +234,11 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 					skills: exp.skills.flatMap(skill => skill.value),
 					startedAt: toDateString(exp.startedAt),
 					completedAt: exp.isCurrentRole ? null : toDateString(exp.completedAt)
-				})),
-				onCompleted() {
-					onSaveChanges();
-				}
+				}))
+			},
+			onCompleted() {
+				reset(getDefaultValues());
+				onSaveChanges();
 			}
 		});
 	}
@@ -255,10 +250,11 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 					<h1 className='w-full text-xl text-foreground-500 font-medium'>Work Experience</h1>
 					<div className='w-full space-y-12 items-center'>
 						{fields.length === 0 ? (
-							<div className='flex flex-col items-center gap-4'>
+							<div className='flex flex-col items-left gap-4'>
 								<p className='text-foreground-500'>No work experience entries. Add your work experience.</p>
 								<Button
 									type='button'
+									fullWidth
 									variant='bordered'
 									startContent={<Plus size={18} />}
 									onPress={() => append({ ...defaultWorkExperience })}
@@ -443,12 +439,7 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 											variant='bordered'
 											startContent={<Trash size={18} />}
 											onPress={() => {
-												if (index > 0) {
-													remove(index);
-													return;
-												}
-												remove(0);
-												append({ ...defaultWorkExperience });
+												remove(index);
 											}}
 										>
 											Delete Experience
