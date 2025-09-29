@@ -11,6 +11,7 @@ export const Sidebar: React.FC = () => {
 
 	const tabs = [
 		{ key: links.resumeBuilderPersonalInfo, title: 'Personal Info' },
+		{ key: links.resumeBuilderCareerProfile, title: 'Career Profile' },
 		{ key: links.resumeBuilderWorkExperience, title: 'Work Experience' },
 		{ key: links.resumeBuilderEducation, title: 'Education' },
 		{ key: links.resumeBuilderCertifications, title: 'Certifications' },
