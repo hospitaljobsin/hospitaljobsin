@@ -4,7 +4,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { Plus, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
-import { z } from 'zod/v4-mini';
+import { z } from 'zod/v4';
 import { ChipsInput } from '../../forms/ChipsInput';
 import type { MonthYearValue } from '../../forms/MonthYearPicker';
 import { MonthYearPicker, parseMonthYear, toDateString } from '../../forms/MonthYearPicker';
@@ -96,23 +96,56 @@ function toEmploymentType(val: string | null | undefined): EmploymentType {
 
 const formSchema = z.object({
 	workExperience: z.array(
-		z.object({
-			title: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
-			description: z.nullable(z.string()),
-			organization: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
-			employmentType: z.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'TEMPORARY', 'VOLUNTEER', 'OTHER', '']),
-			skills: z.array(z.object({ value: z.string() })),
-			startedAt: z.custom<MonthYearValue>(data => {
-				if (typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number') return true;
-				return false;
-			}),
-			completedAt: z.custom<MonthYearValue>(data => {
-				if (data === null) return true;
-				if (typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number') return true;
-				return false;
-			}),
-			isCurrentRole: z.boolean()
-		})
+		z
+			.object({
+				title: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
+				description: z.nullable(z.string()),
+				organization: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
+				employmentType: z.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'TEMPORARY', 'VOLUNTEER', 'OTHER', '']),
+				skills: z.array(z.object({ value: z.string() })),
+				startedAt: z.custom<MonthYearValue>(
+					data => {
+						if (typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number') {
+							const now = new Date();
+							if (data.year > now.getFullYear() || (data.year === now.getFullYear() && data.month > now.getMonth() + 1)) {
+								return false;
+							}
+							return true;
+						}
+						return false;
+					},
+					{ error: 'Start date cannot be in the future' }
+				),
+				completedAt: z.custom<MonthYearValue>(
+					data => {
+						if (data === null) return true;
+						if (typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number') {
+							const now = new Date();
+							if (data.year > now.getFullYear() || (data.year === now.getFullYear() && data.month > now.getMonth() + 1)) {
+								return false;
+							}
+							return true;
+						}
+						return false;
+					},
+					{ error: 'End date cannot be in the future' }
+				),
+				isCurrentRole: z.boolean()
+			})
+			.refine(
+				data => {
+					if (data.startedAt && data.completedAt) {
+						if (data.startedAt.year > data.completedAt.year) {
+							return false;
+						}
+					}
+					return true;
+				},
+				{
+					message: 'Start date cannot be after end date',
+					path: ['completedAt']
+				}
+			)
 	)
 });
 
@@ -153,7 +186,6 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 		handleSubmit,
 		control,
 		formState: { errors, isSubmitting, isDirty, isValid },
-		setError,
 		reset
 	} = useForm<WorkExperienceFormType>({
 		resolver: standardSchemaResolver(formSchema),
@@ -167,63 +199,12 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 		name: 'workExperience'
 	});
 
-	const { fields, append, prepend, remove } = useFieldArray<WorkExperienceFormType>({
+	const { fields, prepend, remove } = useFieldArray<WorkExperienceFormType>({
 		control: control,
 		name: 'workExperience'
 	});
 
 	function onSubmit(formData: WorkExperienceFormType) {
-		let hasValidationErrors = false;
-		for (let index = 0; index < formData.workExperience.length; index++) {
-			const exp = formData.workExperience[index];
-
-			if (
-				exp.startedAt &&
-				(exp.startedAt.year > new Date().getFullYear() ||
-					(exp.startedAt.year === new Date().getFullYear() && exp.startedAt.month > new Date().getMonth() + 1))
-			) {
-				setError(
-					`workExperience.${index}.startedAt`,
-					{
-						message: 'Start date cannot be in the future'
-					},
-					{ shouldFocus: true }
-				);
-				hasValidationErrors = true;
-			}
-
-			if (
-				exp.completedAt &&
-				(exp.completedAt.year > new Date().getFullYear() ||
-					(exp.completedAt.year === new Date().getFullYear() && exp.completedAt.month > new Date().getMonth() + 1))
-			) {
-				setError(
-					`workExperience.${index}.completedAt`,
-					{
-						message: 'End date cannot be in the future'
-					},
-					{ shouldFocus: true }
-				);
-				hasValidationErrors = true;
-			}
-			if (exp.startedAt && exp.completedAt) {
-				if (exp.startedAt.year > exp.completedAt.year) {
-					setError(
-						`workExperience.${index}.completedAt`,
-						{
-							message: 'Start date cannot be after end date'
-						},
-						{ shouldFocus: true }
-					);
-					hasValidationErrors = true;
-				}
-			}
-		}
-
-		if (hasValidationErrors) {
-			return;
-		}
-
 		commitMutation({
 			variables: {
 				workExperience: formData.workExperience.map(exp => ({

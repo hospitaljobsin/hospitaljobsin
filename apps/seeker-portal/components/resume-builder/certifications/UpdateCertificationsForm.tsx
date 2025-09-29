@@ -4,7 +4,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { Plus, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
-import { z } from 'zod/v4-mini';
+import { z } from 'zod/v4';
 import { MonthYearPicker, parseMonthYear, toDateString } from '../../forms/MonthYearPicker';
 import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 
@@ -42,20 +42,42 @@ type Props = {
 
 const formSchema = z.object({
 	certifications: z.array(
-		z.object({
-			name: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
-			issuer: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
-			certificationUrl: z.url('Must be a valid URL'),
-			createdAt: z.custom<{ month: number; year: number }>(data => {
-				return data && typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number';
-			}, 'Issued At is required and must be a valid month/year'),
-			expiresAt: z.nullable(
-				z.custom<{ month: number; year: number }>(data => {
-					if (data === null) return true;
-					return data && typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number';
-				}, 'Expires At must be a valid month/year or null')
+		z
+			.object({
+				name: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
+				issuer: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
+				certificationUrl: z.url('Must be a valid URL'),
+				createdAt: z.custom<{ month: number; year: number }>(data => {
+					if (data && typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number') {
+						const now = new Date();
+						if (data.year > now.getFullYear() || (data.year === now.getFullYear() && data.month > now.getMonth() + 1)) {
+							return false;
+						}
+						return true;
+					}
+					return false;
+				}, 'Start date cannot be in the future'),
+				expiresAt: z.nullable(
+					z.custom<{ month: number; year: number }>(data => {
+						if (data === null) return true;
+						return data && typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number';
+					}, 'Expires At must be a valid month/year or null')
+				)
+			})
+			.refine(
+				data => {
+					if (data.createdAt && data.expiresAt) {
+						if (data.createdAt.year > data.expiresAt.year) {
+							return false;
+						}
+					}
+					return true;
+				},
+				{
+					message: 'Start date cannot be after expiry date',
+					path: ['expiresAt']
+				}
 			)
-		})
 	)
 });
 
@@ -65,7 +87,7 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 	const {
 		handleSubmit,
 		control,
-		setError,
+
 		reset,
 		formState: { errors, isSubmitting, isDirty, isValid }
 	} = useForm<z.infer<typeof formSchema>>({
@@ -93,47 +115,12 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 					}
 	});
 
-	const { fields, append, prepend, remove } = useFieldArray({
+	const { fields, prepend, remove } = useFieldArray({
 		control: control,
 		name: 'certifications'
 	});
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
-		let hasValidationErrors = false;
-		for (let index = 0; index < formData.certifications.length; index++) {
-			const exp = formData.certifications[index];
-			if (
-				exp.createdAt &&
-				(exp.createdAt.year > new Date().getFullYear() ||
-					(exp.createdAt.year === new Date().getFullYear() && exp.createdAt.month > new Date().getMonth() + 1))
-			) {
-				setError(
-					`certifications.${index}.createdAt`,
-					{
-						message: 'Start date cannot be in the future'
-					},
-					{ shouldFocus: true }
-				);
-				hasValidationErrors = true;
-			}
-
-			if (exp.createdAt && exp.expiresAt) {
-				if (exp.createdAt.year > exp.expiresAt.year) {
-					setError(
-						`certifications.${index}.expiresAt`,
-						{
-							message: 'Start date cannot be after expiry date'
-						},
-						{ shouldFocus: true }
-					);
-					hasValidationErrors = true;
-				}
-			}
-		}
-
-		if (hasValidationErrors) {
-			return;
-		}
 		commitMutation({
 			variables: {
 				certifications: formData.certifications.map(cert => ({

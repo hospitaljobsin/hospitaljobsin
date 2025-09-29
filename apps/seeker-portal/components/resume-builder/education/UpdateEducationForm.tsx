@@ -4,7 +4,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { Plus, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
-import { z } from 'zod/v4-mini';
+import { z } from 'zod/v4';
 import { MonthYearPicker, parseMonthYear, toDateString } from '../../forms/MonthYearPicker';
 import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 
@@ -41,16 +41,38 @@ type Props = {
 
 const formSchema = z.object({
 	education: z.array(
-		z.object({
-			degree: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
-			institution: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
-			startedAt: z.custom<{ month: number; year: number }>(data => {
-				return data && typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number';
-			}, 'Start date is required and must be a valid month/year'),
-			completedAt: z.custom<{ month: number; year: number }>(data => {
-				return data && typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number';
-			}, 'End date is required and must be a valid month/year')
-		})
+		z
+			.object({
+				degree: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
+				institution: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
+				startedAt: z.custom<{ month: number; year: number }>(data => {
+					if (data && typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number') {
+						const now = new Date();
+						if (data.year > now.getFullYear() || (data.year === now.getFullYear() && data.month > now.getMonth() + 1)) {
+							return false;
+						}
+						return true;
+					}
+					return false;
+				}, 'Start date cannot be in the future'),
+				completedAt: z.custom<{ month: number; year: number }>(data => {
+					return data && typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number';
+				}, 'End date is required and must be a valid month/year')
+			})
+			.refine(
+				data => {
+					if (data.startedAt && data.completedAt) {
+						if (data.startedAt.year > data.completedAt.year) {
+							return false;
+						}
+					}
+					return true;
+				},
+				{
+					message: 'Start date cannot be after end date',
+					path: ['completedAt']
+				}
+			)
 	)
 });
 
@@ -60,7 +82,7 @@ export default function UpdateEducationForm({ rootQuery, onSaveChanges }: Props)
 	const {
 		handleSubmit,
 		control,
-		setError,
+
 		reset,
 		formState: { errors, isSubmitting, isDirty, isValid }
 	} = useForm<z.infer<typeof formSchema>>({
@@ -82,47 +104,12 @@ export default function UpdateEducationForm({ rootQuery, onSaveChanges }: Props)
 					}
 	});
 
-	const { fields, append, prepend, remove } = useFieldArray({
+	const { fields, prepend, remove } = useFieldArray({
 		control: control,
 		name: 'education'
 	});
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
-		let hasValidationErrors = false;
-		for (let index = 0; index < formData.education.length; index++) {
-			const exp = formData.education[index];
-			if (
-				exp.startedAt &&
-				(exp.startedAt.year > new Date().getFullYear() ||
-					(exp.startedAt.year === new Date().getFullYear() && exp.startedAt.month > new Date().getMonth() + 1))
-			) {
-				setError(
-					`education.${index}.startedAt`,
-					{
-						message: 'Start date cannot be in the future'
-					},
-					{ shouldFocus: true }
-				);
-				hasValidationErrors = true;
-			}
-
-			if (exp.startedAt && exp.completedAt) {
-				if (exp.startedAt.year > exp.completedAt.year) {
-					setError(
-						`education.${index}.completedAt`,
-						{
-							message: 'Start date cannot be after end date'
-						},
-						{ shouldFocus: true }
-					);
-					hasValidationErrors = true;
-				}
-			}
-		}
-
-		if (hasValidationErrors) {
-			return;
-		}
 		commitMutation({
 			variables: {
 				education: formData.education.map(edu => ({
