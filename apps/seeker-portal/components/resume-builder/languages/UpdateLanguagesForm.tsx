@@ -74,7 +74,7 @@ export default function UpdateLanguagesForm({ rootQuery, onSaveChanges }: Props)
 					}
 	});
 
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, prepend, remove } = useFieldArray({
 		control: control,
 		name: 'languages'
 	});
@@ -105,7 +105,7 @@ export default function UpdateLanguagesForm({ rootQuery, onSaveChanges }: Props)
 									variant='bordered'
 									startContent={<Plus size={18} />}
 									onPress={() =>
-										append({
+										prepend({
 											name: '',
 											proficiency: 'BASIC'
 										})
@@ -116,6 +116,20 @@ export default function UpdateLanguagesForm({ rootQuery, onSaveChanges }: Props)
 							</div>
 						) : (
 							<>
+								<Button
+									type='button'
+									variant='bordered'
+									className='w-full sm:w-auto'
+									startContent={<Plus size={18} />}
+									onPress={() =>
+										prepend({
+											name: '',
+											proficiency: 'BASIC'
+										})
+									}
+								>
+									Add Language
+								</Button>
 								{fields.map((item, index) => (
 									<div key={`field-${item.name}-${index}`} className='flex flex-col sm:flex-row gap-4 sm:gap-8 items-start w-full'>
 										<div className='w-full space-y-4'>
@@ -183,20 +197,6 @@ export default function UpdateLanguagesForm({ rootQuery, onSaveChanges }: Props)
 										</Button>
 									</div>
 								))}
-								<Button
-									type='button'
-									variant='bordered'
-									className='w-full sm:w-auto'
-									startContent={<Plus size={18} />}
-									onPress={() =>
-										append({
-											name: '',
-											proficiency: 'BASIC'
-										})
-									}
-								>
-									Add Language
-								</Button>
 							</>
 						)}
 					</div>

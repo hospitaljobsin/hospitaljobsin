@@ -76,18 +76,11 @@ export default function UpdateLicensesForm({ rootQuery, onSaveChanges }: Props) 
 						}))
 					}
 				: {
-						licenses: [
-							{
-								name: '',
-								issuer: '',
-								licenseNumber: '',
-								registrationYear: new Date().getFullYear()
-							}
-						]
+						licenses: []
 					}
 	});
 
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, prepend, remove } = useFieldArray({
 		control: control,
 		name: 'licenses'
 	});
@@ -117,14 +110,15 @@ export default function UpdateLicensesForm({ rootQuery, onSaveChanges }: Props) 
 					<div className='w-full flex flex-col'>
 						<div className='w-full space-y-12 items-center'>
 							{fields.length === 0 ? (
-								<div className='flex flex-col items-center gap-4'>
+								<div className='flex flex-col items-start gap-4'>
 									<p className='text-foreground-500'>No license entries. Add your licenses.</p>
 									<Button
 										type='button'
 										variant='bordered'
+										fullWidth
 										startContent={<Plus size={18} />}
 										onPress={() =>
-											append({
+											prepend({
 												name: '',
 												issuer: '',
 												licenseNumber: '',
@@ -137,6 +131,22 @@ export default function UpdateLicensesForm({ rootQuery, onSaveChanges }: Props) 
 								</div>
 							) : (
 								<>
+									<Button
+										type='button'
+										variant='bordered'
+										className='w-full sm:w-auto'
+										startContent={<Plus size={18} />}
+										onPress={() =>
+											prepend({
+												name: '',
+												issuer: '',
+												licenseNumber: '',
+												registrationYear: new Date().getFullYear()
+											})
+										}
+									>
+										Add License
+									</Button>
 									{fields.map((item, index) => (
 										<div key={`field-${item.name}-${index}`} className='flex gap-8 items-end w-full flex-col'>
 											<div className='w-full space-y-4'>
@@ -225,22 +235,6 @@ export default function UpdateLicensesForm({ rootQuery, onSaveChanges }: Props) 
 											</Button>
 										</div>
 									))}
-									<Button
-										type='button'
-										variant='bordered'
-										className='w-full sm:w-auto'
-										startContent={<Plus size={18} />}
-										onPress={() =>
-											append({
-												name: '',
-												issuer: '',
-												licenseNumber: '',
-												registrationYear: new Date().getFullYear()
-											})
-										}
-									>
-										Add License
-									</Button>
 								</>
 							)}
 						</div>

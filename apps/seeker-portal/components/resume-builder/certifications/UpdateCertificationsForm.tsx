@@ -89,19 +89,11 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 						})
 					}
 				: {
-						certifications: [
-							{
-								name: '',
-								issuer: '',
-								certificationUrl: '',
-								createdAt: { month: 1, year: new Date().getFullYear() },
-								expiresAt: null
-							}
-						]
+						certifications: []
 					}
 	});
 
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, prepend, remove } = useFieldArray({
 		control: control,
 		name: 'certifications'
 	});
@@ -165,14 +157,15 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 					<div className='w-full flex flex-col'>
 						<div className='w-full space-y-12 items-center'>
 							{fields.length === 0 ? (
-								<div className='flex flex-col items-center gap-4'>
+								<div className='flex flex-col items-start gap-4'>
 									<p className='text-foreground-500'>No certification entries. Add your certifications.</p>
 									<Button
 										type='button'
 										variant='bordered'
+										fullWidth
 										startContent={<Plus size={18} />}
 										onPress={() =>
-											append({
+											prepend({
 												name: '',
 												issuer: '',
 												certificationUrl: '',
@@ -186,6 +179,23 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 								</div>
 							) : (
 								<>
+									<Button
+										type='button'
+										variant='bordered'
+										className='w-full sm:w-auto'
+										startContent={<Plus size={18} />}
+										onPress={() =>
+											prepend({
+												name: '',
+												issuer: '',
+												certificationUrl: '',
+												createdAt: { month: 1, year: 2000 },
+												expiresAt: null
+											})
+										}
+									>
+										Add Certification
+									</Button>
 									{fields.map((item, index) => (
 										<div key={`field-${item.name}-${index}`} className='flex gap-8 items-end w-full flex-col'>
 											<div className='w-full space-y-4'>
@@ -291,23 +301,6 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 											</Button>
 										</div>
 									))}
-									<Button
-										type='button'
-										variant='bordered'
-										className='w-full sm:w-auto'
-										startContent={<Plus size={18} />}
-										onPress={() =>
-											append({
-												name: '',
-												issuer: '',
-												certificationUrl: '',
-												createdAt: { month: 1, year: 2000 },
-												expiresAt: null
-											})
-										}
-									>
-										Add Certification
-									</Button>
 								</>
 							)}
 						</div>

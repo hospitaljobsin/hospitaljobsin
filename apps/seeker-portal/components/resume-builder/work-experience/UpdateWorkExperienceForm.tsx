@@ -146,7 +146,7 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 					}))
 				}
 			: {
-					workExperience: [{ ...defaultWorkExperience }]
+					workExperience: []
 				};
 
 	const {
@@ -167,7 +167,7 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 		name: 'workExperience'
 	});
 
-	const { fields, append, remove } = useFieldArray<WorkExperienceFormType>({
+	const { fields, append, prepend, remove } = useFieldArray<WorkExperienceFormType>({
 		control: control,
 		name: 'workExperience'
 	});
@@ -257,13 +257,22 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 									fullWidth
 									variant='bordered'
 									startContent={<Plus size={18} />}
-									onPress={() => append({ ...defaultWorkExperience })}
+									onPress={() => prepend({ ...defaultWorkExperience })}
 								>
 									Add Work Experience
 								</Button>
 							</div>
 						) : (
 							<>
+								<Button
+									type='button'
+									variant='bordered'
+									className='w-full sm:w-auto'
+									startContent={<Plus size={18} />}
+									onPress={() => prepend({ ...defaultWorkExperience })}
+								>
+									Add Work Experience
+								</Button>
 								{fields.map((item, index) => (
 									<div key={item.id} className='flex flex-col gap-8 items-end w-full'>
 										<div className='w-full space-y-4'>
@@ -446,15 +455,6 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 										</Button>
 									</div>
 								))}
-								<Button
-									type='button'
-									variant='bordered'
-									className='w-full sm:w-auto'
-									startContent={<Plus size={18} />}
-									onPress={() => append({ ...defaultWorkExperience })}
-								>
-									Add Work Experience
-								</Button>
 							</>
 						)}
 					</div>

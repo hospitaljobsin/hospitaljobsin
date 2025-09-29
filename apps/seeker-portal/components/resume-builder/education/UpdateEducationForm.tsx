@@ -78,18 +78,11 @@ export default function UpdateEducationForm({ rootQuery, onSaveChanges }: Props)
 						})
 					}
 				: {
-						education: [
-							{
-								degree: '',
-								institution: '',
-								startedAt: { month: 1, year: 2000 },
-								completedAt: { month: 1, year: 2000 }
-							}
-						]
+						education: []
 					}
 	});
 
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, prepend, remove } = useFieldArray({
 		control: control,
 		name: 'education'
 	});
@@ -153,14 +146,15 @@ export default function UpdateEducationForm({ rootQuery, onSaveChanges }: Props)
 					<h1 className='w-full text-xl text-foreground-500 font-medium'>Education</h1>
 					<div className='w-full space-y-12 items-center'>
 						{fields.length === 0 ? (
-							<div className='flex flex-col items-center gap-4'>
+							<div className='flex flex-col items-start gap-4'>
 								<p className='text-foreground-500'>No education entries. Add your education history.</p>
 								<Button
 									type='button'
 									variant='bordered'
+									fullWidth
 									startContent={<Plus size={18} />}
 									onPress={() =>
-										append({
+										prepend({
 											degree: '',
 											institution: '',
 											startedAt: { month: 1, year: 2000 },
@@ -173,6 +167,22 @@ export default function UpdateEducationForm({ rootQuery, onSaveChanges }: Props)
 							</div>
 						) : (
 							<>
+								<Button
+									type='button'
+									variant='bordered'
+									className='w-full sm:w-auto'
+									startContent={<Plus size={18} />}
+									onPress={() =>
+										prepend({
+											degree: '',
+											institution: '',
+											startedAt: { month: 1, year: 2000 },
+											completedAt: { month: 1, year: 2000 }
+										})
+									}
+								>
+									Add Education
+								</Button>
 								{fields.map((item, index) => (
 									<div key={`field-${item.degree}-${item.institution}-${index}`} className='flex flex-col gap-8 items-end w-full'>
 										<div className='w-full space-y-4'>
@@ -260,22 +270,6 @@ export default function UpdateEducationForm({ rootQuery, onSaveChanges }: Props)
 										</Button>
 									</div>
 								))}
-								<Button
-									type='button'
-									variant='bordered'
-									className='w-full sm:w-auto'
-									startContent={<Plus size={18} />}
-									onPress={() =>
-										append({
-											degree: '',
-											institution: '',
-											startedAt: { month: 1, year: 2000 },
-											completedAt: { month: 1, year: 2000 }
-										})
-									}
-								>
-									Add Education
-								</Button>
 							</>
 						)}
 					</div>
