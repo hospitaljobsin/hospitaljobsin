@@ -3,6 +3,7 @@ import { Button, Checkbox, Input, Kbd, Select, SelectItem, Textarea } from '@her
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { Plus, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
+import { useEffect } from 'react';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
 import { ChipsInput } from '../../forms/ChipsInput';
@@ -131,7 +132,7 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 		isCurrentRole: true
 	};
 
-	const defaultValues: WorkExperienceFormType =
+	const getDefaultValues = (): WorkExperienceFormType =>
 		data.workExperience.length > 0
 			? {
 					workExperience: data.workExperience.map((exp: WorkExperienceFragmentItem) => ({
@@ -157,7 +158,7 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 		reset
 	} = useForm<WorkExperienceFormType>({
 		resolver: standardSchemaResolver(formSchema),
-		defaultValues,
+		defaultValues: getDefaultValues(),
 		mode: 'onChange',
 		reValidateMode: 'onChange'
 	});
@@ -171,6 +172,11 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 		control: control,
 		name: 'workExperience'
 	});
+
+	// Reset form when server data changes
+	useEffect(() => {
+		reset(getDefaultValues());
+	}, [data, reset]);
 
 	function onSubmit(formData: WorkExperienceFormType) {
 		let hasValidationErrors = false;
@@ -236,7 +242,6 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 					completedAt: exp.isCurrentRole ? null : toDateString(exp.completedAt)
 				})),
 				onCompleted() {
-					reset(formData);
 					onSaveChanges();
 				}
 			}

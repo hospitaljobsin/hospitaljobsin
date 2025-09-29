@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, ReactNode, useContext, useState } from 'react';
+import React, { createContext, type ReactNode, useContext, useState } from 'react';
 
 interface UnsavedChangesContextType {
 	hasUnsavedChanges: boolean;

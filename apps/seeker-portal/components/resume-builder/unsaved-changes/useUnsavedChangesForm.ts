@@ -13,14 +13,8 @@ export const useUnsavedChangesForm = (isDirty: boolean, isValid: boolean, onSave
 	}, [isDirty, setHasUnsavedChanges]);
 
 	useEffect(() => {
-		const handleSave = async () => {
-			await onSave();
-			if (isValid) {
-				setHasUnsavedChanges(false);
-			}
-		};
-		setCallbacks(handleSave, onCancel);
-	}, [onSave, onCancel, setCallbacks, setHasUnsavedChanges, isValid]);
+		setCallbacks(onSave, onCancel);
+	}, [onSave, onCancel, setCallbacks]);
 
 	return { markAsChanged };
 };
