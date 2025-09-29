@@ -6,6 +6,11 @@ import ResumeProgressSkeleton from '@/components/resume-builder/ResumeProgressSk
 import dynamic from 'next/dynamic';
 
 // TODO: add compulsory fields list to complete profile
+// instead of having this on the resume builder page itself (which clutters UX)
+// we let anyone to visit the job apply page, provided they are authenticated.
+// when they click apply and their profile is incomplete, we show a modal
+// that tells them to complete their profile. This way, we don't interrupt
+// users who are just browsing jobs and might not want to complete their profile yet.
 
 const CertificationsClientComponent = dynamic(() => import('./CertificationsClientComponent'), {
 	ssr: false,
