@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { MobileResumeBuilderLayout } from './MobileResumeBuilderLayout';
 import { ResumeBuilderLayout } from './ResumeBuilderLayout';
 
@@ -13,29 +13,18 @@ export const ResponsiveResumeBuilder: React.FC<ResponsiveResumeBuilderProps> = (
 	desktopComponent: DesktopComponent,
 	mobileComponent: MobileComponent
 }) => {
-	const [isMobile, setIsMobile] = useState(false);
-
-	useEffect(() => {
-		const checkIsMobile = () => {
-			setIsMobile(window.innerWidth < 1024);
-		};
-
-		checkIsMobile();
-		window.addEventListener('resize', checkIsMobile);
-		return () => window.removeEventListener('resize', checkIsMobile);
-	}, []);
-
-	if (isMobile) {
-		return (
-			<MobileResumeBuilderLayout>
-				<MobileComponent />
-			</MobileResumeBuilderLayout>
-		);
-	}
-
 	return (
-		<ResumeBuilderLayout>
-			<DesktopComponent />
-		</ResumeBuilderLayout>
+		<>
+			<div className='lg:hidden'>
+				<MobileResumeBuilderLayout>
+					<MobileComponent />
+				</MobileResumeBuilderLayout>
+			</div>
+			<div className='hidden lg:block'>
+				<ResumeBuilderLayout>
+					<DesktopComponent />
+				</ResumeBuilderLayout>
+			</div>
+		</>
 	);
 };

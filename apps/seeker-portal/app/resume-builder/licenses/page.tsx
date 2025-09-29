@@ -1,13 +1,13 @@
 'use client';
 import DashboardHeaderSkeleton from '@/components/layout/DashboardHeaderSkeleton';
 import ContentSkeleton from '@/components/resume-builder/ContentSkeleton';
-import ResumeBuilderSharedLayout from '@/components/resume-builder/ResumeBuilderSharedLayout';
+import { ResponsiveResumeBuilder } from '@/components/resume-builder/ResponsiveResumeBuilder';
 import ResumeProgressSkeleton from '@/components/resume-builder/ResumeProgressSkeleton';
 import dynamic from 'next/dynamic';
 
 const LicensesClientComponent = dynamic(() => import('./LicensesClientComponent'), {
 	ssr: false,
-	loading: () => <ResumeBuilderSharedLayout desktopComponent={() => <ContentSkeleton />} mobileComponent={() => <ContentSkeleton />} />
+	loading: () => <ResponsiveResumeBuilder desktopComponent={() => <ContentSkeleton />} mobileComponent={() => <ContentSkeleton />} />
 });
 
 const DashboardHeaderClientComponent = dynamic(() => import('@/components/layout/DashboardHeaderClientComponent'), {
