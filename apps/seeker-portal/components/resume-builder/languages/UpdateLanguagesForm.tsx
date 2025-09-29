@@ -70,7 +70,7 @@ export default function UpdateLanguagesForm({ rootQuery, onSaveChanges }: Props)
 						}))
 					}
 				: {
-						languages: [{ name: '', proficiency: 'BASIC' }]
+						languages: []
 					}
 	});
 
@@ -98,11 +98,12 @@ export default function UpdateLanguagesForm({ rootQuery, onSaveChanges }: Props)
 					<h1 className='w-full text-xl text-foreground-500 font-medium'>Languages</h1>
 					<div className='w-full space-y-12 items-center'>
 						{fields.length === 0 ? (
-							<div className='flex flex-col items-center gap-4'>
+							<div className='flex flex-col items-start gap-4'>
 								<p className='text-foreground-500'>No language entries. Add your languages.</p>
 								<Button
 									type='button'
 									variant='bordered'
+									fullWidth
 									startContent={<Plus size={18} />}
 									onPress={() =>
 										prepend({
