@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7f73ed796d70cf7a348ad09cd76a601f>>
+ * @generated SignedSource<<102461143777a833b17076a108859696>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type EducationViewFragment$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderFragment" | "DesktopEducationViewFragment" | "MobileEducationViewFragment" | "ResumeProgressFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"DesktopEducationViewFragment" | "MobileEducationViewFragment" | "ResumeProgressFragment">;
   readonly " $fragmentType": "EducationViewFragment";
 };
 export type EducationViewFragment$key = {
@@ -25,11 +25,6 @@ const node: ReaderFragment = {
   "metadata": null,
   "name": "EducationViewFragment",
   "selections": [
-    {
-      "args": null,
-      "kind": "FragmentSpread",
-      "name": "DashboardHeaderFragment"
-    },
     {
       "args": null,
       "kind": "FragmentSpread",
@@ -50,6 +45,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "8fa5236af06040d69e299ba6a4816d98";
+(node as any).hash = "ba0a6006fd99712f8af7d28d03e2cbdc";
 
 export default node;

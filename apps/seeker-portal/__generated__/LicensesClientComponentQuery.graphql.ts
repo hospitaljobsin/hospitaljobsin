@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<b8020baa0878ced6f14437ac9d675ad4>>
- * @relayHash ab235f28828a2bd97c1ca5af7da8210a
+ * @generated SignedSource<<3436dd7e441277c693c2f45a700d6006>>
+ * @relayHash 5dedb4c1cc7b76f1ca3cd7d13232f91f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ab235f28828a2bd97c1ca5af7da8210a
+// @relayRequestID 5dedb4c1cc7b76f1ca3cd7d13232f91f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -74,20 +74,6 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "fullName",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "avatarUrl",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
                 "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
@@ -101,13 +87,6 @@ return {
                     "storageKey": null
                   },
                   (v1/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "isComplete",
-                    "storageKey": null
-                  },
                   (v0/*: any*/),
                   {
                     "alias": null,
@@ -150,8 +129,7 @@ return {
                   }
                 ],
                 "storageKey": null
-              },
-              (v1/*: any*/)
+              }
             ],
             "type": "Account",
             "abstractKey": null
@@ -170,7 +148,7 @@ return {
     ]
   },
   "params": {
-    "id": "ab235f28828a2bd97c1ca5af7da8210a",
+    "id": "5dedb4c1cc7b76f1ca3cd7d13232f91f",
     "metadata": {},
     "name": "LicensesClientComponentQuery",
     "operationKind": "query",

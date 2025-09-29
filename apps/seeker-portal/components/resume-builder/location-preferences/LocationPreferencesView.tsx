@@ -9,7 +9,6 @@ import { MobileLocationPreferencesView } from './MobileLocationPreferencesView';
 
 const LocationPreferencesViewFragment = graphql`
   fragment LocationPreferencesViewFragment on Query {
-    ...DashboardHeaderFragment
 	...ResumeProgressFragment
     ...DesktopLocationPreferencesViewFragment
 	...MobileLocationPreferencesViewFragment
@@ -26,7 +25,6 @@ export default function LocationPreferencesView({
 
 	return (
 		<ResumeBuilderSharedLayout
-			headerQuery={data}
 			progressQuery={data}
 			desktopComponent={() => <DesktopLocationPreferencesView data={data} />}
 			mobileComponent={() => <MobileLocationPreferencesView data={data} />}

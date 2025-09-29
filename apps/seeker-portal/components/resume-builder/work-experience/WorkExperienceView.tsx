@@ -9,7 +9,6 @@ import { MobileWorkExperienceView } from './MobileWorkExperienceView';
 
 const WorkExperienceViewFragment = graphql`
   fragment WorkExperienceViewFragment on Query {
-    ...DashboardHeaderFragment
 	...ResumeProgressFragment
     ...DesktopWorkExperienceViewFragment
 	...MobileWorkExperienceViewFragment
@@ -22,7 +21,6 @@ export default function WorkExperienceView({ queryReference }: { queryReference:
 
 	return (
 		<ResumeBuilderSharedLayout
-			headerQuery={data}
 			progressQuery={data}
 			desktopComponent={() => <DesktopWorkExperienceView data={data} />}
 			mobileComponent={() => <MobileWorkExperienceView data={data} />}

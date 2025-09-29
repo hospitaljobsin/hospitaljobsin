@@ -9,7 +9,6 @@ import { MobilePersonalInfoView } from './MobilePersonalInfoView';
 
 const PersonalInfoViewFragment = graphql`
   fragment PersonalInfoViewFragment on Query {
-    ...DashboardHeaderFragment
 	...ResumeProgressFragment
     ...DesktopPersonalInfoViewFragment
 	...MobilePersonalInfoViewFragment
@@ -22,7 +21,6 @@ export default function PersonalInfoView({ queryReference }: { queryReference: P
 
 	return (
 		<ResumeBuilderSharedLayout
-			headerQuery={data}
 			progressQuery={data}
 			desktopComponent={() => <DesktopPersonalInfoView data={data} />}
 			mobileComponent={() => <MobilePersonalInfoView data={data} />}

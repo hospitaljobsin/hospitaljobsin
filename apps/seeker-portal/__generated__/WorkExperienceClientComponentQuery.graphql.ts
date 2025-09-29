@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<e120b326885e2a039078c0847b46648d>>
- * @relayHash 317924bc2ad9420b0718020743335ecf
+ * @generated SignedSource<<a009164dedc9a0daa352d8bef99f350a>>
+ * @relayHash 37b4d3fa8123072cac24a2a7076c39f6
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 317924bc2ad9420b0718020743335ecf
+// @relayRequestID 37b4d3fa8123072cac24a2a7076c39f6
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -74,20 +74,6 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "fullName",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "avatarUrl",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
                 "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
@@ -101,13 +87,6 @@ return {
                     "storageKey": null
                   },
                   (v1/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "isComplete",
-                    "storageKey": null
-                  },
                   (v0/*: any*/),
                   {
                     "alias": null,
@@ -171,8 +150,7 @@ return {
                   }
                 ],
                 "storageKey": null
-              },
-              (v1/*: any*/)
+              }
             ],
             "type": "Account",
             "abstractKey": null
@@ -191,7 +169,7 @@ return {
     ]
   },
   "params": {
-    "id": "317924bc2ad9420b0718020743335ecf",
+    "id": "37b4d3fa8123072cac24a2a7076c39f6",
     "metadata": {},
     "name": "WorkExperienceClientComponentQuery",
     "operationKind": "query",

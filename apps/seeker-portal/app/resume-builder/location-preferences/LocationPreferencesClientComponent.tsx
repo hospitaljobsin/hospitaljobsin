@@ -1,8 +1,8 @@
 'use client';
 import type { LocationPreferencesClientComponentQuery as LocationPreferencesClientComponentQueryType } from '@/__generated__/LocationPreferencesClientComponentQuery.graphql';
+import ContentSkeleton from '@/components/resume-builder/ContentSkeleton';
 import LocationPreferencesView from '@/components/resume-builder/location-preferences/LocationPreferencesView';
 import ResumeBuilderSharedLayout from '@/components/resume-builder/ResumeBuilderSharedLayout';
-import ContentSkeleton from '@/components/resume-builder/ContentSkeleton';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -19,7 +19,7 @@ export default function LocationPreferencesClientComponent() {
 		environment,
 		LocationPreferencesClientComponentQuery,
 		{},
-		{ fetchPolicy: 'store-or-network', networkCacheConfig: { force: false } }
+		{ fetchPolicy: 'store-or-network' }
 	);
 
 	return (

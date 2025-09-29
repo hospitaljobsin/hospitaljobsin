@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<1ccc9b51e9364cdff30984a20c032c22>>
- * @relayHash cac7624451990bf059d1a12d9cadfaab
+ * @generated SignedSource<<810e5942c5feca05a694f331da1e1937>>
+ * @relayHash 1271f0ba3a191019448b1283d5a805b2
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID cac7624451990bf059d1a12d9cadfaab
+// @relayRequestID 1271f0ba3a191019448b1283d5a805b2
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -74,20 +74,6 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "fullName",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "avatarUrl",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
                 "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
@@ -101,13 +87,6 @@ return {
                     "storageKey": null
                   },
                   (v1/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "isComplete",
-                    "storageKey": null
-                  },
                   (v0/*: any*/),
                   {
                     "alias": null,
@@ -150,8 +129,7 @@ return {
                   }
                 ],
                 "storageKey": null
-              },
-              (v1/*: any*/)
+              }
             ],
             "type": "Account",
             "abstractKey": null
@@ -170,7 +148,7 @@ return {
     ]
   },
   "params": {
-    "id": "cac7624451990bf059d1a12d9cadfaab",
+    "id": "1271f0ba3a191019448b1283d5a805b2",
     "metadata": {},
     "name": "EducationClientComponentQuery",
     "operationKind": "query",

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<7359e8bef282596e24bf03f57ce669ae>>
- * @relayHash 37353e07e49adf9f818751e5f4a1ecc2
+ * @generated SignedSource<<1384fa8d1f2092f3fb0ac9a56e9c18c6>>
+ * @relayHash 75ddeb5c72ee491cd3f43117116c07d4
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 37353e07e49adf9f818751e5f4a1ecc2
+// @relayRequestID 75ddeb5c72ee491cd3f43117116c07d4
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -74,20 +74,6 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "fullName",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "avatarUrl",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
                 "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
@@ -101,13 +87,6 @@ return {
                     "storageKey": null
                   },
                   (v1/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "isComplete",
-                    "storageKey": null
-                  },
                   (v0/*: any*/),
                   {
                     "alias": null,
@@ -136,8 +115,7 @@ return {
                   }
                 ],
                 "storageKey": null
-              },
-              (v1/*: any*/)
+              }
             ],
             "type": "Account",
             "abstractKey": null
@@ -156,7 +134,7 @@ return {
     ]
   },
   "params": {
-    "id": "37353e07e49adf9f818751e5f4a1ecc2",
+    "id": "75ddeb5c72ee491cd3f43117116c07d4",
     "metadata": {},
     "name": "LanguagesClientComponentQuery",
     "operationKind": "query",

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<563ea835b0490f97dc8f3d4175643789>>
- * @relayHash 6185b9f7c433186ef616d54d82a02431
+ * @generated SignedSource<<1ef276b4c3d9d13549a9e61b76c5c1f9>>
+ * @relayHash 7cbbf43256e969f38a839ab744b1f1d1
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 6185b9f7c433186ef616d54d82a02431
+// @relayRequestID 7cbbf43256e969f38a839ab744b1f1d1
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -74,20 +74,6 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "fullName",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "avatarUrl",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
                 "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
@@ -101,13 +87,6 @@ return {
                     "storageKey": null
                   },
                   (v1/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "isComplete",
-                    "storageKey": null
-                  },
                   (v0/*: any*/),
                   {
                     "alias": null,
@@ -157,8 +136,7 @@ return {
                   }
                 ],
                 "storageKey": null
-              },
-              (v1/*: any*/)
+              }
             ],
             "type": "Account",
             "abstractKey": null
@@ -177,7 +155,7 @@ return {
     ]
   },
   "params": {
-    "id": "6185b9f7c433186ef616d54d82a02431",
+    "id": "7cbbf43256e969f38a839ab744b1f1d1",
     "metadata": {},
     "name": "CertificationsClientComponentQuery",
     "operationKind": "query",

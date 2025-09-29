@@ -11,7 +11,6 @@ export const DashboardHeaderClientComponentQuery = graphql`
 `;
 
 export default function DashboardHeaderClientComponent({ animate = true }: { animate?: boolean }) {
-	console.log('Rendering DashboardHeaderClientComponent');
 	const data = useLazyLoadQuery<DashboardHeaderClientComponentQueryType>(
 		DashboardHeaderClientComponentQuery,
 		{},
@@ -19,7 +18,6 @@ export default function DashboardHeaderClientComponent({ animate = true }: { ani
 			fetchPolicy: 'store-or-network'
 		}
 	);
-	console.log('data: ', data);
 
 	return <DashboardHeader query={data} animate={animate} />;
 }

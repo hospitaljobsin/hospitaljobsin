@@ -1,8 +1,8 @@
 'use client';
 import type { LicensesClientComponentQuery as LicensesClientComponentQueryType } from '@/__generated__/LicensesClientComponentQuery.graphql';
+import ContentSkeleton from '@/components/resume-builder/ContentSkeleton';
 import LicensesView from '@/components/resume-builder/licenses/LicensesView';
 import ResumeBuilderSharedLayout from '@/components/resume-builder/ResumeBuilderSharedLayout';
-import ContentSkeleton from '@/components/resume-builder/ContentSkeleton';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -19,7 +19,7 @@ export default function LicensesClientComponent() {
 		environment,
 		LicensesClientComponentQuery,
 		{},
-		{ fetchPolicy: 'store-or-network', networkCacheConfig: { force: false } }
+		{ fetchPolicy: 'store-or-network' }
 	);
 
 	return (

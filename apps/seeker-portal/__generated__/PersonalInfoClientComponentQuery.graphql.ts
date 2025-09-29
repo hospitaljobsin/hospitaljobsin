@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<aa8af6c5ef7feb384a63598ba75d0148>>
- * @relayHash a7a93e85246e3a83beb89d62d033ce98
+ * @generated SignedSource<<93678499d06bee3cc0b90b888285b3e4>>
+ * @relayHash 9b6b87ccd3ef4ad87ee9d4cb6fb2ecd6
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID a7a93e85246e3a83beb89d62d033ce98
+// @relayRequestID 9b6b87ccd3ef4ad87ee9d4cb6fb2ecd6
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -73,20 +73,6 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "fullName",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "avatarUrl",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
                 "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
@@ -100,13 +86,6 @@ return {
                     "storageKey": null
                   },
                   (v0/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "isComplete",
-                    "storageKey": null
-                  },
                   {
                     "alias": null,
                     "args": null,
@@ -137,8 +116,7 @@ return {
                   }
                 ],
                 "storageKey": null
-              },
-              (v0/*: any*/)
+              }
             ],
             "type": "Account",
             "abstractKey": null
@@ -157,7 +135,7 @@ return {
     ]
   },
   "params": {
-    "id": "a7a93e85246e3a83beb89d62d033ce98",
+    "id": "9b6b87ccd3ef4ad87ee9d4cb6fb2ecd6",
     "metadata": {},
     "name": "PersonalInfoClientComponentQuery",
     "operationKind": "query",

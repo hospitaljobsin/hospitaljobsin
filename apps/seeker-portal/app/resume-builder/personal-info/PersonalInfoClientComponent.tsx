@@ -1,8 +1,8 @@
 'use client';
 import type { PersonalInfoClientComponentQuery as PersonalInfoClientComponentQueryType } from '@/__generated__/PersonalInfoClientComponentQuery.graphql';
+import ContentSkeleton from '@/components/resume-builder/ContentSkeleton';
 import PersonalInfoView from '@/components/resume-builder/personal-info/PersonalInfoView';
 import ResumeBuilderSharedLayout from '@/components/resume-builder/ResumeBuilderSharedLayout';
-import ContentSkeleton from '@/components/resume-builder/ContentSkeleton';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -19,7 +19,7 @@ export default function PersonalInfoClientComponent() {
 		environment,
 		PersonalInfoClientComponentQuery,
 		{},
-		{ fetchPolicy: 'store-or-network', networkCacheConfig: { force: false } }
+		{ fetchPolicy: 'store-or-network' }
 	);
 
 	return (

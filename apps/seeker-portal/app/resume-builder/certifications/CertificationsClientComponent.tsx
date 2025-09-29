@@ -1,8 +1,8 @@
 'use client';
 import type { CertificationsClientComponentQuery as CertificationsClientComponentQueryType } from '@/__generated__/CertificationsClientComponentQuery.graphql';
 import CertificationsView from '@/components/resume-builder/certifications/CertificationsView';
-import ResumeBuilderSharedLayout from '@/components/resume-builder/ResumeBuilderSharedLayout';
 import ContentSkeleton from '@/components/resume-builder/ContentSkeleton';
+import ResumeBuilderSharedLayout from '@/components/resume-builder/ResumeBuilderSharedLayout';
 import { Suspense } from 'react';
 import { loadQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -19,7 +19,7 @@ export default function CertificationsClientComponent() {
 		environment,
 		CertificationsClientComponentQuery,
 		{},
-		{ fetchPolicy: 'store-or-network', networkCacheConfig: { force: false } }
+		{ fetchPolicy: 'store-or-network' }
 	);
 
 	return (
