@@ -12,6 +12,9 @@ import dynamic from 'next/dynamic';
 // that tells them to complete their profile. This way, we don't interrupt
 // users who are just browsing jobs and might not want to complete their profile yet.
 
+// TODO: use @react-pdf/renderer to dynamically generate PDF previews on the client
+// https://react-pdf.org/repl
+
 const CertificationsClientComponent = dynamic(() => import('./CertificationsClientComponent'), {
 	ssr: false,
 	loading: () => <ResponsiveResumeBuilder desktopComponent={() => <ContentSkeleton />} mobileComponent={() => <ContentSkeleton />} />
