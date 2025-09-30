@@ -1082,7 +1082,7 @@ class JobApplicantRepo:
     def format_career_profile(
         career_profile: CareerProfile,
     ) -> str:
-        return f"Preferred Monthly Salary: {career_profile.preferred_monthly_salary_inr} INR, Negotiable: {'Yes' if career_profile.negotiable else 'No'}"
+        return f"Preferred Monthly Salary: {career_profile.expected_salary or 'N/A'} INR, Current Industry: {career_profile.current_industry or 'N/A'}, Desired Job types: {', '.join(career_profile.desired_job_types) if career_profile.desired_job_types else 'N/A'}, Desired Work Modes: {', '.join(career_profile.desired_work_modes) if career_profile.desired_work_modes else 'N/A'}"
 
     @staticmethod
     def format_profile_snapshot_for_embedding(profile: BaseProfile) -> str:
