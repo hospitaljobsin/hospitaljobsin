@@ -227,12 +227,6 @@ class BaseProfileType:
     category: str | None = strawberry.field(
         description="The category of the profile's user.",
     )
-    locations_open_to_work: list[str] = strawberry.field(
-        description="Locations the user is open to work in.",
-    )
-    open_to_relocation_anywhere: bool = strawberry.field(
-        description="Whether the user is open to relocation anywhere.",
-    )
     education: list["EducationType"] = strawberry.field(
         description="The user's education history.",
     )
@@ -278,8 +272,6 @@ class ParsedProfileType(BaseProfileType):
             if model.marital_status is not None
             else None,
             category=model.category,
-            locations_open_to_work=[loc.name for loc in model.locations_open_to_work],
-            open_to_relocation_anywhere=model.open_to_relocation_anywhere,
             education=[EducationType.marshal(edu) for edu in model.education],
             licenses=[LicenseType.marshal(lic) for lic in model.licenses],
             languages=[LanguageType.marshal(language) for language in model.languages],
@@ -327,8 +319,6 @@ class ProfileType(BaseProfileType, BaseNodeType[Profile]):
             if model.marital_status is not None
             else None,
             category=model.category,
-            locations_open_to_work=[loc.name for loc in model.locations_open_to_work],
-            open_to_relocation_anywhere=model.open_to_relocation_anywhere,
             education=[EducationType.marshal(edu) for edu in model.education],
             licenses=[LicenseType.marshal(lic) for lic in model.licenses],
             languages=[LanguageType.marshal(language) for language in model.languages],
@@ -960,6 +950,8 @@ class CareerProfileType:
     desired_job_types: list[JobTypeEnum] = strawberry.field(default_factory=list)
     desired_work_modes: list[WorkModeEnum] = strawberry.field(default_factory=list)
     expected_salary: float | None = strawberry.field(default=None)
+    locations_open_to_work: list[str] = strawberry.field(default_factory=list)
+    open_to_relocation_anywhere: bool = strawberry.field(default=False)
 
     @classmethod
     def marshal(cls, se: CareerProfile) -> Self:
@@ -968,6 +960,8 @@ class CareerProfileType:
             desired_job_types=se.desired_job_types,
             desired_work_modes=se.desired_work_modes,
             expected_salary=se.expected_salary,
+            locations_open_to_work=se.locations_open_to_work,
+            open_to_relocation_anywhere=se.open_to_relocation_anywhere,
         )
 
 
@@ -1032,6 +1026,13 @@ class CareerProfileInputType:
         description="The expected salary.", default=None
     )
 
+    locations_open_to_work: list[str] = strawberry.field(
+        description="Locations the user is open to work in.", default_factory=list
+    )
+    open_to_relocation_anywhere: bool = strawberry.field(
+        description="Whether the user is open to relocation anywhere.", default=False
+    )
+
     def to_document(self) -> CareerProfile:
         return CareerProfile(
             current_industry=self.current_industry,
@@ -1040,4 +1041,6 @@ class CareerProfileInputType:
                 work_mode.value for work_mode in self.desired_work_modes
             ],
             expected_salary=self.expected_salary,
+            locations_open_to_work=self.locations_open_to_work,
+            open_to_relocation_anywhere=self.open_to_relocation_anywhere,
         )

@@ -20,7 +20,6 @@ const links = {
 	resumeBuilderEducation: '/resume-builder/education',
 	resumeBuilderCertifications: '/resume-builder/certifications',
 	resumeBuilderLicenses: '/resume-builder/licenses',
-	resumeBuilderLocationPreferences: '/resume-builder/location-preferences',
 	resumeBuilderLanguages: '/resume-builder/languages',
 	savedJobs: '/saved',
 	appliedJobs: '/applied',

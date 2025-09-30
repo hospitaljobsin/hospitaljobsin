@@ -45,14 +45,6 @@ class ProfileOutput(BaseModel):
         ...,
         description="The socio-economic category of the applicant (caste).",
     )
-    locations_open_to_work: list[str] = Field(
-        ...,
-        description="The locations the applicant is open to work in.",
-    )
-    open_to_relocation_anywhere: bool = Field(
-        ...,
-        description="Whether the applicant is open to relocation anywhere.",
-    )
     education: list[Education] = Field(
         ...,
         description="The education of the applicant.",

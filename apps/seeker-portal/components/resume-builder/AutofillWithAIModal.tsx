@@ -16,11 +16,8 @@ const ParseProfileDocumentMutation = graphql`
         headline
         professionalSummary
         dateOfBirth
-        openToRelocationAnywhere
-        locationsOpenToWork
         ...UpdatePersonalDetailsFormFragment
           ...UpdateLanguagesFormFragment
-          ...UpdateLocationPreferencesFormFragment
           ...UpdateEducationFormFragment
           ...UpdateWorkExperienceFormFragment
           ...UpdateCertificationsFormFragment

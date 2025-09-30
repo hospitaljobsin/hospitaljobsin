@@ -359,8 +359,6 @@ class ProfileSnapshotType(BaseProfileType):
             if model.marital_status is not None
             else None,
             category=model.category,
-            locations_open_to_work=[loc.name for loc in model.locations_open_to_work],
-            open_to_relocation_anywhere=model.open_to_relocation_anywhere,
             education=[EducationType.marshal(edu) for edu in model.education],
             licenses=[LicenseType.marshal(lic) for lic in model.licenses],
             languages=[LanguageType.marshal(language) for language in model.languages],
@@ -410,8 +408,6 @@ class AnalysedFieldsType:
     address: FieldAnalysisType | None = None
     marital_status: FieldAnalysisType | None = None
     category: FieldAnalysisType | None = None
-    locations_open_to_work: FieldAnalysisType | None = None
-    open_to_relocation_anywhere: FieldAnalysisType | None = None
     education: FieldAnalysisType | None = None
     licenses: FieldAnalysisType | None = None
     languages: FieldAnalysisType | None = None
@@ -442,16 +438,6 @@ class AnalysedFieldsType:
             else None,
             category=FieldAnalysisType.marshal(analysed_fields.category)
             if analysed_fields.category
-            else None,
-            locations_open_to_work=FieldAnalysisType.marshal(
-                analysed_fields.locations_open_to_work
-            )
-            if analysed_fields.locations_open_to_work
-            else None,
-            open_to_relocation_anywhere=FieldAnalysisType.marshal(
-                analysed_fields.open_to_relocation_anywhere
-            )
-            if analysed_fields.open_to_relocation_anywhere
             else None,
             education=FieldAnalysisType.marshal(analysed_fields.education)
             if analysed_fields.education

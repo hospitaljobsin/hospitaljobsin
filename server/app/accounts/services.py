@@ -373,28 +373,6 @@ class ProfileService:
 
         return Ok(account)
 
-    async def update_location_preferences(
-        self,
-        *,
-        account: Account,
-        locations_open_to_work: list[str],
-        open_to_relocation_anywhere: bool,
-    ) -> Ok[Account]:
-        """Update the user's location preferences, including address."""
-        existing_profile = await self._profile_repo.get_by_account(account)
-        if existing_profile is None:
-            existing_profile = await self._profile_repo.create(account)
-            await self._account_repo.update_profile(
-                account=account, profile=existing_profile
-            )
-
-        await self._profile_repo.update(
-            profile=existing_profile,
-            locations_open_to_work=locations_open_to_work,
-            open_to_relocation_anywhere=open_to_relocation_anywhere,
-        )
-        return Ok(account)
-
     async def update_education(
         self,
         account: Account,
@@ -575,8 +553,6 @@ class ProfileParserService:
                 gender=profile_output.gender,
                 marital_status=profile_output.marital_status,
                 category=profile_output.category,
-                open_to_relocation_anywhere=profile_output.open_to_relocation_anywhere,
-                locations_open_to_work=profile_output.locations_open_to_work,
                 education=profile_output.education,
                 licenses=[
                     License(
@@ -587,7 +563,7 @@ class ProfileParserService:
                 languages=profile_output.languages,
                 job_preferences=profile_output.job_preferences,
                 work_experience=profile_output.work_experience,
-                salary_expectations=profile_output.salary_expectations,
+                career_profile=profile_output.career_profile,
                 certifications=profile_output.certifications,
                 professional_summary=profile_output.professional_summary,
                 headline=profile_output.headline,
@@ -605,12 +581,6 @@ class ProfileParserService:
                 if profile_output.marital_status
                 else UNSET,
                 category=profile_output.category if profile_output.category else UNSET,
-                open_to_relocation_anywhere=profile_output.open_to_relocation_anywhere
-                if profile_output.open_to_relocation_anywhere
-                else UNSET,
-                locations_open_to_work=profile_output.locations_open_to_work
-                if profile_output.locations_open_to_work
-                else UNSET,
                 education=profile_output.education
                 if profile_output.education
                 else UNSET,
@@ -631,8 +601,8 @@ class ProfileParserService:
                 work_experience=profile_output.work_experience
                 if profile_output.work_experience
                 else UNSET,
-                salary_expectations=profile_output.salary_expectations
-                if profile_output.salary_expectations
+                career_profile=profile_output.career_profile
+                if profile_output.career_profile
                 else UNSET,
                 certifications=profile_output.certifications
                 if profile_output.certifications

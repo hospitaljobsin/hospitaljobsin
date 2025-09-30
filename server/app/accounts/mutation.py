@@ -403,44 +403,6 @@ class AccountMutation:
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdateProfilePayload,
-        description="Update the current user's profile location preferences.",
-        extensions=[
-            PermissionExtension(
-                permissions=[
-                    IsAuthenticated(),
-                ],
-            )
-        ],
-    )
-    @inject
-    async def update_profile_location_preferences(
-        self,
-        info: AuthInfo,
-        profile_service: Annotated[ProfileService, Inject],
-        locations_open_to_work: Annotated[
-            list[str],
-            strawberry.argument(description="Locations the user is open to work in."),
-        ],
-        open_to_relocation_anywhere: Annotated[
-            bool,
-            strawberry.argument(
-                description="Whether the user is open to relocation anywhere."
-            ),
-        ],
-    ) -> UpdateProfilePayload:
-        """Update the current user's profile location preferences, including address."""
-        match await profile_service.update_location_preferences(
-            account=info.context["current_user"],
-            locations_open_to_work=locations_open_to_work,
-            open_to_relocation_anywhere=open_to_relocation_anywhere,
-        ):
-            case Ok(account):
-                return AccountType.marshal(account)
-            case _ as unreachable:
-                assert_never(unreachable)
-
-    @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=UpdateProfilePayload,
         description="Update the current user's profile education.",
         extensions=[
             PermissionExtension(

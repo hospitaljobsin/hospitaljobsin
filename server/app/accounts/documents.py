@@ -92,6 +92,14 @@ class CareerProfile(BaseModel):
     desired_job_types: list[JobKindType] = []
     desired_work_modes: list[WorkModeType] = []
     expected_salary: float | None = None
+    locations_open_to_work: list[str] = Field(
+        default_factory=list,
+        description="The locations the candidate prefers to work in.",
+    )
+    open_to_relocation_anywhere: bool = Field(
+        default=False,
+        description="Whether the candidate is open to relocation anywhere.",
+    )
 
 
 # CERTIFICATION
@@ -117,8 +125,6 @@ class BaseProfile(BaseModel):
     address: str | None = None
     marital_status: MaritalStatus | None = None
     category: str | None = None
-    locations_open_to_work: list[Location] = []
-    open_to_relocation_anywhere: bool
     education: list[Education]
     licenses: list[License]
     languages: list[Language]
@@ -156,7 +162,13 @@ class Profile(BaseProfile, Document):
                 self.date_of_birth,
                 self.address,
                 self.education,
-                (self.locations_open_to_work or self.open_to_relocation_anywhere),
+                (
+                    self.career_profile
+                    and (
+                        self.career_profile.locations_open_to_work
+                        or self.career_profile.open_to_relocation_anywhere
+                    )
+                ),
                 self.professional_summary,
                 self.headline,
             ]
@@ -172,7 +184,13 @@ class Profile(BaseProfile, Document):
                 bool(self.address),
                 bool(self.work_experience),
                 bool(self.education),
-                bool(self.locations_open_to_work or self.open_to_relocation_anywhere),
+                bool(
+                    self.career_profile
+                    and (
+                        self.career_profile.locations_open_to_work
+                        or self.career_profile.open_to_relocation_anywhere
+                    )
+                ),
                 bool(self.professional_summary),
                 bool(self.headline),
             ]

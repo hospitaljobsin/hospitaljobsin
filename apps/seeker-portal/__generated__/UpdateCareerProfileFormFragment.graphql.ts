@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<56525bafcf7db4bf7c769a134f17a1c3>>
+ * @generated SignedSource<<14a4e844d6173104f0e0293f77b08925>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,6 +19,8 @@ export type UpdateCareerProfileFormFragment$data = {
     readonly desiredJobTypes: ReadonlyArray<JobType>;
     readonly desiredWorkModes: ReadonlyArray<WorkMode>;
     readonly expectedSalary: number | null | undefined;
+    readonly locationsOpenToWork: ReadonlyArray<string>;
+    readonly openToRelocationAnywhere: boolean;
   } | null | undefined;
   readonly " $fragmentType": "UpdateCareerProfileFormFragment";
 };
@@ -75,6 +77,20 @@ const node: ReaderFragment = {
           "kind": "ScalarField",
           "name": "expectedSalary",
           "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "locationsOpenToWork",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "openToRelocationAnywhere",
+          "storageKey": null
         }
       ],
       "storageKey": null
@@ -84,6 +100,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "4f2719e1a29bcc005e21cd6aeea49a06";
+(node as any).hash = "c6486ee106581daac97d6431550d49fc";
 
 export default node;

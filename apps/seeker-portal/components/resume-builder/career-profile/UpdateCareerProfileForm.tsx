@@ -1,9 +1,11 @@
 import type { UpdateCareerProfileFormFragment$key } from '@/__generated__/UpdateCareerProfileFormFragment.graphql';
-import { Checkbox, CheckboxGroup, Input } from '@heroui/react';
+import { Checkbox, CheckboxGroup, Chip, Divider, Input, Switch } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { Controller, useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
+import LocationAutocomplete from '../../forms/LocationAutocomplete';
 import { SteppableNumberInput } from '../../forms/SteppableNumberInput';
 import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 
@@ -29,7 +31,10 @@ const UpdateCareerProfileFormFragment = graphql`
 		desiredJobTypes
 		desiredWorkModes
 		expectedSalary
+		locationsOpenToWork
+    openToRelocationAnywhere
 	}
+
   }
 `;
 
@@ -42,29 +47,37 @@ const formSchema = z.object({
 	currentIndustry: z.nullable(z.string()),
 	desiredJobTypes: z.array(z.string()),
 	desiredWorkModes: z.array(z.string()),
-	expectedSalary: z.nullable(z.number().min(0))
+	expectedSalary: z.nullable(z.number().min(0)),
+	openToRelocationAnywhere: z.boolean(),
+	locationsOpenToWork: z.array(z.string())
 });
 
 export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Props) {
 	const [commitMutation, isMutationInFlight] = useMutation(UpdateCareerProfileFormMutation);
 	const data = useFragment(UpdateCareerProfileFormFragment, rootQuery);
+	const [inputValue, setInputValue] = useState('');
 
 	const defaultValues: z.infer<typeof formSchema> = {
 		currentIndustry: data.careerProfile?.currentIndustry ?? null,
 		desiredJobTypes: data.careerProfile?.desiredJobTypes ?? [],
 		desiredWorkModes: data.careerProfile?.desiredWorkModes ?? [],
-		expectedSalary: data.careerProfile?.expectedSalary ?? null
+		expectedSalary: data.careerProfile?.expectedSalary ?? null,
+		openToRelocationAnywhere: data.careerProfile?.openToRelocationAnywhere || false,
+		locationsOpenToWork: (data.careerProfile?.locationsOpenToWork || []) as string[]
 	};
 
 	const {
 		handleSubmit,
 		control,
+		setValue,
 		reset,
 		formState: { errors, isSubmitting, isDirty, isValid }
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
 		defaultValues
 	});
+
+	const locations = useWatch({ control, name: 'locationsOpenToWork' }) || [];
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
 		commitMutation({
@@ -73,7 +86,9 @@ export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Pr
 					currentIndustry: formData.currentIndustry,
 					desiredJobTypes: formData.desiredJobTypes,
 					desiredWorkModes: formData.desiredWorkModes,
-					expectedSalary: formData.expectedSalary
+					expectedSalary: formData.expectedSalary,
+					locationsOpenToWork: formData.locationsOpenToWork || [],
+					openToRelocationAnywhere: formData.openToRelocationAnywhere
 				}
 			},
 			onCompleted() {
@@ -81,6 +96,10 @@ export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Pr
 				onSaveChanges();
 			}
 		});
+	}
+
+	function handleRemoveLocation(loc: string) {
+		setValue('locationsOpenToWork', locations.filter((l: string) => l !== loc) as string[], { shouldDirty: true, shouldValidate: true });
 	}
 
 	return (
@@ -179,6 +198,51 @@ export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Pr
 								</CheckboxGroup>
 							)}
 						/>
+					</div>
+					<Divider />
+					<div className='mb-12 flex flex-col gap-6'>
+						<div className='flex items-center gap-4 mb-4'>
+							<Controller
+								name='openToRelocationAnywhere'
+								control={control}
+								render={({ field }) => <Switch isSelected={field.value} onValueChange={field.onChange} />}
+							/>
+							<span>Open to relocation anywhere</span>
+						</div>
+						{errors.locationsOpenToWork && <div className='text-red-500 text-sm mb-2'>{errors.locationsOpenToWork.message}</div>}
+						<div className='flex flex-col w-full gap-2'>
+							<div className='block'>Preferred work locations</div>
+
+							<LocationAutocomplete
+								value={inputValue}
+								onValueChange={setInputValue}
+								onChange={location => {
+									if (location.address.displayName && !locations.includes(location.address.displayName)) {
+										setValue('locationsOpenToWork', [...locations, location.address.displayName] as string[], {
+											shouldValidate: true,
+											shouldDirty: true
+										});
+									}
+									setInputValue('');
+								}}
+								onClear={() => setInputValue('')}
+								placeholder='Add a location'
+								inputProps={{
+									classNames: {
+										inputWrapper: 'bg-background'
+									}
+								}}
+							/>
+							{locations && (
+								<div className='flex flex-wrap gap-2 mt-4'>
+									{locations?.map((loc: string) => (
+										<Chip key={loc} isCloseable size='sm' onClose={() => handleRemoveLocation(loc)}>
+											{loc}
+										</Chip>
+									))}
+								</div>
+							)}
+						</div>
 					</div>
 				</div>
 			</form>

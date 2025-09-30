@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a079c532a019f2ffc969fba531a91343>>
- * @relayHash 442746a5048619e75290be9d3d02e44c
+ * @generated SignedSource<<141a572f74d074a67445e0afa2af0609>>
+ * @relayHash 8ad2493a721b8d8931c253375a86d0c0
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 442746a5048619e75290be9d3d02e44c
+// @relayRequestID 8ad2493a721b8d8931c253375a86d0c0
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -22,10 +22,8 @@ export type AutofillWithAIModalMutation$data = {
     readonly address?: string | null | undefined;
     readonly dateOfBirth?: any | null | undefined;
     readonly headline?: string | null | undefined;
-    readonly locationsOpenToWork?: ReadonlyArray<string>;
-    readonly openToRelocationAnywhere?: boolean;
     readonly professionalSummary?: string | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"UpdateCertificationsFormFragment" | "UpdateEducationFormFragment" | "UpdateLanguagesFormFragment" | "UpdateLicensesFormFragment" | "UpdateLocationPreferencesFormFragment" | "UpdatePersonalDetailsFormFragment" | "UpdateWorkExperienceFormFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"UpdateCertificationsFormFragment" | "UpdateEducationFormFragment" | "UpdateLanguagesFormFragment" | "UpdateLicensesFormFragment" | "UpdatePersonalDetailsFormFragment" | "UpdateWorkExperienceFormFragment">;
   };
 };
 export type AutofillWithAIModalMutation = {
@@ -90,38 +88,24 @@ v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "openToRelocationAnywhere",
+  "name": "name",
   "storageKey": null
 },
 v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "locationsOpenToWork",
+  "name": "startedAt",
   "storageKey": null
 },
 v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "name",
-  "storageKey": null
-},
-v9 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "startedAt",
-  "storageKey": null
-},
-v10 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "completedAt",
   "storageKey": null
 },
-v11 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -150,8 +134,6 @@ return {
               (v3/*: any*/),
               (v4/*: any*/),
               (v5/*: any*/),
-              (v6/*: any*/),
-              (v7/*: any*/),
               {
                 "args": null,
                 "kind": "FragmentSpread",
@@ -161,11 +143,6 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "UpdateLanguagesFormFragment"
-              },
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "UpdateLocationPreferencesFormFragment"
               },
               {
                 "args": null,
@@ -226,8 +203,6 @@ return {
               (v3/*: any*/),
               (v4/*: any*/),
               (v5/*: any*/),
-              (v6/*: any*/),
-              (v7/*: any*/),
               {
                 "kind": "InlineFragment",
                 "selections": [
@@ -260,7 +235,7 @@ return {
                     "name": "languages",
                     "plural": true,
                     "selections": [
-                      (v8/*: any*/),
+                      (v6/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -293,8 +268,8 @@ return {
                         "name": "institution",
                         "storageKey": null
                       },
-                      (v9/*: any*/),
-                      (v10/*: any*/)
+                      (v7/*: any*/),
+                      (v8/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -327,8 +302,8 @@ return {
                         "name": "organization",
                         "storageKey": null
                       },
-                      (v9/*: any*/),
-                      (v10/*: any*/),
+                      (v7/*: any*/),
+                      (v8/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -354,8 +329,8 @@ return {
                     "name": "certifications",
                     "plural": true,
                     "selections": [
-                      (v8/*: any*/),
-                      (v11/*: any*/),
+                      (v6/*: any*/),
+                      (v9/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -388,8 +363,8 @@ return {
                     "name": "licenses",
                     "plural": true,
                     "selections": [
-                      (v8/*: any*/),
-                      (v11/*: any*/),
+                      (v6/*: any*/),
+                      (v9/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -435,7 +410,7 @@ return {
     ]
   },
   "params": {
-    "id": "442746a5048619e75290be9d3d02e44c",
+    "id": "8ad2493a721b8d8931c253375a86d0c0",
     "metadata": {},
     "name": "AutofillWithAIModalMutation",
     "operationKind": "mutation",
@@ -444,6 +419,6 @@ return {
 };
 })();
 
-(node as any).hash = "14c6a9beb7c60e337c0a1a3ad66e4fdb";
+(node as any).hash = "591fe3a9cb08916653a2dac842dfc3d7";
 
 export default node;

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c386fe3bad2d61a634f92071ecaf70a5>>
- * @relayHash ae5c3eeb49cb7beff485ccbfe9eae3fb
+ * @generated SignedSource<<6b3a7f55cc7d55980a2f52347f581012>>
+ * @relayHash c1448ed5191aea43889639bbea5a603c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ae5c3eeb49cb7beff485ccbfe9eae3fb
+// @relayRequestID c1448ed5191aea43889639bbea5a603c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -115,6 +115,20 @@ return {
                         "kind": "ScalarField",
                         "name": "expectedSalary",
                         "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "locationsOpenToWork",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "openToRelocationAnywhere",
+                        "storageKey": null
                       }
                     ],
                     "storageKey": null
@@ -141,7 +155,7 @@ return {
     ]
   },
   "params": {
-    "id": "ae5c3eeb49cb7beff485ccbfe9eae3fb",
+    "id": "c1448ed5191aea43889639bbea5a603c",
     "metadata": {},
     "name": "CareerProfileClientComponentQuery",
     "operationKind": "query",

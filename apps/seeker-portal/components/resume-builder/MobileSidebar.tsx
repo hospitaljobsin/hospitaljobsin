@@ -17,7 +17,6 @@ export const MobileSidebar: React.FC = () => {
 		{ key: links.resumeBuilderEducation, title: 'Education' },
 		{ key: links.resumeBuilderCertifications, title: 'Certifications' },
 		{ key: links.resumeBuilderLicenses, title: 'Licenses' },
-		{ key: links.resumeBuilderLocationPreferences, title: 'Location Preferences' },
 		{ key: links.resumeBuilderLanguages, title: 'Languages' }
 	];
 

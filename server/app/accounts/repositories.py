@@ -10,7 +10,6 @@ from bson import ObjectId
 from passlib.hash import argon2
 from strawberry import UNSET
 
-from app.base.models import GeoObject
 from app.core.constants import (
     EMAIL_VERIFICATION_EXPIRES_IN,
     EMAIL_VERIFICATION_TOKEN_LENGTH,
@@ -30,7 +29,6 @@ from .documents import (
     Gender,
     Language,
     License,
-    Location,
     MaritalStatus,
     PhoneNumberVerificationToken,
     Profile,
@@ -317,14 +315,12 @@ class ProfileRepo:
             address="",
             marital_status=None,
             category=None,
-            locations_open_to_work=[],
-            open_to_relocation_anywhere=False,
             education=[],
             licenses=[],
             languages=[],
             job_preferences=[],
             work_experience=[],
-            salary_expectations=None,
+            career_profile=None,
             certifications=[],
             professional_summary=None,
             headline=None,
@@ -363,8 +359,6 @@ class ProfileRepo:
         address: str | None = UNSET,
         marital_status: MaritalStatus | None = UNSET,
         category: str | None = UNSET,
-        locations_open_to_work: list[str] = UNSET,
-        open_to_relocation_anywhere: bool = UNSET,
         education: list[Education] = UNSET,
         licenses: list[License] = UNSET,
         languages: list[Language] = UNSET,
@@ -388,35 +382,6 @@ class ProfileRepo:
             profile.marital_status = marital_status
         if category is not UNSET:
             profile.category = category
-        if locations_open_to_work is not UNSET:
-            # Build a lookup for existing locations by name for O(1) access
-            existing_locations_by_name = {
-                loc.name: loc for loc in profile.locations_open_to_work
-            }
-            updated_locations: list[Location] = []
-            for location_name in locations_open_to_work:
-                if location_name in existing_locations_by_name:
-                    # Reuse the existing geocoded Location object
-                    updated_locations.append(existing_locations_by_name[location_name])
-                else:
-                    # Geocode and add if successful
-                    result = await self._region_repo.get_by_name(location_name)
-                    if result is not None:
-                        updated_locations.append(
-                            Location(
-                                name=location_name,
-                                geo=GeoObject(
-                                    type="Point",
-                                    coordinates=(
-                                        result.coordinates.coordinates[0],
-                                        result.coordinates.coordinates[1],
-                                    ),
-                                ),
-                            )
-                        )
-            profile.locations_open_to_work = updated_locations
-        if open_to_relocation_anywhere is not UNSET:
-            profile.open_to_relocation_anywhere = open_to_relocation_anywhere
         if education is not UNSET:
             profile.education = education
         if licenses is not UNSET:

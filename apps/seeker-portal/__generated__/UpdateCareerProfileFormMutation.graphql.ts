@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c9484fcce22f24b3e52721e5c25cae3e>>
- * @relayHash a6d8a3051b1fe2fb04c1786059ad8ddd
+ * @generated SignedSource<<5efe58b39f939a88b28dcae9d46b6bbc>>
+ * @relayHash 21cd47627ca3ee08691d7a5fa5dd2218
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID a6d8a3051b1fe2fb04c1786059ad8ddd
+// @relayRequestID 21cd47627ca3ee08691d7a5fa5dd2218
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -20,6 +20,8 @@ export type CareerProfileInput = {
   desiredJobTypes?: ReadonlyArray<JobType>;
   desiredWorkModes?: ReadonlyArray<WorkMode>;
   expectedSalary?: number | null | undefined;
+  locationsOpenToWork?: ReadonlyArray<string>;
+  openToRelocationAnywhere?: boolean;
 };
 export type UpdateCareerProfileFormMutation$variables = {
   careerProfile: CareerProfileInput;
@@ -199,6 +201,20 @@ return {
                         "kind": "ScalarField",
                         "name": "expectedSalary",
                         "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "locationsOpenToWork",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "openToRelocationAnywhere",
+                        "storageKey": null
                       }
                     ],
                     "storageKey": null
@@ -224,7 +240,7 @@ return {
     ]
   },
   "params": {
-    "id": "a6d8a3051b1fe2fb04c1786059ad8ddd",
+    "id": "21cd47627ca3ee08691d7a5fa5dd2218",
     "metadata": {},
     "name": "UpdateCareerProfileFormMutation",
     "operationKind": "mutation",

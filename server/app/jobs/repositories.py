@@ -1082,7 +1082,15 @@ class JobApplicantRepo:
     def format_career_profile(
         career_profile: CareerProfile,
     ) -> str:
-        return f"Preferred Monthly Salary: {career_profile.expected_salary or 'N/A'} INR, Current Industry: {career_profile.current_industry or 'N/A'}, Desired Job types: {', '.join(career_profile.desired_job_types) if career_profile.desired_job_types else 'N/A'}, Desired Work Modes: {', '.join(career_profile.desired_work_modes) if career_profile.desired_work_modes else 'N/A'}"
+        locations_str = ", ".join(career_profile.locations_open_to_work)
+        return (
+            f"Preferred Monthly Salary: {career_profile.expected_salary or 'N/A'} INR, "
+            f"Current Industry: {career_profile.current_industry or 'N/A'}, "
+            f"Desired Job types: {', '.join(career_profile.desired_job_types) if career_profile.desired_job_types else 'N/A'}, "
+            f"Desired Work Modes: {', '.join(career_profile.desired_work_modes) if career_profile.desired_work_modes else 'N/A'}, "
+            f"Open to work in: {locations_str or 'N/A'}\\n"
+            f"Open to relocate anywhere: {'Yes' if career_profile.open_to_relocation_anywhere else 'No'}\\n"
+        )
 
     @staticmethod
     def format_profile_snapshot_for_embedding(profile: BaseProfile) -> str:
@@ -1094,7 +1102,6 @@ class JobApplicantRepo:
         )
         skills_str = ", ".join(profile.job_preferences)
         languages_str = ", ".join([lang.name for lang in profile.languages])
-        locations_str = ", ".join([loc.name for loc in profile.locations_open_to_work])
         certifications_str = ", ".join([cert.name for cert in profile.certifications])
         return (
             f"Gender: {profile.gender or 'N/A'}\\n"
@@ -1102,13 +1109,10 @@ class JobApplicantRepo:
             f"Address: {profile.address or 'N/A'}\\n"
             f"Marital Status: {profile.marital_status or 'N/A'}\\n"
             f"Category: {profile.category or 'N/A'}\\n"
-            f"Open to work in: {locations_str or 'N/A'}\\n"
-            f"Open to relocate anywhere: {'Yes' if profile.open_to_relocation_anywhere else 'No'}\\n"
             f"Education: {education_str or 'N/A'}\\n"
             f"Work Experience: {work_experience_str or 'N/A'}\\n"
             f"Job Preferences: {skills_str or 'N/A'}\\n"
             f"Languages: {languages_str or 'N/A'}\\n"
-            f"Salary Expectations: {JobApplicantRepo.format_career_profile(profile.salary_expectations) if profile.salary_expectations else 'N/A'}\\n"
             f"Certifications: {certifications_str or 'N/A'}"
         )
 
@@ -1131,15 +1135,13 @@ class JobApplicantRepo:
                 gender=account.profile.gender,
                 marital_status=account.profile.marital_status,
                 category=account.profile.category,
-                locations_open_to_work=account.profile.locations_open_to_work,
-                open_to_relocation_anywhere=account.profile.open_to_relocation_anywhere,
                 education=account.profile.education,
                 licenses=account.profile.licenses,
                 languages=account.profile.languages,
                 job_preferences=account.profile.job_preferences,
                 work_experience=account.profile.work_experience,
                 total_work_experience_years=account.profile.total_work_experience_years,
-                salary_expectations=account.profile.salary_expectations,
+                career_profile=account.profile.career_profile,
                 certifications=account.profile.certifications,
                 professional_summary=account.profile.professional_summary,
                 headline=account.profile.headline,

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c3702b238bfc263cccee27a6a9ec241b>>
+ * @generated SignedSource<<3ac4cf48ae78bd7d5958537f2ec02c6d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type ProfileSnapshotViewFragment$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"AboutMeFragment" | "ApplicantFieldsFragment" | "CertificationsFragment" | "EducationFragment" | "LanguagesFragment" | "LicensesFragment" | "LocationPreferencesFragment" | "PersonalDetailsFragment" | "WorkExperienceFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"AboutMeFragment" | "ApplicantFieldsFragment" | "CertificationsFragment" | "EducationFragment" | "LanguagesFragment" | "LicensesFragment" | "PersonalDetailsFragment" | "WorkExperienceFragment">;
   readonly " $fragmentType": "ProfileSnapshotViewFragment";
 };
 export type ProfileSnapshotViewFragment$key = {
@@ -53,11 +53,6 @@ const node: ReaderFragment = {
     {
       "args": null,
       "kind": "FragmentSpread",
-      "name": "LocationPreferencesFragment"
-    },
-    {
-      "args": null,
-      "kind": "FragmentSpread",
       "name": "PersonalDetailsFragment"
     },
     {
@@ -75,6 +70,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "5edc5f27fb41bf3fc6a91807675bb7c8";
+(node as any).hash = "1b24645748d2e9f07b202550f8c0e715";
 
 export default node;

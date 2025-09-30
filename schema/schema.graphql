@@ -351,8 +351,6 @@ type AnalysedFields {
 	address: FieldAnalysis
 	maritalStatus: FieldAnalysis
 	category: FieldAnalysis
-	locationsOpenToWork: FieldAnalysis
-	openToRelocationAnywhere: FieldAnalysis
 	education: FieldAnalysis
 	licenses: FieldAnalysis
 	languages: FieldAnalysis
@@ -528,16 +526,6 @@ interface BaseProfile {
 	category: String
 
 	"""
-	Locations the user is open to work in.
-	"""
-	locationsOpenToWork: [String!]!
-
-	"""
-	Whether the user is open to relocation anywhere.
-	"""
-	openToRelocationAnywhere: Boolean!
-
-	"""
 	The user's education history.
 	"""
 	education: [Education!]!
@@ -600,6 +588,8 @@ type CareerProfile {
 	desiredJobTypes: [JobType!]!
 	desiredWorkModes: [WorkMode!]!
 	expectedSalary: Float
+	locationsOpenToWork: [String!]!
+	openToRelocationAnywhere: Boolean!
 }
 
 """
@@ -625,6 +615,16 @@ input CareerProfileInput {
 	The expected salary.
 	"""
 	expectedSalary: Float = null
+
+	"""
+	Locations the user is open to work in.
+	"""
+	locationsOpenToWork: [String!]! = []
+
+	"""
+	Whether the user is open to relocation anywhere.
+	"""
+	openToRelocationAnywhere: Boolean! = false
 }
 
 type Certification {
@@ -3089,21 +3089,6 @@ type Mutation {
 	): Account
 
 	"""
-	Update the current user's profile location preferences.
-	"""
-	updateProfileLocationPreferences(
-		"""
-		Locations the user is open to work in.
-		"""
-		locationsOpenToWork: [String!]!
-
-		"""
-		Whether the user is open to relocation anywhere.
-		"""
-		openToRelocationAnywhere: Boolean!
-	): UpdateProfilePayload! @isAuthenticated
-
-	"""
 	Update the current user's profile education.
 	"""
 	updateProfileEducation(
@@ -4182,16 +4167,6 @@ type Profile implements BaseProfile & Node {
 	category: String
 
 	"""
-	Locations the user is open to work in.
-	"""
-	locationsOpenToWork: [String!]!
-
-	"""
-	Whether the user is open to relocation anywhere.
-	"""
-	openToRelocationAnywhere: Boolean!
-
-	"""
 	The user's education history.
 	"""
 	education: [Education!]!
@@ -4285,16 +4260,6 @@ type ProfileSnapshot implements BaseProfile {
 	The category of the profile's user.
 	"""
 	category: String
-
-	"""
-	Locations the user is open to work in.
-	"""
-	locationsOpenToWork: [String!]!
-
-	"""
-	Whether the user is open to relocation anywhere.
-	"""
-	openToRelocationAnywhere: Boolean!
 
 	"""
 	The user's education history.
