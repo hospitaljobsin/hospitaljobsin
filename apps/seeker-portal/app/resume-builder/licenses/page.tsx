@@ -24,7 +24,7 @@ const ResumeProgressClientComponent = dynamic(() => import('@/components/resume-
 
 export default function LicensePage() {
 	return (
-		<div className='w-full h-full flex flex-col'>
+		<div className='w-full h-full flex flex-col bg-background-600'>
 			<DashboardHeaderClientComponent />
 			<div className='w-full h-full flex flex-1 max-w-7xl mx-auto flex-col-reverse lg:flex-row'>
 				<LicensesClientComponent />
