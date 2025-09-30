@@ -92,9 +92,6 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [queryReference, loadQuery, disposeQuery] = useQueryLoader<LocationAutocompleteQuery>(SearchLocationsQuery);
 
-	// Track the last selected value to prevent it from being cleared
-	const lastSelectedValue = useRef<string | null>(null);
-	const lastSelectedValueTimestamp = useRef<number>(0);
 	const shouldRefetchSuggestions = useRef(true);
 
 	const handleDataLoaded = useCallback((locations: SearchLocation[]) => {
@@ -137,16 +134,10 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 
 	const handleSelectionChange = (selectedKey: Key | null) => {
 		if (!selectedKey) {
-			// Do nothing on blur or deselection
 			return;
 		}
 		const selected = suggestions.find(item => item.placeId === selectedKey);
 		if (selected) {
-			console.log('Selection changed to:', selected);
-
-			// Prevent refetching suggestions when setting value from selection
-			shouldRefetchSuggestions.current = false;
-
 			// Update the parent component with the selected location object
 			onChange?.({
 				address: selected.address,
@@ -154,65 +145,24 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 				level: selected.level
 			});
 
-			// Set the input value to the displayName if it exists
-			if (selected.address.displayName) {
-				// Store the selected value to prevent it from being cleared
-				lastSelectedValue.current = selected.address.displayName;
-				lastSelectedValueTimestamp.current = Date.now();
-
-				// Update the input value
-				onValueChange?.(selected.address.displayName);
-
-				// Submit the selected value
-				onSubmit?.(selected.address.displayName);
-			}
-
 			setIsLoading(false);
-			// Clear query reference to completely stop the loading state
 			disposeQuery();
 		}
 	};
 
 	const handleInputChange = (value: string) => {
-		console.log('INPUT CHANGE: ', value);
-
 		// Reset justSubmitted when user starts typing again
 		if (justSubmitted) {
 			setJustSubmitted(false);
 		}
 
-		// If we have a last selected value and the input is being cleared (likely due to a race condition),
-		// don't clear it and maintain the selected value
-		if (value === '' && lastSelectedValue.current && !justSubmitted) {
-			// If the value is being cleared right after a selection, it might be a race condition
-			// Check if less than 100ms passed since selection (typical for UI framework events)
-			const timeSinceLastUpdate = Date.now() - (lastSelectedValueTimestamp.current || 0);
-			if (timeSinceLastUpdate < 100) {
-				console.log('Preventing value clear, restoring:', lastSelectedValue.current);
-				setTimeout(() => {
-					// Make sure value is not null before using it
-					const valueToRestore = lastSelectedValue.current;
-					if (valueToRestore) {
-						onValueChange?.(valueToRestore);
-					}
-				}, 0);
-				return;
-			}
-
-			// If it's been longer, user probably intentionally cleared the input
-			lastSelectedValue.current = null;
-			setSuggestions([]);
-		} else if (value === '') {
-			// Normal clearing behavior
+		// Clear suggestions when input is empty
+		if (value === '') {
 			setSuggestions([]);
 		}
 
-		// Only update the value if it's not undefined or null
-		if (value !== undefined && value !== null) {
-			onValueChange?.(value);
-		}
-
-		// Don't call onChange here, only when selection changes
+		// Always update the value
+		onValueChange?.(value);
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {

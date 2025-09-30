@@ -120,6 +120,7 @@ export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Pr
 							render={({ field }) => (
 								<Input
 									{...field}
+									variant='bordered'
 									label='Current Industry'
 									placeholder='Enter your current industry'
 									value={field.value ?? ''}
@@ -139,6 +140,7 @@ export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Pr
 							render={({ field }) => (
 								<SteppableNumberInput
 									{...field}
+									variant='bordered'
 									label='Expected Salary'
 									placeholder='Enter expected salary'
 									formatOptions={{
@@ -234,15 +236,17 @@ export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Pr
 											shouldValidate: true,
 											shouldDirty: true
 										});
+										setInputValue('');
 									}
-									setInputValue('');
 								}}
 								onClear={() => setInputValue('')}
 								placeholder='Add a location'
+								variant='bordered'
 								inputProps={{
 									classNames: {
 										inputWrapper: 'bg-background'
-									}
+									},
+									variant: 'bordered'
 								}}
 							/>
 							{locations && (

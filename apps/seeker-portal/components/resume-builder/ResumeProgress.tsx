@@ -10,6 +10,13 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import invariant from 'tiny-invariant';
 
+function getProgressText(percentage: number): string {
+	if (percentage < 50) return 'weak';
+	if (percentage < 65) return 'moderate';
+	if (percentage < 80) return 'good';
+	return 'excellent';
+}
+
 const ResumeProgressFragment = graphql`
 fragment ResumeProgressFragment on Query {
     viewer {
@@ -47,6 +54,8 @@ export default function ResumeProgress({ query }: { query: ResumeProgressFragmen
 				value={data.profile.progressPercentage}
 				color={getResumeProgressColor(data.profile.progressPercentage)}
 				classNames={{ label: 'text-foreground-600 text-sm', value: 'text-foreground-600' }}
+				formatOptions={{ style: 'percent', minimumFractionDigits: 0 }}
+				valueLabel={`${data.profile.progressPercentage}% - ${getProgressText(data.profile.progressPercentage)}`}
 				showValueLabel
 				disableAnimation
 			/>
@@ -56,9 +65,10 @@ export default function ResumeProgress({ query }: { query: ResumeProgressFragmen
 					<div
 						className={`w-full h-32 bg-${getResumeProgressColor(data.profile.progressPercentage)}-400 rounded-t-lg flex items-center justify-end pr-6`}
 					>
-						<span className={`text-${getResumeProgressColor(data.profile.progressPercentage)}-foreground opacity-75 text-2xl font-medium`}>
-							{data.profile.progressPercentage}% complete
-						</span>
+						<div className={`text-${getResumeProgressColor(data.profile.progressPercentage)}-foreground text-right`}>
+							<div className='text-2xl font-medium opacity-80'>{data.profile.progressPercentage}% complete</div>
+							<div className='text-lg opacity-75'>{getProgressText(data.profile.progressPercentage)}</div>
+						</div>
 					</div>
 					{/* Avatar and Name */}
 					<div className='absolute left-6 -bottom-10 flex items-end gap-4'>
@@ -73,7 +83,7 @@ export default function ResumeProgress({ query }: { query: ResumeProgressFragmen
 				</div>
 				<CardBody className='pt-14 pb-6 px-6'>
 					<div className='flex flex-col sm:flex-row gap-6 items-start justify-between w-full'>
-						<div className='flex flex-col gap-2'>
+						<div className='flex flex-col gap-4'>
 							<h1 className='text-2xl font-medium'>{data.fullName}</h1>
 							<div className='flex flex-col gap-4 text-foreground-600 text-sm'>
 								<div className='flex items-start gap-6'>

@@ -111,6 +111,7 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 								<Select
 									{...field}
 									fullWidth
+									variant='bordered'
 									label='Gender'
 									placeholder='Add your gender'
 									selectionMode='single'
@@ -143,6 +144,7 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 										label='Date of Birth'
 										{...field}
 										value={field.value as any}
+										variant='bordered'
 										onChange={field.onChange}
 										errorMessage={errors.dateOfBirth?.message}
 										isInvalid={!!errors.dateOfBirth}
@@ -163,6 +165,7 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 									{...field}
 									fullWidth
 									label='Marital Status'
+									variant='bordered'
 									placeholder='Add your marital status'
 									selectionMode='single'
 									value={field.value ?? ''}
@@ -190,6 +193,7 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 								<Input
 									{...field}
 									label='Category'
+									variant='bordered'
 									placeholder='Add your category'
 									value={field.value ?? ''}
 									errorMessage={errors.category?.message}
@@ -209,6 +213,7 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 								<LocationAutocomplete
 									label='Current Address'
 									labelPlacement='outside'
+									variant='bordered'
 									value={field.value || ''}
 									onValueChange={field.onChange}
 									onChange={location => {

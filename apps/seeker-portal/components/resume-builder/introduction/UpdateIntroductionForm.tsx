@@ -88,7 +88,7 @@ export default function UpdateIntroductionForm({
 						label='Headline'
 						placeholder='Enter your headline'
 						type='text'
-						variant='faded'
+						variant='bordered'
 						errorMessage={errors.headline?.message}
 						isInvalid={!!errors.headline}
 						className='w-full'
