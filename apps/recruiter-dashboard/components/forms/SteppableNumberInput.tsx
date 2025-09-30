@@ -1,18 +1,14 @@
-import { Input } from '@heroui/react';
+import { Input, type InputProps } from '@heroui/react';
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
-interface SteppableNumberInputProps {
+interface SteppableNumberInputProps extends Omit<InputProps, 'value' | 'onValueChange' | 'type' | 'endContent'> {
 	value?: number | null;
 	onValueChange?: (value: number | null) => void;
 	step?: number;
 	min?: number;
 	max?: number;
 	formatOptions?: Intl.NumberFormatOptions;
-	label?: string;
-	placeholder?: string;
-	errorMessage?: string;
-	isInvalid?: boolean;
 	isClearable?: boolean;
 	onClear?: () => void;
 }
@@ -24,12 +20,9 @@ export function SteppableNumberInput({
 	min,
 	max,
 	formatOptions,
-	label,
-	placeholder,
-	errorMessage,
-	isInvalid,
 	isClearable,
-	onClear
+	onClear,
+	...inputProps
 }: SteppableNumberInputProps) {
 	const formatNumber = useCallback((num: number, options?: Intl.NumberFormatOptions) => {
 		if (options) {
@@ -72,13 +65,10 @@ export function SteppableNumberInput({
 
 	return (
 		<Input
+			{...inputProps}
 			type='text'
-			label={label}
-			placeholder={placeholder}
 			value={inputValue}
 			onValueChange={handleInputChange}
-			errorMessage={errorMessage}
-			isInvalid={isInvalid}
 			endContent={
 				<div className='flex items-center gap-1'>
 					{isClearable && inputValue && (

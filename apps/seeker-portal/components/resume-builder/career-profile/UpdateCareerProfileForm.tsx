@@ -4,6 +4,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { Controller, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
+import { SteppableNumberInput } from '../../forms/SteppableNumberInput';
 import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 
 const UpdateCareerProfileFormMutation = graphql`
@@ -111,13 +112,21 @@ export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Pr
 							name='expectedSalary'
 							control={control}
 							render={({ field }) => (
-								<Input
+								<SteppableNumberInput
 									{...field}
 									label='Expected Salary'
 									placeholder='Enter expected salary'
-									type='number'
-									value={field.value?.toString() ?? ''}
-									onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)}
+									formatOptions={{
+										style: 'currency',
+										currency: 'INR',
+										currencyDisplay: 'code',
+										currencySign: 'accounting'
+									}}
+									value={field.value as number | undefined}
+									onValueChange={field.onChange}
+									step={1000}
+									isClearable
+									onClear={() => field.onChange(null)}
 									errorMessage={errors.expectedSalary?.message}
 									isInvalid={!!errors.expectedSalary}
 									classNames={{
