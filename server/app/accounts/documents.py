@@ -145,10 +145,6 @@ class BaseProfile(BaseModel):
 # Main Job Seeker Profile Document
 # AKA Reusable Resume
 class Profile(BaseProfile, Document):
-    source_document_urls: list[str] = Field(
-        default_factory=list,
-        description="List of URLs to the source documents (e.g., resumes in PDF format) used to create this profile.",
-    )  # limit
     embedding: list[float] | None = Field(default=None, repr=False)
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 

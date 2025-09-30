@@ -92,6 +92,7 @@ const nextConfig: NextConfig = {
 			lexical: 'lexical/Lexical.dev.mjs'
 		}
 	},
+	// biome-ignore lint/suspicious/useAwait: nextjs expects an async function here
 	async rewrites() {
 		return [
 			{
@@ -108,11 +109,12 @@ const nextConfig: NextConfig = {
 			}
 		];
 	},
+	// biome-ignore lint/suspicious/useAwait: nextjs expects an async function here
 	async redirects() {
 		return [
 			{
 				source: links.resumeBuilder,
-				destination: links.resumeBuilderPersonalInfo,
+				destination: links.resumeBuilderResume,
 				permanent: false
 			},
 			{
@@ -153,6 +155,7 @@ const nextConfig: NextConfig = {
 			}
 		];
 	},
+	// biome-ignore lint/suspicious/useAwait: nextjs expects an async function here
 	async headers() {
 		return [
 			{

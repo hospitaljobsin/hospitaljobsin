@@ -35,12 +35,10 @@ from .types import (
     LanguageInputType,
     LicenseInputType,
     MaritalStatusTypeEnum,
-    ParseProfileDocumentPayload,
     PhoneNumberAlreadyExistsErrorType,
     PhoneNumberDoesNotExistErrorType,
     PhoneNumberMissingErrorType,
     PhoneNumberVerificationTokenCooldownErrorType,
-    ProfileType,
     RemoveAccountPhoneNumberPayload,
     RequestPhoneNumberVerificationTokenPayload,
     RequestPhoneNumberVerificationTokenSuccessType,
@@ -574,46 +572,6 @@ class AccountMutation:
                 assert_never(unreachable)
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=ParseProfileDocumentPayload,
-        description="Parse a profile document into structured data.",
-        extensions=[
-            PermissionExtension(
-                permissions=[
-                    IsAuthenticated(),
-                ],
-            )
-        ],
-    )
-    @inject
-    async def parse_profile_document(
-        self,
-        info: AuthInfo,
-        profile_parser_service: Annotated[ProfileParserService, Inject],
-        file_key: Annotated[
-            str,
-            strawberry.argument(
-                description="The document URL to parse.",
-            ),
-        ],
-        overwrite: Annotated[
-            bool,
-            strawberry.argument(
-                description="Whether to overwrite the existing profile.",
-            ),
-        ] = False,
-    ) -> ParseProfileDocumentPayload:
-        """Parse a profile document into structured data."""
-        match await profile_parser_service.parse_profile_document(
-            file_key=file_key,
-            account=info.context["current_user"],
-            overwrite=overwrite,
-        ):
-            case Ok(profile):
-                return ProfileType.marshal(profile)
-            case _ as unreachable:
-                assert_never(unreachable)
-
-    @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GenerateProfileDocumentPresignedURLPayloadType,
         description="Parse a profile document into structured data.",
         extensions=[
@@ -695,16 +653,51 @@ class AccountMutation:
         info: AuthInfo,
         profile_service: Annotated[ProfileService, Inject],
         resume_url: Annotated[
-            str | None,
+            str,
             strawberry.argument(
                 description="The URL of the resume file.",
             ),
-        ] = None,
+        ],
+        file_key: Annotated[
+            str,
+            strawberry.argument(
+                description="The file key of the resume file in the storage provider.",
+            ),
+        ],
     ) -> UpdateProfilePayload:
         """Update the current user's resume."""
         match await profile_service.update_resume(
             account=info.context["current_user"],
             resume_url=resume_url,
+            file_key=file_key,
+        ):
+            case Ok(account):
+                return AccountType.marshal(account)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateProfilePayload,
+        description="Remove the current user's resume.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def remove_profile_resume(
+        self,
+        info: AuthInfo,
+        profile_service: Annotated[ProfileService, Inject],
+    ) -> UpdateProfilePayload:
+        """Remove the current user's resume."""
+        match await profile_service.update_resume(
+            account=info.context["current_user"],
+            resume_url=None,
+            file_key=None,
         ):
             case Ok(account):
                 return AccountType.marshal(account)

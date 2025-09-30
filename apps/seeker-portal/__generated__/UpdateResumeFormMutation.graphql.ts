@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<f37c4c4418eb07242c526c24c09c25c9>>
- * @relayHash 5b01eec35cab4226e2204e5014c1e940
+ * @generated SignedSource<<deb381a051ca7f45f25b3786c0cb39a6>>
+ * @relayHash 10d974b5040246c8a9e37da0766587e1
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,12 +9,13 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 5b01eec35cab4226e2204e5014c1e940
+// @relayRequestID 10d974b5040246c8a9e37da0766587e1
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type UpdateResumeFormMutation$variables = {
-  resumeUrl?: string | null | undefined;
+  fileKey: string;
+  resumeUrl: string;
 };
 export type UpdateResumeFormMutation$data = {
   readonly updateProfileResume: {
@@ -30,21 +31,29 @@ export type UpdateResumeFormMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "fileKey"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "resumeUrl"
+},
+v2 = [
   {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "resumeUrl"
-  }
-],
-v1 = [
+    "kind": "Variable",
+    "name": "fileKey",
+    "variableName": "fileKey"
+  },
   {
     "kind": "Variable",
     "name": "resumeUrl",
     "variableName": "resumeUrl"
   }
 ],
-v2 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -53,14 +62,17 @@ v2 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "UpdateResumeFormMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateProfileResume",
@@ -108,13 +120,16 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "UpdateResumeFormMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateProfileResume",
@@ -130,7 +145,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v2/*: any*/),
+              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -146,7 +161,7 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v2/*: any*/),
+                  (v3/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -171,7 +186,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v2/*: any*/)
+              (v3/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -182,7 +197,7 @@ return {
     ]
   },
   "params": {
-    "id": "5b01eec35cab4226e2204e5014c1e940",
+    "id": "10d974b5040246c8a9e37da0766587e1",
     "metadata": {},
     "name": "UpdateResumeFormMutation",
     "operationKind": "mutation",
@@ -191,6 +206,6 @@ return {
 };
 })();
 
-(node as any).hash = "646176e01e8d0cfba6f86456abbc24ec";
+(node as any).hash = "a8ee691a6a0a54b3b101c751aec12236";
 
 export default node;

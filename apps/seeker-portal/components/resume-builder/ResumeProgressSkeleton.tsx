@@ -1,5 +1,4 @@
-import { Button, Progress } from '@heroui/react';
-import { SparkleIcon } from 'lucide-react';
+import { Progress } from '@heroui/react';
 
 export default function ResumeProgressSkeleton() {
 	return (
@@ -14,12 +13,6 @@ export default function ResumeProgressSkeleton() {
 					showValueLabel
 					disableAnimation
 				/>
-				<Button isDisabled className='min-w-64 hidden sm:flex lg:col-span-3' startContent={<SparkleIcon size={18} />}>
-					Autofill With AI
-				</Button>
-				<Button className='sm:hidden' isIconOnly isDisabled>
-					<SparkleIcon size={18} />
-				</Button>
 			</div>
 		</div>
 	);

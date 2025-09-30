@@ -353,7 +353,6 @@ class ProfileRepo:
         self,
         profile: Profile,
         *,
-        source_document_urls: list[str] = UNSET,
         gender: Gender | None = UNSET,
         date_of_birth: date | None = UNSET,
         address: str | None = UNSET,
@@ -371,8 +370,6 @@ class ProfileRepo:
         resume_url: str | None = UNSET,
     ) -> Profile:
         """Update a profile with new fields."""
-        if source_document_urls is not UNSET:
-            profile.source_document_urls = source_document_urls
         if gender is not UNSET:
             profile.gender = gender
         if date_of_birth is not UNSET:

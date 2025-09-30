@@ -3151,21 +3151,6 @@ type Mutation {
 	"""
 	Parse a profile document into structured data.
 	"""
-	parseProfileDocument(
-		"""
-		The document URL to parse.
-		"""
-		fileKey: String!
-
-		"""
-		Whether to overwrite the existing profile.
-		"""
-		overwrite: Boolean! = false
-	): ParseProfileDocumentPayload! @isAuthenticated
-
-	"""
-	Parse a profile document into structured data.
-	"""
 	generateProfileDocumentPresignedUrl(
 		"""
 		The content type of the file.
@@ -3190,8 +3175,18 @@ type Mutation {
 		"""
 		The URL of the resume file.
 		"""
-		resumeUrl: String = null
+		resumeUrl: String!
+
+		"""
+		The file key of the resume file in the storage provider.
+		"""
+		fileKey: String!
 	): UpdateProfilePayload! @isAuthenticated
+
+	"""
+	Remove the current user's resume.
+	"""
+	removeProfileResume: UpdateProfilePayload! @isAuthenticated
 
 	"""
 	Remove the avatar from the current user account.
@@ -4038,11 +4033,6 @@ type PageInfo {
 	"""
 	endCursor: String
 }
-
-"""
-The parse profile document payload.
-"""
-union ParseProfileDocumentPayload = Profile
 
 """
 Used when the password is not strong enough.
