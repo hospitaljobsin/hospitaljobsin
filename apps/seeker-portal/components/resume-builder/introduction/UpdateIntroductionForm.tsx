@@ -1,11 +1,8 @@
-'use client';
-
 import type { UpdateIntroductionFormFragment$key } from '@/__generated__/UpdateIntroductionFormFragment.graphql';
 import type { UpdateIntroductionFormMutation as UpdateIntroductionFormMutationType } from '@/__generated__/UpdateIntroductionFormMutation.graphql';
 import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
 import { cn, Input } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useTransition } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod';
@@ -47,7 +44,6 @@ export default function UpdateIntroductionForm({
 }) {
 	const data = useFragment(ProfessionalSummaryFragment, rootQuery);
 	const [commitMutation, isInFlight] = useMutation<UpdateIntroductionFormMutationType>(UpdateIntroductionFormMutation);
-	const [isPending, startTransition] = useTransition();
 
 	const {
 		handleSubmit,
@@ -63,13 +59,14 @@ export default function UpdateIntroductionForm({
 		}
 	});
 
-	const onSubmit = (values: FormValues) => {
+	const onSubmit = (formData: FormValues) => {
 		commitMutation({
 			variables: {
-				professionalSummary: values.professionalSummary,
-				headline: values.headline
+				professionalSummary: formData.professionalSummary,
+				headline: formData.headline
 			},
 			onCompleted: () => {
+				reset(formData);
 				onSaveChanges();
 			}
 		});
