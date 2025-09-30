@@ -86,6 +86,9 @@ export default function UpdateIntroductionForm({
 						errorMessage={errors.headline?.message}
 						isInvalid={!!errors.headline}
 						className='w-full'
+						classNames={{
+							inputWrapper: 'bg-background'
+						}}
 					/>
 					<Controller
 						control={control}
@@ -112,6 +115,7 @@ export default function UpdateIntroductionForm({
 											<p className='text-tiny text-foreground-400'>Rich text editing is supported.</p>
 										)
 									}
+									className='bg-background'
 								/>
 							</div>
 						)}
