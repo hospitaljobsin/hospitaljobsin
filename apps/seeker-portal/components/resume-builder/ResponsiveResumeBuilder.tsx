@@ -20,7 +20,7 @@ export const ResponsiveResumeBuilder: React.FC<ResponsiveResumeBuilderProps> = (
 					<MobileComponent />
 				</MobileResumeBuilderLayout>
 			</div>
-			<div className='hidden lg:block'>
+			<div className='hidden lg:flex flex-1 w-full'>
 				<ResumeBuilderLayout>
 					<DesktopComponent />
 				</ResumeBuilderLayout>

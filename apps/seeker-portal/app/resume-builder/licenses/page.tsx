@@ -26,8 +26,10 @@ export default function LicensePage() {
 	return (
 		<div className='w-full h-full flex flex-col'>
 			<DashboardHeaderClientComponent />
-			<ResumeProgressClientComponent />
-			<LicensesClientComponent />
+			<div className='w-full h-full flex flex-1 max-w-7xl mx-auto flex-col-reverse lg:flex-row'>
+				<LicensesClientComponent />
+				<ResumeProgressClientComponent />
+			</div>
 		</div>
 	);
 }

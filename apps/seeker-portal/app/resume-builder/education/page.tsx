@@ -26,8 +26,10 @@ export default function EducationPage() {
 	return (
 		<div className='w-full h-full flex flex-col'>
 			<DashboardHeaderClientComponent />
-			<ResumeProgressClientComponent />
-			<EducationClientComponent />
+			<div className='w-full h-full flex flex-1 max-w-7xl mx-auto flex-col-reverse lg:flex-row'>
+				<EducationClientComponent />
+				<ResumeProgressClientComponent />
+			</div>
 		</div>
 	);
 }

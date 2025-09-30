@@ -24,10 +24,12 @@ const ResumeProgressClientComponent = dynamic(() => import('@/components/resume-
 
 export default function CertificationsPage() {
 	return (
-		<div className='w-full h-full flex flex-col'>
+		<div className='w-full h-full flex flex-col bg-background-600'>
 			<DashboardHeaderClientComponent />
-			<ResumeProgressClientComponent />
-			<CareerProfileClientComponent />
+			<div className='w-full h-full flex flex-1 max-w-7xl mx-auto flex-col-reverse lg:flex-row'>
+				<CareerProfileClientComponent />
+				<ResumeProgressClientComponent />
+			</div>
 		</div>
 	);
 }
