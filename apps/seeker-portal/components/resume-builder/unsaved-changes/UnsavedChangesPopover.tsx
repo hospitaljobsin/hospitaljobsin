@@ -10,7 +10,7 @@ interface UnsavedChangesPopoverProps {
 }
 
 export const UnsavedChangesPopover: React.FC<UnsavedChangesPopoverProps> = ({ children }) => {
-	const { hasUnsavedChanges, onSave, onCancel, setHasUnsavedChanges } = useUnsavedChanges();
+	const { hasUnsavedChanges, onSave, onCancel, setHasUnsavedChanges, isLoading } = useUnsavedChanges();
 
 	const handleSave = () => {
 		onSave?.();
@@ -36,18 +36,18 @@ export const UnsavedChangesPopover: React.FC<UnsavedChangesPopoverProps> = ({ ch
 						<div className='flex flex-col gap-6'>
 							<p className='font-normal text-sm md:text-base'>Caution - You have unsaved changes</p>
 							<div className='md:flex gap-4 hidden'>
-								<Button size='md' variant='flat' onPress={handleCancel}>
+								<Button size='md' variant='flat' onPress={handleCancel} isDisabled={isLoading}>
 									Cancel Changes
 								</Button>
-								<Button size='md' color='primary' onPress={handleSave}>
+								<Button size='md' color='primary' onPress={handleSave} isLoading={isLoading}>
 									Save Changes
 								</Button>
 							</div>
 							<div className='flex gap-4 md:hidden'>
-								<Button size='sm' variant='flat' onPress={handleCancel}>
+								<Button size='sm' variant='flat' onPress={handleCancel} isDisabled={isLoading}>
 									Cancel Changes
 								</Button>
-								<Button size='sm' color='primary' onPress={handleSave}>
+								<Button size='sm' color='primary' onPress={handleSave} isLoading={isLoading}>
 									Save Changes
 								</Button>
 							</div>

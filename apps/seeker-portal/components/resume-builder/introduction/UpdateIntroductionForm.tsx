@@ -73,7 +73,13 @@ export default function UpdateIntroductionForm({
 	};
 
 	return (
-		<UnsavedChangesFormWrapper isDirty={isDirty} isValid={isValid} onSave={handleSubmit(onSubmit)} onCancel={() => reset()}>
+		<UnsavedChangesFormWrapper
+			isDirty={isDirty}
+			isValid={isValid}
+			onSave={handleSubmit(onSubmit)}
+			onCancel={() => reset()}
+			isLoading={isInFlight}
+		>
 			<form className='space-y-8 sm:space-y-12'>
 				<div className='flex flex-col gap-8 sm:gap-12'>
 					<h1 className='w-full text-xl text-foreground-500 font-medium'>Introduction</h1>

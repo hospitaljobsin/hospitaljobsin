@@ -8,12 +8,15 @@ interface UnsavedChangesContextType {
 	onSave?: () => void;
 	onCancel?: () => void;
 	setCallbacks: (onSave: () => void, onCancel: () => void) => void;
+	isLoading: boolean;
+	setIsLoading: (value: boolean) => void;
 }
 
 const UnsavedChangesContext = createContext<UnsavedChangesContextType | undefined>(undefined);
 
 export const UnsavedChangesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 	const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const [onSave, setOnSave] = useState<(() => void) | undefined>();
 	const [onCancel, setOnCancel] = useState<(() => void) | undefined>();
 
@@ -29,7 +32,9 @@ export const UnsavedChangesProvider: React.FC<{ children: ReactNode }> = ({ chil
 				setHasUnsavedChanges,
 				onSave,
 				onCancel,
-				setCallbacks
+				setCallbacks,
+				isLoading,
+				setIsLoading
 			}}
 		>
 			{children}

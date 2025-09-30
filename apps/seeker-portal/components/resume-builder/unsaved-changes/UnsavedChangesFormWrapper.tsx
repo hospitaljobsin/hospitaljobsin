@@ -10,10 +10,18 @@ interface UnsavedChangesFormWrapperProps {
 	isValid: boolean;
 	onSave: () => void;
 	onCancel: () => void;
+	isLoading: boolean;
 }
 
-export const UnsavedChangesFormWrapper: React.FC<UnsavedChangesFormWrapperProps> = ({ children, isDirty, isValid, onSave, onCancel }) => {
-	useUnsavedChangesForm(isDirty, isValid, onSave, onCancel);
+export const UnsavedChangesFormWrapper: React.FC<UnsavedChangesFormWrapperProps> = ({
+	children,
+	isDirty,
+	isValid,
+	onSave,
+	onCancel,
+	isLoading
+}) => {
+	useUnsavedChangesForm(isDirty, isValid, isLoading, onSave, onCancel);
 
 	return <UnsavedChangesPopover>{children}</UnsavedChangesPopover>;
 };

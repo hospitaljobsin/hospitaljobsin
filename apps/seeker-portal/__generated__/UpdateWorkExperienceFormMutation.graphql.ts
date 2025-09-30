@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<6ac7bc803b23e3eae51ab510c3215c14>>
- * @relayHash f41a15f7673fa3a7605512c6b78a7bf6
+ * @generated SignedSource<<eb5acff91f46743d9600dbe110fb3424>>
+ * @relayHash 240f24db2c50fb7bf7cf4129a3ef3040
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID f41a15f7673fa3a7605512c6b78a7bf6
+// @relayRequestID 240f24db2c50fb7bf7cf4129a3ef3040
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -29,6 +29,15 @@ export type UpdateWorkExperienceFormMutation$variables = {
 export type UpdateWorkExperienceFormMutation$data = {
   readonly updateProfileExperience: {
     readonly profile?: {
+      readonly workExperience: ReadonlyArray<{
+        readonly completedAt: any | null | undefined;
+        readonly description: string | null | undefined;
+        readonly employmentType: EmploymentType | null | undefined;
+        readonly organization: string;
+        readonly skills: ReadonlyArray<string>;
+        readonly startedAt: any;
+        readonly title: string;
+      }>;
       readonly " $fragmentSpreads": FragmentRefs<"UpdateWorkExperienceFormFragment">;
     } | null | undefined;
     readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment" | "ResumeProgressAccountFragment">;
@@ -57,11 +66,71 @@ v1 = [
 v2 = {
   "alias": null,
   "args": null,
+  "concreteType": "WorkExperience",
+  "kind": "LinkedField",
+  "name": "workExperience",
+  "plural": true,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "title",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "description",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "organization",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "startedAt",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "completedAt",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "employmentType",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "skills",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v3 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -108,7 +177,8 @@ return {
                     "args": null,
                     "kind": "FragmentSpread",
                     "name": "UpdateWorkExperienceFormFragment"
-                  }
+                  },
+                  (v2/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -137,11 +207,11 @@ return {
         "name": "updateProfileExperience",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
+          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              (v3/*: any*/),
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -157,7 +227,7 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v3/*: any*/),
+                  (v4/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -165,67 +235,8 @@ return {
                     "name": "progressPercentage",
                     "storageKey": null
                   },
-                  (v2/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "WorkExperience",
-                    "kind": "LinkedField",
-                    "name": "workExperience",
-                    "plural": true,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "title",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "description",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "organization",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "startedAt",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "completedAt",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "employmentType",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "skills",
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
-                  }
+                  (v3/*: any*/),
+                  (v2/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -236,7 +247,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v3/*: any*/)
+              (v4/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -247,7 +258,7 @@ return {
     ]
   },
   "params": {
-    "id": "f41a15f7673fa3a7605512c6b78a7bf6",
+    "id": "240f24db2c50fb7bf7cf4129a3ef3040",
     "metadata": {},
     "name": "UpdateWorkExperienceFormMutation",
     "operationKind": "mutation",
@@ -256,6 +267,6 @@ return {
 };
 })();
 
-(node as any).hash = "155954f2e77f8edee63ad8787eaafad9";
+(node as any).hash = "911bcdce3cc630806173de317c0a8bbc";
 
 export default node;

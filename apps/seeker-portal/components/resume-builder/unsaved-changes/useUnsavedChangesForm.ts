@@ -2,8 +2,8 @@ import { useNavigationGuard } from '@/lib/hooks/useNavigationGuard';
 import { useEffect } from 'react';
 import { useUnsavedChanges } from './UnsavedChangesContext';
 
-export const useUnsavedChangesForm = (isDirty: boolean, isValid: boolean, onSave: () => void, onCancel: () => void) => {
-	const { setHasUnsavedChanges, setCallbacks } = useUnsavedChanges();
+export const useUnsavedChangesForm = (isDirty: boolean, isValid: boolean, isLoading: boolean, onSave: () => void, onCancel: () => void) => {
+	const { setHasUnsavedChanges, setCallbacks, setIsLoading } = useUnsavedChanges();
 
 	useNavigationGuard({
 		enabled: isDirty,
@@ -19,6 +19,10 @@ export const useUnsavedChangesForm = (isDirty: boolean, isValid: boolean, onSave
 	useEffect(() => {
 		setHasUnsavedChanges(isDirty);
 	}, [isDirty, setHasUnsavedChanges]);
+
+	useEffect(() => {
+		setIsLoading(isLoading);
+	}, [isLoading, setIsLoading]);
 
 	useEffect(() => {
 		setCallbacks(onSave, onCancel);

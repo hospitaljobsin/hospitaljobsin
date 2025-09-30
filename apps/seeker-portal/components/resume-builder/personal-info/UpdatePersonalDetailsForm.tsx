@@ -93,7 +93,13 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 	}
 
 	return (
-		<UnsavedChangesFormWrapper isDirty={isDirty} isValid={isValid} onSave={handleSubmit(onSubmit)} onCancel={() => reset()}>
+		<UnsavedChangesFormWrapper
+			isDirty={isDirty}
+			isValid={isValid}
+			onSave={handleSubmit(onSubmit)}
+			onCancel={() => reset()}
+			isLoading={isSubmitting || isMutationInFlight}
+		>
 			<form className='space-y-12'>
 				<div className='pb-6 space-y-6'>
 					<h1 className='w-full text-xl text-foreground-500 font-medium'>Personal Details</h1>

@@ -1,7 +1,9 @@
 import type { UpdateWorkExperienceFormFragment$key } from '@/__generated__/UpdateWorkExperienceFormFragment.graphql';
+import type { UpdateWorkExperienceFormMutation as UpdateWorkExperienceFormMutationType } from '@/__generated__/UpdateWorkExperienceFormMutation.graphql';
 import { Button, Checkbox, Input, Kbd, Select, SelectItem, Textarea } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { Plus, Trash } from 'lucide-react';
+import { useMemo } from 'react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
@@ -18,6 +20,15 @@ mutation UpdateWorkExperienceFormMutation($workExperience: [WorkExperienceInput!
 		...ResumeProgressAccountFragment
       profile {
           ...UpdateWorkExperienceFormFragment
+		  workExperience {
+      title
+	  description
+      organization
+      startedAt
+      completedAt
+      employmentType
+      skills
+    }
       }
     }
   }
@@ -52,16 +63,6 @@ type WorkExperienceFormType = {
 		completedAt: MonthYearValue;
 		isCurrentRole?: boolean;
 	}>;
-};
-
-type WorkExperienceFragmentItem = {
-	title: string;
-	description?: string;
-	organization: string;
-	employmentType: string | null | undefined;
-	skills: readonly string[];
-	startedAt: string | null;
-	completedAt: string | null;
 };
 
 type Props = {
@@ -150,10 +151,10 @@ const formSchema = z.object({
 });
 
 export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: Props) {
-	const [commitMutation, isMutationInFlight] = useMutation(UpdateWorkExperienceFormMutation);
+	const [commitMutation, isMutationInFlight] = useMutation<UpdateWorkExperienceFormMutationType>(UpdateWorkExperienceFormMutation);
 	const data = useFragment(UpdateWorkExperienceFormFragment, rootQuery);
 
-	const defaultWorkExperience: WorkExperienceFormType['workExperience'][number] = {
+	const defaultWorkExperience = {
 		title: '',
 		description: null,
 		organization: '',
@@ -164,23 +165,26 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 		isCurrentRole: true
 	};
 
-	const getDefaultValues = (): WorkExperienceFormType =>
-		data.workExperience.length > 0
-			? {
-					workExperience: data.workExperience.map((exp: WorkExperienceFragmentItem) => ({
-						title: exp.title,
-						description: exp.description || null,
-						organization: exp.organization,
-						employmentType: toEmploymentType(exp.employmentType),
-						skills: exp.skills.map((skill: string) => ({ value: skill })),
-						startedAt: parseMonthYear(exp.startedAt),
-						completedAt: parseMonthYear(exp.completedAt),
-						isCurrentRole: !exp.completedAt
-					}))
-				}
-			: {
-					workExperience: []
-				};
+	const defaultValues = useMemo(
+		() =>
+			data.workExperience.length > 0
+				? {
+						workExperience: data.workExperience.map(exp => ({
+							title: exp.title,
+							description: exp.description || null,
+							organization: exp.organization,
+							employmentType: toEmploymentType(exp.employmentType),
+							skills: exp.skills.map((skill: string) => ({ value: skill })),
+							startedAt: parseMonthYear(exp.startedAt),
+							completedAt: parseMonthYear(exp.completedAt),
+							isCurrentRole: !exp.completedAt
+						}))
+					}
+				: {
+						workExperience: []
+					},
+		[data.workExperience]
+	);
 
 	const {
 		handleSubmit,
@@ -189,7 +193,7 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 		reset
 	} = useForm<WorkExperienceFormType>({
 		resolver: standardSchemaResolver(formSchema),
-		defaultValues: getDefaultValues(),
+		defaultValues,
 		mode: 'onChange',
 		reValidateMode: 'onChange'
 	});
@@ -217,15 +221,32 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 					completedAt: exp.isCurrentRole ? null : toDateString(exp.completedAt)
 				}))
 			},
-			onCompleted() {
-				reset(getDefaultValues());
+			onCompleted(data) {
+				reset({
+					workExperience: data.updateProfileExperience.profile?.workExperience.map(exp => ({
+						title: exp.title,
+						description: exp.description || null,
+						organization: exp.organization,
+						employmentType: toEmploymentType(exp.employmentType),
+						skills: exp.skills.map((skill: string) => ({ value: skill })),
+						startedAt: parseMonthYear(exp.startedAt),
+						completedAt: parseMonthYear(exp.completedAt),
+						isCurrentRole: !exp.completedAt
+					}))
+				});
 				onSaveChanges();
 			}
 		});
 	}
 
 	return (
-		<UnsavedChangesFormWrapper isDirty={isDirty} isValid={isValid} onSave={handleSubmit(onSubmit)} onCancel={() => reset()}>
+		<UnsavedChangesFormWrapper
+			isDirty={isDirty}
+			isValid={isValid}
+			onSave={handleSubmit(onSubmit)}
+			onCancel={() => reset()}
+			isLoading={isSubmitting || isMutationInFlight}
+		>
 			<form className='space-y-12'>
 				<div className='pb-6 space-y-6'>
 					<h1 className='w-full text-xl text-foreground-500 font-medium'>Work Experience</h1>
@@ -238,7 +259,7 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 									fullWidth
 									variant='bordered'
 									startContent={<Plus size={18} />}
-									onPress={() => prepend({ ...defaultWorkExperience })}
+									onPress={() => prepend(defaultWorkExperience, { shouldFocus: true })}
 								>
 									Add Work Experience
 								</Button>

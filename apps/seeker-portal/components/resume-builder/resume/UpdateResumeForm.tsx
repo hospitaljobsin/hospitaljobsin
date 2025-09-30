@@ -172,7 +172,13 @@ export default function UpdateResumeForm({ rootQuery, onSaveChanges }: Props) {
 	// File selected but not saved yet - show preview with remove button
 	if (selectedFile && previewUrl) {
 		return (
-			<UnsavedChangesFormWrapper isDirty={isDirty} isValid={true} onSave={handleSave} onCancel={handleRemoveSelected}>
+			<UnsavedChangesFormWrapper
+				isDirty={isDirty}
+				isValid={true}
+				onSave={handleSave}
+				onCancel={handleRemoveSelected}
+				isLoading={isUploading}
+			>
 				<div className='space-y-6'>
 					<div className='flex items-center justify-between'>
 						<h1 className='text-xl text-foreground-500 font-medium'>Your Resume</h1>
