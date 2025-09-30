@@ -169,7 +169,7 @@ export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Pr
 							control={control}
 							render={({ field }) => (
 								<CheckboxGroup
-									label='Desired Work Modes'
+									label='Preferred Work Modes'
 									value={field.value}
 									onValueChange={field.onChange}
 									classNames={{
@@ -193,7 +193,7 @@ export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Pr
 							control={control}
 							render={({ field }) => (
 								<CheckboxGroup
-									label='Desired Job Types'
+									label='Preferred Job Types'
 									value={field.value}
 									onValueChange={field.onChange}
 									classNames={{

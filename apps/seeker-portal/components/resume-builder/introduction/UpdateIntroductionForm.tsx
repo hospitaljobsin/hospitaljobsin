@@ -5,6 +5,7 @@ import { cn, Input } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
+import { useState } from 'react';
 import { z } from 'zod';
 import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 
@@ -44,6 +45,7 @@ export default function UpdateIntroductionForm({
 }) {
 	const data = useFragment(ProfessionalSummaryFragment, rootQuery);
 	const [commitMutation, isInFlight] = useMutation<UpdateIntroductionFormMutationType>(UpdateIntroductionFormMutation);
+	const [editorKey, setEditorKey] = useState(0);
 
 	const {
 		handleSubmit,
@@ -77,7 +79,10 @@ export default function UpdateIntroductionForm({
 			isDirty={isDirty}
 			isValid={isValid}
 			onSave={handleSubmit(onSubmit)}
-			onCancel={() => reset()}
+			onCancel={() => {
+				reset();
+				setEditorKey(prev => prev + 1);
+			}}
 			isLoading={isInFlight}
 		>
 			<form className='space-y-8 sm:space-y-12'>
@@ -109,6 +114,7 @@ export default function UpdateIntroductionForm({
 									Professional Summary
 								</h2>
 								<MarkdownEditor
+									key={editorKey}
 									initialValue={field.value}
 									onValueChange={value => {
 										field.onChange(value);
