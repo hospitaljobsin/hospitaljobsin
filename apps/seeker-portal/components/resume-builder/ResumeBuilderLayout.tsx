@@ -10,10 +10,10 @@ interface ResumeBuilderLayoutProps {
 export const ResumeBuilderLayout: FC<ResumeBuilderLayoutProps> = ({ children }) => {
 	return (
 		<UnsavedChangesProvider>
-			<div className='w-full h-full bg-background-600 flex-1'>
-				<main className='flex flex-col lg:flex-row gap-4 lg:gap-8 w-full'>
+			<div className='w-full h-full bg-background-600 flex-1 py-8'>
+				<main className='flex flex-col lg:flex-row gap-4 lg:gap-0 w-full'>
 					<Sidebar />
-					<div className='flex-1 w-full pb-32'>{children}</div>
+					<div className='flex-1 w-full pb-32 lg:ml-8'>{children}</div>
 				</main>
 			</div>
 		</UnsavedChangesProvider>

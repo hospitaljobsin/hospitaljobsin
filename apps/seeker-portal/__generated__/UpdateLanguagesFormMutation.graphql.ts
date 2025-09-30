@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<b47120cc982e0fa50406e5558db85f93>>
- * @relayHash 24e551dd64ad4d1e5aa85f1f8b2bc744
+ * @generated SignedSource<<67babb484dded6cc004d7c0c7a1e1623>>
+ * @relayHash 6e77221567d22b427a6ad4c3adcc619f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 24e551dd64ad4d1e5aa85f1f8b2bc744
+// @relayRequestID 6e77221567d22b427a6ad4c3adcc619f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -160,6 +160,13 @@ return {
                     "name": "progressPercentage",
                     "storageKey": null
                   },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
+                    "storageKey": null
+                  },
                   (v2/*: any*/),
                   {
                     "alias": null,
@@ -188,6 +195,34 @@ return {
                   }
                 ],
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "email",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
+                "storageKey": null
               }
             ],
             "type": "Account",
@@ -207,7 +242,7 @@ return {
     ]
   },
   "params": {
-    "id": "24e551dd64ad4d1e5aa85f1f8b2bc744",
+    "id": "6e77221567d22b427a6ad4c3adcc619f",
     "metadata": {},
     "name": "UpdateLanguagesFormMutation",
     "operationKind": "mutation",

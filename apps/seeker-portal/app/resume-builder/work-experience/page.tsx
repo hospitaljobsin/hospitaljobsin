@@ -26,9 +26,9 @@ export default function WorkExperiencePage() {
 	return (
 		<div className='w-full h-full flex flex-col bg-background-600'>
 			<DashboardHeaderClientComponent />
-			<div className='w-full h-full flex flex-1 max-w-7xl mx-auto flex-col-reverse lg:flex-row'>
-				<WorkExperienceClientComponent />
+			<div className='w-full h-full flex flex-1 max-w-7xl mx-auto flex-col px-4 py-6'>
 				<ResumeProgressClientComponent />
+				<WorkExperienceClientComponent />
 			</div>
 		</div>
 	);

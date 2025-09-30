@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<19e1e78510aced2a888dd45323ba620f>>
- * @relayHash d5c8b27943ce4c79d8dbd46a022d01a5
+ * @generated SignedSource<<6f7583b4a32add0f1c75ef27547e4233>>
+ * @relayHash a140c69d857ea30d1356c9d0c2f5151e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d5c8b27943ce4c79d8dbd46a022d01a5
+// @relayRequestID a140c69d857ea30d1356c9d0c2f5151e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -161,6 +161,13 @@ return {
                     "name": "progressPercentage",
                     "storageKey": null
                   },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
+                    "storageKey": null
+                  },
                   (v2/*: any*/),
                   {
                     "alias": null,
@@ -203,6 +210,34 @@ return {
                   }
                 ],
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "email",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
+                "storageKey": null
               }
             ],
             "type": "Account",
@@ -222,7 +257,7 @@ return {
     ]
   },
   "params": {
-    "id": "d5c8b27943ce4c79d8dbd46a022d01a5",
+    "id": "a140c69d857ea30d1356c9d0c2f5151e",
     "metadata": {},
     "name": "UpdateLicensesFormMutation",
     "operationKind": "mutation",

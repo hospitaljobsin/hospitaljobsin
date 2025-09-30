@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<20d72389e45cbef7c5b76f340dfb8596>>
- * @relayHash 58d49dcff24d570d0dca6be967ee9af6
+ * @generated SignedSource<<a909a35b93d029303c1d49688cea855c>>
+ * @relayHash 6a059192a53660257c27fa6874251e8c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 58d49dcff24d570d0dca6be967ee9af6
+// @relayRequestID 6a059192a53660257c27fa6874251e8c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -239,6 +239,13 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
+                    "name": "updatedAt",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
                     "name": "gender",
                     "storageKey": null
                   },
@@ -272,6 +279,34 @@ return {
                   }
                 ],
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "email",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
+                "storageKey": null
               }
             ],
             "type": "Account",
@@ -292,7 +327,7 @@ return {
     ]
   },
   "params": {
-    "id": "58d49dcff24d570d0dca6be967ee9af6",
+    "id": "6a059192a53660257c27fa6874251e8c",
     "metadata": {},
     "name": "UpdatePersonalDetailsFormMutation",
     "operationKind": "mutation",

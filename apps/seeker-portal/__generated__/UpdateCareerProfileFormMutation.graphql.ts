@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<5efe58b39f939a88b28dcae9d46b6bbc>>
- * @relayHash 21cd47627ca3ee08691d7a5fa5dd2218
+ * @generated SignedSource<<e412d72261f868b7f67eeef286f6834a>>
+ * @relayHash 67398cba5a7c8fd79e6dacb48f80c3bb
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 21cd47627ca3ee08691d7a5fa5dd2218
+// @relayRequestID 67398cba5a7c8fd79e6dacb48f80c3bb
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -165,6 +165,13 @@ return {
                     "name": "progressPercentage",
                     "storageKey": null
                   },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
+                    "storageKey": null
+                  },
                   (v2/*: any*/),
                   {
                     "alias": null,
@@ -221,6 +228,34 @@ return {
                   }
                 ],
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "email",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
+                "storageKey": null
               }
             ],
             "type": "Account",
@@ -240,7 +275,7 @@ return {
     ]
   },
   "params": {
-    "id": "21cd47627ca3ee08691d7a5fa5dd2218",
+    "id": "67398cba5a7c8fd79e6dacb48f80c3bb",
     "metadata": {},
     "name": "UpdateCareerProfileFormMutation",
     "operationKind": "mutation",

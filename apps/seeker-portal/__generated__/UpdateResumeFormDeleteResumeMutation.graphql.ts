@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<69d7eccef42af7d6c528cef7b09e3494>>
- * @relayHash 4ae9da07af2a16e0cd0c1b365f1952b5
+ * @generated SignedSource<<d2d0ce159048627d50c69da050f927f3>>
+ * @relayHash 9771cce6aa2ff3142d70eac34207bf73
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 4ae9da07af2a16e0cd0c1b365f1952b5
+// @relayRequestID 9771cce6aa2ff3142d70eac34207bf73
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -142,10 +142,45 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
+                    "name": "updatedAt",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
                     "name": "resumeUrl",
                     "storageKey": null
                   }
                 ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "email",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
                 "storageKey": null
               }
             ],
@@ -166,7 +201,7 @@ return {
     ]
   },
   "params": {
-    "id": "4ae9da07af2a16e0cd0c1b365f1952b5",
+    "id": "9771cce6aa2ff3142d70eac34207bf73",
     "metadata": {},
     "name": "UpdateResumeFormDeleteResumeMutation",
     "operationKind": "mutation",

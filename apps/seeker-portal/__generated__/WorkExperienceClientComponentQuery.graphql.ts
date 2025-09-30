@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a009164dedc9a0daa352d8bef99f350a>>
- * @relayHash 37b4d3fa8123072cac24a2a7076c39f6
+ * @generated SignedSource<<d9825e5b6d7ec4160430557d66e902aa>>
+ * @relayHash a6fd9c2397b06d3c1f5536052add33bf
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 37b4d3fa8123072cac24a2a7076c39f6
+// @relayRequestID a6fd9c2397b06d3c1f5536052add33bf
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -74,6 +74,34 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "email",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
@@ -84,6 +112,13 @@ return {
                     "args": null,
                     "kind": "ScalarField",
                     "name": "progressPercentage",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
                     "storageKey": null
                   },
                   (v1/*: any*/),
@@ -169,7 +204,7 @@ return {
     ]
   },
   "params": {
-    "id": "37b4d3fa8123072cac24a2a7076c39f6",
+    "id": "a6fd9c2397b06d3c1f5536052add33bf",
     "metadata": {},
     "name": "WorkExperienceClientComponentQuery",
     "operationKind": "query",

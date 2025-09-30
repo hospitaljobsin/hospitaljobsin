@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<eb5acff91f46743d9600dbe110fb3424>>
- * @relayHash 240f24db2c50fb7bf7cf4129a3ef3040
+ * @generated SignedSource<<acb4e22658932bb8e820614fbb72afb3>>
+ * @relayHash 0f19a61e5dc71a01aaf8ef8f2f0b38f3
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 240f24db2c50fb7bf7cf4129a3ef3040
+// @relayRequestID 0f19a61e5dc71a01aaf8ef8f2f0b38f3
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -235,9 +235,44 @@ return {
                     "name": "progressPercentage",
                     "storageKey": null
                   },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
+                    "storageKey": null
+                  },
                   (v3/*: any*/),
                   (v2/*: any*/)
                 ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "email",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
                 "storageKey": null
               }
             ],
@@ -258,7 +293,7 @@ return {
     ]
   },
   "params": {
-    "id": "240f24db2c50fb7bf7cf4129a3ef3040",
+    "id": "0f19a61e5dc71a01aaf8ef8f2f0b38f3",
     "metadata": {},
     "name": "UpdateWorkExperienceFormMutation",
     "operationKind": "mutation",

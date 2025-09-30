@@ -28,7 +28,7 @@ export const Sidebar: React.FC = () => {
 			onSelectionChange={key => router.push(key as string)}
 			isVertical
 			classNames={{
-				base: 'w-full',
+				base: 'w-full min-w-64',
 				tabList: 'w-full',
 				tab: 'justify-start',
 				cursor: 'shadow-none'

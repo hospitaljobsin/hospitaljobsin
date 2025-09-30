@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dc9af7704dad0683a29b1e222b1d3add>>
+ * @generated SignedSource<<420043f2f2e818d894c7c846eda53b04>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,8 +11,13 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type ResumeProgressAccountFragment$data = {
+  readonly avatarUrl: string;
+  readonly email: string;
+  readonly fullName: string;
+  readonly phoneNumber: string | null | undefined;
   readonly profile: {
     readonly progressPercentage: number;
+    readonly updatedAt: any;
   };
   readonly " $fragmentType": "ResumeProgressAccountFragment";
 };
@@ -27,6 +32,34 @@ const node: ReaderFragment = {
   "metadata": null,
   "name": "ResumeProgressAccountFragment",
   "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "avatarUrl",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "fullName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "email",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "phoneNumber",
+      "storageKey": null
+    },
     {
       "kind": "RequiredField",
       "field": {
@@ -43,6 +76,13 @@ const node: ReaderFragment = {
             "kind": "ScalarField",
             "name": "progressPercentage",
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "updatedAt",
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -54,6 +94,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "ed8859bc5257f36935557337f5517478";
+(node as any).hash = "5d43a470c771369a118dab9f31182b9c";
 
 export default node;

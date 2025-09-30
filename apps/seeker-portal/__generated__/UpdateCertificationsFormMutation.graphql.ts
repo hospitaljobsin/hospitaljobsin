@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<2924edf1c87932e636eda4b3e72b3f7d>>
- * @relayHash 259facd8931690065974487588171fa7
+ * @generated SignedSource<<5a3019dd99a07b96dae0ca2cdb8f05bd>>
+ * @relayHash a2c60751daf199ccb00a0bf51d17fc98
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 259facd8931690065974487588171fa7
+// @relayRequestID a2c60751daf199ccb00a0bf51d17fc98
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -162,6 +162,13 @@ return {
                     "name": "progressPercentage",
                     "storageKey": null
                   },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
+                    "storageKey": null
+                  },
                   (v2/*: any*/),
                   {
                     "alias": null,
@@ -211,6 +218,34 @@ return {
                   }
                 ],
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "email",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
+                "storageKey": null
               }
             ],
             "type": "Account",
@@ -230,7 +265,7 @@ return {
     ]
   },
   "params": {
-    "id": "259facd8931690065974487588171fa7",
+    "id": "a2c60751daf199ccb00a0bf51d17fc98",
     "metadata": {},
     "name": "UpdateCertificationsFormMutation",
     "operationKind": "mutation",

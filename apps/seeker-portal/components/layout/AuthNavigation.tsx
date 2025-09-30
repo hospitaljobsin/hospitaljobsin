@@ -99,7 +99,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							<DropdownItem key='profile' startContent={<UserIcon className='h-4 w-4' />} href={links.resumeBuilder}>
 								<div className='w-full flex flex-col gap-2'>
 									<p>
-										My Resume <span className='text-foreground-400 text-xs'>({data.profile.progressPercentage}%)</span>
+										My Profile <span className='text-foreground-400 text-xs'>({data.profile.progressPercentage}%)</span>
 									</p>
 									<Progress
 										value={data.profile.progressPercentage}
@@ -163,7 +163,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 						>
 							<div className='w-full flex flex-col gap-2'>
 								<p>
-									My Resume <span className='text-foreground-400 text-xs'>({data.profile.progressPercentage}%)</span>
+									My Profile <span className='text-foreground-400 text-xs'>({data.profile.progressPercentage}%)</span>
 								</p>
 								<Progress
 									value={data.profile.progressPercentage}

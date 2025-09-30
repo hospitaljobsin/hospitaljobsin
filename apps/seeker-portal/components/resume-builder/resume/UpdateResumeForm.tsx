@@ -217,8 +217,8 @@ export default function UpdateResumeForm({ rootQuery, onSaveChanges }: Props) {
 		<>
 			<div className='space-y-6'>
 				<div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
-					<h1 className='text-xl text-foreground-500 font-medium'>Resume</h1>
-					<div className='flex gap-3'>
+					<h1 className='text-xl text-foreground-500 font-medium'>Your Resume</h1>
+					<div className='flex gap-3 flex-col sm:flex-row'>
 						<Button variant='bordered' size='sm' onPress={() => setShowRemoveModal(true)}>
 							Remove Resume
 						</Button>
