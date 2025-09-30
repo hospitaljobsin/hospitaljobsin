@@ -4,21 +4,22 @@ import links from '@/lib/links';
 import { Tab, Tabs } from '@heroui/react';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
+import { FileText, User, MessageSquare, Briefcase, Building, GraduationCap, Award, Shield, Languages } from 'lucide-react';
 
 export const MobileSidebar: React.FC = () => {
 	const pathname = usePathname();
 	const router = useRouter();
 
 	const tabs = [
-		{ key: links.resumeBuilderResume, title: 'Resume' },
-		{ key: links.resumeBuilderPersonalInfo, title: 'Personal Details' },
-		{ key: links.resumeBuilderIntroduction, title: 'Introduction' },
-		{ key: links.resumeBuilderCareerProfile, title: 'Career Profile' },
-		{ key: links.resumeBuilderWorkExperience, title: 'Work Experience' },
-		{ key: links.resumeBuilderEducation, title: 'Education' },
-		{ key: links.resumeBuilderCertifications, title: 'Certifications' },
-		{ key: links.resumeBuilderLicenses, title: 'Licenses' },
-		{ key: links.resumeBuilderLanguages, title: 'Languages' }
+		{ key: links.resumeBuilderResume, title: 'Resume', icon: FileText },
+		{ key: links.resumeBuilderPersonalInfo, title: 'Personal Details', icon: User },
+		{ key: links.resumeBuilderIntroduction, title: 'Introduction', icon: MessageSquare },
+		{ key: links.resumeBuilderCareerProfile, title: 'Career Profile', icon: Briefcase },
+		{ key: links.resumeBuilderWorkExperience, title: 'Work Experience', icon: Building },
+		{ key: links.resumeBuilderEducation, title: 'Education', icon: GraduationCap },
+		{ key: links.resumeBuilderCertifications, title: 'Certifications', icon: Award },
+		{ key: links.resumeBuilderLicenses, title: 'Licenses', icon: Shield },
+		{ key: links.resumeBuilderLanguages, title: 'Languages', icon: Languages }
 	];
 
 	return (
@@ -31,9 +32,20 @@ export const MobileSidebar: React.FC = () => {
 					cursor: 'shadow-none'
 				}}
 			>
-				{tabs.map(tab => (
-					<Tab key={tab.key} title={tab.title} />
-				))}
+				{tabs.map(tab => {
+					const Icon = tab.icon;
+					return (
+						<Tab
+							key={tab.key}
+							title={
+								<div className='flex items-center gap-2'>
+									<Icon size={18} />
+									{tab.title}
+								</div>
+							}
+						/>
+					);
+				})}
 			</Tabs>
 		</div>
 	);

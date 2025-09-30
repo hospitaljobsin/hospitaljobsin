@@ -149,7 +149,6 @@ export default function UpdateLanguagesForm({ rootQuery, onSaveChanges }: Props)
 											{ shouldFocus: true }
 										)
 									}
-									className='px-8'
 								>
 									Add Your First Language
 								</Button>

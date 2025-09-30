@@ -165,7 +165,6 @@ export default function UpdateLicensesForm({ rootQuery, onSaveChanges }: Props) 
 												{ shouldFocus: true }
 											)
 										}
-										className='px-8'
 									>
 										Add Your First License
 									</Button>

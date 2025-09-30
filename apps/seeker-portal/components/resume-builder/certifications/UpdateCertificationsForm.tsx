@@ -201,7 +201,6 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 												{ shouldFocus: true }
 											)
 										}
-										className='px-8'
 									>
 										Add Your First Certification
 									</Button>
