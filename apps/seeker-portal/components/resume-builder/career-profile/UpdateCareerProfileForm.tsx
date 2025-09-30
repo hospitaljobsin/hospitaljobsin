@@ -164,7 +164,10 @@ export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Pr
 									label='Desired Work Modes'
 									value={field.value}
 									onValueChange={field.onChange}
-									className='w-full'
+									classNames={{
+										base: 'gap-4',
+										wrapper: 'gap-6 flex w-full items-center flex-wrap'
+									}}
 									orientation='horizontal'
 									errorMessage={errors.desiredWorkModes?.message}
 									isInvalid={!!errors.desiredWorkModes}
@@ -185,7 +188,10 @@ export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Pr
 									label='Desired Job Types'
 									value={field.value}
 									onValueChange={field.onChange}
-									className='w-full'
+									classNames={{
+										base: 'gap-4',
+										wrapper: 'gap-6 flex w-full items-center flex-wrap'
+									}}
 									orientation='horizontal'
 									errorMessage={errors.desiredJobTypes?.message}
 									isInvalid={!!errors.desiredJobTypes}
@@ -236,7 +242,7 @@ export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Pr
 							{locations && (
 								<div className='flex flex-wrap gap-2 mt-4'>
 									{locations?.map((loc: string) => (
-										<Chip key={loc} isCloseable size='sm' onClose={() => handleRemoveLocation(loc)}>
+										<Chip key={loc} isCloseable size='md' onClose={() => handleRemoveLocation(loc)}>
 											{loc}
 										</Chip>
 									))}

@@ -16,7 +16,7 @@ export const ResumeBuilderLayout: React.FC<ResumeBuilderLayoutProps> = ({ childr
 						<div className='lg:col-span-3 order-1'>
 							<Sidebar />
 						</div>
-						<div className='lg:col-span-9 flex flex-col gap-10 order-2 pb-32'>{children}</div>
+						<div className='lg:col-span-6 flex flex-col gap-10 order-2 pb-32'>{children}</div>
 					</main>
 				</div>
 			</div>
