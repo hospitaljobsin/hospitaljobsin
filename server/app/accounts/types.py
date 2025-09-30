@@ -254,6 +254,9 @@ class BaseProfileType:
     headline: str | None = strawberry.field(
         description="The user's headline.",
     )
+    resume_url: str | None = strawberry.field(
+        description="The user's resume URL.",
+    )
 
 
 @strawberry.type(
@@ -287,6 +290,7 @@ class ParsedProfileType(BaseProfileType):
             ],
             professional_summary=model.professional_summary,
             headline=model.headline,
+            resume_url=model.resume_url,
         )
 
 
@@ -337,6 +341,7 @@ class ProfileType(BaseProfileType, BaseNodeType[Profile]):
             professional_summary=model.professional_summary,
             headline=model.headline,
             progress_percentage=model.progress_percentage,
+            resume_url=model.resume_url,
         )
 
     @classmethod

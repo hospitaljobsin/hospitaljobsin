@@ -679,6 +679,39 @@ class AccountMutation:
                 assert_never(unreachable)
 
     @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateProfilePayload,
+        description="Update the current user's resume.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_profile_resume(
+        self,
+        info: AuthInfo,
+        profile_service: Annotated[ProfileService, Inject],
+        resume_url: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The URL of the resume file.",
+            ),
+        ] = None,
+    ) -> UpdateProfilePayload:
+        """Update the current user's resume."""
+        match await profile_service.update_resume(
+            account=info.context["current_user"],
+            resume_url=resume_url,
+        ):
+            case Ok(account):
+                return AccountType.marshal(account)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
         graphql_type=AccountType,
         description="Remove the avatar from the current user account.",
         extensions=[

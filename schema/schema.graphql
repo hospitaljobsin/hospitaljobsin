@@ -569,6 +569,11 @@ interface BaseProfile {
 	The user's headline.
 	"""
 	headline: String
+
+	"""
+	The user's resume URL.
+	"""
+	resumeUrl: String
 }
 
 """
@@ -3179,6 +3184,16 @@ type Mutation {
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""
+	Update the current user's resume.
+	"""
+	updateProfileResume(
+		"""
+		The URL of the resume file.
+		"""
+		resumeUrl: String = null
+	): UpdateProfilePayload! @isAuthenticated
+
+	"""
 	Remove the avatar from the current user account.
 	"""
 	removeAccountAvatar: Account! @isAuthenticated
@@ -4212,6 +4227,11 @@ type Profile implements BaseProfile & Node {
 	headline: String
 
 	"""
+	The user's resume URL.
+	"""
+	resumeUrl: String
+
+	"""
 	The Globally Unique ID of this object
 	"""
 	id: ID!
@@ -4305,6 +4325,11 @@ type ProfileSnapshot implements BaseProfile {
 	The user's headline.
 	"""
 	headline: String
+
+	"""
+	The user's resume URL.
+	"""
+	resumeUrl: String
 }
 
 """

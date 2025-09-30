@@ -58,6 +58,7 @@
 		"posthog-js": "1.268.8",
 		"react": "19.1.1",
 		"react-dom": "19.1.1",
+		"react-dropzone": "14.3.8",
 		"react-hook-form": "7.63.0",
 		"react-scan": "0.4.3",
 		"react-share": "5.2.2",

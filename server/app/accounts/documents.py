@@ -135,6 +135,7 @@ class BaseProfile(BaseModel):
     certifications: list[Certification]
     professional_summary: str | None = None
     headline: str | None = None
+    resume_url: str | None = None
 
     def __str__(self) -> str:
         """LLM friendly text representation of a job."""

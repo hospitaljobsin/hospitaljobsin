@@ -1,17 +1,16 @@
 import type { UpdateResumeFormFragment$key } from '@/__generated__/UpdateResumeFormFragment.graphql';
-import { Checkbox, CheckboxGroup, Chip, Divider, Input, Switch } from '@heroui/react';
-import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { useState } from 'react';
-import { Controller, useForm, useWatch } from 'react-hook-form';
+import type { UpdateResumeFormGenerateProfileDocumentPresignedUrlMutation as UpdateResumeFormGenerateProfileDocumentPresignedUrlMutationType } from '@/__generated__/UpdateResumeFormGenerateProfileDocumentPresignedUrlMutation.graphql';
+import { FileIcon } from 'lucide-react';
+import { useCallback, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { graphql, useFragment, useMutation } from 'react-relay';
-import { z } from 'zod/v4';
-import LocationAutocomplete from '../../forms/LocationAutocomplete';
-import { SteppableNumberInput } from '../../forms/SteppableNumberInput';
+import { uploadFileToS3 } from '../../../lib/presignedUrl';
 import { UnsavedChangesFormWrapper } from '../unsaved-changes';
+import RemoveResumeConfirmationModal from './RemoveResumeConfirmationModal';
 
 const UpdateResumeFormMutation = graphql`
-mutation UpdateResumeFormMutation($resumeUrl: String!) {
-  updateProfileResume(Resume: $Resume) {
+mutation UpdateResumeFormMutation($resumeUrl: String) {
+  updateProfileResume(resumeUrl: $resumeUrl) {
     ...on Account {
         ...IncompleteProfileBannerFragment
         ...ResumeProgressAccountFragment
@@ -23,10 +22,18 @@ mutation UpdateResumeFormMutation($resumeUrl: String!) {
 }
 `;
 
+const GenerateProfileDocumentPresignedUrlMutation = graphql`
+  mutation UpdateResumeFormGenerateProfileDocumentPresignedUrlMutation($contentType: String!) {
+	generateProfileDocumentPresignedUrl(contentType: $contentType) {
+	  fileKey
+	  presignedUrl
+	}
+}
+	`;
+
 const UpdateResumeFormFragment = graphql`
   fragment UpdateResumeFormFragment on Profile {
-    __typename
-
+	resumeUrl
   }
 `;
 
@@ -35,215 +42,191 @@ type Props = {
 	onSaveChanges: () => void;
 };
 
-const formSchema = z.object({
-	currentIndustry: z.nullable(z.string()),
-	desiredJobTypes: z.array(z.string()),
-	desiredWorkModes: z.array(z.string()),
-	expectedSalary: z.nullable(z.number().min(0)),
-	openToRelocationAnywhere: z.boolean(),
-	locationsOpenToWork: z.array(z.string())
-});
-
 export default function UpdateResumeForm({ rootQuery, onSaveChanges }: Props) {
-	const [commitMutation, isMutationInFlight] = useMutation(UpdateResumeFormMutation);
+	const [commitMutation] = useMutation(UpdateResumeFormMutation);
+	const [commitPresignedUrlMutation] = useMutation<UpdateResumeFormGenerateProfileDocumentPresignedUrlMutationType>(
+		GenerateProfileDocumentPresignedUrlMutation
+	);
 	const data = useFragment(UpdateResumeFormFragment, rootQuery);
-	const [inputValue, setInputValue] = useState('');
+	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	const [isUploading, setIsUploading] = useState(false);
+	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+	const [showRemoveModal, setShowRemoveModal] = useState(false);
+	const [isRemoving, setIsRemoving] = useState(false);
 
-	const defaultValues: z.infer<typeof formSchema> = {
-		currentIndustry: data.Resume?.currentIndustry ?? null,
-		desiredJobTypes: data.Resume?.desiredJobTypes ?? [],
-		desiredWorkModes: data.Resume?.desiredWorkModes ?? [],
-		expectedSalary: data.Resume?.expectedSalary ?? null,
-		openToRelocationAnywhere: data.Resume?.openToRelocationAnywhere || false,
-		locationsOpenToWork: (data.Resume?.locationsOpenToWork || []) as string[]
-	};
+	const onDrop = useCallback((acceptedFiles: File[]) => {
+		const file = acceptedFiles[0];
+		if (file) {
+			setSelectedFile(file);
+			setPreviewUrl(URL.createObjectURL(file));
+		}
+	}, []);
 
-	const {
-		handleSubmit,
-		control,
-		setValue,
-		reset,
-		formState: { errors, isSubmitting, isDirty, isValid }
-	} = useForm<z.infer<typeof formSchema>>({
-		resolver: standardSchemaResolver(formSchema),
-		defaultValues
+	const { getRootProps, getInputProps, isDragActive } = useDropzone({
+		onDrop,
+		accept: {
+			'application/pdf': ['.pdf'],
+			'application/msword': ['.doc'],
+			'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
+		},
+		multiple: false
 	});
 
-	const locations = useWatch({ control, name: 'locationsOpenToWork' }) || [];
+	const handleSave = useCallback(() => {
+		if (!selectedFile) return;
 
-	function onSubmit(formData: z.infer<typeof formSchema>) {
-		commitMutation({
-			variables: {
-				Resume: {
-					currentIndustry: formData.currentIndustry,
-					desiredJobTypes: formData.desiredJobTypes,
-					desiredWorkModes: formData.desiredWorkModes,
-					expectedSalary: formData.expectedSalary,
-					locationsOpenToWork: formData.locationsOpenToWork || [],
-					openToRelocationAnywhere: formData.openToRelocationAnywhere
+		setIsUploading(true);
+
+		commitPresignedUrlMutation({
+			variables: { contentType: selectedFile.type },
+			onCompleted: response => {
+				const { presignedUrl } = response.generateProfileDocumentPresignedUrl;
+
+				try {
+					uploadFileToS3(presignedUrl, selectedFile).then(() => {
+						const resumeUrl = presignedUrl.split('?')[0];
+
+						commitMutation({
+							variables: { resumeUrl: resumeUrl },
+							onCompleted: () => {
+								if (previewUrl) URL.revokeObjectURL(previewUrl);
+								setSelectedFile(null);
+								setPreviewUrl(null);
+								setIsUploading(false);
+								onSaveChanges();
+							},
+							onError: () => setIsUploading(false)
+						});
+					});
+				} catch {
+					setIsUploading(false);
 				}
 			},
-			onCompleted() {
-				reset(formData);
-				onSaveChanges();
-			}
+			onError: () => setIsUploading(false)
 		});
+	}, [selectedFile, commitPresignedUrlMutation, commitMutation, onSaveChanges, previewUrl]);
+
+	const handleRemoveSelected = useCallback(() => {
+		if (previewUrl) URL.revokeObjectURL(previewUrl);
+		setSelectedFile(null);
+		setPreviewUrl(null);
+	}, [previewUrl]);
+
+	const handleRemoveSaved = useCallback(() => {
+		setIsRemoving(true);
+		commitMutation({
+			variables: { resumeUrl: null },
+			onCompleted() {
+				setIsRemoving(false);
+				setShowRemoveModal(false);
+				onSaveChanges();
+			},
+			onError: () => setIsRemoving(false)
+		});
+	}, [commitMutation, onSaveChanges]);
+
+	// No resume saved and no file selected - show drag and drop
+	if (!data.resumeUrl && !selectedFile) {
+		return (
+			<div className='space-y-6'>
+				<h1 className='text-xl text-foreground-500 font-medium'>Upload Resume</h1>
+				<div
+					{...getRootProps()}
+					className={`border-2 border-dashed rounded-lg p-16 text-center transition-colors cursor-pointer ${
+						isDragActive ? 'border-primary bg-primary/5' : 'border-gray-300'
+					}`}
+				>
+					<input {...getInputProps()} />
+					<div className='space-y-6 flex flex-col justify-center items-center'>
+						<FileIcon className='text-foreground-600' />
+
+						<p className='text-2xl font-medium mb-2'>Drop your resume here</p>
+						<p className='text-gray-500 mb-4'>or click to browse files</p>
+						<p className='text-sm text-gray-400'>Supports PDF files</p>
+						<div className='inline-block px-6 py-3 bg-primary text-white rounded-lg font-medium'>Browse Files</div>
+					</div>
+				</div>
+			</div>
+		);
 	}
 
-	function handleRemoveLocation(loc: string) {
-		setValue('locationsOpenToWork', locations.filter((l: string) => l !== loc) as string[], { shouldDirty: true, shouldValidate: true });
-	}
-
-	return (
-		<UnsavedChangesFormWrapper isDirty={isDirty} isValid={isValid} onSave={handleSubmit(onSubmit)} onCancel={() => reset()}>
-			<form className='space-y-12'>
-				<div className='pb-6 space-y-6'>
-					<h1 className='w-full text-xl text-foreground-500 font-medium'>Career Profile</h1>
-					<div className='mb-12'>
-						<Controller
-							name='currentIndustry'
-							control={control}
-							render={({ field }) => (
-								<Input
-									{...field}
-									label='Current Industry'
-									placeholder='Enter your current industry'
-									value={field.value ?? ''}
-									errorMessage={errors.currentIndustry?.message}
-									isInvalid={!!errors.currentIndustry}
-									classNames={{
-										inputWrapper: 'bg-background'
-									}}
-								/>
-							)}
-						/>
+	// File selected but not saved yet - show preview with remove button
+	if (selectedFile && previewUrl) {
+		return (
+			<UnsavedChangesFormWrapper isDirty={true} isValid={true} onSave={handleSave} onCancel={handleRemoveSelected}>
+				<div className='space-y-6'>
+					<div className='flex items-center justify-between'>
+						<h1 className='text-xl text-foreground-500 font-medium'>Upload Resume</h1>
+						<button
+							type='button'
+							className='px-4 py-2 text-sm text-red-600 border border-red-300 rounded hover:bg-red-50'
+							onClick={handleRemoveSelected}
+						>
+							Remove Selected File
+						</button>
 					</div>
-					<div className='mb-12'>
-						<Controller
-							name='expectedSalary'
-							control={control}
-							render={({ field }) => (
-								<SteppableNumberInput
-									{...field}
-									label='Expected Salary'
-									placeholder='Enter expected salary'
-									formatOptions={{
-										style: 'currency',
-										currency: 'INR',
-										currencyDisplay: 'code',
-										currencySign: 'accounting'
-									}}
-									value={field.value as number | undefined}
-									onValueChange={field.onChange}
-									step={1000}
-									isClearable
-									onClear={() => field.onChange(null)}
-									errorMessage={errors.expectedSalary?.message}
-									isInvalid={!!errors.expectedSalary}
-									classNames={{
-										inputWrapper: 'bg-background'
-									}}
-								/>
-							)}
-						/>
-					</div>
-					<div className='mb-12'>
-						<Controller
-							name='desiredWorkModes'
-							control={control}
-							render={({ field }) => (
-								<CheckboxGroup
-									label='Desired Work Modes'
-									value={field.value}
-									onValueChange={field.onChange}
-									classNames={{
-										base: 'gap-4',
-										wrapper: 'gap-6 flex w-full items-center flex-wrap'
-									}}
-									orientation='horizontal'
-									errorMessage={errors.desiredWorkModes?.message}
-									isInvalid={!!errors.desiredWorkModes}
-								>
-									<Checkbox value='REMOTE'>Remote</Checkbox>
-									<Checkbox value='HYBRID'>Hybrid</Checkbox>
-									<Checkbox value='OFFICE'>Office</Checkbox>
-								</CheckboxGroup>
-							)}
-						/>
-					</div>
-					<div className='mb-12'>
-						<Controller
-							name='desiredJobTypes'
-							control={control}
-							render={({ field }) => (
-								<CheckboxGroup
-									label='Desired Job Types'
-									value={field.value}
-									onValueChange={field.onChange}
-									classNames={{
-										base: 'gap-4',
-										wrapper: 'gap-6 flex w-full items-center flex-wrap'
-									}}
-									orientation='horizontal'
-									errorMessage={errors.desiredJobTypes?.message}
-									isInvalid={!!errors.desiredJobTypes}
-								>
-									<Checkbox value='FULL_TIME'>Full Time</Checkbox>
-									<Checkbox value='PART_TIME'>Part Time</Checkbox>
-									<Checkbox value='INTERNSHIP'>Internship</Checkbox>
-									<Checkbox value='CONTRACT'>Contract</Checkbox>
-									<Checkbox value='LOCUM'>Locum</Checkbox>
-								</CheckboxGroup>
-							)}
-						/>
-					</div>
-					<Divider />
-					<div className='mb-12 flex flex-col gap-6'>
-						<div className='flex items-center gap-4 mb-4'>
-							<Controller
-								name='openToRelocationAnywhere'
-								control={control}
-								render={({ field }) => <Switch isSelected={field.value} onValueChange={field.onChange} />}
-							/>
-							<span>Open to relocation anywhere</span>
+					<div className='border rounded-lg overflow-hidden'>
+						<div className='bg-gray-50 px-4 py-3 border-b flex items-center justify-between'>
+							<h3 className='font-medium'>Preview</h3>
+							<span className='text-sm text-gray-500'>
+								{selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+							</span>
 						</div>
-						{errors.locationsOpenToWork && <div className='text-red-500 text-sm mb-2'>{errors.locationsOpenToWork.message}</div>}
-						<div className='flex flex-col w-full gap-2'>
-							<div className='block'>Preferred work locations</div>
-
-							<LocationAutocomplete
-								value={inputValue}
-								onValueChange={setInputValue}
-								onChange={location => {
-									if (location.address.displayName && !locations.includes(location.address.displayName)) {
-										setValue('locationsOpenToWork', [...locations, location.address.displayName] as string[], {
-											shouldValidate: true,
-											shouldDirty: true
-										});
-									}
-									setInputValue('');
-								}}
-								onClear={() => setInputValue('')}
-								placeholder='Add a location'
-								inputProps={{
-									classNames: {
-										inputWrapper: 'bg-background'
-									}
-								}}
-							/>
-							{locations && (
-								<div className='flex flex-wrap gap-2 mt-4'>
-									{locations?.map((loc: string) => (
-										<Chip key={loc} isCloseable size='md' onClose={() => handleRemoveLocation(loc)}>
-											{loc}
-										</Chip>
-									))}
+						<div className='h-96'>
+							{selectedFile.type === 'application/pdf' ? (
+								<iframe src={previewUrl} className='w-full h-full' title='Resume Preview' />
+							) : (
+								<div className='flex items-center justify-center h-full text-gray-500'>
+									<div className='text-center'>
+										<p>Preview not available for this file type</p>
+										<p className='text-sm mt-1'>File ready to upload: {selectedFile.name}</p>
+									</div>
 								</div>
 							)}
 						</div>
+						{isUploading && <div className='p-4 text-center text-gray-500'>Uploading...</div>}
 					</div>
 				</div>
-			</form>
-		</UnsavedChangesFormWrapper>
+			</UnsavedChangesFormWrapper>
+		);
+	}
+
+	// Resume already saved - show remove and upload new buttons
+	return (
+		<>
+			<div className='space-y-6'>
+				<div className='flex items-center justify-between'>
+					<h1 className='text-xl text-foreground-500 font-medium'>Resume</h1>
+					<div className='flex gap-3'>
+						<button
+							type='button'
+							className='px-4 py-2 text-sm text-red-600 border border-red-300 rounded hover:bg-red-50'
+							onClick={() => setShowRemoveModal(true)}
+						>
+							Remove Resume
+						</button>
+						<div {...getRootProps()} className='px-4 py-2 text-sm bg-primary text-white rounded cursor-pointer hover:bg-primary/90'>
+							<input {...getInputProps()} />
+							Upload New Resume
+						</div>
+					</div>
+				</div>
+				<div className='border rounded-lg overflow-hidden'>
+					<div className='bg-gray-50 px-4 py-3 border-b'>
+						<h3 className='font-medium'>Resume Preview</h3>
+					</div>
+					<div className='h-96'>
+						<iframe src={data.resumeUrl} className='w-full h-full' title='Resume Preview' />
+					</div>
+				</div>
+			</div>
+
+			<RemoveResumeConfirmationModal
+				isOpen={showRemoveModal}
+				onOpenChange={setShowRemoveModal}
+				onConfirm={handleRemoveSaved}
+				isRemoving={isRemoving}
+			/>
+		</>
 	);
 }

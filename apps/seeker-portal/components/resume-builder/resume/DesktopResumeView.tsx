@@ -3,7 +3,7 @@ import type { DesktopResumeViewFragment$key } from '@/__generated__/DesktopResum
 import React from 'react';
 import { graphql, useFragment } from 'react-relay';
 import invariant from 'tiny-invariant';
-import UpdateCareerProfileForm from './UpdateResumeForm';
+import UpdateResumeForm from './UpdateResumeForm';
 
 const DesktopResumeViewFragment = graphql`
   fragment DesktopResumeViewFragment on Query {
@@ -11,7 +11,7 @@ const DesktopResumeViewFragment = graphql`
         __typename
       ... on Account {
         profile @required(action: THROW) {
-          ...UpdateCareerProfileFormFragment
+          ...UpdateResumeFormFragment
         }
       }
     }
@@ -22,5 +22,5 @@ export const DesktopResumeView: React.FC<{ data: DesktopResumeViewFragment$key }
 	const fragmentData = useFragment(DesktopResumeViewFragment, data);
 	invariant(fragmentData.viewer.__typename === 'Account', 'Expected profile data to be present');
 
-	return <UpdateCareerProfileForm rootQuery={fragmentData.viewer.profile} onSaveChanges={() => {}} />;
+	return <UpdateResumeForm rootQuery={fragmentData.viewer.profile} onSaveChanges={() => {}} />;
 };

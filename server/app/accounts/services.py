@@ -489,6 +489,25 @@ class ProfileService:
 
         return Ok(account)
 
+    async def update_resume(
+        self,
+        account: Account,
+        resume_url: str | None,
+    ) -> Ok[Account]:
+        existing_profile = await self._profile_repo.get_by_account(account)
+        if existing_profile is None:
+            existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
+
+        await self._profile_repo.update(
+            profile=existing_profile,
+            resume_url=resume_url,
+        )
+
+        return Ok(account)
+
 
 class ProfileParserService:
     def __init__(

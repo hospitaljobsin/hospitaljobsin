@@ -368,6 +368,7 @@ class ProfileRepo:
         certifications: list[Certification] = UNSET,
         professional_summary: str | None = UNSET,
         headline: str | None = UNSET,
+        resume_url: str | None = UNSET,
     ) -> Profile:
         """Update a profile with new fields."""
         if source_document_urls is not UNSET:
@@ -403,6 +404,8 @@ class ProfileRepo:
             profile.professional_summary = professional_summary
         if headline is not UNSET:
             profile.headline = headline
+        if resume_url is not UNSET:
+            profile.resume_url = resume_url
         profile.updated_at = datetime.now(UTC)
         return await profile.save(link_rule=WriteRules.WRITE)
 

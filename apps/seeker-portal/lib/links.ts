@@ -13,6 +13,7 @@ const links = {
 	recruiterLanding: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/`,
 	profile: '/profile',
 	resumeBuilder: '/resume-builder',
+	resumeBuilderResume: '/resume-builder/resume',
 	resumeBuilderPersonalInfo: '/resume-builder/personal-info',
 	resumeBuilderIntroduction: '/resume-builder/introduction',
 	resumeBuilderCareerProfile: '/resume-builder/career-profile',
