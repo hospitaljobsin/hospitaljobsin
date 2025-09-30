@@ -10,7 +10,7 @@ export const Sidebar: React.FC = () => {
 	const router = useRouter();
 
 	const tabs = [
-		{ key: links.resumeBuilderPersonalInfo, title: 'Personal Info' },
+		{ key: links.resumeBuilderPersonalInfo, title: 'Personal Details' },
 		{ key: links.resumeBuilderIntroduction, title: 'Introduction' },
 		{ key: links.resumeBuilderCareerProfile, title: 'Career Profile' },
 		{ key: links.resumeBuilderWorkExperience, title: 'Work Experience' },
