@@ -3,8 +3,10 @@ import links from '@/lib/links';
 import { Button } from '@heroui/react';
 import { SearchX } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import DashboardHeader from '../layout/DashboardHeader';
+import CompleteProfileDrawer from './complete-profile/CompleteProfileDrawer';
 import JobApplicationDetails from './JobApplicationDetails';
 import JobApplyForm from './JobApplyForm';
 import ProfilePreview from './ProfileReview';
@@ -36,6 +38,7 @@ const JobApplyViewFragment = graphql`
         __typename
         ... on Account {
           ...ProfileReviewFragment
+		  ...CompleteProfileDrawerFragment
 		  profile @required(action: THROW) {
 					isComplete
 				}
@@ -46,6 +49,11 @@ const JobApplyViewFragment = graphql`
 
 export default function JobApplyView(props: { rootQuery: JobApplyViewFragment$key }) {
 	const query = useFragment(JobApplyViewFragment, props.rootQuery);
+	const [showCompleteProfileDrawer, setShowCompleteProfileDrawer] = useState(false);
+
+	const handleProfileIncomplete = () => {
+		setShowCompleteProfileDrawer(true);
+	};
 
 	// only users who have not applied can access this page
 	if (
@@ -54,8 +62,7 @@ export default function JobApplyView(props: { rootQuery: JobApplyViewFragment$ke
 		!query.organization.job.isVisible ||
 		query.organization.job.isApplied ||
 		query.organization.job.externalApplicationUrl !== null ||
-		query.viewer.__typename !== 'Account' ||
-		!query.viewer.profile?.isComplete
+		query.viewer.__typename !== 'Account'
 	) {
 		return (
 			<>
@@ -86,8 +93,17 @@ export default function JobApplyView(props: { rootQuery: JobApplyViewFragment$ke
 					<div className='py-8 w-full h-full flex flex-col items-center gap-6'>
 						<JobApplicationDetails job={query.organization.job} />
 						<ProfilePreview account={query.viewer} />
-						<JobApplyForm rootQuery={query.organization.job} />
+						<JobApplyForm
+							rootQuery={query.organization.job}
+							isProfileComplete={query.viewer.profile.isComplete}
+							onProfileIncomplete={handleProfileIncomplete}
+						/>
 					</div>
+					<CompleteProfileDrawer
+						isOpen={showCompleteProfileDrawer}
+						onClose={() => setShowCompleteProfileDrawer(false)}
+						account={query.viewer}
+					/>
 				</div>
 			</div>
 		</div>

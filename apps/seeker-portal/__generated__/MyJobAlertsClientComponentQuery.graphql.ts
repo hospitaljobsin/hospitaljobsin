@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<ba04db70e04d2a465fa14e1dd2000b7f>>
- * @relayHash e5c8443020ff5a2e5efd56af13638706
+ * @generated SignedSource<<4320c72db9ee14be88b60fe3b29ec789>>
+ * @relayHash 116ccd67e95165e4a2ac253aae1c0752
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID e5c8443020ff5a2e5efd56af13638706
+// @relayRequestID 116ccd67e95165e4a2ac253aae1c0752
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -107,14 +107,7 @@ return {
                     "name": "progressPercentage",
                     "storageKey": null
                   },
-                  (v1/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "isComplete",
-                    "storageKey": null
-                  }
+                  (v1/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -329,7 +322,7 @@ return {
     ]
   },
   "params": {
-    "id": "e5c8443020ff5a2e5efd56af13638706",
+    "id": "116ccd67e95165e4a2ac253aae1c0752",
     "metadata": {},
     "name": "MyJobAlertsClientComponentQuery",
     "operationKind": "query",

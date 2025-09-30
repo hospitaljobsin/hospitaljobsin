@@ -8,7 +8,6 @@ import invariant from 'tiny-invariant';
 import Logo from '../Logo';
 import MyJobsTabs from '../my-jobs/MyJobsTabs';
 import AuthNavigation from './AuthNavigation';
-import IncompleteProfileBanner from './IncompleteProfileBanner';
 
 export const MyJobsHeaderFragment = graphql`
   fragment MyJobsHeaderFragment on Query {
@@ -16,7 +15,6 @@ export const MyJobsHeaderFragment = graphql`
       ... on Account {
         __typename
         ...AuthNavigationFragment
-		...IncompleteProfileBannerFragment
       }
       ... on NotAuthenticatedError {
         __typename
@@ -30,7 +28,6 @@ export default function MyJobsHeader({ query }: { query: MyJobsHeaderFragment$ke
 	invariant(data.viewer.__typename === 'Account', "Expected 'Account' node type");
 	return (
 		<div className='w-full flex flex-col bg-background border-b border-foreground-300 sticky top-0 z-50'>
-			{data.viewer.__typename === 'Account' && <IncompleteProfileBanner account={data.viewer} />}
 			<Navbar maxWidth='xl'>
 				<NavbarBrand className='flex items-center gap-4 text-foreground-500'>
 					<Link href={links.landing} className='font-medium text-inherit'>

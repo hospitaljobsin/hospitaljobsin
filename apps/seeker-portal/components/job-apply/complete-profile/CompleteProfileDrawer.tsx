@@ -1,0 +1,155 @@
+'use client';
+
+import type { CompleteProfileDrawerFragment$key } from '@/__generated__/CompleteProfileDrawerFragment.graphql';
+import { Drawer, DrawerBody, DrawerContent, DrawerHeader, Progress } from '@heroui/react';
+import { AlertCircle, CheckCircle } from 'lucide-react';
+import { useEffect } from 'react';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import CompleteProfileContext from './CompleteProfileContext';
+import AddressStep from './steps/AddressStep';
+import CareerProfileStep from './steps/CareerProfileStep';
+import DateOfBirthStep from './steps/DateOfBirthStep';
+import EducationStep from './steps/EducationStep';
+import HeadlineStep from './steps/HeadlineStep';
+import ProfessionalSummaryStep from './steps/ProfessionalSummaryStep';
+
+interface CompleteProfileDrawerProps {
+	isOpen: boolean;
+	onClose: () => void;
+	account: CompleteProfileDrawerFragment$key;
+}
+
+const CompleteProfileDrawerFragment = graphql`
+fragment CompleteProfileDrawerFragment on Account {
+	profile @required(action: THROW) {
+		isComplete
+		dateOfBirth
+		address
+		education {
+			__typename
+		}
+		careerProfile {
+			locationsOpenToWork
+			openToRelocationAnywhere
+		}
+		professionalSummary
+		headline
+	}
+}
+`;
+
+function CompleteProfileWizard({ onClose, missingFields }: { onClose: () => void; missingFields: string[] }) {
+	const state = CompleteProfileContext.useSelector(state => state);
+	const { send } = CompleteProfileContext.useActorRef();
+	const currentStep = CompleteProfileContext.useSelector(state => state.context.currentStep);
+	const totalSteps = CompleteProfileContext.useSelector(state => state.context.totalSteps);
+
+	useEffect(() => {
+		if (state.matches('checkingProfile')) {
+			send({
+				type: 'START_FORM',
+				missingFields,
+				totalSteps: missingFields.length
+			});
+		}
+	}, [state, send, missingFields]);
+
+	useEffect(() => {
+		if (state.matches('completed')) {
+			onClose();
+		}
+	}, [state, onClose]);
+
+	const currentField = CompleteProfileContext.useSelector(state => {
+		const { missingFields, currentFieldIndex } = state.context;
+		return missingFields[currentFieldIndex];
+	});
+
+	const renderStep = () => {
+		if (!state.matches('activeStep')) return null;
+
+		switch (currentField) {
+			case 'dateOfBirth':
+				return <DateOfBirthStep />;
+			case 'address':
+				return <AddressStep />;
+			case 'education':
+				return <EducationStep />;
+			case 'careerProfile':
+				return <CareerProfileStep />;
+			case 'professionalSummary':
+				return <ProfessionalSummaryStep />;
+			case 'headline':
+				return <HeadlineStep />;
+			default:
+				return null;
+		}
+	};
+
+	return (
+		<>
+			<DrawerHeader className='flex flex-col gap-4'>
+				<div className='flex items-center gap-3'>
+					<div className='flex items-center justify-center w-10 h-10 rounded-full bg-primary-50 dark:bg-primary-900/20'>
+						<AlertCircle className='w-5 h-5 text-primary-500' />
+					</div>
+					<h2 className='text-xl font-semibold'>Complete Your Profile</h2>
+				</div>
+				{totalSteps > 0 && (
+					<div className='space-y-2'>
+						<div className='flex justify-between text-sm text-foreground-600'>
+							<span>
+								Step {currentStep} of {totalSteps}
+							</span>
+							<span>{Math.round((currentStep / totalSteps) * 100)}% complete</span>
+						</div>
+						<Progress value={(currentStep / totalSteps) * 100} color='primary' size='sm' />
+					</div>
+				)}
+			</DrawerHeader>
+			<DrawerBody>{renderStep()}</DrawerBody>
+		</>
+	);
+}
+
+export default function CompleteProfileDrawer({ isOpen, onClose, account }: CompleteProfileDrawerProps) {
+	const data = useFragment(CompleteProfileDrawerFragment, account);
+	const profile = data.profile;
+
+	// Determine missing fields
+	const missingFields: string[] = [];
+	if (!profile.dateOfBirth) missingFields.push('dateOfBirth');
+	if (!profile.address) missingFields.push('address');
+	if (!profile.education || profile.education.length === 0) missingFields.push('education');
+	if (!profile.careerProfile?.locationsOpenToWork?.length && !profile.careerProfile?.openToRelocationAnywhere)
+		missingFields.push('careerProfile');
+	if (!profile.professionalSummary) missingFields.push('professionalSummary');
+	if (!profile.headline) missingFields.push('headline');
+
+	return (
+		<Drawer isOpen={isOpen} onClose={onClose} placement='right' size='lg'>
+			<DrawerContent>
+				{profile.isComplete ? (
+					<>
+						<DrawerHeader>
+							<div className='flex items-center gap-3'>
+								<div className='flex items-center justify-center w-10 h-10 rounded-full bg-success-50 dark:bg-success-900/20'>
+									<CheckCircle className='w-5 h-5 text-success-500' />
+								</div>
+								<h2 className='text-xl font-semibold'>Profile Complete!</h2>
+							</div>
+						</DrawerHeader>
+						<DrawerBody>
+							<p className='text-foreground-600'>Your profile is complete! You can now apply for jobs.</p>
+						</DrawerBody>
+					</>
+				) : (
+					<CompleteProfileContext.Provider>
+						<CompleteProfileWizard onClose={onClose} missingFields={missingFields} />
+					</CompleteProfileContext.Provider>
+				)}
+			</DrawerContent>
+		</Drawer>
+	);
+}

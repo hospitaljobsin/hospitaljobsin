@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5f568e8ef6d94afdebff44bc6313683a>>
+ * @generated SignedSource<<bab7a11d6c6bcd5bd34b88e7bd1bd5d0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,7 +22,7 @@ export type OrgDetailHeaderFragment$data = {
   };
   readonly viewer: {
     readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "IncompleteProfileBannerFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment">;
   } | {
     readonly __typename: "NotAuthenticatedError";
     readonly __typename: "NotAuthenticatedError";
@@ -74,11 +74,6 @@ return {
               "args": null,
               "kind": "FragmentSpread",
               "name": "AuthNavigationFragment"
-            },
-            {
-              "args": null,
-              "kind": "FragmentSpread",
-              "name": "IncompleteProfileBannerFragment"
             }
           ],
           "type": "Account",
@@ -132,6 +127,6 @@ return {
 };
 })();
 
-(node as any).hash = "653c7ca451ce98ee4655300f355dd870";
+(node as any).hash = "a9573995ae5bd99af8095dd52c3cbb10";
 
 export default node;

@@ -1,7 +1,7 @@
 import type { JobApplyButtonFragment$key } from '@/__generated__/JobApplyButtonFragment.graphql';
 import { env } from '@/lib/env/client';
 import links from '@/lib/links';
-import { Button, Tooltip } from '@heroui/react';
+import { Button } from '@heroui/react';
 import { ExternalLinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useFragment } from 'react-relay';
@@ -48,7 +48,6 @@ export default function JobApplyButton({ query }: { query: JobApplyButtonFragmen
 	invariant(root.organization.job.__typename === 'Job', "Expected 'Job' node type");
 
 	const isAuthenticated = root.viewer.__typename === 'Account';
-	const isProfileIncomplete = isAuthenticated && !root.viewer.profile.isComplete;
 
 	const data = root.organization.job;
 	return (
@@ -67,30 +66,6 @@ export default function JobApplyButton({ query }: { query: JobApplyButtonFragmen
 				>
 					{data.isApplied ? 'Already Applied' : 'Apply now'}
 				</Button>
-			) : isProfileIncomplete && !data.isApplied ? (
-				<Tooltip
-					showArrow
-					content={
-						<div className='px-1 py-2'>
-							<div className='text-sm'>
-								<Link href={links.resumeBuilder}>Complete your profile</Link> to apply for this job
-							</div>
-						</div>
-					}
-				>
-					<span className='w-full sm:w-auto'>
-						<Button
-							as={Link}
-							href={links.jobDetailApply(root.organization.slug, root.organization.job.slug)}
-							size='lg'
-							color='primary'
-							className='w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3'
-							isDisabled
-						>
-							Apply now
-						</Button>
-					</span>
-				</Tooltip>
 			) : (
 				<Button
 					as={Link}

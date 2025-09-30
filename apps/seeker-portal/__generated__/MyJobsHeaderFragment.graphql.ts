@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<61ee8135ed06ba858b7da4c8d0ee7c6a>>
+ * @generated SignedSource<<57bf52da6b1aca1556aa9067b3e8db56>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,7 @@ import type { FragmentRefs } from "relay-runtime";
 export type MyJobsHeaderFragment$data = {
   readonly viewer: {
     readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "IncompleteProfileBannerFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment">;
   } | {
     readonly __typename: "NotAuthenticatedError";
   } | {
@@ -58,11 +58,6 @@ return {
               "args": null,
               "kind": "FragmentSpread",
               "name": "AuthNavigationFragment"
-            },
-            {
-              "args": null,
-              "kind": "FragmentSpread",
-              "name": "IncompleteProfileBannerFragment"
             }
           ],
           "type": "Account",
@@ -85,6 +80,6 @@ return {
 };
 })();
 
-(node as any).hash = "478274046d7759cb864dcd7224447e45";
+(node as any).hash = "899475304ad0d651bcdb28bd4c93539e";
 
 export default node;

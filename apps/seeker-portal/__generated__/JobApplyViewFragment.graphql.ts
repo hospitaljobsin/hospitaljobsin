@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b2096e45e6f4d425d9825b85b932a747>>
+ * @generated SignedSource<<5e3c9005cd67ef5d5c76380ce7f17238>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -34,7 +34,7 @@ export type JobApplyViewFragment$data = {
     readonly profile: {
       readonly isComplete: boolean;
     };
-    readonly " $fragmentSpreads": FragmentRefs<"ProfileReviewFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"CompleteProfileDrawerFragment" | "ProfileReviewFragment">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -403,6 +403,11 @@ return {
               "name": "ProfileReviewFragment"
             },
             {
+              "args": null,
+              "kind": "FragmentSpread",
+              "name": "CompleteProfileDrawerFragment"
+            },
+            {
               "kind": "RequiredField",
               "field": {
                 "alias": null,
@@ -437,6 +442,6 @@ return {
 };
 })();
 
-(node as any).hash = "58406b2ab81ae523c63f1ccb528b1978";
+(node as any).hash = "ca3ada535ffdc89da00bf04bf1064380";
 
 export default node;

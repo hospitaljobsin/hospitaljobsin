@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<dc27b4510e044f181fce81b43e9e9de7>>
- * @relayHash f5933c05c5c086868c250e9341ec9256
+ * @generated SignedSource<<e93e97cf86b32e095ffd8063126e01f2>>
+ * @relayHash e3183f213124295d6385ccbbc0a95946
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID f5933c05c5c086868c250e9341ec9256
+// @relayRequestID e3183f213124295d6385ccbbc0a95946
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -153,11 +153,75 @@ return {
                     "kind": "ScalarField",
                     "name": "isComplete",
                     "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "dateOfBirth",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "address",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Education",
+                    "kind": "LinkedField",
+                    "name": "education",
+                    "plural": true,
+                    "selections": [
+                      (v3/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "CareerProfile",
+                    "kind": "LinkedField",
+                    "name": "careerProfile",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "locationsOpenToWork",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "openToRelocationAnywhere",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "professionalSummary",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "headline",
+                    "storageKey": null
                   }
                 ],
                 "storageKey": null
-              },
-              (v4/*: any*/)
+              }
             ],
             "type": "Account",
             "abstractKey": null
@@ -491,7 +555,7 @@ return {
     ]
   },
   "params": {
-    "id": "f5933c05c5c086868c250e9341ec9256",
+    "id": "e3183f213124295d6385ccbbc0a95946",
     "metadata": {},
     "name": "JobApplyViewClientComponentQuery",
     "operationKind": "query",

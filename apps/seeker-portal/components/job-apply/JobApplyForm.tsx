@@ -68,7 +68,15 @@ const formSchema = z.object({
 	)
 });
 
-export default function JobApplyForm({ rootQuery }: { rootQuery: JobApplyFormFragment$key }) {
+export default function JobApplyForm({
+	rootQuery,
+	isProfileComplete,
+	onProfileIncomplete
+}: {
+	rootQuery: JobApplyFormFragment$key;
+	isProfileComplete: boolean;
+	onProfileIncomplete: () => void;
+}) {
 	const router = useRouter();
 	const data = useFragment(JobApplyFormFragment, rootQuery);
 	const [commitMutation, isMutationInFlight] = useMutation<JobApplyFormMutation>(CreateJobApplicantMutation);
@@ -128,11 +136,19 @@ export default function JobApplyForm({ rootQuery }: { rootQuery: JobApplyFormFra
 	}
 
 	function handleFormSubmit(values: z.infer<typeof formSchema>) {
+		if (!isProfileComplete) {
+			onProfileIncomplete();
+			return;
+		}
 		setPendingSubmitValues(values);
 		setShowConfirmModal(true);
 	}
 
 	function handleDirectApply() {
+		if (!isProfileComplete) {
+			onProfileIncomplete();
+			return;
+		}
 		setShowDirectApplyModal(true);
 	}
 
