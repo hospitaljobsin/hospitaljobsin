@@ -1,4 +1,6 @@
 import type { UpdatePersonalDetailsFormFragment$key } from '@/__generated__/UpdatePersonalDetailsFormFragment.graphql';
+import type { UpdatePersonalDetailsFormMutation as UpdatePersonalDetailsFormMutationType } from '@/__generated__/UpdatePersonalDetailsFormMutation.graphql';
+import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
 import { DatePicker, Input, Select, SelectItem } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { CalendarDate, parseDate } from '@internationalized/date';
@@ -8,14 +10,18 @@ import { z } from 'zod/v4-mini';
 import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 
 const UpdatePersonalDetailsFormMutation = graphql`
-mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $maritalStatus: MaritalStatusType, $category: String) {
-	updateProfilePersonalDetails(gender: $gender, dateOfBirth: $dateOfBirth, maritalStatus: $maritalStatus, category: $category) {
+mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $maritalStatus: MaritalStatusType, $category: String, $address: String) {
+	updateProfilePersonalDetails(gender: $gender, dateOfBirth: $dateOfBirth, maritalStatus: $maritalStatus, category: $category,address: $address) {
+		__typename
 		...on Account {
 			...IncompleteProfileBannerFragment
 			...ResumeProgressAccountFragment
 			profile {
 				...UpdatePersonalDetailsFormFragment
 			}
+		}
+		... on InvalidLocationError {
+			message
 		}
 	}
 }
@@ -26,6 +32,7 @@ const UpdatePersonalDetailsFormFragment = graphql`
     dateOfBirth
     maritalStatus
     category
+	address
   }
 `;
 
@@ -38,24 +45,27 @@ const formSchema = z.object({
 	gender: z.union([z.literal('MALE'), z.literal('FEMALE'), z.literal('OTHER'), z.null()]),
 	dateOfBirth: z.nullable(z.custom<CalendarDate>(data => data instanceof CalendarDate)),
 	maritalStatus: z.union([z.literal('MARRIED'), z.literal('SINGLE'), z.null()]),
-	category: z.nullable(z.string().check(z.maxLength(25, 'Category is too long')))
+	category: z.nullable(z.string().check(z.maxLength(25, 'Category is too long'))),
+	address: z.nullable(z.string())
 });
 
 export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: Props) {
-	const [commitMutation, isMutationInFlight] = useMutation(UpdatePersonalDetailsFormMutation);
+	const [commitMutation, isMutationInFlight] = useMutation<UpdatePersonalDetailsFormMutationType>(UpdatePersonalDetailsFormMutation);
 	const data = useFragment(UpdatePersonalDetailsFormFragment, rootQuery);
 
 	const defaultValues: z.infer<typeof formSchema> = {
 		category: data.category ?? null,
 		gender: ['MALE', 'FEMALE', 'OTHER'].includes(data.gender ?? '') ? (data.gender as 'MALE' | 'FEMALE' | 'OTHER') : null,
 		maritalStatus: ['MARRIED', 'SINGLE'].includes(data.maritalStatus ?? '') ? (data.maritalStatus as 'MARRIED' | 'SINGLE') : null,
-		dateOfBirth: data.dateOfBirth ? parseDate(data.dateOfBirth) : null
+		dateOfBirth: data.dateOfBirth ? parseDate(data.dateOfBirth) : null,
+		address: String(data.address ?? '')
 	};
 
 	const {
 		handleSubmit,
 		control,
 		reset,
+		setError,
 		formState: { errors, isSubmitting, isDirty, isValid }
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
@@ -68,9 +78,14 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 				gender: formData.gender || null,
 				dateOfBirth: formData.dateOfBirth ? formData.dateOfBirth.toString() : null,
 				category: formData.category || null,
-				maritalStatus: formData.maritalStatus || null
+				maritalStatus: formData.maritalStatus || null,
+				address: formData.address || null
 			},
-			onCompleted() {
+			onCompleted(data) {
+				if (data.updateProfilePersonalDetails.__typename === 'InvalidLocationError') {
+					setError('address', { message: data.updateProfilePersonalDetails.message });
+					return;
+				}
 				reset(formData);
 				onSaveChanges();
 			}
@@ -175,6 +190,31 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 									isInvalid={!!errors.category}
 									classNames={{
 										inputWrapper: 'bg-background'
+									}}
+								/>
+							)}
+						/>
+					</div>
+					<div className='mb-12'>
+						<Controller
+							name='address'
+							control={control}
+							render={({ field }) => (
+								<LocationAutocomplete
+									label='Current Address'
+									labelPlacement='outside'
+									value={field.value || ''}
+									onValueChange={field.onChange}
+									onChange={location => {
+										if (location.address.displayName) field.onChange(location.address.displayName);
+									}}
+									placeholder='Enter your address'
+									errorMessage={errors.address?.message}
+									isInvalid={!!errors.address}
+									inputProps={{
+										classNames: {
+											inputWrapper: 'bg-background'
+										}
 									}}
 								/>
 							)}

@@ -32,6 +32,7 @@ from app.base.types import (
     BaseEdgeType,
     BaseErrorType,
     BaseNodeType,
+    InvalidLocationErrorType,
     JobTypeEnum,
     WorkModeEnum,
 )
@@ -1333,17 +1334,6 @@ UnsaveJobPayload = Annotated[
 class CreateJobSuccessType:
     job_edge: JobEdgeType = strawberry.field(
         description="The edge of the created job.",
-    )
-
-
-@strawberry.type(
-    name="InvalidLocationError",
-    description="Used when the location is invalid.",
-)
-class InvalidLocationErrorType(BaseErrorType):
-    message: str = strawberry.field(
-        description="Human readable error message.",
-        default="Location is invalid!",
     )
 
 

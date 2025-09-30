@@ -2996,7 +2996,12 @@ type Mutation {
 		The category of the user profile.
 		"""
 		category: String
-	): UpdateProfilePayload! @isAuthenticated
+
+		"""
+		The address of the user profile (now part of location preferences).
+		"""
+		address: String
+	): UpdateProfilePersonalDetailsPayload! @isAuthenticated
 
 	"""
 	Update the current user's profile languages.
@@ -3096,11 +3101,6 @@ type Mutation {
 		Whether the user is open to relocation anywhere.
 		"""
 		openToRelocationAnywhere: Boolean!
-
-		"""
-		The address of the user profile (now part of location preferences).
-		"""
-		address: String
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""
@@ -5152,6 +5152,11 @@ union UpdatePasswordPayload = Account | PasswordNotStrongError
 The update profile payload.
 """
 union UpdateProfilePayload = Account
+
+"""
+The update profile personal details payload.
+"""
+union UpdateProfilePersonalDetailsPayload = Account | InvalidLocationError
 
 """
 The update webauthn credential payload.

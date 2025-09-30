@@ -12,13 +12,12 @@ const UpdateLocationPreferencesFormFragment = graphql`
   fragment UpdateLocationPreferencesFormFragment on Profile {
     locationsOpenToWork
     openToRelocationAnywhere
-    address
   }
 `;
 
 const UpdateLocationPreferencesMutation = graphql`
-  mutation UpdateLocationPreferencesFormMutation($locationsOpenToWork: [String!]!, $openToRelocationAnywhere: Boolean!, $address: String!) {
-    updateProfileLocationPreferences(locationsOpenToWork: $locationsOpenToWork, openToRelocationAnywhere: $openToRelocationAnywhere, address: $address) {
+  mutation UpdateLocationPreferencesFormMutation($locationsOpenToWork: [String!]!, $openToRelocationAnywhere: Boolean!) {
+    updateProfileLocationPreferences(locationsOpenToWork: $locationsOpenToWork, openToRelocationAnywhere: $openToRelocationAnywhere) {
       ... on Account {
 		...IncompleteProfileBannerFragment
 		...ResumeProgressAccountFragment
@@ -32,8 +31,7 @@ const UpdateLocationPreferencesMutation = graphql`
 
 const formSchema = z.object({
 	openToRelocationAnywhere: z.boolean(),
-	locationsOpenToWork: z.array(z.string()),
-	address: z.string().check(z.minLength(3, 'Address is required'))
+	locationsOpenToWork: z.array(z.string())
 });
 
 export default function UpdateLocationPreferencesForm({
@@ -49,8 +47,7 @@ export default function UpdateLocationPreferencesForm({
 
 	const defaultValues = {
 		openToRelocationAnywhere: data.openToRelocationAnywhere || false,
-		locationsOpenToWork: (data.locationsOpenToWork || []) as string[],
-		address: String(data.address ?? '')
+		locationsOpenToWork: (data.locationsOpenToWork || []) as string[]
 	};
 
 	const {
@@ -70,8 +67,7 @@ export default function UpdateLocationPreferencesForm({
 		commit({
 			variables: {
 				locationsOpenToWork: formData.locationsOpenToWork || [],
-				openToRelocationAnywhere: formData.openToRelocationAnywhere,
-				address: formData.address
+				openToRelocationAnywhere: formData.openToRelocationAnywhere
 			},
 			onCompleted() {
 				reset(formData);
@@ -90,31 +86,6 @@ export default function UpdateLocationPreferencesForm({
 				<div className='pb-4 sm:pb-6 space-y-4 sm:space-y-6 w-full'>
 					<h1 className='w-full text-xl text-foreground-500 font-medium'>Location Preferences</h1>
 					<div className='w-full flex flex-col gap-8'>
-						<div className='mb-12'>
-							<Controller
-								name='address'
-								control={control}
-								render={({ field }) => (
-									<LocationAutocomplete
-										label='Current Address'
-										labelPlacement='outside'
-										value={field.value || ''}
-										onValueChange={field.onChange}
-										onChange={location => {
-											if (location.address.displayName) field.onChange(location.address.displayName);
-										}}
-										placeholder='Enter your address'
-										errorMessage={errors.address?.message}
-										isInvalid={!!errors.address}
-										inputProps={{
-											classNames: {
-												inputWrapper: 'bg-background'
-											}
-										}}
-									/>
-								)}
-							/>
-						</div>
 						<div className='flex items-center gap-4'>
 							<Controller
 								name='openToRelocationAnywhere'

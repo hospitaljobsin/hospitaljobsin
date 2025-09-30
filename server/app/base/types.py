@@ -142,6 +142,17 @@ class InvalidUserInputErrorType(BaseErrorType):
         )
 
 
+@strawberry.type(
+    name="InvalidLocationError",
+    description="Used when the location is invalid.",
+)
+class InvalidLocationErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Location is invalid!",
+    )
+
+
 @strawberry.type(name="Address")
 class AddressType:
     display_name: str | None = field(

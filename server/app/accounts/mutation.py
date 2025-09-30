@@ -18,7 +18,8 @@ from app.accounts.exceptions import (
 from app.accounts.repositories import AccountRepo
 from app.accounts.services import AccountService, ProfileParserService, ProfileService
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
-from app.base.types import CreatePresignedURLPayloadType
+from app.base.exceptions import InvalidLocationError
+from app.base.types import CreatePresignedURLPayloadType, InvalidLocationErrorType
 from app.context import AuthInfo, Info
 
 from .types import (
@@ -48,6 +49,7 @@ from .types import (
     UpdateAccountPhoneNumberPayload,
     UpdateAccountWhatsappJobAlertsPayload,
     UpdateProfilePayload,
+    UpdateProfilePersonalDetailsPayload,
     WorkExperienceInputType,
 )
 
@@ -55,7 +57,7 @@ from .types import (
 @strawberry.type
 class AccountMutation:
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=UpdateProfilePayload,
+        graphql_type=UpdateProfilePersonalDetailsPayload,
         description="Update the current user's profile personal details.",
         extensions=[
             PermissionExtension(
@@ -94,7 +96,13 @@ class AccountMutation:
                 description="The category of the user profile.",
             ),
         ] = strawberry.UNSET,
-    ) -> UpdateProfilePayload:
+        address: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The address of the user profile (now part of location preferences).",
+            ),
+        ] = strawberry.UNSET,
+    ) -> UpdateProfilePersonalDetailsPayload:
         """Update the current user's profile personal details."""
         match await profile_service.update_personal_details(
             account=info.context["current_user"],
@@ -102,9 +110,14 @@ class AccountMutation:
             date_of_birth=date_of_birth,
             marital_status=marital_status.value if marital_status is not None else None,
             category=category,
+            address=address,
         ):
             case Ok(account):
                 return AccountType.marshal(account)
+            case Err(error):
+                match error:
+                    case InvalidLocationError():
+                        return InvalidLocationErrorType()
             case _ as unreachable:
                 assert_never(unreachable)
 
@@ -414,19 +427,12 @@ class AccountMutation:
                 description="Whether the user is open to relocation anywhere."
             ),
         ],
-        address: Annotated[
-            str | None,
-            strawberry.argument(
-                description="The address of the user profile (now part of location preferences).",
-            ),
-        ] = strawberry.UNSET,
     ) -> UpdateProfilePayload:
         """Update the current user's profile location preferences, including address."""
         match await profile_service.update_location_preferences(
             account=info.context["current_user"],
             locations_open_to_work=locations_open_to_work,
             open_to_relocation_anywhere=open_to_relocation_anywhere,
-            address=address,
         ):
             case Ok(account):
                 return AccountType.marshal(account)

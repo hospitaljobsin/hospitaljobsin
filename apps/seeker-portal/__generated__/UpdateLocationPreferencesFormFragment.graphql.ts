@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ada1cfbd343c62605f0afe6eccc256a9>>
+ * @generated SignedSource<<baeb0bf2d841d5cdfa7ba4d8204c4cf5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,6 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type UpdateLocationPreferencesFormFragment$data = {
-  readonly address: string | null | undefined;
   readonly locationsOpenToWork: ReadonlyArray<string>;
   readonly openToRelocationAnywhere: boolean;
   readonly " $fragmentType": "UpdateLocationPreferencesFormFragment";
@@ -40,19 +39,12 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "openToRelocationAnywhere",
       "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "address",
-      "storageKey": null
     }
   ],
   "type": "Profile",
   "abstractKey": null
 };
 
-(node as any).hash = "cbf79ca316aaf8b3f019bcc441d5a8d8";
+(node as any).hash = "40f047ff56876ff0a4ba85243a625d8b";
 
 export default node;

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<8986bc5bd95245e033f55235cd30ee3d>>
- * @relayHash 07b16da578f1f7fab5697bbdc2b23f31
+ * @generated SignedSource<<0fd8b1f6b7369ee8284afbfe839dca8a>>
+ * @relayHash 5fdfaefb96a9be7c2f683d911a76991e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 07b16da578f1f7fab5697bbdc2b23f31
+// @relayRequestID 5fdfaefb96a9be7c2f683d911a76991e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -106,6 +106,13 @@ return {
                     "name": "category",
                     "storageKey": null
                   },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "address",
+                    "storageKey": null
+                  },
                   (v0/*: any*/)
                 ],
                 "storageKey": null
@@ -128,7 +135,7 @@ return {
     ]
   },
   "params": {
-    "id": "07b16da578f1f7fab5697bbdc2b23f31",
+    "id": "5fdfaefb96a9be7c2f683d911a76991e",
     "metadata": {},
     "name": "PersonalInfoClientComponentQuery",
     "operationKind": "query",

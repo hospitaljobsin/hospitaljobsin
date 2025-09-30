@@ -25,6 +25,7 @@ from app.auth.repositories import SessionRepo, WebAuthnCredentialRepo
 from app.base.types import (
     BaseErrorType,
     BaseNodeType,
+    InvalidLocationErrorType,
     JobTypeEnum,
     NotAuthenticatedErrorType,
     WorkModeEnum,
@@ -731,6 +732,13 @@ UpdateProfilePayload = Annotated[
     ),
 ]
 
+UpdateProfilePersonalDetailsPayload = Annotated[
+    AccountType | InvalidLocationErrorType,
+    strawberry.union(
+        name="UpdateProfilePersonalDetailsPayload",
+        description="The update profile personal details payload.",
+    ),
+]
 
 ParseProfileDocumentPayload = Annotated[
     ProfileType,

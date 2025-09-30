@@ -155,7 +155,6 @@ class Profile(BaseProfile, Document):
             [
                 self.date_of_birth,
                 self.address,
-                self.work_experience,
                 self.education,
                 (self.locations_open_to_work or self.open_to_relocation_anywhere),
                 self.professional_summary,

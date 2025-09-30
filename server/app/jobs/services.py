@@ -17,6 +17,7 @@ from types_aiobotocore_sqs import SQSClient
 
 from app.accounts.documents import Account
 from app.accounts.exceptions import AccountProfileIncompleteError
+from app.base.exceptions import InvalidLocationError
 from app.base.models import Address, GeoObject
 from app.config import AppSettings, AWSSettings, EnvironmentSettings
 from app.core.constants import (
@@ -43,7 +44,6 @@ from app.jobs.exceptions import (
     AccountProfileNotFoundError,
     InsufficientActiveVacanciesError,
     InvalidApplicantLocationsError,
-    InvalidLocationError,
     JobApplicantAlreadyExistsError,
     JobApplicantCountNotFoundError,
     JobApplicantNotFoundError,

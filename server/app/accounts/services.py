@@ -35,10 +35,12 @@ from app.accounts.repositories import (
     PhoneNumberVerificationTokenRepo,
     ProfileRepo,
 )
+from app.base.exceptions import InvalidLocationError
 from app.config import AuthSettings, AWSSettings
 from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
 from app.core.messages import BaseMessageSender
 from app.core.ocr import BaseOCRClient
+from app.geocoding.repositories import RegionRepo
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
 
@@ -314,9 +316,11 @@ class ProfileService:
         self,
         profile_repo: ProfileRepo,
         account_repo: AccountRepo,
+        region_repo: RegionRepo,
     ) -> None:
         self._profile_repo = profile_repo
         self._account_repo = account_repo
+        self._region_repo = region_repo
 
     async def update_personal_details(
         self,
@@ -325,7 +329,8 @@ class ProfileService:
         date_of_birth: date | None,
         marital_status: str | None,
         category: str | None,
-    ) -> Ok[Account]:
+        address: str | None,
+    ) -> Result[Account, InvalidLocationError]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
             existing_profile = await self._profile_repo.create(account)
@@ -333,12 +338,18 @@ class ProfileService:
                 account=account, profile=existing_profile
             )
 
+        if address:
+            location = await self._region_repo.get_by_name(name=address)
+            if location is None:
+                return Err(InvalidLocationError())
+
         await self._profile_repo.update(
             profile=existing_profile,
             gender=gender,
             date_of_birth=date_of_birth,
             marital_status=marital_status,
             category=category,
+            address=address,
         )
 
         return Ok(account)
@@ -368,7 +379,6 @@ class ProfileService:
         account: Account,
         locations_open_to_work: list[str],
         open_to_relocation_anywhere: bool,
-        address: str | None,
     ) -> Ok[Account]:
         """Update the user's location preferences, including address."""
         existing_profile = await self._profile_repo.get_by_account(account)
@@ -382,7 +392,6 @@ class ProfileService:
             profile=existing_profile,
             locations_open_to_work=locations_open_to_work,
             open_to_relocation_anywhere=open_to_relocation_anywhere,
-            address=address,
         )
         return Ok(account)
 
