@@ -14,6 +14,7 @@ const links = {
 	profile: '/profile',
 	resumeBuilder: '/resume-builder',
 	resumeBuilderPersonalInfo: '/resume-builder/personal-info',
+	resumeBuilderIntroduction: '/resume-builder/introduction',
 	resumeBuilderCareerProfile: '/resume-builder/career-profile',
 	resumeBuilderWorkExperience: '/resume-builder/work-experience',
 	resumeBuilderEducation: '/resume-builder/education',

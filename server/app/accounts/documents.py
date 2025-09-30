@@ -10,7 +10,9 @@ from pymongo import IndexModel
 from app.base.models import GeoObject
 from app.core.constants import (
     AuthProvider,
+    JobKindType,
     TwoFactorProvider,
+    WorkModeType,
 )
 
 if TYPE_CHECKING:
@@ -85,10 +87,11 @@ class WorkExperience(BaseModel):
     skills: list[str] = Field(..., description="The skills of the work experience.")
 
 
-# SALARY EXPECTATIONS
-class SalaryExpectations(BaseModel):
-    preferred_monthly_salary_inr: int
-    negotiable: bool
+class CareerProfile(BaseModel):
+    current_industry: str | None = None
+    desired_job_types: list[JobKindType] = []
+    desired_work_modes: list[WorkModeType] = []
+    expected_salary: float | None = None
 
 
 # CERTIFICATION
@@ -122,7 +125,7 @@ class BaseProfile(BaseModel):
     job_preferences: list[str]
     work_experience: list[WorkExperience]
     total_work_experience_years: float = 0.0
-    salary_expectations: SalaryExpectations | None
+    career_profile: CareerProfile | None = None
     certifications: list[Certification]
     professional_summary: str | None = None
     headline: str | None = None

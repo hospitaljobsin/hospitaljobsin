@@ -14,7 +14,7 @@ from bson import ObjectId
 from pydantic import ValidationError
 from redis.asyncio import Redis
 
-from app.accounts.documents import Account, BaseProfile, SalaryExpectations
+from app.accounts.documents import Account, BaseProfile, CareerProfile
 from app.base.models import Address, GeoObject
 from app.core.constants import (
     DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT,
@@ -1079,10 +1079,10 @@ class JobApplicantRepo:
         return uuid.uuid4().hex
 
     @staticmethod
-    def format_profile_salary_expectations(
-        salary_expectations: SalaryExpectations,
+    def format_career_profile(
+        career_profile: CareerProfile,
     ) -> str:
-        return f"Preferred Monthly Salary: {salary_expectations.preferred_monthly_salary_inr} INR, Negotiable: {'Yes' if salary_expectations.negotiable else 'No'}"
+        return f"Preferred Monthly Salary: {career_profile.preferred_monthly_salary_inr} INR, Negotiable: {'Yes' if career_profile.negotiable else 'No'}"
 
     @staticmethod
     def format_profile_snapshot_for_embedding(profile: BaseProfile) -> str:
@@ -1108,7 +1108,7 @@ class JobApplicantRepo:
             f"Work Experience: {work_experience_str or 'N/A'}\\n"
             f"Job Preferences: {skills_str or 'N/A'}\\n"
             f"Languages: {languages_str or 'N/A'}\\n"
-            f"Salary Expectations: {JobApplicantRepo.format_profile_salary_expectations(profile.salary_expectations) if profile.salary_expectations else 'N/A'}\\n"
+            f"Salary Expectations: {JobApplicantRepo.format_career_profile(profile.salary_expectations) if profile.salary_expectations else 'N/A'}\\n"
             f"Certifications: {certifications_str or 'N/A'}"
         )
 

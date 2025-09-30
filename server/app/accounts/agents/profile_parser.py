@@ -5,12 +5,12 @@ from pydantic_ai import Agent
 from pydantic_ai.settings import ModelSettings
 
 from app.accounts.documents import (
+    CareerProfile,
     Certification,
     Education,
     Gender,
     Language,
     MaritalStatus,
-    SalaryExpectations,
     WorkExperience,
 )
 
@@ -73,9 +73,9 @@ class ProfileOutput(BaseModel):
         ...,
         description="The work experience of the applicant.",
     )
-    salary_expectations: SalaryExpectations | None = Field(
+    career_profile: CareerProfile | None = Field(
         ...,
-        description="The salary expectations of the applicant.",
+        description="The career profile of the applicant.",
     )
     certifications: list[Certification] = Field(
         ...,

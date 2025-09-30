@@ -358,7 +358,7 @@ type AnalysedFields {
 	languages: FieldAnalysis
 	jobPreferences: FieldAnalysis
 	workExperience: FieldAnalysis
-	salaryExpectations: FieldAnalysis
+	careerProfile: FieldAnalysis
 	certifications: FieldAnalysis
 	professionalSummary: FieldAnalysis
 	headline: FieldAnalysis
@@ -565,7 +565,7 @@ interface BaseProfile {
 	"""
 	The user's salary expectations.
 	"""
-	salaryExpectations: SalaryExpectations
+	careerProfile: CareerProfile
 
 	"""
 	The user's certifications.
@@ -593,6 +593,13 @@ enum BusinessProof {
 	SHOP_LICENSE
 	MEDICAL_COUNCIL_REGISTRATION
 	OTHER
+}
+
+type CareerProfile {
+	currentIndustry: String
+	desiredJobTypes: [JobType!]!
+	desiredWorkModes: [WorkMode!]!
+	expectedSalary: Float
 }
 
 type Certification {
@@ -4177,7 +4184,7 @@ type Profile implements BaseProfile & Node {
 	"""
 	The user's salary expectations.
 	"""
-	salaryExpectations: SalaryExpectations
+	careerProfile: CareerProfile
 
 	"""
 	The user's certifications.
@@ -4282,7 +4289,7 @@ type ProfileSnapshot implements BaseProfile {
 	"""
 	The user's salary expectations.
 	"""
-	salaryExpectations: SalaryExpectations
+	careerProfile: CareerProfile
 
 	"""
 	The user's certifications.
@@ -4775,11 +4782,6 @@ union ResetPasswordPayload =
 	| InvalidPasswordResetTokenError
 	| PasswordNotStrongError
 	| TwoFactorAuthenticationChallengeNotFoundError
-
-type SalaryExpectations {
-	preferredMonthlySalaryInr: Int!
-	negotiable: Boolean!
-}
 
 """
 The save job payload.

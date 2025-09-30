@@ -16,13 +16,13 @@ from app.accounts.documents import Account, BaseProfile
 from app.accounts.types import (
     AccountType,
     BaseProfileType,
+    CareerProfileType,
     CertificationType,
     EducationType,
     GenderTypeEnum,
     LanguageType,
     LicenseType,
     MaritalStatusTypeEnum,
-    SalaryExpectationsType,
     WorkExperienceType,
 )
 from app.auth.permissions import IsAuthenticated
@@ -32,6 +32,8 @@ from app.base.types import (
     BaseEdgeType,
     BaseErrorType,
     BaseNodeType,
+    JobTypeEnum,
+    WorkModeEnum,
 )
 from app.context import AuthInfo, Info
 from app.core.constants import JobApplicantAnalysisStatus
@@ -116,28 +118,6 @@ class JobTypeFilterEnum(Enum):
     INTERNSHIP = "internship"
     CONTRACT = "contract"
     LOCUM = "locum"
-
-
-@strawberry.enum(
-    name="JobType",
-    description="The type of job.",
-)
-class JobTypeEnum(Enum):
-    FULL_TIME = "full_time"
-    PART_TIME = "part_time"
-    INTERNSHIP = "internship"
-    CONTRACT = "contract"
-    LOCUM = "locum"
-
-
-@strawberry.enum(
-    name="WorkMode",
-    description="The work mode of the job.",
-)
-class WorkModeEnum(Enum):
-    REMOTE = "remote"
-    HYBRID = "hybrid"
-    OFFICE = "office"
 
 
 @strawberry.enum(
@@ -387,10 +367,8 @@ class ProfileSnapshotType(BaseProfileType):
             work_experience=[
                 WorkExperienceType.marshal(exp) for exp in model.work_experience
             ],
-            salary_expectations=SalaryExpectationsType.marshal(
-                model.salary_expectations
-            )
-            if model.salary_expectations is not None
+            career_profile=CareerProfileType.marshal(model.career_profile)
+            if model.career_profile is not None
             else None,
             certifications=[
                 CertificationType.marshal(cert) for cert in model.certifications
@@ -438,7 +416,7 @@ class AnalysedFieldsType:
     languages: FieldAnalysisType | None = None
     job_preferences: FieldAnalysisType | None = None
     work_experience: FieldAnalysisType | None = None
-    salary_expectations: FieldAnalysisType | None = None
+    career_profile: FieldAnalysisType | None = None
     certifications: FieldAnalysisType | None = None
     professional_summary: FieldAnalysisType | None = None
     headline: FieldAnalysisType | None = None
@@ -489,10 +467,8 @@ class AnalysedFieldsType:
             work_experience=FieldAnalysisType.marshal(analysed_fields.work_experience)
             if analysed_fields.work_experience
             else None,
-            salary_expectations=FieldAnalysisType.marshal(
-                analysed_fields.salary_expectations
-            )
-            if analysed_fields.salary_expectations
+            career_profile=FieldAnalysisType.marshal(analysed_fields.career_profile)
+            if analysed_fields.career_profile
             else None,
             certifications=FieldAnalysisType.marshal(analysed_fields.certifications)
             if analysed_fields.certifications

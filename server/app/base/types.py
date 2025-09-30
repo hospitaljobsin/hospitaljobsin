@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Generic, Self, TypeVar, get_args, get_origin
 
 import strawberry
@@ -212,3 +213,25 @@ class CreatePresignedURLPayloadType:
     presigned_url: str = strawberry.field(
         description="The presigned URL.",
     )
+
+
+@strawberry.enum(
+    name="JobType",
+    description="The type of job.",
+)
+class JobTypeEnum(Enum):
+    FULL_TIME = "full_time"
+    PART_TIME = "part_time"
+    INTERNSHIP = "internship"
+    CONTRACT = "contract"
+    LOCUM = "locum"
+
+
+@strawberry.enum(
+    name="WorkMode",
+    description="The work mode of the job.",
+)
+class WorkModeEnum(Enum):
+    REMOTE = "remote"
+    HYBRID = "hybrid"
+    OFFICE = "office"

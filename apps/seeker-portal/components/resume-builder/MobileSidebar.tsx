@@ -11,6 +11,7 @@ export const MobileSidebar: React.FC = () => {
 
 	const tabs = [
 		{ key: links.resumeBuilderPersonalInfo, title: 'Personal Info' },
+		{ key: links.resumeBuilderIntroduction, title: 'Introduction' },
 		{ key: links.resumeBuilderCareerProfile, title: 'Career Profile' },
 		{ key: links.resumeBuilderWorkExperience, title: 'Work Experience' },
 		{ key: links.resumeBuilderEducation, title: 'Education' },

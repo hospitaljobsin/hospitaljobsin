@@ -13,19 +13,21 @@ from strawberry import field, relay
 from app.accounts.documents import (
     Account,
     BaseProfile,
+    CareerProfile,
     Certification,
     Education,
     Language,
     License,
     Profile,
-    SalaryExpectations,
     WorkExperience,
 )
 from app.auth.repositories import SessionRepo, WebAuthnCredentialRepo
 from app.base.types import (
     BaseErrorType,
     BaseNodeType,
+    JobTypeEnum,
     NotAuthenticatedErrorType,
+    WorkModeEnum,
 )
 from app.context import AuthInfo, Info
 from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
@@ -245,7 +247,7 @@ class BaseProfileType:
     work_experience: list["WorkExperienceType"] = strawberry.field(
         description="The user's work experience.",
     )
-    salary_expectations: Optional["SalaryExpectationsType"] = strawberry.field(
+    career_profile: Optional["CareerProfileType"] = strawberry.field(
         description="The user's salary expectations.",
     )
     certifications: list["CertificationType"] = strawberry.field(
@@ -284,10 +286,8 @@ class ParsedProfileType(BaseProfileType):
             work_experience=[
                 WorkExperienceType.marshal(exp) for exp in model.work_experience
             ],
-            salary_expectations=SalaryExpectationsType.marshal(
-                model.salary_expectations
-            )
-            if model.salary_expectations is not None
+            career_profile=CareerProfileType.marshal(model.career_profile)
+            if model.career_profile is not None
             else None,
             certifications=[
                 CertificationType.marshal(cert) for cert in model.certifications
@@ -335,10 +335,8 @@ class ProfileType(BaseProfileType, BaseNodeType[Profile]):
             work_experience=[
                 WorkExperienceType.marshal(exp) for exp in model.work_experience
             ],
-            salary_expectations=SalaryExpectationsType.marshal(
-                model.salary_expectations
-            )
-            if model.salary_expectations is not None
+            career_profile=CareerProfileType.marshal(model.career_profile)
+            if model.career_profile is not None
             else None,
             certifications=[
                 CertificationType.marshal(cert) for cert in model.certifications
@@ -948,16 +946,20 @@ class WorkExperienceType:
         )
 
 
-@strawberry.type(name="SalaryExpectations")
-class SalaryExpectationsType:
-    preferred_monthly_salary_inr: int
-    negotiable: bool
+@strawberry.type(name="CareerProfile")
+class CareerProfileType:
+    current_industry: str | None = strawberry.field(default=None)
+    desired_job_types: list[JobTypeEnum] = strawberry.field(default_factory=list)
+    desired_work_modes: list[WorkModeEnum] = strawberry.field(default_factory=list)
+    expected_salary: float | None = strawberry.field(default=None)
 
     @classmethod
-    def marshal(cls, se: SalaryExpectations) -> Self:
+    def marshal(cls, se: CareerProfile) -> Self:
         return cls(
-            preferred_monthly_salary_inr=se.preferred_monthly_salary_inr,
-            negotiable=se.negotiable,
+            current_industry=se.current_industry,
+            desired_job_types=se.desired_job_types,
+            desired_work_modes=se.desired_work_modes,
+            expected_salary=se.expected_salary,
         )
 
 

@@ -23,6 +23,7 @@ from app.geocoding.repositories import RegionRepo
 from .documents import (
     Account,
     AnalyticsPreference,
+    CareerProfile,
     Certification,
     Education,
     EmailVerificationToken,
@@ -33,7 +34,6 @@ from .documents import (
     MaritalStatus,
     PhoneNumberVerificationToken,
     Profile,
-    SalaryExpectations,
     TermsAndPolicy,
     WorkExperience,
 )
@@ -370,7 +370,7 @@ class ProfileRepo:
         languages: list[Language] = UNSET,
         job_preferences: list[str] = UNSET,
         work_experience: list[WorkExperience] = UNSET,
-        salary_expectations: SalaryExpectations | None = UNSET,
+        career_profile: CareerProfile | None = UNSET,
         certifications: list[Certification] = UNSET,
         professional_summary: str | None = UNSET,
         headline: str | None = UNSET,
@@ -430,8 +430,8 @@ class ProfileRepo:
             profile.total_work_experience_years = self._calculate_total_work_experience(
                 work_experience
             )
-        if salary_expectations is not UNSET:
-            profile.salary_expectations = salary_expectations
+        if career_profile is not UNSET:
+            profile.career_profile = career_profile
         if certifications is not UNSET:
             profile.certifications = certifications
         if professional_summary is not UNSET:
