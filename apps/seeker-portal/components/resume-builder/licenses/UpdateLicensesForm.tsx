@@ -2,7 +2,7 @@ import type { UpdateLicensesFormFragment$key } from '@/__generated__/UpdateLicen
 import { YearPicker } from '@/components/forms/YearPicker';
 import { Button, Input } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { Plus, Trash } from 'lucide-react';
+import { IdCardIcon, Plus, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
@@ -112,136 +112,157 @@ export default function UpdateLicensesForm({ rootQuery, onSaveChanges }: Props) 
 		>
 			<form className='space-y-12'>
 				<div className='pb-4 sm:pb-6 space-y-4 sm:space-y-6 w-full'>
-					<h1 className='w-full text-xl text-foreground-500 font-medium'>Licenses</h1>
+					<div className='flex flex-col sm:flex-row sm:items-center gap-4 justify-between w-full'>
+						<h1 className='text-xl text-foreground-500 font-medium'>Licenses</h1>
+						{fields.length > 0 && (
+							<Button
+								type='button'
+								variant='bordered'
+								className='w-full sm:w-auto'
+								startContent={<Plus size={18} />}
+								onPress={() =>
+									prepend(
+										{
+											name: '',
+											issuer: '',
+											licenseNumber: '',
+											registrationYear: new Date().getFullYear()
+										},
+										{ shouldFocus: true }
+									)
+								}
+							>
+								Add License
+							</Button>
+						)}
+					</div>
 					<div className='w-full flex flex-col'>
 						<div className='w-full space-y-12 items-center'>
 							{fields.length === 0 ? (
-								<div className='flex flex-col items-start gap-4'>
-									<p className='text-foreground-500'>No license entries. Add your licenses.</p>
+								<div className='flex flex-col items-center gap-6 rounded-lg border-foreground-300 border-2 border-dashed p-12 text-center'>
+									<div className='w-16 h-16 rounded-full bg-foreground-200 flex items-center justify-center'>
+										<IdCardIcon className='text-foreground-600' />
+									</div>
+									<div className='space-y-2'>
+										<h3 className='text-lg font-semibold text-foreground-700'>Display Your Licenses</h3>
+										<p className='text-foreground-500 max-w-sm'>
+											Add your professional licenses to demonstrate your qualifications and regulatory compliance.
+										</p>
+									</div>
 									<Button
 										type='button'
-										variant='bordered'
-										fullWidth
-										startContent={<Plus size={18} />}
+										color='default'
+										size='lg'
+										startContent={<Plus size={20} />}
 										onPress={() =>
-											prepend({
-												name: '',
-												issuer: '',
-												licenseNumber: '',
-												registrationYear: new Date().getFullYear()
-											})
+											prepend(
+												{
+													name: '',
+													issuer: '',
+													licenseNumber: '',
+													registrationYear: new Date().getFullYear()
+												},
+												{ shouldFocus: true }
+											)
 										}
+										className='px-8'
 									>
-										Add License
+										Add Your First License
 									</Button>
 								</div>
 							) : (
-								<>
-									<Button
-										type='button'
-										variant='bordered'
-										className='w-full sm:w-auto'
-										startContent={<Plus size={18} />}
-										onPress={() =>
-											prepend({
-												name: '',
-												issuer: '',
-												licenseNumber: '',
-												registrationYear: new Date().getFullYear()
-											})
-										}
-									>
-										Add License
-									</Button>
-									{fields.map((item, index) => (
-										<div key={`field-${item.name}-${index}`} className='flex gap-8 items-end w-full flex-col'>
-											<div className='w-full space-y-4'>
-												<Controller
-													name={`licenses.${index}.name`}
-													control={control}
-													defaultValue=''
-													render={({ field }) => (
-														<Input
-															{...field}
-															fullWidth
-															label='Name'
-															placeholder='License name'
-															errorMessage={errors.licenses?.[index]?.name?.message}
-															isInvalid={!!errors.licenses?.[index]?.name}
-															classNames={{
-																inputWrapper: 'bg-background'
-															}}
-														/>
-													)}
-												/>
-											</div>
-											<div className='w-full space-y-4'>
-												<Controller
-													name={`licenses.${index}.issuer`}
-													control={control}
-													defaultValue=''
-													render={({ field }) => (
-														<Input
-															{...field}
-															fullWidth
-															label='Issuer'
-															placeholder='License issuer'
-															errorMessage={errors.licenses?.[index]?.issuer?.message}
-															isInvalid={!!errors.licenses?.[index]?.issuer}
-															classNames={{
-																inputWrapper: 'bg-background'
-															}}
-														/>
-													)}
-												/>
-											</div>
-											<div className='w-full space-y-4'>
-												<Controller
-													name={`licenses.${index}.licenseNumber`}
-													control={control}
-													defaultValue=''
-													render={({ field }) => (
-														<Input
-															{...field}
-															fullWidth
-															label='License Number'
-															placeholder='License number'
-															errorMessage={errors.licenses?.[index]?.licenseNumber?.message}
-															isInvalid={!!errors.licenses?.[index]?.licenseNumber}
-															classNames={{
-																inputWrapper: 'bg-background'
-															}}
-														/>
-													)}
-												/>
-											</div>
-											<div className='w-full space-y-4'>
-												<Controller
-													name={`licenses.${index}.registrationYear`}
-													control={control}
-													defaultValue={undefined}
-													render={({ field }) => (
-														<YearPicker
-															{...field}
-															label='Registration Year'
-															errorMessage={errors.licenses?.[index]?.registrationYear?.message}
-															isInvalid={!!errors.licenses?.[index]?.registrationYear}
-															selectProps={{
-																classNames: {
-																	trigger: 'bg-background'
-																}
-															}}
-														/>
-													)}
-												/>
-											</div>
-
-											<Button type='button' variant='bordered' startContent={<Trash size={18} />} onPress={() => remove(index)}>
-												Delete License
-											</Button>
+								fields.map((item, index) => (
+									<div key={`field-${item.name}-${index}`} className='flex gap-8 items-end w-full flex-col'>
+										<div className='w-full space-y-4'>
+											<Controller
+												name={`licenses.${index}.name`}
+												control={control}
+												defaultValue=''
+												render={({ field }) => (
+													<Input
+														{...field}
+														variant='bordered'
+														fullWidth
+														label='Name'
+														placeholder='License name'
+														errorMessage={errors.licenses?.[index]?.name?.message}
+														isInvalid={!!errors.licenses?.[index]?.name}
+														classNames={{
+															inputWrapper: 'bg-background'
+														}}
+													/>
+												)}
+											/>
 										</div>
-									))}
-								</>
+										<div className='w-full space-y-4'>
+											<Controller
+												name={`licenses.${index}.issuer`}
+												control={control}
+												defaultValue=''
+												render={({ field }) => (
+													<Input
+														{...field}
+														variant='bordered'
+														fullWidth
+														label='Issuer'
+														placeholder='License issuer'
+														errorMessage={errors.licenses?.[index]?.issuer?.message}
+														isInvalid={!!errors.licenses?.[index]?.issuer}
+														classNames={{
+															inputWrapper: 'bg-background'
+														}}
+													/>
+												)}
+											/>
+										</div>
+										<div className='w-full space-y-4'>
+											<Controller
+												name={`licenses.${index}.licenseNumber`}
+												control={control}
+												defaultValue=''
+												render={({ field }) => (
+													<Input
+														{...field}
+														variant='bordered'
+														fullWidth
+														label='License Number'
+														placeholder='License number'
+														errorMessage={errors.licenses?.[index]?.licenseNumber?.message}
+														isInvalid={!!errors.licenses?.[index]?.licenseNumber}
+														classNames={{
+															inputWrapper: 'bg-background'
+														}}
+													/>
+												)}
+											/>
+										</div>
+										<div className='w-full space-y-4'>
+											<Controller
+												name={`licenses.${index}.registrationYear`}
+												control={control}
+												defaultValue={undefined}
+												render={({ field }) => (
+													<YearPicker
+														{...field}
+														variant='bordered'
+														label='Registration Year'
+														errorMessage={errors.licenses?.[index]?.registrationYear?.message}
+														isInvalid={!!errors.licenses?.[index]?.registrationYear}
+														selectProps={{
+															classNames: {
+																trigger: 'bg-background'
+															}
+														}}
+													/>
+												)}
+											/>
+										</div>
+
+										<Button type='button' variant='bordered' startContent={<Trash size={18} />} onPress={() => remove(index)}>
+											Delete License
+										</Button>
+									</div>
+								))
 							)}
 						</div>
 					</div>

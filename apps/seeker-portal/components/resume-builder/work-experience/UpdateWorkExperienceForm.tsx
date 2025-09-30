@@ -2,7 +2,7 @@ import type { UpdateWorkExperienceFormFragment$key } from '@/__generated__/Updat
 import type { UpdateWorkExperienceFormMutation as UpdateWorkExperienceFormMutationType } from '@/__generated__/UpdateWorkExperienceFormMutation.graphql';
 import { Button, Checkbox, Input, Kbd, Select, SelectItem, Textarea } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { Plus, Trash } from 'lucide-react';
+import { Plus, TrafficConeIcon, Trash } from 'lucide-react';
 import { useMemo } from 'react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
@@ -249,215 +249,233 @@ export default function UpdateWorkExperienceForm({ rootQuery, onSaveChanges }: P
 		>
 			<form className='space-y-12'>
 				<div className='pb-6 space-y-6'>
-					<h1 className='w-full text-xl text-foreground-500 font-medium'>Work Experience</h1>
+					<div className='flex flex-col sm:flex-row sm:items-center gap-4 justify-between w-full'>
+						<h1 className='text-xl text-foreground-500 font-medium'>Work Experience</h1>
+						{fields.length > 0 && (
+							<Button
+								type='button'
+								variant='bordered'
+								className='w-full sm:w-auto'
+								startContent={<Plus size={18} />}
+								onPress={() => prepend({ ...defaultWorkExperience }, { shouldFocus: true })}
+							>
+								Add Work Experience
+							</Button>
+						)}
+					</div>
 					<div className='w-full space-y-12 items-center'>
 						{fields.length === 0 ? (
-							<div className='flex flex-col items-left gap-4'>
-								<p className='text-foreground-500'>No work experience entries. Add your work experience.</p>
+							<div className='flex flex-col items-center gap-8 rounded-lg border-foreground-300 border-2 border-dashed p-12 text-center'>
+								<div className='w-16 h-16 rounded-full bg-foreground-200 flex items-center justify-center'>
+									<TrafficConeIcon className='w-8 h-8 text-foreground-600' />
+								</div>
+								<div className='space-y-2'>
+									<h3 className='text-base sm:text-lg font-semibold text-foreground-700'>Build Your Career Story</h3>
+									<p className='text-foreground-500 max-w-sm text-sm sm:text-base'>
+										Showcase your professional journey. Add your work experience to help employers understand your background.
+									</p>
+								</div>
 								<Button
 									type='button'
-									fullWidth
-									variant='bordered'
-									startContent={<Plus size={18} />}
+									color='default'
+									size='lg'
+									startContent={<Plus size={20} />}
 									onPress={() => prepend(defaultWorkExperience, { shouldFocus: true })}
 								>
-									Add Work Experience
+									Add Your First Experience
 								</Button>
 							</div>
 						) : (
-							<>
-								<Button
-									type='button'
-									variant='bordered'
-									className='w-full sm:w-auto'
-									startContent={<Plus size={18} />}
-									onPress={() => prepend({ ...defaultWorkExperience })}
-								>
-									Add Work Experience
-								</Button>
-								{fields.map((item, index) => (
-									<div key={item.id} className='flex flex-col gap-8 items-end w-full'>
-										<div className='w-full space-y-4'>
-											<Controller
-												name={`workExperience.${index}.title`}
-												control={control}
-												defaultValue=''
-												render={({ field }) => (
-													<Input
-														{...field}
-														fullWidth
-														label='Title'
-														placeholder='Add job title'
-														errorMessage={errors.workExperience?.[index]?.title?.message}
-														isInvalid={!!errors.workExperience?.[index]?.title}
-														classNames={{
-															inputWrapper: 'bg-background'
-														}}
-													/>
-												)}
-											/>
-										</div>
-										<div className='w-full space-y-4'>
-											<Controller
-												name={`workExperience.${index}.organization`}
-												control={control}
-												defaultValue=''
-												render={({ field }) => (
-													<Input
-														{...field}
-														fullWidth
-														label='Organization'
-														placeholder='Add organization'
-														errorMessage={errors.workExperience?.[index]?.organization?.message}
-														isInvalid={!!errors.workExperience?.[index]?.organization}
-														classNames={{
-															inputWrapper: 'bg-background'
-														}}
-													/>
-												)}
-											/>
-										</div>
-										<div className='w-full space-y-4'>
-											<Controller
-												name={`workExperience.${index}.employmentType`}
-												control={control}
-												defaultValue={''}
-												render={({ field }) => (
-													<Select
-														{...field}
-														label='Employment Type'
-														placeholder='Select employment type'
-														selectionMode='single'
-														selectedKeys={field.value ? [field.value] : ['']}
-														defaultSelectedKeys={field.value ? [field.value] : ['']}
-														onSelectionChange={keys => {
-															const value = Array.from(keys)[0] as EmploymentType;
-															field.onChange(value);
-														}}
-														errorMessage={errors.workExperience?.[index]?.employmentType?.message}
-														isInvalid={!!errors.workExperience?.[index]?.employmentType}
-														classNames={{
+							fields.map((item, index) => (
+								<div key={item.id} className='flex flex-col gap-8 items-end w-full'>
+									<div className='w-full space-y-4'>
+										<Controller
+											name={`workExperience.${index}.title`}
+											control={control}
+											defaultValue=''
+											render={({ field }) => (
+												<Input
+													{...field}
+													fullWidth
+													label='Title'
+													placeholder='Add job title'
+													variant='bordered'
+													errorMessage={errors.workExperience?.[index]?.title?.message}
+													isInvalid={!!errors.workExperience?.[index]?.title}
+													classNames={{
+														inputWrapper: 'bg-background'
+													}}
+												/>
+											)}
+										/>
+									</div>
+									<div className='w-full space-y-4'>
+										<Controller
+											name={`workExperience.${index}.organization`}
+											control={control}
+											defaultValue=''
+											render={({ field }) => (
+												<Input
+													{...field}
+													fullWidth
+													variant='bordered'
+													label='Organization'
+													placeholder='Add organization'
+													errorMessage={errors.workExperience?.[index]?.organization?.message}
+													isInvalid={!!errors.workExperience?.[index]?.organization}
+													classNames={{
+														inputWrapper: 'bg-background'
+													}}
+												/>
+											)}
+										/>
+									</div>
+									<div className='w-full space-y-4'>
+										<Controller
+											name={`workExperience.${index}.employmentType`}
+											control={control}
+											defaultValue={''}
+											render={({ field }) => (
+												<Select
+													{...field}
+													variant='bordered'
+													label='Employment Type'
+													placeholder='Select employment type'
+													selectionMode='single'
+													selectedKeys={field.value ? [field.value] : ['']}
+													defaultSelectedKeys={field.value ? [field.value] : ['']}
+													onSelectionChange={keys => {
+														const value = Array.from(keys)[0] as EmploymentType;
+														field.onChange(value);
+													}}
+													errorMessage={errors.workExperience?.[index]?.employmentType?.message}
+													isInvalid={!!errors.workExperience?.[index]?.employmentType}
+													classNames={{
+														trigger: 'bg-background'
+													}}
+												>
+													{EMPLOYMENT_TYPE_OPTIONS.map(option => (
+														<SelectItem key={option.value}>{option.label}</SelectItem>
+													))}
+												</Select>
+											)}
+										/>
+									</div>
+									<div className='w-full flex gap-4 items-center'>
+										<Controller
+											name={`workExperience.${index}.isCurrentRole`}
+											control={control}
+											render={({ field }) => (
+												<Checkbox
+													isSelected={field.value}
+													onValueChange={field.onChange}
+													aria-label='I am currently working in this role'
+													className='mb-2'
+												>
+													I am currently working in this role
+												</Checkbox>
+											)}
+										/>
+									</div>
+									<div className='w-full flex flex-col sm:flex-row gap-4'>
+										<Controller
+											name={`workExperience.${index}.startedAt`}
+											control={control}
+											render={({ field }) => (
+												<MonthYearPicker
+													variant='bordered'
+													label='Start Date'
+													value={field.value}
+													onChange={field.onChange}
+													errorMessage={errors.workExperience?.[index]?.startedAt?.message}
+													isInvalid={!!errors.workExperience?.[index]?.startedAt}
+													selectProps={{
+														classNames: {
 															trigger: 'bg-background'
-														}}
-													>
-														{EMPLOYMENT_TYPE_OPTIONS.map(option => (
-															<SelectItem key={option.value}>{option.label}</SelectItem>
-														))}
-													</Select>
-												)}
-											/>
-										</div>
-										<div className='w-full flex gap-4 items-center'>
-											<Controller
-												name={`workExperience.${index}.isCurrentRole`}
-												control={control}
-												render={({ field }) => (
-													<Checkbox
-														isSelected={field.value}
-														onValueChange={field.onChange}
-														aria-label='I am currently working in this role'
-														className='mb-2'
-													>
-														I am currently working in this role
-													</Checkbox>
-												)}
-											/>
-										</div>
-										<div className='w-full flex flex-col sm:flex-row gap-4'>
-											<Controller
-												name={`workExperience.${index}.startedAt`}
-												control={control}
-												render={({ field }) => (
+														}
+													}}
+												/>
+											)}
+										/>
+										<Controller
+											name={`workExperience.${index}.completedAt`}
+											control={control}
+											render={({ field }) => {
+												const isCurrentRole = value[index]?.isCurrentRole || false;
+												return (
 													<MonthYearPicker
-														label='Start Date'
-														value={field.value}
+														variant='bordered'
+														label='End Date'
+														value={isCurrentRole ? null : field.value}
 														onChange={field.onChange}
-														errorMessage={errors.workExperience?.[index]?.startedAt?.message}
-														isInvalid={!!errors.workExperience?.[index]?.startedAt}
+														isDisabled={isCurrentRole}
+														errorMessage={errors.workExperience?.[index]?.completedAt?.message}
+														isInvalid={!!errors.workExperience?.[index]?.completedAt}
 														selectProps={{
 															classNames: {
 																trigger: 'bg-background'
 															}
 														}}
 													/>
-												)}
-											/>
-											<Controller
-												name={`workExperience.${index}.completedAt`}
-												control={control}
-												render={({ field }) => {
-													const isCurrentRole = value[index]?.isCurrentRole || false;
-													return (
-														<MonthYearPicker
-															label='End Date'
-															value={isCurrentRole ? null : field.value}
-															onChange={field.onChange}
-															isDisabled={isCurrentRole}
-															errorMessage={errors.workExperience?.[index]?.completedAt?.message}
-															isInvalid={!!errors.workExperience?.[index]?.completedAt}
-															selectProps={{
-																classNames: {
-																	trigger: 'bg-background'
-																}
-															}}
-														/>
-													);
-												}}
-											/>
-										</div>
-										<div className='w-full space-y-4'>
-											<Controller
-												name={`workExperience.${index}.description`}
-												control={control}
-												render={({ field }) => (
-													<Textarea
-														{...field}
-														fullWidth
-														value={field.value || ''}
-														label='Description'
-														placeholder='List your major responsibilities and achievements, highlighting standout projects.'
-														errorMessage={errors.workExperience?.[index]?.description?.message}
-														isInvalid={!!errors.workExperience?.[index]?.description}
-														classNames={{
-															inputWrapper: 'bg-background'
-														}}
-													/>
-												)}
-											/>
-										</div>
-										<div className='w-full space-y-4'>
-											<ChipsInput<WorkExperienceFormType, `workExperience.${number}.skills`>
-												name={`workExperience.${index}.skills`}
-												control={control}
-												label='Skills'
-												delimiters={[',', 'Enter']}
-												inputProps={{
-													placeholder: 'Enter skills...',
-													description: (
-														<p className='mt-2'>
-															Separate skills with commas or Enter <Kbd keys={['enter']} classNames={{ base: 'p-0 px-2 shadow-none' }} />
-														</p>
-													),
-													classNames: {
-														inputWrapper: 'bg-background'
-													}
-												}}
-											/>
-										</div>
-
-										<Button
-											type='button'
-											variant='bordered'
-											startContent={<Trash size={18} />}
-											onPress={() => {
-												remove(index);
+												);
 											}}
-										>
-											Delete Experience
-										</Button>
+										/>
 									</div>
-								))}
-							</>
+									<div className='w-full space-y-4'>
+										<Controller
+											name={`workExperience.${index}.description`}
+											control={control}
+											render={({ field }) => (
+												<Textarea
+													{...field}
+													variant='bordered'
+													fullWidth
+													value={field.value || ''}
+													label='Description'
+													placeholder='List your major responsibilities and achievements, highlighting standout projects.'
+													errorMessage={errors.workExperience?.[index]?.description?.message}
+													isInvalid={!!errors.workExperience?.[index]?.description}
+													classNames={{
+														inputWrapper: 'bg-background'
+													}}
+												/>
+											)}
+										/>
+									</div>
+									<div className='w-full space-y-4'>
+										<ChipsInput<WorkExperienceFormType, `workExperience.${number}.skills`>
+											name={`workExperience.${index}.skills`}
+											control={control}
+											label='Skills'
+											variant='bordered'
+											delimiters={[',', 'Enter']}
+											inputProps={{
+												variant: 'bordered',
+												placeholder: 'Enter skills...',
+												description: (
+													<p className='mt-2'>
+														Separate skills with commas or Enter <Kbd keys={['enter']} classNames={{ base: 'p-0 px-2 shadow-none' }} />
+													</p>
+												),
+												classNames: {
+													inputWrapper: 'bg-background'
+												}
+											}}
+										/>
+									</div>
+
+									<Button
+										type='button'
+										variant='bordered'
+										startContent={<Trash size={18} />}
+										onPress={() => {
+											remove(index);
+										}}
+									>
+										Delete Experience
+									</Button>
+								</div>
+							))
 						)}
 					</div>
 				</div>

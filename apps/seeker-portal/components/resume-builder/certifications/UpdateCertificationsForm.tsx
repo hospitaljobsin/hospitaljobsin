@@ -1,7 +1,7 @@
 import type { UpdateCertificationsFormFragment$key } from '@/__generated__/UpdateCertificationsFormFragment.graphql';
 import { Button, Input } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { Plus, Trash } from 'lucide-react';
+import { Plus, ShieldCheckIcon, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
@@ -146,155 +146,177 @@ export default function UpdateCertificationsForm({ rootQuery, onSaveChanges }: P
 		>
 			<form className='space-y-12'>
 				<div className='pb-6 space-y-6'>
-					<h1 className='w-full text-xl text-foreground-500 font-medium'>Certifications</h1>
+					<div className='flex flex-col sm:flex-row sm:items-center gap-4 justify-between w-full'>
+						<h1 className='text-xl text-foreground-500 font-medium'>Certifications</h1>
+						{fields.length > 0 && (
+							<Button
+								type='button'
+								variant='bordered'
+								className='w-full sm:w-auto'
+								startContent={<Plus size={18} />}
+								onPress={() =>
+									prepend(
+										{
+											name: '',
+											issuer: '',
+											certificationUrl: '',
+											createdAt: { month: 1, year: 2000 },
+											expiresAt: null
+										},
+										{ shouldFocus: true }
+									)
+								}
+							>
+								Add Certification
+							</Button>
+						)}
+					</div>
 					<div className='w-full flex flex-col'>
 						<div className='w-full space-y-12 items-center'>
 							{fields.length === 0 ? (
-								<div className='flex flex-col items-start gap-4'>
-									<p className='text-foreground-500'>No certification entries. Add your certifications.</p>
+								<div className='flex flex-col items-center gap-6 rounded-lg border-foreground-300 border-2 border-dashed p-12 text-center'>
+									<div className='w-16 h-16 rounded-full bg-foreground-200 flex items-center justify-center'>
+										<ShieldCheckIcon className='w-8 h-8 text-foreground-600' />
+									</div>
+									<div className='space-y-2'>
+										<h3 className='text-lg font-semibold text-foreground-700'>Highlight Your Credentials</h3>
+										<p className='text-foreground-500 max-w-sm'>
+											Showcase your professional certifications and credentials to stand out to employers.
+										</p>
+									</div>
 									<Button
 										type='button'
-										variant='bordered'
-										fullWidth
-										startContent={<Plus size={18} />}
+										color='default'
+										size='lg'
+										startContent={<Plus size={20} />}
 										onPress={() =>
-											prepend({
-												name: '',
-												issuer: '',
-												certificationUrl: '',
-												createdAt: { month: 1, year: 2000 },
-												expiresAt: null
-											})
+											prepend(
+												{
+													name: '',
+													issuer: '',
+													certificationUrl: '',
+													createdAt: { month: 1, year: 2000 },
+													expiresAt: null
+												},
+												{ shouldFocus: true }
+											)
 										}
+										className='px-8'
 									>
-										Add Certification
+										Add Your First Certification
 									</Button>
 								</div>
 							) : (
-								<>
-									<Button
-										type='button'
-										variant='bordered'
-										className='w-full sm:w-auto'
-										startContent={<Plus size={18} />}
-										onPress={() =>
-											prepend({
-												name: '',
-												issuer: '',
-												certificationUrl: '',
-												createdAt: { month: 1, year: 2000 },
-												expiresAt: null
-											})
-										}
-									>
-										Add Certification
-									</Button>
-									{fields.map((item, index) => (
-										<div key={`field-${item.name}-${index}`} className='flex gap-8 items-end w-full flex-col'>
-											<div className='w-full space-y-4'>
-												<Controller
-													name={`certifications.${index}.name`}
-													control={control}
-													defaultValue=''
-													render={({ field }) => (
-														<Input
-															{...field}
-															fullWidth
-															label='Name'
-															placeholder='Certification name'
-															errorMessage={errors.certifications?.[index]?.name?.message}
-															isInvalid={!!errors.certifications?.[index]?.name}
-															classNames={{
-																inputWrapper: 'bg-background'
-															}}
-														/>
-													)}
-												/>
-											</div>
-											<div className='w-full space-y-4'>
-												<Controller
-													name={`certifications.${index}.issuer`}
-													control={control}
-													defaultValue=''
-													render={({ field }) => (
-														<Input
-															{...field}
-															fullWidth
-															label='Issuer'
-															placeholder='Certification issuer'
-															errorMessage={errors.certifications?.[index]?.issuer?.message}
-															isInvalid={!!errors.certifications?.[index]?.issuer}
-															classNames={{
-																inputWrapper: 'bg-background'
-															}}
-														/>
-													)}
-												/>
-											</div>
-											<div className='w-full space-y-4'>
-												<Controller
-													name={`certifications.${index}.certificationUrl`}
-													control={control}
-													defaultValue=''
-													render={({ field }) => (
-														<Input
-															{...field}
-															fullWidth
-															label='Certification URL'
-															placeholder='https://...'
-															errorMessage={errors.certifications?.[index]?.certificationUrl?.message}
-															isInvalid={!!errors.certifications?.[index]?.certificationUrl}
-															classNames={{
-																inputWrapper: 'bg-background'
-															}}
-														/>
-													)}
-												/>
-											</div>
-											<div className='w-full space-y-4 flex flex-col sm:flex-row gap-6'>
-												<Controller
-													control={control}
-													name={`certifications.${index}.createdAt`}
-													render={({ field }) => (
-														<MonthYearPicker
-															label='Issued At'
-															value={field.value}
-															onChange={field.onChange}
-															errorMessage={errors.certifications?.[index]?.createdAt?.message}
-															isInvalid={!!errors.certifications?.[index]?.createdAt}
-															selectProps={{
-																classNames: {
-																	trigger: 'bg-background'
-																}
-															}}
-														/>
-													)}
-												/>
-												<Controller
-													control={control}
-													name={`certifications.${index}.expiresAt`}
-													render={({ field }) => (
-														<MonthYearPicker
-															label='Expires At'
-															value={field.value}
-															onChange={field.onChange}
-															errorMessage={errors.certifications?.[index]?.expiresAt?.message}
-															isInvalid={!!errors.certifications?.[index]?.expiresAt}
-															selectProps={{
-																classNames: {
-																	trigger: 'bg-background'
-																}
-															}}
-														/>
-													)}
-												/>
-											</div>
-											<Button type='button' variant='bordered' onPress={() => remove(index)} startContent={<Trash size={18} />}>
-												Delete Certification
-											</Button>
+								fields.map((item, index) => (
+									<div key={`field-${item.name}-${index}`} className='flex gap-8 items-end w-full flex-col'>
+										<div className='w-full space-y-4'>
+											<Controller
+												name={`certifications.${index}.name`}
+												control={control}
+												defaultValue=''
+												render={({ field }) => (
+													<Input
+														{...field}
+														fullWidth
+														variant='bordered'
+														label='Name'
+														placeholder='Certification name'
+														errorMessage={errors.certifications?.[index]?.name?.message}
+														isInvalid={!!errors.certifications?.[index]?.name}
+														classNames={{
+															inputWrapper: 'bg-background'
+														}}
+													/>
+												)}
+											/>
 										</div>
-									))}
-								</>
+										<div className='w-full space-y-4'>
+											<Controller
+												name={`certifications.${index}.issuer`}
+												control={control}
+												defaultValue=''
+												render={({ field }) => (
+													<Input
+														{...field}
+														fullWidth
+														variant='bordered'
+														label='Issuer'
+														placeholder='Certification issuer'
+														errorMessage={errors.certifications?.[index]?.issuer?.message}
+														isInvalid={!!errors.certifications?.[index]?.issuer}
+														classNames={{
+															inputWrapper: 'bg-background'
+														}}
+													/>
+												)}
+											/>
+										</div>
+										<div className='w-full space-y-4'>
+											<Controller
+												name={`certifications.${index}.certificationUrl`}
+												control={control}
+												defaultValue=''
+												render={({ field }) => (
+													<Input
+														{...field}
+														fullWidth
+														variant='bordered'
+														label='Certification URL'
+														placeholder='https://...'
+														errorMessage={errors.certifications?.[index]?.certificationUrl?.message}
+														isInvalid={!!errors.certifications?.[index]?.certificationUrl}
+														classNames={{
+															inputWrapper: 'bg-background'
+														}}
+													/>
+												)}
+											/>
+										</div>
+										<div className='w-full space-y-4 flex flex-col sm:flex-row gap-6'>
+											<Controller
+												control={control}
+												name={`certifications.${index}.createdAt`}
+												render={({ field }) => (
+													<MonthYearPicker
+														label='Issued At'
+														variant='bordered'
+														value={field.value}
+														onChange={field.onChange}
+														errorMessage={errors.certifications?.[index]?.createdAt?.message}
+														isInvalid={!!errors.certifications?.[index]?.createdAt}
+														selectProps={{
+															classNames: {
+																trigger: 'bg-background'
+															}
+														}}
+													/>
+												)}
+											/>
+											<Controller
+												control={control}
+												name={`certifications.${index}.expiresAt`}
+												render={({ field }) => (
+													<MonthYearPicker
+														label='Expires At'
+														variant='bordered'
+														value={field.value}
+														onChange={field.onChange}
+														errorMessage={errors.certifications?.[index]?.expiresAt?.message}
+														isInvalid={!!errors.certifications?.[index]?.expiresAt}
+														selectProps={{
+															classNames: {
+																trigger: 'bg-background'
+															}
+														}}
+													/>
+												)}
+											/>
+										</div>
+										<Button type='button' variant='bordered' onPress={() => remove(index)} startContent={<Trash size={18} />}>
+											Delete Certification
+										</Button>
+									</div>
+								))
 							)}
 						</div>
 					</div>

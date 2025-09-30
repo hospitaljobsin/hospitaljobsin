@@ -1,7 +1,7 @@
 import type { UpdateLanguagesFormFragment$key } from '@/__generated__/UpdateLanguagesFormFragment.graphql';
 import { Button, Input, Select, SelectItem } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { Plus, Trash } from 'lucide-react';
+import { LanguagesIcon, Plus, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
@@ -101,110 +101,129 @@ export default function UpdateLanguagesForm({ rootQuery, onSaveChanges }: Props)
 		>
 			<form className='space-y-12'>
 				<div className='pb-4 sm:pb-6 space-y-4 sm:space-y-6 w-full'>
-					<h1 className='w-full text-xl text-foreground-500 font-medium'>Languages</h1>
-					<div className='w-full space-y-12 items-center'>
-						{fields.length === 0 ? (
-							<div className='flex flex-col items-start gap-4'>
-								<p className='text-foreground-500'>No language entries. Add your languages.</p>
-								<Button
-									type='button'
-									variant='bordered'
-									fullWidth
-									startContent={<Plus size={18} />}
-									onPress={() =>
-										prepend({
+					<div className='flex flex-col sm:flex-row sm:items-center gap-4 justify-between w-full'>
+						<h1 className='text-xl text-foreground-500 font-medium'>Languages</h1>
+						{fields.length > 0 && (
+							<Button
+								type='button'
+								variant='bordered'
+								className='w-full sm:w-auto'
+								startContent={<Plus size={18} />}
+								onPress={() =>
+									prepend(
+										{
 											name: '',
 											proficiency: 'BASIC'
-										})
+										},
+										{ shouldFocus: true }
+									)
+								}
+							>
+								Add Language
+							</Button>
+						)}
+					</div>
+					<div className='w-full space-y-12 items-center'>
+						{fields.length === 0 ? (
+							<div className='flex flex-col items-center gap-6 rounded-lg border-foreground-300 border-2 border-dashed p-12 text-center'>
+								<div className='w-16 h-16 rounded-full bg-foreground-200 flex items-center justify-center'>
+									<LanguagesIcon size={32} className='text-foreground-600' />
+								</div>
+								<div className='space-y-2'>
+									<h3 className='text-lg font-semibold text-foreground-700'>Showcase Your Languages</h3>
+									<p className='text-foreground-500 max-w-sm'>
+										Highlight your multilingual abilities to stand out in today's global workplace.
+									</p>
+								</div>
+								<Button
+									type='button'
+									color='default'
+									size='lg'
+									startContent={<Plus size={20} />}
+									onPress={() =>
+										prepend(
+											{
+												name: '',
+												proficiency: 'BASIC'
+											},
+											{ shouldFocus: true }
+										)
 									}
+									className='px-8'
 								>
-									Add Language
+									Add Your First Language
 								</Button>
 							</div>
 						) : (
-							<>
-								<Button
-									type='button'
-									variant='bordered'
-									className='w-full sm:w-auto'
-									startContent={<Plus size={18} />}
-									onPress={() =>
-										prepend({
-											name: '',
-											proficiency: 'BASIC'
-										})
-									}
-								>
-									Add Language
-								</Button>
-								{fields.map((item, index) => (
-									<div key={`field-${item.name}-${index}`} className='flex flex-col sm:flex-row gap-4 sm:gap-8 items-start w-full'>
-										<div className='w-full space-y-4'>
-											<Controller
-												name={`languages.${index}.name`}
-												control={control}
-												defaultValue=''
-												render={({ field }) => (
-													<Input
-														{...field}
-														fullWidth
-														label='Name'
-														placeholder='Add language name'
-														errorMessage={errors.languages?.[index]?.name?.message}
-														isInvalid={!!errors.languages?.[index]?.name}
-														classNames={{
-															inputWrapper: 'bg-background'
-														}}
-													/>
-												)}
-											/>
-										</div>
-										<div className='w-full space-y-4'>
-											<Controller
-												name={`languages.${index}.proficiency`}
-												control={control}
-												defaultValue='BASIC'
-												render={({ field }) => (
-													<Select
-														{...field}
-														fullWidth
-														label='Proficiency'
-														placeholder='Select proficiency'
-														selectionMode='single'
-														selectedKeys={[field.value ?? 'BASIC']}
-														defaultSelectedKeys={[field.value ?? 'BASIC']}
-														onSelectionChange={keys => {
-															const value = Array.from(keys)[0] as 'NATIVE' | 'PROFESSIONAL' | 'BASIC';
-															field.onChange(value);
-														}}
-														errorMessage={errors.languages?.[index]?.proficiency?.message}
-														isInvalid={!!errors.languages?.[index]?.proficiency}
-														classNames={{
-															trigger: 'bg-background'
-														}}
-													>
-														{LANGUAGE_PROFICIENCY_OPTIONS.map(option => (
-															<SelectItem key={option.key}>{option.label}</SelectItem>
-														))}
-													</Select>
-												)}
-											/>
-										</div>
-										<Button type='button' variant='bordered' isIconOnly className='w-auto hidden sm:flex' onPress={() => remove(index)}>
-											<Trash size={18} />
-										</Button>
-										<Button
-											type='button'
-											variant='bordered'
-											className='self-end w-auto sm:hidden'
-											startContent={<Trash size={18} />}
-											onPress={() => remove(index)}
-										>
-											Delete Language
-										</Button>
+							fields.map((item, index) => (
+								<div key={`field-${item.name}-${index}`} className='flex flex-col sm:flex-row gap-4 sm:gap-8 items-start w-full'>
+									<div className='w-full space-y-4'>
+										<Controller
+											name={`languages.${index}.name`}
+											control={control}
+											defaultValue=''
+											render={({ field }) => (
+												<Input
+													{...field}
+													fullWidth
+													variant='bordered'
+													label='Name'
+													placeholder='Add language name'
+													errorMessage={errors.languages?.[index]?.name?.message}
+													isInvalid={!!errors.languages?.[index]?.name}
+													classNames={{
+														inputWrapper: 'bg-background'
+													}}
+												/>
+											)}
+										/>
 									</div>
-								))}
-							</>
+									<div className='w-full space-y-4'>
+										<Controller
+											name={`languages.${index}.proficiency`}
+											control={control}
+											defaultValue='BASIC'
+											render={({ field }) => (
+												<Select
+													{...field}
+													fullWidth
+													variant='bordered'
+													label='Proficiency'
+													placeholder='Select proficiency'
+													selectionMode='single'
+													selectedKeys={[field.value ?? 'BASIC']}
+													defaultSelectedKeys={[field.value ?? 'BASIC']}
+													onSelectionChange={keys => {
+														const value = Array.from(keys)[0] as 'NATIVE' | 'PROFESSIONAL' | 'BASIC';
+														field.onChange(value);
+													}}
+													errorMessage={errors.languages?.[index]?.proficiency?.message}
+													isInvalid={!!errors.languages?.[index]?.proficiency}
+													classNames={{
+														trigger: 'bg-background'
+													}}
+												>
+													{LANGUAGE_PROFICIENCY_OPTIONS.map(option => (
+														<SelectItem key={option.key}>{option.label}</SelectItem>
+													))}
+												</Select>
+											)}
+										/>
+									</div>
+									<Button type='button' variant='bordered' isIconOnly className='w-auto hidden sm:flex' onPress={() => remove(index)}>
+										<Trash size={18} />
+									</Button>
+									<Button
+										type='button'
+										variant='bordered'
+										className='self-end w-auto sm:hidden'
+										startContent={<Trash size={18} />}
+										onPress={() => remove(index)}
+									>
+										Delete Language
+									</Button>
+								</div>
+							))
 						)}
 					</div>
 				</div>
