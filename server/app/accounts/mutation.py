@@ -24,6 +24,7 @@ from app.context import AuthInfo, Info
 from .types import (
     AccountType,
     AnalyticsPreferenceInputTypeEnum,
+    CareerProfileInputType,
     CertificationInputType,
     EducationInputType,
     GenderTypeEnum,
@@ -673,6 +674,39 @@ class AccountMutation:
                 return GenerateProfileDocumentPresignedURLPayloadType(
                     presigned_url=presigned_url, file_key=file_key
                 )
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateProfilePayload,
+        description="Update the current user's profile career profile.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_profile_career_profile(
+        self,
+        info: AuthInfo,
+        profile_service: Annotated[ProfileService, Inject],
+        career_profile: Annotated[
+            CareerProfileInputType,
+            strawberry.argument(
+                description="The career profile of the user.",
+            ),
+        ],
+    ) -> UpdateProfilePayload:
+        """Update the current user's profile career profile."""
+        match await profile_service.update_career_profile(
+            account=info.context["current_user"],
+            career_profile=career_profile.to_document(),
+        ):
+            case Ok(account):
+                return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)
 

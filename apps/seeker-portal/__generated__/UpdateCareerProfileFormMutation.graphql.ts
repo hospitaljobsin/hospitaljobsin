@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<af007b539e75b264432dd4dbfcb4c588>>
- * @relayHash 293393572f0783e6b2560f5abffebd44
+ * @generated SignedSource<<c9484fcce22f24b3e52721e5c25cae3e>>
+ * @relayHash a6d8a3051b1fe2fb04c1786059ad8ddd
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,22 +9,23 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 293393572f0783e6b2560f5abffebd44
+// @relayRequestID a6d8a3051b1fe2fb04c1786059ad8ddd
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type CertificationInput = {
-  certificationUrl: string;
-  createdAt: any;
-  expiresAt?: any | null | undefined;
-  issuer: string;
-  name: string;
+export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
+export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
+export type CareerProfileInput = {
+  currentIndustry?: string | null | undefined;
+  desiredJobTypes?: ReadonlyArray<JobType>;
+  desiredWorkModes?: ReadonlyArray<WorkMode>;
+  expectedSalary?: number | null | undefined;
 };
 export type UpdateCareerProfileFormMutation$variables = {
-  certifications: ReadonlyArray<CertificationInput>;
+  careerProfile: CareerProfileInput;
 };
 export type UpdateCareerProfileFormMutation$data = {
-  readonly updateProfileCertifications: {
+  readonly updateProfileCareerProfile: {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateCareerProfileFormFragment">;
     } | null | undefined;
@@ -41,14 +42,14 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "certifications"
+    "name": "careerProfile"
   }
 ],
 v1 = [
   {
     "kind": "Variable",
-    "name": "certifications",
-    "variableName": "certifications"
+    "name": "careerProfile",
+    "variableName": "careerProfile"
   }
 ],
 v2 = {
@@ -77,7 +78,7 @@ return {
         "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "updateProfileCertifications",
+        "name": "updateProfileCareerProfile",
         "plural": false,
         "selections": [
           {
@@ -131,7 +132,7 @@ return {
         "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "updateProfileCertifications",
+        "name": "updateProfileCareerProfile",
         "plural": false,
         "selections": [
           (v2/*: any*/),
@@ -166,44 +167,37 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "Certification",
+                    "concreteType": "CareerProfile",
                     "kind": "LinkedField",
-                    "name": "certifications",
-                    "plural": true,
+                    "name": "careerProfile",
+                    "plural": false,
                     "selections": [
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "name",
+                        "name": "currentIndustry",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "issuer",
+                        "name": "desiredJobTypes",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "certificationUrl",
+                        "name": "desiredWorkModes",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "createdAt",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "expiresAt",
+                        "name": "expectedSalary",
                         "storageKey": null
                       }
                     ],
@@ -230,7 +224,7 @@ return {
     ]
   },
   "params": {
-    "id": "293393572f0783e6b2560f5abffebd44",
+    "id": "a6d8a3051b1fe2fb04c1786059ad8ddd",
     "metadata": {},
     "name": "UpdateCareerProfileFormMutation",
     "operationKind": "mutation",
@@ -239,6 +233,6 @@ return {
 };
 })();
 
-(node as any).hash = "3c313b995fb0bdf3f8a5168973035a31";
+(node as any).hash = "3c5721117eebacdf5e14ec57135a42b4";
 
 export default node;

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<e4c02cc109357ca1b18978bb17165627>>
- * @relayHash f8d783a514e73dd91bd353643dc59aca
+ * @generated SignedSource<<c386fe3bad2d61a634f92071ecaf70a5>>
+ * @relayHash ae5c3eeb49cb7beff485ccbfe9eae3fb
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID f8d783a514e73dd91bd353643dc59aca
+// @relayRequestID ae5c3eeb49cb7beff485ccbfe9eae3fb
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -83,44 +83,37 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "Certification",
+                    "concreteType": "CareerProfile",
                     "kind": "LinkedField",
-                    "name": "certifications",
-                    "plural": true,
+                    "name": "careerProfile",
+                    "plural": false,
                     "selections": [
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "name",
+                        "name": "currentIndustry",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "issuer",
+                        "name": "desiredJobTypes",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "certificationUrl",
+                        "name": "desiredWorkModes",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "createdAt",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "expiresAt",
+                        "name": "expectedSalary",
                         "storageKey": null
                       }
                     ],
@@ -148,7 +141,7 @@ return {
     ]
   },
   "params": {
-    "id": "f8d783a514e73dd91bd353643dc59aca",
+    "id": "ae5c3eeb49cb7beff485ccbfe9eae3fb",
     "metadata": {},
     "name": "CareerProfileClientComponentQuery",
     "operationKind": "query",

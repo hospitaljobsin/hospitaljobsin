@@ -13,6 +13,7 @@ from app.accounts.agents.profile_parser import ProfileParserAgent
 from app.accounts.documents import (
     Account,
     AnalyticsPreference,
+    CareerProfile,
     Education,
     Language,
     License,
@@ -478,6 +479,25 @@ class ProfileService:
             profile=existing_profile,
             professional_summary=professional_summary,
             headline=headline,
+        )
+
+        return Ok(account)
+
+    async def update_career_profile(
+        self,
+        account: Account,
+        career_profile: CareerProfile,
+    ) -> Ok[Account]:
+        existing_profile = await self._profile_repo.get_by_account(account)
+        if existing_profile is None:
+            existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
+
+        await self._profile_repo.update(
+            profile=existing_profile,
+            career_profile=career_profile,
         )
 
         return Ok(account)

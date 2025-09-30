@@ -602,6 +602,31 @@ type CareerProfile {
 	expectedSalary: Float
 }
 
+"""
+The career profile details input.
+"""
+input CareerProfileInput {
+	"""
+	The current industry of the user.
+	"""
+	currentIndustry: String = null
+
+	"""
+	The desired job types.
+	"""
+	desiredJobTypes: [JobType!]! = []
+
+	"""
+	The desired work modes.
+	"""
+	desiredWorkModes: [WorkMode!]! = []
+
+	"""
+	The expected salary.
+	"""
+	expectedSalary: Float = null
+}
+
 type Certification {
 	name: String!
 	issuer: String!
@@ -3157,6 +3182,16 @@ type Mutation {
 		"""
 		contentType: String!
 	): GenerateProfileDocumentPresignedURLPayload! @isAuthenticated
+
+	"""
+	Update the current user's profile career profile.
+	"""
+	updateProfileCareerProfile(
+		"""
+		The career profile of the user.
+		"""
+		careerProfile: CareerProfileInput!
+	): UpdateProfilePayload! @isAuthenticated
 
 	"""
 	Remove the avatar from the current user account.

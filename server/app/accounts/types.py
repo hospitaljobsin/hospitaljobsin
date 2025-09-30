@@ -1004,3 +1004,32 @@ class LicenseInputType:
             verified_at=None,
             verification_notes=None,
         )
+
+
+@strawberry.input(
+    name="CareerProfileInput",
+    description="The career profile details input.",
+)
+class CareerProfileInputType:
+    current_industry: str | None = strawberry.field(
+        description="The current industry of the user.", default=None
+    )
+    desired_job_types: list[JobTypeEnum] = strawberry.field(
+        description="The desired job types.", default_factory=list
+    )
+    desired_work_modes: list[WorkModeEnum] = strawberry.field(
+        description="The desired work modes.", default_factory=list
+    )
+    expected_salary: float | None = strawberry.field(
+        description="The expected salary.", default=None
+    )
+
+    def to_document(self) -> CareerProfile:
+        return CareerProfile(
+            current_industry=self.current_industry,
+            desired_job_types=[job_type.value for job_type in self.desired_job_types],
+            desired_work_modes=[
+                work_mode.value for work_mode in self.desired_work_modes
+            ],
+            expected_salary=self.expected_salary,
+        )

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3468988cb93473128aa90d23da8ff7fb>>
+ * @generated SignedSource<<56525bafcf7db4bf7c769a134f17a1c3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,16 +9,17 @@
 // @ts-nocheck
 
 import type { ReaderFragment } from 'relay-runtime';
+export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
+export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type UpdateCareerProfileFormFragment$data = {
   readonly __typename: "Profile";
-  readonly certifications: ReadonlyArray<{
-    readonly certificationUrl: string;
-    readonly createdAt: any;
-    readonly expiresAt: any | null | undefined;
-    readonly issuer: string;
-    readonly name: string;
-  }>;
+  readonly careerProfile: {
+    readonly currentIndustry: string | null | undefined;
+    readonly desiredJobTypes: ReadonlyArray<JobType>;
+    readonly desiredWorkModes: ReadonlyArray<WorkMode>;
+    readonly expectedSalary: number | null | undefined;
+  } | null | undefined;
   readonly " $fragmentType": "UpdateCareerProfileFormFragment";
 };
 export type UpdateCareerProfileFormFragment$key = {
@@ -42,44 +43,37 @@ const node: ReaderFragment = {
     {
       "alias": null,
       "args": null,
-      "concreteType": "Certification",
+      "concreteType": "CareerProfile",
       "kind": "LinkedField",
-      "name": "certifications",
-      "plural": true,
+      "name": "careerProfile",
+      "plural": false,
       "selections": [
         {
           "alias": null,
           "args": null,
           "kind": "ScalarField",
-          "name": "name",
+          "name": "currentIndustry",
           "storageKey": null
         },
         {
           "alias": null,
           "args": null,
           "kind": "ScalarField",
-          "name": "issuer",
+          "name": "desiredJobTypes",
           "storageKey": null
         },
         {
           "alias": null,
           "args": null,
           "kind": "ScalarField",
-          "name": "certificationUrl",
+          "name": "desiredWorkModes",
           "storageKey": null
         },
         {
           "alias": null,
           "args": null,
           "kind": "ScalarField",
-          "name": "createdAt",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "expiresAt",
+          "name": "expectedSalary",
           "storageKey": null
         }
       ],
@@ -90,6 +84,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "0d933ed797848f20d79a312a04940c97";
+(node as any).hash = "4f2719e1a29bcc005e21cd6aeea49a06";
 
 export default node;
