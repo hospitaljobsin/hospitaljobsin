@@ -1,5 +1,5 @@
 'use client';
-import { Drawer, DrawerBody, DrawerContent, DrawerHeader, Progress } from '@heroui/react';
+import { Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, Progress } from '@heroui/react';
 import { AlertCircle, CheckCircle } from 'lucide-react';
 import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
@@ -16,6 +16,7 @@ interface CompleteProfileDrawerProps {
 	isOpen: boolean;
 	onClose: () => void;
 	account: CompleteProfileDrawerFragment$key;
+	onApply?: () => void;
 }
 
 const CompleteProfileDrawerFragment = graphql`
@@ -41,11 +42,13 @@ fragment CompleteProfileDrawerFragment on Account {
 function CompleteProfileWizard({
 	onClose,
 	missingFields,
-	hasResume
+	hasResume,
+	onApply
 }: {
 	onClose: () => void;
 	missingFields: string[];
 	hasResume: boolean;
+	onApply?: () => void;
 }) {
 	const state = CompleteProfileContext.useSelector(state => state);
 	const { send } = CompleteProfileContext.useActorRef();
@@ -58,7 +61,8 @@ function CompleteProfileWizard({
 			send({
 				type: 'START_FORM',
 				missingFields: fieldsToProcess,
-				totalSteps: fieldsToProcess.length
+				totalSteps: fieldsToProcess.length,
+				onApply
 			});
 		}
 	}, [state, send, missingFields, hasResume]);
@@ -77,9 +81,12 @@ function CompleteProfileWizard({
 
 	useEffect(() => {
 		if (state.matches('completed')) {
+			if (onApply) {
+				onApply();
+			}
 			onClose();
 		}
-	}, [state, onClose]);
+	}, [state, onClose, onApply]);
 
 	const currentField = CompleteProfileContext.useSelector(state => {
 		const { missingFields, currentFieldIndex } = state.context;
@@ -133,7 +140,7 @@ function CompleteProfileWizard({
 	);
 }
 
-export default function CompleteProfileDrawer({ isOpen, onClose, account }: CompleteProfileDrawerProps) {
+export default function CompleteProfileDrawer({ isOpen, onClose, account, onApply }: CompleteProfileDrawerProps) {
 	const data = useFragment(CompleteProfileDrawerFragment, account);
 	const profile = data.profile;
 	const hasResume = !!profile.resumeUrl;
@@ -161,11 +168,16 @@ export default function CompleteProfileDrawer({ isOpen, onClose, account }: Comp
 						</DrawerHeader>
 						<DrawerBody>
 							<p className='text-foreground-600'>Your profile is complete! You can now apply for jobs.</p>
+							{onApply && (
+								<Button color='primary' size='lg' fullWidth onPress={onApply}>
+									Apply for Job
+								</Button>
+							)}
 						</DrawerBody>
 					</>
 				) : (
 					<CompleteProfileContext.Provider>
-						<CompleteProfileWizard onClose={onClose} missingFields={missingFields} hasResume={hasResume} />
+						<CompleteProfileWizard onClose={onClose} missingFields={missingFields} hasResume={hasResume} onApply={onApply} />
 					</CompleteProfileContext.Provider>
 				)}
 			</DrawerContent>

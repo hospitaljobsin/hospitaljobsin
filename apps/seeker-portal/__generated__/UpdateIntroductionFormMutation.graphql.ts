@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<64d42fee8a5487733cfff30de574b73e>>
- * @relayHash 0f91bfaa8cecdc30d8d4e2274d2018c2
+ * @generated SignedSource<<d0a3fb18dc5cb930303543cca1d2517c>>
+ * @relayHash 16cb63a6413fabc6d8119b0918bd78a6
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 0f91bfaa8cecdc30d8d4e2274d2018c2
+// @relayRequestID 16cb63a6413fabc6d8119b0918bd78a6
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -22,6 +22,7 @@ export type UpdateIntroductionFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateIntroductionFormFragment">;
     } | null | undefined;
+    readonly " $fragmentSpreads": FragmentRefs<"ResumeProgressAccountFragment">;
   };
 };
 export type UpdateIntroductionFormMutation = {
@@ -81,6 +82,11 @@ return {
             "kind": "InlineFragment",
             "selections": [
               {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "ResumeProgressAccountFragment"
+              },
+              {
                 "alias": null,
                 "args": null,
                 "concreteType": "Profile",
@@ -137,11 +143,54 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "email",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
                 "plural": false,
                 "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
+                    "storageKey": null
+                  },
+                  (v3/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -155,8 +204,7 @@ return {
                     "kind": "ScalarField",
                     "name": "headline",
                     "storageKey": null
-                  },
-                  (v3/*: any*/)
+                  }
                 ],
                 "storageKey": null
               }
@@ -178,7 +226,7 @@ return {
     ]
   },
   "params": {
-    "id": "0f91bfaa8cecdc30d8d4e2274d2018c2",
+    "id": "16cb63a6413fabc6d8119b0918bd78a6",
     "metadata": {},
     "name": "UpdateIntroductionFormMutation",
     "operationKind": "mutation",
@@ -187,6 +235,6 @@ return {
 };
 })();
 
-(node as any).hash = "8837e49ac037ac53a07caf44addeb4f6";
+(node as any).hash = "1e60e48aac06325522f0c7593258327f";
 
 export default node;

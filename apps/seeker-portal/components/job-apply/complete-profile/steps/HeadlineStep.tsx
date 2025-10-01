@@ -12,6 +12,7 @@ const HeadlineStepMutation = graphql`
 mutation HeadlineStepMutation($headline: String!) {
 	updateProfileAboutMe(headline: $headline, professionalSummary: "") {
 		... on Account {
+			...CompleteProfileDrawerFragment
 			profile {
 				headline
 			}
@@ -93,7 +94,7 @@ export default function HeadlineStep() {
 					Previous
 				</Button>
 				<Button type='submit' color='primary' fullWidth isLoading={formState.isSubmitting}>
-					Complete Profile
+					Continue
 				</Button>
 			</div>
 		</form>

@@ -4,7 +4,7 @@ import links from '@/lib/links';
 import { useRouter } from '@bprogress/next/app';
 import { addToast, Button, Card, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Progress, Textarea } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { useState } from 'react';
+import { useState, forwardRef, useImperativeHandle } from 'react';
 import { useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
@@ -68,15 +68,18 @@ const formSchema = z.object({
 	)
 });
 
-export default function JobApplyForm({
-	rootQuery,
-	isProfileComplete,
-	onProfileIncomplete
-}: {
-	rootQuery: JobApplyFormFragment$key;
-	isProfileComplete: boolean;
-	onProfileIncomplete: () => void;
-}) {
+export interface JobApplyFormRef {
+	triggerDirectApply: () => void;
+}
+
+const JobApplyForm = forwardRef<
+	JobApplyFormRef,
+	{
+		rootQuery: JobApplyFormFragment$key;
+		isProfileComplete: boolean;
+		onProfileIncomplete: () => void;
+	}
+>(function JobApplyForm({ rootQuery, isProfileComplete, onProfileIncomplete }, ref) {
 	const router = useRouter();
 	const data = useFragment(JobApplyFormFragment, rootQuery);
 	const [commitMutation, isMutationInFlight] = useMutation<JobApplyFormMutation>(CreateJobApplicantMutation);
@@ -171,6 +174,18 @@ export default function JobApplyForm({
 			}
 		});
 	}
+
+	useImperativeHandle(
+		ref,
+		() => ({
+			triggerDirectApply: () => {
+				if (isProfileComplete) {
+					onDirectApplyConfirmed();
+				}
+			}
+		}),
+		[isProfileComplete]
+	);
 
 	return (
 		<div className='w-full flex flex-col gap-6'>
@@ -334,4 +349,6 @@ export default function JobApplyForm({
 			</Modal>
 		</div>
 	);
-}
+});
+
+export default JobApplyForm;

@@ -3,12 +3,12 @@ import links from '@/lib/links';
 import { Button } from '@heroui/react';
 import { SearchX } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import DashboardHeader from '../layout/DashboardHeader';
 import CompleteProfileDrawer from './complete-profile/CompleteProfileDrawer';
 import JobApplicationDetails from './JobApplicationDetails';
-import JobApplyForm from './JobApplyForm';
+import JobApplyForm, { type JobApplyFormRef } from './JobApplyForm';
 import ProfilePreview from './ProfileReview';
 
 const JobApplyViewFragment = graphql`
@@ -50,9 +50,19 @@ const JobApplyViewFragment = graphql`
 export default function JobApplyView(props: { rootQuery: JobApplyViewFragment$key }) {
 	const query = useFragment(JobApplyViewFragment, props.rootQuery);
 	const [showCompleteProfileDrawer, setShowCompleteProfileDrawer] = useState(false);
+	const jobApplyFormRef = useRef<JobApplyFormRef | null>(null);
 
 	const handleProfileIncomplete = () => {
 		setShowCompleteProfileDrawer(true);
+	};
+
+	const handleApplyAfterProfileComplete = () => {
+		// This will be called when profile completion is done and user wants to apply
+		setShowCompleteProfileDrawer(false);
+		// Trigger the job application directly
+		if (jobApplyFormRef.current) {
+			jobApplyFormRef.current.triggerDirectApply();
+		}
 	};
 
 	// only users who have not applied can access this page
@@ -94,6 +104,7 @@ export default function JobApplyView(props: { rootQuery: JobApplyViewFragment$ke
 						<JobApplicationDetails job={query.organization.job} />
 						<ProfilePreview account={query.viewer} />
 						<JobApplyForm
+							ref={jobApplyFormRef}
 							rootQuery={query.organization.job}
 							isProfileComplete={query.viewer.profile.isComplete}
 							onProfileIncomplete={handleProfileIncomplete}
@@ -103,6 +114,7 @@ export default function JobApplyView(props: { rootQuery: JobApplyViewFragment$ke
 						isOpen={showCompleteProfileDrawer}
 						onClose={() => setShowCompleteProfileDrawer(false)}
 						account={query.viewer}
+						onApply={handleApplyAfterProfileComplete}
 					/>
 				</div>
 			</div>

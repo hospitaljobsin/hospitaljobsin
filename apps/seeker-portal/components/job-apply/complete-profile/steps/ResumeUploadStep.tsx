@@ -3,43 +3,92 @@
 import { Button } from '@heroui/react';
 import { Upload } from 'lucide-react';
 import { useCallback, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { graphql, useMutation } from 'react-relay';
+import type { ResumeUploadStepGeneratePresignedUrlMutation } from '@/__generated__/ResumeUploadStepGeneratePresignedUrlMutation.graphql';
+import type { ResumeUploadStepUpdateResumeMutation } from '@/__generated__/ResumeUploadStepUpdateResumeMutation.graphql';
+import { uploadFileToS3 } from '../../../../lib/presignedUrl';
 import CompleteProfileContext from '../CompleteProfileContext';
+
+const GeneratePresignedUrlMutation = graphql`
+mutation ResumeUploadStepGeneratePresignedUrlMutation($contentType: String!) {
+	generateProfileDocumentPresignedUrl(contentType: $contentType) {
+		fileKey
+		presignedUrl
+	}
+}
+`;
+
+const UpdateResumeMutation = graphql`
+mutation ResumeUploadStepUpdateResumeMutation($resumeUrl: String!, $fileKey: String!) {
+	updateProfileResume(resumeUrl: $resumeUrl, fileKey: $fileKey) {
+		...on Account {
+			...CompleteProfileDrawerFragment
+			profile {
+				resumeUrl
+			}
+		}
+	}
+}
+`;
 
 export default function ResumeUploadStep() {
 	const { send } = CompleteProfileContext.useActorRef();
 	const [isUploading, setIsUploading] = useState(false);
+	const [commitPresignedUrlMutation] = useMutation<ResumeUploadStepGeneratePresignedUrlMutation>(GeneratePresignedUrlMutation);
+	const [commitUpdateMutation] = useMutation<ResumeUploadStepUpdateResumeMutation>(UpdateResumeMutation);
 
 	const handleFileUpload = useCallback(
-		async (file: File) => {
+		(file: File) => {
 			setIsUploading(true);
-			try {
-				// Mock upload - replace with actual upload logic
-				console.log('Uploading resume:', file.name);
 
-				// Simulate upload delay
-				await new Promise(resolve => setTimeout(resolve, 2000));
+			commitPresignedUrlMutation({
+				variables: { contentType: file.type },
+				onCompleted: response => {
+					const { presignedUrl, fileKey } = response.generateProfileDocumentPresignedUrl;
 
-				const mockResumeUrl = `https://example.com/resumes/${file.name}`;
+					uploadFileToS3(presignedUrl, file)
+						.then(() => {
+							const resumeUrl = presignedUrl.split('?')[0];
 
-				send({
-					type: 'SUBMIT_RESUME',
-					resumeUrl: mockResumeUrl
-				});
-			} catch (error) {
-				console.error('Upload failed:', error);
-			} finally {
-				setIsUploading(false);
-			}
+							commitUpdateMutation({
+								variables: { resumeUrl, fileKey },
+								onCompleted: () => {
+									setIsUploading(false);
+									send({
+										type: 'SUBMIT_RESUME',
+										resumeUrl
+									});
+								},
+								onError: () => setIsUploading(false)
+							});
+						})
+						.catch(() => setIsUploading(false));
+				},
+				onError: () => setIsUploading(false)
+			});
 		},
-		[send]
+		[commitPresignedUrlMutation, commitUpdateMutation, send]
 	);
 
-	const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0];
-		if (file) {
-			handleFileUpload(file);
-		}
-	};
+	const onDrop = useCallback(
+		(acceptedFiles: File[]) => {
+			const file = acceptedFiles[0];
+			if (file) {
+				handleFileUpload(file);
+			}
+		},
+		[handleFileUpload]
+	);
+
+	const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+		onDrop,
+		accept: {
+			'application/pdf': ['.pdf']
+		},
+		multiple: false,
+		noClick: true
+	});
 
 	return (
 		<div className='space-y-6'>
@@ -50,25 +99,21 @@ export default function ResumeUploadStep() {
 				</p>
 			</div>
 
-			<div className='border-2 border-dashed border-foreground-200 rounded-lg p-8 text-center'>
-				<Upload className='w-12 h-12 text-foreground-400 mx-auto mb-4' />
-				<div className='space-y-2'>
-					<p className='text-foreground-600'>Drop your resume here or click to browse</p>
-					<p className='text-sm text-foreground-500'>Supports PDF, DOC, DOCX files up to 10MB</p>
-				</div>
-				<input
-					type='file'
-					accept='.pdf,.doc,.docx'
-					onChange={handleFileSelect}
-					className='hidden'
-					id='resume-upload'
-					disabled={isUploading}
-				/>
-				<label htmlFor='resume-upload'>
-					<Button as='span' color='primary' className='mt-4 cursor-pointer' isLoading={isUploading} isDisabled={isUploading}>
-						{isUploading ? 'Uploading...' : 'Choose File'}
+			<div
+				{...getRootProps()}
+				className={`border-2 border-dashed rounded-lg p-16 text-center transition-colors cursor-pointer ${
+					isDragActive ? 'border-primary bg-primary/5' : 'border-gray-300'
+				}`}
+			>
+				<input {...getInputProps()} />
+				<div className='space-y-6 flex flex-col justify-center items-center'>
+					<Upload size={64} className='text-foreground-400' />
+					<p className='text-xl mb-2'>Drop your resume here</p>
+					<p className='text-sm text-gray-400'>Supports PDF files</p>
+					<Button color='primary' size='lg' variant='solid' onPress={open} isLoading={isUploading} isDisabled={isUploading}>
+						{isUploading ? 'Uploading...' : 'Browse Files'}
 					</Button>
-				</label>
+				</div>
 			</div>
 		</div>
 	);

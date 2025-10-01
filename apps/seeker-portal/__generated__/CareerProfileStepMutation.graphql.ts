@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<873d1e20be4afa11a69dcddb1a4c20c7>>
- * @relayHash e8f04395f97850cb4808e4e885dc10e8
+ * @generated SignedSource<<c88103481627466dd609e01fb2f2daba>>
+ * @relayHash 5570b93f0870aa049e5667ab8c857b8f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,9 +9,10 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID e8f04395f97850cb4808e4e885dc10e8
+// @relayRequestID 5570b93f0870aa049e5667ab8c857b8f
 
 import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type CareerProfileStepMutation$variables = {
   locationsOpenToWork: ReadonlyArray<string>;
   openToRelocationAnywhere: boolean;
@@ -24,6 +25,7 @@ export type CareerProfileStepMutation$data = {
         readonly openToRelocationAnywhere: boolean;
       } | null | undefined;
     } | null | undefined;
+    readonly " $fragmentSpreads": FragmentRefs<"CompleteProfileDrawerFragment">;
   };
 };
 export type CareerProfileStepMutation = {
@@ -95,6 +97,13 @@ v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 };
@@ -116,6 +125,11 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "CompleteProfileDrawerFragment"
+              },
               {
                 "alias": null,
                 "args": null,
@@ -153,13 +167,7 @@ return {
         "name": "updateProfileCareerProfile",
         "plural": false,
         "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "__typename",
-            "storageKey": null
-          },
+          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -171,8 +179,62 @@ return {
                 "name": "profile",
                 "plural": false,
                 "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "dateOfBirth",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "address",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Education",
+                    "kind": "LinkedField",
+                    "name": "education",
+                    "plural": true,
+                    "selections": [
+                      (v3/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
                   (v2/*: any*/),
-                  (v3/*: any*/)
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "professionalSummary",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "headline",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "resumeUrl",
+                    "storageKey": null
+                  },
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -183,7 +245,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v3/*: any*/)
+              (v4/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -194,7 +256,7 @@ return {
     ]
   },
   "params": {
-    "id": "e8f04395f97850cb4808e4e885dc10e8",
+    "id": "5570b93f0870aa049e5667ab8c857b8f",
     "metadata": {},
     "name": "CareerProfileStepMutation",
     "operationKind": "mutation",
@@ -203,6 +265,6 @@ return {
 };
 })();
 
-(node as any).hash = "26908e02e6bbb032dde2e9df04226464";
+(node as any).hash = "34bb47cdc798666c55ab459930081f3d";
 
 export default node;

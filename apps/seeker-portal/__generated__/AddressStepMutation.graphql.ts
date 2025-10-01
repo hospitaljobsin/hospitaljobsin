@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<48b506769efb899f1036a9bda359c466>>
- * @relayHash 7db754ffc49f0a4b09c5270c06f840d1
+ * @generated SignedSource<<878f3b6d4d0df64906c4f07afb7c97ab>>
+ * @relayHash c87e13733ccf2f361d7a37639e0ba060
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,9 +9,10 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 7db754ffc49f0a4b09c5270c06f840d1
+// @relayRequestID c87e13733ccf2f361d7a37639e0ba060
 
 import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type AddressStepMutation$variables = {
   address?: string | null | undefined;
 };
@@ -21,6 +22,7 @@ export type AddressStepMutation$data = {
     readonly profile: {
       readonly address: string | null | undefined;
     } | null | undefined;
+    readonly " $fragmentSpreads": FragmentRefs<"CompleteProfileDrawerFragment">;
   } | {
     readonly __typename: "InvalidLocationError";
     readonly message: string;
@@ -105,6 +107,11 @@ return {
             "kind": "InlineFragment",
             "selections": [
               {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "CompleteProfileDrawerFragment"
+              },
+              {
                 "alias": null,
                 "args": null,
                 "concreteType": "Profile",
@@ -154,7 +161,79 @@ return {
                 "name": "profile",
                 "plural": false,
                 "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "dateOfBirth",
+                    "storageKey": null
+                  },
                   (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Education",
+                    "kind": "LinkedField",
+                    "name": "education",
+                    "plural": true,
+                    "selections": [
+                      (v2/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "CareerProfile",
+                    "kind": "LinkedField",
+                    "name": "careerProfile",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "locationsOpenToWork",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "openToRelocationAnywhere",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "professionalSummary",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "headline",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "resumeUrl",
+                    "storageKey": null
+                  },
                   (v5/*: any*/)
                 ],
                 "storageKey": null
@@ -178,7 +257,7 @@ return {
     ]
   },
   "params": {
-    "id": "7db754ffc49f0a4b09c5270c06f840d1",
+    "id": "c87e13733ccf2f361d7a37639e0ba060",
     "metadata": {},
     "name": "AddressStepMutation",
     "operationKind": "mutation",
@@ -187,6 +266,6 @@ return {
 };
 })();
 
-(node as any).hash = "8036b739adb0e9bfd27b1e44c99ece89";
+(node as any).hash = "01921c24c2829de19a418d20e8161f57";
 
 export default node;

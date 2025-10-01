@@ -1,6 +1,5 @@
 'use client';
 
-import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
 import { Button, Chip, Divider, Switch } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useState } from 'react';
@@ -8,12 +7,14 @@ import { Controller, useForm, useWatch } from 'react-hook-form';
 import { graphql, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
 import type { CareerProfileStepMutation as CareerProfileStepMutationType } from '@/__generated__/CareerProfileStepMutation.graphql';
+import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
 import CompleteProfileContext from '../CompleteProfileContext';
 
 const CareerProfileStepMutation = graphql`
 mutation CareerProfileStepMutation($locationsOpenToWork: [String!]!, $openToRelocationAnywhere: Boolean!) {
 	updateProfileCareerProfile(locationsOpenToWork: $locationsOpenToWork, openToRelocationAnywhere: $openToRelocationAnywhere, desiredJobTypes: [], desiredWorkModes: []) {
 		...on Account {
+			...CompleteProfileDrawerFragment
 			profile {
 				careerProfile {
 					locationsOpenToWork

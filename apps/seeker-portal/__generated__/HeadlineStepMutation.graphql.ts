@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<b49c95d1c2938a4a06b4e09542f691c3>>
- * @relayHash fbd43f5cdbd59e32a5883fa1c3350983
+ * @generated SignedSource<<ffea46f898f7919192da2bdff7b310b9>>
+ * @relayHash 690863efe95b7352022a907ea15b9982
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,9 +9,10 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID fbd43f5cdbd59e32a5883fa1c3350983
+// @relayRequestID 690863efe95b7352022a907ea15b9982
 
 import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type HeadlineStepMutation$variables = {
   headline: string;
 };
@@ -20,6 +21,7 @@ export type HeadlineStepMutation$data = {
     readonly profile?: {
       readonly headline: string | null | undefined;
     } | null | undefined;
+    readonly " $fragmentSpreads": FragmentRefs<"CompleteProfileDrawerFragment">;
   };
 };
 export type HeadlineStepMutation = {
@@ -58,6 +60,13 @@ v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 };
@@ -79,6 +88,11 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "CompleteProfileDrawerFragment"
+              },
               {
                 "alias": null,
                 "args": null,
@@ -116,13 +130,7 @@ return {
         "name": "updateProfileAboutMe",
         "plural": false,
         "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "__typename",
-            "storageKey": null
-          },
+          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -134,8 +142,80 @@ return {
                 "name": "profile",
                 "plural": false,
                 "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "dateOfBirth",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "address",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Education",
+                    "kind": "LinkedField",
+                    "name": "education",
+                    "plural": true,
+                    "selections": [
+                      (v3/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "CareerProfile",
+                    "kind": "LinkedField",
+                    "name": "careerProfile",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "locationsOpenToWork",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "openToRelocationAnywhere",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "professionalSummary",
+                    "storageKey": null
+                  },
                   (v2/*: any*/),
-                  (v3/*: any*/)
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "resumeUrl",
+                    "storageKey": null
+                  },
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -146,7 +226,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v3/*: any*/)
+              (v4/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -157,7 +237,7 @@ return {
     ]
   },
   "params": {
-    "id": "fbd43f5cdbd59e32a5883fa1c3350983",
+    "id": "690863efe95b7352022a907ea15b9982",
     "metadata": {},
     "name": "HeadlineStepMutation",
     "operationKind": "mutation",
@@ -166,6 +246,6 @@ return {
 };
 })();
 
-(node as any).hash = "5db792e2ac06635e08a4fd98ed192fea";
+(node as any).hash = "97ba09adb3a7bfd345256316a7226624";
 
 export default node;

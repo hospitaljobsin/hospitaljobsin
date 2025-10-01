@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<fa2b1e169d88c0d60096ee17fe385007>>
- * @relayHash ad6d6b813d38119903d86965e591afe3
+ * @generated SignedSource<<2a537c4b90698a9588b9144ac1e027e2>>
+ * @relayHash 54526c05773ca21f2bf8b7752bf0bf0a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,9 +9,10 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ad6d6b813d38119903d86965e591afe3
+// @relayRequestID 54526c05773ca21f2bf8b7752bf0bf0a
 
 import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type DateOfBirthStepMutation$variables = {
   dateOfBirth?: any | null | undefined;
 };
@@ -21,6 +22,7 @@ export type DateOfBirthStepMutation$data = {
     readonly profile: {
       readonly dateOfBirth: any | null | undefined;
     } | null | undefined;
+    readonly " $fragmentSpreads": FragmentRefs<"CompleteProfileDrawerFragment">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -88,6 +90,11 @@ return {
             "kind": "InlineFragment",
             "selections": [
               {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "CompleteProfileDrawerFragment"
+              },
+              {
                 "alias": null,
                 "args": null,
                 "concreteType": "Profile",
@@ -136,7 +143,79 @@ return {
                 "name": "profile",
                 "plural": false,
                 "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  },
                   (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "address",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Education",
+                    "kind": "LinkedField",
+                    "name": "education",
+                    "plural": true,
+                    "selections": [
+                      (v2/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "CareerProfile",
+                    "kind": "LinkedField",
+                    "name": "careerProfile",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "locationsOpenToWork",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "openToRelocationAnywhere",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "professionalSummary",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "headline",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "resumeUrl",
+                    "storageKey": null
+                  },
                   (v4/*: any*/)
                 ],
                 "storageKey": null
@@ -159,7 +238,7 @@ return {
     ]
   },
   "params": {
-    "id": "ad6d6b813d38119903d86965e591afe3",
+    "id": "54526c05773ca21f2bf8b7752bf0bf0a",
     "metadata": {},
     "name": "DateOfBirthStepMutation",
     "operationKind": "mutation",
@@ -168,6 +247,6 @@ return {
 };
 })();
 
-(node as any).hash = "4d307cc35334ebe523f04d0840a604e4";
+(node as any).hash = "8fa93a75e6774bb65e61a548c2cf4f81";
 
 export default node;

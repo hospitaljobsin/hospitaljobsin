@@ -15,7 +15,8 @@ const context = {
 	currentStep: 0,
 	totalSteps: 0,
 	missingFields: [] as string[],
-	currentFieldIndex: 0
+	currentFieldIndex: 0,
+	onApply: null as (() => void) | null
 };
 
 export const completeProfileMachine = createMachine({
@@ -23,7 +24,7 @@ export const completeProfileMachine = createMachine({
 	types: {} as {
 		context: typeof context;
 		events:
-			| { type: 'START_FORM'; missingFields: string[]; totalSteps: number }
+			| { type: 'START_FORM'; missingFields: string[]; totalSteps: number; onApply?: () => void }
 			| { type: 'SUBMIT_RESUME'; resumeUrl: string }
 			| { type: 'SUBMIT_DATE_OF_BIRTH'; dateOfBirth: string }
 			| { type: 'SUBMIT_ADDRESS'; address: string }
@@ -33,7 +34,8 @@ export const completeProfileMachine = createMachine({
 			| { type: 'SUBMIT_HEADLINE'; headline: string }
 			| { type: 'NEXT_STEP' }
 			| { type: 'PREVIOUS_STEP' }
-			| { type: 'REFRESH_FIELDS'; missingFields: string[]; totalSteps: number };
+			| { type: 'REFRESH_FIELDS'; missingFields: string[]; totalSteps: number }
+			| { type: 'APPLY_FOR_JOB' };
 	},
 	context: context,
 	states: {
@@ -45,7 +47,8 @@ export const completeProfileMachine = createMachine({
 						totalSteps: ({ event }) => event.totalSteps,
 						currentStep: () => 1,
 						missingFields: ({ event }) => event.missingFields,
-						currentFieldIndex: () => 0
+						currentFieldIndex: () => 0,
+						onApply: ({ event }) => event.onApply || null
 					})
 				}
 			}
@@ -156,11 +159,25 @@ export const completeProfileMachine = createMachine({
 						})
 					}
 				],
-				SUBMIT_HEADLINE: {
-					target: 'completed',
-					actions: assign({
-						headline: ({ event }) => event.headline
-					})
+				SUBMIT_HEADLINE: [
+					{
+						target: 'completed',
+						guard: ({ context }) => context.currentFieldIndex + 1 >= context.missingFields.length,
+						actions: assign({
+							headline: ({ event }) => event.headline
+						})
+					},
+					{
+						target: 'activeStep',
+						actions: assign({
+							headline: ({ event }) => event.headline,
+							currentStep: ({ context }) => context.currentStep + 1,
+							currentFieldIndex: ({ context }) => context.currentFieldIndex + 1
+						})
+					}
+				],
+				APPLY_FOR_JOB: {
+					target: 'completed'
 				},
 				PREVIOUS_STEP: {
 					target: 'activeStep',

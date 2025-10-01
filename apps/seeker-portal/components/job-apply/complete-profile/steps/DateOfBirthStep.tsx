@@ -14,6 +14,7 @@ mutation DateOfBirthStepMutation($dateOfBirth: Date) {
 	updateProfilePersonalDetails(dateOfBirth: $dateOfBirth) {
 		__typename
 		...on Account {
+			...CompleteProfileDrawerFragment
 			profile {
 				dateOfBirth
 			}

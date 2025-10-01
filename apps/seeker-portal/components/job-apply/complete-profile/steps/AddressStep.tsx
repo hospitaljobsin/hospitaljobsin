@@ -14,6 +14,7 @@ mutation AddressStepMutation($address: String) {
 	updateProfilePersonalDetails(address: $address) {
 		__typename
 		...on Account {
+			...CompleteProfileDrawerFragment
 			profile {
 				address
 			}
