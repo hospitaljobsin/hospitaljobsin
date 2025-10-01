@@ -1,6 +1,7 @@
 from collections.abc import Callable, Iterator
 from typing import Any
 
+import sentry_sdk
 from graphql.error import GraphQLError
 from graphql.execution.execute import ExecutionResult as GraphQLExecutionResult
 from strawberry.extensions.base_extension import SchemaExtension
@@ -43,6 +44,7 @@ class MaskErrors(SchemaExtension):
 
         for error in result.errors:
             if self.should_mask_error(error):
+                sentry_sdk.capture_exception(error)
                 processed_errors.append(self.anonymise_error(error))
             else:
                 processed_errors.append(error)
