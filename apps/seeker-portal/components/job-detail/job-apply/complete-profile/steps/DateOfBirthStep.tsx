@@ -40,7 +40,6 @@ interface DateOfBirthStepProps {
 export default function DateOfBirthStep({ account }: DateOfBirthStepProps) {
 	const data = useFragment(DateOfBirthStepFragment, account);
 	const { send } = CompleteProfileContext.useActorRef();
-	const isLastStep = CompleteProfileContext.useSelector(state => state.context.currentFieldIndex + 1 >= state.context.totalSteps);
 
 	const { control, handleSubmit, formState } = useForm<z.infer<typeof dateOfBirthSchema>>({
 		resolver: standardSchemaResolver(dateOfBirthSchema),
@@ -84,7 +83,7 @@ export default function DateOfBirthStep({ account }: DateOfBirthStepProps) {
 			/>
 
 			<Button type='submit' color='primary' fullWidth isLoading={formState.isSubmitting || isMutationInFlight}>
-				{isLastStep ? 'Apply' : 'Continue'}
+				Continue
 			</Button>
 		</form>
 	);

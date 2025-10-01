@@ -16,7 +16,8 @@ const context = {
 	missingFields: [] as string[],
 	currentFieldIndex: 0,
 	applicationFields: [] as ApplicationField[],
-	jobId: ''
+	jobId: '',
+	showReviewStep: false
 };
 
 export const completeProfileMachine = createMachine({
@@ -28,7 +29,9 @@ export const completeProfileMachine = createMachine({
 			| { type: 'STEP_COMPLETED' }
 			| { type: 'SUBMIT_APPLICATION_FIELD'; fieldIndex: number; fieldValue: string }
 			| { type: 'PREVIOUS_STEP' }
-			| { type: 'REFRESH_FIELDS'; missingFields: string[]; totalSteps: number };
+			| { type: 'REFRESH_FIELDS'; missingFields: string[]; totalSteps: number }
+			| { type: 'PROCEED_TO_REVIEW' }
+			| { type: 'APPLY_FOR_JOB' };
 	},
 	context: context,
 	states: {
@@ -42,7 +45,8 @@ export const completeProfileMachine = createMachine({
 						missingFields: ({ event }) => event.missingFields,
 						currentFieldIndex: () => 0,
 						applicationFields: ({ event }) => event.applicationFields,
-						jobId: ({ event }) => event.jobId
+						jobId: ({ event }) => event.jobId,
+						showReviewStep: () => true
 					})
 				}
 			}
@@ -51,8 +55,8 @@ export const completeProfileMachine = createMachine({
 			on: {
 				STEP_COMPLETED: [
 					{
-						target: 'completed',
-						guard: ({ context }) => context.currentFieldIndex + 1 >= context.totalSteps
+						target: 'reviewStep',
+						guard: ({ context }) => context.currentFieldIndex + 1 >= context.missingFields.length + context.applicationFields.length
 					},
 					{
 						target: 'activeStep',
@@ -73,13 +77,14 @@ export const completeProfileMachine = createMachine({
 				},
 				SUBMIT_APPLICATION_FIELD: [
 					{
-						target: 'completed',
-						guard: ({ context }) => context.currentFieldIndex + 1 >= context.totalSteps,
+						target: 'reviewStep',
+						guard: ({ context }) => context.currentFieldIndex + 1 >= context.missingFields.length + context.applicationFields.length,
 						actions: assign({
 							applicationFields: ({ context, event }) =>
 								context.applicationFields.map((field, idx) =>
 									idx === event.fieldIndex ? { ...field, fieldValue: event.fieldValue } : field
-								)
+								),
+							currentStep: ({ context }) => context.currentStep + 1
 						})
 					},
 					{
@@ -104,6 +109,20 @@ export const completeProfileMachine = createMachine({
 			}
 		},
 
+		reviewStep: {
+			on: {
+				APPLY_FOR_JOB: {
+					target: 'completed'
+				},
+				PREVIOUS_STEP: {
+					target: 'activeStep',
+					actions: assign({
+						currentStep: ({ context }) => context.currentStep - 1,
+						currentFieldIndex: ({ context }) => context.currentFieldIndex - 1
+					})
+				}
+			}
+		},
 		completed: {
 			type: 'final'
 		}

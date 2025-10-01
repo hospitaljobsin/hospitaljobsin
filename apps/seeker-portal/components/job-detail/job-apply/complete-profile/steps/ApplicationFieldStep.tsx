@@ -34,7 +34,6 @@ export default function ApplicationFieldStep({ job }: ApplicationFieldStepProps)
 	const currentFieldIndex = CompleteProfileContext.useSelector(state => state.context.currentFieldIndex);
 	const missingFieldsLength = CompleteProfileContext.useSelector(state => state.context.missingFields.length);
 	const applicationFields = CompleteProfileContext.useSelector(state => state.context.applicationFields);
-	const isLastStep = CompleteProfileContext.useSelector(state => state.context.currentFieldIndex + 1 >= state.context.totalSteps);
 
 	const applicationFieldIndex = currentFieldIndex - missingFieldsLength;
 	const currentField = applicationFields[applicationFieldIndex];
@@ -78,7 +77,7 @@ export default function ApplicationFieldStep({ job }: ApplicationFieldStepProps)
 					Previous
 				</Button>
 				<Button type='submit' color='primary' fullWidth isLoading={formState.isSubmitting}>
-					{isLastStep ? 'Apply' : 'Continue'}
+					Continue
 				</Button>
 			</div>
 		</form>

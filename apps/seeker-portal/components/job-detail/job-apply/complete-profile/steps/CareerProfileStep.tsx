@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Chip, Divider, Switch } from '@heroui/react';
+import { Button, Chip, Switch } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -49,7 +49,6 @@ interface CareerProfileStepProps {
 export default function CareerProfileStep({ account }: CareerProfileStepProps) {
 	const data = useFragment(CareerProfileStepFragment, account);
 	const { send } = CompleteProfileContext.useActorRef();
-	const isLastStep = CompleteProfileContext.useSelector(state => state.context.currentFieldIndex + 1 >= state.context.totalSteps);
 
 	const [inputValue, setInputValue] = useState('');
 
@@ -148,7 +147,7 @@ export default function CareerProfileStep({ account }: CareerProfileStepProps) {
 					Previous
 				</Button>
 				<Button type='submit' color='primary' fullWidth isLoading={formState.isSubmitting}>
-					{isLastStep ? 'Apply' : 'Continue'}
+					Continue
 				</Button>
 			</div>
 		</form>

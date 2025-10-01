@@ -43,7 +43,6 @@ interface AddressStepProps {
 export default function AddressStep({ account }: AddressStepProps) {
 	const data = useFragment(AddressStepFragment, account);
 	const { send } = CompleteProfileContext.useActorRef();
-	const isLastStep = CompleteProfileContext.useSelector(state => state.context.currentFieldIndex + 1 >= state.context.totalSteps);
 
 	const { control, handleSubmit, formState, setError } = useForm<z.infer<typeof addressSchema>>({
 		resolver: standardSchemaResolver(addressSchema),
@@ -74,8 +73,8 @@ export default function AddressStep({ account }: AddressStepProps) {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
 			<div className='space-y-2'>
-				<h3 className='text-lg font-semibold'>Address</h3>
-				<p className='text-sm text-foreground-600'>Please provide your current address for profile completion.</p>
+				<h3 className='text-lg font-medium'>Current Address</h3>
+				<p className='text-sm text-foreground-600'>We couldn't find this in your resume.</p>
 			</div>
 
 			<Controller
@@ -102,7 +101,7 @@ export default function AddressStep({ account }: AddressStepProps) {
 					Previous
 				</Button>
 				<Button type='submit' color='primary' fullWidth isLoading={formState.isSubmitting}>
-					{isLastStep ? 'Apply' : 'Continue'}
+					Continue
 				</Button>
 			</div>
 		</form>

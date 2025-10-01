@@ -38,7 +38,6 @@ interface HeadlineStepProps {
 export default function HeadlineStep({ account }: HeadlineStepProps) {
 	const data = useFragment(HeadlineStepFragment, account);
 	const { send } = CompleteProfileContext.useActorRef();
-	const isLastStep = CompleteProfileContext.useSelector(state => state.context.currentFieldIndex + 1 >= state.context.totalSteps);
 
 	const { register, handleSubmit, formState, watch } = useForm<z.infer<typeof headlineSchema>>({
 		resolver: standardSchemaResolver(headlineSchema),
@@ -89,7 +88,7 @@ export default function HeadlineStep({ account }: HeadlineStepProps) {
 					Previous
 				</Button>
 				<Button type='submit' color='primary' fullWidth isLoading={formState.isSubmitting}>
-					{isLastStep ? 'Apply' : 'Continue'}
+					Continue
 				</Button>
 			</div>
 		</form>

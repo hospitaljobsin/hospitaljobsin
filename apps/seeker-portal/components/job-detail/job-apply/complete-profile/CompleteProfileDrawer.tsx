@@ -14,6 +14,7 @@ import CareerProfileStep from './steps/CareerProfileStep';
 import DateOfBirthStep from './steps/DateOfBirthStep';
 import HeadlineStep from './steps/HeadlineStep';
 import ResumeUploadStep from './steps/ResumeUploadStep';
+import ReviewApplicationStep from './steps/ReviewApplicationStep';
 
 interface CompleteProfileDrawerProps {
 	isOpen: boolean;
@@ -75,7 +76,7 @@ function CompleteProfileWizard({
 	const { send } = CompleteProfileContext.useActorRef();
 	const currentStep = CompleteProfileContext.useSelector(state => state.context.currentStep);
 	const totalSteps = CompleteProfileContext.useSelector(state => state.context.totalSteps);
-	const { applyForJob } = useJobApplication();
+	const { applyForJob, isLoading } = useJobApplication();
 
 	const { missingFields, hasResume } = useMemo(() => {
 		const profile = accountData.profile;
@@ -134,6 +135,9 @@ function CompleteProfileWizard({
 
 	const currentField = CompleteProfileContext.useSelector(state => {
 		const { missingFields, currentFieldIndex, applicationFields } = state.context;
+		if (state.matches('reviewStep') || state.matches('completed')) {
+			return 'reviewApplication';
+		}
 		if (currentFieldIndex < missingFields.length) {
 			return missingFields[currentFieldIndex];
 		}
@@ -146,7 +150,7 @@ function CompleteProfileWizard({
 	const isResumeStep = currentField === 'resume';
 
 	const renderStep = () => {
-		if (!state.matches('activeStep')) return null;
+		if (!state.matches('activeStep') && !state.matches('reviewStep') && !state.matches('completed')) return null;
 
 		switch (currentField) {
 			case 'resume':
@@ -161,6 +165,8 @@ function CompleteProfileWizard({
 				return <HeadlineStep account={accountData} />;
 			case 'applicationField':
 				return <ApplicationFieldStep job={jobData} />;
+			case 'reviewApplication':
+				return <ReviewApplicationStep isLoading={isLoading} />;
 			default:
 				return null;
 		}
@@ -169,16 +175,15 @@ function CompleteProfileWizard({
 	return (
 		<>
 			<DrawerHeader className='flex flex-col gap-4'>
-				{isResumeStep ||
-					(currentField === 'applicationField' && (
-						<div className='flex items-center gap-3'>
-							<AlertCircle className='w-4 h-4 text-foreground-500' />
-							<h2 className='text-sm text-foreground-600 font-medium'>
-								{isResumeStep ? 'Complete Your Profile' : 'Fill in these questions asked by recruiters'}
-							</h2>
-						</div>
-					))}
-				{totalSteps > 0 && !isResumeStep && (
+				{(isResumeStep || currentField === 'applicationField') && (
+					<div className='flex items-center gap-3'>
+						<AlertCircle className='w-4 h-4 text-foreground-500' />
+						<h2 className='text-sm text-foreground-600 font-medium'>
+							{isResumeStep ? 'Complete Your Profile' : 'Fill in these questions asked by recruiters'}
+						</h2>
+					</div>
+				)}
+				{totalSteps > 0 && !isResumeStep && currentField !== 'reviewApplication' && !state.matches('completed') && (
 					<div className='space-y-2 mr-4'>
 						<div className='flex justify-between text-sm text-foreground-600'>
 							<span>
