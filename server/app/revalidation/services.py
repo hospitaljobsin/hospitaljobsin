@@ -11,7 +11,9 @@ class BaseRevalidationService:
 
 class RevalidationService(BaseRevalidationService):
     def __init__(
-        self, revalidate_settings: RevalidateSettings, env_settings: EnvironmentSettings
+        self,
+        revalidate_settings: RevalidateSettings,
+        env_settings: EnvironmentSettings,
     ) -> None:
         self._revalidate_settings = revalidate_settings
         self._env_settings = env_settings
