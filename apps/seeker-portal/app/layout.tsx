@@ -1,13 +1,13 @@
+import { GoogleTagManager } from '@next/third-parties/google';
+import type { Metadata } from 'next';
+import { Work_Sans } from 'next/font/google';
+import { headers } from 'next/headers';
 import CookieBanner from '@/components/CookieBanner';
 import Footer from '@/components/layout/Footer';
 import PostHogIdentifier from '@/components/PostHogIdentifier';
 import { ReactScan } from '@/components/ReactScanComponent';
 import { APP_DESCRIPTION, APP_TITLE } from '@/lib/constants';
 import { env } from '@/lib/env/client';
-import { GoogleTagManager } from '@next/third-parties/google';
-import type { Metadata } from 'next';
-import { Work_Sans } from 'next/font/google';
-import { headers } from 'next/headers';
 import './globals.css';
 import Providers from './providers';
 
@@ -25,6 +25,18 @@ export const metadata: Metadata = {
 	metadataBase: new URL(env.NEXT_PUBLIC_URL),
 	alternates: {
 		canonical: './'
+	},
+	robots: {
+		follow: true,
+		index: true,
+		nocache: false,
+		googleBot: {
+			follow: true,
+			index: true
+		}
+	},
+	other: {
+		bingbot: ['index, follow']
 	}
 };
 
