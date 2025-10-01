@@ -9,9 +9,7 @@ import CompleteProfileContext from './CompleteProfileContext';
 import AddressStep from './steps/AddressStep';
 import CareerProfileStep from './steps/CareerProfileStep';
 import DateOfBirthStep from './steps/DateOfBirthStep';
-import EducationStep from './steps/EducationStep';
 import HeadlineStep from './steps/HeadlineStep';
-import ProfessionalSummaryStep from './steps/ProfessionalSummaryStep';
 import ResumeUploadStep from './steps/ResumeUploadStep';
 
 interface CompleteProfileDrawerProps {
@@ -100,12 +98,8 @@ function CompleteProfileWizard({
 				return <DateOfBirthStep />;
 			case 'address':
 				return <AddressStep />;
-			case 'education':
-				return <EducationStep />;
 			case 'careerProfile':
 				return <CareerProfileStep />;
-			case 'professionalSummary':
-				return <ProfessionalSummaryStep />;
 			case 'headline':
 				return <HeadlineStep />;
 			default:
@@ -148,10 +142,8 @@ export default function CompleteProfileDrawer({ isOpen, onClose, account }: Comp
 	const missingFields: string[] = [];
 	if (!profile.dateOfBirth) missingFields.push('dateOfBirth');
 	if (!profile.address) missingFields.push('address');
-	if (!profile.education || profile.education.length === 0) missingFields.push('education');
 	if (!profile.careerProfile?.locationsOpenToWork?.length && !profile.careerProfile?.openToRelocationAnywhere)
 		missingFields.push('careerProfile');
-	if (!profile.professionalSummary) missingFields.push('professionalSummary');
 	if (!profile.headline) missingFields.push('headline');
 
 	return (

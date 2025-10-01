@@ -3,8 +3,22 @@
 import { Button, Input } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useForm } from 'react-hook-form';
+import { graphql, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
+import type { HeadlineStepMutation as HeadlineStepMutationType } from '@/__generated__/HeadlineStepMutation.graphql';
 import CompleteProfileContext from '../CompleteProfileContext';
+
+const HeadlineStepMutation = graphql`
+mutation HeadlineStepMutation($headline: String!) {
+	updateProfileAboutMe(headline: $headline, professionalSummary: "") {
+		... on Account {
+			profile {
+				headline
+			}
+		}
+	}
+}
+`;
 
 const headlineSchema = z.object({
 	headline: z.string().min(10, 'Headline should be at least 10 characters').max(100, 'Headline should not exceed 100 characters')
@@ -21,13 +35,19 @@ export default function HeadlineStep() {
 
 	const watchedHeadline = watch('headline');
 
-	const onSubmit = async (data: z.infer<typeof headlineSchema>) => {
-		// Mock mutation call
-		console.log('Saving headline:', data.headline);
+	const [commitMutation] = useMutation<HeadlineStepMutationType>(HeadlineStepMutation);
 
-		send({
-			type: 'SUBMIT_HEADLINE',
-			headline: data.headline
+	const onSubmit = (data: z.infer<typeof headlineSchema>) => {
+		commitMutation({
+			variables: {
+				headline: data.headline
+			},
+			onCompleted() {
+				send({
+					type: 'SUBMIT_HEADLINE',
+					headline: data.headline
+				});
+			}
 		});
 	};
 

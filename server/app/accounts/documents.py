@@ -158,7 +158,6 @@ class Profile(BaseProfile, Document):
             [
                 self.date_of_birth,
                 self.address,
-                self.education,
                 (
                     self.career_profile
                     and (
@@ -166,8 +165,8 @@ class Profile(BaseProfile, Document):
                         or self.career_profile.open_to_relocation_anywhere
                     )
                 ),
-                self.professional_summary,
                 self.headline,
+                self.resume_url,
             ]
         )
 

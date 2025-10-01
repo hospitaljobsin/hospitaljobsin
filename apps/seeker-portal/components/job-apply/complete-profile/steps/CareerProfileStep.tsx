@@ -1,32 +1,43 @@
 'use client';
 
-import { Button, Checkbox, Input } from '@heroui/react';
+import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
+import { Button, Chip, Divider, Switch } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { Plus, X } from 'lucide-react';
 import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
+import { graphql, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
+import type { CareerProfileStepMutation as CareerProfileStepMutationType } from '@/__generated__/CareerProfileStepMutation.graphql';
 import CompleteProfileContext from '../CompleteProfileContext';
 
-const careerProfileSchema = z
-	.object({
-		locationsOpenToWork: z.array(z.string()).optional(),
-		openToRelocationAnywhere: z.boolean()
-	})
-	.refine(data => data.openToRelocationAnywhere || (data.locationsOpenToWork && data.locationsOpenToWork.length > 0), {
-		message: 'Please either select specific locations or indicate you are open to relocation anywhere',
-		path: ['root']
-	});
+const CareerProfileStepMutation = graphql`
+mutation CareerProfileStepMutation($locationsOpenToWork: [String!]!, $openToRelocationAnywhere: Boolean!) {
+	updateProfileCareerProfile(locationsOpenToWork: $locationsOpenToWork, openToRelocationAnywhere: $openToRelocationAnywhere, desiredJobTypes: [], desiredWorkModes: []) {
+		...on Account {
+			profile {
+				careerProfile {
+					locationsOpenToWork
+					openToRelocationAnywhere
+				}
+			}
+		}
+	}
+}
+`;
+
+const careerProfileSchema = z.object({
+	openToRelocationAnywhere: z.boolean(),
+	locationsOpenToWork: z.array(z.string())
+});
 
 export default function CareerProfileStep() {
 	const { send } = CompleteProfileContext.useActorRef();
 	const locationsOpenToWork = CompleteProfileContext.useSelector(state => state.context.locationsOpenToWork);
 	const openToRelocationAnywhere = CompleteProfileContext.useSelector(state => state.context.openToRelocationAnywhere);
 
-	const [newLocation, setNewLocation] = useState('');
-	const [locations, setLocations] = useState<string[]>(locationsOpenToWork || []);
+	const [inputValue, setInputValue] = useState('');
 
-	const { control, handleSubmit, formState, watch, setValue } = useForm<z.infer<typeof careerProfileSchema>>({
+	const { control, handleSubmit, formState, setValue } = useForm<z.infer<typeof careerProfileSchema>>({
 		resolver: standardSchemaResolver(careerProfileSchema),
 		defaultValues: {
 			locationsOpenToWork: locationsOpenToWork || [],
@@ -34,16 +45,23 @@ export default function CareerProfileStep() {
 		}
 	});
 
-	const watchOpenToRelocationAnywhere = watch('openToRelocationAnywhere');
+	const locations = useWatch({ control, name: 'locationsOpenToWork' }) || [];
 
-	const onSubmit = async (data: z.infer<typeof careerProfileSchema>) => {
-		// Mock mutation call
-		console.log('Saving career profile:', data);
+	const [commitMutation] = useMutation<CareerProfileStepMutationType>(CareerProfileStepMutation);
 
-		send({
-			type: 'SUBMIT_CAREER_PROFILE',
-			locationsOpenToWork: data.locationsOpenToWork || [],
-			openToRelocationAnywhere: data.openToRelocationAnywhere
+	const onSubmit = (data: z.infer<typeof careerProfileSchema>) => {
+		commitMutation({
+			variables: {
+				locationsOpenToWork: data.locationsOpenToWork || [],
+				openToRelocationAnywhere: data.openToRelocationAnywhere
+			},
+			onCompleted() {
+				send({
+					type: 'SUBMIT_CAREER_PROFILE',
+					locationsOpenToWork: data.locationsOpenToWork || [],
+					openToRelocationAnywhere: data.openToRelocationAnywhere
+				});
+			}
 		});
 	};
 
@@ -51,20 +69,9 @@ export default function CareerProfileStep() {
 		send({ type: 'PREVIOUS_STEP' });
 	};
 
-	const addLocation = () => {
-		if (newLocation.trim() && !locations.includes(newLocation.trim())) {
-			const updatedLocations = [...locations, newLocation.trim()];
-			setLocations(updatedLocations);
-			setValue('locationsOpenToWork', updatedLocations);
-			setNewLocation('');
-		}
-	};
-
-	const removeLocation = (locationToRemove: string) => {
-		const updatedLocations = locations.filter(loc => loc !== locationToRemove);
-		setLocations(updatedLocations);
-		setValue('locationsOpenToWork', updatedLocations);
-	};
+	function handleRemoveLocation(loc: string) {
+		setValue('locationsOpenToWork', locations.filter((l: string) => l !== loc) as string[], { shouldDirty: true, shouldValidate: true });
+	}
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
@@ -73,52 +80,55 @@ export default function CareerProfileStep() {
 				<p className='text-sm text-foreground-600'>Let employers know where you're willing to work.</p>
 			</div>
 
-			<Controller
-				name='openToRelocationAnywhere'
-				control={control}
-				render={({ field }) => (
-					<Checkbox isSelected={field.value} onValueChange={field.onChange}>
-						I am open to relocation anywhere
-					</Checkbox>
+			<Divider />
+			<div className='flex flex-col gap-6'>
+				<div className='flex items-center gap-4 mb-4'>
+					<Controller
+						name='openToRelocationAnywhere'
+						control={control}
+						render={({ field }) => <Switch isSelected={field.value} onValueChange={field.onChange} />}
+					/>
+					<span>Open to relocation anywhere</span>
+				</div>
+				{formState.errors.locationsOpenToWork && (
+					<div className='text-red-500 text-sm mb-2'>{formState.errors.locationsOpenToWork.message}</div>
 				)}
-			/>
+				<div className='flex flex-col w-full gap-2'>
+					<div className='block'>Preferred work locations</div>
 
-			{!watchOpenToRelocationAnywhere && (
-				<div className='space-y-4'>
-					<div className='space-y-2'>
-						<label className='text-sm font-medium'>Specific Locations</label>
-						<div className='flex gap-2'>
-							<Input
-								value={newLocation}
-								onChange={e => setNewLocation(e.target.value)}
-								placeholder='Enter a city or state'
-								onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), addLocation())}
-							/>
-							<Button type='button' color='primary' variant='flat' isIconOnly onPress={addLocation} isDisabled={!newLocation.trim()}>
-								<Plus size={16} />
-							</Button>
-						</div>
-					</div>
-
-					{locations.length > 0 && (
-						<div className='space-y-2'>
-							<p className='text-sm text-foreground-600'>Selected locations:</p>
-							<div className='flex flex-wrap gap-2'>
-								{locations.map(location => (
-									<div key={location} className='flex items-center gap-1 px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-sm'>
-										{location}
-										<button type='button' onClick={() => removeLocation(location)} className='ml-1 hover:text-primary-900'>
-											<X size={14} />
-										</button>
-									</div>
-								))}
-							</div>
+					<LocationAutocomplete
+						value={inputValue}
+						onValueChange={setInputValue}
+						onChange={location => {
+							if (location.address.displayName && !locations.includes(location.address.displayName)) {
+								setValue('locationsOpenToWork', [...locations, location.address.displayName] as string[], {
+									shouldValidate: true,
+									shouldDirty: true
+								});
+								setInputValue('');
+							}
+						}}
+						onClear={() => setInputValue('')}
+						placeholder='Add a location'
+						variant='bordered'
+						inputProps={{
+							classNames: {
+								inputWrapper: 'bg-background'
+							},
+							variant: 'bordered'
+						}}
+					/>
+					{locations && (
+						<div className='flex flex-wrap gap-2 mt-4'>
+							{locations?.map((loc: string) => (
+								<Chip key={loc} isCloseable size='md' onClose={() => handleRemoveLocation(loc)}>
+									{loc}
+								</Chip>
+							))}
 						</div>
 					)}
 				</div>
-			)}
-
-			{formState.errors.root && <p className='text-danger text-sm'>{formState.errors.root.message}</p>}
+			</div>
 
 			<div className='flex gap-3'>
 				<Button type='button' variant='flat' fullWidth onPress={handlePrevious}>

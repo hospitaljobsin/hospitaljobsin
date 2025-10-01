@@ -19,13 +19,17 @@ from app.accounts.repositories import AccountRepo
 from app.accounts.services import AccountService, ProfileParserService, ProfileService
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
 from app.base.exceptions import InvalidLocationError
-from app.base.types import CreatePresignedURLPayloadType, InvalidLocationErrorType
+from app.base.types import (
+    CreatePresignedURLPayloadType,
+    InvalidLocationErrorType,
+    JobTypeEnum,
+    WorkModeEnum,
+)
 from app.context import AuthInfo, Info
 
 from .types import (
     AccountType,
     AnalyticsPreferenceInputTypeEnum,
-    CareerProfileInputType,
     CertificationInputType,
     EducationInputType,
     GenderTypeEnum,
@@ -623,17 +627,52 @@ class AccountMutation:
         self,
         info: AuthInfo,
         profile_service: Annotated[ProfileService, Inject],
-        career_profile: Annotated[
-            CareerProfileInputType,
+        current_industry: Annotated[
+            str | None,
+            strawberry.argument(description="The current industry of the user."),
+        ] = strawberry.UNSET,
+        desired_job_types: Annotated[
+            list[JobTypeEnum],
             strawberry.argument(
-                description="The career profile of the user.",
+                description="The desired job types.",
             ),
-        ],
+        ] = strawberry.UNSET,
+        desired_work_modes: Annotated[
+            list[WorkModeEnum],
+            strawberry.argument(
+                description="The desired work modes.",
+            ),
+        ] = strawberry.UNSET,
+        expected_salary: Annotated[
+            float | None,
+            strawberry.argument(description="The expected salary."),
+        ] = strawberry.UNSET,
+        locations_open_to_work: Annotated[
+            list[str],
+            strawberry.argument(
+                description="Locations the user is open to work in.",
+            ),
+        ] = strawberry.UNSET,
+        open_to_relocation_anywhere: Annotated[
+            bool,
+            strawberry.argument(
+                description="Whether the user is open to relocation anywhere.",
+            ),
+        ] = strawberry.UNSET,
     ) -> UpdateProfilePayload:
         """Update the current user's profile career profile."""
         match await profile_service.update_career_profile(
             account=info.context["current_user"],
-            career_profile=career_profile.to_document(),
+            current_industry=current_industry,
+            desired_job_types=[job_type.value for job_type in desired_job_types]
+            if desired_job_types is not strawberry.UNSET
+            else strawberry.UNSET,
+            desired_work_modes=[work_mode.value for work_mode in desired_work_modes]
+            if desired_work_modes is not strawberry.UNSET
+            else strawberry.UNSET,
+            expected_salary=expected_salary,
+            locations_open_to_work=locations_open_to_work,
+            open_to_relocation_anywhere=open_to_relocation_anywhere,
         ):
             case Ok(account):
                 return AccountType.marshal(account)

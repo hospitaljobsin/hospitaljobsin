@@ -1,17 +1,18 @@
-import type { UpdateCareerProfileFormFragment$key } from '@/__generated__/UpdateCareerProfileFormFragment.graphql';
 import { Checkbox, CheckboxGroup, Chip, Divider, Input, Switch } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
+import type { UpdateCareerProfileFormFragment$key } from '@/__generated__/UpdateCareerProfileFormFragment.graphql';
+import type { UpdateCareerProfileFormMutation as UpdateCareerProfileFormMutationType } from '@/__generated__/UpdateCareerProfileFormMutation.graphql';
 import LocationAutocomplete from '../../forms/LocationAutocomplete';
 import { SteppableNumberInput } from '../../forms/SteppableNumberInput';
 import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 
 const UpdateCareerProfileFormMutation = graphql`
-mutation UpdateCareerProfileFormMutation($careerProfile: CareerProfileInput!) {
-  updateProfileCareerProfile(careerProfile: $careerProfile) {
+mutation UpdateCareerProfileFormMutation($currentIndustry: String, $desiredJobTypes: [JobType!]!, $desiredWorkModes: [WorkMode!]!, $expectedSalary: Float, $locationsOpenToWork: [String!]!, $openToRelocationAnywhere: Boolean!) {
+  updateProfileCareerProfile(currentIndustry: $currentIndustry, desiredJobTypes: $desiredJobTypes, desiredWorkModes: $desiredWorkModes, expectedSalary: $expectedSalary, locationsOpenToWork: $locationsOpenToWork, openToRelocationAnywhere: $openToRelocationAnywhere) {
     ...on Account {
         ...ResumeProgressAccountFragment
       profile {
@@ -52,7 +53,7 @@ const formSchema = z.object({
 });
 
 export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Props) {
-	const [commitMutation, isMutationInFlight] = useMutation(UpdateCareerProfileFormMutation);
+	const [commitMutation, isMutationInFlight] = useMutation<UpdateCareerProfileFormMutationType>(UpdateCareerProfileFormMutation);
 	const data = useFragment(UpdateCareerProfileFormFragment, rootQuery);
 	const [inputValue, setInputValue] = useState('');
 
@@ -81,14 +82,12 @@ export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Pr
 	function onSubmit(formData: z.infer<typeof formSchema>) {
 		commitMutation({
 			variables: {
-				careerProfile: {
-					currentIndustry: formData.currentIndustry,
-					desiredJobTypes: formData.desiredJobTypes,
-					desiredWorkModes: formData.desiredWorkModes,
-					expectedSalary: formData.expectedSalary,
-					locationsOpenToWork: formData.locationsOpenToWork || [],
-					openToRelocationAnywhere: formData.openToRelocationAnywhere
-				}
+				currentIndustry: formData.currentIndustry,
+				desiredJobTypes: formData.desiredJobTypes,
+				desiredWorkModes: formData.desiredWorkModes,
+				expectedSalary: formData.expectedSalary,
+				locationsOpenToWork: formData.locationsOpenToWork || [],
+				openToRelocationAnywhere: formData.openToRelocationAnywhere
 			},
 			onCompleted() {
 				reset(formData);

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<25b2713bdd90dbce77ac7f9975c54cab>>
- * @relayHash 11070a5c4e2c24c8add748da2e81e0e8
+ * @generated SignedSource<<424753174cb56c5126bb69e0c8125ef5>>
+ * @relayHash e94e89dbf8bc0e02dc2818c3fbbd8494
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,22 +9,19 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 11070a5c4e2c24c8add748da2e81e0e8
+// @relayRequestID e94e89dbf8bc0e02dc2818c3fbbd8494
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
-export type CareerProfileInput = {
-  currentIndustry?: string | null | undefined;
-  desiredJobTypes?: ReadonlyArray<JobType>;
-  desiredWorkModes?: ReadonlyArray<WorkMode>;
-  expectedSalary?: number | null | undefined;
-  locationsOpenToWork?: ReadonlyArray<string>;
-  openToRelocationAnywhere?: boolean;
-};
 export type UpdateCareerProfileFormMutation$variables = {
-  careerProfile: CareerProfileInput;
+  currentIndustry?: string | null | undefined;
+  desiredJobTypes: ReadonlyArray<JobType>;
+  desiredWorkModes: ReadonlyArray<WorkMode>;
+  expectedSalary?: number | null | undefined;
+  locationsOpenToWork: ReadonlyArray<string>;
+  openToRelocationAnywhere: boolean;
 };
 export type UpdateCareerProfileFormMutation$data = {
   readonly updateProfileCareerProfile: {
@@ -44,14 +41,64 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "careerProfile"
+    "name": "currentIndustry"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "desiredJobTypes"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "desiredWorkModes"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "expectedSalary"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "locationsOpenToWork"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "openToRelocationAnywhere"
   }
 ],
 v1 = [
   {
     "kind": "Variable",
-    "name": "careerProfile",
-    "variableName": "careerProfile"
+    "name": "currentIndustry",
+    "variableName": "currentIndustry"
+  },
+  {
+    "kind": "Variable",
+    "name": "desiredJobTypes",
+    "variableName": "desiredJobTypes"
+  },
+  {
+    "kind": "Variable",
+    "name": "desiredWorkModes",
+    "variableName": "desiredWorkModes"
+  },
+  {
+    "kind": "Variable",
+    "name": "expectedSalary",
+    "variableName": "expectedSalary"
+  },
+  {
+    "kind": "Variable",
+    "name": "locationsOpenToWork",
+    "variableName": "locationsOpenToWork"
+  },
+  {
+    "kind": "Variable",
+    "name": "openToRelocationAnywhere",
+    "variableName": "openToRelocationAnywhere"
   }
 ],
 v2 = {
@@ -262,7 +309,7 @@ return {
     ]
   },
   "params": {
-    "id": "11070a5c4e2c24c8add748da2e81e0e8",
+    "id": "e94e89dbf8bc0e02dc2818c3fbbd8494",
     "metadata": {},
     "name": "UpdateCareerProfileFormMutation",
     "operationKind": "mutation",
@@ -271,6 +318,6 @@ return {
 };
 })();
 
-(node as any).hash = "a353d6a5e127fcf0036da856691d5d6e";
+(node as any).hash = "1f1f1319ff4c1a61cc13ed1e8c78b0c0";
 
 export default node;

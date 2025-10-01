@@ -16,6 +16,8 @@ from app.core.constants import (
     PHONE_NUMBER_VERIFICATION_EXPIRES_IN,
     TERMS_AND_POLICY_LATEST_VERSION,
     AuthProvider,
+    JobKindType,
+    WorkModeType,
 )
 from app.geocoding.repositories import RegionRepo
 
@@ -405,6 +407,33 @@ class ProfileRepo:
             profile.resume_url = resume_url
         profile.updated_at = datetime.now(UTC)
         return await profile.save(link_rule=WriteRules.WRITE)
+
+    async def update_career_profile(
+        self,
+        profile: Profile,
+        current_industry: str | None = UNSET,
+        desired_job_types: list[JobKindType] = UNSET,
+        desired_work_modes: list[WorkModeType] = UNSET,
+        expected_salary: float | None = UNSET,
+        locations_open_to_work: list[str] = UNSET,
+        open_to_relocation_anywhere: bool = UNSET,
+    ) -> Profile:
+        career_profile = profile.career_profile or CareerProfile()
+
+        if current_industry is not UNSET:
+            career_profile.current_industry = current_industry
+        if desired_job_types is not UNSET:
+            career_profile.desired_job_types = desired_job_types
+        if desired_work_modes is not UNSET:
+            career_profile.desired_work_modes = desired_work_modes
+        if expected_salary is not UNSET:
+            career_profile.expected_salary = expected_salary
+        if locations_open_to_work is not UNSET:
+            career_profile.locations_open_to_work = locations_open_to_work
+        if open_to_relocation_anywhere is not UNSET:
+            career_profile.open_to_relocation_anywhere = open_to_relocation_anywhere
+
+        return await self.update(profile, career_profile=career_profile)
 
     async def get(self, profile_id: str) -> Profile | None:
         """Get profile by ID."""

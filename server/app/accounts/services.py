@@ -13,7 +13,6 @@ from app.accounts.agents.profile_parser import ProfileParserAgent
 from app.accounts.documents import (
     Account,
     AnalyticsPreference,
-    CareerProfile,
     Education,
     Language,
     License,
@@ -37,7 +36,11 @@ from app.accounts.repositories import (
 )
 from app.base.exceptions import InvalidLocationError
 from app.config import AuthSettings, AWSSettings
-from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
+from app.core.constants import (
+    TERMS_AND_POLICY_LATEST_VERSION,
+    JobKindType,
+    WorkModeType,
+)
 from app.core.messages import BaseMessageSender
 from app.core.ocr import BaseOCRClient
 from app.geocoding.repositories import RegionRepo
@@ -560,7 +563,7 @@ class ProfileService:
     async def update_licenses(
         self,
         account: Account,
-        licenses: list,
+        licenses: list[License],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
@@ -600,7 +603,12 @@ class ProfileService:
     async def update_career_profile(
         self,
         account: Account,
-        career_profile: CareerProfile,
+        current_industry: str | None = UNSET,
+        desired_job_types: list[JobKindType] = UNSET,
+        desired_work_modes: list[WorkModeType] = UNSET,
+        expected_salary: float | None = UNSET,
+        locations_open_to_work: list[str] = UNSET,
+        open_to_relocation_anywhere: bool = UNSET,
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
@@ -609,9 +617,14 @@ class ProfileService:
                 account=account, profile=existing_profile
             )
 
-        await self._profile_repo.update(
+        await self._profile_repo.update_career_profile(
             profile=existing_profile,
-            career_profile=career_profile,
+            current_industry=current_industry,
+            desired_job_types=desired_job_types,
+            desired_work_modes=desired_work_modes,
+            expected_salary=expected_salary,
+            locations_open_to_work=locations_open_to_work,
+            open_to_relocation_anywhere=open_to_relocation_anywhere,
         )
 
         return Ok(account)
