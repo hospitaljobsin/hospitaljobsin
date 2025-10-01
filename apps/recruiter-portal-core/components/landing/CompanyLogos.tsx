@@ -44,7 +44,15 @@ export default function CompanyLogos() {
 					<motion.div className='flex gap-8 items-center' animate={controls} style={{ width: '200%' }}>
 						{[...companies, ...companies].map((company, index) => (
 							<div key={`${company.name}-${index}`} className='flex items-center justify-center min-w-[200px] h-16'>
-								<Image src={company.logo} alt={company.name} width={100} height={50} className='object-contain' title={company.name} />
+								<Image
+									src={company.logo}
+									alt={company.name}
+									width={100}
+									height={50}
+									className='object-contain'
+									loading='eager'
+									title={company.name}
+								/>
 							</div>
 						))}
 					</motion.div>
