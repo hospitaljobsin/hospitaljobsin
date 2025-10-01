@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<29ed440c7bc1d1fd796d5ea444c9992b>>
- * @relayHash 45850f0965a6630581cff5631c6fa302
+ * @generated SignedSource<<0c8aa542b04779624482a24df3d26298>>
+ * @relayHash db17c8b874b26a996bc3fb3b18c95443
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 45850f0965a6630581cff5631c6fa302
+// @relayRequestID db17c8b874b26a996bc3fb3b18c95443
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -17,7 +17,7 @@ export type LicenseInput = {
   issuer: string;
   licenseNumber: string;
   name: string;
-  registrationYear: any;
+  registrationYear: number;
 };
 export type UpdateLicensesFormMutation$variables = {
   licenses: ReadonlyArray<LicenseInput>;
@@ -27,7 +27,7 @@ export type UpdateLicensesFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateLicensesFormFragment">;
     } | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"ResumeProgressAccountFragment">;
   };
 };
 export type UpdateLicensesFormMutation = {
@@ -85,7 +85,7 @@ return {
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "IncompleteProfileBannerFragment"
+                "name": "ResumeProgressAccountFragment"
               },
               {
                 "alias": null,
@@ -132,7 +132,34 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v3/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "email",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
+                "storageKey": null
+              },
               {
                 "alias": null,
                 "args": null,
@@ -145,7 +172,14 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "isComplete",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
                     "storageKey": null
                   },
                   (v3/*: any*/),
@@ -210,7 +244,7 @@ return {
     ]
   },
   "params": {
-    "id": "45850f0965a6630581cff5631c6fa302",
+    "id": "db17c8b874b26a996bc3fb3b18c95443",
     "metadata": {},
     "name": "UpdateLicensesFormMutation",
     "operationKind": "mutation",
@@ -219,6 +253,6 @@ return {
 };
 })();
 
-(node as any).hash = "476d817ebfb3d0fcd92c5f7409ca5497";
+(node as any).hash = "aba1f36db883b8b9c1b920e93ba78a1a";
 
 export default node;

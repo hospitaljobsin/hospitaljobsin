@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<29b41ca3fcea360614ff94f5244a7bee>>
- * @relayHash b489a62da97b89ecc58d59dfe963c377
+ * @generated SignedSource<<5ae4c4f1231ba9f428f37a1144cd4ed5>>
+ * @relayHash 76889375576ec1d469c27ee2047b2dd8
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b489a62da97b89ecc58d59dfe963c377
+// @relayRequestID 76889375576ec1d469c27ee2047b2dd8
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -84,7 +84,6 @@ return {
                 "name": "avatarUrl",
                 "storageKey": null
               },
-              (v0/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -97,7 +96,7 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "isComplete",
+                    "name": "progressPercentage",
                     "storageKey": null
                   },
                   (v0/*: any*/)
@@ -122,7 +121,7 @@ return {
     ]
   },
   "params": {
-    "id": "b489a62da97b89ecc58d59dfe963c377",
+    "id": "76889375576ec1d469c27ee2047b2dd8",
     "metadata": {},
     "name": "notFoundJobDetailQuery",
     "operationKind": "query",

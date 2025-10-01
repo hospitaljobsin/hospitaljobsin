@@ -34,10 +34,16 @@ from app.accounts.repositories import (
     PhoneNumberVerificationTokenRepo,
     ProfileRepo,
 )
+from app.base.exceptions import InvalidLocationError
 from app.config import AuthSettings, AWSSettings
-from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
+from app.core.constants import (
+    TERMS_AND_POLICY_LATEST_VERSION,
+    JobKindType,
+    WorkModeType,
+)
 from app.core.messages import BaseMessageSender
 from app.core.ocr import BaseOCRClient
+from app.geocoding.repositories import RegionRepo
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
 
@@ -308,14 +314,143 @@ class AccountService:
         return Ok(account)
 
 
+class ProfileParserService:
+    def __init__(
+        self,
+        profile_parser_agent: ProfileParserAgent,
+        ocr_client: BaseOCRClient,
+        profile_repo: ProfileRepo,
+        s3_client: S3Client,
+        aws_settings: AWSSettings,
+        account_repo: AccountRepo,
+    ) -> None:
+        self._profile_parser_agent = profile_parser_agent
+        self._ocr_client = ocr_client
+        self._profile_repo = profile_repo
+        self._s3_client = s3_client
+        self._aws_settings = aws_settings
+        self._account_repo = account_repo
+
+    async def generate_presigned_url(self, content_type: str) -> Ok[tuple[str, str]]:
+        """Generate a presigned URL for a document."""
+        file_key = f"autofill-profiles/{uuid.uuid4()}"
+        presigned_url = await self._s3_client.generate_presigned_url(
+            "put_object",
+            Params={
+                "Bucket": self._aws_settings.s3_bucket_name,
+                "Key": file_key,
+                "ContentType": content_type,
+            },
+            ExpiresIn=3600,
+            HttpMethod="PUT",
+        )
+        return Ok((presigned_url, file_key))
+
+    async def parse_profile_document(
+        self,
+        *,
+        file_key: str,
+        resume_url: str,
+        account: Account,
+        overwrite: bool,
+    ) -> Ok[Profile]:
+        """Parse a profile document into structured data."""
+        ocr_texts = await self._ocr_client(file_key)
+
+        result = await self._profile_parser_agent.run(
+            f"OCR text:\n{'\n'.join(ocr_texts)}"
+        )
+
+        profile_output = result.output
+        profile = await self._profile_repo.get_by_account(account)
+        if profile is None:
+            profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(account=account, profile=profile)
+
+        if overwrite:
+            profile = await self._profile_repo.update(
+                resume_url=resume_url,
+                profile=profile,
+                address=profile_output.address,
+                date_of_birth=profile_output.date_of_birth,
+                gender=profile_output.gender,
+                marital_status=profile_output.marital_status,
+                category=profile_output.category,
+                education=profile_output.education,
+                licenses=[
+                    License(
+                        **partial_license.model_dump(), verification_status="pending"
+                    )
+                    for partial_license in profile_output.licenses
+                ],
+                languages=profile_output.languages,
+                job_preferences=profile_output.job_preferences,
+                work_experience=profile_output.work_experience,
+                career_profile=profile_output.career_profile,
+                certifications=profile_output.certifications,
+                professional_summary=profile_output.professional_summary,
+                headline=profile_output.headline,
+            )
+        else:
+            # add the non null fields to the profile
+            profile = await self._profile_repo.update(
+                resume_url=resume_url,
+                profile=profile,
+                address=profile_output.address if profile_output.address else UNSET,
+                date_of_birth=profile_output.date_of_birth
+                if profile_output.date_of_birth
+                else UNSET,
+                gender=profile_output.gender if profile_output.gender else UNSET,
+                marital_status=profile_output.marital_status
+                if profile_output.marital_status
+                else UNSET,
+                category=profile_output.category if profile_output.category else UNSET,
+                education=profile_output.education
+                if profile_output.education
+                else UNSET,
+                licenses=[
+                    License(
+                        **partial_license.model_dump(), verification_status="pending"
+                    )
+                    for partial_license in profile_output.licenses
+                ]
+                if profile_output.licenses
+                else UNSET,
+                languages=profile_output.languages
+                if profile_output.languages
+                else UNSET,
+                job_preferences=profile_output.job_preferences
+                if profile_output.job_preferences
+                else UNSET,
+                work_experience=profile_output.work_experience
+                if profile_output.work_experience
+                else UNSET,
+                career_profile=profile_output.career_profile
+                if profile_output.career_profile
+                else UNSET,
+                certifications=profile_output.certifications
+                if profile_output.certifications
+                else UNSET,
+                professional_summary=profile_output.professional_summary
+                if profile_output.professional_summary
+                else UNSET,
+                headline=profile_output.headline if profile_output.headline else UNSET,
+            )
+        return Ok(profile)
+
+
 class ProfileService:
     def __init__(
         self,
         profile_repo: ProfileRepo,
         account_repo: AccountRepo,
+        region_repo: RegionRepo,
+        profile_parser_service: ProfileParserService,
     ) -> None:
         self._profile_repo = profile_repo
         self._account_repo = account_repo
+        self._region_repo = region_repo
+        self._profile_parser_service = profile_parser_service
 
     async def update_personal_details(
         self,
@@ -324,7 +459,8 @@ class ProfileService:
         date_of_birth: date | None,
         marital_status: str | None,
         category: str | None,
-    ) -> Ok[Account]:
+        address: str | None,
+    ) -> Result[Account, InvalidLocationError]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
             existing_profile = await self._profile_repo.create(account)
@@ -332,12 +468,18 @@ class ProfileService:
                 account=account, profile=existing_profile
             )
 
+        if address:
+            location = await self._region_repo.get_by_name(name=address)
+            if location is None:
+                return Err(InvalidLocationError())
+
         await self._profile_repo.update(
             profile=existing_profile,
             gender=gender,
             date_of_birth=date_of_birth,
             marital_status=marital_status,
             category=category,
+            address=address,
         )
 
         return Ok(account)
@@ -359,30 +501,6 @@ class ProfileService:
             languages=languages,
         )
 
-        return Ok(account)
-
-    async def update_location_preferences(
-        self,
-        *,
-        account: Account,
-        locations_open_to_work: list[str],
-        open_to_relocation_anywhere: bool,
-        address: str | None,
-    ) -> Ok[Account]:
-        """Update the user's location preferences, including address."""
-        existing_profile = await self._profile_repo.get_by_account(account)
-        if existing_profile is None:
-            existing_profile = await self._profile_repo.create(account)
-            await self._account_repo.update_profile(
-                account=account, profile=existing_profile
-            )
-
-        await self._profile_repo.update(
-            profile=existing_profile,
-            locations_open_to_work=locations_open_to_work,
-            open_to_relocation_anywhere=open_to_relocation_anywhere,
-            address=address,
-        )
         return Ok(account)
 
     async def update_education(
@@ -445,7 +563,7 @@ class ProfileService:
     async def update_licenses(
         self,
         account: Account,
-        licenses: list,
+        licenses: list[License],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
@@ -482,135 +600,59 @@ class ProfileService:
 
         return Ok(account)
 
-
-class ProfileParserService:
-    def __init__(
+    async def update_career_profile(
         self,
-        profile_parser_agent: ProfileParserAgent,
-        ocr_client: BaseOCRClient,
-        profile_repo: ProfileRepo,
-        s3_client: S3Client,
-        aws_settings: AWSSettings,
-        account_repo: AccountRepo,
-    ) -> None:
-        self._profile_parser_agent = profile_parser_agent
-        self._ocr_client = ocr_client
-        self._profile_repo = profile_repo
-        self._s3_client = s3_client
-        self._aws_settings = aws_settings
-        self._account_repo = account_repo
-
-    async def generate_presigned_url(self, content_type: str) -> Ok[tuple[str, str]]:
-        """Generate a presigned URL for a document."""
-        file_key = f"autofill-profiles/{uuid.uuid4()}"
-        presigned_url = await self._s3_client.generate_presigned_url(
-            "put_object",
-            Params={
-                "Bucket": self._aws_settings.s3_bucket_name,
-                "Key": file_key,
-                "ContentType": content_type,
-            },
-            ExpiresIn=3600,
-            HttpMethod="PUT",
-        )
-        return Ok((presigned_url, file_key))
-
-    async def parse_profile_document(
-        self,
-        *,
-        file_key: str,
         account: Account,
-        overwrite: bool,
-    ) -> Ok[Profile]:
-        """Parse a profile document into structured data."""
-        ocr_texts = await self._ocr_client(file_key)
+        current_industry: str | None = UNSET,
+        desired_job_types: list[JobKindType] = UNSET,
+        desired_work_modes: list[WorkModeType] = UNSET,
+        expected_salary: float | None = UNSET,
+        locations_open_to_work: list[str] = UNSET,
+        open_to_relocation_anywhere: bool = UNSET,
+    ) -> Ok[Account]:
+        existing_profile = await self._profile_repo.get_by_account(account)
+        if existing_profile is None:
+            existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
 
-        result = await self._profile_parser_agent.run(
-            f"OCR text:\n{'\n'.join(ocr_texts)}"
+        await self._profile_repo.update_career_profile(
+            profile=existing_profile,
+            current_industry=current_industry,
+            desired_job_types=desired_job_types,
+            desired_work_modes=desired_work_modes,
+            expected_salary=expected_salary,
+            locations_open_to_work=locations_open_to_work,
+            open_to_relocation_anywhere=open_to_relocation_anywhere,
         )
 
-        profile_output = result.output
-        profile = await self._profile_repo.get_by_account(account)
-        if profile is None:
-            profile = await self._profile_repo.create(account)
-            await self._account_repo.update_profile(account=account, profile=profile)
+        return Ok(account)
 
-        if overwrite:
-            profile = await self._profile_repo.update(
-                profile=profile,
-                source_document_urls=[file_key]
-                if overwrite
-                else [*profile.source_document_urls, file_key],
-                address=profile_output.address,
-                date_of_birth=profile_output.date_of_birth,
-                gender=profile_output.gender,
-                marital_status=profile_output.marital_status,
-                category=profile_output.category,
-                open_to_relocation_anywhere=profile_output.open_to_relocation_anywhere,
-                locations_open_to_work=profile_output.locations_open_to_work,
-                education=profile_output.education,
-                licenses=[
-                    License(
-                        **partial_license.model_dump(), verification_status="pending"
-                    )
-                    for partial_license in profile_output.licenses
-                ],
-                languages=profile_output.languages,
-                job_preferences=profile_output.job_preferences,
-                work_experience=profile_output.work_experience,
-                salary_expectations=profile_output.salary_expectations,
-                certifications=profile_output.certifications,
-                professional_summary=profile_output.professional_summary,
-                headline=profile_output.headline,
+    async def update_resume(
+        self,
+        account: Account,
+        resume_url: str | None = None,
+        file_key: str | None = None,
+    ) -> Ok[Account]:
+        existing_profile = await self._profile_repo.get_by_account(account)
+        if existing_profile is None:
+            existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
+
+        if file_key is not None and resume_url is not None:
+            await self._profile_parser_service.parse_profile_document(
+                file_key=file_key,
+                resume_url=resume_url,
+                account=account,
+                overwrite=False,
             )
         else:
-            # add the non null fields to the profile
-            profile = await self._profile_repo.update(
-                profile=profile,
-                address=profile_output.address if profile_output.address else UNSET,
-                date_of_birth=profile_output.date_of_birth
-                if profile_output.date_of_birth
-                else UNSET,
-                gender=profile_output.gender if profile_output.gender else UNSET,
-                marital_status=profile_output.marital_status
-                if profile_output.marital_status
-                else UNSET,
-                category=profile_output.category if profile_output.category else UNSET,
-                open_to_relocation_anywhere=profile_output.open_to_relocation_anywhere
-                if profile_output.open_to_relocation_anywhere
-                else UNSET,
-                locations_open_to_work=profile_output.locations_open_to_work
-                if profile_output.locations_open_to_work
-                else UNSET,
-                education=profile_output.education
-                if profile_output.education
-                else UNSET,
-                licenses=[
-                    License(
-                        **partial_license.model_dump(), verification_status="pending"
-                    )
-                    for partial_license in profile_output.licenses
-                ]
-                if profile_output.licenses
-                else UNSET,
-                languages=profile_output.languages
-                if profile_output.languages
-                else UNSET,
-                job_preferences=profile_output.job_preferences
-                if profile_output.job_preferences
-                else UNSET,
-                work_experience=profile_output.work_experience
-                if profile_output.work_experience
-                else UNSET,
-                salary_expectations=profile_output.salary_expectations
-                if profile_output.salary_expectations
-                else UNSET,
-                certifications=profile_output.certifications
-                if profile_output.certifications
-                else UNSET,
-                professional_summary=profile_output.professional_summary
-                if profile_output.professional_summary
-                else UNSET,
-                headline=profile_output.headline if profile_output.headline else UNSET,
+            await self._profile_repo.update(
+                profile=existing_profile,
+                resume_url=None,
             )
-        return Ok(profile)
+
+        return Ok(account)

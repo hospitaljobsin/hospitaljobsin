@@ -13,19 +13,22 @@ from strawberry import field, relay
 from app.accounts.documents import (
     Account,
     BaseProfile,
+    CareerProfile,
     Certification,
     Education,
     Language,
     License,
     Profile,
-    SalaryExpectations,
     WorkExperience,
 )
 from app.auth.repositories import SessionRepo, WebAuthnCredentialRepo
 from app.base.types import (
     BaseErrorType,
     BaseNodeType,
+    InvalidLocationErrorType,
+    JobTypeEnum,
     NotAuthenticatedErrorType,
+    WorkModeEnum,
 )
 from app.context import AuthInfo, Info
 from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
@@ -224,12 +227,6 @@ class BaseProfileType:
     category: str | None = strawberry.field(
         description="The category of the profile's user.",
     )
-    locations_open_to_work: list[str] = strawberry.field(
-        description="Locations the user is open to work in.",
-    )
-    open_to_relocation_anywhere: bool = strawberry.field(
-        description="Whether the user is open to relocation anywhere.",
-    )
     education: list["EducationType"] = strawberry.field(
         description="The user's education history.",
     )
@@ -245,7 +242,7 @@ class BaseProfileType:
     work_experience: list["WorkExperienceType"] = strawberry.field(
         description="The user's work experience.",
     )
-    salary_expectations: Optional["SalaryExpectationsType"] = strawberry.field(
+    career_profile: Optional["CareerProfileType"] = strawberry.field(
         description="The user's salary expectations.",
     )
     certifications: list["CertificationType"] = strawberry.field(
@@ -256,6 +253,9 @@ class BaseProfileType:
     )
     headline: str | None = strawberry.field(
         description="The user's headline.",
+    )
+    resume_url: str | None = strawberry.field(
+        description="The user's resume URL.",
     )
 
 
@@ -275,8 +275,6 @@ class ParsedProfileType(BaseProfileType):
             if model.marital_status is not None
             else None,
             category=model.category,
-            locations_open_to_work=[loc.name for loc in model.locations_open_to_work],
-            open_to_relocation_anywhere=model.open_to_relocation_anywhere,
             education=[EducationType.marshal(edu) for edu in model.education],
             licenses=[LicenseType.marshal(lic) for lic in model.licenses],
             languages=[LanguageType.marshal(language) for language in model.languages],
@@ -284,16 +282,15 @@ class ParsedProfileType(BaseProfileType):
             work_experience=[
                 WorkExperienceType.marshal(exp) for exp in model.work_experience
             ],
-            salary_expectations=SalaryExpectationsType.marshal(
-                model.salary_expectations
-            )
-            if model.salary_expectations is not None
+            career_profile=CareerProfileType.marshal(model.career_profile)
+            if model.career_profile is not None
             else None,
             certifications=[
                 CertificationType.marshal(cert) for cert in model.certifications
             ],
             professional_summary=model.professional_summary,
             headline=model.headline,
+            resume_url=model.resume_url,
         )
 
 
@@ -310,6 +307,10 @@ class ProfileType(BaseProfileType, BaseNodeType[Profile]):
         description="Whether the profile is complete.",
     )
 
+    progress_percentage: float = strawberry.field(
+        description="The profile completion percentage.",
+    )
+
     @classmethod
     def marshal(cls, model: Profile) -> Self:
         """Marshal into a node instance."""
@@ -322,8 +323,6 @@ class ProfileType(BaseProfileType, BaseNodeType[Profile]):
             if model.marital_status is not None
             else None,
             category=model.category,
-            locations_open_to_work=[loc.name for loc in model.locations_open_to_work],
-            open_to_relocation_anywhere=model.open_to_relocation_anywhere,
             education=[EducationType.marshal(edu) for edu in model.education],
             licenses=[LicenseType.marshal(lic) for lic in model.licenses],
             languages=[LanguageType.marshal(language) for language in model.languages],
@@ -331,10 +330,8 @@ class ProfileType(BaseProfileType, BaseNodeType[Profile]):
             work_experience=[
                 WorkExperienceType.marshal(exp) for exp in model.work_experience
             ],
-            salary_expectations=SalaryExpectationsType.marshal(
-                model.salary_expectations
-            )
-            if model.salary_expectations is not None
+            career_profile=CareerProfileType.marshal(model.career_profile)
+            if model.career_profile is not None
             else None,
             certifications=[
                 CertificationType.marshal(cert) for cert in model.certifications
@@ -343,6 +340,8 @@ class ProfileType(BaseProfileType, BaseNodeType[Profile]):
             is_complete=model.is_complete,
             professional_summary=model.professional_summary,
             headline=model.headline,
+            progress_percentage=model.progress_percentage,
+            resume_url=model.resume_url,
         )
 
     @classmethod
@@ -728,6 +727,13 @@ UpdateProfilePayload = Annotated[
     ),
 ]
 
+UpdateProfilePersonalDetailsPayload = Annotated[
+    AccountType | InvalidLocationErrorType,
+    strawberry.union(
+        name="UpdateProfilePersonalDetailsPayload",
+        description="The update profile personal details payload.",
+    ),
+]
 
 ParseProfileDocumentPayload = Annotated[
     ProfileType,
@@ -943,16 +949,24 @@ class WorkExperienceType:
         )
 
 
-@strawberry.type(name="SalaryExpectations")
-class SalaryExpectationsType:
-    preferred_monthly_salary_inr: int
-    negotiable: bool
+@strawberry.type(name="CareerProfile")
+class CareerProfileType:
+    current_industry: str | None = strawberry.field(default=None)
+    desired_job_types: list[JobTypeEnum] = strawberry.field(default_factory=list)
+    desired_work_modes: list[WorkModeEnum] = strawberry.field(default_factory=list)
+    expected_salary: float | None = strawberry.field(default=None)
+    locations_open_to_work: list[str] = strawberry.field(default_factory=list)
+    open_to_relocation_anywhere: bool = strawberry.field(default=False)
 
     @classmethod
-    def marshal(cls, se: SalaryExpectations) -> Self:
+    def marshal(cls, se: CareerProfile) -> Self:
         return cls(
-            preferred_monthly_salary_inr=se.preferred_monthly_salary_inr,
-            negotiable=se.negotiable,
+            current_industry=se.current_industry,
+            desired_job_types=se.desired_job_types,
+            desired_work_modes=se.desired_work_modes,
+            expected_salary=se.expected_salary,
+            locations_open_to_work=se.locations_open_to_work,
+            open_to_relocation_anywhere=se.open_to_relocation_anywhere,
         )
 
 
@@ -983,7 +997,7 @@ class LicenseInputType:
     name: str = strawberry.field(description="The name of the license.")
     issuer: str = strawberry.field(description="The issuer of the license.")
     license_number: str = strawberry.field(description="The license number.")
-    registration_year: date = strawberry.field(
+    registration_year: int = strawberry.field(
         description="The year when the license was issued."
     )
 

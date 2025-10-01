@@ -11,12 +11,12 @@ from strawberry.permission import PermissionExtension
 
 from app.accounts.exceptions import AccountProfileIncompleteError
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
+from app.base.exceptions import InvalidLocationError
 from app.context import AuthInfo, Info
 from app.jobs.exceptions import (
     AccountProfileNotFoundError,
     InsufficientActiveVacanciesError,
     InvalidApplicantLocationsError,
-    InvalidLocationError,
     JobApplicantAlreadyExistsError,
     JobApplicantsNotFoundError,
     JobIsExternalError,

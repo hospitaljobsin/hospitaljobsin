@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<4b3dc5c2217fe5e6e0f569f91126f7dc>>
- * @relayHash e9a67ba6527c2712d1217b4bef297909
+ * @generated SignedSource<<f9aef1d6a76f986adfcec33145b33b21>>
+ * @relayHash 9008394c4f86b1c225a139d9fb3ff571
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID e9a67ba6527c2712d1217b4bef297909
+// @relayRequestID 9008394c4f86b1c225a139d9fb3ff571
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -475,27 +475,6 @@ return {
                                     "alias": null,
                                     "args": null,
                                     "kind": "ScalarField",
-                                    "name": "locationsOpenToWork",
-                                    "storageKey": null
-                                  },
-                                  {
-                                    "alias": null,
-                                    "args": null,
-                                    "kind": "ScalarField",
-                                    "name": "openToRelocationAnywhere",
-                                    "storageKey": null
-                                  },
-                                  {
-                                    "alias": null,
-                                    "args": null,
-                                    "kind": "ScalarField",
-                                    "name": "address",
-                                    "storageKey": null
-                                  },
-                                  {
-                                    "alias": null,
-                                    "args": null,
-                                    "kind": "ScalarField",
                                     "name": "gender",
                                     "storageKey": null
                                   },
@@ -518,6 +497,13 @@ return {
                                     "args": null,
                                     "kind": "ScalarField",
                                     "name": "category",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "address",
                                     "storageKey": null
                                   },
                                   {
@@ -702,36 +688,6 @@ return {
                                             "args": null,
                                             "concreteType": "FieldAnalysis",
                                             "kind": "LinkedField",
-                                            "name": "locationsOpenToWork",
-                                            "plural": false,
-                                            "selections": (v14/*: any*/),
-                                            "storageKey": null
-                                          },
-                                          {
-                                            "alias": null,
-                                            "args": null,
-                                            "concreteType": "FieldAnalysis",
-                                            "kind": "LinkedField",
-                                            "name": "openToRelocationAnywhere",
-                                            "plural": false,
-                                            "selections": (v14/*: any*/),
-                                            "storageKey": null
-                                          },
-                                          {
-                                            "alias": null,
-                                            "args": null,
-                                            "concreteType": "FieldAnalysis",
-                                            "kind": "LinkedField",
-                                            "name": "address",
-                                            "plural": false,
-                                            "selections": (v14/*: any*/),
-                                            "storageKey": null
-                                          },
-                                          {
-                                            "alias": null,
-                                            "args": null,
-                                            "concreteType": "FieldAnalysis",
-                                            "kind": "LinkedField",
                                             "name": "gender",
                                             "plural": false,
                                             "selections": (v14/*: any*/),
@@ -763,6 +719,16 @@ return {
                                             "concreteType": "FieldAnalysis",
                                             "kind": "LinkedField",
                                             "name": "category",
+                                            "plural": false,
+                                            "selections": (v14/*: any*/),
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "address",
                                             "plural": false,
                                             "selections": (v14/*: any*/),
                                             "storageKey": null
@@ -824,7 +790,7 @@ return {
     ]
   },
   "params": {
-    "id": "e9a67ba6527c2712d1217b4bef297909",
+    "id": "9008394c4f86b1c225a139d9fb3ff571",
     "metadata": {},
     "name": "JobApplicantDetailClientComponentQuery",
     "operationKind": "query",

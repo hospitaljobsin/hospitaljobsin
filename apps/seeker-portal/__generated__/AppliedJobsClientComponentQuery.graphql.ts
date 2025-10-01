@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<af8726769d136c972a8021b4079c2584>>
- * @relayHash 209b59b33cdcc3ecd3d9ce55a21ed14c
+ * @generated SignedSource<<2f24f4f973c52a4b135f0e002b4b50d2>>
+ * @relayHash 403323950781d78249e8dde72b3edfc9
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 209b59b33cdcc3ecd3d9ce55a21ed14c
+// @relayRequestID 403323950781d78249e8dde72b3edfc9
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -103,7 +103,6 @@ return {
                 "name": "avatarUrl",
                 "storageKey": null
               },
-              (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -116,7 +115,7 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "isComplete",
+                    "name": "progressPercentage",
                     "storageKey": null
                   },
                   (v1/*: any*/)
@@ -402,7 +401,7 @@ return {
     ]
   },
   "params": {
-    "id": "209b59b33cdcc3ecd3d9ce55a21ed14c",
+    "id": "403323950781d78249e8dde72b3edfc9",
     "metadata": {},
     "name": "AppliedJobsClientComponentQuery",
     "operationKind": "query",

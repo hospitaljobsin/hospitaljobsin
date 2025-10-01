@@ -5,12 +5,12 @@ from pydantic_ai import Agent
 from pydantic_ai.settings import ModelSettings
 
 from app.accounts.documents import (
+    CareerProfile,
     Certification,
     Education,
     Gender,
     Language,
     MaritalStatus,
-    SalaryExpectations,
     WorkExperience,
 )
 
@@ -45,14 +45,6 @@ class ProfileOutput(BaseModel):
         ...,
         description="The socio-economic category of the applicant (caste).",
     )
-    locations_open_to_work: list[str] = Field(
-        ...,
-        description="The locations the applicant is open to work in.",
-    )
-    open_to_relocation_anywhere: bool = Field(
-        ...,
-        description="Whether the applicant is open to relocation anywhere.",
-    )
     education: list[Education] = Field(
         ...,
         description="The education of the applicant.",
@@ -73,9 +65,9 @@ class ProfileOutput(BaseModel):
         ...,
         description="The work experience of the applicant.",
     )
-    salary_expectations: SalaryExpectations | None = Field(
+    career_profile: CareerProfile | None = Field(
         ...,
-        description="The salary expectations of the applicant.",
+        description="The career profile of the applicant.",
     )
     certifications: list[Certification] = Field(
         ...,

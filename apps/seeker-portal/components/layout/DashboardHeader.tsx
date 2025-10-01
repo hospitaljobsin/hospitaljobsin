@@ -1,6 +1,5 @@
 'use client';
 import type { DashboardHeaderFragment$key } from '@/__generated__/DashboardHeaderFragment.graphql';
-import IncompleteProfileBanner from '@/components/layout/IncompleteProfileBanner';
 import { APP_NAME } from '@/lib/constants';
 import { env } from '@/lib/env/client';
 import links from '@/lib/links';
@@ -22,7 +21,6 @@ export const DashboardHeaderFragment = graphql`
       ... on Account {
         __typename
         ...AuthNavigationFragment
-		...IncompleteProfileBannerFragment
       }
       ... on NotAuthenticatedError {
         __typename
@@ -43,7 +41,6 @@ export default function DashboardHeader({ query, animate = true }: { query: Dash
 
 	return (
 		<div className={'w-full flex flex-col sticky top-0 z-50'}>
-			{data.viewer.__typename === 'Account' ? <IncompleteProfileBanner account={data.viewer} animate={animate} /> : null}
 			<Navbar
 				maxWidth='xl'
 				isBordered

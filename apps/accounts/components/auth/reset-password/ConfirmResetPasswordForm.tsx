@@ -1,7 +1,5 @@
 'use client';
 
-import type { ConfirmResetPasswordFormMutation as ConfirmResetPasswordFormMutationType } from '@/__generated__/ConfirmResetPasswordFormMutation.graphql';
-import links from '@/lib/links';
 import { Button, Card, CardBody, CardHeader, Input } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
@@ -10,6 +8,8 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { z } from 'zod/v4-mini';
+import type { ConfirmResetPasswordFormMutation as ConfirmResetPasswordFormMutationType } from '@/__generated__/ConfirmResetPasswordFormMutation.graphql';
+import links from '@/lib/links';
 
 const ConfirmResetPasswordFormMutation = graphql`
   mutation ConfirmResetPasswordFormMutation($email: String!, $passwordResetToken: String!, $newPassword: String!) {
@@ -153,7 +153,7 @@ export default function ConfirmResetPasswordForm({ email, resetToken }: { email:
 
 					<div className='flex h-8 items-end space-x-1'>
 						<div className='flex h-8 items-end space-x-1' aria-live='polite' aria-atomic='true'>
-							{errorMessage && <p className='text-sm text-red-500'>{errorMessage}</p>}
+							{errorMessage && <p className='text-sm text-danger-500'>{errorMessage}</p>}
 						</div>
 					</div>
 				</form>

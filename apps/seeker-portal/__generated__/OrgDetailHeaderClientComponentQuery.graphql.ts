@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<86f99fc1b1d5b885f0a264098c335f22>>
- * @relayHash c6b57aa56f1841141e39f88c6f74c175
+ * @generated SignedSource<<2947ae7d355bf559e8c9866fe20a9839>>
+ * @relayHash 9721501150f0e7424c8300f69ab3c467
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c6b57aa56f1841141e39f88c6f74c175
+// @relayRequestID 9721501150f0e7424c8300f69ab3c467
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -109,7 +109,6 @@ return {
                 "name": "avatarUrl",
                 "storageKey": null
               },
-              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -122,7 +121,7 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "isComplete",
+                    "name": "progressPercentage",
                     "storageKey": null
                   },
                   (v3/*: any*/)
@@ -174,7 +173,7 @@ return {
     ]
   },
   "params": {
-    "id": "c6b57aa56f1841141e39f88c6f74c175",
+    "id": "9721501150f0e7424c8300f69ab3c467",
     "metadata": {},
     "name": "OrgDetailHeaderClientComponentQuery",
     "operationKind": "query",

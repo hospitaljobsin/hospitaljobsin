@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<8ee92a69a6bd9249f69754020887b98f>>
- * @relayHash 04d611f1fc917688720e583633205697
+ * @generated SignedSource<<cb14a3c713ff57fa9369c2799d472673>>
+ * @relayHash 50fb789e6c948bf153f94c8e38c1153b
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 04d611f1fc917688720e583633205697
+// @relayRequestID 50fb789e6c948bf153f94c8e38c1153b
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -271,6 +271,51 @@ return {
                       {
                         "alias": null,
                         "args": null,
+                        "concreteType": "JobApplicationForm",
+                        "kind": "LinkedField",
+                        "name": "applicationForm",
+                        "plural": false,
+                        "selections": [
+                          {
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "ApplicationField",
+                            "kind": "LinkedField",
+                            "name": "fields",
+                            "plural": true,
+                            "selections": [
+                              (v4/*: any*/),
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "fieldName",
+                                "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "defaultValue",
+                                "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "isRequired",
+                                "storageKey": null
+                              }
+                            ],
+                            "storageKey": null
+                          },
+                          (v8/*: any*/)
+                        ],
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
                         "kind": "ScalarField",
                         "name": "isSaved",
                         "storageKey": null
@@ -353,7 +398,79 @@ return {
                 "plural": false,
                 "selections": [
                   (v6/*: any*/),
-                  (v8/*: any*/)
+                  (v8/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "dateOfBirth",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "address",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Education",
+                    "kind": "LinkedField",
+                    "name": "education",
+                    "plural": true,
+                    "selections": [
+                      (v4/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "CareerProfile",
+                    "kind": "LinkedField",
+                    "name": "careerProfile",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "locationsOpenToWork",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "openToRelocationAnywhere",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "professionalSummary",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "headline",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "resumeUrl",
+                    "storageKey": null
+                  }
                 ],
                 "storageKey": null
               }
@@ -372,7 +489,7 @@ return {
     ]
   },
   "params": {
-    "id": "04d611f1fc917688720e583633205697",
+    "id": "50fb789e6c948bf153f94c8e38c1153b",
     "metadata": {},
     "name": "JobControlsClientComponentQuery",
     "operationKind": "query",

@@ -10,30 +10,30 @@ from bson import ObjectId
 from passlib.hash import argon2
 from strawberry import UNSET
 
-from app.base.models import GeoObject
 from app.core.constants import (
     EMAIL_VERIFICATION_EXPIRES_IN,
     EMAIL_VERIFICATION_TOKEN_LENGTH,
     PHONE_NUMBER_VERIFICATION_EXPIRES_IN,
     TERMS_AND_POLICY_LATEST_VERSION,
     AuthProvider,
+    JobKindType,
+    WorkModeType,
 )
 from app.geocoding.repositories import RegionRepo
 
 from .documents import (
     Account,
     AnalyticsPreference,
+    CareerProfile,
     Certification,
     Education,
     EmailVerificationToken,
     Gender,
     Language,
     License,
-    Location,
     MaritalStatus,
     PhoneNumberVerificationToken,
     Profile,
-    SalaryExpectations,
     TermsAndPolicy,
     WorkExperience,
 )
@@ -317,14 +317,12 @@ class ProfileRepo:
             address="",
             marital_status=None,
             category=None,
-            locations_open_to_work=[],
-            open_to_relocation_anywhere=False,
             education=[],
             licenses=[],
             languages=[],
             job_preferences=[],
             work_experience=[],
-            salary_expectations=None,
+            career_profile=None,
             certifications=[],
             professional_summary=None,
             headline=None,
@@ -357,27 +355,23 @@ class ProfileRepo:
         self,
         profile: Profile,
         *,
-        source_document_urls: list[str] = UNSET,
         gender: Gender | None = UNSET,
         date_of_birth: date | None = UNSET,
         address: str | None = UNSET,
         marital_status: MaritalStatus | None = UNSET,
         category: str | None = UNSET,
-        locations_open_to_work: list[str] = UNSET,
-        open_to_relocation_anywhere: bool = UNSET,
         education: list[Education] = UNSET,
         licenses: list[License] = UNSET,
         languages: list[Language] = UNSET,
         job_preferences: list[str] = UNSET,
         work_experience: list[WorkExperience] = UNSET,
-        salary_expectations: SalaryExpectations | None = UNSET,
+        career_profile: CareerProfile | None = UNSET,
         certifications: list[Certification] = UNSET,
         professional_summary: str | None = UNSET,
         headline: str | None = UNSET,
+        resume_url: str | None = UNSET,
     ) -> Profile:
         """Update a profile with new fields."""
-        if source_document_urls is not UNSET:
-            profile.source_document_urls = source_document_urls
         if gender is not UNSET:
             profile.gender = gender
         if date_of_birth is not UNSET:
@@ -388,35 +382,6 @@ class ProfileRepo:
             profile.marital_status = marital_status
         if category is not UNSET:
             profile.category = category
-        if locations_open_to_work is not UNSET:
-            # Build a lookup for existing locations by name for O(1) access
-            existing_locations_by_name = {
-                loc.name: loc for loc in profile.locations_open_to_work
-            }
-            updated_locations: list[Location] = []
-            for location_name in locations_open_to_work:
-                if location_name in existing_locations_by_name:
-                    # Reuse the existing geocoded Location object
-                    updated_locations.append(existing_locations_by_name[location_name])
-                else:
-                    # Geocode and add if successful
-                    result = await self._region_repo.get_by_name(location_name)
-                    if result is not None:
-                        updated_locations.append(
-                            Location(
-                                name=location_name,
-                                geo=GeoObject(
-                                    type="Point",
-                                    coordinates=(
-                                        result.coordinates.coordinates[0],
-                                        result.coordinates.coordinates[1],
-                                    ),
-                                ),
-                            )
-                        )
-            profile.locations_open_to_work = updated_locations
-        if open_to_relocation_anywhere is not UNSET:
-            profile.open_to_relocation_anywhere = open_to_relocation_anywhere
         if education is not UNSET:
             profile.education = education
         if licenses is not UNSET:
@@ -430,16 +395,45 @@ class ProfileRepo:
             profile.total_work_experience_years = self._calculate_total_work_experience(
                 work_experience
             )
-        if salary_expectations is not UNSET:
-            profile.salary_expectations = salary_expectations
+        if career_profile is not UNSET:
+            profile.career_profile = career_profile
         if certifications is not UNSET:
             profile.certifications = certifications
         if professional_summary is not UNSET:
             profile.professional_summary = professional_summary
         if headline is not UNSET:
             profile.headline = headline
+        if resume_url is not UNSET:
+            profile.resume_url = resume_url
         profile.updated_at = datetime.now(UTC)
         return await profile.save(link_rule=WriteRules.WRITE)
+
+    async def update_career_profile(
+        self,
+        profile: Profile,
+        current_industry: str | None = UNSET,
+        desired_job_types: list[JobKindType] = UNSET,
+        desired_work_modes: list[WorkModeType] = UNSET,
+        expected_salary: float | None = UNSET,
+        locations_open_to_work: list[str] = UNSET,
+        open_to_relocation_anywhere: bool = UNSET,
+    ) -> Profile:
+        career_profile = profile.career_profile or CareerProfile()
+
+        if current_industry is not UNSET:
+            career_profile.current_industry = current_industry
+        if desired_job_types is not UNSET:
+            career_profile.desired_job_types = desired_job_types
+        if desired_work_modes is not UNSET:
+            career_profile.desired_work_modes = desired_work_modes
+        if expected_salary is not UNSET:
+            career_profile.expected_salary = expected_salary
+        if locations_open_to_work is not UNSET:
+            career_profile.locations_open_to_work = locations_open_to_work
+        if open_to_relocation_anywhere is not UNSET:
+            career_profile.open_to_relocation_anywhere = open_to_relocation_anywhere
+
+        return await self.update(profile, career_profile=career_profile)
 
     async def get(self, profile_id: str) -> Profile | None:
         """Get profile by ID."""

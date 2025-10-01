@@ -15,7 +15,6 @@ import GoogleOneTapLogin from '../GoogleOneTapLogin';
 import Logo from '../Logo';
 import OrganizationTabs from '../organization-detail/OrganizationTabs';
 import AuthDropdown from './AuthNavigation';
-import IncompleteProfileBanner from './IncompleteProfileBanner';
 
 export const OrgDetailHeaderFragment = graphql`
   fragment OrgDetailHeaderFragment on Query   @argumentDefinitions(
@@ -25,7 +24,6 @@ export const OrgDetailHeaderFragment = graphql`
 		__typename
 		... on Account {
 			...AuthNavigationFragment
-			...IncompleteProfileBannerFragment
 		}
 		... on NotAuthenticatedError {
 			__typename
@@ -53,7 +51,6 @@ export default function OrgDetailHeader({ root }: { root: OrgDetailHeaderFragmen
 
 	return (
 		<div className='w-full flex flex-col bg-background-600 border-b border-foreground-300 sticky top-0 z-50'>
-			{data.viewer.__typename === 'Account' && <IncompleteProfileBanner account={data.viewer} animate={false} />}
 			<Navbar maxWidth='xl' className='bg-background-600'>
 				<NavbarContent justify='center' className='flex-1 w-full flex gap-6'>
 					<NavbarBrand className='flex items-center gap-4 text-foreground-500'>

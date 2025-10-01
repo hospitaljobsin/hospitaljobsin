@@ -1,10 +1,10 @@
 'use client';
-import type { JobControlsClientComponentQuery as JobControlsClientComponentQueryType } from '@/__generated__/JobControlsClientComponentQuery.graphql';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import invariant from 'tiny-invariant';
-import JobApplyButton from './JobApplyButton';
+import type { JobControlsClientComponentQuery as JobControlsClientComponentQueryType } from '@/__generated__/JobControlsClientComponentQuery.graphql';
 import JobControls from './JobControls';
+import JobApplyButton from './job-apply/JobApplyButton';
 
 export const JobControlsClientComponentQuery = graphql`
   query JobControlsClientComponentQuery($slug: String!, $jobSlug: String!) {

@@ -1,5 +1,6 @@
 'use client';
 import type { AuthNavigationFragment$key } from '@/__generated__/AuthNavigationFragment.graphql';
+import { getResumeProgressColor } from '@/lib/color';
 import links from '@/lib/links';
 import {
 	Button,
@@ -14,6 +15,7 @@ import {
 	DropdownSection,
 	DropdownTrigger,
 	NavbarItem,
+	Progress,
 	useDisclosure
 } from '@heroui/react';
 import { BriefcaseBusiness, ExternalLinkIcon, LogOutIcon, SendIcon, Settings, UserIcon } from 'lucide-react';
@@ -28,6 +30,9 @@ const AuthNavigationFragment = graphql`
         __typename
         fullName
 		avatarUrl
+		profile @required(action: THROW) {
+			progressPercentage
+		}
   }
 `;
 
@@ -91,8 +96,18 @@ export default function AuthNavigation({ rootQuery }: Props) {
 									</p>
 								</Link>
 							</DropdownItem>
-							<DropdownItem key='profile' startContent={<UserIcon className='h-4 w-4' />} href={links.profile}>
-								Job Seeker Profile
+							<DropdownItem key='profile' startContent={<UserIcon className='h-4 w-4' />} href={links.resumeBuilder}>
+								<div className='w-full flex flex-col gap-2'>
+									<p>
+										My Profile <span className='text-foreground-400 text-xs'>({data.profile.progressPercentage}%)</span>
+									</p>
+									<Progress
+										value={data.profile.progressPercentage}
+										disableAnimation
+										size='sm'
+										color={getResumeProgressColor(data.profile.progressPercentage)}
+									/>
+								</div>
 							</DropdownItem>
 							<DropdownItem key='saved' startContent={<BriefcaseBusiness className='h-4 w-4' />} href={links.savedJobs}>
 								My Jobs
@@ -142,11 +157,21 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							radius='sm'
 							variant='light'
 							startContent={<UserIcon className='h-4 w-4' />}
-							href={links.profile}
-							as={links.profile ? 'a' : 'button'}
+							href={links.resumeBuilder}
+							as={links.resumeBuilder ? 'a' : 'button'}
 							fullWidth
 						>
-							Job Seeker Profile
+							<div className='w-full flex flex-col gap-2'>
+								<p>
+									My Profile <span className='text-foreground-400 text-xs'>({data.profile.progressPercentage}%)</span>
+								</p>
+								<Progress
+									value={data.profile.progressPercentage}
+									disableAnimation
+									size='sm'
+									color={getResumeProgressColor(data.profile.progressPercentage)}
+								/>
+							</div>
 						</Button>
 						<Button
 							className='w-full justify-start'

@@ -17,7 +17,6 @@ mutation GoogleOneTapLoginMutation($token: String!) {
 		id
 		email
 		...AuthNavigationFragment
-		...IncompleteProfileBannerFragment
 		...JobAuthFragment
 		...JobControlsAuthFragment
 	}

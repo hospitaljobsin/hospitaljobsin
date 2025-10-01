@@ -3,23 +3,20 @@ from datetime import UTC, date, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar, Literal
 
 import pymongo
-from beanie import BackLink, Document, Indexed, Link
+from beanie import Document, Indexed, Link
 from pydantic import BaseModel, Field
 from pymongo import IndexModel
 
 from app.base.models import GeoObject
 from app.core.constants import (
     AuthProvider,
+    JobKindType,
     TwoFactorProvider,
+    WorkModeType,
 )
 
 if TYPE_CHECKING:
-    from app.auth.documents import (
-        OAuthCredential,
-        RecoveryCode,
-        TemporaryTwoFactorChallenge,
-        WebAuthnCredential,
-    )
+    pass
 
 
 # ENUMS
@@ -90,10 +87,19 @@ class WorkExperience(BaseModel):
     skills: list[str] = Field(..., description="The skills of the work experience.")
 
 
-# SALARY EXPECTATIONS
-class SalaryExpectations(BaseModel):
-    preferred_monthly_salary_inr: int
-    negotiable: bool
+class CareerProfile(BaseModel):
+    current_industry: str | None = None
+    desired_job_types: list[JobKindType] = []
+    desired_work_modes: list[WorkModeType] = []
+    expected_salary: float | None = None
+    locations_open_to_work: list[str] = Field(
+        default_factory=list,
+        description="The locations the candidate prefers to work in.",
+    )
+    open_to_relocation_anywhere: bool = Field(
+        default=False,
+        description="Whether the candidate is open to relocation anywhere.",
+    )
 
 
 # CERTIFICATION
@@ -119,18 +125,17 @@ class BaseProfile(BaseModel):
     address: str | None = None
     marital_status: MaritalStatus | None = None
     category: str | None = None
-    locations_open_to_work: list[Location] = []
-    open_to_relocation_anywhere: bool
     education: list[Education]
     licenses: list[License]
     languages: list[Language]
     job_preferences: list[str]
     work_experience: list[WorkExperience]
     total_work_experience_years: float = 0.0
-    salary_expectations: SalaryExpectations | None
+    career_profile: CareerProfile | None = None
     certifications: list[Certification]
     professional_summary: str | None = None
     headline: str | None = None
+    resume_url: str | None = None
 
     def __str__(self) -> str:
         """LLM friendly text representation of a job."""
@@ -140,10 +145,6 @@ class BaseProfile(BaseModel):
 # Main Job Seeker Profile Document
 # AKA Reusable Resume
 class Profile(BaseProfile, Document):
-    source_document_urls: list[str] = Field(
-        default_factory=list,
-        description="List of URLs to the source documents (e.g., resumes in PDF format) used to create this profile.",
-    )  # limit
     embedding: list[float] | None = Field(default=None, repr=False)
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
@@ -157,13 +158,40 @@ class Profile(BaseProfile, Document):
             [
                 self.date_of_birth,
                 self.address,
-                self.work_experience,
-                self.education,
-                (self.locations_open_to_work or self.open_to_relocation_anywhere),
-                self.professional_summary,
+                (
+                    self.career_profile
+                    and (
+                        self.career_profile.locations_open_to_work
+                        or self.career_profile.open_to_relocation_anywhere
+                    )
+                ),
                 self.headline,
+                self.resume_url,
             ]
         )
+
+    @property
+    def progress_percentage(self) -> int:
+        """Calculates the profile completion percentage based on filled fields."""
+        total_fields = 8  # Total number of key fields to check
+        filled_fields = sum(
+            [
+                bool(self.date_of_birth),
+                bool(self.address),
+                bool(self.work_experience),
+                bool(self.education),
+                bool(
+                    self.career_profile
+                    and (
+                        self.career_profile.locations_open_to_work
+                        or self.career_profile.open_to_relocation_anywhere
+                    )
+                ),
+                bool(self.professional_summary),
+                bool(self.headline),
+            ]
+        )
+        return int((filled_fields / total_fields) * 100)
 
     def __str__(self) -> str:
         """LLM friendly text representation of a job."""

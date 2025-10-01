@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<82b8a2bca8f7a2054d193c288a81652f>>
- * @relayHash 2d58f1c7f7f413affa5763de6706ae8a
+ * @generated SignedSource<<76c86462845ff1623976f1bbb2d53963>>
+ * @relayHash 85d66a8d5b125feaf447fe9e50b00805
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 2d58f1c7f7f413affa5763de6706ae8a
+// @relayRequestID 85d66a8d5b125feaf447fe9e50b00805
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -27,7 +27,7 @@ export type UpdateEducationFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateEducationFormFragment">;
     } | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"ResumeProgressAccountFragment">;
   };
 };
 export type UpdateEducationFormMutation = {
@@ -85,7 +85,7 @@ return {
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "IncompleteProfileBannerFragment"
+                "name": "ResumeProgressAccountFragment"
               },
               {
                 "alias": null,
@@ -132,7 +132,34 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v3/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "email",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
+                "storageKey": null
+              },
               {
                 "alias": null,
                 "args": null,
@@ -145,7 +172,14 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "isComplete",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
                     "storageKey": null
                   },
                   (v3/*: any*/),
@@ -210,7 +244,7 @@ return {
     ]
   },
   "params": {
-    "id": "2d58f1c7f7f413affa5763de6706ae8a",
+    "id": "85d66a8d5b125feaf447fe9e50b00805",
     "metadata": {},
     "name": "UpdateEducationFormMutation",
     "operationKind": "mutation",
@@ -219,6 +253,6 @@ return {
 };
 })();
 
-(node as any).hash = "82540f3f0eeb03fda3e968a0a5df115d";
+(node as any).hash = "697fb898aeac94f33dfd30d512ac1263";
 
 export default node;

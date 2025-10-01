@@ -1,14 +1,14 @@
-import type { JobType, WorkMode } from '@/__generated__/JobDetailsInternalFragment.graphql';
-import type { JobOverviewFragment$key } from '@/__generated__/JobOverviewFragment.graphql';
-import { dateFormat, salaryFormat } from '@/lib/intl';
 import { Card, CardBody, CardFooter, CardHeader, Skeleton, Tooltip } from '@heroui/react';
 import { Briefcase, Clock, Globe, HandshakeIcon, IndianRupee, MapPin, Users } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { graphql, useFragment } from 'react-relay';
+import type { JobType, WorkMode } from '@/__generated__/JobDetailsInternalFragment.graphql';
+import type { JobOverviewFragment$key } from '@/__generated__/JobOverviewFragment.graphql';
+import { dateFormat, salaryFormat } from '@/lib/intl';
 
 const JobControlsClientComponent = dynamic(() => import('./JobControlsClientComponent'), { ssr: false });
 
-const JobApplyButtonClientComponent = dynamic(() => import('./JobApplyButton'), {
+const JobApplyButtonClientComponent = dynamic(() => import('./job-apply/JobApplyButton'), {
 	ssr: false,
 	loading: () => <Skeleton className='h-12 rounded-lg w-full sm:w-32' />
 });

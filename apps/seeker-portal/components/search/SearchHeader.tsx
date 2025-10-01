@@ -1,6 +1,5 @@
 'use client';
 import type { SearchHeaderFragment$key } from '@/__generated__/SearchHeaderFragment.graphql';
-import IncompleteProfileBanner from '@/components/layout/IncompleteProfileBanner';
 import { APP_NAME } from '@/lib/constants';
 import { env } from '@/lib/env/client';
 import links from '@/lib/links';
@@ -22,7 +21,6 @@ export const SearchHeaderFragment = graphql`
       ... on Account {
         __typename
         ...AuthNavigationFragment
-		...IncompleteProfileBannerFragment
       }
       ... on NotAuthenticatedError {
         __typename
@@ -74,7 +72,6 @@ export default function SearchHeader({
 
 	return (
 		<div className={'w-full flex flex-col sticky top-0 z-50'}>
-			{data.viewer.__typename === 'Account' && <IncompleteProfileBanner account={data.viewer} animate={false} />}
 			<Navbar
 				maxWidth='xl'
 				isBordered

@@ -4,6 +4,7 @@ import { createJiti } from 'jiti';
 import type { NextConfig } from 'next';
 import { fileURLToPath } from 'node:url';
 import { env } from './lib/env/client';
+import links from './lib/links';
 
 const jiti = createJiti(fileURLToPath(import.meta.url));
 
@@ -17,7 +18,6 @@ const nextConfig: NextConfig = {
 			fullUrl: true
 		}
 	},
-
 	typedRoutes: true,
 	poweredByHeader: false,
 	pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
@@ -92,6 +92,7 @@ const nextConfig: NextConfig = {
 			lexical: 'lexical/Lexical.dev.mjs'
 		}
 	},
+	// biome-ignore lint/suspicious/useAwait: nextjs expects an async function here
 	async rewrites() {
 		return [
 			{
@@ -108,8 +109,14 @@ const nextConfig: NextConfig = {
 			}
 		];
 	},
+	// biome-ignore lint/suspicious/useAwait: nextjs expects an async function here
 	async redirects() {
 		return [
+			{
+				source: links.resumeBuilder,
+				destination: links.resumeBuilderResume,
+				permanent: false
+			},
 			{
 				source: '/search/jobs-in/:location',
 				has: [
@@ -148,6 +155,7 @@ const nextConfig: NextConfig = {
 			}
 		];
 	},
+	// biome-ignore lint/suspicious/useAwait: nextjs expects an async function here
 	async headers() {
 		return [
 			{

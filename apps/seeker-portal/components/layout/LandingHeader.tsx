@@ -12,7 +12,6 @@ import GoogleOneTapLogin from '../GoogleOneTapLogin';
 import { WhatsappIcon } from '../icons';
 import Logo from '../Logo';
 import AuthNavigation from './AuthNavigation';
-import IncompleteProfileBanner from './IncompleteProfileBanner';
 
 export const LandingHeaderFragment = graphql`
   fragment LandingHeaderFragment on Query {
@@ -20,7 +19,6 @@ export const LandingHeaderFragment = graphql`
       ... on Account {
         __typename
         ...AuthNavigationFragment
-		...IncompleteProfileBannerFragment
       }
       ... on NotAuthenticatedError {
         __typename
@@ -33,7 +31,6 @@ export default function LandingHeader({ rootQuery }: { rootQuery: LandingHeaderF
 	const data = useFragment(LandingHeaderFragment, rootQuery);
 	return (
 		<div className={cn('w-full flex flex-col static top-0 z-50')}>
-			{data.viewer.__typename === 'Account' ? <IncompleteProfileBanner account={data.viewer} /> : null}
 			<Navbar
 				maxWidth='xl'
 				isBordered={false}

@@ -18,7 +18,13 @@ from app.accounts.exceptions import (
 from app.accounts.repositories import AccountRepo
 from app.accounts.services import AccountService, ProfileParserService, ProfileService
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
-from app.base.types import CreatePresignedURLPayloadType
+from app.base.exceptions import InvalidLocationError
+from app.base.types import (
+    CreatePresignedURLPayloadType,
+    InvalidLocationErrorType,
+    JobTypeEnum,
+    WorkModeEnum,
+)
 from app.context import AuthInfo, Info
 
 from .types import (
@@ -33,12 +39,10 @@ from .types import (
     LanguageInputType,
     LicenseInputType,
     MaritalStatusTypeEnum,
-    ParseProfileDocumentPayload,
     PhoneNumberAlreadyExistsErrorType,
     PhoneNumberDoesNotExistErrorType,
     PhoneNumberMissingErrorType,
     PhoneNumberVerificationTokenCooldownErrorType,
-    ProfileType,
     RemoveAccountPhoneNumberPayload,
     RequestPhoneNumberVerificationTokenPayload,
     RequestPhoneNumberVerificationTokenSuccessType,
@@ -47,6 +51,7 @@ from .types import (
     UpdateAccountPhoneNumberPayload,
     UpdateAccountWhatsappJobAlertsPayload,
     UpdateProfilePayload,
+    UpdateProfilePersonalDetailsPayload,
     WorkExperienceInputType,
 )
 
@@ -54,7 +59,7 @@ from .types import (
 @strawberry.type
 class AccountMutation:
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=UpdateProfilePayload,
+        graphql_type=UpdateProfilePersonalDetailsPayload,
         description="Update the current user's profile personal details.",
         extensions=[
             PermissionExtension(
@@ -93,17 +98,32 @@ class AccountMutation:
                 description="The category of the user profile.",
             ),
         ] = strawberry.UNSET,
-    ) -> UpdateProfilePayload:
+        address: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The address of the user profile (now part of location preferences).",
+            ),
+        ] = strawberry.UNSET,
+    ) -> UpdateProfilePersonalDetailsPayload:
         """Update the current user's profile personal details."""
         match await profile_service.update_personal_details(
             account=info.context["current_user"],
-            gender=gender.value if gender is not None else None,
+            gender=gender.value
+            if gender is not None and gender is not strawberry.UNSET
+            else None,
             date_of_birth=date_of_birth,
-            marital_status=marital_status.value if marital_status is not None else None,
+            marital_status=marital_status.value
+            if marital_status is not None and marital_status is not strawberry.UNSET
+            else None,
             category=category,
+            address=address,
         ):
             case Ok(account):
                 return AccountType.marshal(account)
+            case Err(error):
+                match error:
+                    case InvalidLocationError():
+                        return InvalidLocationErrorType()
             case _ as unreachable:
                 assert_never(unreachable)
 
@@ -389,51 +409,6 @@ class AccountMutation:
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdateProfilePayload,
-        description="Update the current user's profile location preferences.",
-        extensions=[
-            PermissionExtension(
-                permissions=[
-                    IsAuthenticated(),
-                ],
-            )
-        ],
-    )
-    @inject
-    async def update_profile_location_preferences(
-        self,
-        info: AuthInfo,
-        profile_service: Annotated[ProfileService, Inject],
-        locations_open_to_work: Annotated[
-            list[str],
-            strawberry.argument(description="Locations the user is open to work in."),
-        ],
-        open_to_relocation_anywhere: Annotated[
-            bool,
-            strawberry.argument(
-                description="Whether the user is open to relocation anywhere."
-            ),
-        ],
-        address: Annotated[
-            str | None,
-            strawberry.argument(
-                description="The address of the user profile (now part of location preferences).",
-            ),
-        ] = strawberry.UNSET,
-    ) -> UpdateProfilePayload:
-        """Update the current user's profile location preferences, including address."""
-        match await profile_service.update_location_preferences(
-            account=info.context["current_user"],
-            locations_open_to_work=locations_open_to_work,
-            open_to_relocation_anywhere=open_to_relocation_anywhere,
-            address=address,
-        ):
-            case Ok(account):
-                return AccountType.marshal(account)
-            case _ as unreachable:
-                assert_never(unreachable)
-
-    @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=UpdateProfilePayload,
         description="Update the current user's profile education.",
         extensions=[
             PermissionExtension(
@@ -605,46 +580,6 @@ class AccountMutation:
                 assert_never(unreachable)
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=ParseProfileDocumentPayload,
-        description="Parse a profile document into structured data.",
-        extensions=[
-            PermissionExtension(
-                permissions=[
-                    IsAuthenticated(),
-                ],
-            )
-        ],
-    )
-    @inject
-    async def parse_profile_document(
-        self,
-        info: AuthInfo,
-        profile_parser_service: Annotated[ProfileParserService, Inject],
-        file_key: Annotated[
-            str,
-            strawberry.argument(
-                description="The document URL to parse.",
-            ),
-        ],
-        overwrite: Annotated[
-            bool,
-            strawberry.argument(
-                description="Whether to overwrite the existing profile.",
-            ),
-        ] = False,
-    ) -> ParseProfileDocumentPayload:
-        """Parse a profile document into structured data."""
-        match await profile_parser_service.parse_profile_document(
-            file_key=file_key,
-            account=info.context["current_user"],
-            overwrite=overwrite,
-        ):
-            case Ok(profile):
-                return ProfileType.marshal(profile)
-            case _ as unreachable:
-                assert_never(unreachable)
-
-    @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GenerateProfileDocumentPresignedURLPayloadType,
         description="Parse a profile document into structured data.",
         extensions=[
@@ -673,6 +608,142 @@ class AccountMutation:
                 return GenerateProfileDocumentPresignedURLPayloadType(
                     presigned_url=presigned_url, file_key=file_key
                 )
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateProfilePayload,
+        description="Update the current user's profile career profile.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_profile_career_profile(
+        self,
+        info: AuthInfo,
+        profile_service: Annotated[ProfileService, Inject],
+        current_industry: Annotated[
+            str | None,
+            strawberry.argument(description="The current industry of the user."),
+        ] = strawberry.UNSET,
+        desired_job_types: Annotated[
+            list[JobTypeEnum],
+            strawberry.argument(
+                description="The desired job types.",
+            ),
+        ] = strawberry.UNSET,
+        desired_work_modes: Annotated[
+            list[WorkModeEnum],
+            strawberry.argument(
+                description="The desired work modes.",
+            ),
+        ] = strawberry.UNSET,
+        expected_salary: Annotated[
+            float | None,
+            strawberry.argument(description="The expected salary."),
+        ] = strawberry.UNSET,
+        locations_open_to_work: Annotated[
+            list[str],
+            strawberry.argument(
+                description="Locations the user is open to work in.",
+            ),
+        ] = strawberry.UNSET,
+        open_to_relocation_anywhere: Annotated[
+            bool,
+            strawberry.argument(
+                description="Whether the user is open to relocation anywhere.",
+            ),
+        ] = strawberry.UNSET,
+    ) -> UpdateProfilePayload:
+        """Update the current user's profile career profile."""
+        match await profile_service.update_career_profile(
+            account=info.context["current_user"],
+            current_industry=current_industry,
+            desired_job_types=[job_type.value for job_type in desired_job_types]
+            if desired_job_types is not strawberry.UNSET
+            else strawberry.UNSET,
+            desired_work_modes=[work_mode.value for work_mode in desired_work_modes]
+            if desired_work_modes is not strawberry.UNSET
+            else strawberry.UNSET,
+            expected_salary=expected_salary,
+            locations_open_to_work=locations_open_to_work,
+            open_to_relocation_anywhere=open_to_relocation_anywhere,
+        ):
+            case Ok(account):
+                return AccountType.marshal(account)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateProfilePayload,
+        description="Update the current user's resume.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_profile_resume(
+        self,
+        info: AuthInfo,
+        profile_service: Annotated[ProfileService, Inject],
+        resume_url: Annotated[
+            str,
+            strawberry.argument(
+                description="The URL of the resume file.",
+            ),
+        ],
+        file_key: Annotated[
+            str,
+            strawberry.argument(
+                description="The file key of the resume file in the storage provider.",
+            ),
+        ],
+    ) -> UpdateProfilePayload:
+        """Update the current user's resume."""
+        match await profile_service.update_resume(
+            account=info.context["current_user"],
+            resume_url=resume_url,
+            file_key=file_key,
+        ):
+            case Ok(account):
+                return AccountType.marshal(account)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateProfilePayload,
+        description="Remove the current user's resume.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def remove_profile_resume(
+        self,
+        info: AuthInfo,
+        profile_service: Annotated[ProfileService, Inject],
+    ) -> UpdateProfilePayload:
+        """Remove the current user's resume."""
+        match await profile_service.update_resume(
+            account=info.context["current_user"],
+            resume_url=None,
+            file_key=None,
+        ):
+            case Ok(account):
+                return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)
 

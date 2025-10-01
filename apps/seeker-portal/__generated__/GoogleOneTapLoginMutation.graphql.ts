@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a02a4ea43e2f314cafb17c4821b8b894>>
- * @relayHash bacca3a9aef45c9aa7b7b4691940e959
+ * @generated SignedSource<<32c737f763583ffd7455116180285e9d>>
+ * @relayHash 57d84725b3be760fd5a468f2e45ccca5
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID bacca3a9aef45c9aa7b7b4691940e959
+// @relayRequestID 57d84725b3be760fd5a468f2e45ccca5
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -22,7 +22,7 @@ export type GoogleOneTapLoginMutation$data = {
     readonly __typename: "Account";
     readonly email: string;
     readonly id: string;
-    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "IncompleteProfileBannerFragment" | "JobAuthFragment" | "JobControlsAuthFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "JobAuthFragment" | "JobControlsAuthFragment">;
   } | {
     readonly __typename: "InvalidCredentialsError";
     readonly message: string;
@@ -135,11 +135,6 @@ return {
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "IncompleteProfileBannerFragment"
-              },
-              {
-                "args": null,
-                "kind": "FragmentSpread",
                 "name": "JobAuthFragment"
               },
               {
@@ -207,7 +202,7 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "isComplete",
+                    "name": "progressPercentage",
                     "storageKey": null
                   },
                   (v3/*: any*/)
@@ -239,7 +234,7 @@ return {
     ]
   },
   "params": {
-    "id": "bacca3a9aef45c9aa7b7b4691940e959",
+    "id": "57d84725b3be760fd5a468f2e45ccca5",
     "metadata": {},
     "name": "GoogleOneTapLoginMutation",
     "operationKind": "mutation",
@@ -248,6 +243,6 @@ return {
 };
 })();
 
-(node as any).hash = "54db69393e7b78ad4a8bb7b027555730";
+(node as any).hash = "c607068b53d631c8fab8f7f716a9453a";
 
 export default node;

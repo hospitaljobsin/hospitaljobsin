@@ -16,13 +16,13 @@ from app.accounts.documents import Account, BaseProfile
 from app.accounts.types import (
     AccountType,
     BaseProfileType,
+    CareerProfileType,
     CertificationType,
     EducationType,
     GenderTypeEnum,
     LanguageType,
     LicenseType,
     MaritalStatusTypeEnum,
-    SalaryExpectationsType,
     WorkExperienceType,
 )
 from app.auth.permissions import IsAuthenticated
@@ -32,6 +32,9 @@ from app.base.types import (
     BaseEdgeType,
     BaseErrorType,
     BaseNodeType,
+    InvalidLocationErrorType,
+    JobTypeEnum,
+    WorkModeEnum,
 )
 from app.context import AuthInfo, Info
 from app.core.constants import JobApplicantAnalysisStatus
@@ -116,28 +119,6 @@ class JobTypeFilterEnum(Enum):
     INTERNSHIP = "internship"
     CONTRACT = "contract"
     LOCUM = "locum"
-
-
-@strawberry.enum(
-    name="JobType",
-    description="The type of job.",
-)
-class JobTypeEnum(Enum):
-    FULL_TIME = "full_time"
-    PART_TIME = "part_time"
-    INTERNSHIP = "internship"
-    CONTRACT = "contract"
-    LOCUM = "locum"
-
-
-@strawberry.enum(
-    name="WorkMode",
-    description="The work mode of the job.",
-)
-class WorkModeEnum(Enum):
-    REMOTE = "remote"
-    HYBRID = "hybrid"
-    OFFICE = "office"
 
 
 @strawberry.enum(
@@ -378,8 +359,6 @@ class ProfileSnapshotType(BaseProfileType):
             if model.marital_status is not None
             else None,
             category=model.category,
-            locations_open_to_work=[loc.name for loc in model.locations_open_to_work],
-            open_to_relocation_anywhere=model.open_to_relocation_anywhere,
             education=[EducationType.marshal(edu) for edu in model.education],
             licenses=[LicenseType.marshal(lic) for lic in model.licenses],
             languages=[LanguageType.marshal(language) for language in model.languages],
@@ -387,16 +366,15 @@ class ProfileSnapshotType(BaseProfileType):
             work_experience=[
                 WorkExperienceType.marshal(exp) for exp in model.work_experience
             ],
-            salary_expectations=SalaryExpectationsType.marshal(
-                model.salary_expectations
-            )
-            if model.salary_expectations is not None
+            career_profile=CareerProfileType.marshal(model.career_profile)
+            if model.career_profile is not None
             else None,
             certifications=[
                 CertificationType.marshal(cert) for cert in model.certifications
             ],
             professional_summary=model.professional_summary,
             headline=model.headline,
+            resume_url=model.resume_url,
         )
 
 
@@ -431,14 +409,12 @@ class AnalysedFieldsType:
     address: FieldAnalysisType | None = None
     marital_status: FieldAnalysisType | None = None
     category: FieldAnalysisType | None = None
-    locations_open_to_work: FieldAnalysisType | None = None
-    open_to_relocation_anywhere: FieldAnalysisType | None = None
     education: FieldAnalysisType | None = None
     licenses: FieldAnalysisType | None = None
     languages: FieldAnalysisType | None = None
     job_preferences: FieldAnalysisType | None = None
     work_experience: FieldAnalysisType | None = None
-    salary_expectations: FieldAnalysisType | None = None
+    career_profile: FieldAnalysisType | None = None
     certifications: FieldAnalysisType | None = None
     professional_summary: FieldAnalysisType | None = None
     headline: FieldAnalysisType | None = None
@@ -464,16 +440,6 @@ class AnalysedFieldsType:
             category=FieldAnalysisType.marshal(analysed_fields.category)
             if analysed_fields.category
             else None,
-            locations_open_to_work=FieldAnalysisType.marshal(
-                analysed_fields.locations_open_to_work
-            )
-            if analysed_fields.locations_open_to_work
-            else None,
-            open_to_relocation_anywhere=FieldAnalysisType.marshal(
-                analysed_fields.open_to_relocation_anywhere
-            )
-            if analysed_fields.open_to_relocation_anywhere
-            else None,
             education=FieldAnalysisType.marshal(analysed_fields.education)
             if analysed_fields.education
             else None,
@@ -489,10 +455,8 @@ class AnalysedFieldsType:
             work_experience=FieldAnalysisType.marshal(analysed_fields.work_experience)
             if analysed_fields.work_experience
             else None,
-            salary_expectations=FieldAnalysisType.marshal(
-                analysed_fields.salary_expectations
-            )
-            if analysed_fields.salary_expectations
+            career_profile=FieldAnalysisType.marshal(analysed_fields.career_profile)
+            if analysed_fields.career_profile
             else None,
             certifications=FieldAnalysisType.marshal(analysed_fields.certifications)
             if analysed_fields.certifications
@@ -1357,17 +1321,6 @@ UnsaveJobPayload = Annotated[
 class CreateJobSuccessType:
     job_edge: JobEdgeType = strawberry.field(
         description="The edge of the created job.",
-    )
-
-
-@strawberry.type(
-    name="InvalidLocationError",
-    description="Used when the location is invalid.",
-)
-class InvalidLocationErrorType(BaseErrorType):
-    message: str = strawberry.field(
-        description="Human readable error message.",
-        default="Location is invalid!",
     )
 
 
