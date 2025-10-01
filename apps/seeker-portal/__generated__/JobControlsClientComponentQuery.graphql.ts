@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<037cd0e854dc795595588e82ec07a865>>
- * @relayHash c2b46f50b97460086bba3f305200ca73
+ * @generated SignedSource<<cb14a3c713ff57fa9369c2799d472673>>
+ * @relayHash 50fb789e6c948bf153f94c8e38c1153b
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c2b46f50b97460086bba3f305200ca73
+// @relayRequestID 50fb789e6c948bf153f94c8e38c1153b
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -489,7 +489,7 @@ return {
     ]
   },
   "params": {
-    "id": "c2b46f50b97460086bba3f305200ca73",
+    "id": "50fb789e6c948bf153f94c8e38c1153b",
     "metadata": {},
     "name": "JobControlsClientComponentQuery",
     "operationKind": "query",

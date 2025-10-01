@@ -57,7 +57,6 @@ fragment CompleteProfileDrawerJobFragment on Job {
 			isRequired
 		}
 	}
-	...ApplicationFieldStepFragment
 }
 `;
 
@@ -164,7 +163,7 @@ function CompleteProfileWizard({
 			case 'headline':
 				return <HeadlineStep account={accountData} />;
 			case 'applicationField':
-				return <ApplicationFieldStep job={jobData} />;
+				return <ApplicationFieldStep />;
 			case 'reviewApplication':
 				return <ReviewApplicationStep isLoading={isLoading} />;
 			default:

@@ -1,4 +1,7 @@
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
+import { ExternalLinkIcon } from 'lucide-react';
+import Link from 'next/link';
+import links from '@/lib/links';
 
 interface ConfirmApplicationModalProps {
 	isOpen: boolean;
@@ -13,7 +16,18 @@ export default function ConfirmApplicationModal({ isOpen, onClose, onConfirm, is
 			<ModalContent>
 				<ModalHeader>Confirm Application</ModalHeader>
 				<ModalBody>
-					<p>Are you sure you want to submit your job application? You won't be able to undo this.</p>
+					<p className='text-sm text-foreground-600'>Review your application before submitting.</p>
+					<p className='text-sm text-foreground-700 w-full'>
+						Improve your chances by{' '}
+						<Link
+							href={links.resumeBuilder}
+							target='_blank'
+							rel='noopener noreferrer'
+							className='inline-flex items-center gap-2 min-w-min text-primary'
+						>
+							updating your resume. <ExternalLinkIcon size={14} />
+						</Link>
+					</p>
 				</ModalBody>
 				<ModalFooter className='flex gap-4'>
 					<Button variant='flat' onPress={onClose} fullWidth>

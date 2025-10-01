@@ -11,7 +11,8 @@ interface ReviewApplicationStepProps {
 }
 
 export default function ReviewApplicationStep({ isLoading }: ReviewApplicationStepProps) {
-	const { send } = CompleteProfileContext.useActorRef();
+	const actorRef = CompleteProfileContext.useActorRef();
+	const send = actorRef.send;
 
 	const handleApply = () => {
 		send({ type: 'APPLY_FOR_JOB' });

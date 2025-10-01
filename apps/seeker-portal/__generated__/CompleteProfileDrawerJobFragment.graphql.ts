@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f718cc0380c721ff2d10b640c3f3b944>>
+ * @generated SignedSource<<1730a7168a741f2a9fd8c64bad74a62e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,7 +19,6 @@ export type CompleteProfileDrawerJobFragment$data = {
     }>;
   } | null | undefined;
   readonly id: string;
-  readonly " $fragmentSpreads": FragmentRefs<"ApplicationFieldStepFragment">;
   readonly " $fragmentType": "CompleteProfileDrawerJobFragment";
 };
 export type CompleteProfileDrawerJobFragment$key = {
@@ -82,17 +81,12 @@ const node: ReaderFragment = {
         }
       ],
       "storageKey": null
-    },
-    {
-      "args": null,
-      "kind": "FragmentSpread",
-      "name": "ApplicationFieldStepFragment"
     }
   ],
   "type": "Job",
   "abstractKey": null
 };
 
-(node as any).hash = "a676d5235837063ce5b45076fc29b064";
+(node as any).hash = "578e5924f750ef4f3d34749ed8d0c616";
 
 export default node;

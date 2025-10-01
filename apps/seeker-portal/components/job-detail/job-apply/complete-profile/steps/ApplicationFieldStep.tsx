@@ -2,34 +2,16 @@
 
 import { Button, Textarea } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { useForm } from 'react-hook-form';
-import { graphql, useFragment } from 'react-relay';
+import { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
-import type { ApplicationFieldStepFragment$key } from '@/__generated__/ApplicationFieldStepFragment.graphql';
 import CompleteProfileContext from '../CompleteProfileContext';
-
-const ApplicationFieldStepFragment = graphql`
-fragment ApplicationFieldStepFragment on Job {
-	applicationForm {
-		fields {
-			fieldName
-			defaultValue
-			isRequired
-		}
-	}
-}
-`;
 
 const applicationFieldSchema = z.object({
 	fieldValue: z.string().min(1, 'This field is required')
 });
 
-interface ApplicationFieldStepProps {
-	job: ApplicationFieldStepFragment$key;
-}
-
-export default function ApplicationFieldStep({ job }: ApplicationFieldStepProps) {
-	const data = useFragment(ApplicationFieldStepFragment, job);
+export default function ApplicationFieldStep() {
 	const { send } = CompleteProfileContext.useActorRef();
 	const currentFieldIndex = CompleteProfileContext.useSelector(state => state.context.currentFieldIndex);
 	const missingFieldsLength = CompleteProfileContext.useSelector(state => state.context.missingFields.length);
@@ -38,10 +20,14 @@ export default function ApplicationFieldStep({ job }: ApplicationFieldStepProps)
 	const applicationFieldIndex = currentFieldIndex - missingFieldsLength;
 	const currentField = applicationFields[applicationFieldIndex];
 
-	const { register, handleSubmit, formState } = useForm<z.infer<typeof applicationFieldSchema>>({
+	const { handleSubmit, formState, control, reset } = useForm<z.infer<typeof applicationFieldSchema>>({
 		resolver: standardSchemaResolver(applicationFieldSchema),
 		defaultValues: { fieldValue: currentField?.fieldValue || currentField?.defaultValue || '' }
 	});
+
+	useEffect(() => {
+		reset({ fieldValue: currentField?.fieldValue || currentField?.defaultValue || '' });
+	}, [applicationFieldIndex, reset, currentField?.fieldValue, currentField?.defaultValue]);
 
 	const onSubmit = (formData: z.infer<typeof applicationFieldSchema>) => {
 		send({
@@ -64,12 +50,20 @@ export default function ApplicationFieldStep({ job }: ApplicationFieldStepProps)
 				<p className='text-sm text-foreground-600'>Please provide your response to this screening question.</p>
 			</div>
 
-			<Textarea
-				{...register('fieldValue')}
-				isRequired={currentField.isRequired}
-				errorMessage={formState.errors.fieldValue?.message}
-				isInvalid={!!formState.errors.fieldValue}
-				autoFocus
+			<Controller
+				name='fieldValue'
+				control={control}
+				defaultValue={currentField?.fieldValue || currentField?.defaultValue || ''}
+				render={({ field }) => (
+					<Textarea
+						{...field}
+						key={applicationFieldIndex}
+						isRequired={currentField.isRequired}
+						errorMessage={formState.errors.fieldValue?.message}
+						isInvalid={!!formState.errors.fieldValue}
+						autoFocus
+					/>
+				)}
 			/>
 
 			<div className='flex gap-3'>

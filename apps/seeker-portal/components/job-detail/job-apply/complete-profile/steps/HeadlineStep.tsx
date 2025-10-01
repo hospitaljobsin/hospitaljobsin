@@ -44,8 +44,6 @@ export default function HeadlineStep({ account }: HeadlineStepProps) {
 		defaultValues: { headline: data.profile.headline || '' }
 	});
 
-	const watchedHeadline = watch('headline');
-
 	const [commitMutation] = useMutation<HeadlineStepMutationType>(HeadlineStepMutation);
 
 	const onSubmit = (formData: z.infer<typeof headlineSchema>) => {
