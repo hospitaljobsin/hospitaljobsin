@@ -5,9 +5,6 @@
 			"source.fixAll": "explicit"
 		}
 	},
-	"ruff.nativeServer": true,
-	"python.languageServer": "None",
-	"python.analysis.typeCheckingMode": "standard",
 	"python.analysis.autoImportCompletions": true,
 	"python.analysis.showOnlyDirectDependenciesInAutoImport": true,
 	"python.defaultInterpreterPath": "${workspaceFolder}/server/.venv/bin/python",
@@ -15,7 +12,7 @@
 	"python.testing.cwd": "${workspaceFolder}/server",
 	"python.testing.unittestEnabled": false,
 	"python.testing.pytestEnabled": true,
-	"python.testing.pytestArgs": [""],
+	"python.testing.pytestArgs": ["tests"],
 	"python.terminal.activateEnvironment": false,
 	"files.exclude": {
 		"**/.git": true,

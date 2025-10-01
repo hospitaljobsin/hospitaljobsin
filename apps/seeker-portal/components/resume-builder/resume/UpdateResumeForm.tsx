@@ -15,7 +15,6 @@ const UpdateResumeFormMutation = graphql`
 mutation UpdateResumeFormMutation($resumeUrl: String!, $fileKey: String!) {
   updateProfileResume(resumeUrl: $resumeUrl, fileKey: $fileKey) {
     ...on Account {
-        ...IncompleteProfileBannerFragment
         ...ResumeProgressAccountFragment
       profile {
           ...UpdateResumeFormFragment
@@ -29,7 +28,6 @@ const DeleteResumeMutation = graphql`
   mutation UpdateResumeFormDeleteResumeMutation {
 	removeProfileResume {
 	  ...on Account {
-		...IncompleteProfileBannerFragment
 		...ResumeProgressAccountFragment
 		profile {
           ...UpdateResumeFormFragment

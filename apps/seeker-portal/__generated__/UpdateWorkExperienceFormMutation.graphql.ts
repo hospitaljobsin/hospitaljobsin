@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<acb4e22658932bb8e820614fbb72afb3>>
- * @relayHash 0f19a61e5dc71a01aaf8ef8f2f0b38f3
+ * @generated SignedSource<<5bf3d56506dade2dabfafe554c677de7>>
+ * @relayHash bb50c48e818160e0389205c874fddd73
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 0f19a61e5dc71a01aaf8ef8f2f0b38f3
+// @relayRequestID bb50c48e818160e0389205c874fddd73
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -40,7 +40,7 @@ export type UpdateWorkExperienceFormMutation$data = {
       }>;
       readonly " $fragmentSpreads": FragmentRefs<"UpdateWorkExperienceFormFragment">;
     } | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment" | "ResumeProgressAccountFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"ResumeProgressAccountFragment">;
   };
 };
 export type UpdateWorkExperienceFormMutation = {
@@ -158,11 +158,6 @@ return {
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "IncompleteProfileBannerFragment"
-              },
-              {
-                "args": null,
-                "kind": "FragmentSpread",
                 "name": "ResumeProgressAccountFragment"
               },
               {
@@ -211,42 +206,6 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v4/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Profile",
-                "kind": "LinkedField",
-                "name": "profile",
-                "plural": false,
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "isComplete",
-                    "storageKey": null
-                  },
-                  (v4/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "progressPercentage",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "updatedAt",
-                    "storageKey": null
-                  },
-                  (v3/*: any*/),
-                  (v2/*: any*/)
-                ],
-                "storageKey": null
-              },
               {
                 "alias": null,
                 "args": null,
@@ -274,6 +233,34 @@ return {
                 "kind": "ScalarField",
                 "name": "phoneNumber",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
+                    "storageKey": null
+                  },
+                  (v4/*: any*/),
+                  (v3/*: any*/),
+                  (v2/*: any*/)
+                ],
+                "storageKey": null
               }
             ],
             "type": "Account",
@@ -293,7 +280,7 @@ return {
     ]
   },
   "params": {
-    "id": "0f19a61e5dc71a01aaf8ef8f2f0b38f3",
+    "id": "bb50c48e818160e0389205c874fddd73",
     "metadata": {},
     "name": "UpdateWorkExperienceFormMutation",
     "operationKind": "mutation",
@@ -302,6 +289,6 @@ return {
 };
 })();
 
-(node as any).hash = "911bcdce3cc630806173de317c0a8bbc";
+(node as any).hash = "0727ad2ddf542a259892523dff20d053";
 
 export default node;

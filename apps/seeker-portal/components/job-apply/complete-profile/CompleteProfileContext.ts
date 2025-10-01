@@ -4,6 +4,7 @@ import { createActorContext } from '@xstate/react';
 import { assign, createMachine } from 'xstate';
 
 const context = {
+	resumeUrl: '',
 	dateOfBirth: '',
 	address: '',
 	education: [] as Array<{ degree: string; institution: string; year: string }>,
@@ -23,6 +24,7 @@ export const completeProfileMachine = createMachine({
 		context: typeof context;
 		events:
 			| { type: 'START_FORM'; missingFields: string[]; totalSteps: number }
+			| { type: 'SUBMIT_RESUME'; resumeUrl: string }
 			| { type: 'SUBMIT_DATE_OF_BIRTH'; dateOfBirth: string }
 			| { type: 'SUBMIT_ADDRESS'; address: string }
 			| { type: 'SUBMIT_EDUCATION'; education: Array<{ degree: string; institution: string; year: string }> }
@@ -30,7 +32,8 @@ export const completeProfileMachine = createMachine({
 			| { type: 'SUBMIT_PROFESSIONAL_SUMMARY'; professionalSummary: string }
 			| { type: 'SUBMIT_HEADLINE'; headline: string }
 			| { type: 'NEXT_STEP' }
-			| { type: 'PREVIOUS_STEP' };
+			| { type: 'PREVIOUS_STEP' }
+			| { type: 'REFRESH_FIELDS'; missingFields: string[]; totalSteps: number };
 	},
 	context: context,
 	states: {
@@ -49,6 +52,23 @@ export const completeProfileMachine = createMachine({
 		},
 		activeStep: {
 			on: {
+				SUBMIT_RESUME: {
+					target: 'activeStep',
+					actions: assign({
+						resumeUrl: ({ event }) => event.resumeUrl,
+						currentStep: ({ context }) => context.currentStep + 1,
+						currentFieldIndex: ({ context }) => context.currentFieldIndex + 1
+					})
+				},
+				REFRESH_FIELDS: {
+					target: 'activeStep',
+					actions: assign({
+						missingFields: ({ event }) => event.missingFields,
+						totalSteps: ({ event }) => event.totalSteps,
+						currentFieldIndex: () => 0,
+						currentStep: () => 1
+					})
+				},
 				SUBMIT_DATE_OF_BIRTH: [
 					{
 						target: 'completed',

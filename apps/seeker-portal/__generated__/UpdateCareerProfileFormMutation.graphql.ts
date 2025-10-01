@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<e412d72261f868b7f67eeef286f6834a>>
- * @relayHash 67398cba5a7c8fd79e6dacb48f80c3bb
+ * @generated SignedSource<<25b2713bdd90dbce77ac7f9975c54cab>>
+ * @relayHash 11070a5c4e2c24c8add748da2e81e0e8
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 67398cba5a7c8fd79e6dacb48f80c3bb
+// @relayRequestID 11070a5c4e2c24c8add748da2e81e0e8
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -31,7 +31,7 @@ export type UpdateCareerProfileFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateCareerProfileFormFragment">;
     } | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment" | "ResumeProgressAccountFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"ResumeProgressAccountFragment">;
   };
 };
 export type UpdateCareerProfileFormMutation = {
@@ -89,11 +89,6 @@ return {
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "IncompleteProfileBannerFragment"
-              },
-              {
-                "args": null,
-                "kind": "FragmentSpread",
                 "name": "ResumeProgressAccountFragment"
               },
               {
@@ -141,7 +136,34 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v3/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "email",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
+                "storageKey": null
+              },
               {
                 "alias": null,
                 "args": null,
@@ -150,14 +172,6 @@ return {
                 "name": "profile",
                 "plural": false,
                 "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "isComplete",
-                    "storageKey": null
-                  },
-                  (v3/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -172,6 +186,7 @@ return {
                     "name": "updatedAt",
                     "storageKey": null
                   },
+                  (v3/*: any*/),
                   (v2/*: any*/),
                   {
                     "alias": null,
@@ -228,34 +243,6 @@ return {
                   }
                 ],
                 "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "avatarUrl",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "fullName",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "email",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "phoneNumber",
-                "storageKey": null
               }
             ],
             "type": "Account",
@@ -275,7 +262,7 @@ return {
     ]
   },
   "params": {
-    "id": "67398cba5a7c8fd79e6dacb48f80c3bb",
+    "id": "11070a5c4e2c24c8add748da2e81e0e8",
     "metadata": {},
     "name": "UpdateCareerProfileFormMutation",
     "operationKind": "mutation",
@@ -284,6 +271,6 @@ return {
 };
 })();
 
-(node as any).hash = "3c5721117eebacdf5e14ec57135a42b4";
+(node as any).hash = "a353d6a5e127fcf0036da856691d5d6e";
 
 export default node;

@@ -3,9 +3,9 @@ import type { UpdateIntroductionFormMutation as UpdateIntroductionFormMutationTy
 import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
 import { cn, Input } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
-import { useState } from 'react';
 import { z } from 'zod';
 import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 
@@ -20,7 +20,6 @@ const UpdateIntroductionFormMutation = graphql`
   mutation UpdateIntroductionFormMutation($professionalSummary: String!, $headline: String!) {
     updateProfileAboutMe(professionalSummary: $professionalSummary, headline: $headline) {
       ... on Account {
-        ...IncompleteProfileBannerFragment
         profile {
           ...UpdateIntroductionFormFragment
         }

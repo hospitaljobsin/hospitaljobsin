@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<dd03ebc68caec9bde2979afaefde1a9c>>
- * @relayHash eaaf040feb4dd09f5278641dc68e8884
+ * @generated SignedSource<<64d42fee8a5487733cfff30de574b73e>>
+ * @relayHash 0f91bfaa8cecdc30d8d4e2274d2018c2
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID eaaf040feb4dd09f5278641dc68e8884
+// @relayRequestID 0f91bfaa8cecdc30d8d4e2274d2018c2
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -22,7 +22,6 @@ export type UpdateIntroductionFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateIntroductionFormFragment">;
     } | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment">;
   };
 };
 export type UpdateIntroductionFormMutation = {
@@ -82,11 +81,6 @@ return {
             "kind": "InlineFragment",
             "selections": [
               {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "IncompleteProfileBannerFragment"
-              },
-              {
                 "alias": null,
                 "args": null,
                 "concreteType": "Profile",
@@ -140,7 +134,6 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -149,14 +142,6 @@ return {
                 "name": "profile",
                 "plural": false,
                 "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "isComplete",
-                    "storageKey": null
-                  },
-                  (v3/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -170,7 +155,8 @@ return {
                     "kind": "ScalarField",
                     "name": "headline",
                     "storageKey": null
-                  }
+                  },
+                  (v3/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -192,7 +178,7 @@ return {
     ]
   },
   "params": {
-    "id": "eaaf040feb4dd09f5278641dc68e8884",
+    "id": "0f91bfaa8cecdc30d8d4e2274d2018c2",
     "metadata": {},
     "name": "UpdateIntroductionFormMutation",
     "operationKind": "mutation",
@@ -201,6 +187,6 @@ return {
 };
 })();
 
-(node as any).hash = "41db8b7d0baccb60c7af947e1e9a7976";
+(node as any).hash = "8837e49ac037ac53a07caf44addeb4f6";
 
 export default node;

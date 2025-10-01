@@ -8,7 +8,5 @@
 		"apps": true,
 		"server": true,
 		"infrastructure": true
-	},
-	"relay.pathToConfig": "relay.config.json",
-	"relay.pathToRelay": "/usr/lib/node_modules/relay-compiler/linux-x64/relay"
+	}
 }

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0fcba0479098c4bc7e61563338c6917f>>
+ * @generated SignedSource<<fc66982163dc84448da358ee1d710646>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -24,6 +24,7 @@ export type CompleteProfileDrawerFragment$data = {
     readonly headline: string | null | undefined;
     readonly isComplete: boolean;
     readonly professionalSummary: string | null | undefined;
+    readonly resumeUrl: string | null | undefined;
   };
   readonly " $fragmentType": "CompleteProfileDrawerFragment";
 };
@@ -125,6 +126,13 @@ const node: ReaderFragment = {
             "kind": "ScalarField",
             "name": "headline",
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "resumeUrl",
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -136,6 +144,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "e04ff21059bd9fc506c06807e7681f3c";
+(node as any).hash = "3db75075ca2249f7271259ad97570301";
 
 export default node;

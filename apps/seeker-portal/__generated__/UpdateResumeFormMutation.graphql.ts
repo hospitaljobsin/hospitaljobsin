@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<dcfb20688685f05413807dba2ef5def4>>
- * @relayHash 13835fd65fc7f6b8593a440cd6420d17
+ * @generated SignedSource<<75fdcf8d5cbd2832983d2c7b570e8134>>
+ * @relayHash 02d0863b8f4794a2de6a00a51e736ea3
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 13835fd65fc7f6b8593a440cd6420d17
+// @relayRequestID 02d0863b8f4794a2de6a00a51e736ea3
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -22,7 +22,7 @@ export type UpdateResumeFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateResumeFormFragment">;
     } | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment" | "ResumeProgressAccountFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"ResumeProgressAccountFragment">;
   };
 };
 export type UpdateResumeFormMutation = {
@@ -84,11 +84,6 @@ return {
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "IncompleteProfileBannerFragment"
-              },
-              {
-                "args": null,
-                "kind": "FragmentSpread",
                 "name": "ResumeProgressAccountFragment"
               },
               {
@@ -145,47 +140,6 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v3/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Profile",
-                "kind": "LinkedField",
-                "name": "profile",
-                "plural": false,
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "isComplete",
-                    "storageKey": null
-                  },
-                  (v3/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "progressPercentage",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "updatedAt",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "resumeUrl",
-                    "storageKey": null
-                  }
-                ],
-                "storageKey": null
-              },
               {
                 "alias": null,
                 "args": null,
@@ -213,6 +167,39 @@ return {
                 "kind": "ScalarField",
                 "name": "phoneNumber",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
+                    "storageKey": null
+                  },
+                  (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "resumeUrl",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
               }
             ],
             "type": "Account",
@@ -232,7 +219,7 @@ return {
     ]
   },
   "params": {
-    "id": "13835fd65fc7f6b8593a440cd6420d17",
+    "id": "02d0863b8f4794a2de6a00a51e736ea3",
     "metadata": {},
     "name": "UpdateResumeFormMutation",
     "operationKind": "mutation",
@@ -241,6 +228,6 @@ return {
 };
 })();
 
-(node as any).hash = "a8ee691a6a0a54b3b101c751aec12236";
+(node as any).hash = "95fb3061980896e7ea03aaec3e80e29d";
 
 export default node;

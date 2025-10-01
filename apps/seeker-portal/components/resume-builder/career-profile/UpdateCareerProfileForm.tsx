@@ -13,7 +13,6 @@ const UpdateCareerProfileFormMutation = graphql`
 mutation UpdateCareerProfileFormMutation($careerProfile: CareerProfileInput!) {
   updateProfileCareerProfile(careerProfile: $careerProfile) {
     ...on Account {
-        ...IncompleteProfileBannerFragment
         ...ResumeProgressAccountFragment
       profile {
           ...UpdateCareerProfileFormFragment

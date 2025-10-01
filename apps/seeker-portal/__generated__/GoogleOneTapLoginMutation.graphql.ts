@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<d04bdc64a454a45d4bccd8e408238159>>
- * @relayHash 9b1d49c908b7293338038f0a19878075
+ * @generated SignedSource<<32c737f763583ffd7455116180285e9d>>
+ * @relayHash 57d84725b3be760fd5a468f2e45ccca5
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 9b1d49c908b7293338038f0a19878075
+// @relayRequestID 57d84725b3be760fd5a468f2e45ccca5
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -22,7 +22,7 @@ export type GoogleOneTapLoginMutation$data = {
     readonly __typename: "Account";
     readonly email: string;
     readonly id: string;
-    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "IncompleteProfileBannerFragment" | "JobAuthFragment" | "JobControlsAuthFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "JobAuthFragment" | "JobControlsAuthFragment">;
   } | {
     readonly __typename: "InvalidCredentialsError";
     readonly message: string;
@@ -135,11 +135,6 @@ return {
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "IncompleteProfileBannerFragment"
-              },
-              {
-                "args": null,
-                "kind": "FragmentSpread",
                 "name": "JobAuthFragment"
               },
               {
@@ -210,14 +205,7 @@ return {
                     "name": "progressPercentage",
                     "storageKey": null
                   },
-                  (v3/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "isComplete",
-                    "storageKey": null
-                  }
+                  (v3/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -246,7 +234,7 @@ return {
     ]
   },
   "params": {
-    "id": "9b1d49c908b7293338038f0a19878075",
+    "id": "57d84725b3be760fd5a468f2e45ccca5",
     "metadata": {},
     "name": "GoogleOneTapLoginMutation",
     "operationKind": "mutation",
@@ -255,6 +243,6 @@ return {
 };
 })();
 
-(node as any).hash = "54db69393e7b78ad4a8bb7b027555730";
+(node as any).hash = "c607068b53d631c8fab8f7f716a9453a";
 
 export default node;

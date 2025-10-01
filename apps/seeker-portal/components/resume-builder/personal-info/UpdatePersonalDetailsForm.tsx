@@ -14,7 +14,6 @@ mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Da
 	updateProfilePersonalDetails(gender: $gender, dateOfBirth: $dateOfBirth, maritalStatus: $maritalStatus, category: $category,address: $address) {
 		__typename
 		...on Account {
-			...IncompleteProfileBannerFragment
 			...ResumeProgressAccountFragment
 			profile {
 				...UpdatePersonalDetailsFormFragment

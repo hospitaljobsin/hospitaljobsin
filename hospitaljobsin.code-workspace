@@ -21,6 +21,8 @@
     // Set the Python interpreter globally, so VS Code stops complaining about invalid interpreter on other folders
     // Also fix the Ruff extension
     "python.defaultInterpreterPath": "${workspaceFolder:server}/.venv/bin/python",
-    	"ruff.nativeServer": true,
+    "ruff.nativeServer": true,
+    "relay.pathToConfig": "relay.config.json",
+	  "relay.pathToRelay": "/usr/lib/node_modules/relay-compiler/linux-x64/relay"
   }
 }
