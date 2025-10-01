@@ -7,7 +7,8 @@ const companies = [
 	{ name: 'GEM Hospital', logo: '/company-logos/gem-hospital.png' },
 	{ name: 'Kauvery Hospital', logo: '/company-logos/kauvery-hospital.png' },
 	{ name: 'Spectra Medical', logo: '/company-logos/spectra-medical.png' },
-	{ name: 'Vecura', logo: '/company-logos/vecura.png' }
+	{ name: 'Vecura', logo: '/company-logos/vecura.png' },
+	{ name: 'Scans World', logo: '/company-logos/scans-world.png' }
 ];
 
 export default function CompanyLogos() {
