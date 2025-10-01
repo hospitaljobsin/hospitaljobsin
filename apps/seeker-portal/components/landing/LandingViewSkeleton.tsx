@@ -22,15 +22,15 @@ export default function LandingViewSkeleton() {
 					</svg>
 				</div>
 				{/* Main content: text left, image right */}
-				<div className='relative z-10 flex flex-col md:flex-row md:items-end text-center md:text-left gap-8 pt-8 sm:pt-24 px-4 max-w-7xl w-full h-full'>
+				<div className='relative z-10 flex flex-col md:flex-row md:items-end text-center md:text-left gap-8 pt-8 px-4 max-w-7xl w-full h-full'>
 					{/* Left: Text and Search */}
 					<div className='flex-1 flex flex-col items-center md:items-start gap-6 pb-16'>
-						<h1 className='text-4xl sm:text-6xl font-medium tracking-tight text-primary-foreground drop-shadow-lg hidden md:block'>
+						<h1 className='text-4xl font-medium tracking-tight text-primary-foreground drop-shadow-lg hidden md:block'>
 							Empowering <span className='text-accent-400'>Healthcare Heroes</span>
 							<br />
 							to Find Their Next <span className='text-accent-400'>Opportunity</span>
 						</h1>
-						<p className='text-lg sm:text-2xl text-primary-foreground/90 font-medium max-w-xl mx-auto md:mx-0 hidden md:block'>
+						<p className='text-lg sm:text-xl text-primary-foreground/90 font-medium max-w-xl mx-auto md:mx-0 hidden md:block'>
 							Discover life-changing roles at top hospitals and clinics. Your next mission starts here.
 						</p>
 						<div className='w-full flex flex-col items-center md:items-start gap-4'>
@@ -38,7 +38,7 @@ export default function LandingViewSkeleton() {
 						</div>
 					</div>
 					{/* Right: Doctor Image */}
-					<div className='flex-1 md:flex items-end w-auto h-[600px] hidden relative'>
+					<div className='flex-1 md:flex items-end w-auto h-[450px] hidden relative'>
 						<Image
 							src='/hero-model.png'
 							alt='Group of doctors smiling, representing healthcare professionals'
@@ -51,7 +51,7 @@ export default function LandingViewSkeleton() {
 						<Image
 							src='/hero-model-2.png'
 							alt='Group of doctors smiling, representing healthcare professionals'
-							className='w-auto h-full max-w-full object-cover object-bottom absolute drop-shadow-lg left-56 z-20 hidden xl:block'
+							className='w-auto h-full max-w-full object-cover object-bottom absolute drop-shadow-lg left-72 z-20 hidden xl:block'
 							loading='eager'
 							unoptimized={false}
 							width={1000}
