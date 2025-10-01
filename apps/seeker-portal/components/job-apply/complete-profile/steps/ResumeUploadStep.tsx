@@ -4,11 +4,20 @@ import { Button } from '@heroui/react';
 import { Upload } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { graphql, useMutation } from 'react-relay';
+import { graphql, useFragment, useMutation } from 'react-relay';
+import type { ResumeUploadStepFragment$key } from '@/__generated__/ResumeUploadStepFragment.graphql';
 import type { ResumeUploadStepGeneratePresignedUrlMutation } from '@/__generated__/ResumeUploadStepGeneratePresignedUrlMutation.graphql';
 import type { ResumeUploadStepUpdateResumeMutation } from '@/__generated__/ResumeUploadStepUpdateResumeMutation.graphql';
 import { uploadFileToS3 } from '../../../../lib/presignedUrl';
 import CompleteProfileContext from '../CompleteProfileContext';
+
+const ResumeUploadStepFragment = graphql`
+fragment ResumeUploadStepFragment on Account {
+	profile @required(action: THROW) {
+		resumeUrl
+	}
+}
+`;
 
 const GeneratePresignedUrlMutation = graphql`
 mutation ResumeUploadStepGeneratePresignedUrlMutation($contentType: String!) {
@@ -24,15 +33,17 @@ mutation ResumeUploadStepUpdateResumeMutation($resumeUrl: String!, $fileKey: Str
 	updateProfileResume(resumeUrl: $resumeUrl, fileKey: $fileKey) {
 		...on Account {
 			...CompleteProfileDrawerFragment
-			profile {
-				resumeUrl
-			}
 		}
 	}
 }
 `;
 
-export default function ResumeUploadStep() {
+interface ResumeUploadStepProps {
+	account: ResumeUploadStepFragment$key;
+}
+
+export default function ResumeUploadStep({ account }: ResumeUploadStepProps) {
+	const data = useFragment(ResumeUploadStepFragment, account);
 	const { send } = CompleteProfileContext.useActorRef();
 	const [isUploading, setIsUploading] = useState(false);
 	const [commitPresignedUrlMutation] = useMutation<ResumeUploadStepGeneratePresignedUrlMutation>(GeneratePresignedUrlMutation);
@@ -55,10 +66,7 @@ export default function ResumeUploadStep() {
 								variables: { resumeUrl, fileKey },
 								onCompleted: () => {
 									setIsUploading(false);
-									send({
-										type: 'SUBMIT_RESUME',
-										resumeUrl
-									});
+									send({ type: 'STEP_COMPLETED' });
 								},
 								onError: () => setIsUploading(false)
 							});

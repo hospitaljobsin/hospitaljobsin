@@ -4,23 +4,29 @@ import { Button, Chip, Divider, Switch } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { graphql, useMutation } from 'react-relay';
+import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
+import type { CareerProfileStepFragment$key } from '@/__generated__/CareerProfileStepFragment.graphql';
 import type { CareerProfileStepMutation as CareerProfileStepMutationType } from '@/__generated__/CareerProfileStepMutation.graphql';
 import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
 import CompleteProfileContext from '../CompleteProfileContext';
+
+const CareerProfileStepFragment = graphql`
+fragment CareerProfileStepFragment on Account {
+	profile @required(action: THROW) {
+		careerProfile {
+			locationsOpenToWork
+			openToRelocationAnywhere
+		}
+	}
+}
+`;
 
 const CareerProfileStepMutation = graphql`
 mutation CareerProfileStepMutation($locationsOpenToWork: [String!]!, $openToRelocationAnywhere: Boolean!) {
 	updateProfileCareerProfile(locationsOpenToWork: $locationsOpenToWork, openToRelocationAnywhere: $openToRelocationAnywhere, desiredJobTypes: [], desiredWorkModes: []) {
 		...on Account {
 			...CompleteProfileDrawerFragment
-			profile {
-				careerProfile {
-					locationsOpenToWork
-					openToRelocationAnywhere
-				}
-			}
 		}
 	}
 }
@@ -31,18 +37,22 @@ const careerProfileSchema = z.object({
 	locationsOpenToWork: z.array(z.string())
 });
 
-export default function CareerProfileStep() {
+interface CareerProfileStepProps {
+	account: CareerProfileStepFragment$key;
+}
+
+export default function CareerProfileStep({ account }: CareerProfileStepProps) {
+	const data = useFragment(CareerProfileStepFragment, account);
 	const { send } = CompleteProfileContext.useActorRef();
-	const locationsOpenToWork = CompleteProfileContext.useSelector(state => state.context.locationsOpenToWork);
-	const openToRelocationAnywhere = CompleteProfileContext.useSelector(state => state.context.openToRelocationAnywhere);
+	const isLastStep = CompleteProfileContext.useSelector(state => state.context.currentFieldIndex + 1 >= state.context.totalSteps);
 
 	const [inputValue, setInputValue] = useState('');
 
 	const { control, handleSubmit, formState, setValue } = useForm<z.infer<typeof careerProfileSchema>>({
 		resolver: standardSchemaResolver(careerProfileSchema),
 		defaultValues: {
-			locationsOpenToWork: locationsOpenToWork || [],
-			openToRelocationAnywhere: openToRelocationAnywhere || false
+			locationsOpenToWork: data.profile.careerProfile?.locationsOpenToWork || [],
+			openToRelocationAnywhere: data.profile.careerProfile?.openToRelocationAnywhere || false
 		}
 	});
 
@@ -50,18 +60,14 @@ export default function CareerProfileStep() {
 
 	const [commitMutation] = useMutation<CareerProfileStepMutationType>(CareerProfileStepMutation);
 
-	const onSubmit = (data: z.infer<typeof careerProfileSchema>) => {
+	const onSubmit = (formData: z.infer<typeof careerProfileSchema>) => {
 		commitMutation({
 			variables: {
-				locationsOpenToWork: data.locationsOpenToWork || [],
-				openToRelocationAnywhere: data.openToRelocationAnywhere
+				locationsOpenToWork: formData.locationsOpenToWork || [],
+				openToRelocationAnywhere: formData.openToRelocationAnywhere
 			},
 			onCompleted() {
-				send({
-					type: 'SUBMIT_CAREER_PROFILE',
-					locationsOpenToWork: data.locationsOpenToWork || [],
-					openToRelocationAnywhere: data.openToRelocationAnywhere
-				});
+				send({ type: 'STEP_COMPLETED' });
 			}
 		});
 	};
@@ -136,7 +142,7 @@ export default function CareerProfileStep() {
 					Previous
 				</Button>
 				<Button type='submit' color='primary' fullWidth isLoading={formState.isSubmitting}>
-					Continue
+					{isLastStep ? 'Apply' : 'Continue'}
 				</Button>
 			</div>
 		</form>

@@ -3,19 +3,25 @@
 import { Button, Input } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useForm } from 'react-hook-form';
-import { graphql, useMutation } from 'react-relay';
+import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
+import type { HeadlineStepFragment$key } from '@/__generated__/HeadlineStepFragment.graphql';
 import type { HeadlineStepMutation as HeadlineStepMutationType } from '@/__generated__/HeadlineStepMutation.graphql';
 import CompleteProfileContext from '../CompleteProfileContext';
+
+const HeadlineStepFragment = graphql`
+fragment HeadlineStepFragment on Account {
+	profile @required(action: THROW) {
+		headline
+	}
+}
+`;
 
 const HeadlineStepMutation = graphql`
 mutation HeadlineStepMutation($headline: String!) {
 	updateProfileAboutMe(headline: $headline, professionalSummary: "") {
 		... on Account {
 			...CompleteProfileDrawerFragment
-			profile {
-				headline
-			}
 		}
 	}
 }
@@ -25,29 +31,31 @@ const headlineSchema = z.object({
 	headline: z.string().min(10, 'Headline should be at least 10 characters').max(100, 'Headline should not exceed 100 characters')
 });
 
-export default function HeadlineStep() {
+interface HeadlineStepProps {
+	account: HeadlineStepFragment$key;
+}
+
+export default function HeadlineStep({ account }: HeadlineStepProps) {
+	const data = useFragment(HeadlineStepFragment, account);
 	const { send } = CompleteProfileContext.useActorRef();
-	const headline = CompleteProfileContext.useSelector(state => state.context.headline);
+	const isLastStep = CompleteProfileContext.useSelector(state => state.context.currentFieldIndex + 1 >= state.context.totalSteps);
 
 	const { register, handleSubmit, formState, watch } = useForm<z.infer<typeof headlineSchema>>({
 		resolver: standardSchemaResolver(headlineSchema),
-		defaultValues: { headline: headline || '' }
+		defaultValues: { headline: data.profile.headline || '' }
 	});
 
 	const watchedHeadline = watch('headline');
 
 	const [commitMutation] = useMutation<HeadlineStepMutationType>(HeadlineStepMutation);
 
-	const onSubmit = (data: z.infer<typeof headlineSchema>) => {
+	const onSubmit = (formData: z.infer<typeof headlineSchema>) => {
 		commitMutation({
 			variables: {
-				headline: data.headline
+				headline: formData.headline
 			},
 			onCompleted() {
-				send({
-					type: 'SUBMIT_HEADLINE',
-					headline: data.headline
-				});
+				send({ type: 'STEP_COMPLETED' });
 			}
 		});
 	};
@@ -94,7 +102,7 @@ export default function HeadlineStep() {
 					Previous
 				</Button>
 				<Button type='submit' color='primary' fullWidth isLoading={formState.isSubmitting}>
-					Continue
+					{isLastStep ? 'Apply' : 'Continue'}
 				</Button>
 			</div>
 		</form>

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<2a537c4b90698a9588b9144ac1e027e2>>
- * @relayHash 54526c05773ca21f2bf8b7752bf0bf0a
+ * @generated SignedSource<<7197f34a2146a49c91059ac514d22703>>
+ * @relayHash 3e6a995ed95635bdff1ad3cf9ed49329
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 54526c05773ca21f2bf8b7752bf0bf0a
+// @relayRequestID 3e6a995ed95635bdff1ad3cf9ed49329
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -19,9 +19,6 @@ export type DateOfBirthStepMutation$variables = {
 export type DateOfBirthStepMutation$data = {
   readonly updateProfilePersonalDetails: {
     readonly __typename: "Account";
-    readonly profile: {
-      readonly dateOfBirth: any | null | undefined;
-    } | null | undefined;
     readonly " $fragmentSpreads": FragmentRefs<"CompleteProfileDrawerFragment">;
   } | {
     // This will never be '%other', but we need some
@@ -60,13 +57,6 @@ v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "dateOfBirth",
-  "storageKey": null
-},
-v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 };
@@ -93,18 +83,6 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "CompleteProfileDrawerFragment"
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Profile",
-                "kind": "LinkedField",
-                "name": "profile",
-                "plural": false,
-                "selections": [
-                  (v3/*: any*/)
-                ],
-                "storageKey": null
               }
             ],
             "type": "Account",
@@ -150,7 +128,13 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "dateOfBirth",
+                    "storageKey": null
+                  },
                   {
                     "alias": null,
                     "args": null,
@@ -216,7 +200,7 @@ return {
                     "name": "resumeUrl",
                     "storageKey": null
                   },
-                  (v4/*: any*/)
+                  (v3/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -227,7 +211,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v4/*: any*/)
+              (v3/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -238,7 +222,7 @@ return {
     ]
   },
   "params": {
-    "id": "54526c05773ca21f2bf8b7752bf0bf0a",
+    "id": "3e6a995ed95635bdff1ad3cf9ed49329",
     "metadata": {},
     "name": "DateOfBirthStepMutation",
     "operationKind": "mutation",
@@ -247,6 +231,6 @@ return {
 };
 })();
 
-(node as any).hash = "8fa93a75e6774bb65e61a548c2cf4f81";
+(node as any).hash = "f20fe9412cc006bcbe00552bfece73bb";
 
 export default node;

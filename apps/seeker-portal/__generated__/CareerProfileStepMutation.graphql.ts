@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c88103481627466dd609e01fb2f2daba>>
- * @relayHash 5570b93f0870aa049e5667ab8c857b8f
+ * @generated SignedSource<<95611701b22b9dc029ab28341569e1c0>>
+ * @relayHash 0bf8eb6ffeafb06b43db25e5b6753bad
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 5570b93f0870aa049e5667ab8c857b8f
+// @relayRequestID 0bf8eb6ffeafb06b43db25e5b6753bad
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -19,12 +19,6 @@ export type CareerProfileStepMutation$variables = {
 };
 export type CareerProfileStepMutation$data = {
   readonly updateProfileCareerProfile: {
-    readonly profile?: {
-      readonly careerProfile: {
-        readonly locationsOpenToWork: ReadonlyArray<string>;
-        readonly openToRelocationAnywhere: boolean;
-      } | null | undefined;
-    } | null | undefined;
     readonly " $fragmentSpreads": FragmentRefs<"CompleteProfileDrawerFragment">;
   };
 };
@@ -71,36 +65,11 @@ v1 = [
 v2 = {
   "alias": null,
   "args": null,
-  "concreteType": "CareerProfile",
-  "kind": "LinkedField",
-  "name": "careerProfile",
-  "plural": false,
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "locationsOpenToWork",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "openToRelocationAnywhere",
-      "storageKey": null
-    }
-  ],
-  "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v4 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -129,18 +98,6 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "CompleteProfileDrawerFragment"
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Profile",
-                "kind": "LinkedField",
-                "name": "profile",
-                "plural": false,
-                "selections": [
-                  (v2/*: any*/)
-                ],
-                "storageKey": null
               }
             ],
             "type": "Account",
@@ -167,7 +124,7 @@ return {
         "name": "updateProfileCareerProfile",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
+          (v2/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -208,11 +165,35 @@ return {
                     "name": "education",
                     "plural": true,
                     "selections": [
-                      (v3/*: any*/)
+                      (v2/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v2/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "CareerProfile",
+                    "kind": "LinkedField",
+                    "name": "careerProfile",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "locationsOpenToWork",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "openToRelocationAnywhere",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
                   {
                     "alias": null,
                     "args": null,
@@ -234,7 +215,7 @@ return {
                     "name": "resumeUrl",
                     "storageKey": null
                   },
-                  (v4/*: any*/)
+                  (v3/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -245,7 +226,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v4/*: any*/)
+              (v3/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -256,7 +237,7 @@ return {
     ]
   },
   "params": {
-    "id": "5570b93f0870aa049e5667ab8c857b8f",
+    "id": "0bf8eb6ffeafb06b43db25e5b6753bad",
     "metadata": {},
     "name": "CareerProfileStepMutation",
     "operationKind": "mutation",
@@ -265,6 +246,6 @@ return {
 };
 })();
 
-(node as any).hash = "34bb47cdc798666c55ab459930081f3d";
+(node as any).hash = "cbb8499844b5a47bdb46b11d16eacdd0";
 
 export default node;

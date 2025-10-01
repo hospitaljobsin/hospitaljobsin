@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<878f3b6d4d0df64906c4f07afb7c97ab>>
- * @relayHash c87e13733ccf2f361d7a37639e0ba060
+ * @generated SignedSource<<da05f85e0acab8ad0e0e39df32c71ef1>>
+ * @relayHash 03ad6e246db74d6c9f1b0689c6adaf98
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c87e13733ccf2f361d7a37639e0ba060
+// @relayRequestID 03ad6e246db74d6c9f1b0689c6adaf98
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -19,9 +19,6 @@ export type AddressStepMutation$variables = {
 export type AddressStepMutation$data = {
   readonly updateProfilePersonalDetails: {
     readonly __typename: "Account";
-    readonly profile: {
-      readonly address: string | null | undefined;
-    } | null | undefined;
     readonly " $fragmentSpreads": FragmentRefs<"CompleteProfileDrawerFragment">;
   } | {
     readonly __typename: "InvalidLocationError";
@@ -60,13 +57,6 @@ v2 = {
   "storageKey": null
 },
 v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "address",
-  "storageKey": null
-},
-v4 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -80,7 +70,7 @@ v4 = {
   "type": "InvalidLocationError",
   "abstractKey": null
 },
-v5 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -110,24 +100,12 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "CompleteProfileDrawerFragment"
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Profile",
-                "kind": "LinkedField",
-                "name": "profile",
-                "plural": false,
-                "selections": [
-                  (v3/*: any*/)
-                ],
-                "storageKey": null
               }
             ],
             "type": "Account",
             "abstractKey": null
           },
-          (v4/*: any*/)
+          (v3/*: any*/)
         ],
         "storageKey": null
       }
@@ -175,7 +153,13 @@ return {
                     "name": "dateOfBirth",
                     "storageKey": null
                   },
-                  (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "address",
+                    "storageKey": null
+                  },
                   {
                     "alias": null,
                     "args": null,
@@ -234,7 +218,7 @@ return {
                     "name": "resumeUrl",
                     "storageKey": null
                   },
-                  (v5/*: any*/)
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -242,11 +226,11 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v4/*: any*/),
+          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              (v5/*: any*/)
+              (v4/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -257,7 +241,7 @@ return {
     ]
   },
   "params": {
-    "id": "c87e13733ccf2f361d7a37639e0ba060",
+    "id": "03ad6e246db74d6c9f1b0689c6adaf98",
     "metadata": {},
     "name": "AddressStepMutation",
     "operationKind": "mutation",
@@ -266,6 +250,6 @@ return {
 };
 })();
 
-(node as any).hash = "01921c24c2829de19a418d20e8161f57";
+(node as any).hash = "b07b288ebcbe2c6e401f6a4b6144578b";
 
 export default node;

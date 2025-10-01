@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fc66982163dc84448da358ee1d710646>>
+ * @generated SignedSource<<9a6ee27983c441b75d80c865b9636ea8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -26,6 +26,7 @@ export type CompleteProfileDrawerFragment$data = {
     readonly professionalSummary: string | null | undefined;
     readonly resumeUrl: string | null | undefined;
   };
+  readonly " $fragmentSpreads": FragmentRefs<"AddressStepFragment" | "CareerProfileStepFragment" | "DateOfBirthStepFragment" | "HeadlineStepFragment" | "ResumeUploadStepFragment">;
   readonly " $fragmentType": "CompleteProfileDrawerFragment";
 };
 export type CompleteProfileDrawerFragment$key = {
@@ -138,12 +139,37 @@ const node: ReaderFragment = {
         "storageKey": null
       },
       "action": "THROW"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "AddressStepFragment"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "DateOfBirthStepFragment"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "HeadlineStepFragment"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "CareerProfileStepFragment"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "ResumeUploadStepFragment"
     }
   ],
   "type": "Account",
   "abstractKey": null
 };
 
-(node as any).hash = "3db75075ca2249f7271259ad97570301";
+(node as any).hash = "1b2d19ba0dbcbc0c81aa2af322370a67";
 
 export default node;

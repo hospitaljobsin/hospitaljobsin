@@ -3,11 +3,20 @@
 import { Button } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { Controller, useForm } from 'react-hook-form';
-import { graphql, useMutation } from 'react-relay';
+import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
+import type { AddressStepFragment$key } from '@/__generated__/AddressStepFragment.graphql';
 import type { AddressStepMutation as AddressStepMutationType } from '@/__generated__/AddressStepMutation.graphql';
 import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
 import CompleteProfileContext from '../CompleteProfileContext';
+
+const AddressStepFragment = graphql`
+fragment AddressStepFragment on Account {
+	profile @required(action: THROW) {
+		address
+	}
+}
+`;
 
 const AddressStepMutation = graphql`
 mutation AddressStepMutation($address: String) {
@@ -15,9 +24,6 @@ mutation AddressStepMutation($address: String) {
 		__typename
 		...on Account {
 			...CompleteProfileDrawerFragment
-			profile {
-				address
-			}
 		}
 		... on InvalidLocationError {
 			message
@@ -30,31 +36,33 @@ const addressSchema = z.object({
 	address: z.string().min(1, 'Please provide your address')
 });
 
-export default function AddressStep() {
+interface AddressStepProps {
+	account: AddressStepFragment$key;
+}
+
+export default function AddressStep({ account }: AddressStepProps) {
+	const data = useFragment(AddressStepFragment, account);
 	const { send } = CompleteProfileContext.useActorRef();
-	const address = CompleteProfileContext.useSelector(state => state.context.address);
+	const isLastStep = CompleteProfileContext.useSelector(state => state.context.currentFieldIndex + 1 >= state.context.totalSteps);
 
 	const { control, handleSubmit, formState, setError } = useForm<z.infer<typeof addressSchema>>({
 		resolver: standardSchemaResolver(addressSchema),
-		defaultValues: { address: address || '' }
+		defaultValues: { address: data.profile.address || '' }
 	});
 
 	const [commitMutation] = useMutation<AddressStepMutationType>(AddressStepMutation);
 
-	const onSubmit = (data: z.infer<typeof addressSchema>) => {
+	const onSubmit = (formData: z.infer<typeof addressSchema>) => {
 		commitMutation({
 			variables: {
-				address: data.address
+				address: formData.address
 			},
 			onCompleted(response) {
 				if (response.updateProfilePersonalDetails.__typename === 'InvalidLocationError') {
 					setError('address', { message: response.updateProfilePersonalDetails.message });
 					return;
 				}
-				send({
-					type: 'SUBMIT_ADDRESS',
-					address: data.address
-				});
+				send({ type: 'STEP_COMPLETED' });
 			}
 		});
 	};
@@ -94,7 +102,7 @@ export default function AddressStep() {
 					Previous
 				</Button>
 				<Button type='submit' color='primary' fullWidth isLoading={formState.isSubmitting}>
-					Continue
+					{isLastStep ? 'Apply' : 'Continue'}
 				</Button>
 			</div>
 		</form>

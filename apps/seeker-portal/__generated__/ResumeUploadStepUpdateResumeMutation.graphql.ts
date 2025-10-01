@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<4fcb15c2771cecb63056ab6822bdf3d8>>
- * @relayHash c48688a78a2c171570a92a5a2f891354
+ * @generated SignedSource<<7afd52d26b6c070dbe2b97772c742aa5>>
+ * @relayHash ed9cc8536a2acf4aca1496ca08238a14
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c48688a78a2c171570a92a5a2f891354
+// @relayRequestID ed9cc8536a2acf4aca1496ca08238a14
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -19,9 +19,6 @@ export type ResumeUploadStepUpdateResumeMutation$variables = {
 };
 export type ResumeUploadStepUpdateResumeMutation$data = {
   readonly updateProfileResume: {
-    readonly profile?: {
-      readonly resumeUrl: string | null | undefined;
-    } | null | undefined;
     readonly " $fragmentSpreads": FragmentRefs<"CompleteProfileDrawerFragment">;
   };
 };
@@ -57,17 +54,10 @@ v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "resumeUrl",
-  "storageKey": null
-},
-v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v5 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -99,18 +89,6 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "CompleteProfileDrawerFragment"
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Profile",
-                "kind": "LinkedField",
-                "name": "profile",
-                "plural": false,
-                "selections": [
-                  (v3/*: any*/)
-                ],
-                "storageKey": null
               }
             ],
             "type": "Account",
@@ -140,7 +118,7 @@ return {
         "name": "updateProfileResume",
         "plural": false,
         "selections": [
-          (v4/*: any*/),
+          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -181,7 +159,7 @@ return {
                     "name": "education",
                     "plural": true,
                     "selections": [
-                      (v4/*: any*/)
+                      (v3/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -224,8 +202,14 @@ return {
                     "name": "headline",
                     "storageKey": null
                   },
-                  (v3/*: any*/),
-                  (v5/*: any*/)
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "resumeUrl",
+                    "storageKey": null
+                  },
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -236,7 +220,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v5/*: any*/)
+              (v4/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -247,7 +231,7 @@ return {
     ]
   },
   "params": {
-    "id": "c48688a78a2c171570a92a5a2f891354",
+    "id": "ed9cc8536a2acf4aca1496ca08238a14",
     "metadata": {},
     "name": "ResumeUploadStepUpdateResumeMutation",
     "operationKind": "mutation",
@@ -256,6 +240,6 @@ return {
 };
 })();
 
-(node as any).hash = "62b85b95a6ece5041f2004d64dee0fa3";
+(node as any).hash = "ba40f7a5e27e9f6e5e661e2cb4aeaeb5";
 
 export default node;

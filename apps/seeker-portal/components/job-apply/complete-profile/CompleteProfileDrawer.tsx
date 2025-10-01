@@ -1,12 +1,15 @@
 'use client';
-import { Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, Progress } from '@heroui/react';
-import { AlertCircle, CheckCircle } from 'lucide-react';
-import { useEffect } from 'react';
+import { Drawer, DrawerBody, DrawerContent, DrawerHeader, Progress } from '@heroui/react';
+import { AlertCircle } from 'lucide-react';
+import { useEffect, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import type { CompleteProfileDrawerFragment$key } from '@/__generated__/CompleteProfileDrawerFragment.graphql';
+import type { CompleteProfileDrawerJobFragment$key } from '@/__generated__/CompleteProfileDrawerJobFragment.graphql';
+import { useJobApplication } from '../hooks/useJobApplication';
 import CompleteProfileContext from './CompleteProfileContext';
 import AddressStep from './steps/AddressStep';
+import ApplicationFieldStep from './steps/ApplicationFieldStep';
 import CareerProfileStep from './steps/CareerProfileStep';
 import DateOfBirthStep from './steps/DateOfBirthStep';
 import HeadlineStep from './steps/HeadlineStep';
@@ -16,7 +19,7 @@ interface CompleteProfileDrawerProps {
 	isOpen: boolean;
 	onClose: () => void;
 	account: CompleteProfileDrawerFragment$key;
-	onApply?: () => void;
+	job: CompleteProfileDrawerJobFragment$key;
 }
 
 const CompleteProfileDrawerFragment = graphql`
@@ -36,61 +39,109 @@ fragment CompleteProfileDrawerFragment on Account {
 		headline
 		resumeUrl
 	}
+	...AddressStepFragment
+	...DateOfBirthStepFragment
+	...HeadlineStepFragment
+	...CareerProfileStepFragment
+	...ResumeUploadStepFragment
+}
+`;
+
+const CompleteProfileDrawerJobFragment = graphql`
+fragment CompleteProfileDrawerJobFragment on Job {
+	id
+	applicationForm {
+		fields {
+			fieldName
+			defaultValue
+			isRequired
+		}
+	}
+	...ApplicationFieldStepFragment
 }
 `;
 
 function CompleteProfileWizard({
 	onClose,
-	missingFields,
-	hasResume,
-	onApply
+	account,
+	job
 }: {
 	onClose: () => void;
-	missingFields: string[];
-	hasResume: boolean;
-	onApply?: () => void;
+	account: CompleteProfileDrawerFragment$key;
+	job: CompleteProfileDrawerJobFragment$key;
 }) {
+	const accountData = useFragment(CompleteProfileDrawerFragment, account);
+	const jobData = useFragment(CompleteProfileDrawerJobFragment, job);
 	const state = CompleteProfileContext.useSelector(state => state);
 	const { send } = CompleteProfileContext.useActorRef();
 	const currentStep = CompleteProfileContext.useSelector(state => state.context.currentStep);
 	const totalSteps = CompleteProfileContext.useSelector(state => state.context.totalSteps);
+	const { applyForJob } = useJobApplication();
+
+	const { missingFields, hasResume } = useMemo(() => {
+		const profile = accountData.profile;
+		const fields: string[] = [];
+		if (!profile.dateOfBirth) fields.push('dateOfBirth');
+		if (!profile.address) fields.push('address');
+		if (!profile.careerProfile?.locationsOpenToWork?.length && !profile.careerProfile?.openToRelocationAnywhere)
+			fields.push('careerProfile');
+		if (!profile.headline) fields.push('headline');
+		return {
+			missingFields: fields,
+			hasResume: !!profile.resumeUrl
+		};
+	}, [accountData.profile]);
+
+	useEffect(() => {
+		if (state.matches('completed')) {
+			const applicationFields = state.context.applicationFields.map(field => ({
+				fieldName: field.fieldName,
+				fieldValue: field.fieldValue
+			}));
+			applyForJob(jobData.id, applicationFields).then(() => {
+				onClose();
+			});
+		}
+	}, [state, applyForJob, jobData.id, onClose]);
 
 	useEffect(() => {
 		if (state.matches('checkingProfile')) {
 			const fieldsToProcess = hasResume ? missingFields : ['resume', ...missingFields];
+			const applicationFields =
+				jobData.applicationForm?.fields?.map(field => ({
+					fieldName: field.fieldName,
+					fieldValue: '',
+					isRequired: field.isRequired,
+					defaultValue: field.defaultValue || ''
+				})) || [];
 			send({
 				type: 'START_FORM',
 				missingFields: fieldsToProcess,
-				totalSteps: fieldsToProcess.length,
-				onApply
+				applicationFields,
+				jobId: jobData.id
 			});
 		}
-	}, [state, send, missingFields, hasResume]);
+	}, [state, send, missingFields, hasResume, jobData]);
 
-	// Handle resume upload completion and field refresh
 	useEffect(() => {
-		if (state.context.resumeUrl && !hasResume) {
-			// Resume was just uploaded, refresh missing fields
+		if (accountData.profile.resumeUrl && !hasResume) {
 			send({
 				type: 'REFRESH_FIELDS',
 				missingFields,
 				totalSteps: missingFields.length
 			});
 		}
-	}, [state.context.resumeUrl, hasResume, missingFields, send]);
-
-	useEffect(() => {
-		if (state.matches('completed')) {
-			if (onApply) {
-				onApply();
-			}
-			onClose();
-		}
-	}, [state, onClose, onApply]);
+	}, [accountData.profile.resumeUrl, hasResume, missingFields, send]);
 
 	const currentField = CompleteProfileContext.useSelector(state => {
-		const { missingFields, currentFieldIndex } = state.context;
-		return missingFields[currentFieldIndex];
+		const { missingFields, currentFieldIndex, applicationFields } = state.context;
+		if (currentFieldIndex < missingFields.length) {
+			return missingFields[currentFieldIndex];
+		}
+		if (applicationFields.length > 0) {
+			return 'applicationField';
+		}
+		return null;
 	});
 
 	const isResumeStep = currentField === 'resume';
@@ -100,15 +151,17 @@ function CompleteProfileWizard({
 
 		switch (currentField) {
 			case 'resume':
-				return <ResumeUploadStep />;
+				return <ResumeUploadStep account={accountData} />;
 			case 'dateOfBirth':
-				return <DateOfBirthStep />;
+				return <DateOfBirthStep account={accountData} />;
 			case 'address':
-				return <AddressStep />;
+				return <AddressStep account={accountData} />;
 			case 'careerProfile':
-				return <CareerProfileStep />;
+				return <CareerProfileStep account={accountData} />;
 			case 'headline':
-				return <HeadlineStep />;
+				return <HeadlineStep account={accountData} />;
+			case 'applicationField':
+				return <ApplicationFieldStep job={jobData} />;
 			default:
 				return null;
 		}
@@ -140,46 +193,13 @@ function CompleteProfileWizard({
 	);
 }
 
-export default function CompleteProfileDrawer({ isOpen, onClose, account, onApply }: CompleteProfileDrawerProps) {
-	const data = useFragment(CompleteProfileDrawerFragment, account);
-	const profile = data.profile;
-	const hasResume = !!profile.resumeUrl;
-
-	// Determine missing fields
-	const missingFields: string[] = [];
-	if (!profile.dateOfBirth) missingFields.push('dateOfBirth');
-	if (!profile.address) missingFields.push('address');
-	if (!profile.careerProfile?.locationsOpenToWork?.length && !profile.careerProfile?.openToRelocationAnywhere)
-		missingFields.push('careerProfile');
-	if (!profile.headline) missingFields.push('headline');
-
+export default function CompleteProfileDrawer({ isOpen, onClose, account, job }: CompleteProfileDrawerProps) {
 	return (
 		<Drawer isOpen={isOpen} onClose={onClose} placement='right' size='lg'>
 			<DrawerContent>
-				{profile.isComplete ? (
-					<>
-						<DrawerHeader>
-							<div className='flex items-center gap-3'>
-								<div className='flex items-center justify-center w-10 h-10 rounded-full bg-success-50 dark:bg-success-900/20'>
-									<CheckCircle className='w-5 h-5 text-success-500' />
-								</div>
-								<h2 className='text-xl font-semibold'>Profile Complete!</h2>
-							</div>
-						</DrawerHeader>
-						<DrawerBody>
-							<p className='text-foreground-600'>Your profile is complete! You can now apply for jobs.</p>
-							{onApply && (
-								<Button color='primary' size='lg' fullWidth onPress={onApply}>
-									Apply for Job
-								</Button>
-							)}
-						</DrawerBody>
-					</>
-				) : (
-					<CompleteProfileContext.Provider>
-						<CompleteProfileWizard onClose={onClose} missingFields={missingFields} hasResume={hasResume} onApply={onApply} />
-					</CompleteProfileContext.Provider>
-				)}
+				<CompleteProfileContext.Provider>
+					<CompleteProfileWizard onClose={onClose} account={account} job={job} />
+				</CompleteProfileContext.Provider>
 			</DrawerContent>
 		</Drawer>
 	);

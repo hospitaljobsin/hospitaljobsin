@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0f6ea140dca895aac88fb64376dd25f0>>
- * @relayHash 419a6aef1a766eb7d2c2de0f4b020f28
+ * @generated SignedSource<<8ec76bfd2fcf839c9cb505e3ac6f3537>>
+ * @relayHash 9637c9f35c6fd588a6a1dcb8d533b280
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 419a6aef1a766eb7d2c2de0f4b020f28
+// @relayRequestID 9637c9f35c6fd588a6a1dcb8d533b280
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -251,6 +251,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              (v6/*: any*/),
               {
                 "alias": null,
                 "args": [
@@ -269,6 +270,8 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
+                      (v4/*: any*/),
+                      (v6/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -290,15 +293,6 @@ return {
                         "name": "isVisible",
                         "storageKey": null
                       },
-                      (v4/*: any*/),
-                      (v6/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "title",
-                        "storageKey": null
-                      },
                       {
                         "alias": null,
                         "args": null,
@@ -315,6 +309,7 @@ return {
                             "name": "fields",
                             "plural": true,
                             "selections": [
+                              (v3/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,
@@ -341,6 +336,13 @@ return {
                           },
                           (v4/*: any*/)
                         ],
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "title",
                         "storageKey": null
                       },
                       {
@@ -562,7 +564,7 @@ return {
     ]
   },
   "params": {
-    "id": "419a6aef1a766eb7d2c2de0f4b020f28",
+    "id": "9637c9f35c6fd588a6a1dcb8d533b280",
     "metadata": {},
     "name": "JobApplyViewClientComponentQuery",
     "operationKind": "query",

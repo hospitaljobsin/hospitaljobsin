@@ -1,10 +1,10 @@
-import type { JobApplyViewFragment$key } from '@/__generated__/JobApplyViewFragment.graphql';
-import links from '@/lib/links';
 import { Button } from '@heroui/react';
 import { SearchX } from 'lucide-react';
 import Link from 'next/link';
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import type { JobApplyViewFragment$key } from '@/__generated__/JobApplyViewFragment.graphql';
+import links from '@/lib/links';
 import DashboardHeader from '../layout/DashboardHeader';
 import CompleteProfileDrawer from './complete-profile/CompleteProfileDrawer';
 import JobApplicationDetails from './JobApplicationDetails';
@@ -20,15 +20,24 @@ const JobApplyViewFragment = graphql`
       organization(slug: $slug) {
         __typename
         ... on Organization {
+			slug
           job(slug: $jobSlug) {
             __typename
             ... on Job {
+				id
+				slug
 			isApplied
 			externalApplicationUrl
 			isVisible
+			applicationForm {
+				fields {
+					__typename
+				}
+			}
               ...JobApplyFormFragment
               ...JobApplicationDetailsFragment
               ...JobDetailsInternalFragment
+              ...CompleteProfileDrawerJobFragment
             }
 
           }
@@ -56,13 +65,16 @@ export default function JobApplyView(props: { rootQuery: JobApplyViewFragment$ke
 		setShowCompleteProfileDrawer(true);
 	};
 
-	const handleApplyAfterProfileComplete = () => {
-		// This will be called when profile completion is done and user wants to apply
-		setShowCompleteProfileDrawer(false);
-		// Trigger the job application directly
-		if (jobApplyFormRef.current) {
-			jobApplyFormRef.current.triggerDirectApply();
+	const shouldShowCompleteProfileDrawer = () => {
+		if (
+			query.viewer.__typename !== 'Account' ||
+			query.organization.__typename !== 'Organization' ||
+			query.organization.job.__typename !== 'Job'
+		) {
+			return false;
 		}
+		const hasApplicationFields = (query.organization.job.applicationForm?.fields?.length || 0) > 0;
+		return !query.viewer.profile.isComplete || hasApplicationFields;
 	};
 
 	// only users who have not applied can access this page
@@ -103,19 +115,29 @@ export default function JobApplyView(props: { rootQuery: JobApplyViewFragment$ke
 					<div className='py-8 w-full h-full flex flex-col items-center gap-6'>
 						<JobApplicationDetails job={query.organization.job} />
 						<ProfilePreview account={query.viewer} />
-						<JobApplyForm
-							ref={jobApplyFormRef}
-							rootQuery={query.organization.job}
-							isProfileComplete={query.viewer.profile.isComplete}
-							onProfileIncomplete={handleProfileIncomplete}
-						/>
+						{shouldShowCompleteProfileDrawer() ? (
+							<div className='w-full flex justify-center'>
+								<button type='button' className='px-6 py-3 bg-primary text-white rounded-lg font-medium' onClick={handleProfileIncomplete}>
+									{!query.viewer.profile.isComplete ? 'Complete Profile & Apply' : 'Apply for Job'}
+								</button>
+							</div>
+						) : (
+							<JobApplyForm
+								ref={jobApplyFormRef}
+								rootQuery={query.organization.job}
+								isProfileComplete={query.viewer.profile.isComplete}
+								onProfileIncomplete={handleProfileIncomplete}
+							/>
+						)}
 					</div>
-					<CompleteProfileDrawer
-						isOpen={showCompleteProfileDrawer}
-						onClose={() => setShowCompleteProfileDrawer(false)}
-						account={query.viewer}
-						onApply={handleApplyAfterProfileComplete}
-					/>
+					{query.organization.__typename === 'Organization' && query.organization.job.__typename === 'Job' && (
+						<CompleteProfileDrawer
+							isOpen={showCompleteProfileDrawer}
+							onClose={() => setShowCompleteProfileDrawer(false)}
+							account={query.viewer}
+							job={query.organization.job}
+						/>
+					)}
 				</div>
 			</div>
 		</div>

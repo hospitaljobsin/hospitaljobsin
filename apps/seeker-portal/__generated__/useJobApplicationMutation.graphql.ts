@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<26d5e9174c43cce70015334b35641899>>
- * @relayHash 7649be83004956cd3b268ef700832299
+ * @generated SignedSource<<f9f60591b53a720c773235e18cb3aea1>>
+ * @relayHash 007e49603898732d4545267ec65e7604
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 7649be83004956cd3b268ef700832299
+// @relayRequestID 007e49603898732d4545267ec65e7604
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -17,19 +17,22 @@ export type ApplicantFieldInput = {
   fieldName: string;
   fieldValue: string;
 };
-export type JobApplyFormMutation$variables = {
+export type useJobApplicationMutation$variables = {
   applicantFields: ReadonlyArray<ApplicantFieldInput>;
   jobId: string;
 };
-export type JobApplyFormMutation$data = {
+export type useJobApplicationMutation$data = {
   readonly createJobApplication: {
     readonly __typename: "AccountProfileIncompleteError";
     readonly __typename: "AccountProfileIncompleteError";
   } | {
     readonly __typename: "CreateJobApplicantSuccess";
-    readonly __typename: "CreateJobApplicantSuccess";
     readonly jobApplicant: {
       readonly job: {
+        readonly organization: {
+          readonly slug: string;
+        } | null | undefined;
+        readonly slug: string;
         readonly " $fragmentSpreads": FragmentRefs<"JobDetailsInternalFragment">;
       } | null | undefined;
     };
@@ -51,9 +54,9 @@ export type JobApplyFormMutation$data = {
     readonly __typename: "%other";
   };
 };
-export type JobApplyFormMutation = {
-  response: JobApplyFormMutation$data;
-  variables: JobApplyFormMutation$variables;
+export type useJobApplicationMutation = {
+  response: useJobApplicationMutation$data;
+  variables: useJobApplicationMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -290,7 +293,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "JobApplyFormMutation",
+    "name": "useJobApplicationMutation",
     "selections": [
       {
         "alias": null,
@@ -378,6 +381,19 @@ return {
                         ],
                         "args": null,
                         "argumentDefinitions": []
+                      },
+                      (v5/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "Organization",
+                        "kind": "LinkedField",
+                        "name": "organization",
+                        "plural": false,
+                        "selections": [
+                          (v5/*: any*/)
+                        ],
+                        "storageKey": null
                       }
                     ],
                     "storageKey": null
@@ -403,7 +419,7 @@ return {
       (v0/*: any*/)
     ],
     "kind": "Operation",
-    "name": "JobApplyFormMutation",
+    "name": "useJobApplicationMutation",
     "selections": [
       {
         "alias": null,
@@ -499,15 +515,15 @@ return {
     ]
   },
   "params": {
-    "id": "7649be83004956cd3b268ef700832299",
+    "id": "007e49603898732d4545267ec65e7604",
     "metadata": {},
-    "name": "JobApplyFormMutation",
+    "name": "useJobApplicationMutation",
     "operationKind": "mutation",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "19164e2455cf5d0046ad679fce9e47e8";
+(node as any).hash = "e8d68f8d56610dac85872b604239d812";
 
 export default node;

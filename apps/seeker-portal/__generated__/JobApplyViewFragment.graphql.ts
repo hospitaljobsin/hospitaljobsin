@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5e3c9005cd67ef5d5c76380ce7f17238>>
+ * @generated SignedSource<<111beb55e6d36c2a54e8409919eba25b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,15 +15,23 @@ export type JobApplyViewFragment$data = {
     readonly __typename: "Organization";
     readonly job: {
       readonly __typename: "Job";
+      readonly applicationForm: {
+        readonly fields: ReadonlyArray<{
+          readonly __typename: "ApplicationField";
+        }>;
+      } | null | undefined;
       readonly externalApplicationUrl: string | null | undefined;
+      readonly id: string;
       readonly isApplied: boolean;
       readonly isVisible: boolean;
-      readonly " $fragmentSpreads": FragmentRefs<"JobApplicationDetailsFragment" | "JobApplyFormFragment" | "JobDetailsInternalFragment">;
+      readonly slug: string;
+      readonly " $fragmentSpreads": FragmentRefs<"CompleteProfileDrawerJobFragment" | "JobApplicationDetailsFragment" | "JobApplyFormFragment" | "JobDetailsInternalFragment">;
     } | {
       // This will never be '%other', but we need some
       // value in case none of the concrete values match.
       readonly __typename: "%other";
     };
+    readonly slug: string;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -103,6 +111,7 @@ return {
         {
           "kind": "InlineFragment",
           "selections": [
+            (v1/*: any*/),
             {
               "alias": null,
               "args": [
@@ -125,6 +134,14 @@ return {
                       "alias": null,
                       "args": null,
                       "kind": "ScalarField",
+                      "name": "id",
+                      "storageKey": null
+                    },
+                    (v1/*: any*/),
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
                       "name": "isApplied",
                       "storageKey": null
                     },
@@ -140,6 +157,29 @@ return {
                       "args": null,
                       "kind": "ScalarField",
                       "name": "isVisible",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "concreteType": "JobApplicationForm",
+                      "kind": "LinkedField",
+                      "name": "applicationForm",
+                      "plural": false,
+                      "selections": [
+                        {
+                          "alias": null,
+                          "args": null,
+                          "concreteType": "ApplicationField",
+                          "kind": "LinkedField",
+                          "name": "fields",
+                          "plural": true,
+                          "selections": [
+                            (v0/*: any*/)
+                          ],
+                          "storageKey": null
+                        }
+                      ],
                       "storageKey": null
                     },
                     {
@@ -370,6 +410,11 @@ return {
                       ],
                       "args": null,
                       "argumentDefinitions": []
+                    },
+                    {
+                      "args": null,
+                      "kind": "FragmentSpread",
+                      "name": "CompleteProfileDrawerJobFragment"
                     }
                   ],
                   "type": "Job",
@@ -442,6 +487,6 @@ return {
 };
 })();
 
-(node as any).hash = "ca3ada535ffdc89da00bf04bf1064380";
+(node as any).hash = "f8f94959bc44cfcc8de3ba3bea14c183";
 
 export default node;

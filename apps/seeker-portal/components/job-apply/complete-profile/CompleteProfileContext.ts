@@ -3,20 +3,20 @@
 import { createActorContext } from '@xstate/react';
 import { assign, createMachine } from 'xstate';
 
+export interface ApplicationField {
+	fieldName: string;
+	fieldValue: string;
+	isRequired: boolean;
+	defaultValue: string;
+}
+
 const context = {
-	resumeUrl: '',
-	dateOfBirth: '',
-	address: '',
-	education: [] as Array<{ degree: string; institution: string; year: string }>,
-	locationsOpenToWork: [] as string[],
-	openToRelocationAnywhere: false,
-	professionalSummary: '',
-	headline: '',
 	currentStep: 0,
 	totalSteps: 0,
 	missingFields: [] as string[],
 	currentFieldIndex: 0,
-	onApply: null as (() => void) | null
+	applicationFields: [] as ApplicationField[],
+	jobId: ''
 };
 
 export const completeProfileMachine = createMachine({
@@ -24,18 +24,11 @@ export const completeProfileMachine = createMachine({
 	types: {} as {
 		context: typeof context;
 		events:
-			| { type: 'START_FORM'; missingFields: string[]; totalSteps: number; onApply?: () => void }
-			| { type: 'SUBMIT_RESUME'; resumeUrl: string }
-			| { type: 'SUBMIT_DATE_OF_BIRTH'; dateOfBirth: string }
-			| { type: 'SUBMIT_ADDRESS'; address: string }
-			| { type: 'SUBMIT_EDUCATION'; education: Array<{ degree: string; institution: string; year: string }> }
-			| { type: 'SUBMIT_CAREER_PROFILE'; locationsOpenToWork: string[]; openToRelocationAnywhere: boolean }
-			| { type: 'SUBMIT_PROFESSIONAL_SUMMARY'; professionalSummary: string }
-			| { type: 'SUBMIT_HEADLINE'; headline: string }
-			| { type: 'NEXT_STEP' }
+			| { type: 'START_FORM'; missingFields: string[]; applicationFields: ApplicationField[]; jobId: string }
+			| { type: 'STEP_COMPLETED' }
+			| { type: 'SUBMIT_APPLICATION_FIELD'; fieldIndex: number; fieldValue: string }
 			| { type: 'PREVIOUS_STEP' }
-			| { type: 'REFRESH_FIELDS'; missingFields: string[]; totalSteps: number }
-			| { type: 'APPLY_FOR_JOB' };
+			| { type: 'REFRESH_FIELDS'; missingFields: string[]; totalSteps: number };
 	},
 	context: context,
 	states: {
@@ -44,25 +37,31 @@ export const completeProfileMachine = createMachine({
 				START_FORM: {
 					target: 'activeStep',
 					actions: assign({
-						totalSteps: ({ event }) => event.totalSteps,
+						totalSteps: ({ event }) => event.missingFields.length + event.applicationFields.length,
 						currentStep: () => 1,
 						missingFields: ({ event }) => event.missingFields,
 						currentFieldIndex: () => 0,
-						onApply: ({ event }) => event.onApply || null
+						applicationFields: ({ event }) => event.applicationFields,
+						jobId: ({ event }) => event.jobId
 					})
 				}
 			}
 		},
 		activeStep: {
 			on: {
-				SUBMIT_RESUME: {
-					target: 'activeStep',
-					actions: assign({
-						resumeUrl: ({ event }) => event.resumeUrl,
-						currentStep: ({ context }) => context.currentStep + 1,
-						currentFieldIndex: ({ context }) => context.currentFieldIndex + 1
-					})
-				},
+				STEP_COMPLETED: [
+					{
+						target: 'completed',
+						guard: ({ context }) => context.currentFieldIndex + 1 >= context.totalSteps
+					},
+					{
+						target: 'activeStep',
+						actions: assign({
+							currentStep: ({ context }) => context.currentStep + 1,
+							currentFieldIndex: ({ context }) => context.currentFieldIndex + 1
+						})
+					}
+				],
 				REFRESH_FIELDS: {
 					target: 'activeStep',
 					actions: assign({
@@ -72,113 +71,29 @@ export const completeProfileMachine = createMachine({
 						currentStep: () => 1
 					})
 				},
-				SUBMIT_DATE_OF_BIRTH: [
+				SUBMIT_APPLICATION_FIELD: [
 					{
 						target: 'completed',
-						guard: ({ context }) => context.currentFieldIndex + 1 >= context.missingFields.length,
+						guard: ({ context }) => context.currentFieldIndex + 1 >= context.totalSteps,
 						actions: assign({
-							dateOfBirth: ({ event }) => event.dateOfBirth
+							applicationFields: ({ context, event }) =>
+								context.applicationFields.map((field, idx) =>
+									idx === event.fieldIndex ? { ...field, fieldValue: event.fieldValue } : field
+								)
 						})
 					},
 					{
 						target: 'activeStep',
 						actions: assign({
-							dateOfBirth: ({ event }) => event.dateOfBirth,
+							applicationFields: ({ context, event }) =>
+								context.applicationFields.map((field, idx) =>
+									idx === event.fieldIndex ? { ...field, fieldValue: event.fieldValue } : field
+								),
 							currentStep: ({ context }) => context.currentStep + 1,
 							currentFieldIndex: ({ context }) => context.currentFieldIndex + 1
 						})
 					}
 				],
-				SUBMIT_ADDRESS: [
-					{
-						target: 'completed',
-						guard: ({ context }) => context.currentFieldIndex + 1 >= context.missingFields.length,
-						actions: assign({
-							address: ({ event }) => event.address
-						})
-					},
-					{
-						target: 'activeStep',
-						actions: assign({
-							address: ({ event }) => event.address,
-							currentStep: ({ context }) => context.currentStep + 1,
-							currentFieldIndex: ({ context }) => context.currentFieldIndex + 1
-						})
-					}
-				],
-				SUBMIT_EDUCATION: [
-					{
-						target: 'completed',
-						guard: ({ context }) => context.currentFieldIndex + 1 >= context.missingFields.length,
-						actions: assign({
-							education: ({ event }) => event.education
-						})
-					},
-					{
-						target: 'activeStep',
-						actions: assign({
-							education: ({ event }) => event.education,
-							currentStep: ({ context }) => context.currentStep + 1,
-							currentFieldIndex: ({ context }) => context.currentFieldIndex + 1
-						})
-					}
-				],
-				SUBMIT_CAREER_PROFILE: [
-					{
-						target: 'completed',
-						guard: ({ context }) => context.currentFieldIndex + 1 >= context.missingFields.length,
-						actions: assign({
-							locationsOpenToWork: ({ event }) => event.locationsOpenToWork,
-							openToRelocationAnywhere: ({ event }) => event.openToRelocationAnywhere
-						})
-					},
-					{
-						target: 'activeStep',
-						actions: assign({
-							locationsOpenToWork: ({ event }) => event.locationsOpenToWork,
-							openToRelocationAnywhere: ({ event }) => event.openToRelocationAnywhere,
-							currentStep: ({ context }) => context.currentStep + 1,
-							currentFieldIndex: ({ context }) => context.currentFieldIndex + 1
-						})
-					}
-				],
-				SUBMIT_PROFESSIONAL_SUMMARY: [
-					{
-						target: 'completed',
-						guard: ({ context }) => context.currentFieldIndex + 1 >= context.missingFields.length,
-						actions: assign({
-							professionalSummary: ({ event }) => event.professionalSummary
-						})
-					},
-					{
-						target: 'activeStep',
-						actions: assign({
-							professionalSummary: ({ event }) => event.professionalSummary,
-							currentStep: ({ context }) => context.currentStep + 1,
-							currentFieldIndex: ({ context }) => context.currentFieldIndex + 1
-						})
-					}
-				],
-				SUBMIT_HEADLINE: [
-					{
-						target: 'completed',
-						guard: ({ context }) => context.currentFieldIndex + 1 >= context.missingFields.length,
-						actions: assign({
-							headline: ({ event }) => event.headline
-						})
-					},
-					{
-						target: 'activeStep',
-						actions: assign({
-							headline: ({ event }) => event.headline,
-							currentStep: ({ context }) => context.currentStep + 1,
-							currentFieldIndex: ({ context }) => context.currentFieldIndex + 1
-						})
-					}
-				],
-				APPLY_FOR_JOB: {
-					target: 'completed'
-				},
 				PREVIOUS_STEP: {
 					target: 'activeStep',
 					actions: assign({

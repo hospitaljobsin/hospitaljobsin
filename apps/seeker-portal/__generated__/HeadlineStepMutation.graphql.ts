@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<ffea46f898f7919192da2bdff7b310b9>>
- * @relayHash 690863efe95b7352022a907ea15b9982
+ * @generated SignedSource<<9be83d052c216fa665df501e3d5d080b>>
+ * @relayHash 454bce0452c0fcc10fe3c62841e1bf4f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 690863efe95b7352022a907ea15b9982
+// @relayRequestID 454bce0452c0fcc10fe3c62841e1bf4f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -18,9 +18,6 @@ export type HeadlineStepMutation$variables = {
 };
 export type HeadlineStepMutation$data = {
   readonly updateProfileAboutMe: {
-    readonly profile?: {
-      readonly headline: string | null | undefined;
-    } | null | undefined;
     readonly " $fragmentSpreads": FragmentRefs<"CompleteProfileDrawerFragment">;
   };
 };
@@ -53,17 +50,10 @@ v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "headline",
-  "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v4 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -92,18 +82,6 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "CompleteProfileDrawerFragment"
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Profile",
-                "kind": "LinkedField",
-                "name": "profile",
-                "plural": false,
-                "selections": [
-                  (v2/*: any*/)
-                ],
-                "storageKey": null
               }
             ],
             "type": "Account",
@@ -130,7 +108,7 @@ return {
         "name": "updateProfileAboutMe",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
+          (v2/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -171,7 +149,7 @@ return {
                     "name": "education",
                     "plural": true,
                     "selections": [
-                      (v3/*: any*/)
+                      (v2/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -207,7 +185,13 @@ return {
                     "name": "professionalSummary",
                     "storageKey": null
                   },
-                  (v2/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "headline",
+                    "storageKey": null
+                  },
                   {
                     "alias": null,
                     "args": null,
@@ -215,7 +199,7 @@ return {
                     "name": "resumeUrl",
                     "storageKey": null
                   },
-                  (v4/*: any*/)
+                  (v3/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -226,7 +210,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v4/*: any*/)
+              (v3/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -237,7 +221,7 @@ return {
     ]
   },
   "params": {
-    "id": "690863efe95b7352022a907ea15b9982",
+    "id": "454bce0452c0fcc10fe3c62841e1bf4f",
     "metadata": {},
     "name": "HeadlineStepMutation",
     "operationKind": "mutation",
@@ -246,6 +230,6 @@ return {
 };
 })();
 
-(node as any).hash = "97ba09adb3a7bfd345256316a7226624";
+(node as any).hash = "67d74daf325bc7874ae297e5ebe7b471";
 
 export default node;

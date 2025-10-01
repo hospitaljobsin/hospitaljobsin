@@ -4,10 +4,19 @@ import { Button, DatePicker } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { parseDate } from '@internationalized/date';
 import { Controller, useForm } from 'react-hook-form';
-import { graphql, useMutation } from 'react-relay';
+import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
+import type { DateOfBirthStepFragment$key } from '@/__generated__/DateOfBirthStepFragment.graphql';
 import type { DateOfBirthStepMutation as DateOfBirthStepMutationType } from '@/__generated__/DateOfBirthStepMutation.graphql';
 import CompleteProfileContext from '../CompleteProfileContext';
+
+const DateOfBirthStepFragment = graphql`
+fragment DateOfBirthStepFragment on Account {
+	profile @required(action: THROW) {
+		dateOfBirth
+	}
+}
+`;
 
 const DateOfBirthStepMutation = graphql`
 mutation DateOfBirthStepMutation($dateOfBirth: Date) {
@@ -15,9 +24,6 @@ mutation DateOfBirthStepMutation($dateOfBirth: Date) {
 		__typename
 		...on Account {
 			...CompleteProfileDrawerFragment
-			profile {
-				dateOfBirth
-			}
 		}
 	}
 }
@@ -27,27 +33,29 @@ const dateOfBirthSchema = z.object({
 	dateOfBirth: z.string().min(1, 'Date of birth is required')
 });
 
-export default function DateOfBirthStep() {
+interface DateOfBirthStepProps {
+	account: DateOfBirthStepFragment$key;
+}
+
+export default function DateOfBirthStep({ account }: DateOfBirthStepProps) {
+	const data = useFragment(DateOfBirthStepFragment, account);
 	const { send } = CompleteProfileContext.useActorRef();
-	const dateOfBirth = CompleteProfileContext.useSelector(state => state.context.dateOfBirth);
+	const isLastStep = CompleteProfileContext.useSelector(state => state.context.currentFieldIndex + 1 >= state.context.totalSteps);
 
 	const { control, handleSubmit, formState } = useForm<z.infer<typeof dateOfBirthSchema>>({
 		resolver: standardSchemaResolver(dateOfBirthSchema),
-		defaultValues: { dateOfBirth: dateOfBirth || '' }
+		defaultValues: { dateOfBirth: data.profile.dateOfBirth || '' }
 	});
 
 	const [commitMutation, isMutationInFlight] = useMutation<DateOfBirthStepMutationType>(DateOfBirthStepMutation);
 
-	const onSubmit = (data: z.infer<typeof dateOfBirthSchema>) => {
+	const onSubmit = (formData: z.infer<typeof dateOfBirthSchema>) => {
 		commitMutation({
 			variables: {
-				dateOfBirth: data.dateOfBirth
+				dateOfBirth: formData.dateOfBirth
 			},
 			onCompleted() {
-				send({
-					type: 'SUBMIT_DATE_OF_BIRTH',
-					dateOfBirth: data.dateOfBirth
-				});
+				send({ type: 'STEP_COMPLETED' });
 			}
 		});
 	};
@@ -76,7 +84,7 @@ export default function DateOfBirthStep() {
 			/>
 
 			<Button type='submit' color='primary' fullWidth isLoading={formState.isSubmitting || isMutationInFlight}>
-				Continue
+				{isLastStep ? 'Apply' : 'Continue'}
 			</Button>
 		</form>
 	);
