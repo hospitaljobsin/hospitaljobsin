@@ -14,9 +14,9 @@ const CreateJobApplicationMutation = graphql`
       ... on CreateJobApplicantSuccess {
         jobApplicant {
           job {
-			id
+            id
             ...JobDetailsInternalFragment
-			isApplied
+            isApplied
             slug
             organization {
               slug

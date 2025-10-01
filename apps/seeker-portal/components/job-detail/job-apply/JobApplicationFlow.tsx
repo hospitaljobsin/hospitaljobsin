@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import type { JobApplicationFlowFragment$key } from '@/__generated__/JobApplicationFlowFragment.graphql';
 import type { JobApplicationFlowJobFragment$key } from '@/__generated__/JobApplicationFlowJobFragment.graphql';
+import { useJobApplication } from '@/lib/hooks/useJobApplication';
 import ConfirmApplicationModal from './ConfirmApplicationModal';
 import CompleteProfileDrawer from './complete-profile/CompleteProfileDrawer';
-import { useJobApplication } from './hooks/useJobApplication';
 
 const JobApplicationFlowFragment = graphql`
   fragment JobApplicationFlowFragment on Account {

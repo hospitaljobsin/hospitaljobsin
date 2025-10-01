@@ -6,7 +6,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import type { CompleteProfileDrawerFragment$key } from '@/__generated__/CompleteProfileDrawerFragment.graphql';
 import type { CompleteProfileDrawerJobFragment$key } from '@/__generated__/CompleteProfileDrawerJobFragment.graphql';
-import { useJobApplication } from '../hooks/useJobApplication';
+import { useJobApplication } from '@/lib/hooks/useJobApplication';
 import CompleteProfileContext from './CompleteProfileContext';
 import AddressStep from './steps/AddressStep';
 import ApplicationFieldStep from './steps/ApplicationFieldStep';
