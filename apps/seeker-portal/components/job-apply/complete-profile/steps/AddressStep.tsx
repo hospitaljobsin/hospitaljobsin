@@ -1,11 +1,29 @@
 'use client';
 
-import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
 import { Button } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { Controller, useForm } from 'react-hook-form';
+import { graphql, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
+import type { AddressStepMutation as AddressStepMutationType } from '@/__generated__/AddressStepMutation.graphql';
+import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
 import CompleteProfileContext from '../CompleteProfileContext';
+
+const AddressStepMutation = graphql`
+mutation AddressStepMutation($address: String) {
+	updateProfilePersonalDetails(address: $address) {
+		__typename
+		...on Account {
+			profile {
+				address
+			}
+		}
+		... on InvalidLocationError {
+			message
+		}
+	}
+}
+`;
 
 const addressSchema = z.object({
 	address: z.string().min(1, 'Please provide your address')
@@ -15,18 +33,28 @@ export default function AddressStep() {
 	const { send } = CompleteProfileContext.useActorRef();
 	const address = CompleteProfileContext.useSelector(state => state.context.address);
 
-	const { control, handleSubmit, formState } = useForm<z.infer<typeof addressSchema>>({
+	const { control, handleSubmit, formState, setError } = useForm<z.infer<typeof addressSchema>>({
 		resolver: standardSchemaResolver(addressSchema),
 		defaultValues: { address: address || '' }
 	});
 
-	const onSubmit = async (data: z.infer<typeof addressSchema>) => {
-		// Mock mutation call
-		console.log('Saving address:', data.address);
+	const [commitMutation] = useMutation<AddressStepMutationType>(AddressStepMutation);
 
-		send({
-			type: 'SUBMIT_ADDRESS',
-			address: data.address
+	const onSubmit = (data: z.infer<typeof addressSchema>) => {
+		commitMutation({
+			variables: {
+				address: data.address
+			},
+			onCompleted(response) {
+				if (response.updateProfilePersonalDetails.__typename === 'InvalidLocationError') {
+					setError('address', { message: response.updateProfilePersonalDetails.message });
+					return;
+				}
+				send({
+					type: 'SUBMIT_ADDRESS',
+					address: data.address
+				});
+			}
 		});
 	};
 

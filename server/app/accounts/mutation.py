@@ -104,9 +104,13 @@ class AccountMutation:
         """Update the current user's profile personal details."""
         match await profile_service.update_personal_details(
             account=info.context["current_user"],
-            gender=gender.value if gender is not None else None,
+            gender=gender.value
+            if gender is not None and gender is not strawberry.UNSET
+            else None,
             date_of_birth=date_of_birth,
-            marital_status=marital_status.value if marital_status is not None else None,
+            marital_status=marital_status.value
+            if marital_status is not None and marital_status is not strawberry.UNSET
+            else None,
             category=category,
             address=address,
         ):

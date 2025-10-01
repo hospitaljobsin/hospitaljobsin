@@ -70,16 +70,6 @@ export default function ResumeUploadStep() {
 					</Button>
 				</label>
 			</div>
-
-			<div className='bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg'>
-				<h4 className='font-medium text-primary-700 dark:text-primary-300 mb-2'>Why upload your resume?</h4>
-				<ul className='text-sm text-primary-600 dark:text-primary-400 space-y-1'>
-					<li>• Automatically fill profile fields</li>
-					<li>• Better job matching</li>
-					<li>• Faster application process</li>
-					<li>• Showcase your experience to employers</li>
-				</ul>
-			</div>
 		</div>
 	);
 }

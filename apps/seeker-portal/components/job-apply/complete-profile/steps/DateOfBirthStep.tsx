@@ -4,8 +4,23 @@ import { Button, DatePicker } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { parseDate } from '@internationalized/date';
 import { Controller, useForm } from 'react-hook-form';
+import { graphql, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
+import type { DateOfBirthStepMutation as DateOfBirthStepMutationType } from '@/__generated__/DateOfBirthStepMutation.graphql';
 import CompleteProfileContext from '../CompleteProfileContext';
+
+const DateOfBirthStepMutation = graphql`
+mutation DateOfBirthStepMutation($dateOfBirth: Date) {
+	updateProfilePersonalDetails(dateOfBirth: $dateOfBirth) {
+		__typename
+		...on Account {
+			profile {
+				dateOfBirth
+			}
+		}
+	}
+}
+`;
 
 const dateOfBirthSchema = z.object({
 	dateOfBirth: z.string().min(1, 'Date of birth is required')
@@ -20,13 +35,19 @@ export default function DateOfBirthStep() {
 		defaultValues: { dateOfBirth: dateOfBirth || '' }
 	});
 
-	const onSubmit = async (data: z.infer<typeof dateOfBirthSchema>) => {
-		// Mock mutation call
-		console.log('Saving date of birth:', data.dateOfBirth);
+	const [commitMutation, isMutationInFlight] = useMutation<DateOfBirthStepMutationType>(DateOfBirthStepMutation);
 
-		send({
-			type: 'SUBMIT_DATE_OF_BIRTH',
-			dateOfBirth: data.dateOfBirth
+	const onSubmit = (data: z.infer<typeof dateOfBirthSchema>) => {
+		commitMutation({
+			variables: {
+				dateOfBirth: data.dateOfBirth
+			},
+			onCompleted() {
+				send({
+					type: 'SUBMIT_DATE_OF_BIRTH',
+					dateOfBirth: data.dateOfBirth
+				});
+			}
 		});
 	};
 
@@ -53,7 +74,7 @@ export default function DateOfBirthStep() {
 				)}
 			/>
 
-			<Button type='submit' color='primary' fullWidth isLoading={formState.isSubmitting}>
+			<Button type='submit' color='primary' fullWidth isLoading={formState.isSubmitting || isMutationInFlight}>
 				Continue
 			</Button>
 		</form>
