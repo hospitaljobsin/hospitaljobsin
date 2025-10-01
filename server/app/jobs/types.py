@@ -374,6 +374,7 @@ class ProfileSnapshotType(BaseProfileType):
             ],
             professional_summary=model.professional_summary,
             headline=model.headline,
+            resume_url=model.resume_url,
         )
 
 

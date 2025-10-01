@@ -8,7 +8,7 @@ import { graphql, useFragment, useMutation } from 'react-relay';
 import type { ResumeUploadStepFragment$key } from '@/__generated__/ResumeUploadStepFragment.graphql';
 import type { ResumeUploadStepGeneratePresignedUrlMutation } from '@/__generated__/ResumeUploadStepGeneratePresignedUrlMutation.graphql';
 import type { ResumeUploadStepUpdateResumeMutation } from '@/__generated__/ResumeUploadStepUpdateResumeMutation.graphql';
-import { uploadFileToS3 } from '../../../../lib/presignedUrl';
+import { uploadFileToS3 } from '@/lib/presignedUrl';
 import CompleteProfileContext from '../CompleteProfileContext';
 
 const ResumeUploadStepFragment = graphql`

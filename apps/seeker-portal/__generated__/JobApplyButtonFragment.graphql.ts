@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9fc5808a888c862f00d5ef3bf9ed2812>>
+ * @generated SignedSource<<f0d2ee94d5be92ffd732586ec07d27c9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,6 +19,7 @@ export type JobApplyButtonFragment$data = {
       readonly id: string;
       readonly isApplied: boolean;
       readonly slug: string;
+      readonly " $fragmentSpreads": FragmentRefs<"JobApplicationFlowJobFragment">;
     } | {
       // This will never be '%other', but we need some
       // value in case none of the concrete values match.
@@ -35,6 +36,7 @@ export type JobApplyButtonFragment$data = {
     readonly profile: {
       readonly isComplete: boolean;
     };
+    readonly " $fragmentSpreads": FragmentRefs<"JobApplicationFlowFragment">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -137,6 +139,11 @@ return {
                       "kind": "ScalarField",
                       "name": "isApplied",
                       "storageKey": null
+                    },
+                    {
+                      "args": null,
+                      "kind": "FragmentSpread",
+                      "name": "JobApplicationFlowJobFragment"
                     }
                   ],
                   "type": "Job",
@@ -185,6 +192,11 @@ return {
                 "storageKey": null
               },
               "action": "THROW"
+            },
+            {
+              "args": null,
+              "kind": "FragmentSpread",
+              "name": "JobApplicationFlowFragment"
             }
           ],
           "type": "Account",
@@ -199,6 +211,6 @@ return {
 };
 })();
 
-(node as any).hash = "8448922871b7c71422f46e8c5c588972";
+(node as any).hash = "74035101125b1eebddd4768bfd68f64d";
 
 export default node;
