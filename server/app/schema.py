@@ -8,6 +8,7 @@ from strawberry.extensions import (
     AddValidationRules,
     ParserCache,
     QueryDepthLimiter,
+    SchemaExtension,
     ValidationCache,
 )
 from strawberry.file_uploads import Upload
@@ -63,7 +64,7 @@ def create_schema(
     app_settings: AppSettings, env_settings: EnvironmentSettings
 ) -> Schema:
     """Create a GraphQL schema."""
-    extensions = [
+    extensions: list[SchemaExtension] = [
         AioInjectExtension(
             container=create_container(),
         ),
