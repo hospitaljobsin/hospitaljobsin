@@ -1,21 +1,25 @@
-"use client";
-import AIFeatures from "./AIFeatures";
-import BrandedSubdomain from "./BrandedSubdomain";
-import BuiltForHealthcare from "./BuiltForHealthcare";
-import CallToAction from "./CallToAction";
-import HealthcareNetwork from "./HealthcareNetwork";
-import Hero from "./Hero";
-import SecureAuth from "./SecureAuth";
+'use client';
+import AIFeatures from './AIFeatures';
+import BrandedSubdomain from './BrandedSubdomain';
+import BuiltForHealthcare from './BuiltForHealthcare';
+import CallToAction from './CallToAction';
+import CompanyLogos from './CompanyLogos';
+import HealthcareNetwork from './HealthcareNetwork';
+import Hero from './Hero';
+import SecureAuth from './SecureAuth';
 
 export default function LandingView() {
 	return (
-		<div className="flex flex-col items-center w-full">
+		<div className='flex flex-col items-center w-full'>
 			{/* Hero Section */}
 			<Hero />
 
+			{/* Company Logos Section */}
+			<CompanyLogos />
+
 			{/* Features Section */}
-			<section id="features" className="w-full bg-background pt-16 sm:pt-24">
-				<div className="w-full mx-auto flex flex-col gap-12">
+			<section id='features' className='w-full bg-background pt-16 sm:pt-24'>
+				<div className='w-full mx-auto flex flex-col gap-12'>
 					{/* Deep AI Integration Section */}
 					<AIFeatures />
 
