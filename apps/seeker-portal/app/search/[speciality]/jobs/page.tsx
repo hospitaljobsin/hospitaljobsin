@@ -123,7 +123,6 @@ export async function generateMetadata({
 		}
 	}
 
-	title += ' | Hospital Jobs In India';
 	description += " Browse nationwide medical career opportunities across India's leading healthcare networks.";
 
 	return {

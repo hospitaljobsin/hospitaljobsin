@@ -118,7 +118,6 @@ export async function generateMetadata({
 		title += ` in ${location}`;
 		description += ` Explore healthcare career opportunities in ${location}'s premier hospitals, specialty clinics & healthcare centers.`;
 	} else {
-		title += ' | Hospital Jobs In India';
 		description += " Browse nationwide healthcare career opportunities across India's leading healthcare networks.";
 	}
 

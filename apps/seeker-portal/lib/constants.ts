@@ -4,7 +4,7 @@ export const COMPANY_NAME = 'Vnadi';
 
 export const SUPPORT_EMAIL = 'support@hospitaljobs.in';
 
-export const APP_TITLE = 'Hospital Jobs in India | Nursing, Doctor & Healthcare Vacancies';
+export const APP_TITLE = 'Hospital Jobs in India';
 
 export const APP_DESCRIPTION =
 	'Find the latest hospital jobs in India. Apply for doctor, nurse, paramedical, and healthcare vacancies at top hospitals, clinics, and nursing homes. Updated daily.';
