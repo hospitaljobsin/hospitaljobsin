@@ -22,7 +22,7 @@ class FieldAnalysis(BaseModel):
     )
 
     @field_validator("score", mode="after")
-    def round_score(cls, v):
+    def round_score(cls, v: float) -> float:
         return round(v, 4)
 
 
@@ -51,14 +51,6 @@ class AnalysedFields(BaseModel):
         description="The analysis of the applicant's category match to the job.",
         default=None,
     )
-    locations_open_to_work: FieldAnalysis | None = Field(
-        description="The analysis of the applicant's locations open to work match to the job.",
-        default=None,
-    )
-    open_to_relocation_anywhere: FieldAnalysis | None = Field(
-        description="The analysis of the applicant's open to relocation anywhere match to the job.",
-        default=None,
-    )
     education: FieldAnalysis | None = Field(
         description="The analysis of the applicant's education match to the job.",
         default=None,
@@ -79,8 +71,8 @@ class AnalysedFields(BaseModel):
         description="The analysis of the applicant's work experience match to the job.",
         default=None,
     )
-    salary_expectations: FieldAnalysis | None = Field(
-        description="The analysis of the applicant's salary expectations match to the job.",
+    career_profile: FieldAnalysis | None = Field(
+        description="The analysis of the applicant's career profile match to the job.",
         default=None,
     )
     certifications: FieldAnalysis | None = Field(
@@ -139,7 +131,7 @@ def create_job_applicant_analyzer_agent() -> JobApplicantAnalyzerAgent:
             "Your task is to analyze how well the applicant matches the job, step by step, field by field, focusing on each field in the applicant's profile. "
             "Think step by step for each field: first, consider the job's requirements and the applicant's information, then reason about the match, and finally produce a short, concise, and actionable insight for the recruiter. Then score the field. "
             "IMPORTANT: You MUST always output the complete 'analysed_fields' structure containing ALL profile fields. The 'analysed_fields' field cannot be null or missing. "
-            "For each profile field (gender, date_of_birth, address, marital_status, category, locations_open_to_work, open_to_relocation_anywhere, education, licenses, languages, job_preferences, work_experience, salary_expectations, certifications, professional_summary, headline), output a FieldAnalysis object (with 'analysis' and 'score') or null if not applicable, as a field on the AnalysedFields object. "
+            "For each profile field (gender, date_of_birth, address, marital_status, category, education, licenses, languages, job_preferences, work_experience, career_profile, certifications, professional_summary, headline), output a FieldAnalysis object (with 'analysis' and 'score') or null if not applicable, as a field on the AnalysedFields object. "
             "For the 'analysis' field, provide only short, concise, and actionable insights that are directly relevant to the recruiter—avoid detailed paragraphs or verbose explanations. Each analysis should be a brief point or sentence that helps the recruiter quickly understand the applicant's fit for the job. "
             "After all field analyses, synthesize: (a) an overall_summary, (b) a list of strengths, (c) a list of risk_flags and (d) an overall_score (0-1). For the overall summary, also think step by step: consider all field analyses, then synthesize the main reasons for the match score. "
             "Do not copy or store raw profile fields; only output the structured JobApplicantAnalysis object. "
