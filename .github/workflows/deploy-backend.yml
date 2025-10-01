@@ -31,7 +31,7 @@ jobs:
           --health-retries 5
 
       redis:
-        image: docker.io/bitnami/redis:latest
+        image: redis:latest
         env:
           ALLOW_EMPTY_PASSWORD: yes
         ports:
