@@ -1,3 +1,7 @@
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { graphql, readInlineData } from 'relay-runtime';
+import type { JobPosting, WithContext } from 'schema-dts';
 import type { pageJobDetailMetadataFragment$key } from '@/__generated__/pageJobDetailMetadataFragment.graphql';
 import type JobDetailMetadataQueryNode from '@/__generated__/pageJobDetailMetadataQuery.graphql';
 import type { pageJobDetailMetadataQuery } from '@/__generated__/pageJobDetailMetadataQuery.graphql';
@@ -10,10 +14,6 @@ import { env } from '@/lib/env/client';
 import { getEmploymentType } from '@/lib/jsonLd';
 import links from '@/lib/links';
 import loadSerializableQuery from '@/lib/relay/loadSerializableQuery';
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { graphql, readInlineData } from 'relay-runtime';
-import type { JobPosting, WithContext } from 'schema-dts';
 
 const PageJobDetailViewQuery = graphql`
   query pageJobDetailViewQuery($slug: String!, $jobSlug: String!) {
@@ -169,7 +169,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 	}
 
 	return {
-		title: data.organization.job.title,
+		title: `Job Opening for ${data.organization.job.title}`,
 		description: data.organization.job.descriptionCleaned,
 		openGraph: {
 			images: [
