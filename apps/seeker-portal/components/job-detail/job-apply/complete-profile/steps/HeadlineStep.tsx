@@ -28,7 +28,7 @@ mutation HeadlineStepMutation($headline: String!) {
 `;
 
 const headlineSchema = z.object({
-	headline: z.string().min(10, 'Headline should be at least 10 characters').max(100, 'Headline should not exceed 100 characters')
+	headline: z.string().min(5, 'Headline should be at least 5 characters').max(100, 'Headline should not exceed 100 characters')
 });
 
 interface HeadlineStepProps {
@@ -67,7 +67,7 @@ export default function HeadlineStep({ account }: HeadlineStepProps) {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
 			<div className='space-y-2'>
-				<h3 className='text-lg font-semibold'>Professional Headline</h3>
+				<h3 className='text-lg font-medium'>Professional Headline</h3>
 				<p className='text-sm text-foreground-600'>
 					Create a compelling headline that summarizes your professional identity. This will be the first thing employers see.
 				</p>
@@ -80,21 +80,8 @@ export default function HeadlineStep({ account }: HeadlineStepProps) {
 					placeholder='e.g., Experienced ICU Nurse | Critical Care Specialist | Patient Advocate'
 					errorMessage={formState.errors.headline?.message}
 					isInvalid={!!formState.errors.headline}
+					maxLength={100}
 				/>
-				<div className='flex justify-between text-xs text-foreground-500'>
-					<span>Minimum 10 characters</span>
-					<span>{watchedHeadline?.length || 0}/100</span>
-				</div>
-			</div>
-
-			<div className='bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg'>
-				<h4 className='font-medium text-primary-700 dark:text-primary-300 mb-2'>Tips for a great headline:</h4>
-				<ul className='text-sm text-primary-600 dark:text-primary-400 space-y-1'>
-					<li>• Include your job title or specialty</li>
-					<li>• Mention key skills or certifications</li>
-					<li>• Keep it professional and concise</li>
-					<li>• Use keywords relevant to your field</li>
-				</ul>
 			</div>
 
 			<div className='flex gap-3'>

@@ -4,20 +4,11 @@ import { Button } from '@heroui/react';
 import { Upload } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { graphql, useFragment, useMutation } from 'react-relay';
-import type { ResumeUploadStepFragment$key } from '@/__generated__/ResumeUploadStepFragment.graphql';
+import { graphql, useMutation } from 'react-relay';
 import type { ResumeUploadStepGeneratePresignedUrlMutation } from '@/__generated__/ResumeUploadStepGeneratePresignedUrlMutation.graphql';
 import type { ResumeUploadStepUpdateResumeMutation } from '@/__generated__/ResumeUploadStepUpdateResumeMutation.graphql';
 import { uploadFileToS3 } from '@/lib/presignedUrl';
 import CompleteProfileContext from '../CompleteProfileContext';
-
-const ResumeUploadStepFragment = graphql`
-fragment ResumeUploadStepFragment on Account {
-	profile @required(action: THROW) {
-		resumeUrl
-	}
-}
-`;
 
 const GeneratePresignedUrlMutation = graphql`
 mutation ResumeUploadStepGeneratePresignedUrlMutation($contentType: String!) {
@@ -38,12 +29,7 @@ mutation ResumeUploadStepUpdateResumeMutation($resumeUrl: String!, $fileKey: Str
 }
 `;
 
-interface ResumeUploadStepProps {
-	account: ResumeUploadStepFragment$key;
-}
-
-export default function ResumeUploadStep({ account }: ResumeUploadStepProps) {
-	const data = useFragment(ResumeUploadStepFragment, account);
+export default function ResumeUploadStep() {
 	const { send } = CompleteProfileContext.useActorRef();
 	const [isUploading, setIsUploading] = useState(false);
 	const [commitPresignedUrlMutation] = useMutation<ResumeUploadStepGeneratePresignedUrlMutation>(GeneratePresignedUrlMutation);
@@ -101,9 +87,9 @@ export default function ResumeUploadStep({ account }: ResumeUploadStepProps) {
 	return (
 		<div className='space-y-6'>
 			<div className='space-y-2'>
-				<h3 className='text-lg font-semibold'>Upload Your Resume</h3>
+				<h3 className='text-lg font-medium'>Upload Your Resume</h3>
 				<p className='text-sm text-foreground-600'>
-					Upload your resume to help us fill out your profile automatically and improve your job matches.
+					This is reequired for job applications. We'll auto-fill your profile and match you with relevant opportunities.
 				</p>
 			</div>
 

@@ -1,12 +1,12 @@
 'use client';
 
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
 import { useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import type { JobApplicationFlowFragment$key } from '@/__generated__/JobApplicationFlowFragment.graphql';
 import type { JobApplicationFlowJobFragment$key } from '@/__generated__/JobApplicationFlowJobFragment.graphql';
-import { useJobApplication } from './hooks/useJobApplication';
+import ConfirmApplicationModal from './ConfirmApplicationModal';
 import CompleteProfileDrawer from './complete-profile/CompleteProfileDrawer';
+import { useJobApplication } from './hooks/useJobApplication';
 
 const JobApplicationFlowFragment = graphql`
   fragment JobApplicationFlowFragment on Account {
@@ -68,22 +68,12 @@ export default function JobApplicationFlow({ account, job, children }: JobApplic
 				account={accountData}
 				job={jobData}
 			/>
-			<Modal isOpen={showConfirmModal} onClose={() => setShowConfirmModal(false)} size='md'>
-				<ModalContent>
-					<ModalHeader>Confirm Application</ModalHeader>
-					<ModalBody>
-						<p>Are you sure you want to submit your job application? You won't be able to undo this.</p>
-					</ModalBody>
-					<ModalFooter className='flex gap-4'>
-						<Button variant='flat' onPress={() => setShowConfirmModal(false)} fullWidth>
-							Cancel
-						</Button>
-						<Button color='primary' isLoading={isLoading} onPress={handleConfirmApply} fullWidth>
-							Confirm
-						</Button>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
+			<ConfirmApplicationModal
+				isOpen={showConfirmModal}
+				onClose={() => setShowConfirmModal(false)}
+				onConfirm={handleConfirmApply}
+				isLoading={isLoading}
+			/>
 		</>
 	);
 }

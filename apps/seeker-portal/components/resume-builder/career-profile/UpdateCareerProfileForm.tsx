@@ -221,7 +221,7 @@ export default function UpdateCareerProfileForm({ rootQuery, onSaveChanges }: Pr
 							/>
 							<span>Open to relocation anywhere</span>
 						</div>
-						{errors.locationsOpenToWork && <div className='text-red-500 text-sm mb-2'>{errors.locationsOpenToWork.message}</div>}
+						{errors.locationsOpenToWork && <div className='text-danger-500 text-sm mb-2'>{errors.locationsOpenToWork.message}</div>}
 						<div className='flex flex-col w-full gap-2'>
 							<div className='block'>Preferred work locations</div>
 

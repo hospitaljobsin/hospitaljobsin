@@ -63,8 +63,8 @@ export default function DateOfBirthStep({ account }: DateOfBirthStepProps) {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
 			<div className='space-y-2'>
-				<h3 className='text-lg font-semibold'>Date of Birth</h3>
-				<p className='text-sm text-foreground-600'>Please provide your date of birth for profile completion.</p>
+				<h3 className='text-lg font-medium'>Date of Birth</h3>
+				<p className='text-sm text-foreground-600'>We couldn't find this in your resume.</p>
 			</div>
 
 			<Controller

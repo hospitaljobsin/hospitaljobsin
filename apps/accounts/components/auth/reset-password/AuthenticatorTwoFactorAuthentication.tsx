@@ -1,11 +1,11 @@
-import type { AuthenticatorTwoFactorAuthenticationResetPasswordMutation as AuthenticatorTwoFactorAuthenticationResetPasswordMutationType } from '@/__generated__/AuthenticatorTwoFactorAuthenticationResetPasswordMutation.graphql';
-import { useTurnstile } from '@/components/TurnstileProvider';
 import { addToast, Button, Card, CardBody, CardHeader, Input } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { graphql, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
+import type { AuthenticatorTwoFactorAuthenticationResetPasswordMutation as AuthenticatorTwoFactorAuthenticationResetPasswordMutationType } from '@/__generated__/AuthenticatorTwoFactorAuthenticationResetPasswordMutation.graphql';
+import { useTurnstile } from '@/components/TurnstileProvider';
 
 const AuthenticatorTwoFactorAuthenticationResetPasswordMutation = graphql`
   mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation($email: String!, $passwordResetToken: String!, $twoFactorToken: String!, $captchaToken: String!) {
@@ -149,7 +149,7 @@ export default function AuthenticatorTwoFactorAuthentication({
 
 					<div className='flex h-8 items-end space-x-1'>
 						<div className='flex h-8 items-end space-x-1' aria-live='polite' aria-atomic='true'>
-							{errorMessage && <p className='text-sm text-red-500'>{errorMessage}</p>}
+							{errorMessage && <p className='text-sm text-danger-500'>{errorMessage}</p>}
 						</div>
 					</div>
 				</form>

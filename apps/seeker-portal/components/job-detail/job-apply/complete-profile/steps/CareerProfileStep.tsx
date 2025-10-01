@@ -32,10 +32,15 @@ mutation CareerProfileStepMutation($locationsOpenToWork: [String!]!, $openToRelo
 }
 `;
 
-const careerProfileSchema = z.object({
-	openToRelocationAnywhere: z.boolean(),
-	locationsOpenToWork: z.array(z.string())
-});
+const careerProfileSchema = z
+	.object({
+		openToRelocationAnywhere: z.boolean(),
+		locationsOpenToWork: z.array(z.string())
+	})
+	.refine(data => data.openToRelocationAnywhere || data.locationsOpenToWork.length > 0, {
+		message: 'Either select "Open to relocation anywhere" or add at least one preferred work location',
+		path: ['locationsOpenToWork']
+	});
 
 interface CareerProfileStepProps {
 	account: CareerProfileStepFragment$key;
@@ -53,7 +58,9 @@ export default function CareerProfileStep({ account }: CareerProfileStepProps) {
 		defaultValues: {
 			locationsOpenToWork: data.profile.careerProfile?.locationsOpenToWork || [],
 			openToRelocationAnywhere: data.profile.careerProfile?.openToRelocationAnywhere || false
-		}
+		},
+		reValidateMode: 'onChange',
+		mode: 'onChange'
 	});
 
 	const locations = useWatch({ control, name: 'locationsOpenToWork' }) || [];
@@ -83,11 +90,10 @@ export default function CareerProfileStep({ account }: CareerProfileStepProps) {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
 			<div className='space-y-2'>
-				<h3 className='text-lg font-semibold'>Career Profile</h3>
+				<h3 className='text-lg font-medium'>Location Preferences</h3>
 				<p className='text-sm text-foreground-600'>Let employers know where you're willing to work.</p>
 			</div>
 
-			<Divider />
 			<div className='flex flex-col gap-6'>
 				<div className='flex items-center gap-4 mb-4'>
 					<Controller
@@ -97,12 +103,9 @@ export default function CareerProfileStep({ account }: CareerProfileStepProps) {
 					/>
 					<span>Open to relocation anywhere</span>
 				</div>
-				{formState.errors.locationsOpenToWork && (
-					<div className='text-red-500 text-sm mb-2'>{formState.errors.locationsOpenToWork.message}</div>
-				)}
+
 				<div className='flex flex-col w-full gap-2'>
 					<div className='block'>Preferred work locations</div>
-
 					<LocationAutocomplete
 						value={inputValue}
 						onValueChange={setInputValue}
@@ -133,6 +136,9 @@ export default function CareerProfileStep({ account }: CareerProfileStepProps) {
 								</Chip>
 							))}
 						</div>
+					)}{' '}
+					{formState.errors.locationsOpenToWork && (
+						<div className='text-danger-500 text-sm mb-2'>{formState.errors.locationsOpenToWork.message}</div>
 					)}
 				</div>
 			</div>

@@ -1,11 +1,11 @@
-import type { PasskeyTwoFactorAuthenticationGenerateOptionsMutation } from '@/__generated__/PasskeyTwoFactorAuthenticationGenerateOptionsMutation.graphql';
-import type { PasskeyTwoFactorAuthenticationResetPasswordMutation as PasskeyTwoFactorAuthenticationResetPasswordMutationType } from '@/__generated__/PasskeyTwoFactorAuthenticationResetPasswordMutation.graphql';
-import { useTurnstile } from '@/components/TurnstileProvider';
 import { addToast, Button, Card, CardBody, CardHeader, Input } from '@heroui/react';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { Fingerprint } from 'lucide-react';
 import { useState } from 'react';
 import { graphql, useMutation } from 'react-relay';
+import type { PasskeyTwoFactorAuthenticationGenerateOptionsMutation } from '@/__generated__/PasskeyTwoFactorAuthenticationGenerateOptionsMutation.graphql';
+import type { PasskeyTwoFactorAuthenticationResetPasswordMutation as PasskeyTwoFactorAuthenticationResetPasswordMutationType } from '@/__generated__/PasskeyTwoFactorAuthenticationResetPasswordMutation.graphql';
+import { useTurnstile } from '@/components/TurnstileProvider';
 
 const GenerateAuthenticationOptionsMutation = graphql`
   mutation PasskeyTwoFactorAuthenticationGenerateOptionsMutation($captchaToken: String!) {
@@ -221,7 +221,7 @@ export default function PasskeyTwoFactorAuthentication({
 
 				<div className='flex h-8 items-end space-x-1'>
 					<div className='flex h-8 items-end space-x-1' aria-live='polite' aria-atomic='true'>
-						{errorMessage && <p className='text-sm text-red-500'>{errorMessage}</p>}
+						{errorMessage && <p className='text-sm text-danger-500'>{errorMessage}</p>}
 					</div>
 				</div>
 			</CardBody>

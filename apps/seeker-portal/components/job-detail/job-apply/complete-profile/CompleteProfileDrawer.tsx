@@ -43,7 +43,6 @@ fragment CompleteProfileDrawerFragment on Account {
 	...DateOfBirthStepFragment
 	...HeadlineStepFragment
 	...CareerProfileStepFragment
-	...ResumeUploadStepFragment
 }
 `;
 
@@ -151,7 +150,7 @@ function CompleteProfileWizard({
 
 		switch (currentField) {
 			case 'resume':
-				return <ResumeUploadStep account={accountData} />;
+				return <ResumeUploadStep />;
 			case 'dateOfBirth':
 				return <DateOfBirthStep account={accountData} />;
 			case 'address':
@@ -170,14 +169,17 @@ function CompleteProfileWizard({
 	return (
 		<>
 			<DrawerHeader className='flex flex-col gap-4'>
-				<div className='flex items-center gap-3'>
-					<div className='flex items-center justify-center w-10 h-10 rounded-full bg-primary-50 dark:bg-primary-900/20'>
-						<AlertCircle className='w-5 h-5 text-primary-500' />
-					</div>
-					<h2 className='text-xl font-semibold'>{isResumeStep ? 'Complete Your Profile' : 'Fill in Missing Information'}</h2>
-				</div>
+				{isResumeStep ||
+					(currentField === 'applicationField' && (
+						<div className='flex items-center gap-3'>
+							<AlertCircle className='w-4 h-4 text-foreground-500' />
+							<h2 className='text-sm text-foreground-600 font-medium'>
+								{isResumeStep ? 'Complete Your Profile' : 'Fill in these questions asked by recruiters'}
+							</h2>
+						</div>
+					))}
 				{totalSteps > 0 && !isResumeStep && (
-					<div className='space-y-2'>
+					<div className='space-y-2 mr-4'>
 						<div className='flex justify-between text-sm text-foreground-600'>
 							<span>
 								Step {currentStep} of {totalSteps}

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9a6ee27983c441b75d80c865b9636ea8>>
+ * @generated SignedSource<<0292a4dec1e153296a9c0f07d8c10186>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -26,7 +26,7 @@ export type CompleteProfileDrawerFragment$data = {
     readonly professionalSummary: string | null | undefined;
     readonly resumeUrl: string | null | undefined;
   };
-  readonly " $fragmentSpreads": FragmentRefs<"AddressStepFragment" | "CareerProfileStepFragment" | "DateOfBirthStepFragment" | "HeadlineStepFragment" | "ResumeUploadStepFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"AddressStepFragment" | "CareerProfileStepFragment" | "DateOfBirthStepFragment" | "HeadlineStepFragment">;
   readonly " $fragmentType": "CompleteProfileDrawerFragment";
 };
 export type CompleteProfileDrawerFragment$key = {
@@ -159,17 +159,12 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "FragmentSpread",
       "name": "CareerProfileStepFragment"
-    },
-    {
-      "args": null,
-      "kind": "FragmentSpread",
-      "name": "ResumeUploadStepFragment"
     }
   ],
   "type": "Account",
   "abstractKey": null
 };
 
-(node as any).hash = "1b2d19ba0dbcbc0c81aa2af322370a67";
+(node as any).hash = "dcf27467f530a972e507a4bc4079e550";
 
 export default node;
