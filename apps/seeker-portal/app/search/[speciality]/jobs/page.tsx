@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+import { graphql, readInlineData } from 'relay-runtime';
 import type { pageSearchSpecialityMetadataFragment$key } from '@/__generated__/pageSearchSpecialityMetadataFragment.graphql';
 import type SearchMetadataQueryNode from '@/__generated__/pageSearchSpecialityMetadataQuery.graphql';
 import type { pageSearchSpecialityMetadataQuery } from '@/__generated__/pageSearchSpecialityMetadataQuery.graphql';
@@ -8,8 +10,6 @@ import { env } from '@/lib/env/client';
 import links from '@/lib/links';
 import loadSerializableQuery from '@/lib/relay/loadSerializableQuery';
 import { parseSearchParams } from '@/lib/searchParams';
-import type { Metadata } from 'next';
-import { graphql, readInlineData } from 'relay-runtime';
 import SearchViewSpecialityClientComponent from './SearchViewSpecialityClientComponent';
 
 export const PageSearchSpecialityViewQuery = graphql`
@@ -107,7 +107,7 @@ export async function generateMetadata({
 	const jobCount = data.jobs.totalCount;
 	const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT;
 
-	let title = hasReasonableCount ? `${jobCount} Medical Jobs & Healthcare Careers` : 'Medical Jobs & Healthcare Careers';
+	let title = '';
 	let description = hasReasonableCount
 		? `Discover ${jobCount} verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
 		: 'Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.';
@@ -115,29 +115,15 @@ export async function generateMetadata({
 	if (speciality) {
 		// Enhance search term titles with medical context
 		if (hasReasonableCount) {
-			const medicalTitle =
-				speciality.toLowerCase().includes('doctor') || speciality.toLowerCase().includes('physician')
-					? `${jobCount} ${speciality} Positions & Medical Careers`
-					: speciality.toLowerCase().includes('nurse') || speciality.toLowerCase().includes('nursing')
-						? `${jobCount} ${speciality} Jobs & Healthcare Opportunities`
-						: `${jobCount} ${speciality} Medical Jobs & Healthcare Careers`;
-
-			title = medicalTitle;
+			title = `${jobCount} ${speciality} Jobs`;
 			description = `Find ${jobCount} ${speciality} positions at leading healthcare institutions. Join top medical facilities as a ${speciality.toLowerCase()} with competitive salaries & benefits.`;
 		} else {
-			const medicalTitle =
-				speciality.toLowerCase().includes('doctor') || speciality.toLowerCase().includes('physician')
-					? `${speciality} Positions & Medical Careers`
-					: speciality.toLowerCase().includes('nurse') || speciality.toLowerCase().includes('nursing')
-						? `${speciality} Jobs & Healthcare Opportunities`
-						: `${speciality} Medical Jobs & Healthcare Careers`;
-
-			title = medicalTitle;
+			title = `${speciality} Jobs`;
 			description = `Find ${speciality} positions at leading healthcare institutions. Join top medical facilities as a ${speciality.toLowerCase()} with competitive salaries & benefits.`;
 		}
 	}
 
-	title += " | India's Medical Job Portal";
+	title += ' | Hospital Jobs In India';
 	description += " Browse nationwide medical career opportunities across India's leading healthcare networks.";
 
 	return {

@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+import { graphql, readInlineData } from 'relay-runtime';
 import type { pageSearchMetadataFragment$key } from '@/__generated__/pageSearchMetadataFragment.graphql';
 import type SearchMetadataQueryNode from '@/__generated__/pageSearchMetadataQuery.graphql';
 import type { pageSearchMetadataQuery } from '@/__generated__/pageSearchMetadataQuery.graphql';
@@ -8,8 +10,6 @@ import { env } from '@/lib/env/client';
 import links from '@/lib/links';
 import loadSerializableQuery from '@/lib/relay/loadSerializableQuery';
 import { parseSearchParams } from '@/lib/searchParams';
-import type { Metadata } from 'next';
-import { graphql, readInlineData } from 'relay-runtime';
 import SearchViewClientComponent from './SearchViewClientComponent';
 
 const PageSearchViewQuery = graphql`
@@ -107,14 +107,14 @@ export async function generateMetadata({
 	const jobCount = data.jobs.totalCount;
 	const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT; // Only show count if we have 50+ jobs
 
-	let title = hasReasonableCount ? `${jobCount} Medical Jobs & Healthcare Careers` : 'Medical Jobs & Healthcare Careers';
+	let title = hasReasonableCount ? `${jobCount} Healthcare Jobs` : 'Healthcare Jobs';
 	let description = hasReasonableCount
-		? `Discover ${jobCount} verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
-		: 'Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.';
+		? `Discover ${jobCount} verified healthcare jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
+		: 'Discover verified healthcare jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.';
 
 	// No search term handling for main search page since we removed 'q' param
-	title += " | India's Medical Job Portal";
-	description += " Browse nationwide medical career opportunities across India's leading healthcare networks.";
+	title += ' | Hospital Jobs in India';
+	description += " Browse nationwide healthcare career opportunities across India's leading healthcare networks.";
 
 	return {
 		title,
