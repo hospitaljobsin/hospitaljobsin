@@ -31,7 +31,7 @@ export default function CompanyLogos() {
 	}, [emblaApi, onPointerDown, onPointerUp]);
 
 	return (
-		<section className='w-full bg-background pt-12'>
+		<section className='w-full bg-background py-12'>
 			<div className='max-w-7xl mx-auto px-4'>
 				<div className='text-center mb-8'>
 					<p className='text-sm font-medium text-foreground-600'>Trusted by leading healthcare organizations</p>
