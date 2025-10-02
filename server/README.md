@@ -85,7 +85,7 @@ uv run strawberry export-schema app.schema:schema > ../schema/schema.graphql
 After following the setup guide, the server can be run independently locally using the following command:
 
 ```bash
-uv run scripts/run_server.py
+uv run -m scripts.run_server
 ```
 
 ### 3. Import Regions
@@ -93,5 +93,5 @@ uv run scripts/run_server.py
 To import geospatial data (regions) into the database, run the following command:
 
 ```bash
-uv run scripts/utils/import_regions.py
+uv run -m scripts.utils.import_regions
 ```

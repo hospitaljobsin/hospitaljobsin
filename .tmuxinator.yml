@@ -4,10 +4,10 @@ root: ./
 windows:
   - server:
       - cd server
-      - uv run scripts/run_server.py
-  -  persist_server:
+      - uv run -m scripts.run_server
+  - persist_server:
       - cd server
-      - uv run scripts/run_persist_server.py
+      - uv run -m scripts.run_persist_server
 
   - seeker_portal:
       - pnpm --filter seeker-portal dev
