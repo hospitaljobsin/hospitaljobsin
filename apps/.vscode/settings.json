@@ -5,7 +5,8 @@
 	"editor.formatOnPaste": false,
 	"editor.codeActionsOnSave": {
 		"source.organizeImports.biome": "explicit",
-		"source.fixAll.biome": "explicit"
+		"source.fixAll.biome": "explicit",
+		"source.removeUnusedImports": "explicit"
 	},
 	"tailwindCSS.experimental.classRegex": ["class:\\s*?[\"'`]([^\"'`]*).*?,"]
 }

@@ -2,7 +2,7 @@ import { Button, Card, CardBody } from '@heroui/react';
 import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
-import { useCallback, useTransition } from 'react';
+import { useCallback } from 'react';
 import { useFragment, usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import type { JobListFragment$key } from '@/__generated__/JobListFragment.graphql';
