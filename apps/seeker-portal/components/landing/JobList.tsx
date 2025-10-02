@@ -104,7 +104,7 @@ export default function JobList({ rootQuery }: Props) {
 					isIconOnly
 					size='sm'
 					variant='bordered'
-					className='absolute -left-4 top-1/2 -translate-y-1/2 z-10 shadow-sm'
+					className='absolute -left-4 top-1/2 -translate-y-1/2 z-10 shadow-sm bg-background'
 					onPress={scrollPrev}
 				>
 					<ChevronLeft size={16} />
@@ -113,7 +113,7 @@ export default function JobList({ rootQuery }: Props) {
 					isIconOnly
 					size='sm'
 					variant='bordered'
-					className='absolute -right-4 top-1/2 -translate-y-1/2 z-10 shadow-sm'
+					className='absolute -right-4 top-1/2 -translate-y-1/2 z-10 shadow-sm bg-background'
 					onPress={scrollNext}
 				>
 					<ChevronRight size={16} />
