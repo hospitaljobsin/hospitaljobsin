@@ -50,6 +50,5 @@ export default async function LandingPage() {
 	);
 
 	const [data, siteStatsData] = await Promise.all([dataPromise, siteStatsDataPromise]);
-	console.log('DATA: ', data, data.graphQLResponse);
 	return <LandingView jobsData={data} siteStatsData={siteStatsData.data} />;
 }
