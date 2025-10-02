@@ -726,7 +726,15 @@ class JobRepo:
         """Get the total number of active jobs and vacancies."""
         result = await Job.aggregate(
             [
-                {"$match": {"is_active": True}},
+                {
+                    "$match": {
+                        "is_active": True,
+                        "$or": [
+                            {"expires_at": {"$gt": datetime.now(UTC)}},
+                            {"expires_at": None},
+                        ],
+                    }
+                },
                 {
                     "$group": {
                         "_id": None,
