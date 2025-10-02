@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<1a5ccc97e59dd72a3f2589c6649b8bb1>>
- * @relayHash ee650025f0418467783e341b3e524df9
+ * @generated SignedSource<<a03873d928b2ff3809a3f152ea055ddd>>
+ * @relayHash 25fb2348f854328707e473b92f9d2076
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ee650025f0418467783e341b3e524df9
+// @relayRequestID 25fb2348f854328707e473b92f9d2076
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type LandingClientComponentQuery$variables = Record<PropertyKey, never>;
-export type LandingClientComponentQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"LandingViewFragment">;
+export type pageLandingQuery$variables = Record<PropertyKey, never>;
+export type pageLandingQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"JobListFragment">;
 };
-export type LandingClientComponentQuery = {
-  response: LandingClientComponentQuery$data;
-  variables: LandingClientComponentQuery$variables;
+export type pageLandingQuery = {
+  response: pageLandingQuery$data;
+  variables: pageLandingQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -71,12 +71,12 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "LandingClientComponentQuery",
+    "name": "pageLandingQuery",
     "selections": [
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "LandingViewFragment"
+        "name": "JobListFragment"
       }
     ],
     "type": "Query",
@@ -86,7 +86,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "LandingClientComponentQuery",
+    "name": "pageLandingQuery",
     "selections": [
       {
         "alias": null,
@@ -361,46 +361,6 @@ return {
             ],
             "type": "Node",
             "abstractKey": "__isNode"
-          },
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "fullName",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "avatarUrl",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Profile",
-                "kind": "LinkedField",
-                "name": "profile",
-                "plural": false,
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "progressPercentage",
-                    "storageKey": null
-                  },
-                  (v1/*: any*/)
-                ],
-                "storageKey": null
-              }
-            ],
-            "type": "Account",
-            "abstractKey": null
           }
         ],
         "storageKey": null
@@ -408,15 +368,15 @@ return {
     ]
   },
   "params": {
-    "id": "ee650025f0418467783e341b3e524df9",
+    "id": "25fb2348f854328707e473b92f9d2076",
     "metadata": {},
-    "name": "LandingClientComponentQuery",
+    "name": "pageLandingQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "08486ba4f8f08f4a9692af02a01dd99b";
+(node as any).hash = "cbff92efb0f66651a622d36833076943";
 
 export default node;

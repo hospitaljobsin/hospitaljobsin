@@ -1,3 +1,4 @@
+'use client';
 import { Skeleton } from '@heroui/react';
 import JobSkeleton from './JobSkeleton';
 

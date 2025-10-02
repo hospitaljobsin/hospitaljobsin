@@ -147,6 +147,7 @@ from app.revalidation.services import (
     DummyRevalidationService,
     RevalidationService,
 )
+from app.stats.services import StatsService
 from app.testing.services import TestSetupService
 
 settings_classes: list[type[BaseSettings]] = [
@@ -355,4 +356,5 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(JobApplicantAnalysisService))
     container.register(aioinject.Singleton(ProfileParserService))
     container.register(aioinject.Singleton(WhatsappClient))
+    container.register(aioinject.Singleton(StatsService))
     return container
