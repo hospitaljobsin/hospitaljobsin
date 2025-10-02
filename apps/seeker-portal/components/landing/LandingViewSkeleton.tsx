@@ -2,6 +2,7 @@
 import { SparklesIcon } from 'lucide-react';
 import Image from 'next/image';
 import LandingHeaderSkeleton from '../layout/LandingHeaderSkeleton';
+import CompanyLogos from './CompanyLogos';
 import JobListSkeleton from './JobListSkeleton';
 import { LandingSearchController } from './LandingSearchController';
 
@@ -60,7 +61,7 @@ export default function LandingViewSkeleton() {
 					</div>
 				</div>
 			</div>
-
+			<CompanyLogos />
 			{/* Trending Jobs Section */}
 			<div className='py-8 sm:py-16 flex flex-col gap-8 max-w-7xl w-full px-4 sm:px-5 mx-auto bg-background-600'>
 				<div className='w-full flex flex-col gap-4 items-center justify-center'>
