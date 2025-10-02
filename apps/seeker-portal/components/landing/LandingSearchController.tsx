@@ -3,7 +3,6 @@ import { Button, Card } from '@heroui/react';
 import { SearchIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-// @ts-ignore: HeroUI types may be missing, but usage is required by project rules
 import links from '@/lib/links';
 import JobSearchAutocomplete from '../forms/JobSearchAutocomplete';
 import LocationAutocomplete from '../forms/LocationAutocomplete';

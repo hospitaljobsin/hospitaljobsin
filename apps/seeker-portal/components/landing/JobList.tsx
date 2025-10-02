@@ -1,19 +1,25 @@
+'use client';
 import { Button, Card, CardBody } from '@heroui/react';
 import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import { useCallback } from 'react';
-import { useFragment, usePaginationFragment } from 'react-relay';
+import { useFragment, usePaginationFragment, usePreloadedQuery, useRelayEnvironment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import type { JobListFragment$key } from '@/__generated__/JobListFragment.graphql';
 import type { JobListInternalFragment$key } from '@/__generated__/JobListInternalFragment.graphql';
-import type { LandingClientComponentQuery } from '@/__generated__/LandingClientComponentQuery.graphql';
+import type LandingPageQueryNode from '@/__generated__/pageLandingQuery.graphql';
+import type { pageLandingQuery } from '@/__generated__/pageLandingQuery.graphql';
+import PageLandingQuery from '@/__generated__/pageLandingQuery.graphql';
+import type { SerializablePreloadedQuery } from '@/lib/relay/serializablePreloadedQuery';
+import useSerializablePreloadedQuery from '@/lib/relay/useSerializablePreloadedQuery';
 import Job from './Job';
 
 const JobListFragment = graphql`
 fragment JobListFragment on Query {
 	...JobListInternalFragment @arguments(workMode: [], jobType: [])
 	viewer {
+		__typename
 		...JobControlsAuthFragment
 	}
 }
@@ -46,12 +52,18 @@ const JobListInternalFragment = graphql`
 `;
 
 type Props = {
-	rootQuery: JobListFragment$key;
+	rootQuery: SerializablePreloadedQuery<typeof LandingPageQueryNode, pageLandingQuery>;
 };
 
 export default function JobList({ rootQuery }: Props) {
-	const root = useFragment(JobListFragment, rootQuery);
-	const { data } = usePaginationFragment<LandingClientComponentQuery, JobListInternalFragment$key>(JobListInternalFragment, root);
+	const environment = useRelayEnvironment();
+	const queryRef = useSerializablePreloadedQuery<typeof LandingPageQueryNode, pageLandingQuery>(environment, rootQuery, 'store-or-network');
+	const rootData = usePreloadedQuery(PageLandingQuery, queryRef);
+	const root = useFragment<JobListFragment$key>(JobListFragment, rootData);
+	console.log('ROOT: ', root);
+	const { data } = usePaginationFragment<pageLandingQuery, JobListInternalFragment$key>(JobListInternalFragment, root);
+
+	console.log('DATA: ', data);
 
 	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' }, [Autoplay({ delay: 4000, stopOnMouseEnter: true })]);
 
@@ -63,7 +75,7 @@ export default function JobList({ rootQuery }: Props) {
 		if (emblaApi) emblaApi.scrollNext();
 	}, [emblaApi]);
 
-	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
+	if (data.jobs?.edges?.length === 0 && !data.jobs?.pageInfo.hasNextPage) {
 		return (
 			<Card className='p-6' fullWidth shadow='none' style={{ background: 'transparent' }}>
 				<CardBody className='flex flex-col gap-6 w-full items-center'>
@@ -83,14 +95,14 @@ export default function JobList({ rootQuery }: Props) {
 	return (
 		<>
 			<div className='md:hidden flex flex-col gap-4 w-full'>
-				{data.jobs.edges.map(jobEdge => (
+				{data.jobs?.edges.map(jobEdge => (
 					<Job key={jobEdge.node.id} job={jobEdge.node} authQueryRef={root.viewer} />
 				))}
 			</div>
 			<div className='hidden md:block relative w-full'>
 				<div className='overflow-hidden -mx-4' ref={emblaRef}>
 					<div className='flex'>
-						{data.jobs.edges.map(jobEdge => (
+						{data.jobs?.edges.map(jobEdge => (
 							<div key={jobEdge.node.id} className='flex-[0_0_100%] min-w-0 px-4'>
 								<Job job={jobEdge.node} authQueryRef={root.viewer} />
 							</div>
@@ -101,7 +113,7 @@ export default function JobList({ rootQuery }: Props) {
 					isIconOnly
 					size='sm'
 					variant='bordered'
-					className='absolute -left-4 top-1/2 -translate-y-1/2 z-10 shadow-sm bg-background'
+					className='absolute -left-6 top-1/2 -translate-y-1/2 z-10 shadow-sm bg-background'
 					onPress={scrollPrev}
 				>
 					<ChevronLeft size={16} />
@@ -110,7 +122,7 @@ export default function JobList({ rootQuery }: Props) {
 					isIconOnly
 					size='sm'
 					variant='bordered'
-					className='absolute -right-4 top-1/2 -translate-y-1/2 z-10 shadow-sm bg-background'
+					className='absolute -right-6 top-1/2 -translate-y-1/2 z-10 shadow-sm bg-background'
 					onPress={scrollNext}
 				>
 					<ChevronRight size={16} />

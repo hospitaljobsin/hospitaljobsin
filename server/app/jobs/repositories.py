@@ -447,8 +447,8 @@ class JobRepo:
 
     async def get_all_active(
         self,
-        work_mode: list[JobWorkMode],
-        job_type: list[JobType],
+        work_mode: list[JobWorkMode] = [],
+        job_type: list[JobType] = [],
         search_term: str | None = None,
         location: str | None = None,
         proximity_km: float | None = None,
@@ -721,6 +721,25 @@ class JobRepo:
             before=before,
             after=after,
         )
+
+    async def get_active_and_vacancies_count(self) -> tuple[int, int]:
+        """Get the total number of active jobs and vacancies."""
+        result = await Job.aggregate(
+            [
+                {"$match": {"is_active": True}},
+                {
+                    "$group": {
+                        "_id": None,
+                        "total_jobs": {"$sum": 1},
+                        "total_vacancies": {"$sum": {"$ifNull": ["$vacancies", 0]}},
+                    }
+                },
+            ]
+        ).to_list()
+
+        if result and len(result) > 0:
+            return result[0].get("total_jobs", 0), result[0].get("total_vacancies", 0)
+        return 0, 0
 
     async def get_all_trending(
         self,

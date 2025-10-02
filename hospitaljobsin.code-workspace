@@ -22,7 +22,6 @@
     // Also fix the Ruff extension
     "python.defaultInterpreterPath": "${workspaceFolder:server}/.venv/bin/python",
     "ruff.nativeServer": "on",
-    "python.languageServer": "None",
     "relay.pathToConfig": "relay.config.json",
     "relay.pathToRelay": "/usr/lib/node_modules/relay-compiler/linux-x64/relay",
     "terminal.integrated.env.linux": {

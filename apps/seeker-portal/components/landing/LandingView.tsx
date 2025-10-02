@@ -1,36 +1,32 @@
-'use client';
 import { ArrowRight, SparklesIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { type PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import LandingClientComponentQuery, {
-	type LandingClientComponentQuery as LandingClientComponentQueryType
-} from '@/__generated__/LandingClientComponentQuery.graphql';
-import type { LandingViewFragment$key } from '@/__generated__/LandingViewFragment.graphql';
+import { Suspense } from 'react';
+import type LandingPageQueryNode from '@/__generated__/pageLandingQuery.graphql';
+import type { pageLandingQuery } from '@/__generated__/pageLandingQuery.graphql';
+import type { SiteStatsFragment$key } from '@/__generated__/SiteStatsFragment.graphql';
 import links from '@/lib/links';
-import LandingHeader from '../layout/LandingHeader';
+import type { SerializablePreloadedQuery } from '@/lib/relay/serializablePreloadedQuery';
+import LandingHeaderClientComponent from '../layout/LandingHeaderClientComponent';
 import CompanyLogos from './CompanyLogos';
 import Introduction from './Introduction';
 import JobList from './JobList';
+import JobListSkeleton from './JobListSkeleton';
 import { LandingSearchController } from './LandingSearchController';
+import SiteStats from './SiteStats';
 
-const LandingViewFragment = graphql`
-  fragment LandingViewFragment on Query {
-    ...JobListFragment
-	...LandingHeaderFragment
-  }
-`;
-
-export default function LandingView({ queryReference }: { queryReference: PreloadedQuery<LandingClientComponentQueryType> }) {
-	const query = usePreloadedQuery(LandingClientComponentQuery, queryReference);
-	const data = useFragment<LandingViewFragment$key>(LandingViewFragment, query);
-
+export default function LandingView({
+	jobsData,
+	siteStatsData
+}: {
+	jobsData: SerializablePreloadedQuery<typeof LandingPageQueryNode, pageLandingQuery>;
+	siteStatsData: SiteStatsFragment$key;
+}) {
 	return (
 		<div className='w-full flex flex-col bg-background-600 h-full'>
 			{/* Hero Section */}
 			<div className='relative bg-gradient-to-br from-primary-600 via-primary-400 to-primary-300 flex flex-col justify-center items-center w-full'>
-				<LandingHeader rootQuery={data} />
+				<LandingHeaderClientComponent />
 				{/* Background SVG or Image Placeholder */}
 				<div className='absolute inset-0 w-full h-full opacity-20 pointer-events-none select-none z-0'>
 					{/* biome-ignore lint/a11y/noSvgWithoutTitle: messes up with nextjs page title */}
@@ -45,7 +41,7 @@ export default function LandingView({ queryReference }: { queryReference: Preloa
 				{/* Main content: text left, image right */}
 				<div className='relative z-10 flex flex-col md:flex-row md:items-end text-center md:text-left gap-8 pt-8 px-4 max-w-7xl w-full h-full'>
 					{/* Left: Text and Search */}
-					<div className='flex-1 flex flex-col items-center md:items-start gap-6 pb-16'>
+					<div className='flex-1 flex flex-col items-center md:items-start gap-6 pb-8'>
 						<h1 className='text-4xl font-medium tracking-tight text-primary-foreground drop-shadow-lg hidden md:block'>
 							Empowering <span className='text-accent-400'>Healthcare Heroes</span>
 							<br />
@@ -54,8 +50,9 @@ export default function LandingView({ queryReference }: { queryReference: Preloa
 						<p className='text-lg sm:text-xl text-primary-foreground/90 font-medium max-w-xl mx-auto md:mx-0 hidden md:block'>
 							Discover life-changing roles at top hospitals and clinics. Your next mission starts here.
 						</p>
-						<div className='w-full flex flex-col items-center md:items-start gap-4'>
+						<div className='w-full flex flex-col items-center md:items-start gap-6'>
 							<LandingSearchController />
+							<SiteStats rootQuery={siteStatsData} />
 						</div>
 					</div>
 					{/* Right: Doctor Image */}
@@ -96,7 +93,9 @@ export default function LandingView({ queryReference }: { queryReference: Preloa
 						</div>
 						<h3 className='text-foreground-500 text-sm sm:text-base font-medium tracking-tight'>Latest Healthcare Jobs Posted</h3>
 					</div>
-					<JobList rootQuery={data} />
+					<Suspense fallback={<JobListSkeleton />}>
+						<JobList rootQuery={jobsData} />
+					</Suspense>
 				</div>
 				<Link href={links.search()} className='flex items-center gap-2 text-lg text-foreground-600 font-medium -mt-2'>
 					View all jobs <ArrowRight className='w-4 h-4' strokeWidth={3} />

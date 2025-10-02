@@ -4671,6 +4671,11 @@ type Query {
 		"""
 		last: Int = null
 	): JobAlertConnection! @isAuthenticated
+
+	"""
+	Get core site statistics.
+	"""
+	stats: Stats!
 }
 
 """
@@ -4992,6 +4997,26 @@ union SetAccount2FAPayload =
 	| EnableAccount2FAWithAuthenticatorSuccess
 	| InvalidCredentialsError
 	| TwoFactorAuthenticationChallengeNotFoundError
+
+"""
+site core statistics
+"""
+type Stats {
+	"""
+	Total number of job vacancies.
+	"""
+	totalVacancies: Int!
+
+	"""
+	Total number of organizations.
+	"""
+	totalOrganizations: Int!
+
+	"""
+	Total number of jobs.
+	"""
+	totalJobs: Int!
+}
 
 """
 The terms and policy.

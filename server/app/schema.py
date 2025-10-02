@@ -30,6 +30,7 @@ from app.jobs.query import JobQuery
 from app.organizations.mutation import OrganizationMutation
 from app.organizations.query import OrganizationQuery
 from app.scalars import DateTime
+from app.stats.query import StatsQuery
 
 from .base.query import BaseQuery
 from .container import create_container
@@ -44,6 +45,7 @@ query = merge_types(
         OrganizationQuery,
         GeocodingQuery,
         JobAlertQuery,
+        StatsQuery,
     ),
 )
 

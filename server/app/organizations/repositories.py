@@ -171,6 +171,7 @@ class OrganizationRepo:
             document_cls=Organization,
             paginate_by="_id",
             entity_paginate_by="id",
+            calculate_total_count=True,
         )
 
         return await paginator.paginate(
@@ -180,6 +181,10 @@ class OrganizationRepo:
             before=ObjectId(before) if before else None,
             after=ObjectId(after) if after else None,
         )
+
+    async def get_all_count(self) -> int:
+        """Get the total number of organizations."""
+        return await Organization.find().count()
 
     async def get_all_by_account_id(
         self,
