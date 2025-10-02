@@ -42,6 +42,8 @@
 		"@t3-oss/env-nextjs": "0.13.8",
 		"@types/mdx": "2.0.13",
 		"acorn": "8.15.0",
+		"embla-carousel-auto-scroll": "8.6.0",
+		"embla-carousel-react": "8.6.0",
 		"framer-motion": "12.23.22",
 		"import-in-the-middle": "1.14.4",
 		"jiti": "2.6.0",

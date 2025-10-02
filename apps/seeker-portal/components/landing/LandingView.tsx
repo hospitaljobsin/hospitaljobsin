@@ -10,6 +10,7 @@ import LandingClientComponentQuery, {
 import type { LandingViewFragment$key } from '@/__generated__/LandingViewFragment.graphql';
 import links from '@/lib/links';
 import LandingHeader from '../layout/LandingHeader';
+import CompanyLogos from './CompanyLogos';
 import JobList from './JobList';
 import { LandingSearchController } from './LandingSearchController';
 
@@ -79,6 +80,8 @@ export default function LandingView({ queryReference }: { queryReference: Preloa
 					</div>
 				</div>
 			</div>
+
+			<CompanyLogos />
 
 			{/* Trending Jobs Section */}
 			<div className='py-8 sm:py-16 flex flex-col gap-8 max-w-7xl w-full px-4 sm:px-5 mx-auto bg-background-600'>

@@ -1,7 +1,8 @@
 'use client';
-import { motion, useAnimationControls } from 'framer-motion';
+import AutoScroll from 'embla-carousel-auto-scroll';
+import useEmblaCarousel from 'embla-carousel-react';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 
 const companies = [
 	{ name: 'GEM Hospital', logo: '/company-logos/gem-hospital.png' },
@@ -12,24 +13,21 @@ const companies = [
 ];
 
 export default function CompanyLogos() {
-	const [isHovered, setIsHovered] = useState(false);
-	const controls = useAnimationControls();
+	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, dragFree: true }, [AutoScroll({ speed: 0.5, stopOnInteraction: false })]);
+
+	const onPointerDown = useCallback(() => {
+		emblaApi?.plugins().autoScroll?.stop();
+	}, [emblaApi]);
+
+	const onPointerUp = useCallback(() => {
+		emblaApi?.plugins().autoScroll?.play();
+	}, [emblaApi]);
 
 	useEffect(() => {
-		if (!isHovered) {
-			const animate = async () => {
-				await controls.set({ x: 0 });
-				await controls.start({
-					x: `-${100 / companies.length}%`,
-					transition: { duration: 15, ease: 'linear' }
-				});
-				animate();
-			};
-			animate();
-		} else {
-			controls.stop();
-		}
-	}, [isHovered, controls]);
+		if (!emblaApi) return;
+		emblaApi.on('pointerDown', onPointerDown);
+		emblaApi.on('pointerUp', onPointerUp);
+	}, [emblaApi, onPointerDown, onPointerUp]);
 
 	return (
 		<section className='w-full bg-background pt-12'>
@@ -38,24 +36,26 @@ export default function CompanyLogos() {
 					<p className='text-sm font-medium text-foreground-600'>Trusted by leading healthcare organizations</p>
 				</div>
 
-				<div className='relative overflow-hidden' onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-					<div className='absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none' />
-					<div className='absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none' />
-					<motion.div className='flex gap-8 items-center' animate={controls} style={{ width: '200%' }}>
-						{[...companies, ...companies].map((company, index) => (
-							<div key={`${company.name}-${index}`} className='flex items-center justify-center min-w-[200px] h-16'>
-								<Image
-									src={company.logo}
-									alt={company.name}
-									width={100}
-									height={50}
-									className='object-contain'
-									loading='eager'
-									title={company.name}
-								/>
-							</div>
-						))}
-					</motion.div>
+				<div className='relative overflow-hidden'>
+					<div className='absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none' />
+					<div className='absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none' />
+					<div className='embla' ref={emblaRef}>
+						<div className='embla__container flex'>
+							{[...companies, ...companies].map((company, index) => (
+								<div key={`${company.name}-${index}`} className='embla__slide flex-[0_0_200px] flex items-center justify-center h-16 mx-4'>
+									<Image
+										src={company.logo}
+										alt={company.name}
+										width={100}
+										height={50}
+										className='object-contain'
+										loading='eager'
+										title={company.name}
+									/>
+								</div>
+							))}
+						</div>
+					</div>
 				</div>
 			</div>
 		</section>
