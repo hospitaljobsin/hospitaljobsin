@@ -1,12 +1,13 @@
+import { Button, Card, CardBody } from '@heroui/react';
+import Autoplay from 'embla-carousel-autoplay';
+import useEmblaCarousel from 'embla-carousel-react';
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { useCallback, useTransition } from 'react';
+import { useFragment, usePaginationFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 import type { JobListFragment$key } from '@/__generated__/JobListFragment.graphql';
 import type { JobListInternalFragment$key } from '@/__generated__/JobListInternalFragment.graphql';
 import type { LandingClientComponentQuery } from '@/__generated__/LandingClientComponentQuery.graphql';
-import { Card, CardBody } from '@heroui/react';
-import { Search } from 'lucide-react';
-import { useTransition } from 'react';
-import { useFragment, usePaginationFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import { WindowVirtualizer } from 'virtua';
 import Job from './Job';
 
 const JobListFragment = graphql`
@@ -49,12 +50,18 @@ type Props = {
 };
 
 export default function JobList({ rootQuery }: Props) {
-	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(JobListFragment, rootQuery);
-	const { data, loadNext, isLoadingNext } = usePaginationFragment<LandingClientComponentQuery, JobListInternalFragment$key>(
-		JobListInternalFragment,
-		root
-	);
+	const { data } = usePaginationFragment<LandingClientComponentQuery, JobListInternalFragment$key>(JobListInternalFragment, root);
+
+	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' }, [Autoplay({ delay: 4000, stopOnMouseEnter: true })]);
+
+	const scrollPrev = useCallback(() => {
+		if (emblaApi) emblaApi.scrollPrev();
+	}, [emblaApi]);
+
+	const scrollNext = useCallback(() => {
+		if (emblaApi) emblaApi.scrollNext();
+	}, [emblaApi]);
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (
@@ -74,19 +81,41 @@ export default function JobList({ rootQuery }: Props) {
 	}
 
 	return (
-		<div
-			className='w-full overflow-y-auto max-h-min'
-			style={{
-				scrollbarWidth: 'none'
-			}}
-		>
-			<WindowVirtualizer ssrCount={data.jobs.edges.length}>
+		<>
+			<div className='md:hidden flex flex-col gap-4 w-full'>
 				{data.jobs.edges.map(jobEdge => (
-					<div key={jobEdge.node.id} className='pb-4 sm:pb-6'>
-						<Job job={jobEdge.node} authQueryRef={root.viewer} />
-					</div>
+					<Job key={jobEdge.node.id} job={jobEdge.node} authQueryRef={root.viewer} />
 				))}
-			</WindowVirtualizer>
-		</div>
+			</div>
+			<div className='hidden md:block relative w-full'>
+				<div className='overflow-hidden -mx-4' ref={emblaRef}>
+					<div className='flex'>
+						{data.jobs.edges.map(jobEdge => (
+							<div key={jobEdge.node.id} className='flex-[0_0_100%] min-w-0 px-4'>
+								<Job job={jobEdge.node} authQueryRef={root.viewer} />
+							</div>
+						))}
+					</div>
+				</div>
+				<Button
+					isIconOnly
+					size='sm'
+					variant='bordered'
+					className='absolute -left-4 top-1/2 -translate-y-1/2 z-10 shadow-sm bg-background'
+					onPress={scrollPrev}
+				>
+					<ChevronLeft size={16} />
+				</Button>
+				<Button
+					isIconOnly
+					size='sm'
+					variant='bordered'
+					className='absolute -right-4 top-1/2 -translate-y-1/2 z-10 shadow-sm bg-background'
+					onPress={scrollNext}
+				>
+					<ChevronRight size={16} />
+				</Button>
+			</div>
+		</>
 	);
 }

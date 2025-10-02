@@ -11,6 +11,7 @@ import type { LandingViewFragment$key } from '@/__generated__/LandingViewFragmen
 import links from '@/lib/links';
 import LandingHeader from '../layout/LandingHeader';
 import CompanyLogos from './CompanyLogos';
+import Introduction from './Introduction';
 import JobList from './JobList';
 import { LandingSearchController } from './LandingSearchController';
 
@@ -83,19 +84,21 @@ export default function LandingView({ queryReference }: { queryReference: Preloa
 
 			<CompanyLogos />
 
+			<Introduction />
+
 			{/* Trending Jobs Section */}
 			<div className='py-8 sm:py-16 flex flex-col gap-8 max-w-7xl w-full px-4 sm:px-5 mx-auto bg-background-600'>
 				<div className='w-full flex flex-col gap-4 items-center justify-center'>
 					<div className='flex flex-col gap-4 w-full py-8'>
 						<div className='flex items-center gap-4 w-full'>
 							<SparklesIcon className='text-foreground-600 w-7 h-7' />
-							<h2 className='text-xl sm:text-2xl font-medium text-foreground-600 tracking-tight'>Latest Jobs</h2>
+							<h2 className='text-lg font-medium text-foreground-600 tracking-tight'>Latest Jobs</h2>
 						</div>
-						<h3 className='text-foreground-500 text-base sm:text-lg font-medium tracking-tight'>Latest Healthcare Jobs Posted</h3>
+						<h3 className='text-foreground-500 text-sm sm:text-base font-medium tracking-tight'>Latest Healthcare Jobs Posted</h3>
 					</div>
 					<JobList rootQuery={data} />
 				</div>
-				<Link href={links.search()} className='flex items-center gap-2 text-lg text-foreground-600 font-medium -mt-6'>
+				<Link href={links.search()} className='flex items-center gap-2 text-lg text-foreground-600 font-medium -mt-2'>
 					View all jobs <ArrowRight className='w-4 h-4' strokeWidth={3} />
 				</Link>
 			</div>
