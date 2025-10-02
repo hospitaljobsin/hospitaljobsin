@@ -30,7 +30,7 @@ export default function CompanyLogos() {
 	}, [emblaApi, onPointerDown, onPointerUp]);
 
 	return (
-		<section className='w-full bg-background-600 pt-12'>
+		<section className='w-full bg-background-600 py-12'>
 			<div className='max-w-7xl mx-auto px-4 flex flex-col gap-8'>
 				<p className='text-base font-medium text-foreground-600'>Find jobs from leading healthcare organizations</p>
 
