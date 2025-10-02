@@ -50,13 +50,10 @@ type Props = {
 };
 
 export default function JobList({ rootQuery }: Props) {
-	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(JobListFragment, rootQuery);
 	const { data } = usePaginationFragment<LandingClientComponentQuery, JobListInternalFragment$key>(JobListInternalFragment, root);
 
-	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' }, [
-		Autoplay({ delay: 4000, stopOnMouseEnter: true, stopOnInteraction: false })
-	]);
+	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' }, [Autoplay({ delay: 4000, stopOnMouseEnter: true })]);
 
 	const scrollPrev = useCallback(() => {
 		if (emblaApi) emblaApi.scrollPrev();
