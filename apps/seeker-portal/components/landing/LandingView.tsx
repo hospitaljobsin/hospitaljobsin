@@ -92,13 +92,13 @@ export default function LandingView({ queryReference }: { queryReference: Preloa
 					<div className='flex flex-col gap-4 w-full py-8'>
 						<div className='flex items-center gap-4 w-full'>
 							<SparklesIcon className='text-foreground-600 w-7 h-7' />
-							<h2 className='text-xl sm:text-2xl font-medium text-foreground-600 tracking-tight'>Latest Jobs</h2>
+							<h2 className='text-lg font-medium text-foreground-600 tracking-tight'>Latest Jobs</h2>
 						</div>
-						<h3 className='text-foreground-500 text-base sm:text-lg font-medium tracking-tight'>Latest Healthcare Jobs Posted</h3>
+						<h3 className='text-foreground-500 text-sm sm:text-base font-medium tracking-tight'>Latest Healthcare Jobs Posted</h3>
 					</div>
 					<JobList rootQuery={data} />
 				</div>
-				<Link href={links.search()} className='flex items-center gap-2 text-lg text-foreground-600 font-medium -mt-6'>
+				<Link href={links.search()} className='flex items-center gap-2 text-lg text-foreground-600 font-medium -mt-2'>
 					View all jobs <ArrowRight className='w-4 h-4' strokeWidth={3} />
 				</Link>
 			</div>
