@@ -1,12 +1,4 @@
 'use client';
-import type { JobDetailsFragment$key } from '@/__generated__/JobDetailsFragment.graphql';
-import type {
-	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
-	JobType,
-	WorkMode
-} from '@/__generated__/JobDetailsInternalFragment.graphql';
-import { dateFormat, salaryFormat } from '@/lib/intl';
-import links from '@/lib/links';
 import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Tooltip } from '@heroui/react';
 import { Briefcase, Clock, ExternalLinkIcon, Globe, HandshakeIcon, IndianRupee, MapPin, Users, VerifiedIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
@@ -15,12 +7,24 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { graphql, readInlineData } from 'react-relay';
 import invariant from 'tiny-invariant';
+import type { JobDetailsFragment$key } from '@/__generated__/JobDetailsFragment.graphql';
+import type {
+	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
+	JobType,
+	WorkMode
+} from '@/__generated__/JobDetailsInternalFragment.graphql';
+import { dateFormat, salaryFormat } from '@/lib/intl';
+import links from '@/lib/links';
 import OneStepCreateJobAlertModal from '../shared/OneStepCreateJobAlertModal';
 import JobControlsSkeleton from './JobControlsSkeleton';
 
 const JobControlsClientComponent = dynamic(() => import('./JobControlsClientComponent'), {
 	ssr: false,
 	loading: () => <JobControlsSkeleton />
+});
+
+const StickyJobApplyButton = dynamic(() => import('./StickyJobApplyButton'), {
+	ssr: false
 });
 
 const JobDetailsFragment = graphql`
@@ -194,15 +198,15 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 			{/* Job Title and Company */}
 			<Card fullWidth className='p-4 sm:p-6 gap-4' shadow='none'>
 				<CardHeader>
-					<div className='flex flex-col sm:flex-row w-full justify-between gap-6 sm:gap-4 items-start sm:items-center'>
-						<h2 className='text-lg sm:text-xl md:text-2xl font-medium break-words leading-snug text-foreground-900 max-w-96'>
+					<div className='flex flex-row w-full justify-between gap-6 sm:gap-4 items-start sm:items-center'>
+						<h2 className='text-lg sm:text-xl md:text-2xl font-medium break-words leading-snug text-foreground-900 w-full sm:max-w-96'>
 							{data.title}
 						</h2>
 						<JobControlsClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
 					</div>
 				</CardHeader>
 				<CardBody className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full'>
-					<div className='flex flex-col border-t border-foreground-300 sm:border-none sm:pt-0 pt-8 sm:flex-row flex-wrap gap-x-4 sm:gap-x-12 gap-y-6 items-start sm:items-center text-foreground-600 w-full'>
+					<div className='flex flex-col sm:flex-row flex-wrap gap-x-4 sm:gap-x-12 gap-y-6 items-start sm:items-center text-foreground-600 w-full'>
 						{salaryRange}
 						{data.location && (
 							<div className='flex items-center gap-2 text-sm sm:text-base'>
@@ -258,11 +262,14 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 					</div>
 				</CardFooter>
 			</Card>
-			<Card shadow='none' className='px-6 py-4'>
+			<Card shadow='none' className='sm:px-6 sm:py-4'>
 				<CardBody className='w-full flex flex-row items-center justify-between gap-6'>
-					<p className='text-sm sm:text-base text-foreground-600'>Send me jobs like this</p>
-					<Button type='button' variant='flat' size='md' onPress={() => setShowAlertModal(true)}>
+					<p className='text-sm sm:text-base text-foreground-600 hidden sm:block'>Send me jobs like this</p>
+					<Button type='button' variant='flat' size='md' className='hidden sm:block' onPress={() => setShowAlertModal(true)}>
 						Create alert
+					</Button>
+					<Button type='button' variant='flat' size='md' className='sm:hidden' fullWidth onPress={() => setShowAlertModal(true)}>
+						Send me jobs like this
 					</Button>
 				</CardBody>
 			</Card>
@@ -280,6 +287,7 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 				isOpen={showAlertModal}
 				onOpenChange={setShowAlertModal}
 			/>
+			<StickyJobApplyButton slug={data.organization?.slug || ''} jobSlug={data.slug} />
 			{/* Job and Company Details */}
 
 			<Card fullWidth className='p-4 sm:p-6' shadow='none'>

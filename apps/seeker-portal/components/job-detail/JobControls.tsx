@@ -1,11 +1,12 @@
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Tooltip } from '@heroui/react';
+import { BookmarkCheckIcon, BookmarkIcon, MoreVertical, Share, Share2Icon } from 'lucide-react';
+import { useState } from 'react';
+import { ConnectionHandler, graphql, useFragment, useMutation } from 'react-relay';
 import type { JobControlsAuthFragment$key } from '@/__generated__/JobControlsAuthFragment.graphql';
 import type { JobControlsFragment$key } from '@/__generated__/JobControlsFragment.graphql';
 import { env } from '@/lib/env/client';
 import links from '@/lib/links';
-import { Button, Link, Tooltip } from '@heroui/react';
-import { BookmarkCheckIcon, BookmarkIcon } from 'lucide-react';
-import { ConnectionHandler, graphql, useFragment, useMutation } from 'react-relay';
-import ShareJob from './ShareJob';
+import ShareJobModal from './ShareJobModal';
 
 export const JobControlsAuthFragment = graphql`
   fragment JobControlsAuthFragment on ViewerPayload {
@@ -17,7 +18,7 @@ export const JobControlsFragment = graphql`
   fragment JobControlsFragment on Job {
     id
     isSaved
-	...ShareJobFragment
+	...ShareJobModalFragment
   }
 `;
 
@@ -65,6 +66,7 @@ export default function JobControls({
 	const isAuthenticated = authData.__typename === 'Account';
 	const [commitSaveMutation, isSaveMutationInFlight] = useMutation(JobControlsSaveMutation);
 	const [commitUnsaveMutation, isUnsaveMutationInFlight] = useMutation(JobControlsUnsaveMutation);
+	const [showShareModal, setShowShareModal] = useState(false);
 
 	function handleSave() {
 		commitSaveMutation({
@@ -108,63 +110,116 @@ export default function JobControls({
 	}
 
 	return (
-		<div className='flex items-center gap-2 sm:gap-4'>
-			{!isAuthenticated ? (
-				<Tooltip
-					showArrow
-					content={
-						<div className='px-1 py-2'>
-							<div className='text-sm'>
-								<Link href={links.login(env.NEXT_PUBLIC_URL)} isExternal size='sm'>
-									Sign in
-								</Link>{' '}
-								to save this job
+		<>
+			{/* Desktop view */}
+			<div className='hidden sm:flex items-center gap-4'>
+				{!isAuthenticated ? (
+					<Tooltip
+						showArrow
+						content={
+							<div className='px-1 py-2'>
+								<div className='text-sm'>
+									<Link href={links.login(env.NEXT_PUBLIC_URL)} isExternal size='sm'>
+										Sign in
+									</Link>{' '}
+									to save this job
+								</div>
 							</div>
-						</div>
-					}
-				>
-					<span>
-						<Button size='lg' isIconOnly variant='light' isDisabled>
+						}
+					>
+						<span>
+							<Button size='lg' isIconOnly variant='light' isDisabled>
+								<BookmarkIcon size={24} strokeWidth={1.5} className='text-foreground-500' />
+							</Button>
+						</span>
+					</Tooltip>
+				) : data.isSaved ? (
+					<Tooltip content='Unsave job'>
+						<Button
+							size='lg'
+							variant='light'
+							isIconOnly
+							data-prevent-progress={true}
+							onClick={event => {
+								event.preventDefault();
+								handleUnsave();
+							}}
+							isLoading={isUnsaveMutationInFlight}
+							isDisabled={isSaveMutationInFlight}
+						>
+							<BookmarkCheckIcon size={24} strokeWidth={1.5} className='text-foreground-500' />
+						</Button>
+					</Tooltip>
+				) : (
+					<Tooltip content='Save job'>
+						<Button
+							size='lg'
+							variant='light'
+							isIconOnly
+							data-prevent-progress={true}
+							onClick={event => {
+								event.preventDefault();
+								handleSave();
+							}}
+							isLoading={isSaveMutationInFlight}
+							isDisabled={isUnsaveMutationInFlight}
+						>
 							<BookmarkIcon size={24} strokeWidth={1.5} className='text-foreground-500' />
 						</Button>
-					</span>
-				</Tooltip>
-			) : data.isSaved ? (
-				<Tooltip content='Unsave job'>
+					</Tooltip>
+				)}
+				<Tooltip content='Share job'>
 					<Button
 						size='lg'
 						variant='light'
 						isIconOnly
 						data-prevent-progress={true}
-						onClick={event => {
-							event.preventDefault();
-							handleUnsave();
-						}}
-						isLoading={isUnsaveMutationInFlight}
-						isDisabled={isSaveMutationInFlight}
-					>
-						<BookmarkCheckIcon size={24} strokeWidth={1.5} className='text-foreground-500' />
-					</Button>
-				</Tooltip>
-			) : (
-				<Tooltip content='Save job'>
-					<Button
-						size='lg'
-						variant='light'
-						isIconOnly
-						data-prevent-progress={true}
-						onClick={event => {
-							event.preventDefault();
-							handleSave();
+						onPress={() => {
+							setShowShareModal(true);
 						}}
 						isLoading={isSaveMutationInFlight}
 						isDisabled={isUnsaveMutationInFlight}
 					>
-						<BookmarkIcon size={24} strokeWidth={1.5} className='text-foreground-500' />
+						<Share2Icon size={24} strokeWidth={1.5} className='text-foreground-500' />
 					</Button>
 				</Tooltip>
-			)}
-			<ShareJob job={data} />
-		</div>
+			</div>
+
+			{/* Mobile view */}
+			<div className='sm:hidden'>
+				<Dropdown>
+					<DropdownTrigger>
+						<Button size='lg' isIconOnly variant='light'>
+							<MoreVertical size={24} strokeWidth={1.5} className='text-foreground-500' />
+						</Button>
+					</DropdownTrigger>
+					<DropdownMenu>
+						{!isAuthenticated ? (
+							<DropdownItem key='save' isDisabled startContent={<BookmarkIcon size={16} />} description='Sign in to save jobs'>
+								Save job
+							</DropdownItem>
+						) : data.isSaved ? (
+							<DropdownItem key='unsave' startContent={<BookmarkCheckIcon size={16} />} onPress={() => handleUnsave()}>
+								Unsave job
+							</DropdownItem>
+						) : (
+							<DropdownItem key='save' startContent={<BookmarkIcon size={16} />} onPress={() => handleSave()}>
+								Save job
+							</DropdownItem>
+						)}
+						<DropdownItem key='share' startContent={<Share size={16} />} onPress={() => setShowShareModal(true)}>
+							Share job
+						</DropdownItem>
+					</DropdownMenu>
+				</Dropdown>
+			</div>
+			<ShareJobModal
+				job={data}
+				isOpen={showShareModal}
+				onClose={() => {
+					setShowShareModal(false);
+				}}
+			/>
+		</>
 	);
 }

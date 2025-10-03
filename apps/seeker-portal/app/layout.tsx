@@ -50,7 +50,7 @@ export default function RootLayout({
 		<html lang='en' suppressHydrationWarning>
 			<ReactScan />
 			{env.NEXT_PUBLIC_ENVIRONMENT === 'production' && <GoogleTagManager gtmId='GTM-TKGSDM8M' />}
-			<body className={`${workSans.variable} antialiased light`}>
+			<body className={`${workSans.variable} antialiased light relative`}>
 				<Providers headersPromise={headersPromise}>
 					<PostHogIdentifier />
 					<CookieBanner />

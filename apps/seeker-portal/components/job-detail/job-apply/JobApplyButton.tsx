@@ -1,6 +1,8 @@
 import { Button } from '@heroui/react';
 import { ExternalLinkIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import invariant from 'tiny-invariant';
@@ -43,8 +45,13 @@ const JobApplyButtonFragment = graphql`
 }
   `;
 
-export default function JobApplyButton({ query }: { query: JobApplyButtonFragment$key }) {
+export default function JobApplyButton({ query, sticky = false }: { query: JobApplyButtonFragment$key; sticky?: boolean }) {
 	const root = useFragment(JobApplyButtonFragment, query);
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
 	invariant(root.organization.__typename === 'Organization', "Expected 'Organization' node type");
 
@@ -53,51 +60,69 @@ export default function JobApplyButton({ query }: { query: JobApplyButtonFragmen
 	const isAuthenticated = root.viewer.__typename === 'Account';
 
 	const data = root.organization.job;
-	if (data.externalApplicationUrl !== null) {
-		return (
-			<Button
-				as={Link}
-				href={data.externalApplicationUrl}
-				size='lg'
-				color='primary'
-				className='w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3'
-				target='_blank'
-				rel='noopener noreferrer'
-				isDisabled={data.isApplied}
-				startContent={<ExternalLinkIcon size={16} />}
-			>
-				{data.isApplied ? 'Already Applied' : 'Apply now'}
-			</Button>
-		);
-	}
 
-	if (!isAuthenticated) {
-		return (
-			<Button
-				as={Link}
-				href={links.login(`${env.NEXT_PUBLIC_URL}${links.jobDetail(root.organization.slug, root.organization.job.slug)}`)}
-				size='lg'
-				color='primary'
-				className='w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3'
-			>
-				Log In to Apply
-			</Button>
-		);
-	}
-
-	return (
-		<JobApplicationFlow account={root.viewer} job={root.organization.job}>
-			{({ onApply }) => (
+	const buttonContent = () => {
+		if (data.externalApplicationUrl !== null) {
+			return (
 				<Button
-					onPress={onApply}
+					as={Link}
+					href={data.externalApplicationUrl}
 					size='lg'
 					color='primary'
 					className='w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3'
+					target='_blank'
+					rel='noopener noreferrer'
 					isDisabled={data.isApplied}
+					startContent={<ExternalLinkIcon size={16} />}
 				>
 					{data.isApplied ? 'Already Applied' : 'Apply now'}
 				</Button>
-			)}
-		</JobApplicationFlow>
-	);
+			);
+		}
+
+		if (!isAuthenticated) {
+			return (
+				<Button
+					as={Link}
+					href={links.login(`${env.NEXT_PUBLIC_URL}${links.jobDetail(root.organization.slug, root.organization.job.slug)}`)}
+					size='lg'
+					color='primary'
+					className='w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3'
+				>
+					Log In to Apply
+				</Button>
+			);
+		}
+
+		return (
+			<JobApplicationFlow account={root.viewer} job={root.organization.job}>
+				{({ onApply }) => (
+					<Button
+						onPress={onApply}
+						size='lg'
+						color='primary'
+						className='w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3'
+						isDisabled={data.isApplied}
+					>
+						{data.isApplied ? 'Already Applied' : 'Apply now'}
+					</Button>
+				)}
+			</JobApplicationFlow>
+		);
+	};
+
+	if (sticky && mounted) {
+		return createPortal(
+			<div className='fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-divider z-20 sm:hidden shadow-lg'>
+				{buttonContent()}
+			</div>,
+			document.body
+		);
+	}
+
+	if (sticky && !mounted) {
+		return null;
+	}
+
+	return <div className='hidden sm:flex'>{buttonContent()}</div>;
 }

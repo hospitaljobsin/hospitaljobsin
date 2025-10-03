@@ -42,7 +42,7 @@ export default function JobControlsClientComponent({ slug, jobSlug }: { slug: st
 
 	invariant(data.organization.job.__typename === 'Job', "Expected 'Job' node type");
 	return (
-		<div className='w-full sm:w-auto flex flex-col-reverse sm:flex-row justify-end gap-6 sm:items-center'>
+		<div className='w-auto flex flex-col-reverse sm:flex-row justify-end gap-6 sm:items-center'>
 			<JobControls authQueryRef={data.viewer} job={data.organization.job} />
 			<JobApplyButton query={data} />
 		</div>
