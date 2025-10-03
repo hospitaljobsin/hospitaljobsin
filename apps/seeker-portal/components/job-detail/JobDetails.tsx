@@ -264,9 +264,12 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 			</Card>
 			<Card shadow='none' className='px-6 py-4'>
 				<CardBody className='w-full flex flex-row items-center justify-between gap-6'>
-					<p className='text-sm sm:text-base text-foreground-600'>Send me jobs like this</p>
-					<Button type='button' variant='flat' size='md' onPress={() => setShowAlertModal(true)}>
+					<p className='text-sm sm:text-base text-foreground-600 hidden sm:block'>Send me jobs like this</p>
+					<Button type='button' variant='flat' size='md' className='hidden sm:block' onPress={() => setShowAlertModal(true)}>
 						Create alert
+					</Button>
+					<Button type='button' variant='flat' size='md' className='sm:hidden' fullWidth onPress={() => setShowAlertModal(true)}>
+						Send me jobs like this
 					</Button>
 				</CardBody>
 			</Card>
