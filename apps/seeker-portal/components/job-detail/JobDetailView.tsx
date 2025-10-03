@@ -44,11 +44,11 @@ export default function JobDetailView(props: { rootQuery: JobDetailViewFragment$
 	useJobImpressionTracker(query.organization.job.id);
 
 	return (
-		<div className='w-full flex flex-col flex-1 h-full'>
+		<div className='w-full flex flex-col flex-1 relative'>
 			<DashboardHeaderClientComponent animate={false} />
 			<div className='w-full mx-auto bg-background-600'>
 				<div className='w-full px-5 max-w-7xl mx-auto'>
-					<div className='py-8 w-full h-full flex flex-col lg:flex-row items-start gap-6'>
+					<div className='py-8 pb-20 sm:pb-8 w-full flex flex-col lg:flex-row items-start gap-6'>
 						<JobDetails rootQuery={query} />
 						<div className='flex h-full flex-col gap-6 w-full lg:w-80 xl:w-96 shrink-0'>
 							<RelatedJobsList job={query.organization.job} />

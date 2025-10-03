@@ -153,7 +153,9 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobOverviewFragme
 			<CardHeader>
 				<div className='flex flex-col sm:flex-row w-full justify-between gap-3 sm:gap-4 items-start sm:items-center'>
 					<h4 className='text-lg sm:text-xl font-medium break-words max-w-full leading-snug text-foreground-900'>{data.title}</h4>
-					<JobApplyButtonClientComponent slug={data.organization.slug} jobSlug={data.slug} />
+					<div className='hidden sm:block'>
+						<JobApplyButtonClientComponent slug={data.organization.slug} jobSlug={data.slug} />
+					</div>
 				</div>
 			</CardHeader>
 			<CardBody className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full'>

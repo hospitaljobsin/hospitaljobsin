@@ -23,6 +23,10 @@ const JobControlsClientComponent = dynamic(() => import('./JobControlsClientComp
 	loading: () => <JobControlsSkeleton />
 });
 
+const StickyJobApplyButton = dynamic(() => import('./StickyJobApplyButton'), {
+	ssr: false
+});
+
 const JobDetailsFragment = graphql`
   fragment JobDetailsFragment on Query @argumentDefinitions(
 	slug: { type: "String!"}
@@ -280,6 +284,7 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 				isOpen={showAlertModal}
 				onOpenChange={setShowAlertModal}
 			/>
+			<StickyJobApplyButton slug={data.organization?.slug || ''} jobSlug={data.slug} />
 			{/* Job and Company Details */}
 
 			<Card fullWidth className='p-4 sm:p-6' shadow='none'>
