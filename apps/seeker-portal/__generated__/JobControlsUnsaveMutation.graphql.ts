@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<f621320cdb320e7a63cdc599709b2df1>>
- * @relayHash c73645f4057f5c7138022496b4612730
+ * @generated SignedSource<<5512e4d922fb615b6126a5123efcbd2e>>
+ * @relayHash 36e344d01ea66ca1f4987d80d3fb63e4
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c73645f4057f5c7138022496b4612730
+// @relayRequestID 36e344d01ea66ca1f4987d80d3fb63e4
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -471,7 +471,7 @@ return {
     ]
   },
   "params": {
-    "id": "c73645f4057f5c7138022496b4612730",
+    "id": "36e344d01ea66ca1f4987d80d3fb63e4",
     "metadata": {},
     "name": "JobControlsUnsaveMutation",
     "operationKind": "mutation",

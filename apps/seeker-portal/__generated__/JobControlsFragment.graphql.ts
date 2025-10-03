@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6b7638bebc3b5ee3b7e8fd311a6a2b45>>
+ * @generated SignedSource<<8b0ca145677d9ecc2f3224e071313a52>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,7 @@ import type { FragmentRefs } from "relay-runtime";
 export type JobControlsFragment$data = {
   readonly id: string;
   readonly isSaved: boolean;
-  readonly " $fragmentSpreads": FragmentRefs<"ShareJobFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"ShareJobModalFragment">;
   readonly " $fragmentType": "JobControlsFragment";
 };
 export type JobControlsFragment$key = {
@@ -44,13 +44,13 @@ const node: ReaderFragment = {
     {
       "args": null,
       "kind": "FragmentSpread",
-      "name": "ShareJobFragment"
+      "name": "ShareJobModalFragment"
     }
   ],
   "type": "Job",
   "abstractKey": null
 };
 
-(node as any).hash = "671b571915089890718dc015f2102fd2";
+(node as any).hash = "856348af546bb94c88706f01489da1c6";
 
 export default node;

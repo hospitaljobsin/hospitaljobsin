@@ -1,12 +1,4 @@
 'use client';
-import type { JobDetailsFragment$key } from '@/__generated__/JobDetailsFragment.graphql';
-import type {
-	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
-	JobType,
-	WorkMode
-} from '@/__generated__/JobDetailsInternalFragment.graphql';
-import { dateFormat, salaryFormat } from '@/lib/intl';
-import links from '@/lib/links';
 import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Tooltip } from '@heroui/react';
 import { Briefcase, Clock, ExternalLinkIcon, Globe, HandshakeIcon, IndianRupee, MapPin, Users, VerifiedIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
@@ -15,6 +7,14 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { graphql, readInlineData } from 'react-relay';
 import invariant from 'tiny-invariant';
+import type { JobDetailsFragment$key } from '@/__generated__/JobDetailsFragment.graphql';
+import type {
+	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
+	JobType,
+	WorkMode
+} from '@/__generated__/JobDetailsInternalFragment.graphql';
+import { dateFormat, salaryFormat } from '@/lib/intl';
+import links from '@/lib/links';
 import OneStepCreateJobAlertModal from '../shared/OneStepCreateJobAlertModal';
 import JobControlsSkeleton from './JobControlsSkeleton';
 
@@ -198,8 +198,8 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 			{/* Job Title and Company */}
 			<Card fullWidth className='p-4 sm:p-6 gap-4' shadow='none'>
 				<CardHeader>
-					<div className='flex flex-col sm:flex-row w-full justify-between gap-6 sm:gap-4 items-start sm:items-center'>
-						<h2 className='text-lg sm:text-xl md:text-2xl font-medium break-words leading-snug text-foreground-900 max-w-96'>
+					<div className='flex flex-row w-full justify-between gap-6 sm:gap-4 items-start sm:items-center'>
+						<h2 className='text-lg sm:text-xl md:text-2xl font-medium break-words leading-snug text-foreground-900 w-full sm:max-w-96'>
 							{data.title}
 						</h2>
 						<JobControlsClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />

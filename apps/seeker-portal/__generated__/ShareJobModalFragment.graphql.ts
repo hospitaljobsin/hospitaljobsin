@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d113bb7bc90252bcad0a203583af078f>>
+ * @generated SignedSource<<b411f38acdd8549abf618ed9bf51f52c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type ShareJobFragment$data = {
+export type ShareJobModalFragment$data = {
   readonly description: string;
   readonly organization: {
     readonly logoUrl: string;
@@ -19,11 +19,11 @@ export type ShareJobFragment$data = {
   };
   readonly slug: string;
   readonly title: string;
-  readonly " $fragmentType": "ShareJobFragment";
+  readonly " $fragmentType": "ShareJobModalFragment";
 };
-export type ShareJobFragment$key = {
-  readonly " $data"?: ShareJobFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"ShareJobFragment">;
+export type ShareJobModalFragment$key = {
+  readonly " $data"?: ShareJobModalFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"ShareJobModalFragment">;
 };
 
 const node: ReaderFragment = (function(){
@@ -38,7 +38,7 @@ return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "ShareJobFragment",
+  "name": "ShareJobModalFragment",
   "selections": [
     (v0/*: any*/),
     {
@@ -91,6 +91,6 @@ return {
 };
 })();
 
-(node as any).hash = "1938e3f3e1666a1322189d65eee01f9c";
+(node as any).hash = "169a91f7cfd56e245bf8c50fc6e73327";
 
 export default node;

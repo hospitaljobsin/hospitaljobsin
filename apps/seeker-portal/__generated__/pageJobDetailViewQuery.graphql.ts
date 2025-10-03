@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<dbf65bb1ba15ab04cd921cb1d70f55a4>>
- * @relayHash 3107f7d4ccf41e932c1d51a6a96ffa9c
+ * @generated SignedSource<<7a3127cc121226c550148ff29299d35e>>
+ * @relayHash 7b7d21964f07a957ff30c75292f995a7
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 3107f7d4ccf41e932c1d51a6a96ffa9c
+// @relayRequestID 7b7d21964f07a957ff30c75292f995a7
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -950,7 +950,7 @@ return {
     ]
   },
   "params": {
-    "id": "3107f7d4ccf41e932c1d51a6a96ffa9c",
+    "id": "7b7d21964f07a957ff30c75292f995a7",
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",
