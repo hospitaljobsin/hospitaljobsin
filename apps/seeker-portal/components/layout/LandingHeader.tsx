@@ -1,13 +1,13 @@
 'use client';
-import type { LandingHeaderFragment$key } from '@/__generated__/LandingHeaderFragment.graphql';
-import { APP_NAME, WHATSAPP_CHANNEL_LINK } from '@/lib/constants';
-import { env } from '@/lib/env/client';
-import links from '@/lib/links';
 import { Button, cn, Navbar, NavbarBrand, NavbarContent, NavbarItem, Tooltip } from '@heroui/react';
 import { ExternalLinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import type { LandingHeaderFragment$key } from '@/__generated__/LandingHeaderFragment.graphql';
+import { APP_NAME, WHATSAPP_CHANNEL_LINK } from '@/lib/constants';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
 import GoogleOneTapLogin from '../GoogleOneTapLogin';
 import { WhatsappIcon } from '../icons';
 import Logo from '../Logo';
@@ -29,6 +29,7 @@ export const LandingHeaderFragment = graphql`
 
 export default function LandingHeader({ rootQuery }: { rootQuery: LandingHeaderFragment$key }) {
 	const data = useFragment(LandingHeaderFragment, rootQuery);
+	console.log('DATA: ', data);
 	return (
 		<div className={cn('w-full flex flex-col static top-0 z-50')}>
 			<Navbar

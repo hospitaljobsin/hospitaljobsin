@@ -41,9 +41,12 @@ export default function CompanyLogos() {
 					<div className='absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none' />
 					<div className='absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none' />
 					<div className='embla' ref={emblaRef}>
-						<div className='embla__container flex'>
+						<div className='gap-x-2 flex'>
 							{[...companies, ...companies].map((company, index) => (
-								<div key={`${company.name}-${index}`} className='embla__slide flex-[0_0_200px] flex items-center justify-center h-16 mx-4'>
+								<div
+									key={`${company.name}-${index}`}
+									className='flex-[0_0_150px] sm:flex-[0_0_200px] flex items-center justify-center h-16 mx-4'
+								>
 									<Image
 										src={company.logo}
 										alt={company.name}
