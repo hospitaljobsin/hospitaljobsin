@@ -206,7 +206,7 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 					</div>
 				</CardHeader>
 				<CardBody className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full'>
-					<div className='flex flex-col border-t border-foreground-300 sm:border-none sm:pt-0 pt-8 sm:flex-row flex-wrap gap-x-4 sm:gap-x-12 gap-y-6 items-start sm:items-center text-foreground-600 w-full'>
+					<div className='flex flex-col sm:flex-row flex-wrap gap-x-4 sm:gap-x-12 gap-y-6 items-start sm:items-center text-foreground-600 w-full'>
 						{salaryRange}
 						{data.location && (
 							<div className='flex items-center gap-2 text-sm sm:text-base'>
@@ -262,7 +262,7 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 					</div>
 				</CardFooter>
 			</Card>
-			<Card shadow='none' className='px-6 py-4'>
+			<Card shadow='none' className='sm:px-6 sm:py-4'>
 				<CardBody className='w-full flex flex-row items-center justify-between gap-6'>
 					<p className='text-sm sm:text-base text-foreground-600 hidden sm:block'>Send me jobs like this</p>
 					<Button type='button' variant='flat' size='md' className='hidden sm:block' onPress={() => setShowAlertModal(true)}>
