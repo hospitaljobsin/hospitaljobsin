@@ -43,7 +43,7 @@ export default function CompanyLogos() {
 							{[...companies, ...companies].map((company, index) => (
 								<div
 									key={`${company.name}-${index}`}
-									className='embla__slide flex-[0_0_150px] sm:flex-[0_0_200px] flex items-center justify-center h-16 mx-4'
+									className='flex-[0_0_150px] sm:flex-[0_0_200px] flex items-center justify-center h-16 mx-4'
 								>
 									<Image
 										src={company.logo}

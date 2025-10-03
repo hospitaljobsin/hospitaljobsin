@@ -4,15 +4,11 @@ import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import { useCallback } from 'react';
-import { useFragment, usePaginationFragment, usePreloadedQuery, useRelayEnvironment } from 'react-relay';
+import { useFragment, usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import type { JobListClientComponentQuery as JobListClientComponentQueryType } from '@/__generated__/JobListClientComponentQuery.graphql';
 import type { JobListFragment$key } from '@/__generated__/JobListFragment.graphql';
 import type { JobListInternalFragment$key } from '@/__generated__/JobListInternalFragment.graphql';
-import type LandingPageQueryNode from '@/__generated__/pageLandingQuery.graphql';
-import type { pageLandingQuery } from '@/__generated__/pageLandingQuery.graphql';
-import PageLandingQuery from '@/__generated__/pageLandingQuery.graphql';
-import type { SerializablePreloadedQuery } from '@/lib/relay/serializablePreloadedQuery';
-import useSerializablePreloadedQuery from '@/lib/relay/useSerializablePreloadedQuery';
 import Job from './Job';
 
 const JobListFragment = graphql`
@@ -52,18 +48,12 @@ const JobListInternalFragment = graphql`
 `;
 
 type Props = {
-	rootQuery: SerializablePreloadedQuery<typeof LandingPageQueryNode, pageLandingQuery>;
+	rootQuery: JobListFragment$key;
 };
 
 export default function JobList({ rootQuery }: Props) {
-	const environment = useRelayEnvironment();
-	const queryRef = useSerializablePreloadedQuery<typeof LandingPageQueryNode, pageLandingQuery>(environment, rootQuery, 'store-or-network');
-	const rootData = usePreloadedQuery(PageLandingQuery, queryRef);
-	const root = useFragment<JobListFragment$key>(JobListFragment, rootData);
-	console.log('ROOT: ', root);
-	const { data } = usePaginationFragment<pageLandingQuery, JobListInternalFragment$key>(JobListInternalFragment, root);
-
-	console.log('DATA: ', data);
+	const root = useFragment<JobListFragment$key>(JobListFragment, rootQuery);
+	const { data } = usePaginationFragment<JobListClientComponentQueryType, JobListInternalFragment$key>(JobListInternalFragment, root);
 
 	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' }, [Autoplay({ delay: 4000, stopOnMouseEnter: true })]);
 

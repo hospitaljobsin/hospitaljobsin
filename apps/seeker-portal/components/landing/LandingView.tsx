@@ -1,27 +1,32 @@
+'use client';
 import { ArrowRight, SparklesIcon } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Suspense } from 'react';
-import type LandingPageQueryNode from '@/__generated__/pageLandingQuery.graphql';
-import type { pageLandingQuery } from '@/__generated__/pageLandingQuery.graphql';
 import type { SiteStatsFragment$key } from '@/__generated__/SiteStatsFragment.graphql';
 import links from '@/lib/links';
-import type { SerializablePreloadedQuery } from '@/lib/relay/serializablePreloadedQuery';
-import LandingHeaderClientComponent from '../layout/LandingHeaderClientComponent';
+import LandingHeaderSkeleton from '../layout/LandingHeaderSkeleton';
 import CompanyLogos from './CompanyLogos';
 import Introduction from './Introduction';
-import JobList from './JobList';
 import JobListSkeleton from './JobListSkeleton';
 import { LandingSearchController } from './LandingSearchController';
 import SiteStats from './SiteStats';
 
-export default function LandingView({
-	jobsData,
-	siteStatsData
-}: {
-	jobsData: SerializablePreloadedQuery<typeof LandingPageQueryNode, pageLandingQuery>;
-	siteStatsData: SiteStatsFragment$key;
-}) {
+const LandingHeaderClientComponent = dynamic(() => import('../layout/LandingHeaderClientComponent'), {
+	ssr: false,
+	loading() {
+		return <LandingHeaderSkeleton />;
+	}
+});
+
+const JobListClientComponent = dynamic(() => import('./JobListClientComponent'), {
+	ssr: false,
+	loading() {
+		return <JobListSkeleton />;
+	}
+});
+
+export default function LandingView({ siteStatsData }: { siteStatsData: SiteStatsFragment$key }) {
 	return (
 		<div className='w-full flex flex-col bg-background-600 h-full'>
 			{/* Hero Section */}
@@ -93,9 +98,7 @@ export default function LandingView({
 						</div>
 						<h3 className='text-foreground-500 text-sm sm:text-base font-medium tracking-tight'>Latest Healthcare Jobs Posted</h3>
 					</div>
-					<Suspense fallback={<JobListSkeleton />}>
-						<JobList rootQuery={jobsData} />
-					</Suspense>
+					<JobListClientComponent />
 				</div>
 				<Link href={links.search()} className='flex items-center gap-2 text-lg text-foreground-600 font-medium -mt-2'>
 					View all jobs <ArrowRight className='w-4 h-4' strokeWidth={3} />

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<db155d738686a5e5244d926b79f54896>>
- * @relayHash e7105764e549034d0077be9a4f24d0d3
+ * @generated SignedSource<<4923d9cfb180af33ba6711df8f21f28b>>
+ * @relayHash bc4e10fb1940b34ee22bc7c5fef3f37e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID e7105764e549034d0077be9a4f24d0d3
+// @relayRequestID bc4e10fb1940b34ee22bc7c5fef3f37e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pageLandingQuery$variables = Record<PropertyKey, never>;
-export type pageLandingQuery$data = {
+export type JobListClientComponentQuery$variables = Record<PropertyKey, never>;
+export type JobListClientComponentQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"JobListFragment">;
 };
-export type pageLandingQuery = {
-  response: pageLandingQuery$data;
-  variables: pageLandingQuery$variables;
+export type JobListClientComponentQuery = {
+  response: JobListClientComponentQuery$data;
+  variables: JobListClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -71,7 +71,7 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageLandingQuery",
+    "name": "JobListClientComponentQuery",
     "selections": [
       {
         "args": null,
@@ -86,7 +86,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "pageLandingQuery",
+    "name": "JobListClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -368,15 +368,15 @@ return {
     ]
   },
   "params": {
-    "id": "e7105764e549034d0077be9a4f24d0d3",
+    "id": "bc4e10fb1940b34ee22bc7c5fef3f37e",
     "metadata": {},
-    "name": "pageLandingQuery",
+    "name": "JobListClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "cbff92efb0f66651a622d36833076943";
+(node as any).hash = "451af4b79c6594525416c232297d0ea4";
 
 export default node;
