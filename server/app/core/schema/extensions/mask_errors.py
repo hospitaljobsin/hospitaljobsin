@@ -4,13 +4,14 @@ from typing import Any
 import sentry_sdk
 from graphql.error import GraphQLError
 from graphql.execution.execute import ExecutionResult as GraphQLExecutionResult
+from pydantic import ValidationError
 from strawberry.extensions.base_extension import SchemaExtension
 from strawberry.types.execution import ExecutionResult as StrawberryExecutionResult
 
 
-def default_should_mask_error(_: GraphQLError) -> bool:
-    # Mask all errors
-    return True
+def default_should_mask_error(err: GraphQLError) -> bool:
+    # Mask all errors except validation errors
+    return err.source != ValidationError
 
 
 class MaskErrors(SchemaExtension):
