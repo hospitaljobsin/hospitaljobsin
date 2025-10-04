@@ -40,7 +40,7 @@ const EnableRecommendedJobAlertsMutation = graphql`
             ...JobAlertFragment
           }
         }
-        removedRecommendedJobAlertIds @deleteRecord
+        removedRecommendedJobAlertIds // TODO: delete edge here instead
       }
       ... on RecommendedJobAlertsNotFoundError {
         message

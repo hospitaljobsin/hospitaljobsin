@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<853c0ce04d00469f6955749cd36048a1>>
+ * @generated SignedSource<<1894392db55f517d8cb4e8841bfcfc40>>
  * @relayHash eb5cc9da96c7c53db5378d8a016f9f03
  * @lightSyntaxTransform
  * @nogrep
@@ -280,16 +280,7 @@ return {
                 ],
                 "storageKey": null
               },
-              (v4/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "filters": null,
-                "handle": "deleteRecord",
-                "key": "",
-                "kind": "ScalarHandle",
-                "name": "removedRecommendedJobAlertIds"
-              }
+              (v4/*: any*/)
             ],
             "type": "EnableRecommendedJobAlertsSuccess",
             "abstractKey": null
@@ -310,6 +301,6 @@ return {
 };
 })();
 
-(node as any).hash = "754082cd4df367f99489c0fd7e27cbc5";
+(node as any).hash = "0b4a654a5cd84253bc0180387f84f6fe";
 
 export default node;

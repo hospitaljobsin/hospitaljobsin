@@ -126,6 +126,13 @@ class JobAlertRepo:
             after=ObjectId(after) if after else None,
         )
 
+    async def get_all_list(
+        self,
+        account: Account,
+    ) -> list[JobAlert]:
+        """Get a result of all job alerts for an account."""
+        return await JobAlert.find(JobAlert.account.id == account.id).to_list()
+
     async def check_exists(
         self,
         account_id: ObjectId,
