@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<25d3e3186a3620f4101ffd793501c8a6>>
- * @relayHash d2ddb128ee51c42c7f77d5b0cfc0fa16
+ * @generated SignedSource<<c2a0c553d5bc9acee432807d4dfd9975>>
+ * @relayHash fadfe876f74051e07a3b8a4685d680df
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d2ddb128ee51c42c7f77d5b0cfc0fa16
+// @relayRequestID fadfe876f74051e07a3b8a4685d680df
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -105,6 +105,27 @@ v11 = {
   "args": null,
   "kind": "ScalarField",
   "name": "searchTerm",
+  "storageKey": null
+},
+v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "cursor",
+  "storageKey": null
+},
+v13 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "hasNextPage",
+  "storageKey": null
+},
+v14 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "endCursor",
   "storageKey": null
 };
 return {
@@ -281,13 +302,7 @@ return {
                 ],
                 "storageKey": null
               },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "cursor",
-                "storageKey": null
-              }
+              (v12/*: any*/)
             ],
             "storageKey": null
           },
@@ -299,20 +314,8 @@ return {
             "name": "pageInfo",
             "plural": false,
             "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "hasNextPage",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "endCursor",
-                "storageKey": null
-              }
+              (v13/*: any*/),
+              (v14/*: any*/)
             ],
             "storageKey": null
           }
@@ -371,21 +374,45 @@ return {
                       (v5/*: any*/)
                     ],
                     "storageKey": null
-                  }
+                  },
+                  (v0/*: any*/)
                 ],
                 "storageKey": null
-              }
+              },
+              (v12/*: any*/)
             ],
             "storageKey": null
           },
-          (v3/*: any*/)
+          (v3/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "PageInfo",
+            "kind": "LinkedField",
+            "name": "pageInfo",
+            "plural": false,
+            "selections": [
+              (v14/*: any*/),
+              (v13/*: any*/)
+            ],
+            "storageKey": null
+          }
         ],
         "storageKey": "recommendedJobAlerts(first:10)"
+      },
+      {
+        "alias": null,
+        "args": (v2/*: any*/),
+        "filters": null,
+        "handle": "connection",
+        "key": "RecommendedJobAlertsFragment_recommendedJobAlerts",
+        "kind": "LinkedHandle",
+        "name": "recommendedJobAlerts"
       }
     ]
   },
   "params": {
-    "id": "d2ddb128ee51c42c7f77d5b0cfc0fa16",
+    "id": "fadfe876f74051e07a3b8a4685d680df",
     "metadata": {},
     "name": "MyJobAlertsClientComponentQuery",
     "operationKind": "query",

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6117ec2a172c649e3d180472ab9a4968>>
+ * @generated SignedSource<<d6909acfe91e3a268b715e52e96b01d9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -41,21 +41,26 @@ export type RecommendedJobAlertsFragment$key = {
 const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
-  "metadata": null,
+  "metadata": {
+    "connection": [
+      {
+        "count": null,
+        "cursor": null,
+        "direction": "forward",
+        "path": [
+          "recommendedJobAlerts"
+        ]
+      }
+    ]
+  },
   "name": "RecommendedJobAlertsFragment",
   "selections": [
     {
-      "alias": null,
-      "args": [
-        {
-          "kind": "Literal",
-          "name": "first",
-          "value": 10
-        }
-      ],
+      "alias": "recommendedJobAlerts",
+      "args": null,
       "concreteType": "RecommendedJobAlertConnection",
       "kind": "LinkedField",
-      "name": "recommendedJobAlerts",
+      "name": "__RecommendedJobAlertsFragment_recommendedJobAlerts_connection",
       "plural": false,
       "selections": [
         {
@@ -147,8 +152,22 @@ const node: ReaderFragment = {
                     }
                   ],
                   "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "__typename",
+                  "storageKey": null
                 }
               ],
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "cursor",
               "storageKey": null
             }
           ],
@@ -160,15 +179,40 @@ const node: ReaderFragment = {
           "kind": "ScalarField",
           "name": "totalCount",
           "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "concreteType": "PageInfo",
+          "kind": "LinkedField",
+          "name": "pageInfo",
+          "plural": false,
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "endCursor",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "hasNextPage",
+              "storageKey": null
+            }
+          ],
+          "storageKey": null
         }
       ],
-      "storageKey": "recommendedJobAlerts(first:10)"
+      "storageKey": null
     }
   ],
   "type": "Query",
   "abstractKey": null
 };
 
-(node as any).hash = "1b74bc5420781a9cd71fc9993d3d0312";
+(node as any).hash = "ad4684db83add5d894efa8ed1ce5ae10";
 
 export default node;

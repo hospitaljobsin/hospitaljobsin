@@ -11,7 +11,7 @@ from app.job_alerts.models import AlertFilters
 from app.jobs.types import JobTypeFilterEnum, WorkModeEnum
 
 if TYPE_CHECKING:
-    from app.accounts.types import AccountType
+    pass
 
 
 @strawberry.enum(
@@ -298,7 +298,7 @@ class EnableRecommendedJobAlertsSuccessType:
         description="The edges of the created job alerts.",
     )
     removed_recommended_job_alert_ids: list[relay.GlobalID] = strawberry.field(
-        description="The IDs of the removed recommended job alerts.",
+        description="The IDs of the recommended job alerts.",
     )
 
 
@@ -311,9 +311,18 @@ EnableRecommendedJobAlertsPayload = Annotated[
 ]
 
 
+@strawberry.type(
+    name="RemoveRecommendedJobAlertsSuccess",
+    description="The remove recommended job alerts success.",
+)
+class RemoveRecommendedJobAlertsSuccessType:
+    removed_recommended_job_alert_ids: list[relay.GlobalID] = strawberry.field(
+        description="The IDs of the recommended job alerts.",
+    )
+
+
 RemoveRecommendedJobAlertsPayload = Annotated[
-    Annotated["AccountType", strawberry.lazy("app.accounts.types")]
-    | RecommendedJobAlertsNotFoundErrorType,
+    RemoveRecommendedJobAlertsSuccessType | RecommendedJobAlertsNotFoundErrorType,
     strawberry.union(
         name="RemoveRecommendedJobAlertsPayload",
         description="The remove recommended job alerts payload.",

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1894392db55f517d8cb4e8841bfcfc40>>
+ * @generated SignedSource<<1f18b94dd57ad9cf97999c2720939e4d>>
  * @relayHash eb5cc9da96c7c53db5378d8a016f9f03
  * @lightSyntaxTransform
  * @nogrep
@@ -15,6 +15,7 @@ import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobAlertFrequency = "DAILY" | "MONTHLY" | "WEEKLY" | "%future added value";
 export type RecommendedJobAlertsEnableMutation$variables = {
+  connections: ReadonlyArray<string>;
   frequency: JobAlertFrequency;
 };
 export type RecommendedJobAlertsEnableMutation$data = {
@@ -42,42 +43,45 @@ export type RecommendedJobAlertsEnableMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "frequency"
-  }
-],
-v1 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "connections"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "frequency"
+},
+v2 = [
   {
     "kind": "Variable",
     "name": "frequency",
     "variableName": "frequency"
   }
 ],
-v2 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v3 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v4 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "removedRecommendedJobAlertIds",
   "storageKey": null
 },
-v5 = {
+v6 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -93,20 +97,23 @@ v5 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "RecommendedJobAlertsEnableMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "enableRecommendedJobAlerts",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
+          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -126,7 +133,7 @@ return {
                     "name": "node",
                     "plural": false,
                     "selections": [
-                      (v3/*: any*/),
+                      (v4/*: any*/),
                       {
                         "args": null,
                         "kind": "FragmentSpread",
@@ -138,12 +145,12 @@ return {
                 ],
                 "storageKey": null
               },
-              (v4/*: any*/)
+              (v5/*: any*/)
             ],
             "type": "EnableRecommendedJobAlertsSuccess",
             "abstractKey": null
           },
-          (v5/*: any*/)
+          (v6/*: any*/)
         ],
         "storageKey": null
       }
@@ -153,19 +160,22 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "RecommendedJobAlertsEnableMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "enableRecommendedJobAlerts",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
+          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -185,7 +195,7 @@ return {
                     "name": "node",
                     "plural": false,
                     "selections": [
-                      (v3/*: any*/),
+                      (v4/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -280,12 +290,28 @@ return {
                 ],
                 "storageKey": null
               },
-              (v4/*: any*/)
+              (v5/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "filters": null,
+                "handle": "deleteEdge",
+                "key": "",
+                "kind": "ScalarHandle",
+                "name": "removedRecommendedJobAlertIds",
+                "handleArgs": [
+                  {
+                    "kind": "Variable",
+                    "name": "connections",
+                    "variableName": "connections"
+                  }
+                ]
+              }
             ],
             "type": "EnableRecommendedJobAlertsSuccess",
             "abstractKey": null
           },
-          (v5/*: any*/)
+          (v6/*: any*/)
         ],
         "storageKey": null
       }
@@ -301,6 +327,6 @@ return {
 };
 })();
 
-(node as any).hash = "0b4a654a5cd84253bc0180387f84f6fe";
+(node as any).hash = "fdae7123f460657f2b16bab83c359f2e";
 
 export default node;

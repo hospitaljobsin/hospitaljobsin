@@ -1,14 +1,14 @@
 import { addToast, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
 import { useState } from 'react';
-import { graphql, useMutation } from 'react-relay';
+import { ConnectionHandler, graphql, useMutation } from 'react-relay';
 import type { RemoveRecommendedJobAlertsModalMutation as RemoveRecommendedJobAlertsMutationType } from '@/__generated__/RemoveRecommendedJobAlertsModalMutation.graphql';
 
 const RemoveRecommendedJobAlertsMutation = graphql`
-  mutation RemoveRecommendedJobAlertsModalMutation {
+  mutation RemoveRecommendedJobAlertsModalMutation($connections: [ID!]!) {
     removeRecommendedJobAlerts {
       __typename
-      ... on Account {
-        id
+      ... on RemoveRecommendedJobAlertsSuccess {
+                removedRecommendedJobAlertIds @deleteEdge(connections: $connections)
       }
       ... on RecommendedJobAlertsNotFoundError {
         message
@@ -32,15 +32,17 @@ export default function RemoveRecommendedJobAlertsModal({ isOpen, onClose, onSuc
 		setIsRemoving(true);
 
 		removeRecommendedJobAlerts({
-			variables: {},
+			variables: {
+				connections: [ConnectionHandler.getConnectionID('client:root', 'RecommendedJobAlertsFragment_recommendedJobAlerts')]
+			},
 			onCompleted: response => {
 				setIsRemoving(false);
-				if (response.removeRecommendedJobAlerts.__typename === 'Account') {
-					addToast({ title: 'Recommended job alerts removed' });
+				if (response.removeRecommendedJobAlerts.__typename === 'RemoveRecommendedJobAlertsSuccess') {
+					addToast({ title: 'Recommended job alerts removed', color: 'success' });
 					onSuccess();
 					onClose();
 				} else if (response.removeRecommendedJobAlerts.__typename === 'RecommendedJobAlertsNotFoundError') {
-					addToast({ title: response.removeRecommendedJobAlerts.message });
+					addToast({ title: response.removeRecommendedJobAlerts.message, color: 'danger' });
 				}
 			},
 			onError: () => {

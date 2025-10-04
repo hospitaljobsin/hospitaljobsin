@@ -43,11 +43,11 @@ class RecommendedJobAlert(BaseModel):
     )
     job_type: list[JobKindType] = Field(
         ...,
-        description="Recommend suitable job types ('full_time', 'part_time', 'internship', 'contract' or 'locum') based on the candidate's career stage and preferences from their resume.",
+        description="Recommend suitable job types (a list of 'full_time', 'part_time', 'internship', 'contract' or 'locum') based on the candidate's career stage and preferences from their resume.",
     )
     work_mode: list[WorkModeType] = Field(
         ...,
-        description="Suggest appropriate work modes ('remote', 'hybrid' or 'office') based on the candidate's experience and role type from their resume.",
+        description="Suggest appropriate work modes (a list of 'remote', 'hybrid' or 'office') based on the candidate's experience and role type from their resume.",
     )
 
 

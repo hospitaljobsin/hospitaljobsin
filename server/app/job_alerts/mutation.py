@@ -31,6 +31,7 @@ from .types import (
     MaxJobAlertsReachedErrorType,
     RecommendedJobAlertsNotFoundErrorType,
     RemoveRecommendedJobAlertsPayload,
+    RemoveRecommendedJobAlertsSuccessType,
     UpdateJobAlertPayload,
 )
 
@@ -223,13 +224,17 @@ class JobAlertMutation:
         job_alert_service: Annotated[JobAlertService, Inject],
     ) -> RemoveRecommendedJobAlertsPayload:
         """Remove recommended job alerts for the current user."""
-        from app.accounts.types import AccountType
 
         match await job_alert_service.remove_recommended_alerts(
             account=info.context["current_user"],
         ):
-            case Ok(account):
-                return AccountType.marshal(account)
+            case Ok(recommended_job_alerts):
+                return RemoveRecommendedJobAlertsSuccessType(
+                    removed_recommended_job_alert_ids=[
+                        relay.GlobalID("RecommendedJobAlert", node_id=str(alert.id))
+                        for alert in recommended_job_alerts
+                    ],
+                )
             case Err(error):
                 match error:
                     case RecommendedJobAlertsNotFoundError():

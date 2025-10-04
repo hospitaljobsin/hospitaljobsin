@@ -461,22 +461,24 @@ class ProfileParserService:
                     for existing_alert in existing_job_alerts
                 )
             ]
-            await self._recommended_job_alert_repo.create_many(
-                account=account,
-                filters=[
-                    AlertFilters(
-                        search_term=alert.search_term,
-                        location=alert.location,
-                        min_experience=alert.min_experience,
-                        max_experience=alert.max_experience,
-                        min_salary=alert.min_salary,
-                        max_salary=alert.max_salary,
-                        job_type=alert.job_type,
-                        work_mode=alert.work_mode,
-                    )
-                    for alert in filtered_recommended_alerts
-                ],
-            )
+            if filtered_recommended_alerts:
+                await self._recommended_job_alert_repo.delete_all(account=account)
+                await self._recommended_job_alert_repo.create_many(
+                    account=account,
+                    filters=[
+                        AlertFilters(
+                            search_term=alert.search_term,
+                            location=alert.location,
+                            min_experience=alert.min_experience,
+                            max_experience=alert.max_experience,
+                            min_salary=alert.min_salary,
+                            max_salary=alert.max_salary,
+                            job_type=alert.job_type,
+                            work_mode=alert.work_mode,
+                        )
+                        for alert in filtered_recommended_alerts
+                    ],
+                )
         return Ok(profile)
 
 

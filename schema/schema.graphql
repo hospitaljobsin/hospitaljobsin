@@ -981,7 +981,7 @@ type EnableRecommendedJobAlertsSuccess {
 	jobAlertEdges: [JobAlertEdge!]!
 
 	"""
-	The IDs of the removed recommended job alerts.
+	The IDs of the recommended job alerts.
 	"""
 	removedRecommendedJobAlertIds: [ID!]!
 }
@@ -4876,8 +4876,18 @@ type RemoveOrganizationMemberSuccess {
 The remove recommended job alerts payload.
 """
 union RemoveRecommendedJobAlertsPayload =
-	| Account
+	| RemoveRecommendedJobAlertsSuccess
 	| RecommendedJobAlertsNotFoundError
+
+"""
+The remove recommended job alerts success.
+"""
+type RemoveRecommendedJobAlertsSuccess {
+	"""
+	The IDs of the recommended job alerts.
+	"""
+	removedRecommendedJobAlertIds: [ID!]!
+}
 
 """
 Request email verification success.

@@ -119,7 +119,7 @@ class JobAlertService:
 
     async def remove_recommended_alerts(
         self, account: Account
-    ) -> Result[Account, RecommendedJobAlertsNotFoundError]:
+    ) -> Result[list[RecommendedJobAlert], RecommendedJobAlertsNotFoundError]:
         recommended_job_alerts = await self._recommended_job_alert_repo.get_all_list(
             account=account
         )
@@ -129,4 +129,4 @@ class JobAlertService:
 
         await self._recommended_job_alert_repo.delete_all(account)
 
-        return Ok(account)
+        return Ok(recommended_job_alerts)

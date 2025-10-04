@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<1e6e530b44b65c31632c12c7c01d7ec9>>
- * @relayHash eac490e80134ad86fe7598d7f9e735d3
+ * @generated SignedSource<<b38f179b44bb6adca62ca8cd0760d168>>
+ * @relayHash 8c1c0161054b87c8ba83f22046c56029
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,19 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID eac490e80134ad86fe7598d7f9e735d3
+// @relayRequestID 8c1c0161054b87c8ba83f22046c56029
 
 import type { ConcreteRequest } from 'relay-runtime';
-export type RemoveRecommendedJobAlertsModalMutation$variables = Record<PropertyKey, never>;
+export type RemoveRecommendedJobAlertsModalMutation$variables = {
+  connections: ReadonlyArray<string>;
+};
 export type RemoveRecommendedJobAlertsModalMutation$data = {
   readonly removeRecommendedJobAlerts: {
-    readonly __typename: "Account";
-    readonly id: string;
-  } | {
     readonly __typename: "RecommendedJobAlertsNotFoundError";
     readonly message: string;
+  } | {
+    readonly __typename: "RemoveRecommendedJobAlertsSuccess";
+    readonly removedRecommendedJobAlertIds: ReadonlyArray<string>;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -32,27 +34,26 @@ export type RemoveRecommendedJobAlertsModalMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = {
+var v0 = [
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "connections"
+  }
+],
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v1 = [
-  {
-    "alias": null,
-    "args": null,
-    "kind": "ScalarField",
-    "name": "id",
-    "storageKey": null
-  }
-],
 v2 = {
-  "kind": "InlineFragment",
-  "selections": (v1/*: any*/),
-  "type": "Account",
-  "abstractKey": null
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "removedRecommendedJobAlertIds",
+  "storageKey": null
 },
 v3 = {
   "kind": "InlineFragment",
@@ -70,7 +71,7 @@ v3 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "RemoveRecommendedJobAlertsModalMutation",
@@ -83,8 +84,15 @@ return {
         "name": "removeRecommendedJobAlerts",
         "plural": false,
         "selections": [
-          (v0/*: any*/),
-          (v2/*: any*/),
+          (v1/*: any*/),
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v2/*: any*/)
+            ],
+            "type": "RemoveRecommendedJobAlertsSuccess",
+            "abstractKey": null
+          },
           (v3/*: any*/)
         ],
         "storageKey": null
@@ -95,7 +103,7 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "RemoveRecommendedJobAlertsModalMutation",
     "selections": [
@@ -107,22 +115,39 @@ return {
         "name": "removeRecommendedJobAlerts",
         "plural": false,
         "selections": [
-          (v0/*: any*/),
-          (v2/*: any*/),
-          (v3/*: any*/),
+          (v1/*: any*/),
           {
             "kind": "InlineFragment",
-            "selections": (v1/*: any*/),
-            "type": "Node",
-            "abstractKey": "__isNode"
-          }
+            "selections": [
+              (v2/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "filters": null,
+                "handle": "deleteEdge",
+                "key": "",
+                "kind": "ScalarHandle",
+                "name": "removedRecommendedJobAlertIds",
+                "handleArgs": [
+                  {
+                    "kind": "Variable",
+                    "name": "connections",
+                    "variableName": "connections"
+                  }
+                ]
+              }
+            ],
+            "type": "RemoveRecommendedJobAlertsSuccess",
+            "abstractKey": null
+          },
+          (v3/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "eac490e80134ad86fe7598d7f9e735d3",
+    "id": "8c1c0161054b87c8ba83f22046c56029",
     "metadata": {},
     "name": "RemoveRecommendedJobAlertsModalMutation",
     "operationKind": "mutation",
@@ -131,6 +156,6 @@ return {
 };
 })();
 
-(node as any).hash = "5a88619318cb95e345b89e2797e4824a";
+(node as any).hash = "e0b30961f15c869b15b2dc9e84fd7e51";
 
 export default node;

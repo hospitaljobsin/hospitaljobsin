@@ -1,11 +1,11 @@
-import type { SetWhatsappAlertsFragment$key } from '@/__generated__/SetWhatsappAlertsFragment.graphql';
-import { useCheckSudoMode } from '@/lib/hooks/useCheckSudoMode';
-import { Button, Card, CardBody, CardFooter, CardHeader, Tooltip } from '@heroui/react';
+import { Button, Card, CardBody, CardFooter, CardHeader } from '@heroui/react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import invariant from 'tiny-invariant';
+import type { SetWhatsappAlertsFragment$key } from '@/__generated__/SetWhatsappAlertsFragment.graphql';
+import { useCheckSudoMode } from '@/lib/hooks/useCheckSudoMode';
 import { WhatsappIcon } from '../icons';
 import DisableWhatsappJobAlertsModal from './DisableWhatsappJobAlertsModal';
 import EnableWhatsappJobAlertsModal from './EnableWhatsappJobAlertsModal';
@@ -48,8 +48,8 @@ export default function SetWhatsappAlerts({ query }: { query: SetWhatsappAlertsF
 			<>
 				<Card shadow='none' className='px-6 pt-6 pb-0 sticky h-full'>
 					<CardHeader className='flex flex-col gap-2 text-center'>
-						<div className='text-lg font-medium'>WhatsApp Job Alerts Enabled</div>
-						<div className='text-sm text-gray-600 mb-4'>
+						<div className='text-base sm:text-lg font-medium'>WhatsApp Job Alerts Enabled</div>
+						<div className='text-xs sm:text-sm text-gray-600 mb-4'>
 							You'll receive notifications about new jobs matching your profile directly on WhatsApp.
 						</div>
 					</CardHeader>
