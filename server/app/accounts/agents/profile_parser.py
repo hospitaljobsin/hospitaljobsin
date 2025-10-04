@@ -119,7 +119,7 @@ class ProfileOutput(BaseModel):
     )
     recommended_job_alerts: list[RecommendedJobAlert] = Field(
         default_factory=list,
-        description="The recommended job alerts for the applicant.",
+        description="Generate personalized job alert recommendations only when the resume contains sufficient career information (skills, experience, education, or clear job preferences). Base alerts on the candidate's background and career trajectory.",
     )
 
 
@@ -146,6 +146,11 @@ def create_profile_parser_agent() -> ProfileParserAgent:
             "SPECIAL CASES:\n"
             "- For nested fields (education, work_experience, certifications, licenses, etc.), extract only if all required subfields are present.\n"
             "- For enums (gender, marital_status), match only known values. Return `null` if uncertain or non-standard.\n\n"
+            "RECOMMENDED JOB ALERTS GENERATION:\n"
+            "- Generate job alerts ONLY when the resume contains sufficient career information (work experience, skills, education, or clear job preferences).\n"
+            "- If generating alerts, create 2-4 recommendations targeting different aspects of their background.\n"
+            "- Base all recommendations strictly on actual resume content - skills, job titles, and experience mentioned.\n"
+            "- Leave empty list if resume lacks sufficient career information for meaningful recommendations.\n\n"
             "Return a complete structured output with all fields defined. Leave nothing out — use `null` or `[]` where appropriate."
         ),
     )

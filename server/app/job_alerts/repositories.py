@@ -1,5 +1,6 @@
 from datetime import UTC, datetime, timedelta
 
+from beanie.operators import In
 from bson import ObjectId
 
 from app.accounts.documents import Account
@@ -30,7 +31,7 @@ class JobAlertRepo:
         account: Account,
         frequency: JobAlertFrequency,
         job_alert_filters: list[AlertFilters],
-    ) -> None:
+    ) -> list[JobAlert]:
         job_alert_docs = [
             JobAlert(
                 account=account.id,
@@ -39,11 +40,8 @@ class JobAlertRepo:
             )
             for filters in job_alert_filters
         ]
-        await JobAlert.insert_many(job_alert_docs)
-
-    async def delete(self, job_alert: JobAlert) -> None:
-        """Delete a job alert."""
-        await job_alert.delete()
+        result = await JobAlert.insert_many(job_alert_docs)
+        return await self.get_all_in_ids(result.inserted_ids)
 
     async def delete(self, job_alert: JobAlert) -> None:
         """Delete a job alert."""
@@ -52,6 +50,10 @@ class JobAlertRepo:
     async def delete_all(self, account: Account) -> None:
         """Delete all job alerts for an account."""
         await JobAlert.find(JobAlert.account.id == account.id).delete_many()
+
+    async def get_all_in_ids(self, job_alert_ids: list[ObjectId]) -> list[JobAlert]:
+        """Get all job alerts in the given IDs."""
+        return await JobAlert.find(In(JobAlert.id, job_alert_ids)).to_list()
 
     async def get_by_id(
         self, job_alert_id: ObjectId, *, fetch_links: bool = False

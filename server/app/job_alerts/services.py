@@ -7,7 +7,7 @@ from app.core.constants import (
     MAX_JOB_ALERTS_PER_ACCOUNT,
     JobAlertFrequency,
 )
-from app.job_alerts.documents import JobAlert
+from app.job_alerts.documents import JobAlert, RecommendedJobAlert
 from app.job_alerts.exceptions import (
     JobAlertAlreadyExistsError,
     JobAlertNotFoundError,
@@ -96,7 +96,10 @@ class JobAlertService:
         self,
         account: Account,
         frequency: JobAlertFrequency,
-    ) -> Result[Account, RecommendedJobAlertsNotFoundError]:
+    ) -> Result[
+        tuple[list[JobAlert], list[RecommendedJobAlert]],
+        RecommendedJobAlertsNotFoundError,
+    ]:
         recommended_job_alerts = await self._recommended_job_alert_repo.get_all_list(
             account=account
         )
@@ -104,11 +107,25 @@ class JobAlertService:
             # cannot enable recommended job alerts if we have no recommendations
             return Err(RecommendedJobAlertsNotFoundError())
 
-        await self._job_alert_repo.create_many(
+        job_alerts = await self._job_alert_repo.create_many(
             account=account,
             job_alert_filters=[r.filters for r in recommended_job_alerts],
             frequency=frequency,
         )
+
+        await self._recommended_job_alert_repo.delete_all(account)
+
+        return Ok((job_alerts, recommended_job_alerts))
+
+    async def remove_recommended_alerts(
+        self, account: Account
+    ) -> Result[Account, RecommendedJobAlertsNotFoundError]:
+        recommended_job_alerts = await self._recommended_job_alert_repo.get_all_list(
+            account=account
+        )
+        if len(recommended_job_alerts) < 1:
+            # cannot remove recommended job alerts if we have no recommendations
+            return Err(RecommendedJobAlertsNotFoundError())
 
         await self._recommended_job_alert_repo.delete_all(account)
 

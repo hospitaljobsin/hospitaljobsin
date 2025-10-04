@@ -1,12 +1,12 @@
-import type { UpdateResumeFormDeleteResumeMutation as DeleteResumeMutationType } from '@/__generated__/UpdateResumeFormDeleteResumeMutation.graphql';
-import type { UpdateResumeFormFragment$key } from '@/__generated__/UpdateResumeFormFragment.graphql';
-import type { UpdateResumeFormGenerateProfileDocumentPresignedUrlMutation as UpdateResumeFormGenerateProfileDocumentPresignedUrlMutationType } from '@/__generated__/UpdateResumeFormGenerateProfileDocumentPresignedUrlMutation.graphql';
-import type { UpdateResumeFormMutation as UpdateResumeFormMutationType } from '@/__generated__/UpdateResumeFormMutation.graphql';
 import { Button } from '@heroui/react';
 import { UploadCloudIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { graphql, useFragment, useMutation } from 'react-relay';
+import type { UpdateResumeFormDeleteResumeMutation as DeleteResumeMutationType } from '@/__generated__/UpdateResumeFormDeleteResumeMutation.graphql';
+import type { UpdateResumeFormFragment$key } from '@/__generated__/UpdateResumeFormFragment.graphql';
+import type { UpdateResumeFormGenerateProfileDocumentPresignedUrlMutation as UpdateResumeFormGenerateProfileDocumentPresignedUrlMutationType } from '@/__generated__/UpdateResumeFormGenerateProfileDocumentPresignedUrlMutation.graphql';
+import type { UpdateResumeFormMutation as UpdateResumeFormMutationType } from '@/__generated__/UpdateResumeFormMutation.graphql';
 import { uploadFileToS3 } from '../../../lib/presignedUrl';
 import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 import RemoveResumeConfirmationModal from './RemoveResumeConfirmationModal';
@@ -63,12 +63,14 @@ export default function UpdateResumeForm({ rootQuery, onSaveChanges }: Props) {
 	const [commitPresignedUrlMutation] = useMutation<UpdateResumeFormGenerateProfileDocumentPresignedUrlMutationType>(
 		GenerateProfileDocumentPresignedUrlMutation
 	);
+
 	const data = useFragment(UpdateResumeFormFragment, rootQuery);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [isUploading, setIsUploading] = useState(false);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [showRemoveModal, setShowRemoveModal] = useState(false);
 	const [isRemoving, setIsRemoving] = useState(false);
+	const [shouldCheckJobAlerts, setShouldCheckJobAlerts] = useState(false);
 
 	const onDrop = useCallback((acceptedFiles: File[]) => {
 		const file = acceptedFiles[0];
@@ -111,6 +113,8 @@ export default function UpdateResumeForm({ rootQuery, onSaveChanges }: Props) {
 								setPreviewUrl(null);
 								setIsUploading(false);
 								onSaveChanges();
+								// Trigger job alerts check after successful resume upload
+								setShouldCheckJobAlerts(true);
 							},
 							onError: () => setIsUploading(false)
 						});
@@ -141,6 +145,10 @@ export default function UpdateResumeForm({ rootQuery, onSaveChanges }: Props) {
 			onError: () => setIsRemoving(false)
 		});
 	}, [commitDeleteMutation, onSaveChanges]);
+
+	const handleJobAlertsChecked = useCallback(() => {
+		setShouldCheckJobAlerts(false);
+	}, []);
 
 	// No resume saved and no file selected - show drag and drop
 	if (!data.resumeUrl && !selectedFile) {
@@ -184,10 +192,10 @@ export default function UpdateResumeForm({ rootQuery, onSaveChanges }: Props) {
 							Remove Selected File
 						</Button>
 					</div>
-					<div className='border rounded-lg overflow-hidden'>
-						<div className='bg-gray-50 px-4 py-3 border-b flex items-center justify-between'>
+					<div className='rounded-lg overflow-hidden'>
+						<div className='bg-background px-4 py-3 border-b flex items-center justify-between'>
 							<h3 className='font-medium'>Preview</h3>
-							<span className='text-sm text-gray-500'>
+							<span className='text-sm text-foreground-500'>
 								{selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
 							</span>
 						</div>
@@ -225,7 +233,7 @@ export default function UpdateResumeForm({ rootQuery, onSaveChanges }: Props) {
 						</Button>
 					</div>
 				</div>
-				<div className='border rounded-lg overflow-hidden h-[500px] md:h-[800px]'>
+				<div className='rounded-lg overflow-hidden h-[500px] md:h-[800px]'>
 					<iframe src={`${data.resumeUrl}#zoom=page-fit`} className='w-full h-full border-0' title='Resume Preview' />
 				</div>
 

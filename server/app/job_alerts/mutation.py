@@ -4,6 +4,7 @@ import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
 from result import Err, Ok
+from strawberry import relay
 from strawberry.permission import PermissionExtension
 
 from app.auth.permissions import IsAuthenticated
@@ -21,12 +22,15 @@ from .types import (
     CreateJobAlertPayload,
     DeleteJobAlertPayload,
     EnableRecommendedJobAlertsPayload,
+    EnableRecommendedJobAlertsSuccessType,
     JobAlertAlreadyExistsErrorType,
+    JobAlertEdgeType,
     JobAlertFrequencyEnum,
     JobAlertNotFoundErrorType,
     JobAlertType,
     MaxJobAlertsReachedErrorType,
     RecommendedJobAlertsNotFoundErrorType,
+    RemoveRecommendedJobAlertsPayload,
     UpdateJobAlertPayload,
 )
 
@@ -179,11 +183,50 @@ class JobAlertMutation:
         ],
     ) -> EnableRecommendedJobAlertsPayload:
         """Enable recommended job alerts for the current user."""
-        from app.accounts.types import AccountType
-
         match await job_alert_service.enable_recommended_alerts(
             account=info.context["current_user"],
             frequency=frequency.value,
+        ):
+            case Ok(result):
+                alerts, removed_recommended_alerts = result
+                return EnableRecommendedJobAlertsSuccessType(
+                    job_alert_edges=[
+                        JobAlertEdgeType.marshal(job_alert) for job_alert in alerts
+                    ],
+                    removed_recommended_job_alert_ids=[
+                        relay.GlobalID("RecommendedJobAlert", node_id=str(alert.id))
+                        for alert in removed_recommended_alerts
+                    ],
+                )
+            case Err(error):
+                match error:
+                    case RecommendedJobAlertsNotFoundError():
+                        return RecommendedJobAlertsNotFoundErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=RemoveRecommendedJobAlertsPayload,
+        description="Remove recommended job alerts for the current user.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def remove_recommended_job_alerts(
+        self,
+        info: AuthInfo,
+        job_alert_service: Annotated[JobAlertService, Inject],
+    ) -> RemoveRecommendedJobAlertsPayload:
+        """Remove recommended job alerts for the current user."""
+        from app.accounts.types import AccountType
+
+        match await job_alert_service.remove_recommended_alerts(
+            account=info.context["current_user"],
         ):
             case Ok(account):
                 return AccountType.marshal(account)

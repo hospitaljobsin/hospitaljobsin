@@ -965,6 +965,28 @@ type EnableAccount2FAWithAuthenticatorSuccess {
 }
 
 """
+The enable recommended job alerts payload.
+"""
+union EnableRecommendedJobAlertsPayload =
+	| EnableRecommendedJobAlertsSuccess
+	| RecommendedJobAlertsNotFoundError
+
+"""
+The enable recommended job alerts success.
+"""
+type EnableRecommendedJobAlertsSuccess {
+	"""
+	The edges of the created job alerts.
+	"""
+	jobAlertEdges: [JobAlertEdge!]!
+
+	"""
+	The IDs of the removed recommended job alerts.
+	"""
+	removedRecommendedJobAlertIds: [ID!]!
+}
+
+"""
 Human readable error.
 """
 interface Error {
@@ -3578,6 +3600,22 @@ type Mutation {
 		"""
 		jobAlertId: ID!
 	): DeleteJobAlertPayload! @isAuthenticated
+
+	"""
+	Enable recommended job alerts for the current user.
+	"""
+	enableRecommendedJobAlerts(
+		"""
+		The frequency of the job alert.
+		"""
+		frequency: JobAlertFrequency!
+	): EnableRecommendedJobAlertsPayload! @isAuthenticated
+
+	"""
+	Remove recommended job alerts for the current user.
+	"""
+	removeRecommendedJobAlerts: RemoveRecommendedJobAlertsPayload!
+		@isAuthenticated
 }
 
 """
@@ -4673,9 +4711,88 @@ type Query {
 	): JobAlertConnection! @isAuthenticated
 
 	"""
+	Get all the recommended job alerts for the current user.
+	"""
+	recommendedJobAlerts(
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
+
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
+
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
+
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): RecommendedJobAlertConnection! @isAuthenticated
+
+	"""
 	Get core site statistics.
 	"""
 	stats: Stats!
+}
+
+"""
+A recommended job alert.
+"""
+type RecommendedJobAlert implements Node {
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
+
+	"""
+	The filters for the job alert.
+	"""
+	filters: AlertFilters!
+}
+
+type RecommendedJobAlertConnection {
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
+
+	"""
+	A list of edges.
+	"""
+	edges: [RecommendedJobAlertEdge!]!
+
+	"""
+	The total number of items in the connection.
+	"""
+	totalCount: Int
+}
+
+type RecommendedJobAlertEdge {
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
+
+	"""
+	The item at the end of the edge
+	"""
+	node: RecommendedJobAlert!
+}
+
+"""
+Error when no recommended job alerts are found for the user.
+"""
+type RecommendedJobAlertsNotFoundError implements Error {
+	"""
+	The error message.
+	"""
+	message: String!
 }
 
 """
@@ -4754,6 +4871,13 @@ type RemoveOrganizationMemberSuccess {
 	"""
 	organization: Organization!
 }
+
+"""
+The remove recommended job alerts payload.
+"""
+union RemoveRecommendedJobAlertsPayload =
+	| Account
+	| RecommendedJobAlertsNotFoundError
 
 """
 Request email verification success.

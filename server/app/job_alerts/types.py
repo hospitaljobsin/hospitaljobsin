@@ -3,6 +3,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Annotated, Self
 
 import strawberry
+from strawberry import relay
 
 from app.base.types import BaseConnectionType, BaseEdgeType, BaseErrorType, BaseNodeType
 from app.job_alerts.documents import JobAlert, RecommendedJobAlert
@@ -177,6 +178,7 @@ class RecommendedJobAlertType(BaseNodeType[RecommendedJobAlert]):
     @classmethod
     def marshal(cls, data: RecommendedJobAlert) -> Self:
         return cls(
+            id=str(data.id),
             filters=AlertFiltersType.marshal(data.filters),
         )
 
@@ -287,11 +289,33 @@ class RecommendedJobAlertsNotFoundErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="EnableRecommendedJobAlertsSuccess",
+    description="The enable recommended job alerts success.",
+)
+class EnableRecommendedJobAlertsSuccessType:
+    job_alert_edges: list[JobAlertEdgeType] = strawberry.field(
+        description="The edges of the created job alerts.",
+    )
+    removed_recommended_job_alert_ids: list[relay.GlobalID] = strawberry.field(
+        description="The IDs of the removed recommended job alerts.",
+    )
+
+
 EnableRecommendedJobAlertsPayload = Annotated[
-    Annotated["AccountType", strawberry.lazy("app.accounts.types")]
-    | RecommendedJobAlertsNotFoundErrorType,
+    EnableRecommendedJobAlertsSuccessType | RecommendedJobAlertsNotFoundErrorType,
     strawberry.union(
         name="EnableRecommendedJobAlertsPayload",
         description="The enable recommended job alerts payload.",
+    ),
+]
+
+
+RemoveRecommendedJobAlertsPayload = Annotated[
+    Annotated["AccountType", strawberry.lazy("app.accounts.types")]
+    | RecommendedJobAlertsNotFoundErrorType,
+    strawberry.union(
+        name="RemoveRecommendedJobAlertsPayload",
+        description="The remove recommended job alerts payload.",
     ),
 ]
