@@ -28,12 +28,6 @@ resource "github_actions_environment_secret" "sst_revalidate_secret" {
   plaintext_value = var.sst_revalidate_secret
 }
 
-resource "github_actions_environment_secret" "sst_accounts_secret_id" {
-  repository      = data.github_repository.this.name
-  environment     = github_repository_environment.this.environment
-  secret_name     = "SST_ACCOUNTS_SECRET_ID"
-  plaintext_value = var.sst_accounts_secret_id
-}
 
 resource "github_actions_environment_secret" "accounts_sentry_dsn" {
   repository      = data.github_repository.this.name
@@ -42,34 +36,11 @@ resource "github_actions_environment_secret" "accounts_sentry_dsn" {
   plaintext_value = var.sentry_accounts_ui_dsn
 }
 
-
-resource "github_actions_environment_secret" "sst_seeker_portal_secret_id" {
-  repository      = data.github_repository.this.name
-  environment     = github_repository_environment.this.environment
-  secret_name     = "SST_SEEKER_PORTAL_SECRET_ID"
-  plaintext_value = var.sst_seeker_portal_secret_id
-}
-
 resource "github_actions_environment_secret" "seeker_portal_sentry_dsn" {
   repository      = data.github_repository.this.name
   environment     = github_repository_environment.this.environment
   secret_name     = "SEEKER_PORTAL_SENTRY_DSN"
   plaintext_value = var.sentry_seeker_portal_ui_dsn
-}
-
-
-resource "github_actions_environment_secret" "sst_recruiter_portal_secret_id" {
-  repository      = data.github_repository.this.name
-  environment     = github_repository_environment.this.environment
-  secret_name     = "SST_RECRUITER_PORTAL_SECRET_ID"
-  plaintext_value = var.sst_recruiter_portal_secret_id
-}
-
-resource "github_actions_environment_secret" "sst_recruiter_dashboard_secret_id" {
-  repository      = data.github_repository.this.name
-  environment     = github_repository_environment.this.environment
-  secret_name     = "SST_RECRUITER_DASHBOARD_SECRET_ID"
-  plaintext_value = var.sst_recruiter_dashboard_secret_id
 }
 
 resource "github_actions_environment_secret" "recruiter_portal_sentry_dsn" {

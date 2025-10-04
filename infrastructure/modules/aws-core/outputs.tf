@@ -45,10 +45,6 @@ output "sst_accounts_domain" {
   value = "accounts.${var.domain_name}"
 }
 
-output "sst_accounts_secret_id" {
-  value     = aws_secretsmanager_secret.accounts.id
-  sensitive = true
-}
 
 output "accounts_sentry_dsn" {
   value     = var.sentry_accounts_ui_dsn
@@ -59,11 +55,6 @@ output "sst_seeker_portal_domain" {
   value = var.domain_name
 }
 
-
-output "sst_seeker_portal_secret_id" {
-  value     = aws_secretsmanager_secret.seeker_portal.id
-  sensitive = true
-}
 
 output "seeker_portal_sentry_dsn" {
   value     = var.sentry_seeker_portal_ui_dsn
@@ -78,22 +69,10 @@ output "sst_recruiter_dashboard_domain" {
   value = "*.${var.domain_name}"
 }
 
-output "sst_recruiter_portal_secret_id" {
-  value     = aws_secretsmanager_secret.recruiter_portal.id
-  sensitive = true
-}
-
 output "recruiter_portal_sentry_dsn" {
   value     = var.sentry_recruiter_portal_ui_dsn
   sensitive = true
 }
-
-
-output "sst_recruiter_dashboard_secret_id" {
-  value     = aws_secretsmanager_secret.recruiter_dashboard.id
-  sensitive = true
-}
-
 
 output "sst_recruiter_portal_base_url" {
   value = "https://recruiter.${var.domain_name}"

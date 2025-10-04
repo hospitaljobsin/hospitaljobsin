@@ -164,30 +164,6 @@ variable "sst_vpc_security_groups" {
   type        = string
 }
 
-variable "sst_accounts_secret_id" {
-  description = "The secret ID for the accounts service."
-  type        = string
-  sensitive   = true
-}
-
-variable "sst_seeker_portal_secret_id" {
-  description = "The secret ID for the seeker portal."
-  type        = string
-  sensitive   = true
-}
-
-variable "sst_recruiter_portal_secret_id" {
-  description = "The secret ID for the recruiter portal."
-  type        = string
-  sensitive   = true
-}
-
-variable "sst_recruiter_dashboard_secret_id" {
-  description = "The secret ID for the recruiter dashboard."
-  type        = string
-  sensitive   = true
-}
-
 
 variable "deployment_aws_access_key_id" {
   description = "The AWS Access Key ID for deployment."
