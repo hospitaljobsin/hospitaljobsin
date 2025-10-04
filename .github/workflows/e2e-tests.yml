@@ -50,7 +50,7 @@ jobs:
           aws autoscaling update-auto-scaling-group \
             --auto-scaling-group-name ${{ vars.AWS_ASG_NAME }} \
             --min-size 0 \
-            --max-size 1 \  # Or higher if you need more than 1 instance
+            --max-size 1$(: Or higher if you need more than 1 instance) \
             --desired-capacity 1
 
           aws ecs update-service \
@@ -188,7 +188,7 @@ jobs:
           aws autoscaling update-auto-scaling-group \
             --auto-scaling-group-name ${{ vars.AWS_ASG_NAME }} \
             --min-size 0 \
-            --max-size 0 \  # Prevents accidental scale-up post-cleanup; reset in setup if needed
+            --max-size 0$(: Prevents accidental scale-up post-cleanup; reset in setup if needed) \
             --desired-capacity 0
 
           echo "Waiting for ASG to scale down to 0 instances..."
