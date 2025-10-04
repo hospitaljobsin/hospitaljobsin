@@ -45,9 +45,6 @@ class JobAlertRepo:
         """Delete a job alert."""
         await job_alert.delete()
 
-    async def delete_all(self, account: Account) -> None:
-        await JobAlert.find(JobAlert.account.id == account.id).delete_many()
-
     async def delete(self, job_alert: JobAlert) -> None:
         """Delete a job alert."""
         await job_alert.delete()
