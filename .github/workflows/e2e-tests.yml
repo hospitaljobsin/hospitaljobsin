@@ -8,15 +8,15 @@ env:
   GOOGLE_CLIENT_SECRET: ${{ secrets.TEST_GOOGLE_OAUTH_CLIENT_SECRET }}
   SEEKER_PORTAL_UI_SENTRY_DSN: ${{secrets.SEEKER_PORTAL_SENTRY_DSN}}
   RECRUITER_PORTAL_UI_SENTRY_DSN: ${{secrets.RECRUITER_PORTAL_UI_SENTRY_DSN}}
-  ACCOUNTS_UI_SENTRY_DSN:  ${{secrets.ACCOUNTS_SENTRY_DSN}}
+  ACCOUNTS_UI_SENTRY_DSN: ${{secrets.ACCOUNTS_SENTRY_DSN}}
   SERVER_SENTRY_DSN: ${{secrets.SERVER_SENTRY_DSN}}
   # repo-level and non-env-specific secrets/vars
   AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
 
 concurrency:
-  group: e2e-tests-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
-  cancel-in-progress: true
+  group: e2e-tests-${{ github.ref_name == 'production' && 'production' || 'staging' }} # Ensures only one run of this workflow at a time
+  cancel-in-progress: false
 
 jobs:
   setup-infrastructure:
@@ -38,17 +38,19 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
       - name: Invoke Staging Setup Lambda
         run: |
-            aws lambda invoke \
-              --function-name ${{ vars.STAGING_ENVIRONMENT_SETUP_LAMBDA_FUNCTION_ARN }} \
-              --payload '{}' \
-              --cli-binary-format raw-in-base64-out \
-              response.json
-      # Start instances for testing
+          aws lambda invoke \
+            --function-name ${{ vars.STAGING_ENVIRONMENT_SETUP_LAMBDA_FUNCTION_ARN }} \
+            --payload '{}' \
+            --cli-binary-format raw-in-base64-out \
+            response.json
+      # Start instances for testing (updated to explicitly set min/max for reliability)
       - name: Start instances for testing
         run: |
           echo "Starting instances..."
           aws autoscaling update-auto-scaling-group \
             --auto-scaling-group-name ${{ vars.AWS_ASG_NAME }} \
+            --min-size 0 \
+            --max-size 1$(: Or higher if you need more than 1 instance) \
             --desired-capacity 1
 
           aws ecs update-service \
@@ -84,7 +86,7 @@ jobs:
 
   test-e2e:
     environment: staging
-    name: 'Test on ${{ matrix.project }}'
+    name: "Test on ${{ matrix.project }}"
     # name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
     needs: setup-infrastructure
     strategy:
@@ -162,13 +164,13 @@ jobs:
 
       - name: Invoke Staging Teardown Lambda
         run: |
-              aws lambda invoke \
-                --function-name ${{ vars.STAGING_ENVIRONMENT_TEARDOWN_LAMBDA_FUNCTION_ARN }} \
-                --payload '{}' \
-                --cli-binary-format raw-in-base64-out \
-                response.json
+          aws lambda invoke \
+            --function-name ${{ vars.STAGING_ENVIRONMENT_TEARDOWN_LAMBDA_FUNCTION_ARN }} \
+            --payload '{}' \
+            --cli-binary-format raw-in-base64-out \
+            response.json
 
-      # Stop instances after testing
+      # Stop instances after testing (updated for reliability: scale ECS first, wait, then ASG with min/max)
       - name: Stop instances after testing
         run: |
           echo "Stopping instances..."
@@ -178,8 +180,35 @@ jobs:
             --service ${{ vars.AWS_BACKEND_ECS_SERVICE }} \
             --desired-count 0
 
+          echo "Waiting for ECS service to stabilize (tasks to stop)..."
+          aws ecs wait services-stable \
+            --cluster ${{ vars.AWS_BACKEND_ECS_CLUSTER }} \
+            --services ${{ vars.AWS_BACKEND_ECS_SERVICE }}
+
           aws autoscaling update-auto-scaling-group \
             --auto-scaling-group-name ${{ vars.AWS_ASG_NAME }} \
+            --min-size 0 \
+            --max-size 0$(: Prevents accidental scale-up post-cleanup; reset in setup if needed) \
             --desired-capacity 0
 
-          echo "✅ Cleanup complete - AWS will terminate instances automatically"
+          echo "Waiting for ASG to scale down to 0 instances..."
+          timeout=600  # 10-minute timeout to avoid infinite loop
+          start_time=$(date +%s)
+          while true; do
+            current_time=$(date +%s)
+            if [ $((current_time - start_time)) -ge $timeout ]; then
+              echo "Timeout: ASG did not scale down within $timeout seconds."
+              exit 1
+            fi
+            count=$(aws autoscaling describe-auto-scaling-groups \
+              --auto-scaling-group-names ${{ vars.AWS_ASG_NAME }} \
+              --query "AutoScalingGroups[0].Instances | length(@)")
+            if [ "$count" -eq 0 ]; then
+              echo "ASG successfully scaled down to 0 instances."
+              break
+            fi
+            echo "Current instance count: $count. Waiting..."
+            sleep 30
+          done
+
+          echo "✅ Cleanup complete - AWS has terminated instances"

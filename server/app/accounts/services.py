@@ -44,6 +44,8 @@ from app.core.constants import (
 from app.core.messages import BaseMessageSender
 from app.core.ocr import BaseOCRClient
 from app.geocoding.repositories import RegionRepo
+from app.job_alerts.models import AlertFilters
+from app.job_alerts.repositories import JobAlertRepo, RecommendedJobAlertRepo
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
 
@@ -323,6 +325,8 @@ class ProfileParserService:
         s3_client: S3Client,
         aws_settings: AWSSettings,
         account_repo: AccountRepo,
+        recommended_job_alert_repo: RecommendedJobAlertRepo,
+        job_alert_repo: JobAlertRepo,
     ) -> None:
         self._profile_parser_agent = profile_parser_agent
         self._ocr_client = ocr_client
@@ -330,6 +334,8 @@ class ProfileParserService:
         self._s3_client = s3_client
         self._aws_settings = aws_settings
         self._account_repo = account_repo
+        self._recommended_job_alert_repo = recommended_job_alert_repo
+        self._job_alert_repo = job_alert_repo
 
     async def generate_presigned_url(self, content_type: str) -> Ok[tuple[str, str]]:
         """Generate a presigned URL for a document."""
@@ -436,6 +442,43 @@ class ProfileParserService:
                 else UNSET,
                 headline=profile_output.headline if profile_output.headline else UNSET,
             )
+        await self._recommended_job_alert_repo.delete_all(account=account)
+        if profile_output.recommended_job_alerts:
+            existing_job_alerts = await self._job_alert_repo.get_all_list(
+                account=account
+            )
+            filtered_recommended_alerts = [
+                alert
+                for alert in profile_output.recommended_job_alerts
+                if not any(
+                    alert.search_term == existing_alert.filters.search_term
+                    and alert.location == existing_alert.filters.location
+                    and alert.min_experience == existing_alert.filters.min_experience
+                    and alert.max_experience == existing_alert.filters.max_experience
+                    and alert.min_salary == existing_alert.filters.min_salary
+                    and alert.max_salary == existing_alert.filters.max_salary
+                    and alert.job_type == existing_alert.filters.job_type
+                    and alert.work_mode == existing_alert.filters.work_mode
+                    for existing_alert in existing_job_alerts
+                )
+            ]
+            if filtered_recommended_alerts:
+                await self._recommended_job_alert_repo.create_many(
+                    account=account,
+                    filters=[
+                        AlertFilters(
+                            search_term=alert.search_term,
+                            location=alert.location,
+                            min_experience=alert.min_experience,
+                            max_experience=alert.max_experience,
+                            min_salary=alert.min_salary,
+                            max_salary=alert.max_salary,
+                            job_type=alert.job_type,
+                            work_mode=alert.work_mode,
+                        )
+                        for alert in filtered_recommended_alerts
+                    ],
+                )
         return Ok(profile)
 
 

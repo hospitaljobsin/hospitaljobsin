@@ -1,13 +1,16 @@
+import { Button, Drawer, DrawerBody, DrawerContent, DrawerHeader } from '@heroui/react';
+import { UploadCloudIcon } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import type { PreloadedQuery } from 'react-relay';
+import { graphql, useFragment, useMutation, usePreloadedQuery, useQueryLoader, useRelayEnvironment } from 'react-relay';
 import type { UpdateResumeFormDeleteResumeMutation as DeleteResumeMutationType } from '@/__generated__/UpdateResumeFormDeleteResumeMutation.graphql';
 import type { UpdateResumeFormFragment$key } from '@/__generated__/UpdateResumeFormFragment.graphql';
 import type { UpdateResumeFormGenerateProfileDocumentPresignedUrlMutation as UpdateResumeFormGenerateProfileDocumentPresignedUrlMutationType } from '@/__generated__/UpdateResumeFormGenerateProfileDocumentPresignedUrlMutation.graphql';
 import type { UpdateResumeFormMutation as UpdateResumeFormMutationType } from '@/__generated__/UpdateResumeFormMutation.graphql';
-import { Button } from '@heroui/react';
-import { UploadCloudIcon } from 'lucide-react';
-import { useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
-import { graphql, useFragment, useMutation } from 'react-relay';
+import type { UpdateResumeFormRecommendedJobAlertsQuery as UpdateResumeFormRecommendedJobAlertsQueryType } from '@/__generated__/UpdateResumeFormRecommendedJobAlertsQuery.graphql';
 import { uploadFileToS3 } from '../../../lib/presignedUrl';
+import RecommendedJobAlerts from '../../my-alerts/RecommendedJobAlerts';
 import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 import RemoveResumeConfirmationModal from './RemoveResumeConfirmationModal';
 
@@ -46,6 +49,15 @@ const GenerateProfileDocumentPresignedUrlMutation = graphql`
 }
 	`;
 
+const UpdateResumeFormRecommendedJobAlertsQuery = graphql`
+  query UpdateResumeFormRecommendedJobAlertsQuery {
+    ...RecommendedJobAlertsFragment
+	recommendedJobAlerts(first: 10) {
+		totalCount @required(action: THROW)
+	}
+  }
+`;
+
 const UpdateResumeFormFragment = graphql`
   fragment UpdateResumeFormFragment on Profile {
 	resumeUrl
@@ -58,17 +70,30 @@ type Props = {
 };
 
 export default function UpdateResumeForm({ rootQuery, onSaveChanges }: Props) {
+	const environment = useRelayEnvironment();
 	const [commitMutation] = useMutation<UpdateResumeFormMutationType>(UpdateResumeFormMutation);
 	const [commitDeleteMutation] = useMutation<DeleteResumeMutationType>(DeleteResumeMutation);
 	const [commitPresignedUrlMutation] = useMutation<UpdateResumeFormGenerateProfileDocumentPresignedUrlMutationType>(
 		GenerateProfileDocumentPresignedUrlMutation
 	);
+
 	const data = useFragment(UpdateResumeFormFragment, rootQuery);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [isUploading, setIsUploading] = useState(false);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [showRemoveModal, setShowRemoveModal] = useState(false);
 	const [isRemoving, setIsRemoving] = useState(false);
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+	const [queryReference, loadQuery, disposeQuery] = useQueryLoader<UpdateResumeFormRecommendedJobAlertsQueryType>(
+		UpdateResumeFormRecommendedJobAlertsQuery
+	);
+
+	useEffect(() => {
+		if (queryReference && !isDrawerOpen) {
+			setIsDrawerOpen(true);
+		}
+	}, [queryReference, isDrawerOpen]);
 
 	const onDrop = useCallback((acceptedFiles: File[]) => {
 		const file = acceptedFiles[0];
@@ -111,6 +136,9 @@ export default function UpdateResumeForm({ rootQuery, onSaveChanges }: Props) {
 								setPreviewUrl(null);
 								setIsUploading(false);
 								onSaveChanges();
+								// Dispose previous query and load new one
+								disposeQuery();
+								loadQuery({}, { fetchPolicy: 'network-only' });
 							},
 							onError: () => setIsUploading(false)
 						});
@@ -121,7 +149,7 @@ export default function UpdateResumeForm({ rootQuery, onSaveChanges }: Props) {
 			},
 			onError: () => setIsUploading(false)
 		});
-	}, [selectedFile, commitPresignedUrlMutation, commitMutation, onSaveChanges, previewUrl]);
+	}, [selectedFile, commitPresignedUrlMutation, commitMutation, onSaveChanges, previewUrl, loadQuery, disposeQuery]);
 
 	const handleRemoveSelected = useCallback(() => {
 		if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -184,10 +212,10 @@ export default function UpdateResumeForm({ rootQuery, onSaveChanges }: Props) {
 							Remove Selected File
 						</Button>
 					</div>
-					<div className='border rounded-lg overflow-hidden'>
-						<div className='bg-gray-50 px-4 py-3 border-b flex items-center justify-between'>
+					<div className='rounded-lg overflow-hidden'>
+						<div className='bg-background px-4 py-3 border-b flex items-center justify-between'>
 							<h3 className='font-medium'>Preview</h3>
-							<span className='text-sm text-gray-500'>
+							<span className='text-sm text-foreground-500'>
 								{selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
 							</span>
 						</div>
@@ -225,7 +253,7 @@ export default function UpdateResumeForm({ rootQuery, onSaveChanges }: Props) {
 						</Button>
 					</div>
 				</div>
-				<div className='border rounded-lg overflow-hidden h-[500px] md:h-[800px]'>
+				<div className='rounded-lg overflow-hidden h-[500px] md:h-[800px]'>
 					<iframe src={`${data.resumeUrl}#zoom=page-fit`} className='w-full h-full border-0' title='Resume Preview' />
 				</div>
 
@@ -238,6 +266,47 @@ export default function UpdateResumeForm({ rootQuery, onSaveChanges }: Props) {
 				onConfirm={handleRemoveSaved}
 				isRemoving={isRemoving}
 			/>
+
+			{queryReference && (
+				<RecommendedJobAlertsDrawer
+					queryReference={queryReference}
+					isOpen={isDrawerOpen}
+					onClose={() => {
+						setIsDrawerOpen(false);
+						disposeQuery();
+					}}
+				/>
+			)}
 		</>
+	);
+}
+
+function RecommendedJobAlertsDrawer({
+	queryReference,
+	isOpen,
+	onClose
+}: {
+	queryReference: PreloadedQuery<UpdateResumeFormRecommendedJobAlertsQueryType>;
+	isOpen: boolean;
+	onClose: () => void;
+}) {
+	const data = usePreloadedQuery(UpdateResumeFormRecommendedJobAlertsQuery, queryReference);
+	const hasAlerts = data.recommendedJobAlerts.totalCount > 0;
+
+	if (!hasAlerts) {
+		return null;
+	}
+
+	return (
+		<Drawer isOpen={isOpen} onClose={onClose} placement='right' size='lg' isDismissable={false} isKeyboardDismissDisabled>
+			<DrawerContent>
+				<DrawerHeader>
+					<h2 className='text-lg font-medium'>Job Recommendations</h2>
+				</DrawerHeader>
+				<DrawerBody>
+					<RecommendedJobAlerts query={data} onSuccess={onClose} />
+				</DrawerBody>
+			</DrawerContent>
+		</Drawer>
 	);
 }

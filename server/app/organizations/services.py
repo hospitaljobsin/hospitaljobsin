@@ -1,11 +1,13 @@
 import uuid
 from datetime import timedelta
+from typing import Annotated
 
 import phonenumbers
 from bson import ObjectId
 from bson.errors import InvalidId
 from email_validator import EmailNotValidError, validate_email
 from humanize import naturaldelta
+from pydantic import Field, HttpUrl, StringConstraints, validate_call
 from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
 
@@ -239,24 +241,40 @@ class OrganizationService:
         self._aws_settings = aws_settings
         self._revalidation_service = revalidation_service
 
+    @validate_call()
     async def create(
         self,
-        admin: Account,
-        name: str,
-        slug: str,
-        description: str | None = None,
-        website: str | None = None,
-        logo_url: str | None = None,
+        admin: Annotated[Account, Field(exclude=True)],
+        name: Annotated[
+            str,
+            StringConstraints(
+                strip_whitespace=True,
+                min_length=3,
+                max_length=100,
+            ),
+        ],
+        slug: Annotated[
+            str,
+            StringConstraints(
+                strip_whitespace=True,
+                min_length=2,
+                max_length=100,
+                pattern=r"^[a-zA-Z0-9_-]+$",
+                to_lower=True,
+            ),
+        ],
+        description: Annotated[
+            str | None,
+            StringConstraints(
+                max_length=5000,
+                min_length=None,
+                strip_whitespace=True,
+            ),
+        ] = None,
+        website: HttpUrl | None = None,
+        logo_url: HttpUrl | None = None,
     ) -> Result[Organization, OrganizationSlugInUseError]:
-        # TODO: add user input validation error handling here.
-        # make each service a separate class. this has DI benefits too- we don't instantiate unwanted deps for each call
-        if slug in RESERVED_ORGANIZATION_NAMES:
-            return Err(OrganizationSlugInUseError())
-        existing_organization = await self._organization_repo.get_by_slug(
-            organization_slug=slug,
-        )
-
-        if existing_organization is not None:
+        if not await self.check_slug_availability(slug):
             return Err(OrganizationSlugInUseError())
 
         organization = await self._organization_repo.create(
@@ -264,8 +282,8 @@ class OrganizationService:
             slug=slug,
             description=description,
             location=None,
-            website=website,
-            logo_url=logo_url,
+            website=str(website) if website else None,
+            logo_url=str(logo_url) if logo_url else None,
         )
 
         # create initial admin member

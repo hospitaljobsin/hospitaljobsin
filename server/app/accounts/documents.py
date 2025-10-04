@@ -1,6 +1,6 @@
 import hashlib
 from datetime import UTC, date, datetime
-from typing import TYPE_CHECKING, Annotated, ClassVar, Literal
+from typing import Annotated, ClassVar, Literal
 
 import pymongo
 from beanie import Document, Indexed, Link
@@ -14,10 +14,6 @@ from app.core.constants import (
     TwoFactorProvider,
     WorkModeType,
 )
-
-if TYPE_CHECKING:
-    pass
-
 
 # ENUMS
 Gender = Literal["MALE", "FEMALE", "OTHER"]

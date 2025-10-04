@@ -13,6 +13,42 @@ from app.accounts.documents import (
     MaritalStatus,
     WorkExperience,
 )
+from app.core.constants import JobKindType, WorkModeType
+
+
+class RecommendedJobAlert(BaseModel):
+    search_term: str = Field(
+        ...,
+        description="Generate a relevant job search term based on the candidate's experience, skills, and career profile from their resume.",
+    )
+    location: str = Field(
+        ...,
+        description="Suggest a job location based on the candidate's current address or work history from their resume (broader the better).",
+    )
+    min_experience: int | None = Field(
+        None,
+        description="Recommend minimum experience years based on the candidate's total work experience from their resume.",
+    )
+    max_experience: int | None = Field(
+        None,
+        description="Recommend maximum experience years based on the candidate's career level and aspirations from their resume.",
+    )
+    min_salary: int | None = Field(
+        None,
+        description="Suggest minimum salary expectations based on the candidate's experience and role level from their resume.",
+    )
+    max_salary: int | None = Field(
+        None,
+        description="Suggest maximum salary expectations based on the candidate's experience and role level from their resume.",
+    )
+    job_type: list[JobKindType] = Field(
+        ...,
+        description="Recommend suitable job types (a list of 'full_time', 'part_time', 'internship', 'contract' or 'locum') based on the candidate's career stage and preferences from their resume.",
+    )
+    work_mode: list[WorkModeType] = Field(
+        ...,
+        description="Suggest appropriate work modes (a list of 'remote', 'hybrid' or 'office') based on the candidate's experience and role type from their resume.",
+    )
 
 
 class PartialLicense(BaseModel):
@@ -81,6 +117,10 @@ class ProfileOutput(BaseModel):
         ...,
         description="The headline of the applicant.",
     )
+    recommended_job_alerts: list[RecommendedJobAlert] = Field(
+        default_factory=list,
+        description="Generate personalized job alert recommendations only when the resume contains sufficient career information (skills, experience, education, or clear job preferences). Base alerts on the candidate's background and career trajectory.",
+    )
 
 
 type ProfileParserAgent = Agent[None, ProfileOutput]
@@ -106,6 +146,11 @@ def create_profile_parser_agent() -> ProfileParserAgent:
             "SPECIAL CASES:\n"
             "- For nested fields (education, work_experience, certifications, licenses, etc.), extract only if all required subfields are present.\n"
             "- For enums (gender, marital_status), match only known values. Return `null` if uncertain or non-standard.\n\n"
+            "RECOMMENDED JOB ALERTS GENERATION:\n"
+            "- Generate job alerts ONLY when the resume contains sufficient career information (work experience, skills, education, or clear job preferences).\n"
+            "- If generating alerts, create 2-4 recommendations targeting different aspects of their background.\n"
+            "- Base all recommendations strictly on actual resume content - skills, job titles, and experience mentioned.\n"
+            "- Leave empty list if resume lacks sufficient career information for meaningful recommendations.\n\n"
             "Return a complete structured output with all fields defined. Leave nothing out — use `null` or `[]` where appropriate."
         ),
     )

@@ -41,8 +41,6 @@ module "github" {
   sst_seeker_portal_domain                          = module.core.sst_seeker_portal_domain
   sst_recruiter_portal_domain                       = module.core.sst_recruiter_portal_domain
   sst_recruiter_dashboard_domain                    = module.core.sst_recruiter_dashboard_domain
-  sst_accounts_secret_id                            = module.core.sst_accounts_secret_id
-  sst_seeker_portal_secret_id                       = module.core.sst_seeker_portal_secret_id
   deployment_aws_access_key_id                      = data.terraform_remote_state.shared.outputs.aws_access_key_id
   deployment_aws_secret_access_key                  = data.terraform_remote_state.shared.outputs.aws_secret_access_key
   sentry_backend_dsn                                = data.terraform_remote_state.shared.outputs.sentry_backend_dsn
@@ -51,8 +49,6 @@ module "github" {
   sst_recruiter_portal_base_url                     = module.core.sst_recruiter_portal_base_url
   sst_captcha_site_key                              = "1x00000000000000000000AA"
   sentry_organization                               = data.terraform_remote_state.shared.outputs.sentry_organization
-  sst_recruiter_portal_secret_id                    = module.core.sst_recruiter_portal_secret_id
-  sst_recruiter_dashboard_secret_id                 = module.core.sst_recruiter_dashboard_secret_id
   sst_vpc_private_subnets                           = data.terraform_remote_state.shared.outputs.vpc_private_subnets
   sst_vpc_security_groups                           = data.terraform_remote_state.shared.outputs.vpc_security_groups
   domain_name                                       = var.domain_name

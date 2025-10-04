@@ -65,7 +65,7 @@ export default function JobList({ rootQuery }: Props) {
 		if (emblaApi) emblaApi.scrollNext();
 	}, [emblaApi]);
 
-	if (data.jobs?.edges?.length === 0 && !data.jobs?.pageInfo.hasNextPage) {
+	if (data.jobs.edges?.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (
 			<Card className='p-6' fullWidth shadow='none' style={{ background: 'transparent' }}>
 				<CardBody className='flex flex-col gap-6 w-full items-center'>
@@ -85,14 +85,14 @@ export default function JobList({ rootQuery }: Props) {
 	return (
 		<>
 			<div className='md:hidden flex flex-col gap-4 w-full'>
-				{data.jobs?.edges.map(jobEdge => (
+				{data.jobs.edges.map(jobEdge => (
 					<Job key={jobEdge.node.id} job={jobEdge.node} authQueryRef={root.viewer} />
 				))}
 			</div>
 			<div className='hidden md:block relative w-full'>
 				<div className='overflow-hidden -mx-4' ref={emblaRef}>
 					<div className='flex'>
-						{data.jobs?.edges.map(jobEdge => (
+						{data.jobs.edges.map(jobEdge => (
 							<div key={jobEdge.node.id} className='flex-[0_0_100%] min-w-0 px-4'>
 								<Job job={jobEdge.node} authQueryRef={root.viewer} />
 							</div>

@@ -8,3 +8,7 @@ class JobAlertNotFoundError:
 
 class MaxJobAlertsReachedError:
     """Raised when the maximum number of job alerts for an account is reached."""
+
+
+class RecommendedJobAlertsNotFoundError(Exception):
+    """Raised when recommended job alerts are not found for an account."""

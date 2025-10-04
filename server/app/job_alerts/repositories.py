@@ -1,11 +1,12 @@
 from datetime import UTC, datetime, timedelta
 
+from beanie.operators import In
 from bson import ObjectId
 
 from app.accounts.documents import Account
 from app.core.constants import JobAlertFrequency
 from app.database.paginator import PaginatedResult, Paginator
-from app.job_alerts.documents import JobAlert
+from app.job_alerts.documents import JobAlert, RecommendedJobAlert
 from app.job_alerts.models import AlertFilters
 
 
@@ -25,6 +26,23 @@ class JobAlertRepo:
         await job_alert.insert()
         return job_alert
 
+    async def create_many(
+        self,
+        account: Account,
+        frequency: JobAlertFrequency,
+        job_alert_filters: list[AlertFilters],
+    ) -> list[JobAlert]:
+        job_alert_docs = [
+            JobAlert(
+                account=account.id,
+                filters=filters,
+                frequency=frequency,
+            )
+            for filters in job_alert_filters
+        ]
+        result = await JobAlert.insert_many(job_alert_docs)
+        return await self.get_all_in_ids(result.inserted_ids)
+
     async def delete(self, job_alert: JobAlert) -> None:
         """Delete a job alert."""
         await job_alert.delete()
@@ -32,6 +50,10 @@ class JobAlertRepo:
     async def delete_all(self, account: Account) -> None:
         """Delete all job alerts for an account."""
         await JobAlert.find(JobAlert.account.id == account.id).delete_many()
+
+    async def get_all_in_ids(self, job_alert_ids: list[ObjectId]) -> list[JobAlert]:
+        """Get all job alerts in the given IDs."""
+        return await JobAlert.find(In(JobAlert.id, job_alert_ids)).to_list()
 
     async def get_by_id(
         self, job_alert_id: ObjectId, *, fetch_links: bool = False
@@ -81,7 +103,7 @@ class JobAlertRepo:
 
     async def get_all(
         self,
-        account_id: ObjectId,
+        account: Account,
         first: int | None = None,
         last: int | None = None,
         before: str | None = None,
@@ -97,12 +119,19 @@ class JobAlertRepo:
         )
 
         return await paginator.paginate(
-            search_criteria=JobAlert.find(JobAlert.account.id == account_id),
+            search_criteria=JobAlert.find(JobAlert.account.id == account.id),
             first=first,
             last=last,
             before=ObjectId(before) if before else None,
             after=ObjectId(after) if after else None,
         )
+
+    async def get_all_list(
+        self,
+        account: Account,
+    ) -> list[JobAlert]:
+        """Get a result of all job alerts for an account."""
+        return await JobAlert.find(JobAlert.account.id == account.id).to_list()
 
     async def check_exists(
         self,
@@ -131,3 +160,71 @@ class JobAlertRepo:
         """Update the last_sent_at timestamp for a job alert."""
         job_alert.last_sent_at = datetime.now(UTC)
         await job_alert.save()
+
+
+class RecommendedJobAlertRepo:
+    async def create(
+        self,
+        account: Account,
+        filters: AlertFilters,
+    ) -> None:
+        recommended_job_alert = RecommendedJobAlert(
+            account=account.id,
+            filters=filters,
+        )
+        await recommended_job_alert.insert()
+
+    async def create_many(
+        self,
+        account: Account,
+        filters: list[AlertFilters],
+    ) -> None:
+        recommended_job_alerts = [
+            RecommendedJobAlert(
+                account=account.id,
+                filters=filters,
+            )
+            for filters in filters
+        ]
+        await RecommendedJobAlert.insert_many(recommended_job_alerts)
+
+    async def delete_all(self, account: Account) -> None:
+        await RecommendedJobAlert.find(
+            RecommendedJobAlert.account.id == account.id
+        ).delete_many()
+
+    async def get_all(
+        self,
+        account: Account,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[RecommendedJobAlert, ObjectId]:
+        """Get a paginated result of all recommended job alerts for an account."""
+        paginator: Paginator[RecommendedJobAlert, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=RecommendedJobAlert,
+            paginate_by="_id",
+            entity_paginate_by="id",
+            calculate_total_count=True,
+        )
+
+        return await paginator.paginate(
+            search_criteria=RecommendedJobAlert.find(
+                RecommendedJobAlert.account.id == account.id
+            ),
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
+
+    async def get_all_list(
+        self,
+        account: Account,
+    ) -> list[RecommendedJobAlert]:
+        """Get a result of all recommended job alerts for an account."""
+        return await RecommendedJobAlert.find(
+            RecommendedJobAlert.account.id == account.id
+        ).to_list()

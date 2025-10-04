@@ -12,7 +12,6 @@ from strawberry import field, relay
 
 from app.accounts.documents import (
     Account,
-    BaseProfile,
     CareerProfile,
     Certification,
     Education,
@@ -257,41 +256,6 @@ class BaseProfileType:
     resume_url: str | None = strawberry.field(
         description="The user's resume URL.",
     )
-
-
-@strawberry.type(
-    name="ParsedProfile",
-    description="A parsed profile.",
-)
-class ParsedProfileType(BaseProfileType):
-    @classmethod
-    def marshal(cls, model: BaseProfile) -> Self:
-        """Marshal into a node instance."""
-        return cls(
-            gender=GenderTypeEnum[model.gender] if model.gender else None,
-            date_of_birth=model.date_of_birth,
-            address=model.address,
-            marital_status=MaritalStatusTypeEnum[model.marital_status]
-            if model.marital_status is not None
-            else None,
-            category=model.category,
-            education=[EducationType.marshal(edu) for edu in model.education],
-            licenses=[LicenseType.marshal(lic) for lic in model.licenses],
-            languages=[LanguageType.marshal(language) for language in model.languages],
-            job_preferences=model.job_preferences,
-            work_experience=[
-                WorkExperienceType.marshal(exp) for exp in model.work_experience
-            ],
-            career_profile=CareerProfileType.marshal(model.career_profile)
-            if model.career_profile is not None
-            else None,
-            certifications=[
-                CertificationType.marshal(cert) for cert in model.certifications
-            ],
-            professional_summary=model.professional_summary,
-            headline=model.headline,
-            resume_url=model.resume_url,
-        )
 
 
 @strawberry.type(
@@ -726,6 +690,7 @@ UpdateProfilePayload = Annotated[
         description="The update profile payload.",
     ),
 ]
+
 
 UpdateProfilePersonalDetailsPayload = Annotated[
     AccountType | InvalidLocationErrorType,
