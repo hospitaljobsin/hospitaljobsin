@@ -442,6 +442,7 @@ class ProfileParserService:
                 else UNSET,
                 headline=profile_output.headline if profile_output.headline else UNSET,
             )
+        await self._recommended_job_alert_repo.delete_all(account=account)
         if profile_output.recommended_job_alerts:
             existing_job_alerts = await self._job_alert_repo.get_all_list(
                 account=account
@@ -462,7 +463,6 @@ class ProfileParserService:
                 )
             ]
             if filtered_recommended_alerts:
-                await self._recommended_job_alert_repo.delete_all(account=account)
                 await self._recommended_job_alert_repo.create_many(
                     account=account,
                     filters=[

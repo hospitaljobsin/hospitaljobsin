@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<262044d98f264ab0984af72c32f84c8b>>
- * @relayHash 363ea1d923500875d5f929e6b9975bac
+ * @generated SignedSource<<41759082fa40b2c26d60c49497c8526e>>
+ * @relayHash f0c6965a5f3c015f615bab3e1a969710
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,12 +9,15 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 363ea1d923500875d5f929e6b9975bac
+// @relayRequestID f0c6965a5f3c015f615bab3e1a969710
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type UpdateResumeFormRecommendedJobAlertsQuery$variables = Record<PropertyKey, never>;
 export type UpdateResumeFormRecommendedJobAlertsQuery$data = {
+  readonly recommendedJobAlerts: {
+    readonly totalCount: number;
+  };
   readonly " $fragmentSpreads": FragmentRefs<"RecommendedJobAlertsFragment">;
 };
 export type UpdateResumeFormRecommendedJobAlertsQuery = {
@@ -29,7 +32,14 @@ var v0 = [
     "name": "first",
     "value": 10
   }
-];
+],
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "totalCount",
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": [],
@@ -41,6 +51,22 @@ return {
         "args": null,
         "kind": "FragmentSpread",
         "name": "RecommendedJobAlertsFragment"
+      },
+      {
+        "alias": null,
+        "args": (v0/*: any*/),
+        "concreteType": "RecommendedJobAlertConnection",
+        "kind": "LinkedField",
+        "name": "recommendedJobAlerts",
+        "plural": false,
+        "selections": [
+          {
+            "kind": "RequiredField",
+            "field": (v1/*: any*/),
+            "action": "THROW"
+          }
+        ],
+        "storageKey": "recommendedJobAlerts(first:10)"
       }
     ],
     "type": "Query",
@@ -170,13 +196,7 @@ return {
             ],
             "storageKey": null
           },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "totalCount",
-            "storageKey": null
-          },
+          (v1/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -217,7 +237,7 @@ return {
     ]
   },
   "params": {
-    "id": "363ea1d923500875d5f929e6b9975bac",
+    "id": "f0c6965a5f3c015f615bab3e1a969710",
     "metadata": {},
     "name": "UpdateResumeFormRecommendedJobAlertsQuery",
     "operationKind": "query",
@@ -226,6 +246,6 @@ return {
 };
 })();
 
-(node as any).hash = "df985b7c38b321371eedd2dd6141066d";
+(node as any).hash = "8871760bd94bcaf6e17b677f818abbb1";
 
 export default node;
