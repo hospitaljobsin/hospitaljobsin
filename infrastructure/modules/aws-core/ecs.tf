@@ -393,7 +393,7 @@ resource "aws_autoscaling_group" "ecs_asg" {
   max_size                  = var.environment_name == "staging" ? 1 : 2
   min_size                  = var.environment_name == "staging" ? 0 : 1
   vpc_zone_identifier       = data.aws_subnets.t3a_compatible_public.ids
-  health_check_type         = "EC2"
+  health_check_type         = "ELB"              # Changed: Use "ELB" if behind ALB/NLB for better ECS integration; revert to "EC2" if no LB
   health_check_grace_period = 45                 # Increased to allow ECS agent to start
   termination_policies      = ["OldestInstance"] # Terminate oldest instances first
   default_cooldown          = 60
@@ -432,14 +432,14 @@ resource "aws_ecs_capacity_provider" "asg_capacity_provider" {
     # Enable termination protection for production to prevent accidental instance termination
     managed_termination_protection = var.environment_name == "production" ? "ENABLED" : "DISABLED"
     managed_scaling {
-      status                    = var.environment_name == "staging" ? "DISABLED" : "ENABLED"
-      target_capacity           = var.environment_name == "staging" ? 1 : 100
+      status                    = "ENABLED" # Enable for both; required for managed_draining
+      target_capacity           = 100       # Set to 100% for full utilization; avoids partial scaling issues
       minimum_scaling_step_size = 1
       maximum_scaling_step_size = 1
-      instance_warmup_period    = var.environment_name == "staging" ? 0 : 300
+      instance_warmup_period    = var.environment_name == "staging" ? 60 : 300 # Shorter warmup for staging to speed up
     }
 
-    managed_draining = var.environment_name == "staging" ? "DISABLED" : "ENABLED"
+    managed_draining = "ENABLED" # Enable for both; ensures graceful drainage during scale-in
   }
 
   lifecycle {
