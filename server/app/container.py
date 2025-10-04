@@ -95,7 +95,7 @@ from app.core.whatsapp_client import WhatsappClient
 from app.dataloaders import create_dataloaders
 from app.embeddings.services import EmbeddingsService
 from app.geocoding.repositories import RegionRepo
-from app.job_alerts.repositories import JobAlertRepo
+from app.job_alerts.repositories import JobAlertRepo, RecommendedJobAlertRepo
 from app.job_alerts.services import JobAlertService
 from app.jobs.agents.applicant_analysis import (
     create_job_applicant_analyzer_agent,
@@ -335,6 +335,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(JobApplicantService))
     container.register(aioinject.Singleton(JobMetricRepo))
     container.register(aioinject.Singleton(JobAlertRepo))
+    container.register(aioinject.Singleton(RecommendedJobAlertRepo))
     container.register(aioinject.Scoped(JobAlertService))
     container.register(aioinject.Scoped(create_account_by_id_dataloader))
     container.register(aioinject.Scoped(create_profile_by_id_dataloader))

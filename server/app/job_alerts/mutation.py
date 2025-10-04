@@ -12,6 +12,7 @@ from app.job_alerts.exceptions import (
     JobAlertAlreadyExistsError,
     JobAlertNotFoundError,
     MaxJobAlertsReachedError,
+    RecommendedJobAlertsNotFoundError,
 )
 from app.job_alerts.services import JobAlertService
 
@@ -19,11 +20,13 @@ from .types import (
     AlertFiltersInput,
     CreateJobAlertPayload,
     DeleteJobAlertPayload,
+    EnableRecommendedJobAlertsPayload,
     JobAlertAlreadyExistsErrorType,
     JobAlertFrequencyEnum,
     JobAlertNotFoundErrorType,
     JobAlertType,
     MaxJobAlertsReachedErrorType,
+    RecommendedJobAlertsNotFoundErrorType,
     UpdateJobAlertPayload,
 )
 
@@ -151,5 +154,42 @@ class JobAlertMutation:
                         return JobAlertNotFoundErrorType()
             case Ok(organization):
                 return JobAlertType.marshal(organization)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=EnableRecommendedJobAlertsPayload,
+        description="Enable recommended job alerts for the current user.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def enable_recommended_job_alerts(
+        self,
+        info: AuthInfo,
+        job_alert_service: Annotated[JobAlertService, Inject],
+        frequency: Annotated[
+            JobAlertFrequencyEnum,
+            strawberry.argument(description="The frequency of the job alert."),
+        ],
+    ) -> EnableRecommendedJobAlertsPayload:
+        """Enable recommended job alerts for the current user."""
+        from app.accounts.types import AccountType
+
+        match await job_alert_service.enable_recommended_alerts(
+            account=info.context["current_user"],
+            frequency=frequency.value,
+        ):
+            case Ok(account):
+                return AccountType.marshal(account)
+            case Err(error):
+                match error:
+                    case RecommendedJobAlertsNotFoundError():
+                        return RecommendedJobAlertsNotFoundErrorType()
             case _ as unreachable:
                 assert_never(unreachable)

@@ -1,13 +1,16 @@
 from datetime import datetime
 from enum import Enum
-from typing import Annotated, Self
+from typing import TYPE_CHECKING, Annotated, Self
 
 import strawberry
 
 from app.base.types import BaseConnectionType, BaseEdgeType, BaseErrorType, BaseNodeType
-from app.job_alerts.documents import JobAlert
+from app.job_alerts.documents import JobAlert, RecommendedJobAlert
 from app.job_alerts.models import AlertFilters
 from app.jobs.types import JobTypeFilterEnum, WorkModeEnum
+
+if TYPE_CHECKING:
+    from app.accounts.types import AccountType
 
 
 @strawberry.enum(
@@ -163,6 +166,22 @@ class JobAlertType(BaseNodeType[JobAlert]):
 
 
 @strawberry.type(
+    name="RecommendedJobAlert",
+    description="A recommended job alert.",
+)
+class RecommendedJobAlertType(BaseNodeType[RecommendedJobAlert]):
+    filters: AlertFiltersType = strawberry.field(
+        description="The filters for the job alert."
+    )
+
+    @classmethod
+    def marshal(cls, data: RecommendedJobAlert) -> Self:
+        return cls(
+            filters=AlertFiltersType.marshal(data.filters),
+        )
+
+
+@strawberry.type(
     name="JobAlertAlreadyExistsError",
     description="Error when the job alert already exists.",
 )
@@ -235,3 +254,44 @@ class JobAlertEdgeType(BaseEdgeType[JobAlertType, JobAlert]):
 @strawberry.type(name="JobAlertConnection")
 class JobAlertConnectionType(BaseConnectionType[JobAlertType, JobAlertEdgeType]):
     pass
+
+
+@strawberry.type(name="RecommendedJobAlertEdge")
+class RecommendedJobAlertEdgeType(
+    BaseEdgeType[RecommendedJobAlertType, RecommendedJobAlert]
+):
+    @classmethod
+    def marshal(cls, job_alert: RecommendedJobAlert) -> Self:
+        """Marshal into a edge instance."""
+        return cls(
+            node=RecommendedJobAlertType.marshal(job_alert),
+            cursor=strawberry.relay.to_base64(JobAlertType, job_alert.id),
+        )
+
+
+@strawberry.type(name="RecommendedJobAlertConnection")
+class RecommendedJobAlertConnectionType(
+    BaseConnectionType[RecommendedJobAlertType, RecommendedJobAlertEdgeType]
+):
+    pass
+
+
+@strawberry.type(
+    name="RecommendedJobAlertsNotFoundError",
+    description="Error when no recommended job alerts are found for the user.",
+)
+class RecommendedJobAlertsNotFoundErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="The error message.",
+        default="No recommended job alerts found for the user.",
+    )
+
+
+EnableRecommendedJobAlertsPayload = Annotated[
+    Annotated["AccountType", strawberry.lazy("app.accounts.types")]
+    | RecommendedJobAlertsNotFoundErrorType,
+    strawberry.union(
+        name="EnableRecommendedJobAlertsPayload",
+        description="The enable recommended job alerts payload.",
+    ),
+]

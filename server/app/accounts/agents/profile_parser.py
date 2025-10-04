@@ -13,6 +13,42 @@ from app.accounts.documents import (
     MaritalStatus,
     WorkExperience,
 )
+from app.core.constants import JobKindType, WorkModeType
+
+
+class RecommendedJobAlert(BaseModel):
+    search_term: str = Field(
+        ...,
+        description="Generate a relevant job search term based on the candidate's experience, skills, and career profile from their resume.",
+    )
+    location: str = Field(
+        ...,
+        description="Suggest a job location based on the candidate's current address or work history from their resume (broader the better).",
+    )
+    min_experience: int | None = Field(
+        None,
+        description="Recommend minimum experience years based on the candidate's total work experience from their resume.",
+    )
+    max_experience: int | None = Field(
+        None,
+        description="Recommend maximum experience years based on the candidate's career level and aspirations from their resume.",
+    )
+    min_salary: int | None = Field(
+        None,
+        description="Suggest minimum salary expectations based on the candidate's experience and role level from their resume.",
+    )
+    max_salary: int | None = Field(
+        None,
+        description="Suggest maximum salary expectations based on the candidate's experience and role level from their resume.",
+    )
+    job_type: list[JobKindType] = Field(
+        ...,
+        description="Recommend suitable job types ('full_time', 'part_time', 'internship', 'contract' or 'locum') based on the candidate's career stage and preferences from their resume.",
+    )
+    work_mode: list[WorkModeType] = Field(
+        ...,
+        description="Suggest appropriate work modes ('remote', 'hybrid' or 'office') based on the candidate's experience and role type from their resume.",
+    )
 
 
 class PartialLicense(BaseModel):
@@ -80,6 +116,10 @@ class ProfileOutput(BaseModel):
     headline: str | None = Field(
         ...,
         description="The headline of the applicant.",
+    )
+    recommended_job_alerts: list[RecommendedJobAlert] = Field(
+        default_factory=list,
+        description="The recommended job alerts for the applicant.",
     )
 
 

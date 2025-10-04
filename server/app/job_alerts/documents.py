@@ -18,3 +18,11 @@ class JobAlert(Document):
 
     class Settings:
         name = "job_alerts"
+
+
+class RecommendedJobAlert(Document):
+    filters: AlertFilters
+    account: Link[Account]
+
+    class Settings:
+        name = "recommended_job_alerts"
