@@ -142,5 +142,3 @@ You can expect to hear things from me like:
 
 - When providing a commit message, use the [Conventional Commits](https://www.conventionalcommits.org) format: `type(scope): summary`.
 - **Examples:** `feat(auth): add password reset endpoint`, `fix(api): correct error status code`.
-
-Follow consolidated development instructions in @AGENTS.md

@@ -3,6 +3,7 @@ from datetime import timedelta
 from typing import Annotated
 
 import phonenumbers
+from beanie import PydanticObjectId
 from bson import ObjectId
 from bson.errors import InvalidId
 from email_validator import EmailNotValidError, validate_email
@@ -379,17 +380,48 @@ class OrganizationService:
         org = await self._organization_repo.delete_banner(existing_organization)
         return Ok(org)
 
+    @validate_call()
     async def update(
         self,
-        account: Account,
-        organization_id: ObjectId,
-        name: str,
-        slug: str,
-        location: str | None = None,
-        description: str | None = None,
-        website: str | None = None,
-        logo_url: str | None = None,
-        banner_url: str | None = None,
+        account: Annotated[Account, Field(exclude=True)],
+        organization_id: Annotated[PydanticObjectId, Field(exclude=True)],
+        name: Annotated[
+            str,
+            StringConstraints(
+                strip_whitespace=True,
+                min_length=3,
+                max_length=100,
+            ),
+        ],
+        slug: Annotated[
+            str,
+            StringConstraints(
+                strip_whitespace=True,
+                min_length=2,
+                max_length=100,
+                pattern=r"^[a-zA-Z0-9_-]+$",
+                to_lower=True,
+            ),
+        ],
+        location: Annotated[
+            str | None,
+            StringConstraints(
+                strip_whitespace=True,
+                min_length=1,
+                max_length=200,
+            ),
+        ] = None,
+        description: Annotated[
+            str | None,
+            StringConstraints(
+                max_length=5000,
+                min_length=None,
+                strip_whitespace=True,
+            ),
+        ] = None,
+        website: HttpUrl | None = None,
+        logo_url: HttpUrl | None = None,
+        banner_url: HttpUrl | None = None,
     ) -> Result[
         Organization,
         OrganizationSlugInUseError
@@ -424,9 +456,9 @@ class OrganizationService:
             slug=slug,
             description=description,
             location=location,
-            website=website,
-            logo_url=logo_url,
-            banner_url=banner_url,
+            website=str(website) if website else None,
+            logo_url=str(logo_url) if logo_url else None,
+            banner_url=str(banner_url) if banner_url else None,
         )
         await self._revalidation_service.revalidate_tag(
             tag=f"organization:{existing_organization.slug}"
