@@ -1,9 +1,9 @@
-import { env } from '@/lib/env/client';
-import links from '@/lib/links';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import type { CacheConfig, GraphQLResponse, RequestParameters, Variables } from 'relay-runtime';
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
 
 interface CacheConfigMetadata {
 	// Whether to include authentication credentials in the request
@@ -121,9 +121,6 @@ export async function networkFetch(
 
 function createNetwork() {
 	async function fetchResponse(params: RequestParameters, variables: Variables, cacheConfig: CustomCacheConfig) {
-		console.log('fetchResponse called...', params, variables, cacheConfig);
-		// FIXME: pass custom headers here
-		// this is the reason we need to make an additional call, even though revalidate and cache options are passed!
 		return await networkFetch(params, variables, cacheConfig.metadata?.options ?? {}, cacheConfig.metadata?.includeAuth || false);
 	}
 
@@ -131,8 +128,6 @@ function createNetwork() {
 	return network;
 }
 
-// FIXME: a new server environment is creating for gen metadata and the view hierarchy
-// we need to be able to get a single server environment to optimize queries
 export const createServerEnvironment = cache(() => {
 	return new Environment({
 		// log: console.log,
