@@ -1,14 +1,21 @@
 import logging
 import uuid
 from datetime import datetime
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
 from beanie import Link
 from bson import ObjectId
 from bson.errors import InvalidId
 from fastapi import Request
 from posthog import Posthog
-from pydantic import TypeAdapter, ValidationError
+from pydantic import (
+    Field,
+    HttpUrl,
+    StringConstraints,
+    TypeAdapter,
+    ValidationError,
+    validate_call,
+)
 from pydantic_extra_types.country import CountryAlpha2
 from result import Err, Ok, Result
 from strawberry import relay
@@ -24,6 +31,7 @@ from app.core.constants import (
     ImpressionJobMetricEventType,
     JobApplicantStatus,
     JobKindType,
+    WorkModeType,
 )
 from app.dataloaders import Dataloaders
 from app.geocoding.repositories import RegionRepo
@@ -211,26 +219,60 @@ class JobService:
 
         return Ok(metric)
 
+    @validate_call()
     async def create(
         self,
         *,
-        account: Account,
-        organization_id: str,
-        title: str,
-        description: str,
-        location: str | None = None,
-        applicant_locations: list[str] = [],
-        external_application_url: str | None = None,
-        vacancies: int | None = None,
-        min_salary: int | None = None,
-        max_salary: int | None = None,
+        account: Annotated[Account, Field(exclude=True)],
+        organization_id: Annotated[str, Field(exclude=True)],
+        title: Annotated[
+            str,
+            StringConstraints(
+                strip_whitespace=True,
+                min_length=3,
+                max_length=200,
+            ),
+        ],
+        description: Annotated[
+            str,
+            StringConstraints(
+                strip_whitespace=True,
+                min_length=10,
+                max_length=5000,
+            ),
+        ],
+        location: Annotated[
+            str | None,
+            StringConstraints(
+                strip_whitespace=True,
+                min_length=1,
+                max_length=200,
+            ),
+        ] = None,
+        applicant_locations: Annotated[list[str], Field(default_factory=list)],
+        external_application_url: HttpUrl | None = None,
+        vacancies: Annotated[int | None, Field(ge=0, le=10000)] = None,
+        min_salary: Annotated[int | None, Field(ge=0)] = None,
+        max_salary: Annotated[int | None, Field(ge=0)] = None,
         is_salary_negotiable: bool = False,
-        min_experience: int | None = None,
-        max_experience: int | None = None,
+        min_experience: Annotated[int | None, Field(ge=0, le=100)] = None,
+        max_experience: Annotated[int | None, Field(ge=0, le=100)] = None,
         expires_at: datetime | None = None,
         job_type: JobKindType | None = None,
-        work_mode: Literal["hybrid", "remote", "office"] | None = None,
-        skills: list[str] = [],
+        work_mode: WorkModeType | None = None,
+        skills: Annotated[
+            list[
+                Annotated[
+                    str,
+                    StringConstraints(
+                        strip_whitespace=True,
+                        min_length=2,
+                        max_length=200,
+                    ),
+                ]
+            ],
+            Field(default_factory=list),
+        ],
         currency: Literal["INR"] = "INR",
     ) -> Result[
         Job,
@@ -269,25 +311,24 @@ class JobService:
             return Err(InvalidApplicantLocationsError())
 
         geo, address = None, None
-        if location is not None:
-            result = await self._region_repo.get_by_name(location)
-            if result is None:
-                return Err(InvalidLocationError())
-            geo = GeoObject(
-                coordinates=(
-                    result.coordinates.coordinates[0],
-                    result.coordinates.coordinates[1],
-                ),
-            )
+        result = await self._region_repo.get_by_name(location)
+        if result is None:
+            return Err(InvalidLocationError())
+        geo = GeoObject(
+            coordinates=(
+                result.coordinates.coordinates[0],
+                result.coordinates.coordinates[1],
+            ),
+        )
 
-            address = Address(
-                display_name=location,
-                street_address=result.address.street_address,
-                address_locality=result.address.address_locality,
-                address_region=result.address.address_region,
-                postal_code=result.address.postal_code,
-                country=result.address.country,
-            )
+        address = Address(
+            display_name=location,
+            street_address=result.address.street_address,
+            address_locality=result.address.address_locality,
+            address_region=result.address.address_region,
+            postal_code=result.address.postal_code,
+            country=result.address.country,
+        )
 
         job = await self._job_repo.create(
             organization=existing_organization,
@@ -306,7 +347,9 @@ class JobService:
             work_mode=work_mode,
             skills=skills,
             currency=currency,
-            external_application_url=external_application_url,
+            external_application_url=str(external_application_url)
+            if external_application_url
+            else None,
             geo=geo,
             address=address,
         )
@@ -330,7 +373,7 @@ class JobService:
         max_experience: int | None = None,
         expires_at: datetime | None = None,
         job_type: JobKindType | None = None,
-        work_mode: Literal["hybrid", "remote", "office"] | None = None,
+        work_mode: WorkModeType | None = None,
         skills: list[str] = [],
         currency: Literal["INR"] = "INR",
     ) -> Result[

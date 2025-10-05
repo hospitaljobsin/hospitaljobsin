@@ -1,12 +1,3 @@
-import type { JobCreationFormFragment$key } from '@/__generated__/JobCreationFormFragment.graphql';
-import type { JobCreationFormMutation } from '@/__generated__/JobCreationFormMutation.graphql';
-import { ChipsInput } from '@/components/forms/ChipsInput';
-import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
-import { SteppableNumberInput } from '@/components/forms/SteppableNumberInput';
-import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
-import { useNavigationGuard } from '@/lib/hooks/useNavigationGuard';
-import links from '@/lib/links';
-import { findAllConnectionIds } from '@/lib/relay/findAllConnectionIds';
 import { useRouter } from '@bprogress/next';
 import {
 	Accordion,
@@ -37,11 +28,20 @@ import { useEffect, useRef, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod';
+import type { JobCreationFormFragment$key } from '@/__generated__/JobCreationFormFragment.graphql';
+import type { JobCreationFormMutation } from '@/__generated__/JobCreationFormMutation.graphql';
+import { ChipsInput } from '@/components/forms/ChipsInput';
+import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
+import { SteppableNumberInput } from '@/components/forms/SteppableNumberInput';
+import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
+import { useNavigationGuard } from '@/lib/hooks/useNavigationGuard';
+import links from '@/lib/links';
+import { findAllConnectionIds } from '@/lib/relay/findAllConnectionIds';
 
 const jobFormSchema = z
 	.object({
-		title: z.string().min(1, 'This field is required').max(75),
-		description: z.string().min(1, 'This field is required').max(4000),
+		title: z.string().min(1, 'This field is required').min(3, 'Title must be at least 3 characters long').max(200),
+		description: z.string().min(1, 'This field is required').min(10, 'Description must be at least 10 characters long').max(5000),
 		vacancies: z.number().positive().nullable().optional(),
 		skills: z.array(z.object({ value: z.string() })),
 		location: z.string().min(1, 'This field is required'),
@@ -323,6 +323,8 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 						label='Job Skills'
 						delimiters={[',', 'Enter']}
 						control={control}
+						minLength={2}
+						maxLength={200}
 						chipProps={{ variant: 'flat' }}
 						inputProps={{
 							placeholder: 'Enter skills...',

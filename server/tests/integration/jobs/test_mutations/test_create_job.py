@@ -393,12 +393,11 @@ async def test_create_job_enum_variations(
 
 
 @pytest.mark.parametrize(
-    ("title", "description", "skills", "expected_error"),
+    ("title", "description", "skills"),
     [
-        ("", "Valid description", ["Python"], None),  # Empty title might be valid
-        ("Valid title", "", ["Python"], None),  # Empty description might be valid
-        ("Valid title", "Valid description", [], None),  # Empty skills might be valid
-        ("Valid title", "Valid description", [""], None),  # Empty skill might be valid
+        ("", "Valid description", ["Python"]),  # Empty title is invalid
+        ("Valid title", "", ["Python"]),  # Empty description is invalid
+        ("Valid title", "Valid description", [""]),  # Empty skill is invalid
     ],
 )
 async def test_create_job_edge_case_strings(
@@ -407,7 +406,6 @@ async def test_create_job_edge_case_strings(
     title: str,
     description: str,
     skills: list[str],
-    expected_error: str | None,
 ) -> None:
     """Test job creation with edge case string values."""
     response = await password_auth_graphql_client(
@@ -422,18 +420,7 @@ async def test_create_job_edge_case_strings(
         },
     )
 
-    if expected_error:
-        assert "errors" in response
-    else:
-        data = response["data"]["createJob"]
-        # Either succeeds or fails gracefully with a known error type
-        assert data["__typename"] in [
-            "CreateJobSuccess",
-            "OrganizationNotFoundError",
-            "OrganizationAuthorizationError",
-            "InvalidLocationError",
-            "InvalidApplicantLocationsError",
-        ]
+    assert "errors" in response
 
 
 @pytest.mark.parametrize(
@@ -442,8 +429,6 @@ async def test_create_job_edge_case_strings(
         (0, 1000000, 0, 10, 1),  # Minimum valid values
         (None, None, None, None, None),  # All None
         (500000, 500000, 5, 5, 1),  # Equal min/max values
-        (-1, 1000000, -1, 10, 0),  # Negative/zero edge cases
-        (1000000, 500000, 10, 5, 100),  # Max less than min (might be invalid)
     ],
 )
 async def test_create_job_numeric_edge_cases(
@@ -483,13 +468,55 @@ async def test_create_job_numeric_edge_cases(
 
     # Should either succeed or fail gracefully
     data = response["data"]["createJob"]
-    assert data["__typename"] in [
-        "CreateJobSuccess",
-        "OrganizationNotFoundError",
-        "OrganizationAuthorizationError",
-        "InvalidLocationError",
-        "InvalidApplicantLocationsError",
-    ]
+    assert data["__typename"] == "CreateJobSuccess"
+
+
+@pytest.mark.parametrize(
+    ("min_salary", "max_salary", "min_exp", "max_exp", "vacancies"),
+    [
+        (-1, 1000000, -1, 10, 0),  # Negative/zero edge cases
+        (1000000, -1, 10, 5, 100),  # Negative/zero edge cases
+        (1000000, 1, 10, -5, 100),  # Negative/zero edge cases
+        (1000000, 1, -10, 5, 100),  # Negative/zero edge cases
+        (1000000, 1, 10, 5, -100),  # Negative/zero edge cases
+    ],
+)
+async def test_create_job_numeric_edge_cases_invalid(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+    min_salary: int | None,
+    max_salary: int | None,
+    min_exp: int | None,
+    max_exp: int | None,
+    vacancies: int | None,
+) -> None:
+    """Test job creation with edge case numeric values."""
+    variables: dict[str, Any] = {
+        "organizationId": relay.to_base64("Organization", valid_organization.id),
+        "title": "Test Job",
+        "description": "Test description",
+        "skills": ["Python"],
+        "location": "Mumbai",
+        "applicantLocations": [],
+    }
+
+    if min_salary is not None:
+        variables["minSalary"] = min_salary
+    if max_salary is not None:
+        variables["maxSalary"] = max_salary
+    if min_exp is not None:
+        variables["minExperience"] = min_exp
+    if max_exp is not None:
+        variables["maxExperience"] = max_exp
+    if vacancies is not None:
+        variables["vacancies"] = vacancies
+
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables=variables,
+    )
+
+    assert "errors" in response
 
 
 async def test_create_job_external_application_url_variations(
@@ -590,3 +617,632 @@ async def test_create_job_future_expiry_date(
 
     job = data["jobEdge"]["node"]
     assert job["expiresAt"] == format_datetime(future_date)
+
+
+@pytest.mark.parametrize(
+    ("title", "description"),
+    [
+        ("AB", "Valid description with enough characters"),  # Title too short
+        ("A" * 201, "Valid description"),  # Title too long
+        ("Valid Title", "Too short"),  # Description too short
+        ("Valid Title", "A" * 10001),  # Description too long
+    ],
+)
+async def test_create_job_validation_errors(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+    title: str,
+    description: str,
+) -> None:
+    """Test job creation with validation errors."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": title,
+            "description": description,
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_create_job_whitespace_trimming(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+) -> None:
+    """Test that whitespace is trimmed from title, description, and location."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "  Software Engineer  ",
+            "description": "  A great software engineering position  ",
+            "skills": ["Python"],
+            "location": "  Mumbai  ",
+            "applicantLocations": [],
+        },
+    )
+
+    data = response["data"]["createJob"]
+    assert data["__typename"] == "CreateJobSuccess"
+
+    job = data["jobEdge"]["node"]
+    assert job["title"] == "Software Engineer"
+    assert job["description"] == "A great software engineering position"
+    assert job["location"] == "Mumbai"
+
+
+@pytest.mark.parametrize(
+    "external_url",
+    [
+        "invalid-url",
+        "ftp://company.com/apply",
+        "",
+        "just-text",
+    ],
+)
+async def test_create_job_invalid_external_url(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+    external_url: str,
+) -> None:
+    """Test job creation with invalid external application URLs."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+            "externalApplicationUrl": external_url,
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    "vacancies",
+    [
+        -1,  # Negative vacancies
+        10001,  # Exceeds maximum
+    ],
+)
+async def test_create_job_invalid_vacancies(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+    vacancies: int,
+) -> None:
+    """Test job creation with invalid vacancy counts."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+            "vacancies": vacancies,
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    ("min_salary", "max_salary"),
+    [
+        (-1, 100000),  # Negative min salary
+        (100000, -1),  # Negative max salary
+    ],
+)
+async def test_create_job_invalid_salary(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+    min_salary: int,
+    max_salary: int,
+) -> None:
+    """Test job creation with invalid salary values."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+            "minSalary": min_salary,
+            "maxSalary": max_salary,
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    ("min_exp", "max_exp"),
+    [
+        (-1, 10),  # Negative min experience
+        (10, -1),  # Negative max experience
+        (101, 10),  # Exceeds maximum
+        (10, 101),  # Exceeds maximum
+    ],
+)
+async def test_create_job_invalid_experience(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+    min_exp: int,
+    max_exp: int,
+) -> None:
+    """Test job creation with invalid experience values."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+            "minExperience": min_exp,
+            "maxExperience": max_exp,
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_create_job_empty_location(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+) -> None:
+    """Test job creation with empty location string."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "",
+            "applicantLocations": [],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_create_job_very_long_location(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+) -> None:
+    """Test job creation with very long location."""
+    long_location = "A" * 201
+
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": long_location,
+            "applicantLocations": [],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_create_job_boundary_values(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+) -> None:
+    """Test job creation with boundary values."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "ABC",  # Minimum length (3)
+            "description": "A" * 10,  # Minimum length (10)
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+            "vacancies": 0,  # Minimum value
+            "minSalary": 0,  # Minimum value
+            "maxSalary": 0,  # Minimum value
+            "minExperience": 0,  # Minimum value
+            "maxExperience": 0,  # Minimum value
+        },
+    )
+
+    data = response["data"]["createJob"]
+    assert data["__typename"] == "CreateJobSuccess"
+
+    job = data["jobEdge"]["node"]
+    assert job["title"] == "ABC"
+    assert len(job["description"]) == 10
+    assert job["vacancies"] == 0
+    assert job["minSalary"] == 0
+    assert job["maxSalary"] == 0
+    assert job["minExperience"] == 0
+    assert job["maxExperience"] == 0
+
+
+async def test_create_job_exact_boundary_title(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+) -> None:
+    """Test job creation with exact boundary title length."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "ABC",  # Exactly 3 characters
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+        },
+    )
+
+    data = response["data"]["createJob"]
+    assert data["__typename"] == "CreateJobSuccess"
+    assert data["jobEdge"]["node"]["title"] == "ABC"
+
+
+async def test_create_job_exact_boundary_description(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+) -> None:
+    """Test job creation with exact boundary description length."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer",
+            "description": "A" * 10,  # Exactly 10 characters
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+        },
+    )
+
+    data = response["data"]["createJob"]
+    assert data["__typename"] == "CreateJobSuccess"
+    assert len(data["jobEdge"]["node"]["description"]) == 10
+
+
+async def test_create_job_maximum_boundary_values(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+) -> None:
+    """Test job creation with maximum boundary values."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "A" * 200,  # Maximum length
+            "description": "A" * 5000,  # Maximum length
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+            "vacancies": 10000,  # Maximum value
+            "minExperience": 100,  # Maximum value
+            "maxExperience": 100,  # Maximum value
+        },
+    )
+
+    data = response["data"]["createJob"]
+    assert data["__typename"] == "CreateJobSuccess"
+
+    job = data["jobEdge"]["node"]
+    assert len(job["title"]) == 200
+    assert len(job["description"]) == 5000
+    assert job["vacancies"] == 10000
+    assert job["minExperience"] == 100
+    assert job["maxExperience"] == 100
+
+
+async def test_create_job_title_only_whitespace(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+) -> None:
+    """Test job creation with title containing only whitespace."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "   ",
+            "description": "Valid description",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_create_job_description_only_whitespace(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+) -> None:
+    """Test job creation with description containing only whitespace."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer",
+            "description": "          ",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_create_job_location_only_whitespace(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+) -> None:
+    """Test job creation with location containing only whitespace."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "   ",
+            "applicantLocations": [],
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    "title",
+    [
+        "A",  # 1 character
+        "AB",  # 2 characters
+        "A" * 201,  # 201 characters
+        "A" * 500,  # Way over limit
+    ],
+)
+async def test_create_job_title_length_edge_cases(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+    title: str,
+) -> None:
+    """Test job creation with various invalid title lengths."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": title,
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    "description",
+    [
+        "A",  # 1 character
+        "A" * 9,  # 9 characters
+        "A" * 5001,  # 5001 characters
+        "A" * 20000,  # Way over limit
+    ],
+)
+async def test_create_job_description_length_edge_cases(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+    description: str,
+) -> None:
+    """Test job creation with various invalid description lengths."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer",
+            "description": description,
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    "vacancies",
+    [
+        -100,  # Large negative
+        -2147483648,  # Min int32
+        10001,  # Just over limit
+        50000,  # Way over limit
+    ],
+)
+async def test_create_job_vacancies_edge_cases(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+    vacancies: int,
+) -> None:
+    """Test job creation with various invalid vacancy values."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+            "vacancies": vacancies,
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    ("min_exp", "max_exp"),
+    [
+        (-100, 10),  # Large negative min
+        (10, -100),  # Large negative max
+        (101, 50),  # Min just over limit
+        (50, 101),  # Max just over limit
+        (200, 200),  # Both way over limit
+    ],
+)
+async def test_create_job_experience_edge_cases(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+    min_exp: int,
+    max_exp: int,
+) -> None:
+    """Test job creation with various invalid experience values."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+            "minExperience": min_exp,
+            "maxExperience": max_exp,
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    ("min_salary", "max_salary"),
+    [
+        (-1000, 100000),  # Negative min
+        (100000, -1000),  # Negative max
+        (-50000, -10000),  # Both negative
+    ],
+)
+async def test_create_job_salary_edge_cases(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+    min_salary: int,
+    max_salary: int,
+) -> None:
+    """Test job creation with various invalid salary values."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+            "minSalary": min_salary,
+            "maxSalary": max_salary,
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    "external_url",
+    [
+        "javascript:alert('xss')",  # JavaScript protocol
+        "file:///etc/passwd",  # File protocol
+        "data:text/html,<script>alert('xss')</script>",  # Data URL
+        "//example.com",  # Protocol-relative URL
+        "htp://typo.com",  # Typo in protocol
+    ],
+)
+async def test_create_job_external_url_edge_cases(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+    external_url: str,
+) -> None:
+    """Test job creation with various invalid external URL formats."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+            "externalApplicationUrl": external_url,
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_create_job_special_characters_in_title(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+) -> None:
+    """Test job creation with special characters in title."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "Software Engineer (Sr.) - Full Stack & DevOps",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+        },
+    )
+
+    data = response["data"]["createJob"]
+    assert data["__typename"] == "CreateJobSuccess"
+    job = data["jobEdge"]["node"]
+    assert job["title"] == "Software Engineer (Sr.) - Full Stack & DevOps"
+
+
+async def test_create_job_unicode_in_title_and_description(
+    password_auth_graphql_client: GraphQLClient,
+    valid_organization: Organization,
+) -> None:
+    """Test job creation with unicode characters in title and description."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_MUTATION,
+        variables={
+            "organizationId": relay.to_base64("Organization", valid_organization.id),
+            "title": "सॉफ्टवेयर इंजीनियर Software Engineer 软件工程师",
+            "description": "We are looking for a talented developer. हम एक प्रतिभाशाली डेवलपर की तलाश में हैं।",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": [],
+        },
+    )
+
+    data = response["data"]["createJob"]
+    assert data["__typename"] == "CreateJobSuccess"
+    job = data["jobEdge"]["node"]
+    assert "सॉफ्टवेयर" in job["title"]
+    assert "प्रतिभाशाली" in job["description"]
