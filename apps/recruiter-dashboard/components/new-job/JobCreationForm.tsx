@@ -226,7 +226,7 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 				title: formData.title,
 				description: formData.description,
 				vacancies: formData.vacancies ?? undefined,
-				skills: formData.skills.map(s => s.value),
+				skills: formData.skills.flatMap(s => s.value).filter(skill => skill.trim().length > 0),
 				location: formData.location,
 				applicantLocations: formData.workMode === 'REMOTE' ? formData.applicantLocations : [],
 				minSalary: formData.minSalary || null,
@@ -323,8 +323,13 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 						label='Job Skills'
 						delimiters={[',', 'Enter']}
 						control={control}
-						minLength={2}
-						maxLength={200}
+						validate={value => {
+							const trimmed = value.trim();
+							if (!trimmed) return true;
+							if (trimmed.length < 2) return 'Skill must be at least 2 characters';
+							if (trimmed.length > 200) return 'Skill must be at most 200 characters';
+							return true;
+						}}
 						chipProps={{ variant: 'flat' }}
 						inputProps={{
 							placeholder: 'Enter skills...',
@@ -415,7 +420,7 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 								labelPlacement='outside'
 								placeholder='Enter job location'
 								value={field.value ?? ''}
-								onChange={value => field.onChange(value.displayName)}
+								onChange={value => field.onChange(value.address.displayName)}
 								onValueChange={field.onChange}
 								description={workMode === 'REMOTE' ? 'Location of the hiring office for the job' : undefined}
 								errorMessage={errors.location?.message}

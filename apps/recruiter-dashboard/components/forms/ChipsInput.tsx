@@ -1,8 +1,7 @@
 import type { ChipProps, InputProps } from '@heroui/react';
 import { Chip, Input } from '@heroui/react';
-import { useState } from 'react';
 import type { Control, FieldArrayPath, FieldValues } from 'react-hook-form';
-import { useFieldArray } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 
 interface ChipsInputProps<TFieldValues extends FieldValues, TName extends FieldArrayPath<TFieldValues>> {
 	label: string;
@@ -13,8 +12,7 @@ interface ChipsInputProps<TFieldValues extends FieldValues, TName extends FieldA
 	chipProps?: ChipProps;
 	inputProps?: InputProps;
 	allowDuplicates?: boolean;
-	minLength?: number;
-	maxLength?: number;
+	validate?: (value: string) => string | true;
 }
 
 export function ChipsInput<TFieldValues extends FieldValues, TName extends FieldArrayPath<TFieldValues>>({
@@ -25,39 +23,38 @@ export function ChipsInput<TFieldValues extends FieldValues, TName extends Field
 	chipProps = {},
 	inputProps = {},
 	allowDuplicates = false,
-	minLength = 1,
-	maxLength
+	validate
 }: ChipsInputProps<TFieldValues, TName>) {
 	const { fields, append, remove } = useFieldArray<TFieldValues, TName, typeof label>({
 		control,
 		name
 	});
-	const [inputValue, setInputValue] = useState('');
+
+	const {
+		register,
+		handleSubmit,
+		reset,
+		formState: { errors }
+	} = useForm<{ chipInput: string }>({
+		mode: 'onChange'
+	});
 
 	const addValue = (value: string) => {
 		const trimmedValue = value.trim();
-		if (trimmedValue && trimmedValue.length >= minLength && (!maxLength || trimmedValue.length <= maxLength)) {
-			if (!allowDuplicates && fields.some(field => field.value === trimmedValue)) {
-				return false;
-			}
-			append({ value: trimmedValue } as unknown as TFieldValues[TName][number]);
-			return true;
-		}
-		return false;
+		if (!trimmedValue) return false;
+		if (!allowDuplicates && fields.some(field => field.value === trimmedValue)) return false;
+		append({ value: trimmedValue } as unknown as TFieldValues[TName][number]);
+		return true;
 	};
+
+	const onSubmitChip = handleSubmit(data => {
+		if (addValue(data.chipInput)) reset();
+	});
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (delimiters.includes(e.key)) {
 			e.preventDefault();
-			if (addValue(inputValue)) {
-				setInputValue('');
-			}
-		}
-	};
-
-	const handleBlur = () => {
-		if (addValue(inputValue)) {
-			setInputValue('');
+			onSubmitChip();
 		}
 	};
 
@@ -69,26 +66,25 @@ export function ChipsInput<TFieldValues extends FieldValues, TName extends Field
 			.split(splitRegex)
 			.map(v => v.trim())
 			.filter(Boolean);
-		let added = false;
 		for (const val of values) {
-			if (addValue(val)) added = true;
+			const validationResult = validate?.(val) ?? true;
+			if (validationResult === true) addValue(val);
 		}
-		if (added) setInputValue('');
+		reset();
 	};
 
 	return (
 		<div className='w-full flex flex-col gap-6'>
 			<Input
+				{...register('chipInput', { validate })}
 				type='text'
 				label={label}
 				labelPlacement='outside'
-				value={inputValue}
-				onChange={e => setInputValue(e.target.value)}
 				onKeyDown={handleKeyDown}
-				onBlur={handleBlur}
+				onBlur={onSubmitChip}
 				onPaste={handlePaste}
-				minLength={minLength}
-				maxLength={maxLength}
+				errorMessage={errors.chipInput?.message}
+				isInvalid={!!errors.chipInput}
 				{...inputProps}
 			/>
 			{fields.length > 0 && (
