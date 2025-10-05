@@ -17,7 +17,7 @@ mutation CreateJobMutation(
     $title: String!
     $description: String!
     $skills: [String!]!
-    $location: String
+    $location: String!
     $applicantLocations: [String!]!
     $externalApplicationUrl: String
     $vacancies: Int
@@ -332,6 +332,7 @@ async def test_create_job_unauthenticated(
             "description": "A great software engineering position",
             "skills": ["Python"],
             "applicantLocations": ["IN"],
+            "location": "Mumbai",
         },
     )
 
@@ -479,6 +480,7 @@ async def test_create_job_numeric_edge_cases(
         (1000000, 1, 10, -5, 100),  # Negative/zero edge cases
         (1000000, 1, -10, 5, 100),  # Negative/zero edge cases
         (1000000, 1, 10, 5, -100),  # Negative/zero edge cases
+        (1000000, 500000, 10, 5, 100),  # Max less than min
     ],
 )
 async def test_create_job_numeric_edge_cases_invalid(

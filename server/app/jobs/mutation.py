@@ -25,6 +25,7 @@ from app.jobs.exceptions import (
     OrganizationNotFoundError,
     SavedJobNotFoundError,
 )
+from app.jobs.models import JobExperienceRange, JobSalaryRange
 from app.jobs.services import (
     JobApplicantService,
     JobApplicationFormService,
@@ -217,11 +218,11 @@ class JobMutation:
             ),
         ],
         location: Annotated[
-            str | None,
+            str,
             strawberry.argument(
                 description="The location of the job.",
             ),
-        ] = None,
+        ],
         external_application_url: Annotated[
             str | None,
             strawberry.argument(
@@ -298,11 +299,15 @@ class JobMutation:
             location=location,
             applicant_locations=applicant_locations,
             vacancies=vacancies,
-            min_salary=min_salary,
-            max_salary=max_salary,
             is_salary_negotiable=is_salary_negotiable,
-            min_experience=min_experience,
-            max_experience=max_experience,
+            salary_range=JobSalaryRange(
+                min_salary=min_salary,
+                max_salary=max_salary,
+            ),
+            experience_range=JobExperienceRange(
+                min_experience=min_experience,
+                max_experience=max_experience,
+            ),
             expires_at=expires_at,
             job_type=job_type.value if job_type else None,
             work_mode=work_mode.value if work_mode else None,
@@ -363,7 +368,7 @@ class JobMutation:
             ),
         ],
         location: Annotated[
-            str | None,
+            str,
             strawberry.argument(
                 description="The location of the job.",
             ),
@@ -450,11 +455,15 @@ class JobMutation:
             location=location,
             applicant_locations=applicant_locations,
             vacancies=vacancies,
-            min_salary=min_salary,
-            max_salary=max_salary,
             is_salary_negotiable=is_salary_negotiable,
-            min_experience=min_experience,
-            max_experience=max_experience,
+            salary_range=JobSalaryRange(
+                min_salary=min_salary,
+                max_salary=max_salary,
+            ),
+            experience_range=JobExperienceRange(
+                min_experience=min_experience,
+                max_experience=max_experience,
+            ),
             expires_at=expires_at,
             job_type=job_type.value if job_type else None,
             work_mode=work_mode.value if work_mode else None,

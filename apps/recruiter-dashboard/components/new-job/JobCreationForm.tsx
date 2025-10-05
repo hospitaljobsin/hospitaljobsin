@@ -82,7 +82,7 @@ const CreateJobMutation = graphql`
     $title: String!,
     $description: String!,
     $skills: [String!]!,
-    $location: String,
+    $location: String!,
     $applicantLocations: [String!]!,
     $minSalary: Int,
     $maxSalary: Int,

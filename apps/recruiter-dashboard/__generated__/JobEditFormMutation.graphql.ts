@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c8c1a60891535f140fe6131127d8ace1>>
- * @relayHash a3847607a4cec2b893024a5981a22f6a
+ * @generated SignedSource<<9cadad7f73e7d2d4f77e2c2ad49bf48b>>
+ * @relayHash e9480e1677350f40e2122570d8268373
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID a3847607a4cec2b893024a5981a22f6a
+// @relayRequestID e9480e1677350f40e2122570d8268373
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -22,7 +22,7 @@ export type JobEditFormMutation$variables = {
   isSalaryNegotiable: boolean;
   jobId: string;
   jobType?: JobType | null | undefined;
-  location?: string | null | undefined;
+  location: string;
   maxExperience?: number | null | undefined;
   maxSalary?: number | null | undefined;
   minExperience?: number | null | undefined;
@@ -689,7 +689,7 @@ return {
     ]
   },
   "params": {
-    "id": "a3847607a4cec2b893024a5981a22f6a",
+    "id": "e9480e1677350f40e2122570d8268373",
     "metadata": {},
     "name": "JobEditFormMutation",
     "operationKind": "mutation",
@@ -698,6 +698,6 @@ return {
 };
 })();
 
-(node as any).hash = "d151715c1e8dc1f58366acba8fe49277";
+(node as any).hash = "1adef3472c25987f99249ae3fc23043c";
 
 export default node;

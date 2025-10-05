@@ -20,7 +20,7 @@ mutation UpdateJobMutation(
     $title: String!
     $description: String!
     $skills: [String!]!
-    $location: String
+    $location: String!
     $applicantLocations: [String!]!
     $vacancies: Int
     $minSalary: Int
@@ -248,7 +248,7 @@ async def test_update_job_remote_work_mode(
             "title": "Remote Developer",
             "description": "Remote job description",
             "skills": ["Python"],
-            "location": None,
+            "location": "Mumbai",
             "workMode": "REMOTE",
             "applicantLocations": ["IN", "US"],
         },
@@ -259,7 +259,7 @@ async def test_update_job_remote_work_mode(
 
     job = data["job"]
     assert job["workMode"] == "REMOTE"
-    assert job["location"] is None
+    assert job["location"] == "Mumbai"
     assert job["applicantLocations"] == ["IN", "US"]
 
 
@@ -351,7 +351,7 @@ async def test_update_job_invalid_applicant_locations(
             "description": "Updated description",
             "skills": ["Python"],
             "workMode": "REMOTE",
-            "location": None,
+            "location": "Mumbai",
             "applicantLocations": ["InvalidCountry123", "AnotherInvalid456"],
         },
     )
@@ -372,7 +372,7 @@ async def test_update_job_remote_without_applicant_locations(
             "title": "Remote Job",
             "description": "Remote job description",
             "skills": ["Python"],
-            "location": None,
+            "location": "Mumbai",
             "workMode": "REMOTE",
             "applicantLocations": [],
         },
@@ -380,28 +380,6 @@ async def test_update_job_remote_without_applicant_locations(
 
     data = response["data"]["updateJob"]
     assert data["__typename"] == "InvalidApplicantLocationsError"
-
-
-async def test_update_job_office_without_location(
-    password_auth_graphql_client: GraphQLClient,
-    test_job: Job,
-) -> None:
-    """Test updating job to office mode without location."""
-    response = await password_auth_graphql_client(
-        UPDATE_JOB_MUTATION,
-        variables={
-            "jobId": relay.to_base64("Job", test_job.id),
-            "title": "Office Job",
-            "description": "Office job description",
-            "skills": ["Python"],
-            "location": None,
-            "workMode": "OFFICE",
-            "applicantLocations": ["IN"],
-        },
-    )
-
-    data = response["data"]["updateJob"]
-    assert data["__typename"] == "InvalidLocationError"
 
 
 async def test_update_job_unauthenticated(
@@ -481,12 +459,8 @@ async def test_update_job_enum_variations(
 @pytest.mark.parametrize(
     ("title", "description", "skills"),
     [
-        ("", "Valid description", ["Python"]),
-        ("Valid title", "", ["Python"]),
         ("Valid title", "Valid description", []),
-        ("Valid title", "Valid description", [""]),
-        ("   ", "Valid description", ["Python"]),  # Whitespace title
-        ("Valid title", "   ", ["Python"]),  # Whitespace description
+        ("Valid title", "Valid description", ["Python"]),
     ],
 )
 async def test_update_job_edge_case_strings(
@@ -511,13 +485,40 @@ async def test_update_job_edge_case_strings(
 
     # Should either succeed or fail gracefully
     data = response["data"]["updateJob"]
-    assert data["__typename"] in [
-        "UpdateJobSuccess",
-        "JobNotFoundError",
-        "OrganizationAuthorizationError",
-        "InvalidLocationError",
-        "InvalidApplicantLocationsError",
-    ]
+    assert data["__typename"] == "UpdateJobSuccess"
+
+
+@pytest.mark.parametrize(
+    ("title", "description", "skills"),
+    [
+        ("", "Valid description", ["Python"]),
+        ("Valid title", "", ["Python"]),
+        ("Valid title", "Valid description", [""]),
+        ("   ", "Valid description", ["Python"]),  # Whitespace title
+        ("Valid title", "   ", ["Python"]),  # Whitespace description
+    ],
+)
+async def test_update_job_edge_case_strings_invalid(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+    title: str,
+    description: str,
+    skills: list[str],
+) -> None:
+    """Test updating job with edge case string values."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": title,
+            "description": description,
+            "skills": skills,
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+        },
+    )
+
+    assert "errors" in response
 
 
 @pytest.mark.parametrize(
@@ -526,8 +527,6 @@ async def test_update_job_edge_case_strings(
         (0, 1000000, 0, 10, 1),  # Minimum valid values
         (None, None, None, None, None),  # All None
         (500000, 500000, 5, 5, 1),  # Equal min/max values
-        (-1, 1000000, -1, 10, 0),  # Negative/zero edge cases
-        (1000000, 500000, 10, 5, 100),  # Max less than min
         (0, 0, 0, 0, 0),  # All zeros
     ],
 )
@@ -568,13 +567,52 @@ async def test_update_job_numeric_edge_cases(
 
     # Should either succeed or fail gracefully
     data = response["data"]["updateJob"]
-    assert data["__typename"] in [
-        "UpdateJobSuccess",
-        "JobNotFoundError",
-        "OrganizationAuthorizationError",
-        "InvalidLocationError",
-        "InvalidApplicantLocationsError",
-    ]
+    assert data["__typename"] == "UpdateJobSuccess"
+
+
+@pytest.mark.parametrize(
+    ("min_salary", "max_salary", "min_exp", "max_exp", "vacancies"),
+    [
+        (-1, 1000000, -1, 10, 0),  # Negative/zero edge cases
+        (1000000, 500000, 10, 5, 100),  # Max less than min
+    ],
+)
+async def test_update_job_numeric_edge_cases_invalid(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+    min_salary: int | None,
+    max_salary: int | None,
+    min_exp: int | None,
+    max_exp: int | None,
+    vacancies: int | None,
+) -> None:
+    """Test updating job with edge case numeric values."""
+    variables: dict[str, Any] = {
+        "jobId": relay.to_base64("Job", test_job.id),
+        "title": "Updated Job",
+        "description": "Updated description",
+        "skills": ["Python"],
+        "location": "Mumbai",
+        "applicantLocations": ["IN"],
+    }
+
+    if min_salary is not None:
+        variables["minSalary"] = min_salary
+    if max_salary is not None:
+        variables["maxSalary"] = max_salary
+    if min_exp is not None:
+        variables["minExperience"] = min_exp
+    if max_exp is not None:
+        variables["maxExperience"] = max_exp
+    if vacancies is not None:
+        variables["vacancies"] = vacancies
+
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables=variables,
+    )
+
+    assert "errors" in response
 
 
 async def test_update_job_multiple_skills(
@@ -793,7 +831,7 @@ async def test_update_job_multiple_applicant_locations(
             "description": "Job accepting applicants from multiple countries",
             "skills": ["Python"],
             "workMode": "REMOTE",
-            "location": None,
+            "location": "Mumbai",
             "applicantLocations": ["IN", "US", "CA", "GB", "AU"],
         },
     )
@@ -808,6 +846,528 @@ async def test_update_job_multiple_applicant_locations(
     assert "CA" in job["applicantLocations"]
     assert "GB" in job["applicantLocations"]
     assert "AU" in job["applicantLocations"]
+
+
+@pytest.mark.parametrize(
+    ("title", "description"),
+    [
+        ("AB", "Valid description with enough characters"),  # Title too short
+        ("A" * 201, "Valid description"),  # Title too long
+        ("Valid Title", "Too short"),  # Description too short
+        ("Valid Title", "A" * 5001),  # Description too long
+    ],
+)
+async def test_update_job_validation_errors(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+    title: str,
+    description: str,
+) -> None:
+    """Test job update with validation errors."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": title,
+            "description": description,
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_job_whitespace_trimming(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test that whitespace is trimmed from title, description, and location."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "  Updated Software Engineer  ",
+            "description": "  Updated job description  ",
+            "skills": ["Python"],
+            "location": "  Delhi  ",
+            "applicantLocations": ["IN"],
+        },
+    )
+
+    data = response["data"]["updateJob"]
+    assert data["__typename"] == "UpdateJobSuccess"
+
+    job = data["job"]
+    assert job["title"] == "Updated Software Engineer"
+    assert job["description"] == "Updated job description"
+    assert job["location"] == "Delhi"
+
+
+@pytest.mark.parametrize(
+    "vacancies",
+    [
+        -1,  # Negative vacancies
+        10001,  # Exceeds maximum
+    ],
+)
+async def test_update_job_invalid_vacancies(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+    vacancies: int,
+) -> None:
+    """Test job update with invalid vacancy counts."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+            "vacancies": vacancies,
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    ("min_salary", "max_salary"),
+    [
+        (-1, 100000),  # Negative min salary
+        (100000, -1),  # Negative max salary
+    ],
+)
+async def test_update_job_invalid_salary(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+    min_salary: int,
+    max_salary: int,
+) -> None:
+    """Test job update with invalid salary values."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+            "minSalary": min_salary,
+            "maxSalary": max_salary,
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    ("min_exp", "max_exp"),
+    [
+        (-1, 10),  # Negative min experience
+        (10, -1),  # Negative max experience
+        (101, 10),  # Exceeds maximum
+        (10, 101),  # Exceeds maximum
+    ],
+)
+async def test_update_job_invalid_experience(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+    min_exp: int,
+    max_exp: int,
+) -> None:
+    """Test job update with invalid experience values."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+            "minExperience": min_exp,
+            "maxExperience": max_exp,
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_job_empty_location(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test job update with empty location string."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "",
+            "applicantLocations": ["IN"],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_job_very_long_location(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test job update with very long location."""
+    long_location = "A" * 201
+
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": long_location,
+            "applicantLocations": ["IN"],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_job_boundary_values(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test job update with boundary values."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "ABC",  # Minimum length (3)
+            "description": "A" * 10,  # Minimum length (10)
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+            "vacancies": 0,  # Minimum value
+            "minSalary": 0,  # Minimum value
+            "maxSalary": 0,  # Minimum value
+            "minExperience": 0,  # Minimum value
+            "maxExperience": 0,  # Minimum value
+        },
+    )
+
+    data = response["data"]["updateJob"]
+    assert data["__typename"] == "UpdateJobSuccess"
+
+    job = data["job"]
+    assert job["title"] == "ABC"
+    assert len(job["description"]) == 10
+    assert job["vacancies"] == 0
+    assert job["minSalary"] == 0
+    assert job["maxSalary"] == 0
+    assert job["minExperience"] == 0
+    assert job["maxExperience"] == 0
+
+
+async def test_update_job_maximum_boundary_values(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test job update with maximum boundary values."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "A" * 200,  # Maximum length
+            "description": "A" * 5000,  # Maximum length
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+            "vacancies": 10000,  # Maximum value
+            "minExperience": 100,  # Maximum value
+            "maxExperience": 100,  # Maximum value
+        },
+    )
+
+    data = response["data"]["updateJob"]
+    assert data["__typename"] == "UpdateJobSuccess"
+
+    job = data["job"]
+    assert len(job["title"]) == 200
+    assert len(job["description"]) == 5000
+    assert job["vacancies"] == 10000
+    assert job["minExperience"] == 100
+    assert job["maxExperience"] == 100
+
+
+async def test_update_job_title_only_whitespace(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test job update with title containing only whitespace."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "   ",
+            "description": "Valid description",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_job_description_only_whitespace(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test job update with description containing only whitespace."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "Software Engineer",
+            "description": "          ",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_job_location_only_whitespace(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test job update with location containing only whitespace."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "   ",
+            "applicantLocations": ["IN"],
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    "title",
+    [
+        "A",  # 1 character
+        "AB",  # 2 characters
+        "A" * 201,  # 201 characters
+        "A" * 500,  # Way over limit
+    ],
+)
+async def test_update_job_title_length_edge_cases(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+    title: str,
+) -> None:
+    """Test job update with various invalid title lengths."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": title,
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    "description",
+    [
+        "A",  # 1 character
+        "A" * 9,  # 9 characters
+        "A" * 5001,  # 5001 characters
+        "A" * 20000,  # Way over limit
+    ],
+)
+async def test_update_job_description_length_edge_cases(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+    description: str,
+) -> None:
+    """Test job update with various invalid description lengths."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "Software Engineer",
+            "description": description,
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    "vacancies",
+    [
+        -100,  # Large negative
+        -2147483648,  # Min int32
+        10001,  # Just over limit
+        50000,  # Way over limit
+    ],
+)
+async def test_update_job_vacancies_edge_cases(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+    vacancies: int,
+) -> None:
+    """Test job update with various invalid vacancy values."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+            "vacancies": vacancies,
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    ("min_exp", "max_exp"),
+    [
+        (-100, 10),  # Large negative min
+        (10, -100),  # Large negative max
+        (101, 50),  # Min just over limit
+        (50, 101),  # Max just over limit
+        (200, 200),  # Both way over limit
+    ],
+)
+async def test_update_job_experience_edge_cases(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+    min_exp: int,
+    max_exp: int,
+) -> None:
+    """Test job update with various invalid experience values."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+            "minExperience": min_exp,
+            "maxExperience": max_exp,
+        },
+    )
+
+    assert "errors" in response
+
+
+@pytest.mark.parametrize(
+    ("min_salary", "max_salary"),
+    [
+        (-1000, 100000),  # Negative min
+        (100000, -1000),  # Negative max
+        (-50000, -10000),  # Both negative
+    ],
+)
+async def test_update_job_salary_edge_cases(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+    min_salary: int,
+    max_salary: int,
+) -> None:
+    """Test job update with various invalid salary values."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "Software Engineer",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+            "minSalary": min_salary,
+            "maxSalary": max_salary,
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_job_special_characters_in_title(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test job update with special characters in title."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "Software Engineer (Sr.) - Full Stack & DevOps",
+            "description": "A great software engineering position",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+        },
+    )
+
+    data = response["data"]["updateJob"]
+    assert data["__typename"] == "UpdateJobSuccess"
+    job = data["job"]
+    assert job["title"] == "Software Engineer (Sr.) - Full Stack & DevOps"
+
+
+async def test_update_job_unicode_in_title_and_description(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test job update with unicode characters in title and description."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "title": "सॉफ्टवेयर इंजीनियर Software Engineer 软件工程师",
+            "description": "We are looking for a talented developer. हम एक प्रतिभाशाली डेवलपर की तलाश में हैं।",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicantLocations": ["IN"],
+        },
+    )
+
+    data = response["data"]["updateJob"]
+    assert data["__typename"] == "UpdateJobSuccess"
+    job = data["job"]
+    assert "सॉफ्टवेयर" in job["title"]
+    assert "प्रतिभाशाली" in job["description"]
 
 
 async def test_update_job_invalid_job_id_format(

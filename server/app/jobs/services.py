@@ -62,7 +62,11 @@ from app.jobs.exceptions import (
     OrganizationNotFoundError,
     SavedJobNotFoundError,
 )
-from app.jobs.models import JobApplicantAnalysisEventBody
+from app.jobs.models import (
+    JobApplicantAnalysisEventBody,
+    JobExperienceRange,
+    JobSalaryRange,
+)
 from app.jobs.repositories import (
     JobApplicantRepo,
     JobApplicationFormRepo,
@@ -242,21 +246,19 @@ class JobService:
             ),
         ],
         location: Annotated[
-            str | None,
+            str,
             StringConstraints(
                 strip_whitespace=True,
                 min_length=1,
                 max_length=200,
             ),
-        ] = None,
+        ],
         applicant_locations: Annotated[list[str], Field(default_factory=list)],
         external_application_url: HttpUrl | None = None,
         vacancies: Annotated[int | None, Field(ge=0, le=10000)] = None,
-        min_salary: Annotated[int | None, Field(ge=0)] = None,
-        max_salary: Annotated[int | None, Field(ge=0)] = None,
         is_salary_negotiable: bool = False,
-        min_experience: Annotated[int | None, Field(ge=0, le=100)] = None,
-        max_experience: Annotated[int | None, Field(ge=0, le=100)] = None,
+        experience_range: JobExperienceRange,
+        salary_range: JobSalaryRange,
         expires_at: datetime | None = None,
         job_type: JobKindType | None = None,
         work_mode: WorkModeType | None = None,
@@ -300,8 +302,6 @@ class JobService:
             return Err(InvalidApplicantLocationsError())
         if work_mode != "remote" and len(applicant_locations) > 0:
             return Err(InvalidApplicantLocationsError())
-        if location is None:
-            return Err(InvalidLocationError())
 
         country_validator = TypeAdapter(list[CountryAlpha2])
         # check alpha2 country codes alone here
@@ -310,7 +310,6 @@ class JobService:
         except ValidationError:
             return Err(InvalidApplicantLocationsError())
 
-        geo, address = None, None
         result = await self._region_repo.get_by_name(location)
         if result is None:
             return Err(InvalidLocationError())
@@ -337,11 +336,11 @@ class JobService:
             vacancies=vacancies,
             location=location,
             applicant_locations=applicant_locations,
-            min_salary=min_salary,
-            max_salary=max_salary,
+            min_salary=salary_range.min_salary,
+            max_salary=salary_range.max_salary,
             is_salary_negotiable=is_salary_negotiable,
-            min_experience=min_experience,
-            max_experience=max_experience,
+            min_experience=experience_range.min_experience,
+            max_experience=experience_range.max_experience,
             expires_at=expires_at,
             job_type=job_type,
             work_mode=work_mode,
@@ -356,25 +355,57 @@ class JobService:
 
         return Ok(job)
 
+    @validate_call()
     async def update(
         self,
         *,
-        account: Account,
-        job_id: str,
-        title: str,
-        description: str,
-        location: str | None = None,
-        applicant_locations: list[str] = [],
-        vacancies: int | None = None,
-        min_salary: int | None = None,
-        max_salary: int | None = None,
+        account: Annotated[Account, Field(exclude=True)],
+        job_id: Annotated[str, Field(exclude=True)],
+        title: Annotated[
+            str,
+            StringConstraints(
+                strip_whitespace=True,
+                min_length=3,
+                max_length=200,
+            ),
+        ],
+        description: Annotated[
+            str,
+            StringConstraints(
+                strip_whitespace=True,
+                min_length=10,
+                max_length=5000,
+            ),
+        ],
+        location: Annotated[
+            str,
+            StringConstraints(
+                strip_whitespace=True,
+                min_length=1,
+                max_length=200,
+            ),
+        ],
+        applicant_locations: Annotated[list[str], Field(default_factory=list)],
+        vacancies: Annotated[int | None, Field(ge=0, le=10000)] = None,
         is_salary_negotiable: bool = False,
-        min_experience: int | None = None,
-        max_experience: int | None = None,
+        experience_range: JobExperienceRange,
+        salary_range: JobSalaryRange,
         expires_at: datetime | None = None,
         job_type: JobKindType | None = None,
         work_mode: WorkModeType | None = None,
-        skills: list[str] = [],
+        skills: Annotated[
+            list[
+                Annotated[
+                    str,
+                    StringConstraints(
+                        strip_whitespace=True,
+                        min_length=2,
+                        max_length=200,
+                    ),
+                ]
+            ],
+            Field(default_factory=list),
+        ],
         currency: Literal["INR"] = "INR",
     ) -> Result[
         Job,
@@ -400,10 +431,8 @@ class JobService:
 
         if work_mode == "remote" and len(applicant_locations) == 0:
             return Err(InvalidApplicantLocationsError())
-        if work_mode != "remote" and location is None:
-            return Err(InvalidLocationError())
 
-        if location is not None and location != existing_job.location:
+        if location != existing_job.location:
             result = await self._region_repo.get_by_name(location)
             if result is None:
                 return Err(InvalidLocationError())
@@ -445,11 +474,11 @@ class JobService:
             applicant_locations=applicant_locations,
             geo=geo,
             address=address,
-            min_salary=min_salary,
-            max_salary=max_salary,
+            min_salary=salary_range.min_salary,
+            max_salary=salary_range.max_salary,
             is_salary_negotiable=is_salary_negotiable,
-            min_experience=min_experience,
-            max_experience=max_experience,
+            min_experience=experience_range.min_experience,
+            max_experience=experience_range.max_experience,
             expires_at=expires_at,
             job_type=job_type,
             work_mode=work_mode,
@@ -705,6 +734,7 @@ class JobApplicantService:
         if existing_job.external_application_url is not None:
             return Err(JobIsExternalError())
 
+        # TODO: avoid fetching link in service layer
         await account.fetch_link(Account.profile)
 
         if account.profile is None:

@@ -73,7 +73,7 @@ mutation JobEditFormMutation(
     $title: String!,
     $description: String!,
     $skills: [String!]!,
-    $location: String,
+    $location: String!,
     $jobId: ID!,
     $minSalary: Int,
     $maxSalary: Int,
