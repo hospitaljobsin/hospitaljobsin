@@ -1,12 +1,4 @@
 'use client';
-import type { JobEditFormFragment$key } from '@/__generated__/JobEditFormFragment.graphql';
-import type { JobEditFormMutation } from '@/__generated__/JobEditFormMutation.graphql';
-import { ChipsInput } from '@/components/forms/ChipsInput';
-import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
-import { SteppableNumberInput } from '@/components/forms/SteppableNumberInput';
-import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
-import { useNavigationGuard } from '@/lib/hooks/useNavigationGuard';
-import links from '@/lib/links';
 import { useRouter } from '@bprogress/next';
 import {
 	Accordion,
@@ -45,6 +37,14 @@ import { Controller, useForm } from 'react-hook-form';
 import { useFragment, useMutation } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { z } from 'zod';
+import type { JobEditFormFragment$key } from '@/__generated__/JobEditFormFragment.graphql';
+import type { JobEditFormMutation } from '@/__generated__/JobEditFormMutation.graphql';
+import { ChipsInput } from '@/components/forms/ChipsInput';
+import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
+import { SteppableNumberInput } from '@/components/forms/SteppableNumberInput';
+import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
+import { useNavigationGuard } from '@/lib/hooks/useNavigationGuard';
+import links from '@/lib/links';
 import CancelEditJobModal from './CancelEditJobModal';
 
 const JobEditFormFragment = graphql`
@@ -73,7 +73,7 @@ mutation JobEditFormMutation(
     $title: String!,
     $description: String!,
     $skills: [String!]!,
-    $location: String,
+    $location: String!,
     $jobId: ID!,
     $minSalary: Int,
     $maxSalary: Int,
@@ -283,7 +283,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 				title: formData.title,
 				description: formData.description,
 				vacancies: formData.vacancies ?? undefined,
-				skills: formData.skills.flatMap(skill => skill.value),
+				skills: formData.skills.flatMap(skill => skill.value).filter(skill => skill.trim().length > 0),
 				location: formData.location,
 				applicantLocations: formData.workMode === 'REMOTE' ? formData.applicantLocations : [],
 				minSalary: formData.minSalary,
@@ -443,6 +443,13 @@ export default function JobEditForm({ rootQuery }: Props) {
 							label='Job Skills'
 							delimiters={[',', 'Enter']}
 							control={control}
+							validate={value => {
+								const trimmed = value.trim();
+								if (!trimmed) return true;
+								if (trimmed.length < 2) return 'Skill must be at least 2 characters';
+								if (trimmed.length > 200) return 'Skill must be at most 200 characters';
+								return true;
+							}}
 							chipProps={{
 								variant: 'flat'
 							}}
@@ -543,7 +550,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 									placeholder='Add job location'
 									value={field.value ?? ''}
 									onChange={value => {
-										field.onChange(value.displayName);
+										field.onChange(value.address.displayName);
 									}}
 									onValueChange={value => {
 										field.onChange(value);

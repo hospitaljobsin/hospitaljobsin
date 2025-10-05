@@ -2760,7 +2760,7 @@ type Mutation {
 		"""
 		The location of the job.
 		"""
-		location: String = null
+		location: String!
 
 		"""
 		The external application URL for the job.
@@ -2840,7 +2840,7 @@ type Mutation {
 		"""
 		The location of the job.
 		"""
-		location: String
+		location: String!
 
 		"""
 		The skills required for the job.

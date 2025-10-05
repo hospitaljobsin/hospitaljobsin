@@ -29,6 +29,7 @@ from app.core.constants import (
     ImpressionJobMetricEventType,
     JobApplicantStatus,
     JobKindType,
+    WorkModeType,
 )
 from app.core.formatting import clean_markdown_text, markdown_to_clean_html, slugify
 from app.database.paginator import PaginatedResult, Paginator, SearchPaginator
@@ -168,7 +169,7 @@ class JobRepo:
         max_experience: int | None = None,
         expires_at: datetime | None = None,
         job_type: JobKindType | None = None,
-        work_mode: Literal["hybrid", "remote", "office"] | None = None,
+        work_mode: WorkModeType | None = None,
         skills: list[str] = [],
         currency: Literal["INR"] = "INR",
     ) -> Job:
@@ -241,7 +242,7 @@ class JobRepo:
         max_experience: int | None = None,
         expires_at: datetime | None = None,
         job_type: JobKindType | None = None,
-        work_mode: Literal["hybrid", "remote", "office"] | None = None,
+        work_mode: WorkModeType | None = None,
         skills: list[str] = [],
         currency: Literal["INR"] = "INR",
     ) -> Job:
