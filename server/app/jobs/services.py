@@ -24,6 +24,7 @@ from types_aiobotocore_sqs import SQSClient
 
 from app.accounts.documents import Account
 from app.accounts.exceptions import AccountProfileIncompleteError
+from app.accounts.repositories import ProfileRepo
 from app.base.exceptions import InvalidLocationError
 from app.base.models import Address, GeoObject
 from app.config import AppSettings, AWSSettings, EnvironmentSettings
@@ -250,7 +251,7 @@ class JobService:
             StringConstraints(
                 strip_whitespace=True,
                 min_length=1,
-                max_length=200,
+                max_length=500,
             ),
         ],
         applicant_locations: Annotated[list[str], Field(default_factory=list)],
@@ -382,7 +383,7 @@ class JobService:
             StringConstraints(
                 strip_whitespace=True,
                 min_length=1,
-                max_length=200,
+                max_length=500,
             ),
         ],
         applicant_locations: Annotated[list[str], Field(default_factory=list)],
@@ -679,6 +680,7 @@ class JobApplicantService:
         job_repo: JobRepo,
         job_applicant_repo: JobApplicantRepo,
         job_metric_repo: JobMetricRepo,
+        profile_repo: ProfileRepo,
         organization_member_service: OrganizationMemberService,
         job_applicant_analyzer_agent: JobApplicantAnalyzerAgent,
         s3_client: S3Client,
@@ -703,6 +705,7 @@ class JobApplicantService:
         self._job_applicant_analysis_service = job_applicant_analysis_service
         self._dataloaders = dataloaders
         self._posthog_client = posthog_client
+        self._profile_repo = profile_repo
 
     async def create(
         self,
@@ -734,13 +737,11 @@ class JobApplicantService:
         if existing_job.external_application_url is not None:
             return Err(JobIsExternalError())
 
-        # TODO: avoid fetching link in service layer
-        await account.fetch_link(Account.profile)
-
-        if account.profile is None:
+        profile = await self._profile_repo.get_by_account(account=account)
+        if profile is None:
             return Err(AccountProfileNotFoundError())
 
-        if not account.profile.is_complete:
+        if not profile.is_complete:
             return Err(AccountProfileIncompleteError())
 
         # check if user has already applied here
