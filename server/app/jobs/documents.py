@@ -11,7 +11,7 @@ from beanie import (
     TimeSeriesConfig,
     UnionDoc,
 )
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, StringConstraints, field_validator
 from pydantic_extra_types.country import CountryAlpha2
 from pymongo import IndexModel
 from pymongo.operations import SearchIndexModel
@@ -135,8 +135,24 @@ class SavedJob(Document):
 
 
 class ApplicationField(BaseModel):
-    field_name: str
-    default_value: str | None = None
+    field_name: Annotated[
+        str,
+        StringConstraints(
+            strip_whitespace=True,
+            min_length=5,
+            max_length=500,
+        ),
+    ]
+    default_value: (
+        Annotated[
+            str,
+            StringConstraints(
+                strip_whitespace=True,
+                max_length=2000,
+            ),
+        ]
+        | None
+    ) = None
     is_required: bool = False
 
 
@@ -150,8 +166,21 @@ class JobApplicationForm(Document):
 
 
 class ApplicantField(BaseModel):
-    field_name: str
-    field_value: str
+    field_name: Annotated[
+        str,
+        StringConstraints(
+            strip_whitespace=True,
+            min_length=5,
+            max_length=500,
+        ),
+    ]
+    field_value: Annotated[
+        str,
+        StringConstraints(
+            strip_whitespace=True,
+            max_length=2000,
+        ),
+    ]
 
     def __str__(self) -> str:
         """LLM friendly text representation of an applicant field."""

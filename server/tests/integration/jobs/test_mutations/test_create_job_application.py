@@ -1,15 +1,17 @@
+import asyncio
 from collections.abc import AsyncGenerator
+from datetime import date
 
 import pytest
-from app.accounts.documents import Account
+from app.accounts.documents import Account, CareerProfile
 from app.accounts.repositories import ProfileRepo
-from app.jobs.documents import Job
+from app.jobs.documents import ApplicationField, Job
 from app.jobs.repositories import JobApplicantRepo, JobApplicationFormRepo, JobRepo
 from app.organizations.documents import Organization
 from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
 from strawberry import relay
 
-from tests.integration.graphql_client import GraphQLClient
+from tests.integration.graphql_client import GraphQLClient, GraphQLResponse
 from tests.utils.slugs import generate_test_slug
 
 CREATE_JOB_APPLICATION_MUTATION = """
@@ -139,10 +141,6 @@ async def complete_profile(
     password_account: Account,
     profile_repo: ProfileRepo,
 ):
-    from datetime import date
-
-    from app.accounts.documents import CareerProfile
-
     profile = await profile_repo.create(
         account=password_account,
         date_of_birth=date(1990, 1, 1),
@@ -362,7 +360,7 @@ async def test_create_job_application_long_field_values(
     complete_profile,
 ) -> None:
     """Test job application with very long field values."""
-    long_text = "A" * 10000
+    long_text = "A" * 2001  # 2001 characters, exceeding max length of 2000
 
     response = await password_auth_graphql_client(
         CREATE_JOB_APPLICATION_MUTATION,
@@ -371,10 +369,7 @@ async def test_create_job_application_long_field_values(
             "applicantFields": [{"fieldName": "cover_letter", "fieldValue": long_text}],
         },
     )
-
-    data = response["data"]["createJobApplication"]
-    assert data["__typename"] == "CreateJobApplicantSuccess"
-    assert data["jobApplicant"]["applicantFields"][0]["fieldValue"] == long_text
+    assert "errors" in response
 
 
 async def test_create_job_application_special_characters_in_fields(
@@ -437,8 +432,7 @@ async def test_create_job_application_empty_field_name(
         },
     )
 
-    data = response["data"]["createJobApplication"]
-    assert data["__typename"] == "CreateJobApplicantSuccess"
+    assert "errors" in response
 
 
 async def test_create_job_application_empty_field_value(
@@ -774,49 +768,21 @@ async def test_create_job_application_profile_incomplete(
     foreign_password_account: Account,
     published_job: Job,
     profile_repo: ProfileRepo,
-    session_repo,
-    auth_settings,
-    secret_settings,
-    lifespan_manager,
+    foreign_password_auth_graphql_client: GraphQLClient,
 ) -> None:
     """Test job application with incomplete profile."""
-    from httpx import ASGITransport, AsyncClient, Cookies
-
-    from tests.integration.graphql_client import GraphQLClient
-    from tests.utils.auth import encrypt_session_data
-
     # Create incomplete profile (missing required fields)
     await profile_repo.create(
         account=foreign_password_account,
         headline="Engineer",
     )
-
-    # Create authenticated client for foreign account
-    session_token = await session_repo.create(
-        foreign_password_account, user_agent="test-agent", ip_address="192.168.1.1"
+    response = await foreign_password_auth_graphql_client(
+        CREATE_JOB_APPLICATION_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", published_job.id),
+            "applicantFields": [],
+        },
     )
-    encrypted_session = encrypt_session_data(
-        secret_settings, {"session_token": session_token}
-    )
-    cookies = Cookies()
-    cookies.set(
-        auth_settings.session_user_cookie_name, encrypted_session.decode("utf-8")
-    )
-
-    async with AsyncClient(
-        transport=ASGITransport(app=lifespan_manager.app),
-        base_url="https://localtest.me",
-        follow_redirects=True,
-        cookies=cookies,
-    ) as client:
-        graphql_client = GraphQLClient(client=client, endpoint="/graphql")
-        response = await graphql_client(
-            CREATE_JOB_APPLICATION_MUTATION,
-            variables={
-                "jobId": relay.to_base64("Job", published_job.id),
-                "applicantFields": [],
-            },
-        )
 
     data = response["data"]["createJobApplication"]
     assert data["__typename"] == "AccountProfileIncompleteError"
@@ -1047,9 +1013,9 @@ async def test_create_job_application_date_formats_in_values(
         variables={
             "jobId": relay.to_base64("Job", published_job.id),
             "applicantFields": [
-                {"fieldName": "start_date", "fieldValue": "2024-01-01"},
-                {"fieldName": "end_date", "fieldValue": "01/01/2024"},
-                {"fieldName": "dob", "fieldValue": "1990-12-31T00:00:00Z"},
+                {"fieldName": "start date", "fieldValue": "2024-01-01"},
+                {"fieldName": "end date", "fieldValue": "01/01/2024"},
+                {"fieldName": "date of birth", "fieldValue": "1990-12-31T00:00:00Z"},
             ],
         },
     )
@@ -1065,9 +1031,7 @@ async def test_create_job_application_concurrent_applications(
     complete_profile,
 ) -> None:
     """Test concurrent applications to different jobs."""
-    import asyncio
-
-    jobs = []
+    jobs: list[Job] = []
     for i in range(5):
         job = await job_repo.create(
             organization=valid_organization,
@@ -1081,7 +1045,7 @@ async def test_create_job_application_concurrent_applications(
         await job_repo.update_active(job, is_active=True)
         jobs.append(job)
 
-    async def apply_to_job(job):
+    async def perform_mutation(job: Job) -> GraphQLResponse:
         return await password_auth_graphql_client(
             CREATE_JOB_APPLICATION_MUTATION,
             variables={
@@ -1090,7 +1054,7 @@ async def test_create_job_application_concurrent_applications(
             },
         )
 
-    responses = await asyncio.gather(*[apply_to_job(job) for job in jobs])
+    responses = await asyncio.gather(*[perform_mutation(job) for job in jobs])
 
     for response in responses:
         data = response["data"]["createJobApplication"]
@@ -1104,8 +1068,6 @@ async def test_create_job_application_missing_required_fields(
     job_application_form_repo: JobApplicationFormRepo,
 ) -> None:
     """Test job application missing required fields from application form."""
-    from app.jobs.documents import ApplicationField
-
     await job_application_form_repo.create(
         job=published_job,
         fields=[
@@ -1135,8 +1097,6 @@ async def test_create_job_application_all_required_fields_provided(
     job_application_form_repo: JobApplicationFormRepo,
 ) -> None:
     """Test job application with all required fields provided."""
-    from app.jobs.documents import ApplicationField
-
     await job_application_form_repo.create(
         job=published_job,
         fields=[
@@ -1167,8 +1127,6 @@ async def test_create_job_application_optional_fields_not_provided(
     job_application_form_repo: JobApplicationFormRepo,
 ) -> None:
     """Test job application with optional fields not provided."""
-    from app.jobs.documents import ApplicationField
-
     await job_application_form_repo.create(
         job=published_job,
         fields=[
@@ -1198,8 +1156,6 @@ async def test_create_job_application_extra_fields_provided(
     job_application_form_repo: JobApplicationFormRepo,
 ) -> None:
     """Test job application with extra fields not in form."""
-    from app.jobs.documents import ApplicationField
-
     await job_application_form_repo.create(
         job=published_job,
         fields=[
@@ -1249,8 +1205,6 @@ async def test_create_job_application_empty_required_field_value(
     job_application_form_repo: JobApplicationFormRepo,
 ) -> None:
     """Test job application with empty value for required field."""
-    from app.jobs.documents import ApplicationField
-
     await job_application_form_repo.create(
         job=published_job,
         fields=[
@@ -1270,6 +1224,248 @@ async def test_create_job_application_empty_required_field_value(
     assert data["__typename"] == "CreateJobApplicantSuccess"
 
 
+async def test_create_job_application_field_name_too_short(
+    password_auth_graphql_client: GraphQLClient,
+    published_job: Job,
+    complete_profile,
+) -> None:
+    """Test job application with field name shorter than 5 characters."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_APPLICATION_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", published_job.id),
+            "applicantFields": [{"fieldName": "abc", "fieldValue": "Some value"}],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_create_job_application_field_name_too_long(
+    password_auth_graphql_client: GraphQLClient,
+    published_job: Job,
+    complete_profile,
+) -> None:
+    """Test job application with field name longer than 500 characters."""
+    long_field_name = "a" * 501
+
+    response = await password_auth_graphql_client(
+        CREATE_JOB_APPLICATION_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", published_job.id),
+            "applicantFields": [
+                {"fieldName": long_field_name, "fieldValue": "Some value"}
+            ],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_create_job_application_field_value_too_long(
+    password_auth_graphql_client: GraphQLClient,
+    published_job: Job,
+    complete_profile,
+) -> None:
+    """Test job application with field value longer than 2000 characters."""
+    long_field_value = "a" * 2001
+
+    response = await password_auth_graphql_client(
+        CREATE_JOB_APPLICATION_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", published_job.id),
+            "applicantFields": [
+                {"fieldName": "cover_letter", "fieldValue": long_field_value}
+            ],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_create_job_application_field_name_exactly_min_length(
+    password_auth_graphql_client: GraphQLClient,
+    published_job: Job,
+    complete_profile,
+) -> None:
+    """Test job application with field name exactly 5 characters."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_APPLICATION_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", published_job.id),
+            "applicantFields": [{"fieldName": "abcde", "fieldValue": "Some value"}],
+        },
+    )
+
+    data = response["data"]["createJobApplication"]
+    assert data["__typename"] == "CreateJobApplicantSuccess"
+
+
+async def test_create_job_application_field_name_exactly_max_length(
+    password_auth_graphql_client: GraphQLClient,
+    published_job: Job,
+    complete_profile,
+) -> None:
+    """Test job application with field name exactly 500 characters."""
+    field_name = "a" * 500
+
+    response = await password_auth_graphql_client(
+        CREATE_JOB_APPLICATION_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", published_job.id),
+            "applicantFields": [{"fieldName": field_name, "fieldValue": "Some value"}],
+        },
+    )
+
+    data = response["data"]["createJobApplication"]
+    assert data["__typename"] == "CreateJobApplicantSuccess"
+
+
+async def test_create_job_application_field_value_exactly_max_length(
+    password_auth_graphql_client: GraphQLClient,
+    published_job: Job,
+    complete_profile,
+) -> None:
+    """Test job application with field value exactly 2000 characters."""
+    field_value = "a" * 2000
+
+    response = await password_auth_graphql_client(
+        CREATE_JOB_APPLICATION_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", published_job.id),
+            "applicantFields": [
+                {"fieldName": "cover_letter", "fieldValue": field_value}
+            ],
+        },
+    )
+
+    data = response["data"]["createJobApplication"]
+    assert data["__typename"] == "CreateJobApplicantSuccess"
+
+
+async def test_create_job_application_field_name_with_leading_whitespace(
+    password_auth_graphql_client: GraphQLClient,
+    published_job: Job,
+    complete_profile,
+) -> None:
+    """Test job application with field name having leading whitespace."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_APPLICATION_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", published_job.id),
+            "applicantFields": [
+                {"fieldName": "  cover_letter", "fieldValue": "Some value"}
+            ],
+        },
+    )
+
+    data = response["data"]["createJobApplication"]
+    assert data["__typename"] == "CreateJobApplicantSuccess"
+    assert data["jobApplicant"]["applicantFields"][0]["fieldName"] == "cover_letter"
+
+
+async def test_create_job_application_field_name_with_trailing_whitespace(
+    password_auth_graphql_client: GraphQLClient,
+    published_job: Job,
+    complete_profile,
+) -> None:
+    """Test job application with field name having trailing whitespace."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_APPLICATION_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", published_job.id),
+            "applicantFields": [
+                {"fieldName": "cover_letter  ", "fieldValue": "Some value"}
+            ],
+        },
+    )
+
+    data = response["data"]["createJobApplication"]
+    assert data["__typename"] == "CreateJobApplicantSuccess"
+    assert data["jobApplicant"]["applicantFields"][0]["fieldName"] == "cover_letter"
+
+
+async def test_create_job_application_field_value_with_leading_whitespace(
+    password_auth_graphql_client: GraphQLClient,
+    published_job: Job,
+    complete_profile,
+) -> None:
+    """Test job application with field value having leading whitespace."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_APPLICATION_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", published_job.id),
+            "applicantFields": [
+                {"fieldName": "cover_letter", "fieldValue": "  Some value"}
+            ],
+        },
+    )
+
+    data = response["data"]["createJobApplication"]
+    assert data["__typename"] == "CreateJobApplicantSuccess"
+    assert data["jobApplicant"]["applicantFields"][0]["fieldValue"] == "Some value"
+
+
+async def test_create_job_application_field_value_with_trailing_whitespace(
+    password_auth_graphql_client: GraphQLClient,
+    published_job: Job,
+    complete_profile,
+) -> None:
+    """Test job application with field value having trailing whitespace."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_APPLICATION_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", published_job.id),
+            "applicantFields": [
+                {"fieldName": "cover_letter", "fieldValue": "Some value  "}
+            ],
+        },
+    )
+
+    data = response["data"]["createJobApplication"]
+    assert data["__typename"] == "CreateJobApplicantSuccess"
+    assert data["jobApplicant"]["applicantFields"][0]["fieldValue"] == "Some value"
+
+
+async def test_create_job_application_field_name_only_whitespace(
+    password_auth_graphql_client: GraphQLClient,
+    published_job: Job,
+    complete_profile,
+) -> None:
+    """Test job application with field name containing only whitespace."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_APPLICATION_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", published_job.id),
+            "applicantFields": [{"fieldName": "     ", "fieldValue": "Some value"}],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_create_job_application_field_value_only_whitespace_stripped(
+    password_auth_graphql_client: GraphQLClient,
+    published_job: Job,
+    complete_profile,
+) -> None:
+    """Test job application with field value containing only whitespace gets stripped."""
+    response = await password_auth_graphql_client(
+        CREATE_JOB_APPLICATION_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", published_job.id),
+            "applicantFields": [{"fieldName": "cover_letter", "fieldValue": "     "}],
+        },
+    )
+
+    data = response["data"]["createJobApplication"]
+    assert data["__typename"] == "CreateJobApplicantSuccess"
+    assert data["jobApplicant"]["applicantFields"][0]["fieldValue"] == ""
+
+    data = response["data"]["createJobApplication"]
+    assert data["__typename"] == "CreateJobApplicantSuccess"
+
+
 async def test_create_job_application_multiple_required_fields_missing(
     password_auth_graphql_client: GraphQLClient,
     published_job: Job,
@@ -1277,8 +1473,6 @@ async def test_create_job_application_multiple_required_fields_missing(
     job_application_form_repo: JobApplicationFormRepo,
 ) -> None:
     """Test job application missing multiple required fields."""
-    from app.jobs.documents import ApplicationField
-
     await job_application_form_repo.create(
         job=published_job,
         fields=[
@@ -1307,8 +1501,6 @@ async def test_create_job_application_case_sensitive_field_names(
     job_application_form_repo: JobApplicationFormRepo,
 ) -> None:
     """Test that field name matching is case-sensitive."""
-    from app.jobs.documents import ApplicationField
-
     await job_application_form_repo.create(
         job=published_job,
         fields=[
@@ -1337,8 +1529,6 @@ async def test_create_job_application_duplicate_field_names(
     job_application_form_repo: JobApplicationFormRepo,
 ) -> None:
     """Test job application with duplicate field names."""
-    from app.jobs.documents import ApplicationField
-
     await job_application_form_repo.create(
         job=published_job,
         fields=[

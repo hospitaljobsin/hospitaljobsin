@@ -178,3 +178,45 @@ async def password_auth_sudo_graphql_client(
         client=password_auth_sudo_http_client,
         endpoint="/graphql",
     )
+
+
+@pytest.fixture
+async def foreign_password_auth_http_client(
+    lifespan_manager: LifespanManager,
+    foreign_password_account: Account,
+    session_repo: SessionRepo,
+    auth_settings: AuthSettings,
+    secret_settings: SecretSettings,
+) -> AsyncIterator[AsyncClient]:
+    session_token = await session_repo.create(
+        foreign_password_account, user_agent="test-agent", ip_address="192.168.1.1"
+    )
+
+    encrypted_session = encrypt_session_data(
+        secret_settings, {"session_token": session_token}
+    )
+
+    cookies = Cookies()
+    cookies.set(
+        auth_settings.session_user_cookie_name, encrypted_session.decode("utf-8")
+    )
+
+    async with AsyncClient(
+        transport=ASGITransport(
+            app=lifespan_manager.app,  # type: ignore[arg-type]
+        ),
+        base_url="https://localtest.me",
+        follow_redirects=True,
+        cookies=cookies,
+    ) as client:
+        yield client
+
+
+@pytest.fixture
+async def foreign_password_auth_graphql_client(
+    foreign_password_auth_http_client: AsyncClient,
+) -> GraphQLClient:
+    return GraphQLClient(
+        client=foreign_password_auth_http_client,
+        endpoint="/graphql",
+    )

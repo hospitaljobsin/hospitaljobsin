@@ -627,8 +627,7 @@ async def test_update_job_application_form_empty_field_name(
         },
     )
 
-    data = response["data"]["updateJobApplicationForm"]
-    assert data["__typename"] == "UpdateJobApplicationFormSuccess"
+    assert "errors" in response
 
 
 async def test_update_job_application_form_whitespace_field_name(
@@ -644,8 +643,7 @@ async def test_update_job_application_form_whitespace_field_name(
         },
     )
 
-    data = response["data"]["updateJobApplicationForm"]
-    assert data["__typename"] == "UpdateJobApplicationFormSuccess"
+    assert "errors" in response
 
 
 async def test_update_job_application_form_empty_default_value(
@@ -750,3 +748,179 @@ async def test_update_job_application_form_idempotent(
     assert len(data1["jobApplicationForm"]["fields"]) == len(
         data2["jobApplicationForm"]["fields"]
     )
+
+
+async def test_update_job_application_form_field_name_too_short(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test updating job application form with field name shorter than 5 characters."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_APPLICATION_FORM_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "fields": [{"fieldName": "Test", "defaultValue": None, "isRequired": True}],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_job_application_form_field_name_exactly_min_length(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test updating job application form with field name exactly 5 characters."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_APPLICATION_FORM_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "fields": [
+                {"fieldName": "Tests", "defaultValue": None, "isRequired": True}
+            ],
+        },
+    )
+
+    data = response["data"]["updateJobApplicationForm"]
+    assert data["__typename"] == "UpdateJobApplicationFormSuccess"
+    assert data["jobApplicationForm"]["fields"][0]["fieldName"] == "Tests"
+
+
+async def test_update_job_application_form_field_name_too_long(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test updating job application form with field name longer than 500 characters."""
+    long_field_name = "A" * 501
+
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_APPLICATION_FORM_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "fields": [
+                {"fieldName": long_field_name, "defaultValue": None, "isRequired": True}
+            ],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_job_application_form_field_name_exactly_max_length(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test updating job application form with field name exactly 500 characters."""
+    field_name = "A" * 500
+
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_APPLICATION_FORM_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "fields": [
+                {"fieldName": field_name, "defaultValue": None, "isRequired": True}
+            ],
+        },
+    )
+
+    data = response["data"]["updateJobApplicationForm"]
+    assert data["__typename"] == "UpdateJobApplicationFormSuccess"
+    assert data["jobApplicationForm"]["fields"][0]["fieldName"] == field_name
+
+
+async def test_update_job_application_form_default_value_too_long(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test updating job application form with default value longer than 2000 characters."""
+    long_default = "A" * 2001
+
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_APPLICATION_FORM_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "fields": [
+                {
+                    "fieldName": "Question",
+                    "defaultValue": long_default,
+                    "isRequired": False,
+                }
+            ],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_job_application_form_default_value_exactly_max_length(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test updating job application form with default value exactly 2000 characters."""
+    default_value = "A" * 2000
+
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_APPLICATION_FORM_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "fields": [
+                {
+                    "fieldName": "Question",
+                    "defaultValue": default_value,
+                    "isRequired": False,
+                }
+            ],
+        },
+    )
+
+    data = response["data"]["updateJobApplicationForm"]
+    assert data["__typename"] == "UpdateJobApplicationFormSuccess"
+    assert data["jobApplicationForm"]["fields"][0]["defaultValue"] == default_value
+
+
+async def test_update_job_application_form_field_name_whitespace_stripped(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test that whitespace is stripped from field names."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_APPLICATION_FORM_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "fields": [
+                {
+                    "fieldName": "  Valid Question  ",
+                    "defaultValue": None,
+                    "isRequired": True,
+                }
+            ],
+        },
+    )
+
+    data = response["data"]["updateJobApplicationForm"]
+    assert data["__typename"] == "UpdateJobApplicationFormSuccess"
+    assert data["jobApplicationForm"]["fields"][0]["fieldName"] == "Valid Question"
+
+
+async def test_update_job_application_form_default_value_whitespace_stripped(
+    password_auth_graphql_client: GraphQLClient,
+    test_job: Job,
+) -> None:
+    """Test that whitespace is stripped from default values."""
+    response = await password_auth_graphql_client(
+        UPDATE_JOB_APPLICATION_FORM_MUTATION,
+        variables={
+            "jobId": relay.to_base64("Job", test_job.id),
+            "fields": [
+                {
+                    "fieldName": "Question",
+                    "defaultValue": "  Default Answer  ",
+                    "isRequired": False,
+                }
+            ],
+        },
+    )
+
+    data = response["data"]["updateJobApplicationForm"]
+    assert data["__typename"] == "UpdateJobApplicationFormSuccess"
+    assert data["jobApplicationForm"]["fields"][0]["defaultValue"] == "Default Answer"
