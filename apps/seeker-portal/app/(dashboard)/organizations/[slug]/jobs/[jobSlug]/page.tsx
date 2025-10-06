@@ -169,7 +169,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 	}
 
 	return {
-		title: `Job Opening for ${data.organization.job.title} in ${data.organization.location}`,
+		title: `Job Opening for ${data.organization.job.title} in ${data.organization.job.location}`,
 		description: data.organization.job.descriptionCleaned,
 		openGraph: {
 			images: [
