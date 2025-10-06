@@ -16,6 +16,7 @@ from app.context import AuthInfo, Info
 from app.jobs.exceptions import (
     AccountProfileNotFoundError,
     InsufficientActiveVacanciesError,
+    InvalidApplicantFieldsError,
     InvalidApplicantLocationsError,
     JobApplicantAlreadyExistsError,
     JobApplicantsNotFoundError,
@@ -52,6 +53,7 @@ from .types import (
     CreateJobSuccessType,
     DeleteJobPayload,
     InsufficientActiveVacanciesErrorType,
+    InvalidApplicantFieldsErrorType,
     InvalidApplicantLocationsErrorType,
     InvalidLocationErrorType,
     JobApplicantAlreadyExistsErrorType,
@@ -679,6 +681,8 @@ class JobMutation:
                         return AccountProfileNotFoundErrorType()
                     case AccountProfileIncompleteError():
                         return AccountProfileIncompleteErrorType()
+                    case InvalidApplicantFieldsError():
+                        return InvalidApplicantFieldsErrorType()
             case Ok(job_application):
                 return CreateJobApplicantSuccessType(
                     job_applicant=JobApplicantType.marshal(job_application)

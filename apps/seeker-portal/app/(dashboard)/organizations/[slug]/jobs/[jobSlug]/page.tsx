@@ -169,7 +169,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 	}
 
 	return {
-		title: `Job Opening for ${data.organization.job.title}`,
+		title: `Job Opening for ${data.organization.job.title} in ${data.organization.job.location}`,
 		description: data.organization.job.descriptionCleaned,
 		openGraph: {
 			images: [
@@ -180,10 +180,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 					alt: data.organization.name
 				}
 			]
-		},
-		robots: {
-			index: true,
-			follow: true
 		},
 		alternates: {
 			canonical: `${env.NEXT_PUBLIC_URL}${links.jobDetail(slug, jobSlug)}`

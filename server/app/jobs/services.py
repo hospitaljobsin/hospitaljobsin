@@ -52,6 +52,7 @@ from app.jobs.documents import (
 from app.jobs.exceptions import (
     AccountProfileNotFoundError,
     InsufficientActiveVacanciesError,
+    InvalidApplicantFieldsError,
     InvalidApplicantLocationsError,
     JobApplicantAlreadyExistsError,
     JobApplicantCountNotFoundError,
@@ -679,6 +680,7 @@ class JobApplicantService:
         self,
         job_repo: JobRepo,
         job_applicant_repo: JobApplicantRepo,
+        job_application_form_repo: JobApplicationFormRepo,
         job_metric_repo: JobMetricRepo,
         profile_repo: ProfileRepo,
         organization_member_service: OrganizationMemberService,
@@ -695,6 +697,7 @@ class JobApplicantService:
         self._job_repo = job_repo
         self._organization_member_service = organization_member_service
         self._job_applicant_repo = job_applicant_repo
+        self._job_application_form_repo = job_application_form_repo
         self._job_metric_repo = job_metric_repo
         self._s3_client = s3_client
         self._sqs_client = sqs_client
@@ -720,7 +723,8 @@ class JobApplicantService:
         | JobApplicantAlreadyExistsError
         | JobIsExternalError
         | AccountProfileNotFoundError
-        | AccountProfileIncompleteError,
+        | AccountProfileIncompleteError
+        | InvalidApplicantFieldsError,
     ]:
         """Create a job application."""
         try:
@@ -752,9 +756,28 @@ class JobApplicantService:
         if existing_job_application is not None:
             return Err(JobApplicantAlreadyExistsError())
 
-        # TODO: validate applicant fields (screening questions here)
-        # if the job doesn't have any, its okay to be an empty array.
-        # otherwise, the questions must match that on the job (maybe tag each question with an ID??)
+        # validate applicant fields against job application form
+        job_application_form = await self._job_application_form_repo.get_by_job_id(
+            existing_job.id
+        )
+        if job_application_form is not None:
+            form_field_names = {
+                field.field_name for field in job_application_form.fields
+            }
+            required_field_names = {
+                field.field_name
+                for field in job_application_form.fields
+                if field.is_required
+            }
+            provided_field_names = [field.field_name for field in applicant_fields]
+            provided_field_names_set = set(provided_field_names)
+
+            if (
+                len(provided_field_names) != len(provided_field_names_set)
+                or not required_field_names.issubset(provided_field_names_set)
+                or not provided_field_names_set.issubset(form_field_names)
+            ):
+                return Err(InvalidApplicantFieldsError())
 
         job_application = await self._job_applicant_repo.create(
             job=existing_job,
@@ -770,7 +793,8 @@ class JobApplicantService:
                     job_id=str(existing_job.id),
                 ).model_dump_json(),
             )
-        else:
+        if self._env_settings.is_development:
+            # do not run in test/ staging environments to save costs
             await self._job_applicant_analysis_service.analyse_job_applicant(
                 job_application=job_application,
                 job=existing_job,

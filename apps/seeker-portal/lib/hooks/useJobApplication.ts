@@ -2,6 +2,7 @@
 
 import { useRouter } from '@bprogress/next/app';
 import { addToast } from '@heroui/react';
+import { sendGTMEvent } from '@next/third-parties/google';
 import { useCallback } from 'react';
 import { graphql, useMutation } from 'react-relay';
 import type { useJobApplicationMutation } from '@/__generated__/useJobApplicationMutation.graphql';
@@ -39,6 +40,9 @@ const CreateJobApplicationMutation = graphql`
       ... on AccountProfileIncompleteError {
         __typename
       }
+	  ... on InvalidApplicantFieldsError {
+		__typename
+	  }
     }
   }
 `;
@@ -64,6 +68,8 @@ export function useJobApplication() {
 						if (response.createJobApplication.__typename === 'CreateJobApplicantSuccess') {
 							const job = response.createJobApplication.jobApplicant.job;
 							router.push(links.jobDetail(job.organization.slug, job.slug));
+							// send event to GTM for conversion tracking
+							sendGTMEvent({ event: 'job_applied', value: jobId });
 							resolve(true);
 						} else {
 							addToast({

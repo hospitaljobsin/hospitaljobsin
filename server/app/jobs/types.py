@@ -1516,6 +1516,17 @@ class AccountProfileIncompleteErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="InvalidApplicantFieldsError",
+    description="Used when the applicant fields are invalid.",
+)
+class InvalidApplicantFieldsErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Invalid applicant fields!",
+    )
+
+
 CreateJobApplicantPayload = Annotated[
     CreateJobApplicantSuccessType
     | JobNotFoundErrorType
@@ -1523,7 +1534,8 @@ CreateJobApplicantPayload = Annotated[
     | JobApplicantAlreadyExistsErrorType
     | JobIsExternalErrorType
     | AccountProfileNotFoundErrorType
-    | AccountProfileIncompleteErrorType,
+    | AccountProfileIncompleteErrorType
+    | InvalidApplicantFieldsErrorType,
     strawberry.union(
         name="CreateJobApplicantPayload",
         description="The create job application payload.",

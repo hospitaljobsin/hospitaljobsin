@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<39dc37d791022495771688e5a04dcd54>>
- * @relayHash 965dc82bb13139ceec715361bb7c559e
+ * @generated SignedSource<<580ae6ea24f1bb4f8ea2245bf9842b3a>>
+ * @relayHash 73a89c150f2982562952de106142ca9c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 965dc82bb13139ceec715361bb7c559e
+// @relayRequestID 73a89c150f2982562952de106142ca9c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -38,6 +38,9 @@ export type useJobApplicationMutation$data = {
         readonly " $fragmentSpreads": FragmentRefs<"JobDetailsInternalFragment">;
       } | null | undefined;
     };
+  } | {
+    readonly __typename: "InvalidApplicantFieldsError";
+    readonly __typename: "InvalidApplicantFieldsError";
   } | {
     readonly __typename: "JobApplicantAlreadyExistsError";
     readonly __typename: "JobApplicantAlreadyExistsError";
@@ -527,7 +530,7 @@ return {
     ]
   },
   "params": {
-    "id": "965dc82bb13139ceec715361bb7c559e",
+    "id": "73a89c150f2982562952de106142ca9c",
     "metadata": {},
     "name": "useJobApplicationMutation",
     "operationKind": "mutation",
@@ -536,6 +539,6 @@ return {
 };
 })();
 
-(node as any).hash = "07497d055b04bc553b2274b14e2eae18";
+(node as any).hash = "c2a46137ada8ff971dbf4cc899ec84de";
 
 export default node;

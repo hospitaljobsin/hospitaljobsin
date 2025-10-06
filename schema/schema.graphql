@@ -666,6 +666,7 @@ union CreateJobApplicantPayload =
 	| JobIsExternalError
 	| AccountProfileNotFoundError
 	| AccountProfileIncompleteError
+	| InvalidApplicantFieldsError
 
 """
 The payload for creating a presigned URL for uploading the job applicant's resume.
@@ -1141,6 +1142,16 @@ type InsufficientAuthProvidersError implements Error {
 Used when there are not enough organization admins to remove an admin.
 """
 type InsufficientOrganizationAdminsError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
+}
+
+"""
+Used when the applicant fields are invalid.
+"""
+type InvalidApplicantFieldsError implements Error {
 	"""
 	Human readable error message.
 	"""

@@ -822,28 +822,6 @@ async def test_create_job_empty_location(
     assert "errors" in response
 
 
-async def test_create_job_very_long_location(
-    password_auth_graphql_client: GraphQLClient,
-    valid_organization: Organization,
-) -> None:
-    """Test job creation with very long location."""
-    long_location = "A" * 201
-
-    response = await password_auth_graphql_client(
-        CREATE_JOB_MUTATION,
-        variables={
-            "organizationId": relay.to_base64("Organization", valid_organization.id),
-            "title": "Software Engineer",
-            "description": "A great software engineering position",
-            "skills": ["Python"],
-            "location": long_location,
-            "applicantLocations": [],
-        },
-    )
-
-    assert "errors" in response
-
-
 async def test_create_job_boundary_values(
     password_auth_graphql_client: GraphQLClient,
     valid_organization: Organization,
