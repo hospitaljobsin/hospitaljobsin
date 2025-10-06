@@ -1186,6 +1186,10 @@ class JobApplicantRepo:
         )
         return await application.insert(link_rule=WriteRules.WRITE)
 
+    async def delete(self, job_applicant: JobApplicant) -> None:
+        """Delete a job applicant."""
+        await job_applicant.delete()
+
     async def update_analysis(
         self,
         job_applicant: JobApplicant,
@@ -1524,11 +1528,12 @@ class JobApplicantRepo:
         )
 
     async def get_many_by_ids(
-        self, job_applicant_ids: list[ObjectId]
+        self, job_applicant_ids: list[ObjectId], job_id: ObjectId
     ) -> list[JobApplicant | None]:
         """Get multiple job applicants by IDs."""
         job_applicants = await JobApplicant.find(
-            In(JobApplicant.id, job_applicant_ids)
+            In(JobApplicant.id, job_applicant_ids),
+            JobApplicant.job.id == job_id,
         ).to_list()
         job_applicant_by_id = {
             job_applicant.id: job_applicant for job_applicant in job_applicants

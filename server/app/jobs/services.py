@@ -605,8 +605,13 @@ class JobApplicationFormService:
         self._job_repo = job_repo
         self._organization_member_service = organization_member_service
 
+    @validate_call()
     async def update(
-        self, account: Account, job_id: str, fields: list[ApplicationField]
+        self,
+        *,
+        account: Annotated[Account, Field(exclude=True)],
+        job_id: Annotated[str, Field(exclude=True)],
+        fields: list[ApplicationField],
     ) -> Result[
         tuple[JobApplicationForm, Job],
         JobNotFoundError | OrganizationAuthorizationError | JobIsExternalError,
@@ -710,12 +715,14 @@ class JobApplicantService:
         self._posthog_client = posthog_client
         self._profile_repo = profile_repo
 
+    @validate_call(config={"arbitrary_types_allowed": True})
     async def create(
         self,
-        account: Account,
-        job_id: str,
+        *,
+        account: Annotated[Account, Field(exclude=True)],
+        job_id: Annotated[str, Field(exclude=True)],
         applicant_fields: list[ApplicantField],
-        request: Request,
+        request: Annotated[Request, Field(exclude=True)],
     ) -> Result[
         JobApplicant,
         JobNotFoundError
@@ -782,7 +789,13 @@ class JobApplicantService:
         job_application = await self._job_applicant_repo.create(
             job=existing_job,
             account=account,
-            applicant_fields=applicant_fields,
+            applicant_fields=[
+                ApplicantField(
+                    field_name=field.field_name,
+                    field_value=field.field_value,
+                )
+                for field in applicant_fields
+            ],
         )
         # --- AGENT INTEGRATION ---
         if self._env_settings.is_production:
@@ -841,7 +854,7 @@ class JobApplicantService:
         if existing_job is None:
             return Err(JobNotFoundError())
 
-        if not await self._organization_member_service.is_admin(
+        if not await self._organization_member_service.is_member(
             account_id=account.id,
             organization_id=existing_job.organization.ref.id,
         ):
@@ -867,7 +880,8 @@ class JobApplicantService:
 
         # Check if all applicants exist
         existing_applicants = await self._job_applicant_repo.get_many_by_ids(
-            applicant_object_ids
+            applicant_object_ids,
+            job_id=job_id_obj,
         )
 
         found_applicants = [app for app in existing_applicants if app]
@@ -880,13 +894,6 @@ class JobApplicantService:
                 if id_obj not in found_ids
             ]
             return Err(JobApplicantsNotFoundError(not_found_ids=not_found_ids))
-
-        # Verify that all applicants belong to the specified job
-        for applicant in found_applicants:
-            if applicant.job.ref.id != job_id_obj:
-                # This indicates a client-side error, trying to update an applicant
-                # from a different job.
-                return Err(OrganizationAuthorizationError())
 
         job_applications = await self._job_applicant_repo.bulk_update(
             job_applicant_ids=applicant_object_ids,
