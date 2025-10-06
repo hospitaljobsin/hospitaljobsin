@@ -309,23 +309,42 @@ class ProfileRepo:
     def __init__(self, region_repo: RegionRepo) -> None:
         self._region_repo = region_repo
 
-    async def create(self, account: Account) -> Profile:
+    async def create(
+        self,
+        account: Account,
+        gender: Gender | None = None,
+        date_of_birth: date | None = None,
+        address: str | None = None,
+        marital_status: MaritalStatus | None = None,
+        category: str | None = None,
+        education: list[Education] = [],
+        licenses: list[License] = [],
+        languages: list[Language] = [],
+        job_preferences: list[str] = [],
+        work_experience: list[WorkExperience] = [],
+        career_profile: CareerProfile | None = None,
+        certifications: list[Certification] = [],
+        professional_summary: str | None = None,
+        headline: str | None = None,
+        resume_url: str | None = None,
+    ) -> Profile:
         """Create a new profile."""
         profile = Profile(
-            gender=None,
-            date_of_birth=None,
-            address="",
-            marital_status=None,
-            category=None,
-            education=[],
-            licenses=[],
-            languages=[],
-            job_preferences=[],
-            work_experience=[],
-            career_profile=None,
-            certifications=[],
-            professional_summary=None,
-            headline=None,
+            gender=gender,
+            date_of_birth=date_of_birth,
+            address=address,
+            marital_status=marital_status,
+            category=category,
+            education=education,
+            licenses=licenses,
+            languages=languages,
+            job_preferences=job_preferences,
+            work_experience=work_experience,
+            career_profile=career_profile,
+            certifications=certifications,
+            professional_summary=professional_summary,
+            headline=headline,
+            resume_url=resume_url,
         )
         await profile.insert()
         account.profile = profile

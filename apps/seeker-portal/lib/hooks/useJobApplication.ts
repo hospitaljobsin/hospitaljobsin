@@ -39,6 +39,9 @@ const CreateJobApplicationMutation = graphql`
       ... on AccountProfileIncompleteError {
         __typename
       }
+	  ... on InvalidApplicantFieldsError {
+		__typename
+	  }
     }
   }
 `;

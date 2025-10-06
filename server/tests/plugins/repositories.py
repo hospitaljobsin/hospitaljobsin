@@ -4,6 +4,7 @@ from app.accounts.repositories import (
     AccountRepo,
     EmailVerificationTokenRepo,
     PhoneNumberVerificationTokenRepo,
+    ProfileRepo,
 )
 from app.auth.repositories import (
     SessionRepo,
@@ -11,7 +12,7 @@ from app.auth.repositories import (
     WebAuthnCredentialRepo,
 )
 from app.job_alerts.repositories import JobAlertRepo
-from app.jobs.repositories import JobRepo
+from app.jobs.repositories import JobApplicantRepo, JobApplicationFormRepo, JobRepo
 from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
 
 
@@ -91,3 +92,27 @@ async def phone_number_verification_token_repo(
 ) -> PhoneNumberVerificationTokenRepo:
     async with container.context() as ctx:
         return await ctx.resolve(PhoneNumberVerificationTokenRepo)
+
+
+@pytest.fixture(scope="session")
+async def job_application_form_repo(
+    container: Container,
+) -> JobApplicationFormRepo:
+    async with container.context() as ctx:
+        return await ctx.resolve(JobApplicationFormRepo)
+
+
+@pytest.fixture(scope="session")
+async def profile_repo(
+    container: Container,
+) -> ProfileRepo:
+    async with container.context() as ctx:
+        return await ctx.resolve(ProfileRepo)
+
+
+@pytest.fixture(scope="session")
+async def job_applicant_repo(
+    container: Container,
+) -> JobApplicantRepo:
+    async with container.context() as ctx:
+        return await ctx.resolve(JobApplicantRepo)

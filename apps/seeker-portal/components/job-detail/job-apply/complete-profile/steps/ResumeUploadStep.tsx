@@ -89,7 +89,7 @@ export default function ResumeUploadStep() {
 			<div className='space-y-2'>
 				<h3 className='text-lg font-medium'>Upload Your Resume</h3>
 				<p className='text-sm text-foreground-600'>
-					This is reequired for job applications. We'll auto-fill your profile and match you with relevant opportunities.
+					This is required for job applications. We'll auto-fill your profile and match you with relevant opportunities.
 				</p>
 			</div>
 
