@@ -7,10 +7,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
 import CompleteProfileContext from '../CompleteProfileContext';
 
-const applicationFieldSchema = z.object({
-	fieldValue: z.string().min(1, 'This field is required')
-});
-
 export default function ApplicationFieldStep() {
 	const { send } = CompleteProfileContext.useActorRef();
 	const currentFieldIndex = CompleteProfileContext.useSelector(state => state.context.currentFieldIndex);
@@ -19,6 +15,12 @@ export default function ApplicationFieldStep() {
 
 	const applicationFieldIndex = currentFieldIndex - missingFieldsLength;
 	const currentField = applicationFields[applicationFieldIndex];
+
+	const applicationFieldSchema = z.object({
+		fieldValue: currentField?.isRequired
+			? z.string().min(1, 'This field is required').max(2000, 'Maximum length is 2000 characters')
+			: z.string().max(2000, 'Maximum length is 2000 characters')
+	});
 
 	const { handleSubmit, formState, control, reset } = useForm<z.infer<typeof applicationFieldSchema>>({
 		resolver: standardSchemaResolver(applicationFieldSchema),
@@ -46,7 +48,9 @@ export default function ApplicationFieldStep() {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
 			<div className='space-y-2'>
-				<h3 className='text-lg font-semibold'>{currentField.fieldName}</h3>
+				<h3 className='text-lg font-semibold flex items-center gap-2'>
+					{currentField.fieldName} {!currentField.isRequired && <span className='text-foreground-500 font-normal text-sm'>(optional)</span>}
+				</h3>
 				<p className='text-sm text-foreground-600'>Please provide your response to this screening question.</p>
 			</div>
 

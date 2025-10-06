@@ -224,7 +224,6 @@ class JobAlertMutation:
         job_alert_service: Annotated[JobAlertService, Inject],
     ) -> RemoveRecommendedJobAlertsPayload:
         """Remove recommended job alerts for the current user."""
-
         match await job_alert_service.remove_recommended_alerts(
             account=info.context["current_user"],
         ):

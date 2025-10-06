@@ -1,13 +1,14 @@
-import type { ApplicationFormBuilderFragment$key } from '@/__generated__/ApplicationFormBuilderFragment.graphql';
-import type { ApplicationFormBuilderMutation as ApplicationFormBuilderMutationType } from '@/__generated__/ApplicationFormBuilderMutation.graphql';
-import JobNotFoundView from '@/components/JobNotFoundView';
-import NotFoundView from '@/components/NotFoundView';
-import { addToast, Alert, Button, Card, CardBody, CardFooter, Checkbox, Input } from '@heroui/react';
+import { Alert, addToast, Button, Card, CardBody, CardFooter, Checkbox, Input } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
+import invariant from 'tiny-invariant';
 import { z } from 'zod';
+import type { ApplicationFormBuilderFragment$key } from '@/__generated__/ApplicationFormBuilderFragment.graphql';
+import type { ApplicationFormBuilderMutation as ApplicationFormBuilderMutationType } from '@/__generated__/ApplicationFormBuilderMutation.graphql';
+import JobNotFoundView from '@/components/JobNotFoundView';
+import NotFoundView from '@/components/NotFoundView';
 
 const ApplicationFormBuilderFragment = graphql`
   fragment ApplicationFormBuilderFragment on Query @argumentDefinitions(
@@ -74,7 +75,11 @@ const ApplicationFormBuilderMutation = graphql`
 const formSchema = z.object({
 	fields: z.array(
 		z.object({
-			fieldName: z.string().min(1, 'This field is required'),
+			fieldName: z
+				.string()
+				.min(1, 'This field is required')
+				.min(5, 'Field name must be at least 5 characters')
+				.max(500, 'Field name must be at most 500 characters'),
 			defaultValue: z.string().nullable(),
 			isRequired: z.boolean().default(false)
 		})
@@ -84,7 +89,11 @@ const formSchema = z.object({
 export default function ApplicationFormBuilder({ rootQuery }: { rootQuery: ApplicationFormBuilderFragment$key }) {
 	const data = useFragment(ApplicationFormBuilderFragment, rootQuery);
 
+	invariant(data.organization.__typename === 'Organization', 'Organization data is expected');
+
 	const job = data.organization.job;
+
+	invariant(job.__typename === 'Job', 'Job data is expected');
 
 	const [commitMutation, isMutationInflight] = useMutation<ApplicationFormBuilderMutationType>(ApplicationFormBuilderMutation);
 
