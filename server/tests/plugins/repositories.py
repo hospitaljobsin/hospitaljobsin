@@ -13,7 +13,11 @@ from app.auth.repositories import (
 )
 from app.job_alerts.repositories import JobAlertRepo
 from app.jobs.repositories import JobApplicantRepo, JobApplicationFormRepo, JobRepo
-from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
+from app.organizations.repositories import (
+    OrganizationInviteRepo,
+    OrganizationMemberRepo,
+    OrganizationRepo,
+)
 
 
 @pytest.fixture(scope="session")
@@ -68,6 +72,14 @@ async def organization_member_repo(
 ) -> OrganizationMemberRepo:
     async with container.context() as ctx:
         return await ctx.resolve(OrganizationMemberRepo)
+
+
+@pytest.fixture(scope="session")
+async def organization_invite_repo(
+    container: Container,
+) -> OrganizationInviteRepo:
+    async with container.context() as ctx:
+        return await ctx.resolve(OrganizationInviteRepo)
 
 
 @pytest.fixture(scope="session")
