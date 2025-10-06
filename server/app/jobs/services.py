@@ -251,7 +251,7 @@ class JobService:
             StringConstraints(
                 strip_whitespace=True,
                 min_length=1,
-                max_length=200,
+                max_length=500,
             ),
         ],
         applicant_locations: Annotated[list[str], Field(default_factory=list)],
@@ -383,7 +383,7 @@ class JobService:
             StringConstraints(
                 strip_whitespace=True,
                 min_length=1,
-                max_length=200,
+                max_length=500,
             ),
         ],
         applicant_locations: Annotated[list[str], Field(default_factory=list)],

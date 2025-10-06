@@ -152,16 +152,16 @@ mutation JobEditFormMutation(
 
 const formSchema = z
 	.object({
-		title: z.string().min(1, 'This field is required').max(75),
-		description: z.string().min(1, 'This field is required').max(4000),
-		vacancies: z.number().nonnegative().nullable(),
+		title: z.string().min(1, 'This field is required').min(3, 'Title must be at least 3 characters long').max(200),
+		description: z.string().min(1, 'This field is required').min(10, 'Description must be at least 10 characters long').max(5000),
+		vacancies: z.number().nonnegative().max(10000).nullable(),
 		skills: z.array(z.object({ value: z.string() })),
-		location: z.string().min(1, 'This field is required'),
+		location: z.string().min(1, 'This field is required').max(500),
 		applicantLocations: z.array(z.string().min(1, 'This field is required')),
 		minSalary: z.number().positive().nullable().optional(),
 		maxSalary: z.number().positive().nullable().optional(),
-		minExperience: z.number().nonnegative().nullable().optional(),
-		maxExperience: z.number().positive().nullable().optional(),
+		minExperience: z.number().nonnegative().max(100).nullable().optional(),
+		maxExperience: z.number().nonnegative().max(100).nullable().optional(),
 		expiresAt: z
 			.custom<CalendarDateTime>(data => {
 				console.log(data);
