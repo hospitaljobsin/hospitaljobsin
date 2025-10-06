@@ -62,6 +62,7 @@ export default function ApplicationFieldStep() {
 						errorMessage={formState.errors.fieldValue?.message}
 						isInvalid={!!formState.errors.fieldValue}
 						autoFocus
+						maxLength={2000}
 					/>
 				)}
 			/>
