@@ -11,7 +11,7 @@ from app.auth.repositories import (
     WebAuthnChallengeRepo,
     WebAuthnCredentialRepo,
 )
-from app.job_alerts.repositories import JobAlertRepo
+from app.job_alerts.repositories import JobAlertRepo, RecommendedJobAlertRepo
 from app.jobs.repositories import JobApplicantRepo, JobApplicationFormRepo, JobRepo
 from app.organizations.repositories import (
     OrganizationInviteRepo,
@@ -88,6 +88,14 @@ async def job_alert_repo(
 ) -> JobAlertRepo:
     async with container.context() as ctx:
         return await ctx.resolve(JobAlertRepo)
+
+
+@pytest.fixture(scope="session")
+async def recommended_job_alert_repo(
+    container: Container,
+) -> RecommendedJobAlertRepo:
+    async with container.context() as ctx:
+        return await ctx.resolve(RecommendedJobAlertRepo)
 
 
 @pytest.fixture(scope="session")
