@@ -201,7 +201,7 @@ async def test_reset_password_case_insensitive_email(
         await password_reset_token_repo.delete(existing_token)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 async def account_with_2fa(account_repo: AccountRepo) -> Account:
     """Create an account with 2FA enabled."""
     totp_secret = pyotp.random_base32()

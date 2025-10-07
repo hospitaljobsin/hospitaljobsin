@@ -80,7 +80,7 @@ query JobsQuery(
 """
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 async def test_organization(
     password_account: Account,
     organization_repo: OrganizationRepo,
@@ -101,7 +101,7 @@ async def test_organization(
     await organization_member_repo.delete(org_member)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 async def sample_jobs(
     test_organization: Organization,
     job_repo: JobRepo,

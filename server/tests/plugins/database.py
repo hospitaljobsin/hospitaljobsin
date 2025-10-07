@@ -23,8 +23,11 @@ logger = get_logger()
 
 
 @pytest.fixture(scope="session")
-def db_settings() -> DatabaseSettings:
-    return get_settings(DatabaseSettings)
+def db_settings(worker_id: str) -> DatabaseSettings:
+    settings = get_settings(DatabaseSettings)
+    # Create unique database name per worker for parallel testing
+    settings.test_database_name = f"{settings.test_database_name}_{worker_id}"
+    return settings
 
 
 @pytest.fixture(scope="session")

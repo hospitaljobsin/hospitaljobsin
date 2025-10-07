@@ -44,7 +44,7 @@ mutation Verify2FAWithAuthenticatorMutation(
 """
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 async def account_with_2fa(account_repo: AccountRepo) -> Account:
     """Create an account with 2FA enabled."""
     totp_secret = pyotp.random_base32()

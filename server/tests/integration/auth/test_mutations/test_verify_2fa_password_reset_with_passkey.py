@@ -71,7 +71,7 @@ mutation GenerateAuthenticationOptionsMutation($captchaToken: String!) {
 """
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 async def account_with_passkey(
     account_repo: AccountRepo,
     webauthn_credential_repo: WebAuthnCredentialRepo,

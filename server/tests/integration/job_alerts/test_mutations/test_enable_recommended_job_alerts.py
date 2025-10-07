@@ -245,8 +245,7 @@ async def test_enable_recommended_job_alerts_multiple_recommendations(
         ),
     ]
 
-    for filters in filters_list:
-        await recommended_job_alert_repo.create(password_account, filters)
+    await recommended_job_alert_repo.create_many(password_account, filters_list)
 
     response = await password_auth_graphql_client(
         ENABLE_RECOMMENDED_JOB_ALERTS_MUTATION,
@@ -338,9 +337,9 @@ async def test_enable_recommended_job_alerts_cleanup_after_enable(
     job_alert_repo: JobAlertRepo,
 ) -> None:
     """Test that recommended job alerts are properly cleaned up after enabling."""
-    # Create multiple recommended job alerts
-    for i in range(3):
-        filters = AlertFilters(
+    # Create multiple recommended job alerts using bulk create
+    filters_list = [
+        AlertFilters(
             search_term=f"cleanup-test-{i}",
             location=f"City-{i}",
             job_type=None,
@@ -350,7 +349,9 @@ async def test_enable_recommended_job_alerts_cleanup_after_enable(
             min_salary=None,
             max_salary=None,
         )
-        await recommended_job_alert_repo.create(password_account, filters)
+        for i in range(3)
+    ]
+    await recommended_job_alert_repo.create_many(password_account, filters_list)
 
     # Verify recommended alerts exist before enabling
     recommended_before = await recommended_job_alert_repo.get_all_list(password_account)

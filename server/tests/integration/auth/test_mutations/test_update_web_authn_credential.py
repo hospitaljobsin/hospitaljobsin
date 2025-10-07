@@ -209,7 +209,7 @@ async def test_update_web_authn_credential_with_various_nicknames(
     assert updated_credential.nickname == new_nickname
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 async def account_with_multiple_credentials(
     account_repo: AccountRepo,
     webauthn_credential_repo: WebAuthnCredentialRepo,

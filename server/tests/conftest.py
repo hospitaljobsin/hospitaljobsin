@@ -54,8 +54,3 @@ pytest_plugins = [
 @pytest.fixture(scope="session", autouse=True)
 def anyio_backend() -> str:
     return "asyncio"
-
-
-@pytest.fixture(scope="session")
-def worker_id() -> str:
-    return "main"

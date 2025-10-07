@@ -141,14 +141,12 @@ async def valid_job_applicants(
         resume_url="https://example.com/resume.pdf",
     )
 
-    applicants: list[JobApplicant] = []
-    for _ in range(3):
-        applicant = await job_applicant_repo.create(
-            job=valid_job,
-            account=foreign_password_account,
-            applicant_fields=[],
-        )
-        applicants.append(applicant)
+    applicants = await job_applicant_repo.create_many(
+        job=valid_job,
+        account=foreign_password_account,
+        count=3,
+        applicant_fields=[],
+    )
     yield applicants
     for applicant in applicants:
         await job_applicant_repo.delete(applicant)
@@ -562,14 +560,12 @@ async def test_update_job_applicants_status_large_batch(
         resume_url="https://example.com/resume.pdf",
     )
 
-    applicants: list[JobApplicant] = []
-    for _ in range(50):
-        applicant = await job_applicant_repo.create(
-            job=valid_job,
-            account=foreign_password_account,
-            applicant_fields=[],
-        )
-        applicants.append(applicant)
+    applicants = await job_applicant_repo.create_many(
+        job=valid_job,
+        account=foreign_password_account,
+        count=50,
+        applicant_fields=[],
+    )
 
     response = await password_auth_graphql_client(
         UPDATE_JOB_APPLICANTS_STATUS_MUTATION,

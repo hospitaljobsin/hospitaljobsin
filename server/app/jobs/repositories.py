@@ -223,6 +223,63 @@ class JobRepo:
             link_rule=WriteRules.DO_NOTHING,
         )
 
+    async def create_many(
+        self,
+        *,
+        organization: Organization,
+        jobs_data: list[dict],
+    ) -> list[Job]:
+        """Create multiple jobs in bulk for testing."""
+        jobs = []
+        for data in jobs_data:
+            embedding = await self._embeddings_service.generate_embeddings(
+                text=self.format_job_for_embedding(
+                    title=data["title"],
+                    description=data["description"],
+                    skills=data.get("skills", []),
+                    location=data.get("location"),
+                    geo=data.get("geo"),
+                    min_salary=data.get("min_salary"),
+                    max_salary=data.get("max_salary"),
+                    min_experience=data.get("min_experience"),
+                    max_experience=data.get("max_experience"),
+                    job_type=data.get("job_type"),
+                    work_mode=data.get("work_mode"),
+                    currency=data.get("currency", "INR"),
+                ),
+                dimensions=JOB_EMBEDDING_DIMENSIONS,
+            )
+            job = Job(
+                title=data["title"],
+                description=data["description"],
+                description_cleaned=clean_markdown_text(data["description"]),
+                description_html=markdown_to_clean_html(data["description"]),
+                embedding=embedding,
+                vacancies=data.get("vacancies"),
+                location=data.get("location"),
+                applicant_locations=data.get("applicant_locations", []),
+                geo=data.get("geo"),
+                address=data.get("address"),
+                min_salary=data.get("min_salary"),
+                max_salary=data.get("max_salary"),
+                is_salary_negotiable=data.get("is_salary_negotiable", False),
+                min_experience=data.get("min_experience"),
+                max_experience=data.get("max_experience"),
+                expires_at=data.get("expires_at"),
+                organization=organization.id,
+                organization_name=organization.name,
+                type=data.get("job_type"),
+                work_mode=data.get("work_mode"),
+                skills=data.get("skills", []),
+                currency=data.get("currency", "INR"),
+                external_application_url=data.get("external_application_url"),
+                slug=await self.generate_slug(data["title"], organization.id),
+                is_active=False,
+            )
+            jobs.append(job)
+        result = await Job.insert_many(jobs, link_rule=WriteRules.DO_NOTHING)
+        return await Job.find(In(Job.id, result.inserted_ids)).to_list()
+
     async def update(
         self,
         *,
@@ -1185,6 +1242,59 @@ class JobApplicantRepo:
             analysis_status="pending",
         )
         return await application.insert(link_rule=WriteRules.WRITE)
+
+    async def create_many(
+        self,
+        account: Account,
+        job: Job,
+        count: int,
+        applicant_fields: list[ApplicantField] = [],
+    ) -> list[JobApplicant]:
+        """Create multiple job applicants in bulk for testing."""
+        job.last_applicant_applied_at = datetime.now(UTC)
+        profile_embedding = await self._embeddings_service.generate_embeddings(
+            text=self.format_profile_snapshot_for_embedding(account.profile),
+            task_type="RETRIEVAL_DOCUMENT",
+            dimensions=JOB_APPLICANT_EMBEDDING_DIMENSIONS,
+        )
+        profile_snapshot = BaseProfile(
+            address=account.profile.address,
+            date_of_birth=account.profile.date_of_birth,
+            gender=account.profile.gender,
+            marital_status=account.profile.marital_status,
+            category=account.profile.category,
+            education=account.profile.education,
+            licenses=account.profile.licenses,
+            languages=account.profile.languages,
+            job_preferences=account.profile.job_preferences,
+            work_experience=account.profile.work_experience,
+            total_work_experience_years=account.profile.total_work_experience_years,
+            career_profile=account.profile.career_profile,
+            certifications=account.profile.certifications,
+            professional_summary=account.profile.professional_summary,
+            headline=account.profile.headline,
+        )
+        applications = [
+            JobApplicant(
+                job=job,
+                organization=job.organization,
+                account=account,
+                account_full_name=account.full_name,
+                profile_snapshot=profile_snapshot,
+                profile_embedding=profile_embedding,
+                status="applied",
+                applicant_fields=applicant_fields,
+                slug=self.generate_slug(),
+                analysis_status="pending",
+            )
+            for _ in range(count)
+        ]
+        result = await JobApplicant.insert_many(
+            applications, link_rule=WriteRules.WRITE
+        )
+        return await JobApplicant.find(
+            In(JobApplicant.id, result.inserted_ids), fetch_links=True, nesting_depth=1
+        ).to_list()
 
     async def delete(self, job_applicant: JobApplicant) -> None:
         """Delete a job applicant."""

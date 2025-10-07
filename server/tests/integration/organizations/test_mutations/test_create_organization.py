@@ -173,7 +173,7 @@ async def test_create_organization_unauthenticated(
 @pytest.mark.parametrize(
     ("full_name", "slug"),
     [
-        ("", generate_test_slug()),  # Empty name is invalid
+        ("", "test"),  # Empty name is invalid
         ("Valid Name", ""),  # Empty slug might be handled by validation
         ("Valid Name", "invalid slug with spaces"),  # Invalid slug format
         ("Valid Name", "slug-with-special-chars!@#"),  # Special characters

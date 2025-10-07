@@ -99,9 +99,9 @@ lint.ignore = [
     "D212",    # multi-line-summary-first-line
     "PD",      # pandas-vet
     "PLR0913", # too many arguments
-    "TCH001",
-    "TCH002",
-    "TCH003",
+    "TC001",
+    "TC002",
+    "TC003",
     "EXE",
     "COM812",
     "ISC001",
@@ -161,4 +161,5 @@ test = [
     "pytest==8.4.2",
     "pytest-sugar==1.1.1",
     "pytest-timeout==2.4.0",
+    "pytest-xdist==3.8.0",
 ]
