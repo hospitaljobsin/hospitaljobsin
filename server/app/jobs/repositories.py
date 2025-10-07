@@ -1276,9 +1276,9 @@ class JobApplicantRepo:
         )
         applications = [
             JobApplicant(
-                job=job,
+                job=job.id,
                 organization=job.organization,
-                account=account,
+                account=account.id,
                 account_full_name=account.full_name,
                 profile_snapshot=profile_snapshot,
                 profile_embedding=profile_embedding,
@@ -1289,9 +1289,7 @@ class JobApplicantRepo:
             )
             for _ in range(count)
         ]
-        result = await JobApplicant.insert_many(
-            applications, link_rule=WriteRules.WRITE
-        )
+        result = await JobApplicant.insert_many(applications)
         return await JobApplicant.find(
             In(JobApplicant.id, result.inserted_ids), fetch_links=True, nesting_depth=1
         ).to_list()
