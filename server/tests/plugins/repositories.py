@@ -10,6 +10,8 @@ from app.auth.repositories import (
     PasswordResetTokenRepo,
     RecoveryCodeRepo,
     SessionRepo,
+    TemporaryTwoFactorChallengeRepo,
+    TwoFactorAuthenticationChallengeRepo,
     WebAuthnChallengeRepo,
     WebAuthnCredentialRepo,
 )
@@ -159,8 +161,14 @@ async def password_reset_token_repo(
 @pytest.fixture(scope="session")
 async def temp_two_factor_challenge_repo(
     container: Container,
-):
-    from app.auth.repositories import TemporaryTwoFactorChallengeRepo
-
+) -> TemporaryTwoFactorChallengeRepo:
     async with container.context() as ctx:
         return await ctx.resolve(TemporaryTwoFactorChallengeRepo)
+
+
+@pytest.fixture(scope="session")
+async def two_factor_authentication_challenge_repo(
+    container: Container,
+) -> TwoFactorAuthenticationChallengeRepo:
+    async with container.context() as ctx:
+        return await ctx.resolve(TwoFactorAuthenticationChallengeRepo)
