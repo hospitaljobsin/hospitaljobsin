@@ -498,11 +498,11 @@ class ProfileService:
     async def update_personal_details(
         self,
         account: Account,
-        gender: str | None,
-        date_of_birth: date | None,
-        marital_status: str | None,
-        category: str | None,
-        address: str | None,
+        gender: str | None = UNSET,
+        date_of_birth: date | None = UNSET,
+        marital_status: str | None = UNSET,
+        category: str | None = UNSET,
+        address: str | None = UNSET,
     ) -> Result[Account, InvalidLocationError]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
@@ -511,7 +511,7 @@ class ProfileService:
                 account=account, profile=existing_profile
             )
 
-        if address:
+        if address is not UNSET and address:
             location = await self._region_repo.get_by_name(name=address)
             if location is None:
                 return Err(InvalidLocationError())

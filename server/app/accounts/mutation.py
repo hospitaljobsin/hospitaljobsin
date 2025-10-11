@@ -110,13 +110,15 @@ class AccountMutation:
             account=info.context["current_user"],
             gender=gender.value
             if gender is not None and gender is not strawberry.UNSET
-            else None,
-            date_of_birth=date_of_birth,
+            else (None if gender is None else strawberry.UNSET),
+            date_of_birth=date_of_birth
+            if date_of_birth is not strawberry.UNSET
+            else strawberry.UNSET,
             marital_status=marital_status.value
             if marital_status is not None and marital_status is not strawberry.UNSET
-            else None,
-            category=category,
-            address=address,
+            else (None if marital_status is None else strawberry.UNSET),
+            category=category if category is not strawberry.UNSET else strawberry.UNSET,
+            address=address if address is not strawberry.UNSET else strawberry.UNSET,
         ):
             case Ok(account):
                 return AccountType.marshal(account)
