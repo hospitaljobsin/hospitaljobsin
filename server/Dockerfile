@@ -5,7 +5,7 @@ FROM python:$PYTHON_BASE AS development-server
 
 # Install curl
 RUN apt-get update && \
-    apt-get install -y curl build-essential && \
+    apt-get install -y build-essential curl && \
     rm -rf /var/lib/apt/lists/*
 
 # install UV
@@ -66,6 +66,10 @@ RUN unzip layer.zip -d /opt && \
 
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production-server
 
+RUN apt-get update && \
+    apt-get install -y build-essential && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY --from=ghcr.io/astral-sh/uv:0.9.2 /uv /uvx /bin/
 
 
@@ -125,6 +129,10 @@ FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS lambda-handler
 
 # Build argument for Lambda handler - can be overridden during build
 ARG LAMBDA_HANDLER=app.sqs_handler.lambda_handler
+
+RUN apt-get update && \
+    apt-get install -y build-essential && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=ghcr.io/astral-sh/uv:0.9.2 /uv /uvx /bin/
 
