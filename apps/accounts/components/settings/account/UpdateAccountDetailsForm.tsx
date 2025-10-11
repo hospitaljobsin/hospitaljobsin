@@ -22,6 +22,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useFragment, useMutation } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { z } from 'zod/v4-mini';
+import type { UpdateAccountDetailsFormCreateProfilePicturePresignedUrlMutation as CreateProfilePicturePresignedUrlMutationType } from '@/__generated__/UpdateAccountDetailsFormCreateProfilePicturePresignedUrlMutation.graphql';
 import type { UpdateAccountDetailsFormFragment$key } from '@/__generated__/UpdateAccountDetailsFormFragment.graphql';
 import { uploadFileToS3 } from '@/lib/presignedUrl';
 import DeleteAvatarModal from './DeleteAvatarModal';
@@ -64,7 +65,7 @@ const formSchema = z.object({
 
 export default function UpdateAccountDetailsForm({ rootQuery, onSaveChanges }: Props) {
 	const [commitMutation, isMutationInFlight] = useMutation(UpdateAccountDetailsFormMutation);
-	const [commitPresignedUrlMutation] = useMutation(CreateProfilePicturePresignedUrlMutation);
+	const [commitPresignedUrlMutation] = useMutation<CreateProfilePicturePresignedUrlMutationType>(CreateProfilePicturePresignedUrlMutation);
 	const data = useFragment(UpdateAccountDetailsFormFragment, rootQuery);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -96,7 +97,7 @@ export default function UpdateAccountDetailsForm({ rootQuery, onSaveChanges }: P
 				variables: {
 					contentType: file.type
 				},
-				onCompleted: (response: any) => {
+				onCompleted: response => {
 					resolve(response.createProfilePicturePresignedUrl?.presignedUrl || null);
 				},
 				onError: error => {
