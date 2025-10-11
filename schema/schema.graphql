@@ -2419,9 +2419,9 @@ type Mutation {
 	"""
 	loginWithPassword(
 		"""
-		The email of the user.
+		The email/ phone number of the user.
 		"""
-		email: String!
+		login: String!
 
 		"""
 		The password of the user.

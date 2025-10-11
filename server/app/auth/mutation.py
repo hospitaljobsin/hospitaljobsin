@@ -510,11 +510,10 @@ class AuthMutation:
     async def login_with_password(
         self,
         info: Info,
-        # login_by: LoginByInputType,
-        email: Annotated[
+        login: Annotated[
             str,
             strawberry.argument(
-                description="The email of the user.",
+                description="The email/ phone number of the user.",
             ),
         ],
         password: Annotated[
@@ -533,7 +532,7 @@ class AuthMutation:
     ) -> LoginWithPasswordPayload:
         """Login a user with email and password."""
         match await auth_service.login_with_password(
-            email=email,
+            login=login,
             password=password,
             captcha_token=captcha_token,
             user_agent=info.context["user_agent"],

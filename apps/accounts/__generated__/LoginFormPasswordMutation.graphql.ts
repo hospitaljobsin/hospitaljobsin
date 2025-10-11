@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<383ce92540b6d8e10b53621408c5aa49>>
- * @relayHash 7dc10aec979439c00c4c04aced0b0f0f
+ * @generated SignedSource<<0ad72b9ca1214b9d6a76eddd0cdc5a60>>
+ * @relayHash f6bb47d9042802b9e721e9194f27b21f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,13 +9,13 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 7dc10aec979439c00c4c04aced0b0f0f
+// @relayRequestID f6bb47d9042802b9e721e9194f27b21f
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type AuthProvider = "OAUTH_GOOGLE" | "PASSWORD" | "WEBAUTHN_CREDENTIAL" | "%future added value";
 export type LoginFormPasswordMutation$variables = {
   captchaToken: string;
-  email: string;
+  login: string;
   password: string;
 };
 export type LoginFormPasswordMutation$data = {
@@ -56,7 +56,7 @@ var v0 = {
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "email"
+  "name": "login"
 },
 v2 = {
   "defaultValue": null,
@@ -71,8 +71,8 @@ v3 = [
   },
   {
     "kind": "Variable",
-    "name": "email",
-    "variableName": "email"
+    "name": "login",
+    "variableName": "login"
   },
   {
     "kind": "Variable",
@@ -222,7 +222,7 @@ return {
     ]
   },
   "params": {
-    "id": "7dc10aec979439c00c4c04aced0b0f0f",
+    "id": "f6bb47d9042802b9e721e9194f27b21f",
     "metadata": {},
     "name": "LoginFormPasswordMutation",
     "operationKind": "mutation",
@@ -231,6 +231,6 @@ return {
 };
 })();
 
-(node as any).hash = "d4f550f048095fb50415814a1cbe345b";
+(node as any).hash = "7fd2db759743adc742d8cb93bd77611d";
 
 export default node;

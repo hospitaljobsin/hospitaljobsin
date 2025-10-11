@@ -697,7 +697,7 @@ class AuthService:
 
     async def login_with_password(
         self,
-        email: str,
+        login: str,
         password: str,
         captcha_token: str,
         user_agent: str,
@@ -716,9 +716,26 @@ class AuthService:
         ):
             return Err(InvalidCaptchaTokenError())
 
-        email = self._normalize_email(email=email)
+        if "@" in login:
+            email = self._normalize_email(email=login)
 
-        account = await self._account_repo.get_by_email(email=email)
+            account = await self._account_repo.get_by_email(email=email)
+        else:
+            try:
+                parsed_number = phonenumbers.parse(login, None)
+                if not phonenumbers.is_valid_number(parsed_number):
+                    return Err(InvalidCredentialsError())
+            except phonenumbers.NumberParseException:
+                return Err(InvalidCredentialsError())
+
+            phone_number = phonenumbers.format_number(
+                phonenumbers.parse(login),
+                phonenumbers.PhoneNumberFormat.E164,
+            )
+
+            account = await self._account_repo.get_by_phone_number(
+                phone_number=phone_number
+            )
         if not account:
             return Err(InvalidCredentialsError())
 

@@ -8,6 +8,7 @@ from app.auth.repositories import WebAuthnCredentialRepo
 from webauthn.helpers.structs import AuthenticatorTransport
 
 from tests.utils.emails import generate_test_email
+from tests.utils.phone_numbers import generate_test_phonenumber
 
 
 @pytest.fixture(scope="module")
@@ -30,6 +31,22 @@ async def foreign_password_account(
     account = await account_repo.create(
         full_name="Mark David",
         email=generate_test_email(),
+        password="Password123!",
+        analytics_preference="acceptance",
+        auth_providers=["password"],
+    )
+    yield account
+    await account_repo.delete(account)
+
+
+@pytest.fixture(scope="module")
+async def phone_password_account(
+    account_repo: AccountRepo,
+) -> AsyncGenerator[Account]:
+    account = await account_repo.create(
+        full_name="John Smith",
+        email=generate_test_email(),
+        phone_number=generate_test_phonenumber(),
         password="Password123!",
         analytics_preference="acceptance",
         auth_providers=["password"],
