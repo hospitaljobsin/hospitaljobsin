@@ -4,7 +4,7 @@ from typing import Annotated, ClassVar, Literal
 
 import pymongo
 from beanie import Document, Indexed, Link
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from pymongo import IndexModel
 
 from app.base.models import GeoObject
@@ -37,6 +37,25 @@ class Education(BaseModel):
     institution: str = Field(..., description="The institution of the education.")
     started_at: date = Field(..., description="When the education started.")
     completed_at: date | None = Field(None, description="When the education ended.")
+
+    @field_validator("started_at")
+    @classmethod
+    def validate_started_at(cls, v: date) -> date:
+        if v > datetime.now(tz=UTC).date():
+            raise ValueError("started_at cannot be in the future")
+        return v
+
+    @field_validator("completed_at")
+    @classmethod
+    def validate_completed_at(cls, v: date | None, info) -> date | None:
+        if v is None:
+            return v
+        if v > datetime.now(tz=UTC).date():
+            raise ValueError("completed_at cannot be in the future")
+        started_at = info.data.get("started_at")
+        if started_at and v < started_at:
+            raise ValueError("completed_at cannot be before started_at")
+        return v
 
 
 # LICENSE
@@ -81,6 +100,25 @@ class WorkExperience(BaseModel):
         None, description="The type of employment (full-time, part-time, etc.)."
     )
     skills: list[str] = Field(..., description="The skills of the work experience.")
+
+    @field_validator("started_at")
+    @classmethod
+    def validate_started_at(cls, v: date) -> date:
+        if v > date.today():
+            raise ValueError("started_at cannot be in the future")
+        return v
+
+    @field_validator("completed_at")
+    @classmethod
+    def validate_completed_at(cls, v: date | None, info) -> date | None:
+        if v is None:
+            return v
+        if v > date.today():
+            raise ValueError("completed_at cannot be in the future")
+        started_at = info.data.get("started_at")
+        if started_at and v < started_at:
+            raise ValueError("completed_at cannot be before started_at")
+        return v
 
 
 class CareerProfile(BaseModel):

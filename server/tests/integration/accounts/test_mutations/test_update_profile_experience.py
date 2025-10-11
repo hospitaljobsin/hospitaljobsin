@@ -860,3 +860,104 @@ async def test_update_profile_experience_all_optional_fields_none(
     assert work_experience[0]["employmentType"] is None
     assert work_experience[0]["completedAt"] is None
     assert work_experience[0]["skills"] == []
+
+
+async def test_update_profile_experience_started_at_in_future(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that startedAt cannot be in the future."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_EXPERIENCE_MUTATION,
+        variables={
+            "workExperience": [
+                {
+                    "title": "Future Position",
+                    "organization": "Hospital",
+                    "startedAt": "2099-01-01",
+                    "completedAt": None,
+                    "description": "Future job",
+                    "employmentType": "FULL_TIME",
+                    "skills": ["Healthcare"],
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_profile_experience_completed_at_in_future(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that completedAt cannot be in the future."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_EXPERIENCE_MUTATION,
+        variables={
+            "workExperience": [
+                {
+                    "title": "Position",
+                    "organization": "Hospital",
+                    "startedAt": "2020-01-01",
+                    "completedAt": "2099-12-31",
+                    "description": "Job",
+                    "employmentType": "FULL_TIME",
+                    "skills": ["Healthcare"],
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_profile_experience_completed_at_before_started_at(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that completedAt cannot be before startedAt."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_EXPERIENCE_MUTATION,
+        variables={
+            "workExperience": [
+                {
+                    "title": "Position",
+                    "organization": "Hospital",
+                    "startedAt": "2020-12-31",
+                    "completedAt": "2020-01-01",
+                    "description": "Job",
+                    "employmentType": "FULL_TIME",
+                    "skills": ["Healthcare"],
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_profile_experience_completed_at_same_as_started_at(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that completedAt can be the same as startedAt."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_EXPERIENCE_MUTATION,
+        variables={
+            "workExperience": [
+                {
+                    "title": "Short Position",
+                    "organization": "Hospital",
+                    "startedAt": "2020-01-01",
+                    "completedAt": "2020-01-01",
+                    "description": "One day job",
+                    "employmentType": "TEMPORARY",
+                    "skills": ["Healthcare"],
+                },
+            ],
+        },
+    )
+
+    assert response["data"]["updateProfileExperience"]["__typename"] == "Account"
+    work_experience = response["data"]["updateProfileExperience"]["profile"][
+        "workExperience"
+    ]
+    assert work_experience[0]["startedAt"] == "2020-01-01"
+    assert work_experience[0]["completedAt"] == "2020-01-01"

@@ -526,26 +526,88 @@ async def test_update_profile_education_old_dates(
     assert edu["completedAt"] == "1985-06-30"
 
 
-async def test_update_profile_education_future_dates(
+async def test_update_profile_education_started_at_in_future(
     password_auth_graphql_client: GraphQLClient,
 ) -> None:
-    """Ensure that future dates are handled correctly."""
+    """Ensure that startedAt cannot be in the future."""
     response = await password_auth_graphql_client(
         UPDATE_PROFILE_EDUCATION_MUTATION,
         variables={
             "education": [
                 {
-                    "degree": "MD",
-                    "institution": "Future Medical School",
-                    "startedAt": "2025-08-01",
-                    "completedAt": "2028-06-30",
+                    "degree": "MBBS",
+                    "institution": "Medical College",
+                    "startedAt": "2099-08-01",
+                    "completedAt": None,
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_profile_education_completed_at_in_future(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that completedAt cannot be in the future."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_EDUCATION_MUTATION,
+        variables={
+            "education": [
+                {
+                    "degree": "MBBS",
+                    "institution": "Medical College",
+                    "startedAt": "2020-08-01",
+                    "completedAt": "2099-06-30",
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_profile_education_completed_at_before_started_at(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that completedAt cannot be before startedAt."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_EDUCATION_MUTATION,
+        variables={
+            "education": [
+                {
+                    "degree": "MBBS",
+                    "institution": "Medical College",
+                    "startedAt": "2020-08-01",
+                    "completedAt": "2019-06-30",
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_profile_education_completed_at_same_as_started_at(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that completedAt can be the same as startedAt."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_EDUCATION_MUTATION,
+        variables={
+            "education": [
+                {
+                    "degree": "Certificate Course",
+                    "institution": "Medical Institute",
+                    "startedAt": "2020-06-30",
+                    "completedAt": "2020-06-30",
                 },
             ],
         },
     )
 
     assert response["data"]["updateProfileEducation"]["__typename"] == "Account"
-    assert len(response["data"]["updateProfileEducation"]["profile"]["education"]) == 1
     edu = response["data"]["updateProfileEducation"]["profile"]["education"][0]
-    assert edu["startedAt"] == "2025-08-01"
-    assert edu["completedAt"] == "2028-06-30"
+    assert edu["startedAt"] == "2020-06-30"
+    assert edu["completedAt"] == "2020-06-30"

@@ -1,10 +1,11 @@
 import uuid
 from datetime import UTC, date, datetime, timedelta
-from typing import Literal
+from typing import Annotated, Literal
 
 import phonenumbers
 import strawberry
 from fastapi import Response
+from pydantic import Field, validate_call
 from result import Err, Ok, Result
 from strawberry import UNSET
 from types_aiobotocore_s3 import S3Client
@@ -546,9 +547,10 @@ class ProfileService:
 
         return Ok(account)
 
+    @validate_call()
     async def update_education(
         self,
-        account: Account,
+        account: Annotated[Account, Field(exclude=True)],
         education: list[Education],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
@@ -565,9 +567,10 @@ class ProfileService:
 
         return Ok(account)
 
+    @validate_call()
     async def update_experience(
         self,
-        account: Account,
+        account: Annotated[Account, Field(exclude=True)],
         work_experience: list[WorkExperience],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
