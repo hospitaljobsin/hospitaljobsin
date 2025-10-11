@@ -1,13 +1,7 @@
 'use client';
 
-import type { LoginFormGenerateAuthenticationOptionsMutation } from '@/__generated__/LoginFormGenerateAuthenticationOptionsMutation.graphql';
-import type { LoginFormPasskeyMutation as LoginFormPasskeyMutationType } from '@/__generated__/LoginFormPasskeyMutation.graphql';
-import type { LoginFormPasswordMutation as LoginFormPasswordMutationType } from '@/__generated__/LoginFormPasswordMutation.graphql';
-import { env } from '@/lib/env/client';
-import links from '@/lib/links';
-import { getValidRedirectURL } from '@/lib/redirects';
 import { useRouter } from '@bprogress/next';
-import { addToast, Alert, Button, Card, CardBody, CardFooter, CardHeader, Divider, Input } from '@heroui/react';
+import { Alert, addToast, Button, Card, CardBody, CardFooter, CardHeader, Divider, Input } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { EyeIcon, EyeOffIcon, FingerprintIcon } from 'lucide-react';
@@ -17,13 +11,19 @@ import posthog from 'posthog-js';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { graphql, useMutation } from 'react-relay';
-import { z } from 'zod/v4-mini';
+import { z } from 'zod/v4';
+import type { LoginFormGenerateAuthenticationOptionsMutation } from '@/__generated__/LoginFormGenerateAuthenticationOptionsMutation.graphql';
+import type { LoginFormPasskeyMutation as LoginFormPasskeyMutationType } from '@/__generated__/LoginFormPasskeyMutation.graphql';
+import type { LoginFormPasswordMutation as LoginFormPasswordMutationType } from '@/__generated__/LoginFormPasswordMutation.graphql';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
+import { getValidRedirectURL } from '@/lib/redirects';
 import { GoogleIcon } from '../Icons';
 import { useTurnstile } from '../TurnstileProvider';
 
 const LoginFormPasswordMutation = graphql`
-  mutation LoginFormPasswordMutation($email: String!, $password: String!, $captchaToken: String!) {
-    loginWithPassword(email: $email, password: $password, captchaToken: $captchaToken) {
+  mutation LoginFormPasswordMutation($login: String!, $password: String!, $captchaToken: String!) {
+    loginWithPassword(login: $login, password: $password, captchaToken: $captchaToken) {
       __typename
       ... on InvalidCredentialsError {
         message
@@ -87,8 +87,11 @@ const LoginFormPasskeyMutation = graphql`
 `;
 
 const loginSchema = z.object({
-	email: z.string().check(z.minLength(1, 'This field is required'), z.email()),
-	password: z.string().check(z.minLength(1, 'This field is required'))
+	login: z
+		.string()
+		.min(1, 'This field is required')
+		.refine(val => z.email().safeParse(val).success || /^\+?[1-9]\d{1,14}$/.test(val), 'Invalid email or phone number'),
+	password: z.string().min(1, 'This field is required')
 });
 
 export default function LoginForm() {
@@ -148,13 +151,13 @@ export default function LoginForm() {
 		const token = await executeCaptcha('login_password');
 		commitPasswordLoginMutation({
 			variables: {
-				email: values.email,
+				login: values.login,
 				password: values.password,
 				captchaToken: token
 			},
 			onCompleted(response) {
 				if (response.loginWithPassword.__typename === 'InvalidCredentialsError') {
-					setError('email', { message: response.loginWithPassword.message });
+					setError('login', { message: response.loginWithPassword.message });
 					setError('password', { message: response.loginWithPassword.message });
 				} else if (response.loginWithPassword.__typename === 'InvalidCaptchaTokenError') {
 					// handle recaptcha failure
@@ -305,15 +308,15 @@ export default function LoginForm() {
 					<form onSubmit={handleSubmit(onSubmit)} className='space-y-3'>
 						<div className='w-full flex flex-col gap-6'>
 							<Input
-								label='Email Address'
+								label='Email or Phone Number'
 								autoComplete='email'
-								placeholder='Enter your email address'
+								placeholder='Enter your email or phone number'
 								type='text'
-								{...register('email', {
-									onChange: () => clearErrors(['email', 'password'])
+								{...register('login', {
+									onChange: () => clearErrors(['login', 'password'])
 								})}
-								errorMessage={errors.email?.message}
-								isInvalid={!!errors.email}
+								errorMessage={errors.login?.message}
+								isInvalid={!!errors.login}
 							/>
 							<div className='w-full flex flex-col'>
 								<Input
@@ -336,7 +339,7 @@ export default function LoginForm() {
 										</button>
 									}
 									{...register('password', {
-										onChange: () => clearErrors(['email', 'password'])
+										onChange: () => clearErrors(['login', 'password'])
 									})}
 									errorMessage={errors.password?.message}
 									isInvalid={!!errors.password}

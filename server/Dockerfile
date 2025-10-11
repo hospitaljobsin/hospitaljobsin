@@ -1,11 +1,11 @@
-ARG PYTHON_BASE=3.13.8-slim-bookworm
+ARG PYTHON_BASE=3.14-slim-bookworm
 
 # development stage
 FROM python:$PYTHON_BASE AS development-server
 
 # Install curl
 RUN apt-get update && \
-    apt-get install -y curl && \
+    apt-get install -y curl build-essential && \
     rm -rf /var/lib/apt/lists/*
 
 # install UV
