@@ -2486,7 +2486,7 @@ requires-dist = [
     { name = "tenacity", specifier = "==9.1.2" },
     { name = "tesserocr", specifier = "==2.8.0" },
     { name = "types-aioboto3", extras = ["essential"], specifier = "==15.0.0" },
-    { name = "types-aiobotocore-bedrock-runtime", specifier = "==2.23.0" },
+    { name = "types-aiobotocore-bedrock-runtime", specifier = "==2.24.2" },
     { name = "types-aiobotocore-geo-places", specifier = "==2.24.1" },
     { name = "types-aiobotocore-location", specifier = "==2.23.0" },
     { name = "types-aiobotocore-ses", specifier = "==2.23.0" },
@@ -2834,11 +2834,11 @@ wheels = [
 
 [[package]]
 name = "types-aiobotocore-bedrock-runtime"
-version = "2.23.0"
+version = "2.24.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d3/94/c225fedd3e00d49e7b9233580690805870281f11097b2616f992edba3e0b/types_aiobotocore_bedrock_runtime-2.23.0.tar.gz", hash = "sha256:3855314116f7dd6ae556e4373a6b682832de1c0dece7eaae0aa42abd17256c89", size = 26424, upload-time = "2025-06-13T01:45:34.806Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2e/c1/d9cf5a2bc687449ba4816bd878c1981b3d5a8e816faca87ed15ab048e751/types_aiobotocore_bedrock_runtime-2.24.2.tar.gz", hash = "sha256:844df02af4078f6cef784bf607ac78705fad4e08932336402d2929fa77f529d9", size = 28584, upload-time = "2025-09-06T01:26:30.163Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/30/6b/7087d0d50ec4b4465b44f1423aba209569f970057765f5b3ee655c2a88ab/types_aiobotocore_bedrock_runtime-2.23.0-py3-none-any.whl", hash = "sha256:988dbee9559745f356f89d9875e789eb291f43dc82ef1102c2abdef0f5711ab7", size = 32382, upload-time = "2025-06-13T01:45:33.566Z" },
+    { url = "https://files.pythonhosted.org/packages/ee/11/b1ed69b3af1ef18e9504f14e96b616a95044d93abb4b1e5399d4e70b12e5/types_aiobotocore_bedrock_runtime-2.24.2-py3-none-any.whl", hash = "sha256:7f128c1076fe50268149c68c5b0938a90644e5b70c5f041660eaa4de5f694695", size = 34700, upload-time = "2025-09-06T01:26:28.545Z" },
 ]
 
 [[package]]
