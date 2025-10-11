@@ -81,6 +81,7 @@ from app.core.emails import (
     SMTPEmailSender,
     create_smtp_client,
 )
+from app.core.embeddings import EmbeddingsService
 from app.core.messages import (
     BaseMessageSender,
     DummyMessageSender,
@@ -93,7 +94,6 @@ from app.core.redis_client import create_redis_client
 from app.core.templates import create_jinja2_environment, create_jinja2_mjml_environment
 from app.core.whatsapp_client import WhatsappClient
 from app.dataloaders import create_dataloaders
-from app.embeddings.services import EmbeddingsService
 from app.geocoding.repositories import RegionRepo
 from app.job_alerts.repositories import JobAlertRepo, RecommendedJobAlertRepo
 from app.job_alerts.services import JobAlertService

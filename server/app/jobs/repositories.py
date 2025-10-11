@@ -31,9 +31,9 @@ from app.core.constants import (
     JobKindType,
     WorkModeType,
 )
+from app.core.embeddings import EmbeddingsService
 from app.core.formatting import clean_markdown_text, markdown_to_clean_html, slugify
 from app.database.paginator import PaginatedResult, Paginator, SearchPaginator
-from app.embeddings.services import EmbeddingsService
 from app.geocoding.repositories import RegionRepo
 from app.jobs.agents.applicant_analysis import JobApplicantAnalysisOutput
 from app.jobs.agents.applicant_query_parser import (
