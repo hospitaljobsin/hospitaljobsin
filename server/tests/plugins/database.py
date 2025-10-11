@@ -1,3 +1,4 @@
+import asyncio
 import json
 from collections.abc import AsyncGenerator
 from pathlib import Path
@@ -151,6 +152,7 @@ async def import_region_data(
         await Region.insert_many(regions)
         print(f"[INFO] Successfully imported {len(regions)} regions.")
         logger.info("Successfully imported regions", count=len(regions))
+        await asyncio.sleep(1.5)  # Give some time for the DB to index the inserts
 
     yield None
     await Region.delete_all()
