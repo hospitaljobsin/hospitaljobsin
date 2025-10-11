@@ -118,7 +118,7 @@ class AccountService:
     async def update_analytics_preference(
         self,
         account: Account | None,
-        type: Literal["acceptance", "rejection"],
+        preference_type: Literal["acceptance", "rejection"],
         response: Response,
     ) -> Ok[Account | None]:
         """Update the analytics preference."""
@@ -126,14 +126,14 @@ class AccountService:
             await self._account_repo.update(
                 account=account,
                 analytics_preference=AnalyticsPreference(
-                    type=type,
+                    type=preference_type,
                     updated_at=datetime.now(UTC),
                 ),
             )
         # Set the consent cookie with appropriate settings
         response.set_cookie(
             self._settings.analytics_preference_cookie_name,
-            "yes" if type == "acceptance" else "no",
+            "yes" if preference_type == "acceptance" else "no",
             max_age=365 * 24 * 60 * 60,  # 1 year
             path="/",
             httponly=False,  # Allow client-side access
@@ -144,13 +144,13 @@ class AccountService:
         return Ok(account)
 
     async def update_terms_and_policy(
-        self, account: Account, type: Literal["acceptance", "rejection"]
+        self, account: Account, preference_type: Literal["acceptance", "rejection"]
     ) -> Ok[Account]:
         """Update the terms and policy."""
         await self._account_repo.update(
             account=account,
             terms_and_policy=TermsAndPolicy(
-                type=type,
+                type=preference_type,
                 updated_at=datetime.now(UTC),
                 version=TERMS_AND_POLICY_LATEST_VERSION,
             ),

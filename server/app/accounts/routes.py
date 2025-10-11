@@ -33,7 +33,7 @@ async def update_analytics_preference(
     """Update the analytics preference."""
     await account_service.update_analytics_preference(
         account=current_user,
-        type="acceptance" if consent_data.consent == "yes" else "rejection",
+        preference_type="acceptance" if consent_data.consent == "yes" else "rejection",
         response=response,
     )
     return {"message": "Consent cookie set successfully"}

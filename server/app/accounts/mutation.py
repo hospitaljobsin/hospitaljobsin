@@ -400,7 +400,7 @@ class AccountMutation:
         """Update the current user's analytics preference."""
         match await account_service.update_analytics_preference(
             account=info.context["current_user"],
-            type=analytics_preference.value.lower(),
+            preference_type=analytics_preference.value.lower(),
             response=info.context["response"],
         ):
             case Ok(account):
