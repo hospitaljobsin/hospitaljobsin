@@ -1031,19 +1031,23 @@ async def test_create_job_application_concurrent_applications(
     complete_profile,
 ) -> None:
     """Test concurrent applications to different jobs."""
-    jobs: list[Job] = []
-    for i in range(5):
-        job = await job_repo.create(
-            organization=valid_organization,
-            title=f"Job {i}",
-            description=f"Description {i}",
-            skills=["Python"],
-            location="Mumbai",
-            applicant_locations=[],
-            vacancies=5,
-        )
+    jobs_data = [
+        {
+            "title": f"Job {i}",
+            "description": f"Description {i}",
+            "skills": ["Python"],
+            "location": "Mumbai",
+            "applicant_locations": [],
+            "vacancies": 5,
+        }
+        for i in range(5)
+    ]
+    jobs = await job_repo.create_many(
+        organization=valid_organization,
+        jobs_data=jobs_data,
+    )
+    for job in jobs:
         await job_repo.update_active(job, is_active=True)
-        jobs.append(job)
 
     async def perform_mutation(job: Job) -> GraphQLResponse:
         return await password_auth_graphql_client(
@@ -1059,6 +1063,9 @@ async def test_create_job_application_concurrent_applications(
     for response in responses:
         data = response["data"]["createJobApplication"]
         assert data["__typename"] == "CreateJobApplicantSuccess"
+
+    for job in jobs:
+        await job_repo.delete(job)
 
 
 async def test_create_job_application_missing_required_fields(

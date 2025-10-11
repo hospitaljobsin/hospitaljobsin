@@ -2,6 +2,7 @@ from collections.abc import AsyncIterator
 from datetime import UTC, datetime, timedelta
 
 import pytest
+from app import create_app
 from app.accounts.documents import Account
 from app.auth.repositories import SessionRepo
 from app.config import AuthSettings, SecretSettings
@@ -16,8 +17,6 @@ from .graphql_client import GraphQLClient
 
 @pytest.fixture(scope="session")
 async def lifespan_manager() -> AsyncIterator[LifespanManager]:
-    from app import create_app
-
     app = create_app()
     async with LifespanManager(app=app) as manager:
         yield manager
@@ -134,7 +133,7 @@ async def password_auth_graphql_client(
 async def password_auth_sudo_http_client(
     lifespan_manager: LifespanManager,
     password_account: Account,
-    session_repo,  # type: ignore[misc] # SessionRepo fixture
+    session_repo: SessionRepo,
     auth_settings: AuthSettings,
     secret_settings: SecretSettings,
 ) -> AsyncIterator[AsyncClient]:
@@ -176,6 +175,54 @@ async def password_auth_sudo_graphql_client(
     """Create authenticated GraphQL client with sudo mode enabled."""
     return GraphQLClient(
         client=password_auth_sudo_http_client,
+        endpoint="/graphql",
+    )
+
+
+@pytest.fixture
+async def webauthn_auth_sudo_http_client(
+    lifespan_manager: LifespanManager,
+    webauthn_account: Account,
+    session_repo: SessionRepo,
+    auth_settings: AuthSettings,
+    secret_settings: SecretSettings,
+) -> AsyncIterator[AsyncClient]:
+    """Create authenticated HTTP client with sudo mode for webauthn-only account."""
+    session_token = await session_repo.create(
+        webauthn_account, user_agent="test-agent", ip_address="192.168.1.1"
+    )
+
+    sudo_mode_expires_at = datetime.now(UTC) + timedelta(seconds=SUDO_MODE_EXPIRES_IN)
+
+    session_data = {
+        "session_token": session_token,
+        "sudo_mode_expires_at": sudo_mode_expires_at.isoformat(),
+    }
+    encrypted_session = encrypt_session_data(secret_settings, session_data)
+
+    cookies = Cookies()
+    cookies.set(
+        auth_settings.session_user_cookie_name, encrypted_session.decode("utf-8")
+    )
+
+    async with AsyncClient(
+        transport=ASGITransport(
+            app=lifespan_manager.app,  # type: ignore[arg-type]
+        ),
+        base_url="https://localtest.me",
+        follow_redirects=True,
+        cookies=cookies,
+    ) as client:
+        yield client
+
+
+@pytest.fixture
+async def webauthn_auth_sudo_graphql_client(
+    webauthn_auth_sudo_http_client: AsyncClient,
+) -> GraphQLClient:
+    """Create authenticated GraphQL client with sudo mode for webauthn-only account."""
+    return GraphQLClient(
+        client=webauthn_auth_sudo_http_client,
         endpoint="/graphql",
     )
 

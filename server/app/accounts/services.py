@@ -1,10 +1,10 @@
 import uuid
 from datetime import UTC, date, datetime, timedelta
-from typing import Literal
+from typing import Annotated, Literal
 
 import phonenumbers
-import strawberry
 from fastapi import Response
+from pydantic import Field, HttpUrl, StringConstraints, validate_call
 from result import Err, Ok, Result
 from strawberry import UNSET
 from types_aiobotocore_s3 import S3Client
@@ -13,6 +13,7 @@ from app.accounts.agents.profile_parser import ProfileParserAgent
 from app.accounts.documents import (
     Account,
     AnalyticsPreference,
+    Certification,
     Education,
     Language,
     License,
@@ -86,15 +87,25 @@ class AccountService:
             HttpMethod="PUT",
         )
 
+    @validate_call()
     async def update(
         self,
-        account: Account,
-        full_name: str = strawberry.UNSET,
-        avatar_url: str | None = strawberry.UNSET,
+        account: Annotated[Account, Field(exclude=True)],
+        full_name: Annotated[
+            str,
+            StringConstraints(
+                max_length=100,
+                min_length=1,
+                strip_whitespace=True,
+            ),
+        ],
+        avatar_url: HttpUrl | None = None,
     ) -> Ok[Account]:
         """Update the given account."""
         await self._account_repo.update(
-            account=account, full_name=full_name, avatar_url=avatar_url
+            account=account,
+            full_name=full_name,
+            avatar_url=str(avatar_url),
         )
         # update denormalized full_name in organization members
         await self._organization_member_repo.update_all(
@@ -107,7 +118,7 @@ class AccountService:
     async def update_analytics_preference(
         self,
         account: Account | None,
-        type: Literal["acceptance", "rejection"],
+        preference_type: Literal["acceptance", "rejection"],
         response: Response,
     ) -> Ok[Account | None]:
         """Update the analytics preference."""
@@ -115,14 +126,14 @@ class AccountService:
             await self._account_repo.update(
                 account=account,
                 analytics_preference=AnalyticsPreference(
-                    type=type,
+                    type=preference_type,
                     updated_at=datetime.now(UTC),
                 ),
             )
         # Set the consent cookie with appropriate settings
         response.set_cookie(
             self._settings.analytics_preference_cookie_name,
-            "yes" if type == "acceptance" else "no",
+            "yes" if preference_type == "acceptance" else "no",
             max_age=365 * 24 * 60 * 60,  # 1 year
             path="/",
             httponly=False,  # Allow client-side access
@@ -133,13 +144,13 @@ class AccountService:
         return Ok(account)
 
     async def update_terms_and_policy(
-        self, account: Account, type: Literal["acceptance", "rejection"]
+        self, account: Account, preference_type: Literal["acceptance", "rejection"]
     ) -> Ok[Account]:
         """Update the terms and policy."""
         await self._account_repo.update(
             account=account,
             terms_and_policy=TermsAndPolicy(
-                type=type,
+                type=preference_type,
                 updated_at=datetime.now(UTC),
                 version=TERMS_AND_POLICY_LATEST_VERSION,
             ),
@@ -147,7 +158,7 @@ class AccountService:
         return Ok(account)
 
     async def request_phone_number_verification_token(
-        self, account: Account, phone_number: str
+        self, phone_number: str
     ) -> Result[
         int,
         InvalidPhoneNumberError
@@ -498,11 +509,11 @@ class ProfileService:
     async def update_personal_details(
         self,
         account: Account,
-        gender: str | None,
-        date_of_birth: date | None,
-        marital_status: str | None,
-        category: str | None,
-        address: str | None,
+        gender: str | None = UNSET,
+        date_of_birth: date | None = UNSET,
+        marital_status: str | None = UNSET,
+        category: str | None = UNSET,
+        address: str | None = UNSET,
     ) -> Result[Account, InvalidLocationError]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
@@ -511,7 +522,7 @@ class ProfileService:
                 account=account, profile=existing_profile
             )
 
-        if address:
+        if address is not UNSET and address:
             location = await self._region_repo.get_by_name(name=address)
             if location is None:
                 return Err(InvalidLocationError())
@@ -546,9 +557,10 @@ class ProfileService:
 
         return Ok(account)
 
+    @validate_call()
     async def update_education(
         self,
-        account: Account,
+        account: Annotated[Account, Field(exclude=True)],
         education: list[Education],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
@@ -565,9 +577,10 @@ class ProfileService:
 
         return Ok(account)
 
+    @validate_call()
     async def update_experience(
         self,
-        account: Account,
+        account: Annotated[Account, Field(exclude=True)],
         work_experience: list[WorkExperience],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
@@ -584,10 +597,11 @@ class ProfileService:
 
         return Ok(account)
 
+    @validate_call()
     async def update_certifications(
         self,
-        account: Account,
-        certifications: list,
+        account: Annotated[Account, Field(exclude=True)],
+        certifications: list[Certification],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
@@ -603,9 +617,10 @@ class ProfileService:
 
         return Ok(account)
 
+    @validate_call()
     async def update_licenses(
         self,
-        account: Account,
+        account: Annotated[Account, Field(exclude=True)],
         licenses: list[License],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
@@ -622,11 +637,12 @@ class ProfileService:
 
         return Ok(account)
 
+    @validate_call()
     async def update_about_me(
         self,
-        account: Account,
-        professional_summary: str | None,
-        headline: str | None,
+        account: Annotated[Account, Field(exclude=True)],
+        professional_summary: Annotated[str | None, Field(max_length=750)] = None,
+        headline: Annotated[str | None, Field(max_length=100)] = None,
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
@@ -643,15 +659,17 @@ class ProfileService:
 
         return Ok(account)
 
+    @validate_call()
     async def update_career_profile(
         self,
-        account: Account,
-        current_industry: str | None = UNSET,
-        desired_job_types: list[JobKindType] = UNSET,
-        desired_work_modes: list[WorkModeType] = UNSET,
-        expected_salary: float | None = UNSET,
-        locations_open_to_work: list[str] = UNSET,
-        open_to_relocation_anywhere: bool = UNSET,
+        *,
+        account: Annotated[Account, Field(exclude=True)],
+        current_industry: str | None,
+        desired_job_types: list[JobKindType],
+        desired_work_modes: list[WorkModeType],
+        expected_salary: Annotated[float | None, Field(ge=0)],
+        locations_open_to_work: list[str],
+        open_to_relocation_anywhere: bool,
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:

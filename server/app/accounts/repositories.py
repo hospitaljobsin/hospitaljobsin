@@ -178,16 +178,19 @@ class AccountRepo:
 
     async def update_password(self, account: Account, password: str) -> Account:
         """Update the given account's password."""
-        if account.password_hash is None:
+        if "password" not in account.auth_providers:
             # account initially had no password
-            account.auth_providers.append("password")
+            new_providers = account.auth_providers.copy()
+            new_providers.append("password")
+            account.auth_providers = new_providers
         account.password_hash = self.hash_password(password)
         return await account.save()
 
     async def delete_password(self, account: Account) -> Account:
         """Delete the given account's password."""
         account.password_hash = None
-        account.auth_providers.remove("password")
+        if "password" in account.auth_providers:
+            account.auth_providers.remove("password")
         return await account.save()
 
     async def delete_avatar(self, account: Account) -> Account:

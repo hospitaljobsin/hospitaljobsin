@@ -1022,7 +1022,7 @@ class AuthService:
         """Get a password reset token (used to check it's validity)."""
         reset_token = await self._password_reset_token_repo.get(
             token=password_reset_token,
-            email=email,
+            email=self._normalize_email(email),
         )
         if reset_token is None:
             return Err(PasswordResetTokenNotFoundError())
@@ -1307,16 +1307,6 @@ class AuthService:
             account=existing_reset_token.account, password=new_password
         )
 
-        if "password" not in existing_reset_token.account.auth_providers:
-            # user is setting their password for the first time
-            await self._account_repo.update_auth_providers(
-                account=existing_reset_token.account,
-                auth_providers=[
-                    *existing_reset_token.account.auth_providers,
-                    "password",
-                ],
-            )
-
         # delete all existing user sessions
         await self._session_repo.delete_all(account_id=existing_reset_token.account.id)
 
@@ -1350,19 +1340,11 @@ class AuthService:
         if not self.check_password_strength(password=new_password):
             return Err(PasswordNotStrongError())
 
-        await self._account_repo.update_password(account=account, password=new_password)
+        updated_account = await self._account_repo.update_password(
+            account=account, password=new_password
+        )
 
-        if "password" not in account.auth_providers:
-            # user is setting their password for the first time
-            await self._account_repo.update_auth_providers(
-                account=account,
-                auth_providers=[
-                    *account.auth_providers,
-                    "password",
-                ],
-            )
-
-        return Ok(account)
+        return Ok(updated_account)
 
     async def delete_password(
         self, account: Account

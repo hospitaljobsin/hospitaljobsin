@@ -4,8 +4,8 @@ from datetime import UTC, datetime, timedelta
 from app.config import DatabaseSettings, get_settings
 from app.container import create_container
 from app.core.constants import JOB_EMBEDDING_DIMENSIONS
+from app.core.embeddings import EmbeddingsService
 from app.database import initialize_database
-from app.embeddings.services import EmbeddingsService
 from app.jobs.documents import Job
 from app.jobs.repositories import JobRepo
 from app.organizations.documents import Organization

@@ -7,8 +7,8 @@ from app.core.constants import (
     JOB_APPLICANT_EMBEDDING_DIMENSIONS,
     JOB_EMBEDDING_DIMENSIONS,
 )
+from app.core.embeddings import EmbeddingsService
 from app.database import initialize_database
-from app.embeddings.services import EmbeddingsService
 from app.jobs.documents import Job, JobApplicant
 from app.jobs.repositories import JobApplicantRepo, JobRepo
 

@@ -98,6 +98,9 @@ class RegionRepo:
     async def get_autocomplete_suggestions(
         self, search_term: str
     ) -> list[LocationAutocompleteSuggestion]:
+        search_term = search_term.strip()
+        if not search_term:
+            return []
         pipeline = [
             {
                 "$search": {

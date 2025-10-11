@@ -182,9 +182,9 @@ async def test_create_job_alert_max_alerts_reached(
     job_alert_repo: JobAlertRepo,
 ) -> None:
     """Test job alert creation when maximum number of alerts is reached."""
-    # Create maximum allowed number of alerts
-    for i in range(MAX_JOB_ALERTS_PER_ACCOUNT):
-        filters = AlertFilters(
+    # Create maximum allowed number of alerts using bulk insert
+    filters_list = [
+        AlertFilters(
             search_term=f"test-max-{i}",
             location="Test Location",
             job_type=None,
@@ -194,12 +194,14 @@ async def test_create_job_alert_max_alerts_reached(
             min_salary=None,
             max_salary=None,
         )
+        for i in range(MAX_JOB_ALERTS_PER_ACCOUNT)
+    ]
 
-        await job_alert_repo.create(
-            account=password_account,
-            filters=filters,
-            frequency="daily",
-        )
+    await job_alert_repo.create_many(
+        account=password_account,
+        frequency="daily",
+        job_alert_filters=filters_list,
+    )
 
     # Try to create one more alert
     response = await password_auth_graphql_client(

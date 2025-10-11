@@ -1,4 +1,4 @@
-ARG PYTHON_BASE=3.13.5-slim-bookworm
+ARG PYTHON_BASE=3.14-slim-bookworm
 
 # development stage
 FROM python:$PYTHON_BASE AS development-server
@@ -9,7 +9,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # install UV
-COPY --from=ghcr.io/astral-sh/uv:0.7.21 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.9.2 /uv /uvx /bin/
 
 WORKDIR /project
 
@@ -66,7 +66,7 @@ RUN unzip layer.zip -d /opt && \
 
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production-server
 
-COPY --from=ghcr.io/astral-sh/uv:0.7.21 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.9.2 /uv /uvx /bin/
 
 
 # COPY --from=layer-build /opt /opt
@@ -126,7 +126,7 @@ FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS lambda-handler
 # Build argument for Lambda handler - can be overridden during build
 ARG LAMBDA_HANDLER=app.sqs_handler.lambda_handler
 
-COPY --from=ghcr.io/astral-sh/uv:0.7.21 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.9.2 /uv /uvx /bin/
 
 COPY --from=layer-build /opt /opt
 

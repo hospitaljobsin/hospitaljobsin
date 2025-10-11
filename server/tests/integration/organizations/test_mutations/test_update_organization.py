@@ -300,7 +300,7 @@ async def test_update_organization_member_unauthorized(
 @pytest.mark.parametrize(
     ("name", "slug"),
     [
-        ("", generate_test_slug()),
+        ("", "test"),
         ("Valid Name", ""),
         ("Valid Name", "invalid slug with spaces"),
         ("Valid Name", "slug-with-special-chars!@#"),

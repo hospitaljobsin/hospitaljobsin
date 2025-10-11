@@ -1,5 +1,5 @@
 import sentry_sdk
-from beanie import init_beanie
+from beanie import Document, init_beanie
 from pymongo import AsyncMongoClient
 from pymongo.operations import SearchIndexModel
 from structlog import get_logger
@@ -259,17 +259,13 @@ async def create_search_indexes(
         logger.info("Region Atlas Search index already exists")
 
 
-async def initialize_database(database_url: str, default_database_name: str) -> None:
+async def initialize_database(
+    default_database_name: str, db_client: AsyncMongoClient
+) -> None:
     """Initialize the database."""
     with sentry_sdk.start_span(op="db.init", name="Initialize Database"):
-        client: AsyncMongoClient = AsyncMongoClient(
-            database_url,
-            connectTimeoutMS=1000 * 15,
-            socketTimeoutMS=1000 * 12,
-            serverSelectionTimeoutMS=1000 * 15,
-        )
         await init_beanie(
-            database=client.get_database(name=default_database_name),
+            database=db_client.get_database(name=default_database_name),
             document_models=[
                 Job,
                 JobApplicant,
@@ -298,4 +294,4 @@ async def initialize_database(database_url: str, default_database_name: str) -> 
                 RecommendedJobAlert,
             ],
         )
-        await create_search_indexes(client, default_database_name)
+        await create_search_indexes(db_client, default_database_name)

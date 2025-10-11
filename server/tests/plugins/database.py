@@ -1,3 +1,4 @@
+import asyncio
 import json
 from collections.abc import AsyncGenerator
 from pathlib import Path
@@ -28,6 +29,12 @@ def db_settings() -> DatabaseSettings:
 
 
 @pytest.fixture(scope="session")
+def db_name(worker_id: str) -> str:
+    """Get a test database name, unique per pytest-xdist worker."""
+    return f"testmedicaljobs_{worker_id}"
+
+
+@pytest.fixture(scope="session")
 async def db_client(db_settings: DatabaseSettings) -> AsyncGenerator[AsyncMongoClient]:
     client = AsyncMongoClient(str(db_settings.database_url))
     yield client
@@ -36,11 +43,11 @@ async def db_client(db_settings: DatabaseSettings) -> AsyncGenerator[AsyncMongoC
 
 @pytest.fixture(autouse=True, scope="session")
 async def initialize_test_database(
-    db_settings: DatabaseSettings, db_client: AsyncMongoClient
+    db_client: AsyncMongoClient, db_name: str
 ) -> AsyncGenerator[None]:
     await initialize_database(
-        database_url=str(db_settings.database_url),
-        default_database_name=db_settings.test_database_name,
+        default_database_name=db_name,
+        db_client=db_client,
     )
 
     # Wait for indexes to be ready
@@ -51,7 +58,7 @@ async def initialize_test_database(
 
     await wait_for_search_indexes(
         client=db_client,
-        database_name=db_settings.test_database_name,
+        database_name=db_name,
         collection_names=[
             str(JobApplicant.get_settings().name),
             str(Job.get_settings().name),
@@ -63,7 +70,7 @@ async def initialize_test_database(
             REGION_SEARCH_INDEX_NAME,
         ],
         wait_time=60,  # wait up to 60 seconds for indexes to be ready
-        check_interval=0.5,  # check every half second
+        check_interval=2.5,  # check every 2.5 seconds
     )
 
     logger.info("Test database initialized and indexes are ready.")
@@ -71,7 +78,7 @@ async def initialize_test_database(
 
     yield
 
-    database = db_client.get_database(name=db_settings.test_database_name)
+    database = db_client.get_database(name=db_name)
 
     collections = await database.list_collection_names()
 
@@ -145,6 +152,7 @@ async def import_region_data(
         await Region.insert_many(regions)
         print(f"[INFO] Successfully imported {len(regions)} regions.")
         logger.info("Successfully imported regions", count=len(regions))
+        await asyncio.sleep(1.5)  # Give some time for the DB to index the inserts
 
     yield None
     await Region.delete_all()
@@ -156,10 +164,11 @@ async def cleanup_database(
     import_region_data,
     db_settings: DatabaseSettings,
     db_client: AsyncMongoClient,
+    db_name: str,
 ) -> AsyncGenerator[None]:
     yield
 
-    database = db_client.get_database(name=db_settings.test_database_name)
+    database = db_client.get_database(name=db_name)
 
     collections = await database.list_collection_names()
 
