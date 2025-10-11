@@ -37,7 +37,7 @@ dependencies = [
     "typing-inspection==0.4.2",
     "strawberry-graphql==0.283.3",
     "types-aiobotocore-textract==2.25.0",
-    "tesserocr==2.8.0",
+    "tesserocr==2.9.1",
     "pillow==11.3.0",
     "pymupdf==1.26.3",
     "python-multipart==0.0.20",

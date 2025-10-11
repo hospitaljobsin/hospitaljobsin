@@ -1,7 +1,9 @@
+from urllib.parse import urlparse
+
 from app.accounts.documents import Account
 from app.accounts.repositories import AccountRepo
+
 from tests.integration.graphql_client import GraphQLClient
-from urllib.parse import urlparse
 
 REMOVE_ACCOUNT_AVATAR_MUTATION = """
 mutation RemoveAccountAvatarMutation {
@@ -84,8 +86,8 @@ async def test_remove_account_avatar_returns_default_avatar(
     assert response["data"]["removeAccountAvatar"]["__typename"] == "Account"
     avatar_url_parsed = urlparse(response["data"]["removeAccountAvatar"]["avatarUrl"])
     assert avatar_url_parsed.hostname is not None and (
-        avatar_url_parsed.hostname == "dicebear.com" or
-        avatar_url_parsed.hostname.endswith(".dicebear.com")
+        avatar_url_parsed.hostname == "dicebear.com"
+        or avatar_url_parsed.hostname.endswith(".dicebear.com")
     )
 
 
