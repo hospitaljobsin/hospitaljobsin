@@ -12,7 +12,6 @@ RUN npm install -g pnpm@latest-10
 ENV PNPM_HOME=/app/.pnpm
 ENV PATH=$PATH:$PNPM_HOME
 
-
 WORKDIR /app
 
 COPY ./apps/accounts/package.json ./apps/accounts/.npmrc ./apps/accounts/
