@@ -431,6 +431,9 @@ class JobRepo:
         self, search_term: str
     ) -> list[JobAutocompleteSuggestion]:
         """Get autocomplete suggestions for a search term."""
+        search_term = search_term.strip()
+        if not search_term:
+            return []
         pipeline = [
             {
                 "$search": {

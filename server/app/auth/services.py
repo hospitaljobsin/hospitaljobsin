@@ -1022,7 +1022,7 @@ class AuthService:
         """Get a password reset token (used to check it's validity)."""
         reset_token = await self._password_reset_token_repo.get(
             token=password_reset_token,
-            email=email,
+            email=self._normalize_email(email),
         )
         if reset_token is None:
             return Err(PasswordResetTokenNotFoundError())

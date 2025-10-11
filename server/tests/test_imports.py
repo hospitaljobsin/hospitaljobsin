@@ -20,7 +20,7 @@ def test_banned_libraries(modules: str | list[str], libraries: Sequence[str]) ->
     for module in modules:
         (
             archrule(f"{module}-banned-libs")
-            .match(f"{module}.*")
+            .match(f"{module}.*")  # pyright: ignore[reportUnknownMemberType]
             .should_not_import(*libraries)
             .check(module)
         )
@@ -29,7 +29,7 @@ def test_banned_libraries(modules: str | list[str], libraries: Sequence[str]) ->
 def test_mutations_and_queries_depend_on_services_or_repositories() -> None:
     (
         archrule("mutations_queries_layer")
-        .match("app.*.mutation", "app.*.query")
+        .match("app.*.mutation", "app.*.query")  # pyright: ignore[reportUnknownMemberType]
         .may_import(
             "app.*.services",
             "app.*.repositories",
@@ -51,7 +51,7 @@ def test_mutations_and_queries_depend_on_services_or_repositories() -> None:
 def test_services_depend_on_repositories() -> None:
     (
         archrule("services_layer")
-        .match("app.*.services")
+        .match("app.*.services")  # pyright: ignore[reportUnknownMemberType]
         .should_not_import("app.*.mutation", "app.*.query")
         .check("app")
     )
@@ -60,7 +60,7 @@ def test_services_depend_on_repositories() -> None:
 def test_repositories_dont_import_services() -> None:
     (
         archrule("repositories_layer")
-        .match("app.*.repositories")
+        .match("app.*.repositories")  # pyright: ignore[reportUnknownMemberType]
         .should_not_import("app.*.services", "app.*.mutation", "app.*.query")
         .check("app")
     )

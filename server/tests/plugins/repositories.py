@@ -15,6 +15,7 @@ from app.auth.repositories import (
     WebAuthnChallengeRepo,
     WebAuthnCredentialRepo,
 )
+from app.geocoding.repositories import RegionRepo
 from app.job_alerts.repositories import JobAlertRepo, RecommendedJobAlertRepo
 from app.jobs.repositories import JobApplicantRepo, JobApplicationFormRepo, JobRepo
 from app.organizations.repositories import (
@@ -172,3 +173,11 @@ async def two_factor_authentication_challenge_repo(
 ) -> TwoFactorAuthenticationChallengeRepo:
     async with container.context() as ctx:
         return await ctx.resolve(TwoFactorAuthenticationChallengeRepo)
+
+
+@pytest.fixture(scope="session")
+async def region_repo(
+    container: Container,
+) -> RegionRepo:
+    async with container.context() as ctx:
+        return await ctx.resolve(RegionRepo)

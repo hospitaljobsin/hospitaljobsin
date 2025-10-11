@@ -19,7 +19,9 @@ from app.accounts.mutation import AccountMutation
 from app.accounts.query import AccountQuery
 from app.auth.mutation import AuthMutation
 from app.auth.query import AuthQuery
+from app.base.query import BaseQuery
 from app.config import AppSettings, EnvironmentSettings, get_settings
+from app.container import create_container
 from app.geocoding.query import GeocodingQuery
 from app.job_alerts.mutation import JobAlertMutation
 from app.job_alerts.query import JobAlertQuery
@@ -31,9 +33,6 @@ from app.scalars import DateTime
 from app.schema.extensions.mask_errors import MaskErrors
 from app.schema.extensions.persisted_queries import PersistedQueriesExtension
 from app.stats.query import StatsQuery
-
-from .base.query import BaseQuery
-from .container import create_container
 
 query = merge_types(
     name="Query",
