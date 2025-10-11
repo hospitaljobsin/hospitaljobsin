@@ -1,10 +1,10 @@
-import type { UpdateCertificationsFormFragment$key } from '@/__generated__/UpdateCertificationsFormFragment.graphql';
 import { Button, Input } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { Plus, ShieldCheckIcon, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4';
+import type { UpdateCertificationsFormFragment$key } from '@/__generated__/UpdateCertificationsFormFragment.graphql';
 import { MonthYearPicker, parseMonthYear, toDateString } from '../../forms/MonthYearPicker';
 import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 
@@ -43,8 +43,8 @@ const formSchema = z.object({
 	certifications: z.array(
 		z
 			.object({
-				name: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
-				issuer: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
+				name: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(200)),
+				issuer: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(200)),
 				certificationUrl: z.url('Must be a valid URL'),
 				createdAt: z.custom<{ month: number; year: number }>(data => {
 					if (data && typeof data === 'object' && data !== null && typeof data.month === 'number' && typeof data.year === 'number') {

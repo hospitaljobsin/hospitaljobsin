@@ -3,9 +3,8 @@ from datetime import UTC, date, datetime, timedelta
 from typing import Annotated, Literal
 
 import phonenumbers
-import strawberry
 from fastapi import Response
-from pydantic import Field, validate_call
+from pydantic import Field, HttpUrl, StringConstraints, validate_call
 from result import Err, Ok, Result
 from strawberry import UNSET
 from types_aiobotocore_s3 import S3Client
@@ -14,6 +13,7 @@ from app.accounts.agents.profile_parser import ProfileParserAgent
 from app.accounts.documents import (
     Account,
     AnalyticsPreference,
+    Certification,
     Education,
     Language,
     License,
@@ -87,15 +87,25 @@ class AccountService:
             HttpMethod="PUT",
         )
 
+    @validate_call()
     async def update(
         self,
-        account: Account,
-        full_name: str = strawberry.UNSET,
-        avatar_url: str | None = strawberry.UNSET,
+        account: Annotated[Account, Field(exclude=True)],
+        full_name: Annotated[
+            str,
+            StringConstraints(
+                max_length=100,
+                min_length=1,
+                strip_whitespace=True,
+            ),
+        ],
+        avatar_url: HttpUrl | None = None,
     ) -> Ok[Account]:
         """Update the given account."""
         await self._account_repo.update(
-            account=account, full_name=full_name, avatar_url=avatar_url
+            account=account,
+            full_name=full_name,
+            avatar_url=str(avatar_url),
         )
         # update denormalized full_name in organization members
         await self._organization_member_repo.update_all(
@@ -148,7 +158,7 @@ class AccountService:
         return Ok(account)
 
     async def request_phone_number_verification_token(
-        self, account: Account, phone_number: str
+        self, phone_number: str
     ) -> Result[
         int,
         InvalidPhoneNumberError
@@ -587,10 +597,11 @@ class ProfileService:
 
         return Ok(account)
 
+    @validate_call()
     async def update_certifications(
         self,
-        account: Account,
-        certifications: list,
+        account: Annotated[Account, Field(exclude=True)],
+        certifications: list[Certification],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
@@ -606,9 +617,10 @@ class ProfileService:
 
         return Ok(account)
 
+    @validate_call()
     async def update_licenses(
         self,
-        account: Account,
+        account: Annotated[Account, Field(exclude=True)],
         licenses: list[License],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
@@ -625,11 +637,12 @@ class ProfileService:
 
         return Ok(account)
 
+    @validate_call()
     async def update_about_me(
         self,
-        account: Account,
-        professional_summary: str | None,
-        headline: str | None,
+        account: Annotated[Account, Field(exclude=True)],
+        professional_summary: Annotated[str | None, Field(max_length=750)] = None,
+        headline: Annotated[str | None, Field(max_length=100)] = None,
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
@@ -646,15 +659,17 @@ class ProfileService:
 
         return Ok(account)
 
+    @validate_call()
     async def update_career_profile(
         self,
-        account: Account,
-        current_industry: str | None = UNSET,
-        desired_job_types: list[JobKindType] = UNSET,
-        desired_work_modes: list[WorkModeType] = UNSET,
-        expected_salary: float | None = UNSET,
-        locations_open_to_work: list[str] = UNSET,
-        open_to_relocation_anywhere: bool = UNSET,
+        *,
+        account: Annotated[Account, Field(exclude=True)],
+        current_industry: str | None,
+        desired_job_types: list[JobKindType],
+        desired_work_modes: list[WorkModeType],
+        expected_salary: Annotated[float | None, Field(ge=0)],
+        locations_open_to_work: list[str],
+        open_to_relocation_anywhere: bool,
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:

@@ -30,8 +30,8 @@ const UpdateIntroductionFormMutation = graphql`
 `;
 
 const formSchema = z.object({
-	professionalSummary: z.string(),
-	headline: z.string()
+	professionalSummary: z.string().max(750, 'Professional Summary must be at most 750 characters long'),
+	headline: z.string().max(100, 'Headline must be at most 100 characters long')
 });
 
 type FormValues = z.infer<typeof formSchema>;

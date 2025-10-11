@@ -34,22 +34,6 @@ async def test_update_account_unauthenticated(
     assert len(response["errors"]) > 0
 
 
-async def test_update_account_full_name_only(
-    password_auth_graphql_client: GraphQLClient,
-) -> None:
-    """Ensure that update_account works when updating only full name."""
-    response = await password_auth_graphql_client(
-        UPDATE_ACCOUNT_MUTATION,
-        variables={
-            "fullName": "Updated Name",
-        },
-    )
-
-    assert response["data"]["updateAccount"]["__typename"] == "Account"
-    assert response["data"]["updateAccount"]["fullName"] == "Updated Name"
-    assert "id" in response["data"]["updateAccount"]
-
-
 async def test_update_account_both_fields(
     password_auth_graphql_client: GraphQLClient,
 ) -> None:
@@ -98,30 +82,6 @@ async def test_update_account_avatar_url_to_default(
     )
 
 
-async def test_update_account_persists_changes(
-    password_auth_graphql_client: GraphQLClient,
-    password_account: Account,
-) -> None:
-    """Ensure that update_account actually persists changes to the database."""
-    original_full_name = password_account.full_name
-    new_full_name = "Persisted Name"
-
-    response = await password_auth_graphql_client(
-        UPDATE_ACCOUNT_MUTATION,
-        variables={
-            "fullName": new_full_name,
-        },
-    )
-
-    assert response["data"]["updateAccount"]["__typename"] == "Account"
-    assert response["data"]["updateAccount"]["fullName"] == new_full_name
-
-    # Verify the account was actually updated by refreshing from database
-    await password_account.sync()
-    assert password_account.full_name == new_full_name
-    assert password_account.full_name != original_full_name
-
-
 async def test_update_account_webauthn_account(
     webauthn_auth_graphql_client: GraphQLClient,
 ) -> None:
@@ -130,18 +90,23 @@ async def test_update_account_webauthn_account(
         UPDATE_ACCOUNT_MUTATION,
         variables={
             "fullName": "WebAuthn User Updated",
+            "avatarUrl": "https://example.com/avatar.jpg",
         },
     )
 
     assert response["data"]["updateAccount"]["__typename"] == "Account"
     assert response["data"]["updateAccount"]["fullName"] == "WebAuthn User Updated"
+    assert (
+        response["data"]["updateAccount"]["avatarUrl"]
+        == "https://example.com/avatar.jpg"
+    )
 
 
 @pytest.mark.parametrize(
     ("full_name", "description"),
     [
         ("A", "Single character name"),
-        ("A" * 100, "Very long name"),
+        ("A" * 100, "Maximum length name"),
         ("John Doe", "Name with space"),
         ("José García", "Name with accents"),
         ("李明", "Chinese characters"),
@@ -162,6 +127,7 @@ async def test_update_account_various_full_names(
         UPDATE_ACCOUNT_MUTATION,
         variables={
             "fullName": full_name,
+            "avatarUrl": "https://example.com/avatar.jpg",
         },
     )
 
@@ -213,6 +179,7 @@ async def test_update_account_multiple_times(
         UPDATE_ACCOUNT_MUTATION,
         variables={
             "fullName": "First Update",
+            "avatarUrl": None,
         },
     )
     assert response1["data"]["updateAccount"]["fullName"] == "First Update"
@@ -222,6 +189,7 @@ async def test_update_account_multiple_times(
         UPDATE_ACCOUNT_MUTATION,
         variables={
             "fullName": "Second Update",
+            "avatarUrl": None,
         },
     )
     assert response2["data"]["updateAccount"]["fullName"] == "Second Update"
@@ -231,6 +199,7 @@ async def test_update_account_multiple_times(
         UPDATE_ACCOUNT_MUTATION,
         variables={
             "fullName": "Third Update",
+            "avatarUrl": None,
         },
     )
     assert response3["data"]["updateAccount"]["fullName"] == "Third Update"
@@ -239,31 +208,32 @@ async def test_update_account_multiple_times(
 async def test_update_account_empty_string_full_name(
     password_auth_graphql_client: GraphQLClient,
 ) -> None:
-    """Ensure that update_account accepts empty string for full name."""
+    """Ensure that update_account strips whitespace from empty string."""
     response = await password_auth_graphql_client(
         UPDATE_ACCOUNT_MUTATION,
         variables={
             "fullName": "",
+            "avatarUrl": None,
         },
     )
 
-    assert response["data"]["updateAccount"]["__typename"] == "Account"
-    assert response["data"]["updateAccount"]["fullName"] == ""
+    assert "errors" in response
 
 
 async def test_update_account_whitespace_full_name(
     password_auth_graphql_client: GraphQLClient,
 ) -> None:
-    """Ensure that update_account preserves whitespace in full name."""
+    """Ensure that update_account strips leading and trailing whitespace."""
     response = await password_auth_graphql_client(
         UPDATE_ACCOUNT_MUTATION,
         variables={
             "fullName": "  John   Doe  ",
+            "avatarUrl": None,
         },
     )
 
     assert response["data"]["updateAccount"]["__typename"] == "Account"
-    assert response["data"]["updateAccount"]["fullName"] == "  John   Doe  "
+    assert response["data"]["updateAccount"]["fullName"] == "John   Doe"
 
 
 async def test_update_account_special_characters_in_name(
@@ -275,6 +245,7 @@ async def test_update_account_special_characters_in_name(
         UPDATE_ACCOUNT_MUTATION,
         variables={
             "fullName": special_name,
+            "avatarUrl": None,
         },
     )
 
@@ -291,6 +262,7 @@ async def test_update_account_newline_in_name(
         UPDATE_ACCOUNT_MUTATION,
         variables={
             "fullName": name_with_newline,
+            "avatarUrl": None,
         },
     )
 
@@ -307,6 +279,7 @@ async def test_update_account_emoji_in_name(
         UPDATE_ACCOUNT_MUTATION,
         variables={
             "fullName": emoji_name,
+            "avatarUrl": None,
         },
     )
 
@@ -323,6 +296,7 @@ async def test_update_account_returns_same_account_id(
         UPDATE_ACCOUNT_MUTATION,
         variables={
             "fullName": "ID Check",
+            "avatarUrl": None,
         },
     )
 
@@ -344,9 +318,57 @@ async def test_update_account_does_not_affect_other_accounts(
         UPDATE_ACCOUNT_MUTATION,
         variables={
             "fullName": "Updated Current Account",
+            "avatarUrl": None,
         },
     )
 
     # Verify the foreign account was not affected
     await foreign_password_account.sync()
     assert foreign_password_account.full_name == original_foreign_name
+
+
+async def test_update_account_full_name_exceeds_max_length(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that update_account rejects full name exceeding 100 characters."""
+    response = await password_auth_graphql_client(
+        UPDATE_ACCOUNT_MUTATION,
+        variables={
+            "fullName": "A" * 101,
+            "avatarUrl": None,
+        },
+    )
+
+    assert "errors" in response
+    assert len(response["errors"]) > 0
+
+
+async def test_update_account_invalid_avatar_url(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that update_account rejects invalid avatar URL."""
+    response = await password_auth_graphql_client(
+        UPDATE_ACCOUNT_MUTATION,
+        variables={
+            "fullName": "John Doe",
+            "avatarUrl": "not-a-valid-url",
+        },
+    )
+
+    assert "errors" in response
+    assert len(response["errors"]) > 0
+
+
+async def test_update_account_whitespace_only_full_name(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that update_account strips whitespace-only full name to empty string."""
+    response = await password_auth_graphql_client(
+        UPDATE_ACCOUNT_MUTATION,
+        variables={
+            "fullName": "   ",
+            "avatarUrl": None,
+        },
+    )
+
+    assert "errors" in response

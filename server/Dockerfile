@@ -1,4 +1,4 @@
-ARG PYTHON_BASE=3.13.5-slim-bookworm
+ARG PYTHON_BASE=3.14-slim-bookworm
 
 # development stage
 FROM python:$PYTHON_BASE AS development-server

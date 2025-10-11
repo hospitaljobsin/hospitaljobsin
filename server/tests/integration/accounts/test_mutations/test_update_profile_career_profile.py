@@ -98,6 +98,7 @@ async def test_update_profile_career_profile_current_industry_only(
             "desiredWorkModes": [],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "expectedSalary": None,
         },
     )
 
@@ -119,6 +120,8 @@ async def test_update_profile_career_profile_desired_job_types_only(
             "desiredWorkModes": [],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+            "expectedSalary": None,
         },
     )
 
@@ -140,6 +143,8 @@ async def test_update_profile_career_profile_desired_work_modes_only(
             "desiredWorkModes": ["OFFICE", "HYBRID"],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+            "expectedSalary": None,
         },
     )
 
@@ -162,6 +167,7 @@ async def test_update_profile_career_profile_expected_salary_only(
             "expectedSalary": 2000000.0,
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
         },
     )
 
@@ -183,6 +189,8 @@ async def test_update_profile_career_profile_locations_open_to_work_only(
             "desiredWorkModes": [],
             "locationsOpenToWork": ["Delhi", "Pune"],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+            "expectedSalary": None,
         },
     )
 
@@ -204,6 +212,8 @@ async def test_update_profile_career_profile_open_to_relocation_anywhere_only(
             "desiredWorkModes": [],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": True,
+            "currentIndustry": None,
+            "expectedSalary": None,
         },
     )
 
@@ -239,6 +249,8 @@ async def test_update_profile_career_profile_various_job_types(
             "desiredWorkModes": [],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+            "expectedSalary": None,
         },
     )
 
@@ -275,6 +287,8 @@ async def test_update_profile_career_profile_various_work_modes(
             "desiredWorkModes": work_modes,
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+            "expectedSalary": None,
         },
     )
 
@@ -312,6 +326,7 @@ async def test_update_profile_career_profile_various_salaries(
             "expectedSalary": salary,
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
         },
     )
 
@@ -359,6 +374,8 @@ async def test_update_profile_career_profile_empty_lists(
             "desiredWorkModes": [],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+            "expectedSalary": None,
         },
     )
 
@@ -428,6 +445,7 @@ async def test_update_profile_career_profile_creates_profile_if_not_exists(
             "desiredWorkModes": [],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "expectedSalary": None,
         },
     )
 
@@ -448,6 +466,8 @@ async def test_update_profile_career_profile_empty_no_op(
             "desiredWorkModes": [],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+            "expectedSalary": None,
         },
     )
 
@@ -471,6 +491,8 @@ async def test_update_profile_career_profile_multiple_locations(
                 "Hyderabad",
             ],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+            "expectedSalary": None,
         },
     )
 
@@ -498,6 +520,8 @@ async def test_update_profile_career_profile_open_to_relocation_true_with_locati
             "desiredWorkModes": [],
             "locationsOpenToWork": ["Bangalore"],
             "openToRelocationAnywhere": True,
+            "currentIndustry": None,
+            "expectedSalary": None,
         },
     )
 
@@ -520,6 +544,8 @@ async def test_update_profile_career_profile_open_to_relocation_false_with_empty
             "desiredWorkModes": [],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+            "expectedSalary": None,
         },
     )
 
@@ -599,6 +625,7 @@ async def test_update_profile_career_profile_preserves_other_profile_fields(
             "desiredWorkModes": [],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "expectedSalary": None,
         },
     )
 
@@ -685,6 +712,7 @@ async def test_update_profile_career_profile_multiple_users_independent(
             "desiredWorkModes": [],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "expectedSalary": None,
         },
     )
 
@@ -692,7 +720,7 @@ async def test_update_profile_career_profile_multiple_users_independent(
         "profile"
     ]["careerProfile"]
     assert career_profile1_verify["currentIndustry"] == "Healthcare"
-    assert career_profile1_verify["expectedSalary"] == 1000000.0
+    assert career_profile1_verify["expectedSalary"] is None
 
 
 @pytest.mark.parametrize(
@@ -720,6 +748,7 @@ async def test_update_profile_career_profile_various_industries(
             "desiredWorkModes": [],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "expectedSalary": None,
         },
     )
 
@@ -744,6 +773,7 @@ async def test_update_profile_career_profile_special_characters_in_industry(
             "desiredWorkModes": [],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "expectedSalary": None,
         },
     )
 
@@ -765,6 +795,8 @@ async def test_update_profile_career_profile_duplicate_job_types(
             "desiredWorkModes": [],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+            "expectedSalary": None,
         },
     )
 
@@ -787,6 +819,8 @@ async def test_update_profile_career_profile_duplicate_work_modes(
             "desiredWorkModes": ["REMOTE", "REMOTE", "HYBRID"],
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+            "expectedSalary": None,
         },
     )
 
@@ -809,6 +843,8 @@ async def test_update_profile_career_profile_duplicate_locations(
             "desiredWorkModes": [],
             "locationsOpenToWork": ["Bangalore", "Bangalore", "Mumbai"],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+            "expectedSalary": None,
         },
     )
 
@@ -824,28 +860,6 @@ async def test_update_profile_career_profile_duplicate_locations(
     ]
 
 
-async def test_update_profile_career_profile_negative_salary(
-    password_auth_graphql_client: GraphQLClient,
-) -> None:
-    """Ensure that negative salary is handled."""
-    response = await password_auth_graphql_client(
-        UPDATE_PROFILE_CAREER_PROFILE_MUTATION,
-        variables={
-            "desiredJobTypes": [],
-            "desiredWorkModes": [],
-            "expectedSalary": -1000.0,
-            "locationsOpenToWork": [],
-            "openToRelocationAnywhere": False,
-        },
-    )
-
-    assert response["data"]["updateProfileCareerProfile"]["__typename"] == "Account"
-    career_profile = response["data"]["updateProfileCareerProfile"]["profile"][
-        "careerProfile"
-    ]
-    assert career_profile["expectedSalary"] == -1000.0
-
-
 async def test_update_profile_career_profile_very_large_salary(
     password_auth_graphql_client: GraphQLClient,
 ) -> None:
@@ -858,6 +872,7 @@ async def test_update_profile_career_profile_very_large_salary(
             "expectedSalary": 999999999.99,
             "locationsOpenToWork": [],
             "openToRelocationAnywhere": False,
+            "currentIndustry": None,
         },
     )
 
@@ -866,3 +881,102 @@ async def test_update_profile_career_profile_very_large_salary(
         "careerProfile"
     ]
     assert career_profile["expectedSalary"] == 999999999.99
+
+
+@pytest.mark.parametrize(
+    ("salary", "description"),
+    [
+        (-0.01, "Negative decimal"),
+        (-1.0, "Negative integer"),
+        (-100000.0, "Large negative"),
+    ],
+)
+async def test_update_profile_career_profile_invalid_negative_salaries(
+    password_auth_graphql_client: GraphQLClient,
+    salary: float,
+    description: str,
+) -> None:
+    """Ensure that negative salary values are rejected."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_CAREER_PROFILE_MUTATION,
+        variables={
+            "desiredJobTypes": [],
+            "desiredWorkModes": [],
+            "expectedSalary": salary,
+            "locationsOpenToWork": [],
+            "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+        },
+    )
+
+    assert "errors" in response, f"Failed for case: {description}"
+    assert len(response["errors"]) > 0
+
+
+async def test_update_profile_career_profile_zero_salary_valid(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that zero salary is accepted as valid."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_CAREER_PROFILE_MUTATION,
+        variables={
+            "desiredJobTypes": [],
+            "desiredWorkModes": [],
+            "expectedSalary": 0.0,
+            "locationsOpenToWork": [],
+            "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+        },
+    )
+
+    assert response["data"]["updateProfileCareerProfile"]["__typename"] == "Account"
+    career_profile = response["data"]["updateProfileCareerProfile"]["profile"][
+        "careerProfile"
+    ]
+    assert career_profile["expectedSalary"] == 0.0
+
+
+async def test_update_profile_career_profile_minimum_positive_salary(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that minimum positive salary is accepted."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_CAREER_PROFILE_MUTATION,
+        variables={
+            "desiredJobTypes": [],
+            "desiredWorkModes": [],
+            "expectedSalary": 0.01,
+            "locationsOpenToWork": [],
+            "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+        },
+    )
+
+    assert response["data"]["updateProfileCareerProfile"]["__typename"] == "Account"
+    career_profile = response["data"]["updateProfileCareerProfile"]["profile"][
+        "careerProfile"
+    ]
+    assert career_profile["expectedSalary"] == 0.01
+
+
+async def test_update_profile_career_profile_fractional_salary(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that fractional salary values are handled correctly."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_CAREER_PROFILE_MUTATION,
+        variables={
+            "desiredJobTypes": [],
+            "desiredWorkModes": [],
+            "expectedSalary": 1234567.89,
+            "locationsOpenToWork": [],
+            "openToRelocationAnywhere": False,
+            "currentIndustry": None,
+        },
+    )
+
+    assert response["data"]["updateProfileCareerProfile"]["__typename"] == "Account"
+    career_profile = response["data"]["updateProfileCareerProfile"]["profile"][
+        "careerProfile"
+    ]
+    assert career_profile["expectedSalary"] == 1234567.89

@@ -617,3 +617,113 @@ async def test_update_profile_certifications_multiple_users_independent(
     ]["certifications"]
     assert len(certifications1_verify) == 1
     assert certifications1_verify[0]["name"] == "AWS Certified Solutions Architect"
+
+
+async def test_update_profile_certifications_empty_string_name(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that empty string name is rejected."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_CERTIFICATIONS_MUTATION,
+        variables={
+            "certifications": [
+                {
+                    "name": "",
+                    "issuer": "Test Issuer",
+                    "certificationUrl": "https://example.com/cert",
+                    "createdAt": "2023-01-15",
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+    assert len(response["errors"]) > 0
+
+
+async def test_update_profile_certifications_empty_issuer(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that empty issuer is rejected."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_CERTIFICATIONS_MUTATION,
+        variables={
+            "certifications": [
+                {
+                    "name": "Test Certification",
+                    "issuer": "",
+                    "certificationUrl": "https://example.com/cert",
+                    "createdAt": "2023-01-15",
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+    assert len(response["errors"]) > 0
+
+
+async def test_update_profile_certifications_empty_url(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that empty certification URL is rejected."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_CERTIFICATIONS_MUTATION,
+        variables={
+            "certifications": [
+                {
+                    "name": "Test Certification",
+                    "issuer": "Test Issuer",
+                    "certificationUrl": "",
+                    "createdAt": "2023-01-15",
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+    assert len(response["errors"]) > 0
+
+
+async def test_update_profile_certifications_invalid_url_format(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that invalid URL format is rejected."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_CERTIFICATIONS_MUTATION,
+        variables={
+            "certifications": [
+                {
+                    "name": "Test Certification",
+                    "issuer": "Test Issuer",
+                    "certificationUrl": "not-a-valid-url",
+                    "createdAt": "2023-01-15",
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+    assert len(response["errors"]) > 0
+
+
+async def test_update_profile_certifications_invalid_date_format(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that invalid date format is rejected."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_CERTIFICATIONS_MUTATION,
+        variables={
+            "certifications": [
+                {
+                    "name": "Test Certification",
+                    "issuer": "Test Issuer",
+                    "certificationUrl": "https://example.com/cert",
+                    "createdAt": "invalid-date",
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+    assert len(response["errors"]) > 0

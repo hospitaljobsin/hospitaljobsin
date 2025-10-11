@@ -1,11 +1,11 @@
-import type { UpdateLicensesFormFragment$key } from '@/__generated__/UpdateLicensesFormFragment.graphql';
-import { YearPicker } from '@/components/forms/YearPicker';
 import { Button, Input } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { IdCardIcon, Plus, Trash } from 'lucide-react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
+import type { UpdateLicensesFormFragment$key } from '@/__generated__/UpdateLicensesFormFragment.graphql';
+import { YearPicker } from '@/components/forms/YearPicker';
 import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 
 const UpdateLicensesFormMutation = graphql`
@@ -41,8 +41,8 @@ type Props = {
 const formSchema = z.object({
 	licenses: z.array(
 		z.object({
-			name: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
-			issuer: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
+			name: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(200)),
+			issuer: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(200)),
 			licenseNumber: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100)),
 			registrationYear: z
 				.number()

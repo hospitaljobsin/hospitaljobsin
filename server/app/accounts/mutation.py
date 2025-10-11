@@ -25,7 +25,6 @@ from app.base.types import (
     JobTypeEnum,
     WorkModeEnum,
 )
-
 from app.context import AuthInfo, Info
 
 from .types import (
@@ -209,13 +208,13 @@ class AccountMutation:
             strawberry.argument(
                 description="The full name of the user account.",
             ),
-        ] = strawberry.UNSET,
+        ],
         avatar_url: Annotated[
             str | None,
             strawberry.argument(
                 description="The URL of the profile picture.",
             ),
-        ] = strawberry.UNSET,
+        ],
     ) -> UpdateAccountPayload:
         """Update the current user's account."""
         match await account_service.update(
@@ -253,7 +252,6 @@ class AccountMutation:
     ) -> RequestPhoneNumberVerificationTokenPayload:
         """Create a phone number verification token."""
         match await account_service.request_phone_number_verification_token(
-            account=info.context["current_user"],
             phone_number=phone_number,
         ):
             case Ok(cooldown_remaining_seconds):
@@ -563,13 +561,13 @@ class AccountMutation:
             strawberry.argument(
                 description="The professional summary of the user profile.",
             ),
-        ] = strawberry.UNSET,
+        ],
         headline: Annotated[
             str | None,
             strawberry.argument(
                 description="The headline of the user profile.",
             ),
-        ] = strawberry.UNSET,
+        ],
     ) -> UpdateProfilePayload:
         """Update the current user's profile about me."""
         match await profile_service.update_about_me(
@@ -633,46 +631,42 @@ class AccountMutation:
         current_industry: Annotated[
             str | None,
             strawberry.argument(description="The current industry of the user."),
-        ] = strawberry.UNSET,
+        ],
         desired_job_types: Annotated[
             list[JobTypeEnum],
             strawberry.argument(
                 description="The desired job types.",
             ),
-        ] = strawberry.UNSET,
+        ],
         desired_work_modes: Annotated[
             list[WorkModeEnum],
             strawberry.argument(
                 description="The desired work modes.",
             ),
-        ] = strawberry.UNSET,
+        ],
         expected_salary: Annotated[
             float | None,
             strawberry.argument(description="The expected salary."),
-        ] = strawberry.UNSET,
+        ],
         locations_open_to_work: Annotated[
             list[str],
             strawberry.argument(
                 description="Locations the user is open to work in.",
             ),
-        ] = strawberry.UNSET,
+        ],
         open_to_relocation_anywhere: Annotated[
             bool,
             strawberry.argument(
                 description="Whether the user is open to relocation anywhere.",
             ),
-        ] = strawberry.UNSET,
+        ],
     ) -> UpdateProfilePayload:
         """Update the current user's profile career profile."""
         match await profile_service.update_career_profile(
             account=info.context["current_user"],
             current_industry=current_industry,
-            desired_job_types=[job_type.value for job_type in desired_job_types]
-            if desired_job_types is not strawberry.UNSET
-            else strawberry.UNSET,
-            desired_work_modes=[work_mode.value for work_mode in desired_work_modes]
-            if desired_work_modes is not strawberry.UNSET
-            else strawberry.UNSET,
+            desired_job_types=[job_type.value for job_type in desired_job_types],
+            desired_work_modes=[work_mode.value for work_mode in desired_work_modes],
             expected_salary=expected_salary,
             locations_open_to_work=locations_open_to_work,
             open_to_relocation_anywhere=open_to_relocation_anywhere,

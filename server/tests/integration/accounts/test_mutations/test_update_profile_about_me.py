@@ -33,6 +33,7 @@ async def test_update_profile_about_me_unauthenticated(
         UPDATE_PROFILE_ABOUT_ME_MUTATION,
         variables={
             "professionalSummary": "Experienced healthcare professional",
+            "headline": None,
         },
     )
 
@@ -69,6 +70,7 @@ async def test_update_profile_about_me_professional_summary_only(
         UPDATE_PROFILE_ABOUT_ME_MUTATION,
         variables={
             "professionalSummary": "Dedicated nurse with expertise in emergency care",
+            "headline": None,
         },
     )
 
@@ -88,6 +90,7 @@ async def test_update_profile_about_me_headline_only(
         UPDATE_PROFILE_ABOUT_ME_MUTATION,
         variables={
             "headline": "Registered Nurse - ICU Specialist",
+            "professionalSummary": None,
         },
     )
 
@@ -147,33 +150,6 @@ async def test_update_profile_about_me_replaces_existing(
     assert profile2["headline"] == "Updated headline"
 
 
-async def test_update_profile_about_me_partial_update_preserves_other_field(
-    password_auth_graphql_client: GraphQLClient,
-) -> None:
-    """Ensure that updating one field doesn't clear the other field."""
-    # Set initial values
-    await password_auth_graphql_client(
-        UPDATE_PROFILE_ABOUT_ME_MUTATION,
-        variables={
-            "professionalSummary": "Original summary",
-            "headline": "Original headline",
-        },
-    )
-
-    # Update only professional summary
-    response = await password_auth_graphql_client(
-        UPDATE_PROFILE_ABOUT_ME_MUTATION,
-        variables={
-            "professionalSummary": "New summary",
-        },
-    )
-
-    assert response["data"]["updateProfileAboutMe"]["__typename"] == "Account"
-    profile = response["data"]["updateProfileAboutMe"]["profile"]
-    assert profile["professionalSummary"] == "New summary"
-    assert profile["headline"] == "Original headline"
-
-
 async def test_update_profile_about_me_creates_profile_if_not_exists(
     password_auth_graphql_client: GraphQLClient,
 ) -> None:
@@ -182,6 +158,7 @@ async def test_update_profile_about_me_creates_profile_if_not_exists(
         UPDATE_PROFILE_ABOUT_ME_MUTATION,
         variables={
             "professionalSummary": "New professional summary",
+            "headline": None,
         },
     )
 
@@ -191,50 +168,74 @@ async def test_update_profile_about_me_creates_profile_if_not_exists(
     assert profile["professionalSummary"] == "New professional summary"
 
 
-async def test_update_profile_about_me_empty_no_op(
+async def test_update_profile_about_me_professional_summary_at_max_length(
     password_auth_graphql_client: GraphQLClient,
 ) -> None:
-    """Ensure that calling mutation with no variables is a no-op."""
-    response = await password_auth_graphql_client(
-        UPDATE_PROFILE_ABOUT_ME_MUTATION,
-        variables={},
-    )
-
-    assert response["data"]["updateProfileAboutMe"]["__typename"] == "Account"
-
-
-async def test_update_profile_about_me_long_professional_summary(
-    password_auth_graphql_client: GraphQLClient,
-) -> None:
-    """Ensure that long professional summary is handled."""
-    long_summary = "A" * 2000
+    """Ensure that professional summary at exactly 750 characters is accepted."""
+    summary_750 = "A" * 750
     response = await password_auth_graphql_client(
         UPDATE_PROFILE_ABOUT_ME_MUTATION,
         variables={
-            "professionalSummary": long_summary,
+            "professionalSummary": summary_750,
+            "headline": None,
         },
     )
 
     assert response["data"]["updateProfileAboutMe"]["__typename"] == "Account"
     profile = response["data"]["updateProfileAboutMe"]["profile"]
-    assert profile["professionalSummary"] == long_summary
+    assert profile["professionalSummary"] == summary_750
 
 
-async def test_update_profile_about_me_long_headline(
+async def test_update_profile_about_me_professional_summary_exceeds_max_length(
     password_auth_graphql_client: GraphQLClient,
 ) -> None:
-    """Ensure that long headline is handled."""
-    long_headline = "B" * 500
+    """Ensure that professional summary exceeding 750 characters is rejected."""
+    summary_751 = "A" * 751
     response = await password_auth_graphql_client(
         UPDATE_PROFILE_ABOUT_ME_MUTATION,
         variables={
-            "headline": long_headline,
+            "professionalSummary": summary_751,
+            "headline": None,
+        },
+    )
+
+    assert "errors" in response
+    assert len(response["errors"]) > 0
+
+
+async def test_update_profile_about_me_headline_at_max_length(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that headline at exactly 100 characters is accepted."""
+    headline_100 = "B" * 100
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_ABOUT_ME_MUTATION,
+        variables={
+            "headline": headline_100,
+            "professionalSummary": None,
         },
     )
 
     assert response["data"]["updateProfileAboutMe"]["__typename"] == "Account"
     profile = response["data"]["updateProfileAboutMe"]["profile"]
-    assert profile["headline"] == long_headline
+    assert profile["headline"] == headline_100
+
+
+async def test_update_profile_about_me_headline_exceeds_max_length(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that headline exceeding 100 characters is rejected."""
+    headline_101 = "B" * 101
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_ABOUT_ME_MUTATION,
+        variables={
+            "headline": headline_101,
+            "professionalSummary": None,
+        },
+    )
+
+    assert "errors" in response
+    assert len(response["errors"]) > 0
 
 
 async def test_update_profile_about_me_special_characters(
@@ -310,6 +311,7 @@ async def test_update_profile_about_me_multiline_text(
         UPDATE_PROFILE_ABOUT_ME_MUTATION,
         variables={
             "professionalSummary": multiline_summary,
+            "headline": None,
         },
     )
 
@@ -446,6 +448,7 @@ async def test_update_profile_about_me_multiple_users_independent(
         UPDATE_PROFILE_ABOUT_ME_MUTATION,
         variables={
             "headline": "User 1 headline",
+            "professionalSummary": "User 1 summary",
         },
     )
 
@@ -538,6 +541,7 @@ async def test_update_profile_about_me_clear_one_field_keep_other(
         UPDATE_PROFILE_ABOUT_ME_MUTATION,
         variables={
             "headline": None,
+            "professionalSummary": "Summary to keep",
         },
     )
 
@@ -566,3 +570,147 @@ async def test_update_profile_about_me_numbers_in_text(
         == "15+ years experience, 500+ surgeries, 100% success rate"
     )
     assert profile["headline"] == "Top 10 Surgeon in 2023"
+
+
+@pytest.mark.parametrize(
+    ("summary_length", "description"),
+    [
+        (749, "One character below max"),
+        (750, "Exactly at max"),
+    ],
+)
+async def test_update_profile_about_me_professional_summary_valid_lengths(
+    password_auth_graphql_client: GraphQLClient,
+    summary_length: int,
+    description: str,
+) -> None:
+    """Test professional summary at valid boundary lengths."""
+    summary = "A" * summary_length
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_ABOUT_ME_MUTATION,
+        variables={
+            "professionalSummary": summary,
+            "headline": None,
+        },
+    )
+
+    assert response["data"]["updateProfileAboutMe"]["__typename"] == "Account", (
+        f"Failed for case: {description}"
+    )
+    profile = response["data"]["updateProfileAboutMe"]["profile"]
+    assert profile["professionalSummary"] == summary
+
+
+@pytest.mark.parametrize(
+    ("summary_length", "description"),
+    [
+        (751, "One character over max"),
+        (800, "Moderately over max"),
+        (1000, "Significantly over max"),
+    ],
+)
+async def test_update_profile_about_me_professional_summary_invalid_lengths(
+    password_auth_graphql_client: GraphQLClient,
+    summary_length: int,
+    description: str,
+) -> None:
+    """Test professional summary exceeding max length is rejected."""
+    summary = "A" * summary_length
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_ABOUT_ME_MUTATION,
+        variables={
+            "professionalSummary": summary,
+            "headline": None,
+        },
+    )
+
+    assert "errors" in response, f"Failed for case: {description}"
+    assert len(response["errors"]) > 0
+
+
+@pytest.mark.parametrize(
+    ("headline_length", "description"),
+    [
+        (99, "One character below max"),
+        (100, "Exactly at max"),
+    ],
+)
+async def test_update_profile_about_me_headline_valid_lengths(
+    password_auth_graphql_client: GraphQLClient,
+    headline_length: int,
+    description: str,
+) -> None:
+    """Test headline at valid boundary lengths."""
+    headline = "B" * headline_length
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_ABOUT_ME_MUTATION,
+        variables={
+            "headline": headline,
+            "professionalSummary": None,
+        },
+    )
+
+    assert response["data"]["updateProfileAboutMe"]["__typename"] == "Account", (
+        f"Failed for case: {description}"
+    )
+    profile = response["data"]["updateProfileAboutMe"]["profile"]
+    assert profile["headline"] == headline
+
+
+@pytest.mark.parametrize(
+    ("headline_length", "description"),
+    [
+        (101, "One character over max"),
+        (150, "Moderately over max"),
+        (200, "Significantly over max"),
+    ],
+)
+async def test_update_profile_about_me_headline_invalid_lengths(
+    password_auth_graphql_client: GraphQLClient,
+    headline_length: int,
+    description: str,
+) -> None:
+    """Test headline exceeding max length is rejected."""
+    headline = "B" * headline_length
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_ABOUT_ME_MUTATION,
+        variables={
+            "headline": headline,
+            "professionalSummary": None,
+        },
+    )
+
+    assert "errors" in response, f"Failed for case: {description}"
+    assert len(response["errors"]) > 0
+
+
+async def test_update_profile_about_me_both_fields_exceed_max_length(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that both fields exceeding max length are rejected."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_ABOUT_ME_MUTATION,
+        variables={
+            "professionalSummary": "A" * 751,
+            "headline": "B" * 101,
+        },
+    )
+
+    assert "errors" in response
+    assert len(response["errors"]) > 0
+
+
+async def test_update_profile_about_me_one_field_valid_one_invalid(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that if one field is invalid, the entire mutation is rejected."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_ABOUT_ME_MUTATION,
+        variables={
+            "professionalSummary": "A" * 750,
+            "headline": "B" * 101,
+        },
+    )
+
+    assert "errors" in response
+    assert len(response["errors"]) > 0

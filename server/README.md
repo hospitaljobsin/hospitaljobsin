@@ -31,13 +31,13 @@ The generated GraphQL Schema can be read [here](../schema/schema.graphql)
 
 | Tool                             | Minimum Tested Version | Description     |
 | -------------------------------- | ---------------------- | --------------- |
-| [Python](https://python.org)     | 3.12                   | Language        |
+| [Python](https://python.org)     | 3.14                   | Language        |
 | [UV](https://docs.astral.sh/uv/) | 0.4                    | Package Manager |
 
 #### 1. Install dependencies
 
 ```bash
-uv sync -p 3.13 --frozen
+uv sync -p 3.14 --frozen
 ```
 
 #### 2. Setup Google Oauth2 Client

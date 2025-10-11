@@ -422,9 +422,9 @@ async def test_update_profile_licenses_whitespace_in_fields(
 
     assert response["data"]["updateProfileLicenses"]["__typename"] == "Account"
     licenses = response["data"]["updateProfileLicenses"]["profile"]["licenses"]
-    assert licenses[0]["name"] == " Medical License "
-    assert licenses[0]["issuer"] == " Medical Council of India "
-    assert licenses[0]["licenseNumber"] == " MCI123456 "
+    assert licenses[0]["name"] == "Medical License"
+    assert licenses[0]["issuer"] == "Medical Council of India"
+    assert licenses[0]["licenseNumber"] == "MCI123456"
 
 
 async def test_update_profile_licenses_multiple_users_independent(
@@ -564,3 +564,155 @@ async def test_update_profile_licenses_different_issuers(
     assert licenses[0]["issuer"] == "Medical Council of India"
     assert licenses[1]["issuer"] == "State Medical Council"
     assert licenses[2]["issuer"] == "National Medical Commission"
+
+
+async def test_update_profile_licenses_empty_string_name(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that empty string name is rejected."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_LICENSES_MUTATION,
+        variables={
+            "licenses": [
+                {
+                    "name": "",
+                    "issuer": "Medical Council of India",
+                    "licenseNumber": "MCI123456",
+                    "registrationYear": 2020,
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+    assert len(response["errors"]) > 0
+
+
+async def test_update_profile_licenses_empty_issuer(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that empty issuer is rejected."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_LICENSES_MUTATION,
+        variables={
+            "licenses": [
+                {
+                    "name": "Medical License",
+                    "issuer": "",
+                    "licenseNumber": "MCI123456",
+                    "registrationYear": 2020,
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+    assert len(response["errors"]) > 0
+
+
+async def test_update_profile_licenses_empty_license_number(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that empty license number is rejected."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_LICENSES_MUTATION,
+        variables={
+            "licenses": [
+                {
+                    "name": "Medical License",
+                    "issuer": "Medical Council of India",
+                    "licenseNumber": "",
+                    "registrationYear": 2020,
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+    assert len(response["errors"]) > 0
+
+
+@pytest.mark.parametrize(
+    ("registration_year", "description", "has_errors"),
+    [
+        (1800, "Very old year", True),
+        (1900, "Old year (Edge case)", False),
+        (1950, "Recent year", False),
+        (2050, "Future year", False),
+        (3000, "Far future year", False),
+    ],
+)
+async def test_update_profile_licenses_edge_case_years(
+    password_auth_graphql_client: GraphQLClient,
+    registration_year: int,
+    description: str,
+    has_errors: bool,
+) -> None:
+    """Test edge case registration years."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_LICENSES_MUTATION,
+        variables={
+            "licenses": [
+                {
+                    "name": "Medical License",
+                    "issuer": "Medical Council of India",
+                    "licenseNumber": "MCI123456",
+                    "registrationYear": registration_year,
+                },
+            ],
+        },
+    )
+
+    if has_errors:
+        assert "errors" in response, f"Expected errors for case: {description}"
+    else:
+        assert "errors" not in response, (
+            f"Did not expect errors for case: {description}"
+        )
+        assert response["data"]["updateProfileLicenses"]["__typename"] == "Account", (
+            f"Failed for case: {description}"
+        )
+        licenses = response["data"]["updateProfileLicenses"]["profile"]["licenses"]
+        assert licenses[0]["registrationYear"] == registration_year
+
+
+async def test_update_profile_licenses_negative_year(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that negative registration year is handled."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_LICENSES_MUTATION,
+        variables={
+            "licenses": [
+                {
+                    "name": "Medical License",
+                    "issuer": "Medical Council of India",
+                    "licenseNumber": "MCI123456",
+                    "registrationYear": -2020,
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
+
+
+async def test_update_profile_licenses_zero_year(
+    password_auth_graphql_client: GraphQLClient,
+) -> None:
+    """Ensure that zero registration year is handled."""
+    response = await password_auth_graphql_client(
+        UPDATE_PROFILE_LICENSES_MUTATION,
+        variables={
+            "licenses": [
+                {
+                    "name": "Medical License",
+                    "issuer": "Medical Council of India",
+                    "licenseNumber": "MCI123456",
+                    "registrationYear": 0,
+                },
+            ],
+        },
+    )
+
+    assert "errors" in response
