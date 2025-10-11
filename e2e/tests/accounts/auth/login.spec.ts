@@ -3,6 +3,8 @@ import { authTest, expect, test } from '@/playwright/fixtures';
 import { waitForCaptcha } from '@/tests/utils/captcha';
 import { WEBAUTHN_PRIVATE_KEY } from '@/tests/utils/constants';
 
+// TODO: add test cases using phone number + password for login
+
 test.describe('Login Page', () => {
 	test.beforeEach(async ({ page }) => {
 		// Navigate to login page
