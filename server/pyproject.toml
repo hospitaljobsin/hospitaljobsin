@@ -142,7 +142,7 @@ dev = [
     "types-passlib==1.7.7.20250602",
     "types-authlib==1.6.0.20250708",
     "types-python-jose==3.5.0.20250531",
-    "ruff==0.12.2",
+    "ruff==0.14.0",
     "pyright==1.1.403",
     "better-exceptions==0.3.3",
     "strawberry-graphql[cli]==0.283.3",
