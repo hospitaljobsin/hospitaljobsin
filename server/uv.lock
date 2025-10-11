@@ -2031,6 +2031,18 @@ wheels = [
 ]
 
 [[package]]
+name = "pytest-retry"
+version = "1.7.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c5/5b/607b017994cca28de3a1ad22a3eee8418e5d428dcd8ec25b26b18e995a73/pytest_retry-1.7.0.tar.gz", hash = "sha256:f8d52339f01e949df47c11ba9ee8d5b362f5824dff580d3870ec9ae0057df80f", size = 19977, upload-time = "2025-01-19T01:56:13.115Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7c/ff/3266c8a73b9b93c4b14160a7e2b31d1e1088e28ed29f4c2d93ae34093bfd/pytest_retry-1.7.0-py3-none-any.whl", hash = "sha256:a2dac85b79a4e2375943f1429479c65beb6c69553e7dae6b8332be47a60954f4", size = 13775, upload-time = "2025-01-19T01:56:11.199Z" },
+]
+
+[[package]]
 name = "pytest-sugar"
 version = "1.1.1"
 source = { registry = "https://pypi.org/simple" }
@@ -2409,6 +2421,7 @@ test = [
     { name = "anyio" },
     { name = "asgi-lifespan" },
     { name = "pytest" },
+    { name = "pytest-retry" },
     { name = "pytest-sugar" },
     { name = "pytest-timeout" },
     { name = "pytest-xdist" },
@@ -2493,6 +2506,7 @@ test = [
     { name = "anyio", specifier = "==4.10.0" },
     { name = "asgi-lifespan", specifier = "==2.1.0" },
     { name = "pytest", specifier = "==8.4.2" },
+    { name = "pytest-retry", specifier = "==1.7.0" },
     { name = "pytest-sugar", specifier = "==1.1.1" },
     { name = "pytest-timeout", specifier = "==2.4.0" },
     { name = "pytest-xdist", specifier = "==3.8.0" },

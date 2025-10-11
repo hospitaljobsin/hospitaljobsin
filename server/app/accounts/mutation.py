@@ -25,6 +25,7 @@ from app.base.types import (
     JobTypeEnum,
     WorkModeEnum,
 )
+
 from app.context import AuthInfo, Info
 
 from .types import (

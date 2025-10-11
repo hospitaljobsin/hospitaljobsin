@@ -1,5 +1,5 @@
 from collections.abc import AsyncIterator
-from datetime import datetime
+from datetime import UTC, datetime
 
 import pyotp
 import pytest
@@ -108,7 +108,9 @@ async def test_verify_2fa_with_valid_totp(
 ) -> None:
     """Ensure that we can verify 2FA with a valid TOTP token."""
     totp = pyotp.TOTP(account_with_2fa.two_factor_secret)
-    valid_token = totp.now()
+    current_time = datetime.now(UTC)
+    timecode = totp.timecode(current_time)
+    valid_token = totp.at(timecode * 30)
 
     response = await graphql_client_with_2fa_challenge(
         VERIFY_2FA_WITH_AUTHENTICATOR_MUTATION,
