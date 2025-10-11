@@ -4,31 +4,21 @@ from typing import Annotated, ClassVar, Literal
 
 import pymongo
 from beanie import Document, Indexed, Link
-from pydantic import BaseModel, Field, HttpUrl, StringConstraints, field_validator
+from pydantic import BaseModel, Field, field_validator
 from pymongo import IndexModel
 
 from app.base.models import GeoObject
 from app.core.constants import (
     AuthProvider,
+    ExperienceEmploymentType,
+    GenderType,
     JobKindType,
+    LanguageProficiencyType,
+    LicenseVerificationStatusType,
+    MaritalStatusType,
     TwoFactorProvider,
     WorkModeType,
 )
-
-# ENUMS
-Gender = Literal["MALE", "FEMALE", "OTHER"]
-MaritalStatus = Literal["MARRIED", "SINGLE"]
-LanguageProficiencyEnum = Literal["NATIVE", "PROFESSIONAL", "BASIC"]
-LicenseVerificationStatusEnum = Literal["pending", "verified", "rejected"]
-EmploymentTypeEnum = Literal[
-    "FULL_TIME",
-    "PART_TIME",
-    "CONTRACT",
-    "INTERNSHIP",
-    "TEMPORARY",
-    "VOLUNTEER",
-    "OTHER",
-]
 
 
 # EDUCATION
@@ -63,36 +53,20 @@ class License(BaseModel):
     name: Annotated[
         str,
         Field(description="The name of the license."),
-        StringConstraints(
-            min_length=1,
-            max_length=200,
-            strip_whitespace=True,
-        ),
     ]
     issuer: Annotated[
         str,
         Field(description="The issuer of the license."),
-        StringConstraints(
-            min_length=1,
-            strip_whitespace=True,
-            max_length=200,
-        ),
     ]
     license_number: Annotated[
         str,
         Field(description="The license number."),
-        StringConstraints(
-            min_length=1,
-            strip_whitespace=True,
-            max_length=100,
-        ),
     ]
     registration_year: int = Field(
         ...,
         description="The year the license was registered.",
-        ge=1900,
     )
-    verification_status: LicenseVerificationStatusEnum = Field(
+    verification_status: LicenseVerificationStatusType = Field(
         ..., description="The verification status of the license."
     )
     verified_at: date | None = Field(None, description="When the license was verified.")
@@ -104,7 +78,7 @@ class License(BaseModel):
 # LANGUAGE (update to use enum)
 class Language(BaseModel):
     name: str = Field(..., description="The name of the language.")
-    proficiency: LanguageProficiencyEnum = Field(
+    proficiency: LanguageProficiencyType = Field(
         ..., description="The proficiency level of the language."
     )
 
@@ -122,29 +96,10 @@ class WorkExperience(BaseModel):
     completed_at: date | None = Field(
         None, description="When the work experience ended."
     )
-    employment_type: EmploymentTypeEnum | None = Field(
+    employment_type: ExperienceEmploymentType | None = Field(
         None, description="The type of employment (full-time, part-time, etc.)."
     )
     skills: list[str] = Field(..., description="The skills of the work experience.")
-
-    @field_validator("started_at")
-    @classmethod
-    def validate_started_at(cls, v: date) -> date:
-        if v > date.today():
-            raise ValueError("started_at cannot be in the future")
-        return v
-
-    @field_validator("completed_at")
-    @classmethod
-    def validate_completed_at(cls, v: date | None, info) -> date | None:
-        if v is None:
-            return v
-        if v > date.today():
-            raise ValueError("completed_at cannot be in the future")
-        started_at = info.data.get("started_at")
-        if started_at and v < started_at:
-            raise ValueError("completed_at cannot be before started_at")
-        return v
 
 
 class CareerProfile(BaseModel):
@@ -167,16 +122,12 @@ class Certification(BaseModel):
     name: str = Field(
         ...,
         description="The name of the certification.",
-        max_length=200,
-        min_length=1,
     )
     issuer: str = Field(
         ...,
         description="The issuer of the certification.",
-        max_length=200,
-        min_length=1,
     )
-    certification_url: HttpUrl = Field(
+    certification_url: str = Field(
         ..., description="The absolute URL of the certification."
     )
     created_at: date = Field(..., description="When the certification was created.")
@@ -190,10 +141,10 @@ class Location(BaseModel):
 
 class BaseProfile(BaseModel):
     # personal details
-    gender: Gender | None = None
+    gender: GenderType | None = None
     date_of_birth: date | None = None
     address: str | None = None
-    marital_status: MaritalStatus | None = None
+    marital_status: MaritalStatusType | None = None
     category: str | None = None
     education: list[Education]
     licenses: list[License]
@@ -277,7 +228,7 @@ class TermsAndPolicy(BaseModel):
 
 
 class AnalyticsPreference(BaseModel):
-    """ "Opt-in analytics cookies preference information."""
+    """Opt-in analytics cookies preference information."""
 
     type: Literal["acceptance", "rejection", "undecided"]
     updated_at: datetime

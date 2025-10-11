@@ -88,6 +88,20 @@ JobAlertFrequency = Literal["daily", "weekly", "monthly"]
 
 OrganizationMemberRoleType = Literal["admin", "member"]
 
+GenderType = Literal["MALE", "FEMALE", "OTHER"]
+MaritalStatusType = Literal["MARRIED", "SINGLE"]
+LanguageProficiencyType = Literal["NATIVE", "PROFESSIONAL", "BASIC"]
+LicenseVerificationStatusType = Literal["pending", "verified", "rejected"]
+ExperienceEmploymentType = Literal[
+    "FULL_TIME",
+    "PART_TIME",
+    "CONTRACT",
+    "INTERNSHIP",
+    "TEMPORARY",
+    "VOLUNTEER",
+    "OTHER",
+]
+
 # Organization names
 # (subdomains which are in use/ might be needed in the future)
 RESERVED_ORGANIZATION_NAMES = [

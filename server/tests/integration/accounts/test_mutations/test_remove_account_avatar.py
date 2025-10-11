@@ -1,4 +1,4 @@
-from urllib.parse import urlparse
+from urllib.parse import ParseResult, urlparse
 
 from app.accounts.documents import Account
 from app.accounts.repositories import AccountRepo
@@ -84,8 +84,10 @@ async def test_remove_account_avatar_returns_default_avatar(
     response = await password_auth_graphql_client(REMOVE_ACCOUNT_AVATAR_MUTATION)
 
     assert response["data"]["removeAccountAvatar"]["__typename"] == "Account"
-    avatar_url_parsed = urlparse(response["data"]["removeAccountAvatar"]["avatarUrl"])
-    assert avatar_url_parsed.hostname is not None and (
+    avatar_url_parsed = urlparse(response["data"]["removeAccountAvatar"]["avatarUrl"])  # pyright: ignore[reportUnknownVariableType]
+    assert isinstance(avatar_url_parsed, ParseResult)
+    assert avatar_url_parsed.hostname is not None
+    assert (
         avatar_url_parsed.hostname == "dicebear.com"
         or avatar_url_parsed.hostname.endswith(".dicebear.com")
     )

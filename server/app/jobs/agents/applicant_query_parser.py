@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
 
-from app.accounts.documents import Gender, MaritalStatus
+from app.core.constants import GenderType, MaritalStatusType
 
 
 class LocationWithRadius(BaseModel):
@@ -50,7 +50,7 @@ class ApplicantQueryFilters(BaseModel):
         default=None,
         description="Whether the applicant must be open to relocation anywhere, if specified.",
     )
-    gender: Gender | None = Field(
+    gender: GenderType | None = Field(
         default=None, description="Gender requirement, if specified."
     )
     min_age: int | None = Field(
@@ -59,7 +59,7 @@ class ApplicantQueryFilters(BaseModel):
     max_age: int | None = Field(
         default=None, description="Maximum age allowed, if specified."
     )
-    marital_status: MaritalStatus | None = Field(
+    marital_status: MaritalStatusType | None = Field(
         default=None, description="Marital status requirement, if specified."
     )
     category: str | None = Field(

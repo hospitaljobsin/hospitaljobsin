@@ -30,6 +30,12 @@ from app.accounts.exceptions import (
     PhoneNumberMissingError,
     PhoneNumberVerificationTokenCooldownError,
 )
+from app.accounts.models import (
+    CertificationInput,
+    EducationInput,
+    LicenseInput,
+    WorkExperienceInput,
+)
 from app.accounts.repositories import (
     AccountRepo,
     PhoneNumberVerificationTokenRepo,
@@ -561,7 +567,7 @@ class ProfileService:
     async def update_education(
         self,
         account: Annotated[Account, Field(exclude=True)],
-        education: list[Education],
+        education: list[EducationInput],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
@@ -572,7 +578,7 @@ class ProfileService:
 
         await self._profile_repo.update(
             profile=existing_profile,
-            education=education,
+            education=[Education(**edu.model_dump()) for edu in education],
         )
 
         return Ok(account)
@@ -581,7 +587,7 @@ class ProfileService:
     async def update_experience(
         self,
         account: Annotated[Account, Field(exclude=True)],
-        work_experience: list[WorkExperience],
+        work_experience: list[WorkExperienceInput],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
@@ -592,7 +598,9 @@ class ProfileService:
 
         await self._profile_repo.update(
             profile=existing_profile,
-            work_experience=work_experience,
+            work_experience=[
+                WorkExperience(**work_exp.model_dump()) for work_exp in work_experience
+            ],
         )
 
         return Ok(account)
@@ -601,7 +609,7 @@ class ProfileService:
     async def update_certifications(
         self,
         account: Annotated[Account, Field(exclude=True)],
-        certifications: list[Certification],
+        certifications: list[CertificationInput],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
@@ -612,7 +620,16 @@ class ProfileService:
 
         await self._profile_repo.update(
             profile=existing_profile,
-            certifications=certifications,
+            certifications=[
+                Certification(
+                    name=certification.name,
+                    issuer=certification.issuer,
+                    certification_url=str(certification.certification_url),
+                    expires_at=certification.expires_at,
+                    created_at=certification.created_at,
+                )
+                for certification in certifications
+            ],
         )
 
         return Ok(account)
@@ -621,7 +638,7 @@ class ProfileService:
     async def update_licenses(
         self,
         account: Annotated[Account, Field(exclude=True)],
-        licenses: list[License],
+        licenses: list[LicenseInput],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
@@ -632,7 +649,9 @@ class ProfileService:
 
         await self._profile_repo.update(
             profile=existing_profile,
-            licenses=licenses,
+            licenses=[
+                License(**profile_license.model_dump()) for profile_license in licenses
+            ],
         )
 
         return Ok(account)

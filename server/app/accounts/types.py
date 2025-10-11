@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 from datetime import date, datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Annotated, Optional, Self
+from typing import TYPE_CHECKING, Annotated, Self
 
 import strawberry
 from aioinject import Inject
@@ -19,6 +19,12 @@ from app.accounts.documents import (
     License,
     Profile,
     WorkExperience,
+)
+from app.accounts.models import (
+    CertificationInput,
+    EducationInput,
+    LicenseInput,
+    WorkExperienceInput,
 )
 from app.auth.repositories import SessionRepo, WebAuthnCredentialRepo
 from app.base.types import (
@@ -134,8 +140,8 @@ class CertificationInputType:
         description="When the certification expires.", default=None
     )
 
-    def to_document(self):
-        return Certification(
+    def to_document(self) -> CertificationInput:
+        return CertificationInput(
             name=self.name,
             issuer=self.issuer,
             certification_url=self.certification_url,
@@ -156,8 +162,8 @@ class EducationInputType:
         description="When the degree was completed."
     )
 
-    def to_document(self) -> Education:
-        return Education(
+    def to_document(self) -> EducationInput:
+        return EducationInput(
             degree=self.degree,
             institution=self.institution,
             started_at=self.started_at,
@@ -192,8 +198,8 @@ class WorkExperienceInputType:
     )
     skills: list[str] = strawberry.field(description="Skills used in this job.")
 
-    def to_document(self) -> WorkExperience:
-        return WorkExperience(
+    def to_document(self) -> WorkExperienceInput:
+        return WorkExperienceInput(
             title=self.title,
             description=self.description,
             organization=self.organization,
@@ -203,6 +209,133 @@ class WorkExperienceInputType:
             if self.employment_type
             else None,
             skills=self.skills,
+        )
+
+
+@strawberry.type(name="Education")
+class EducationType:
+    degree: str
+    institution: str
+    started_at: date
+    completed_at: date | None
+
+    @classmethod
+    def marshal(cls, edu: Education) -> Self:
+        return cls(
+            degree=edu.degree,
+            institution=edu.institution,
+            started_at=edu.started_at,
+            completed_at=edu.completed_at,
+        )
+
+
+@strawberry.type(name="License")
+class LicenseType:
+    name: str
+    issuer: str
+    license_number: str
+    registration_year: int
+    verification_status: LicenseVerificationStatusEnum
+    verified_at: date | None
+
+    @classmethod
+    def marshal(cls, lic: License) -> Self:
+        return cls(
+            name=lic.name,
+            issuer=lic.issuer,
+            license_number=lic.license_number,
+            registration_year=lic.registration_year,
+            verification_status=LicenseVerificationStatusEnum(lic.verification_status),
+            verified_at=lic.verified_at,
+        )
+
+
+@strawberry.type(name="WorkExperience")
+class WorkExperienceType:
+    title: str
+    description: str | None
+    organization: str
+    started_at: date
+    completed_at: date | None
+    employment_type: EmploymentTypeEnum | None
+    skills: list[str]
+
+    @classmethod
+    def marshal(cls, exp: WorkExperience) -> Self:
+        return cls(
+            title=exp.title,
+            description=exp.description,
+            organization=exp.organization,
+            started_at=exp.started_at,
+            completed_at=exp.completed_at,
+            employment_type=EmploymentTypeEnum(exp.employment_type)
+            if exp.employment_type
+            else None,
+            skills=exp.skills,
+        )
+
+
+@strawberry.type(name="CareerProfile")
+class CareerProfileType:
+    current_industry: str | None = strawberry.field(default=None)
+    desired_job_types: list[JobTypeEnum] = strawberry.field(default_factory=list)
+    desired_work_modes: list[WorkModeEnum] = strawberry.field(default_factory=list)
+    expected_salary: float | None = strawberry.field(default=None)
+    locations_open_to_work: list[str] = strawberry.field(default_factory=list)
+    open_to_relocation_anywhere: bool = strawberry.field(default=False)
+
+    @classmethod
+    def marshal(cls, se: CareerProfile) -> Self:
+        return cls(
+            current_industry=se.current_industry,
+            desired_job_types=se.desired_job_types,
+            desired_work_modes=se.desired_work_modes,
+            expected_salary=se.expected_salary,
+            locations_open_to_work=se.locations_open_to_work,
+            open_to_relocation_anywhere=se.open_to_relocation_anywhere,
+        )
+
+
+@strawberry.type(name="Certification")
+class CertificationType:
+    name: str
+    issuer: str
+    certification_url: str
+    created_at: date
+    expires_at: date | None
+
+    @classmethod
+    def marshal(cls, cert: Certification) -> Self:
+        return cls(
+            name=cert.name,
+            issuer=cert.issuer,
+            certification_url=cert.certification_url,
+            created_at=cert.created_at,
+            expires_at=cert.expires_at,
+        )
+
+
+@strawberry.input(
+    name="LicenseInput",
+    description="The license details input.",
+)
+class LicenseInputType:
+    name: str = strawberry.field(description="The name of the license.")
+    issuer: str = strawberry.field(description="The issuer of the license.")
+    license_number: str = strawberry.field(description="The license number.")
+    registration_year: int = strawberry.field(
+        description="The year when the license was issued."
+    )
+
+    def to_document(self) -> LicenseInput:
+        return LicenseInput(
+            name=self.name,
+            issuer=self.issuer,
+            license_number=self.license_number,
+            registration_year=self.registration_year,
+            verification_status="pending",
+            verified_at=None,
+            verification_notes=None,
         )
 
 
@@ -226,25 +359,25 @@ class BaseProfileType:
     category: str | None = strawberry.field(
         description="The category of the profile's user.",
     )
-    education: list["EducationType"] = strawberry.field(
+    education: list[EducationType] = strawberry.field(
         description="The user's education history.",
     )
-    licenses: list["LicenseType"] = strawberry.field(
+    licenses: list[LicenseType] = strawberry.field(
         description="The user's licenses.",
     )
-    languages: list["LanguageType"] = strawberry.field(
+    languages: list[LanguageType] = strawberry.field(
         description="The list of languages spoken by the profile's user.",
     )
     job_preferences: list[str] = strawberry.field(
         description="The user's job preferences.",
     )
-    work_experience: list["WorkExperienceType"] = strawberry.field(
+    work_experience: list[WorkExperienceType] = strawberry.field(
         description="The user's work experience.",
     )
-    career_profile: Optional["CareerProfileType"] = strawberry.field(
+    career_profile: CareerProfileType | None = strawberry.field(
         description="The user's salary expectations.",
     )
-    certifications: list["CertificationType"] = strawberry.field(
+    certifications: list[CertificationType] = strawberry.field(
         description="The user's certifications.",
     )
     professional_summary: str | None = strawberry.field(
@@ -547,7 +680,7 @@ class AccountType(BaseNodeType[Account]):
             ),
         ] = None,
     ) -> Annotated[
-        "OrganizationConnectionType", strawberry.lazy("app.organizations.types")
+        "OrganizationConnectionType", strawberry.lazy("app.organizations.types")  # noqa: UP037
     ]:
         """Return the organizations the user is in."""
         from app.organizations.types import OrganizationConnectionType
@@ -568,7 +701,7 @@ class AccountType(BaseNodeType[Account]):
     @inject
     async def current_session(
         self, info: AuthInfo
-    ) -> Annotated["SessionType", strawberry.lazy("app.auth.types")]:
+    ) -> Annotated["SessionType", strawberry.lazy("app.auth.types")]:  # noqa: UP037
         """Return the current session for the user."""
         from app.auth.types import SessionType
 
@@ -609,7 +742,7 @@ class AccountType(BaseNodeType[Account]):
                 description="How many items to return before the cursor?",
             ),
         ] = None,
-    ) -> Annotated["SessionConnectionType", strawberry.lazy("app.auth.types")]:
+    ) -> Annotated["SessionConnectionType", strawberry.lazy("app.auth.types")]:  # noqa: UP037
         """Return the sessions for the current user."""
         from app.auth.types import SessionConnectionType
 
@@ -659,7 +792,7 @@ class AccountType(BaseNodeType[Account]):
             ),
         ] = None,
     ) -> Annotated[
-        "WebAuthnCredentialConnectionType", strawberry.lazy("app.auth.types")
+        "WebAuthnCredentialConnectionType", strawberry.lazy("app.auth.types")  # noqa: UP037
     ]:
         """Return the webauthn credentials for the current user."""
         from app.auth.types import WebAuthnCredentialConnectionType
@@ -849,130 +982,3 @@ SaveJobPayload = Annotated[
         description="The save job payload.",
     ),
 ]
-
-
-@strawberry.type(name="Education")
-class EducationType:
-    degree: str
-    institution: str
-    started_at: date
-    completed_at: date | None
-
-    @classmethod
-    def marshal(cls, edu: Education) -> Self:
-        return cls(
-            degree=edu.degree,
-            institution=edu.institution,
-            started_at=edu.started_at,
-            completed_at=edu.completed_at,
-        )
-
-
-@strawberry.type(name="License")
-class LicenseType:
-    name: str
-    issuer: str
-    license_number: str
-    registration_year: int
-    verification_status: LicenseVerificationStatusEnum
-    verified_at: date | None
-
-    @classmethod
-    def marshal(cls, lic: License) -> Self:
-        return cls(
-            name=lic.name,
-            issuer=lic.issuer,
-            license_number=lic.license_number,
-            registration_year=lic.registration_year,
-            verification_status=LicenseVerificationStatusEnum(lic.verification_status),
-            verified_at=lic.verified_at,
-        )
-
-
-@strawberry.type(name="WorkExperience")
-class WorkExperienceType:
-    title: str
-    description: str | None
-    organization: str
-    started_at: date
-    completed_at: date | None
-    employment_type: EmploymentTypeEnum | None
-    skills: list[str]
-
-    @classmethod
-    def marshal(cls, exp: WorkExperience) -> Self:
-        return cls(
-            title=exp.title,
-            description=exp.description,
-            organization=exp.organization,
-            started_at=exp.started_at,
-            completed_at=exp.completed_at,
-            employment_type=EmploymentTypeEnum(exp.employment_type)
-            if exp.employment_type
-            else None,
-            skills=exp.skills,
-        )
-
-
-@strawberry.type(name="CareerProfile")
-class CareerProfileType:
-    current_industry: str | None = strawberry.field(default=None)
-    desired_job_types: list[JobTypeEnum] = strawberry.field(default_factory=list)
-    desired_work_modes: list[WorkModeEnum] = strawberry.field(default_factory=list)
-    expected_salary: float | None = strawberry.field(default=None)
-    locations_open_to_work: list[str] = strawberry.field(default_factory=list)
-    open_to_relocation_anywhere: bool = strawberry.field(default=False)
-
-    @classmethod
-    def marshal(cls, se: CareerProfile) -> Self:
-        return cls(
-            current_industry=se.current_industry,
-            desired_job_types=se.desired_job_types,
-            desired_work_modes=se.desired_work_modes,
-            expected_salary=se.expected_salary,
-            locations_open_to_work=se.locations_open_to_work,
-            open_to_relocation_anywhere=se.open_to_relocation_anywhere,
-        )
-
-
-@strawberry.type(name="Certification")
-class CertificationType:
-    name: str
-    issuer: str
-    certification_url: str
-    created_at: date
-    expires_at: date | None
-
-    @classmethod
-    def marshal(cls, cert: Certification) -> Self:
-        return cls(
-            name=cert.name,
-            issuer=cert.issuer,
-            certification_url=cert.certification_url,
-            created_at=cert.created_at,
-            expires_at=cert.expires_at,
-        )
-
-
-@strawberry.input(
-    name="LicenseInput",
-    description="The license details input.",
-)
-class LicenseInputType:
-    name: str = strawberry.field(description="The name of the license.")
-    issuer: str = strawberry.field(description="The issuer of the license.")
-    license_number: str = strawberry.field(description="The license number.")
-    registration_year: int = strawberry.field(
-        description="The year when the license was issued."
-    )
-
-    def to_document(self):
-        return License(
-            name=self.name,
-            issuer=self.issuer,
-            license_number=self.license_number,
-            registration_year=self.registration_year,
-            verification_status="pending",
-            verified_at=None,
-            verification_notes=None,
-        )

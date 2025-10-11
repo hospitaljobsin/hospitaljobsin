@@ -565,7 +565,6 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
     @strawberry.field(  # type: ignore[misc]
         description="The AI analysis of the job applicant.",
     )
-    @inject
     async def analysis(self) -> JobApplicantAnalysisPayload:
         if self._analysis is not None:
             return JobApplicantAnalysisType.marshal(self._analysis)
@@ -576,7 +575,6 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
     @strawberry.field(  # type: ignore[misc]
         description="The account of the job applicant.",
     )
-    @inject
     async def account(self, info: Info) -> AccountType | None:
         if isinstance(self._account, ObjectId):
             account = await info.context["loaders"].account_by_id.load(
@@ -591,7 +589,6 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
     @strawberry.field(  # type: ignore[misc]
         description="The job of the job applicant.",
     )
-    @inject
     async def job(
         self, info: Info
     ) -> Annotated["JobType", strawberry.lazy("app.jobs.types")] | None:
@@ -1061,7 +1058,7 @@ class JobType(BaseNodeType[Job]):
     async def is_applied(
         self, info: Info, job_applicant_repo: Injected[JobApplicantRepo]
     ) -> bool:
-        """Get the number of applications for the job."""
+        """Whether the current user has applied to the job already."""
         current_user = info.context["current_user"]
         if current_user is None:
             return False

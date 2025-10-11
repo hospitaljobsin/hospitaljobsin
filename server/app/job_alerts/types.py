@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Annotated, Self
+from typing import Annotated, Self
 
 import strawberry
 from strawberry import relay
@@ -9,9 +9,6 @@ from app.base.types import BaseConnectionType, BaseEdgeType, BaseErrorType, Base
 from app.job_alerts.documents import JobAlert, RecommendedJobAlert
 from app.job_alerts.models import AlertFilters
 from app.jobs.types import JobTypeFilterEnum, WorkModeEnum
-
-if TYPE_CHECKING:
-    pass
 
 
 @strawberry.enum(
