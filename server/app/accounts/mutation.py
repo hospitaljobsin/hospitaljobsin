@@ -241,7 +241,6 @@ class AccountMutation:
     @inject
     async def request_phone_number_verification_token(
         self,
-        info: AuthInfo,
         account_service: Annotated[AccountService, Inject],
         phone_number: Annotated[
             str,

@@ -5,7 +5,7 @@ import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
-from strawberry import Private, relay
+from strawberry import Maybe, Private, relay
 from strawberry.scalars import JSON
 
 from app.accounts.documents import Account
@@ -15,6 +15,18 @@ from app.auth.repositories import TemporaryTwoFactorChallengeRepo
 from app.base.types import BaseConnectionType, BaseEdgeType, BaseErrorType, BaseNodeType
 from app.context import Info
 from app.core.constants import AuthProvider
+
+
+@strawberry.input(one_of=True, name="LoginByInput")
+class LoginByInputType:
+    email: Annotated[
+        Maybe[str],
+        strawberry.field(description="Email address of the account to log in."),
+    ]
+    phone_number: Annotated[
+        Maybe[str],
+        strawberry.field(description="Phone number of the account to log in."),
+    ]
 
 
 @strawberry.type(

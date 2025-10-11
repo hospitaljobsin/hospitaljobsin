@@ -8,12 +8,10 @@ from app.accounts.documents import (
     CareerProfile,
     Certification,
     Education,
-    Gender,
     Language,
-    MaritalStatus,
     WorkExperience,
 )
-from app.core.constants import JobKindType, WorkModeType
+from app.core.constants import GenderType, JobKindType, MaritalStatusType, WorkModeType
 
 
 class RecommendedJobAlert(BaseModel):
@@ -61,7 +59,7 @@ class PartialLicense(BaseModel):
 
 
 class ProfileOutput(BaseModel):
-    gender: Gender | None = Field(
+    gender: GenderType | None = Field(
         ...,
         description="The gender of the applicant.",
     )
@@ -73,7 +71,7 @@ class ProfileOutput(BaseModel):
         ...,
         description="The address of the applicant.",
     )
-    marital_status: MaritalStatus | None = Field(
+    marital_status: MaritalStatusType | None = Field(
         ...,
         description="The marital status of the applicant.",
     )

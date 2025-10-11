@@ -510,6 +510,7 @@ class AuthMutation:
     async def login_with_password(
         self,
         info: Info,
+        # login_by: LoginByInputType,
         email: Annotated[
             str,
             strawberry.argument(
