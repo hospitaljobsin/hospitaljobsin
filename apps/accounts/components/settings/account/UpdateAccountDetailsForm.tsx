@@ -1,5 +1,3 @@
-import type { UpdateAccountDetailsFormFragment$key } from '@/__generated__/UpdateAccountDetailsFormFragment.graphql';
-import { uploadFileToS3 } from '@/lib/presignedUrl';
 import {
 	Avatar,
 	Badge,
@@ -24,6 +22,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { useFragment, useMutation } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { z } from 'zod/v4-mini';
+import type { UpdateAccountDetailsFormFragment$key } from '@/__generated__/UpdateAccountDetailsFormFragment.graphql';
+import { uploadFileToS3 } from '@/lib/presignedUrl';
 import DeleteAvatarModal from './DeleteAvatarModal';
 
 const UpdateAccountDetailsFormMutation = graphql`
@@ -59,7 +59,7 @@ type Props = {
 };
 
 const formSchema = z.object({
-	fullName: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(75, 'This field must be at most 75 characters long'))
+	fullName: z.string().check(z.minLength(1, 'This field is required'), z.maxLength(100, 'This field must be at most 75 characters long'))
 });
 
 export default function UpdateAccountDetailsForm({ rootQuery, onSaveChanges }: Props) {
