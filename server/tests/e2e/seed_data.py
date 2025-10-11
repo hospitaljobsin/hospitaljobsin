@@ -8,8 +8,13 @@ async def setup_test_database() -> None:
     # Initialize Beanie with test database
     settings = get_settings(DatabaseSettings)
     await initialize_database(
-        database_url=str(settings.database_url),
         default_database_name=settings.default_database_name,
+        db_client=AsyncMongoClient(
+            str(settings.database_url),
+            connectTimeoutMS=1000 * 15,
+            socketTimeoutMS=1000 * 12,
+            serverSelectionTimeoutMS=1000 * 15,
+        ),
     )
 
 

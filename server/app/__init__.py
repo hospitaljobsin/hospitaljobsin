@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from granian.utils.proxies import wrap_asgi_with_proxy_headers
+from pymongo import AsyncMongoClient
 from structlog import get_logger
 
 from app.accounts.routes import accounts_router
@@ -101,8 +102,13 @@ async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None]:
             database_settings = get_settings(DatabaseSettings)
             logger.debug("Initializing database connection")
             await initialize_database(
-                database_url=str(database_settings.database_url),
                 default_database_name=database_settings.default_database_name,
+                db_client=AsyncMongoClient(
+                    str(database_settings.database_url),
+                    connectTimeoutMS=1000 * 15,
+                    socketTimeoutMS=1000 * 12,
+                    serverSelectionTimeoutMS=1000 * 15,
+                ),
             )
         yield
 

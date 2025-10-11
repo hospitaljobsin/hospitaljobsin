@@ -129,6 +129,7 @@ async def invalid_organization(
     return org
 
 
+@pytest.mark.usefixtures("import_region_data")
 async def test_create_job_successful_remote_type(
     password_auth_graphql_client: GraphQLClient,
     valid_organization: Organization,
@@ -181,6 +182,7 @@ async def test_create_job_invalid_remote_type(
     assert data["__typename"] == "InvalidApplicantLocationsError"
 
 
+@pytest.mark.usefixtures("import_region_data")
 async def test_create_job_successful_all_fields(
     password_auth_graphql_client: GraphQLClient,
     valid_organization: Organization,

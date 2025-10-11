@@ -117,7 +117,7 @@ jobs:
       - name: Run unit and integration tests
         if: ${{ inputs.run-deploy }}
         working-directory: ./server
-        run: uv run pytest -vv -n 1
+        run: uv run pytest -vv -n auto --dist loadfile
 
   build-and-push:
     needs: test-backend
