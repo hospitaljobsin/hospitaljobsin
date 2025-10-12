@@ -591,7 +591,7 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
     )
     async def job(
         self, info: Info
-    ) -> Annotated["JobType", strawberry.lazy("app.jobs.types")] | None:
+    ) -> Annotated["JobType", strawberry.lazy("app.jobs.types")] | None:  # noqa: UP037
         if isinstance(self._job, ObjectId):
             job = await info.context["loaders"].job_by_id.load(str(self._job))
 
@@ -879,7 +879,7 @@ class JobType(BaseNodeType[Job]):
                 description="How many items to return before the cursor?",
             ),
         ] = None,
-    ) -> "JobConnectionType":
+    ) -> "JobConnectionType":  # noqa: UP037
         """Return a paginated connection of related jobs for the job."""
         paginated_jobs = await job_repo.get_all_related(
             job_id=ObjectId(self.id),
@@ -1166,7 +1166,7 @@ class JobType(BaseNodeType[Job]):
         self, info: Info
     ) -> (
         Annotated[
-            "OrganizationType",
+            "OrganizationType",  # noqa: UP037
             strawberry.lazy("app.organizations.types"),
         ]
         | None
@@ -1222,7 +1222,7 @@ class SavedJobEdgeType(BaseEdgeType[JobType, SavedJob]):
         """Marshal into a edge instance."""
         return cls(
             node=JobType.marshal(saved_job.job),
-            cursor=relay.to_base64(JobType, saved_job.job.id),
+            cursor=relay.to_base64(JobType, saved_job.id),
             saved_at=saved_job.id.generation_time,
         )
 

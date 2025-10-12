@@ -31,7 +31,7 @@ from app.core.constants import (
     JobKindType,
     WorkModeType,
 )
-from app.core.embeddings import EmbeddingsService
+from app.core.embeddings import BaseEmbeddingsService
 from app.core.formatting import clean_markdown_text, markdown_to_clean_html, slugify
 from app.database.paginator import PaginatedResult, Paginator, SearchPaginator
 from app.geocoding.repositories import RegionRepo
@@ -88,7 +88,7 @@ class JobType(Enum):
 
 class JobRepo:
     def __init__(
-        self, embeddings_service: EmbeddingsService, region_repo: RegionRepo
+        self, embeddings_service: BaseEmbeddingsService, region_repo: RegionRepo
     ) -> None:
         self._embeddings_service = embeddings_service
         self._region_repo = region_repo
@@ -1039,7 +1039,8 @@ class SavedJobRepo:
         paginator: Paginator[SavedJob, ObjectId] = Paginator(
             reverse=True,
             document_cls=SavedJob,
-            paginate_by="job.id",
+            paginate_by="_id",
+            entity_paginate_by="id",
         )
 
         search_criteria = SavedJob.find(
@@ -1086,7 +1087,7 @@ class JobApplicantsSortBy(Enum):
 class JobApplicantRepo:
     def __init__(
         self,
-        embeddings_service: EmbeddingsService,
+        embeddings_service: BaseEmbeddingsService,
         applicant_query_parser_agent: ApplicantQueryParserAgent,
         region_repo: RegionRepo,
         redis_client: Redis,
@@ -1680,7 +1681,9 @@ class JobApplicantRepo:
         paginator: Paginator[JobApplicant, ObjectId] = Paginator(
             reverse=True,
             document_cls=JobApplicant,
-            paginate_by="job.id",
+            paginate_by="_id",
+            entity_paginate_by="id",
+            calculate_total_count=True,
         )
 
         search_criteria = JobApplicant.find(

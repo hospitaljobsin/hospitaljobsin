@@ -71,7 +71,7 @@ class BasePaginator:
             raise ValueError(after_and_before_error)
 
         if first is not None:
-            if first < 0:
+            if first <= 0:
                 first_not_positive_error = "`first` must be a positive integer"
                 raise ValueError(first_not_positive_error)
             if first > MAX_PAGINATION_LIMIT:
@@ -83,7 +83,7 @@ class BasePaginator:
             return first
 
         if last is not None:
-            if last < 0:
+            if last <= 0:
                 last_not_positive_error = "`last` must be a positive integer"
                 raise ValueError(last_not_positive_error)
             if last > MAX_PAGINATION_LIMIT:
@@ -209,6 +209,7 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType], BasePaginat
             pipeline = resolved_search_criteria.get_aggregation_pipeline()
             projection_model = resolved_search_criteria.get_projection_model()
 
+        base_pipeline = pipeline.copy()
         pipeline = self.__apply_ordering(pipeline=pipeline, last=last)
         pipeline = self.__apply_filters(pipeline=pipeline, before=before, after=after)
 
@@ -220,7 +221,7 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType], BasePaginat
                 {
                     "$facet": {
                         "data": pipeline,
-                        "totalCount": [{"$count": "count"}],
+                        "totalCount": base_pipeline + [{"$count": "count"}],
                     }
                 },
                 {
@@ -245,14 +246,20 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType], BasePaginat
             results = await self._document_cls.aggregate(
                 pipeline, projection_model=projection_model
             ).to_list()
-        entities = results[:pagination_limit]
 
         if last is not None:
-            entities = list(reversed(entities))
+            entities = list(
+                reversed(
+                    results[-pagination_limit:]
+                    if len(results) > pagination_limit
+                    else results
+                )
+            )
             has_next_page = before is not None
             has_previous_page = len(results) > pagination_limit
         else:
             # we are paginating forwards by default
+            entities = results[:pagination_limit]
             has_next_page = len(results) > pagination_limit
             has_previous_page = after is not None
 
@@ -406,24 +413,35 @@ class SearchPaginator(Generic[ModelType, SearchProjectionModelType], BasePaginat
             # Check if we have more results than requested (indicating next page exists)
             has_more_results = len(results) > pagination_limit
 
-            entities_data = results[:pagination_limit]
-
-            entities = [
+            # Convert all results to entities first
+            all_entities = [
                 self._projection_model(**entity)
-                for entity in entities_data
+                for entity in results
                 if isinstance(entity, dict)
             ]
 
-        # Determine pagination info
-        if last is not None:
-            # Reverse pagination
-            entities = list(reversed(entities))
-            has_next_page = before is not None
-            has_previous_page = has_more_results
+            # Determine pagination info and slice accordingly
+            if last is not None:
+                # Reverse pagination - take last N items then reverse
+                entities = list(
+                    reversed(
+                        all_entities[-pagination_limit:]
+                        if has_more_results
+                        else all_entities
+                    )
+                )
+                has_next_page = before is not None
+                has_previous_page = has_more_results
+            else:
+                # Forward pagination (default)
+                entities = all_entities[:pagination_limit]
+                has_next_page = has_more_results
+                has_previous_page = after is not None
         else:
-            # Forward pagination (default)
-            has_next_page = has_more_results
-            has_previous_page = after is not None
+            has_next_page = False
+            has_previous_page = (
+                after is not None if first is not None else before is not None
+            )
 
         start_cursor = entities[0].pagination_token if entities else None
         end_cursor = entities[-1].pagination_token if entities else None

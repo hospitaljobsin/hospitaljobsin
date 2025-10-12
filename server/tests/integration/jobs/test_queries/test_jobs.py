@@ -13,6 +13,13 @@ from app.organizations.documents import Organization
 from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
 from pymongo import AsyncMongoClient
 
+from tests.helpers.pagination import (
+    assert_backward_pagination_has_previous,
+    assert_forward_pagination_has_next,
+    assert_forward_pagination_with_after,
+    assert_full_pagination_flow,
+    assert_pagination_validates_first_and_last,
+)
 from tests.integration.graphql_client import GraphQLClient
 from tests.utils.slugs import generate_test_slug
 
@@ -739,24 +746,17 @@ async def test_pagination_forward_first(
     sample_jobs: list[Job],
 ) -> None:
     """Test forward pagination with first parameter."""
-    response = await graphql_client(
-        JOBS_QUERY,
-        variables={
-            "workMode": ["REMOTE", "HYBRID", "OFFICE"],
-            "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
-            "first": 2,
-        },
-    )
 
-    assert "errors" not in response
-    data = response["data"]["jobs"]
+    async def paginate_jobs(params: dict[str, Any]) -> dict[str, Any]:
+        response = await graphql_client(JOBS_QUERY, variables=params)
+        assert "errors" not in response
+        return response["data"]["jobs"]
 
-    # Should return first 2 jobs
-    assert len(data["edges"]) == 2
-    assert data["pageInfo"]["hasNextPage"] is True
-    assert data["pageInfo"]["hasPreviousPage"] is False
-    assert data["pageInfo"]["startCursor"] is not None
-    assert data["pageInfo"]["endCursor"] is not None
+    filters = {
+        "workMode": ["REMOTE", "HYBRID", "OFFICE"],
+        "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
+    }
+    await assert_forward_pagination_has_next(paginate_jobs, filters, 2, 5)
 
 
 async def test_pagination_forward_after(
@@ -764,40 +764,24 @@ async def test_pagination_forward_after(
     sample_jobs: list[Job],
 ) -> None:
     """Test forward pagination with after cursor."""
-    # First, get the first page
-    first_response = await graphql_client(
-        JOBS_QUERY,
-        variables={
-            "workMode": ["REMOTE", "HYBRID", "OFFICE"],
-            "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
-            "first": 2,
-        },
+
+    async def paginate_jobs(params: dict[str, Any]) -> dict[str, Any]:
+        response = await graphql_client(JOBS_QUERY, variables=params)
+        assert "errors" not in response
+        return response["data"]["jobs"]
+
+    filters = {
+        "workMode": ["REMOTE", "HYBRID", "OFFICE"],
+        "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
+    }
+    first_page = await paginate_jobs({"first": 2, **filters})
+    end_cursor = first_page["pageInfo"]["endCursor"]
+    second_page = await assert_forward_pagination_with_after(
+        paginate_jobs, filters, end_cursor, 2
     )
 
-    first_data = first_response["data"]["jobs"]
-    end_cursor = first_data["pageInfo"]["endCursor"]
-
-    # Then get the next page
-    second_response = await graphql_client(
-        JOBS_QUERY,
-        variables={
-            "workMode": ["REMOTE", "HYBRID", "OFFICE"],
-            "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
-            "first": 2,
-            "after": end_cursor,
-        },
-    )
-
-    assert "errors" not in second_response
-    second_data = second_response["data"]["jobs"]
-
-    # Should return next 2 jobs
-    assert len(second_data["edges"]) <= 2
-    assert second_data["pageInfo"]["hasPreviousPage"] is True
-
-    # Verify no overlap between pages
-    first_ids = {edge["node"]["id"] for edge in first_data["edges"]}
-    second_ids = {edge["node"]["id"] for edge in second_data["edges"]}
+    first_ids = {edge["node"]["id"] for edge in first_page["edges"]}
+    second_ids = {edge["node"]["id"] for edge in second_page["edges"]}
     assert first_ids.isdisjoint(second_ids)
 
 
@@ -806,24 +790,17 @@ async def test_pagination_backward_last(
     sample_jobs: list[Job],
 ) -> None:
     """Test backward pagination with last parameter."""
-    response = await graphql_client(
-        JOBS_QUERY,
-        variables={
-            "workMode": ["REMOTE", "HYBRID", "OFFICE"],
-            "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
-            "last": 2,
-        },
-    )
 
-    assert "errors" not in response
-    data = response["data"]["jobs"]
+    async def paginate_jobs(params: dict[str, Any]) -> dict[str, Any]:
+        response = await graphql_client(JOBS_QUERY, variables=params)
+        assert "errors" not in response
+        return response["data"]["jobs"]
 
-    # Should return last 2 jobs
-    assert len(data["edges"]) == 2
-    assert data["pageInfo"]["hasNextPage"] is False
-    assert data["pageInfo"]["hasPreviousPage"] is True
-    assert data["pageInfo"]["startCursor"] is not None
-    assert data["pageInfo"]["endCursor"] is not None
+    filters = {
+        "workMode": ["REMOTE", "HYBRID", "OFFICE"],
+        "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
+    }
+    await assert_backward_pagination_has_previous(paginate_jobs, filters, 2)
 
 
 async def test_pagination_backward_before(
@@ -831,38 +808,26 @@ async def test_pagination_backward_before(
     sample_jobs: list[Job],
 ) -> None:
     """Test backward pagination with before cursor."""
-    # First, get the last page
-    last_response = await graphql_client(
-        JOBS_QUERY,
-        variables={
-            "workMode": ["REMOTE", "HYBRID", "OFFICE"],
-            "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
-            "last": 2,
-        },
-    )
 
-    last_data = last_response["data"]["jobs"]
-    start_cursor = last_data["pageInfo"]["startCursor"]
+    async def paginate_jobs(params: dict[str, Any]) -> dict[str, Any]:
+        response = await graphql_client(JOBS_QUERY, variables=params)
+        assert "errors" not in response
+        return response["data"]["jobs"]
 
-    # Then get the previous page
+    filters = {
+        "workMode": ["REMOTE", "HYBRID", "OFFICE"],
+        "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
+    }
+    last_page = await paginate_jobs({"last": 2, **filters})
+    start_cursor = last_page["pageInfo"]["startCursor"]
     prev_response = await graphql_client(
         JOBS_QUERY,
-        variables={
-            "workMode": ["REMOTE", "HYBRID", "OFFICE"],
-            "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
-            "last": 2,
-            "before": start_cursor,
-        },
+        variables={"last": 2, "before": start_cursor, **filters},
     )
-
     assert "errors" not in prev_response
     prev_data = prev_response["data"]["jobs"]
 
-    # Should return previous jobs
-    assert len(prev_data["edges"]) <= 2
-
-    # Verify no overlap between pages
-    last_ids = {edge["node"]["id"] for edge in last_data["edges"]}
+    last_ids = {edge["node"]["id"] for edge in last_page["edges"]}
     prev_ids = {edge["node"]["id"] for edge in prev_data["edges"]}
     assert last_ids.isdisjoint(prev_ids)
 
@@ -872,20 +837,16 @@ async def test_combined_filters_work_mode_and_location(
     sample_jobs: list[Job],
 ) -> None:
     """Test combining work mode and location filters."""
-    response = await graphql_client(
-        JOBS_QUERY,
-        variables={
-            "workMode": ["REMOTE"],
-            "jobType": [],
-            "location": "Mumbai",
-            "first": 10,
-        },
-    )
 
-    assert "errors" not in response
-    data = response["data"]["jobs"]
+    async def paginate_jobs(params: dict[str, Any]) -> dict[str, Any]:
+        response = await graphql_client(JOBS_QUERY, variables=params)
+        assert "errors" not in response
+        return response["data"]["jobs"]
 
-    # Should return remote jobs in Mumbai
+    filters = {"workMode": ["REMOTE"], "jobType": [], "location": "Mumbai"}
+    await assert_pagination_validates_first_and_last(paginate_jobs, filters)
+
+    data = await paginate_jobs({"first": 10, **filters})
     assert len(data["edges"]) >= 1
     for edge in data["edges"]:
         assert edge["node"]["workMode"] == "REMOTE"
@@ -1192,47 +1153,17 @@ async def test_pagination_consistency(
     sample_jobs: list[Job],
 ) -> None:
     """Test pagination consistency across multiple requests."""
-    # Get all jobs in one request
-    all_response = await graphql_client(
-        JOBS_QUERY,
-        variables={
-            "workMode": ["REMOTE", "HYBRID", "OFFICE"],
-            "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
-            "first": 10,
-        },
-    )
 
-    all_jobs = all_response["data"]["jobs"]["edges"]
+    async def paginate_jobs(params: dict[str, Any]) -> dict[str, Any]:
+        response = await graphql_client(JOBS_QUERY, variables=params)
+        assert "errors" not in response
+        return response["data"]["jobs"]
 
-    # Get jobs in pages of 2
-    paginated_jobs = []
-    cursor = None
-
-    while True:
-        variables: dict[str, Any] = {
-            "workMode": ["REMOTE", "HYBRID", "OFFICE"],
-            "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
-            "first": 2,
-        }
-        if cursor:
-            variables["after"] = cursor
-
-        response = await graphql_client(JOBS_QUERY, variables=variables)
-        page_data = response["data"]["jobs"]
-
-        paginated_jobs.extend(page_data["edges"])
-
-        if not page_data["pageInfo"]["hasNextPage"]:
-            break
-
-        cursor = page_data["pageInfo"]["endCursor"]
-
-    # Compare results
-    all_job_ids = {edge["node"]["id"] for edge in all_jobs}
-    paginated_job_ids = {edge["node"]["id"] for edge in paginated_jobs}
-
-    assert all_job_ids == paginated_job_ids
-    assert len(all_jobs) == len(paginated_jobs)
+    filters = {
+        "workMode": ["REMOTE", "HYBRID", "OFFICE"],
+        "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
+    }
+    await assert_full_pagination_flow(paginate_jobs, filters, 2, 5)
 
 
 async def test_no_duplicate_results(
@@ -1264,21 +1195,16 @@ async def test_total_count_accuracy(
     sample_jobs: list[Job],
 ) -> None:
     """Test that totalCount is accurate."""
-    response = await graphql_client(
-        JOBS_QUERY,
-        variables={
-            "workMode": ["REMOTE", "HYBRID", "OFFICE"],
-            "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
-            "first": 2,
-        },
-    )
 
-    assert "errors" not in response
-    data = response["data"]["jobs"]
+    async def paginate_jobs(params: dict[str, Any]) -> dict[str, Any]:
+        response = await graphql_client(JOBS_QUERY, variables=params)
+        assert "errors" not in response
+        return response["data"]["jobs"]
 
-    # Total count should be 5 (active jobs)
-    assert data["totalCount"] == 5
-
-    # Even with pagination, total count should remain the same
-    assert len(data["edges"]) == 2  # Only 2 returned due to first: 2
-    assert data["totalCount"] == 5  # But total is still 5
+    filters = {
+        "workMode": ["REMOTE", "HYBRID", "OFFICE"],
+        "jobType": ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT"],
+    }
+    result = await paginate_jobs({"first": 2, **filters})
+    assert result["totalCount"] == 5
+    assert len(result["edges"]) == 2
