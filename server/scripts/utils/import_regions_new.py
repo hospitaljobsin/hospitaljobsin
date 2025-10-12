@@ -10,6 +10,7 @@ from app.database import initialize_database
 from app.geocoding.documents import Region
 from app.geocoding.models import GeoJSONMultiPolygon, GeoJSONPoint, GeoJSONPolygon
 from pydantic_extra_types.country import CountryAlpha2
+from pymongo import AsyncMongoClient
 from shapely import Polygon, get_parts
 from shapely.validation import make_valid
 
@@ -649,8 +650,13 @@ async def main() -> None:
         print("No existing state found, starting fresh import...")
 
     await initialize_database(
-        str(get_settings(DatabaseSettings).database_url),
         get_settings(DatabaseSettings).default_database_name,
+        db_client=AsyncMongoClient(
+            str(get_settings(DatabaseSettings).database_url),
+            connectTimeoutMS=1000 * 15,
+            socketTimeoutMS=1000 * 12,
+            serverSelectionTimeoutMS=1000 * 15,
+        ),
     )
 
     # Clear existing regions (optional - uncomment if needed)
