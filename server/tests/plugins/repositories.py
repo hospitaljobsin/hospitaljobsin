@@ -17,7 +17,12 @@ from app.auth.repositories import (
 )
 from app.geocoding.repositories import RegionRepo
 from app.job_alerts.repositories import JobAlertRepo, RecommendedJobAlertRepo
-from app.jobs.repositories import JobApplicantRepo, JobApplicationFormRepo, JobRepo
+from app.jobs.repositories import (
+    JobApplicantRepo,
+    JobApplicationFormRepo,
+    JobRepo,
+    SavedJobRepo,
+)
 from app.organizations.repositories import (
     OrganizationInviteRepo,
     OrganizationMemberRepo,
@@ -93,6 +98,14 @@ async def organization_invite_repo(
 ) -> OrganizationInviteRepo:
     async with container.context() as ctx:
         return await ctx.resolve(OrganizationInviteRepo)
+
+
+@pytest.fixture(scope="session")
+async def saved_job_repo(
+    container: Container,
+) -> SavedJobRepo:
+    async with container.context() as ctx:
+        return await ctx.resolve(SavedJobRepo)
 
 
 @pytest.fixture(scope="session")

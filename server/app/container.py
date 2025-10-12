@@ -81,7 +81,11 @@ from app.core.emails import (
     SMTPEmailSender,
     create_smtp_client,
 )
-from app.core.embeddings import EmbeddingsService
+from app.core.embeddings import (
+    BaseEmbeddingsService,
+    EmbeddingsService,
+    LocalEmbeddingsService,
+)
 from app.core.messages import (
     BaseMessageSender,
     DummyMessageSender,
@@ -272,6 +276,22 @@ def register_revalidation_service(container: aioinject.Container) -> None:
         )
 
 
+def register_embeddings_service(container: aioinject.Container) -> None:
+    env_settings = get_settings(EnvironmentSettings)
+    if (
+        env_settings.is_production
+        or env_settings.is_staging
+        or env_settings.is_development
+    ):
+        container.register(
+            aioinject.Singleton(EmbeddingsService, BaseEmbeddingsService)
+        )
+    else:
+        container.register(
+            aioinject.Singleton(LocalEmbeddingsService, BaseEmbeddingsService)
+        )
+
+
 @lru_cache
 def create_container() -> aioinject.Container:
     """Create a container instance."""
@@ -290,6 +310,7 @@ def create_container() -> aioinject.Container:
     register_ocr_client(container)
     register_message_sender(container)
     register_revalidation_service(container)
+    register_embeddings_service(container)
     env_settings = get_settings(EnvironmentSettings)
     if env_settings.is_testing or env_settings.is_staging:
         container.register(aioinject.Scoped(TestSetupService))
@@ -301,7 +322,6 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(create_oauth_client))
     container.register(aioinject.Singleton(create_captcha_verifier))
     container.register(aioinject.Singleton(create_redis_client))
-    container.register(aioinject.Singleton(EmbeddingsService))
     container.register(aioinject.Singleton(RegionRepo))
     container.register(aioinject.Singleton(JobApplicantRepo))
     container.register(aioinject.Singleton(JobRepo))

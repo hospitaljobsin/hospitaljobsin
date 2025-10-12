@@ -17,7 +17,6 @@
 		"**/.git": true,
 		"**/.pytest_cache": true,
 		"**/.mypy_cache": true,
-		"**/.venv": true,
 		"**/__pycache__": true,
 		"**/.ruff_cache": true
 	},
