@@ -69,6 +69,11 @@ export function SteppableNumberInput({
 			type='text'
 			value={inputValue}
 			onValueChange={handleInputChange}
+			onKeyDown={e => {
+				if (!/^[0-9.-]$/.test(e.key) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
+					e.preventDefault();
+				}
+			}}
 			endContent={
 				<div className='flex items-center gap-1'>
 					{isClearable && inputValue && (
