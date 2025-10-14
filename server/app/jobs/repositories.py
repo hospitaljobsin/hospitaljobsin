@@ -1234,6 +1234,7 @@ class JobApplicantRepo:
                 certifications=account.profile.certifications,
                 professional_summary=account.profile.professional_summary,
                 headline=account.profile.headline,
+                resume_url=account.profile.resume_url,
             ),
             profile_embedding=await self._embeddings_service.generate_embeddings(
                 text=self.format_profile_snapshot_for_embedding(account.profile),
