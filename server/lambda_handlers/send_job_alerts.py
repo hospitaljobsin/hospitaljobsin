@@ -28,6 +28,7 @@ from aws_lambda_powertools.utilities.data_classes import SQSEvent, event_source
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from bson import ObjectId
 from pydantic import BaseModel
+from pymongo import AsyncMongoClient
 from structlog import get_logger
 
 JOBS_SHOW_LIMIT = 10  # Number of jobs to show in the email
@@ -51,13 +52,19 @@ logger = get_logger(__name__)
 async def initialize_handler() -> None:
     database_settings = get_settings(DatabaseSettings)
     await initialize_database(
-        database_url=str(database_settings.database_url),
+        db_client=AsyncMongoClient(
+            str(database_settings.database_url),
+            connectTimeoutMS=1000 * 15,
+            socketTimeoutMS=1000 * 12,
+            serverSelectionTimeoutMS=1000 * 15,
+        ),
         default_database_name=database_settings.default_database_name,
     )
 
 
 # 🟢 Create a persistent event loop and use it both for init and handler
-loop = asyncio.get_event_loop()
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
 
 # ✅ run once per cold start
 loop.run_until_complete(initialize_handler())
