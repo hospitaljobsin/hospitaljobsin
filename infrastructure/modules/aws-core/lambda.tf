@@ -642,7 +642,7 @@ resource "aws_cloudwatch_event_rule" "automation_generate_wa_messages_schedule" 
   count               = var.environment_name == "production" ? 1 : 0
   name                = "${var.resource_prefix}-automation-generate-wa-messages-schedule"
   description         = "Trigger automation_generate_wa_messages lambda function daily"
-  schedule_expression = "cron(0 0 * * ? *)" # Every day at midnight UTC
+  schedule_expression = "cron(0 14 * * ? *)" # Every day at 7:30 PM IST (14:00 UTC)
   # schedule_expression = "cron(0/2 * * * ? *)" # Every 2 minutes
   tags = {
     Environment = var.environment_name
