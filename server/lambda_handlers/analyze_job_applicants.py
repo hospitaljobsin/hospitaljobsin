@@ -1,11 +1,6 @@
 import asyncio
 import json
 
-from aws_lambda_powertools.utilities.data_classes import SQSEvent, event_source
-from aws_lambda_powertools.utilities.typing import LambdaContext
-from bson import ObjectId
-from structlog import get_logger
-
 from app.config import AppSettings, DatabaseSettings, EnvironmentSettings, get_settings
 from app.container import create_container
 from app.core.instrumentation import initialize_instrumentation
@@ -14,6 +9,11 @@ from app.jobs.models import JobApplicantAnalysisEventBody
 from app.jobs.repositories import JobApplicantRepo
 from app.jobs.services import JobApplicantAnalysisService
 from app.logger import setup_logging
+from aws_lambda_powertools.utilities.data_classes import SQSEvent, event_source
+from aws_lambda_powertools.utilities.typing import LambdaContext
+from bson import ObjectId
+from pymongo import AsyncMongoClient
+from structlog import get_logger
 
 settings = get_settings(AppSettings)
 
@@ -35,13 +35,19 @@ logger = get_logger(__name__)
 async def initialize_handler() -> None:
     database_settings = get_settings(DatabaseSettings)
     await initialize_database(
-        database_url=str(database_settings.database_url),
+        db_client=AsyncMongoClient(
+            str(database_settings.database_url),
+            connectTimeoutMS=1000 * 15,
+            socketTimeoutMS=1000 * 12,
+            serverSelectionTimeoutMS=1000 * 15,
+        ),
         default_database_name=database_settings.default_database_name,
     )
 
 
 # 🟢 Create a persistent event loop and use it both for init and handler
-loop = asyncio.get_event_loop()
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
 
 # ✅ run once per cold start
 loop.run_until_complete(initialize_handler())
