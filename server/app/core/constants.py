@@ -115,6 +115,7 @@ RESERVED_ORGANIZATION_NAMES = [
     "legal",
     "blog",
     "docs",
+    "n8n",
 ]
 
 
