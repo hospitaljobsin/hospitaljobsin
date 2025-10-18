@@ -25,7 +25,7 @@ repos:
       # - id: biome-check
       #   files: "\\.(jsx?|tsx?|c(js|ts)|m(js|ts)|d\\.(ts|cts|mts)|jsonc?|css|svelte|vue|astro|graphql|gql)$"
       - id: biome-format
-        files: "\\.(jsx?|tsx?|c(js|ts)|m(js|ts)|d\\.(ts|cts|mts)|jsonc?|css|svelte|vue|astro|graphql|gql)$"
+        files: "\\.(jsx?|tsx?|c(js|ts)|m(js|ts)|d\\.(ts|cts|mts)|jsonc?|json|css|svelte|vue|astro|graphql|gql)$"
         exclude: ^(__generated__|.*/__generated__)/
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.101.1
