@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<e830639497f7e0cdf1a85231ea9b2fd2>>
- * @relayHash 66c50404c26952547ca048afca0d6d0e
+ * @generated SignedSource<<8b2d64b3b7b3a78538d489d8c74504cf>>
+ * @relayHash bab8c667afd4e5d935a02fb18228c9e9
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 66c50404c26952547ca048afca0d6d0e
+// @relayRequestID bab8c667afd4e5d935a02fb18228c9e9
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -169,31 +169,45 @@ v19 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "name",
+  "name": "__typename",
   "storageKey": null
 },
 v20 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "descriptionCleaned",
-  "storageKey": null
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "count",
+      "storageKey": null
+    }
+  ],
+  "type": "JobViewCountSuccess",
+  "abstractKey": null
 },
 v21 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "logoUrl",
+  "name": "name",
   "storageKey": null
 },
 v22 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "__typename",
+  "name": "descriptionCleaned",
   "storageKey": null
 },
 v23 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "logoUrl",
+  "storageKey": null
+},
+v24 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -207,7 +221,7 @@ v23 = {
   "type": "Verified",
   "abstractKey": null
 },
-v24 = {
+v25 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -221,7 +235,7 @@ v24 = {
   "type": "Rejected",
   "abstractKey": null
 },
-v25 = {
+v26 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -235,7 +249,7 @@ v25 = {
   "type": "Pending",
   "abstractKey": null
 },
-v26 = {
+v27 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -307,15 +321,32 @@ return {
                           {
                             "alias": null,
                             "args": null,
+                            "concreteType": null,
+                            "kind": "LinkedField",
+                            "name": "viewCount",
+                            "plural": false,
+                            "selections": [
+                              (v19/*: any*/),
+                              {
+                                "fragment": (v20/*: any*/),
+                                "kind": "AliasedInlineFragmentSpread",
+                                "name": "viewCount"
+                              }
+                            ],
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
                             "concreteType": "Organization",
                             "kind": "LinkedField",
                             "name": "organization",
                             "plural": false,
                             "selections": [
                               (v4/*: any*/),
-                              (v19/*: any*/),
-                              (v20/*: any*/),
                               (v21/*: any*/),
+                              (v22/*: any*/),
+                              (v23/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,
@@ -324,15 +355,15 @@ return {
                                 "name": "verificationStatus",
                                 "plural": false,
                                 "selections": [
-                                  (v22/*: any*/),
+                                  (v19/*: any*/),
                                   {
-                                    "fragment": (v23/*: any*/),
+                                    "fragment": (v24/*: any*/),
                                     "kind": "AliasedInlineFragmentSpread",
                                     "name": "verified"
                                   },
-                                  (v24/*: any*/),
                                   (v25/*: any*/),
-                                  (v26/*: any*/)
+                                  (v26/*: any*/),
+                                  (v27/*: any*/)
                                 ],
                                 "storageKey": null
                               }
@@ -379,7 +410,7 @@ return {
         "name": "saveJob",
         "plural": false,
         "selections": [
-          (v22/*: any*/),
+          (v19/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -419,15 +450,28 @@ return {
                       {
                         "alias": null,
                         "args": null,
+                        "concreteType": null,
+                        "kind": "LinkedField",
+                        "name": "viewCount",
+                        "plural": false,
+                        "selections": [
+                          (v19/*: any*/),
+                          (v20/*: any*/)
+                        ],
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
                         "concreteType": "Organization",
                         "kind": "LinkedField",
                         "name": "organization",
                         "plural": false,
                         "selections": [
                           (v4/*: any*/),
-                          (v19/*: any*/),
-                          (v20/*: any*/),
                           (v21/*: any*/),
+                          (v22/*: any*/),
+                          (v23/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -436,11 +480,11 @@ return {
                             "name": "verificationStatus",
                             "plural": false,
                             "selections": [
-                              (v22/*: any*/),
-                              (v23/*: any*/),
+                              (v19/*: any*/),
                               (v24/*: any*/),
                               (v25/*: any*/),
-                              (v26/*: any*/)
+                              (v26/*: any*/),
+                              (v27/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -471,7 +515,7 @@ return {
     ]
   },
   "params": {
-    "id": "66c50404c26952547ca048afca0d6d0e",
+    "id": "bab8c667afd4e5d935a02fb18228c9e9",
     "metadata": {},
     "name": "JobControlsSaveMutation",
     "operationKind": "mutation",

@@ -1004,20 +1004,12 @@ class JobMetricService:
 
     async def get_impression_count(
         self,
-        account: Account,
         job_id: ObjectId,
-        organization_id: ObjectId,
         event_type: ImpressionJobMetricEventType,
         start_date: datetime | None = None,
         end_date: datetime | None = None,
-    ) -> Result[int, OrganizationAuthorizationError]:
+    ) -> Ok[int]:
         """Get the count of job metrics for a given job ID and event type."""
-        if not await self._organization_member_service.is_member(
-            account_id=account.id,
-            organization_id=organization_id,
-        ):
-            return Err(OrganizationAuthorizationError())
-
         result = await self._job_metric_repo.get_impression_count(
             job_id=job_id,
             event_type=event_type,

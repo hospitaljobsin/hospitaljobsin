@@ -160,11 +160,7 @@ class JobViewCountSuccessType:
 
 
 JobViewCountPayload = Annotated[
-    JobViewCountSuccessType
-    | Annotated[
-        "OrganizationAuthorizationErrorType",
-        strawberry.lazy("app.organizations.types"),
-    ],
+    JobViewCountSuccessType,
     strawberry.union(
         name="JobViewCountPayload",
         description="The job view count payload.",
@@ -956,18 +952,10 @@ class JobType(BaseNodeType[Job]):
 
     @strawberry.field(  # type: ignore[misc]
         description="Viewer count for the job, filtered by time.",
-        extensions=[
-            PermissionExtension(
-                permissions=[
-                    IsAuthenticated(),
-                ]
-            )
-        ],
     )
     @inject
     async def view_count(
         self,
-        info: AuthInfo,
         job_metric_service: Injected[JobMetricService],
         start_date: Annotated[
             datetime | None,
@@ -982,12 +970,8 @@ class JobType(BaseNodeType[Job]):
             ),
         ] = None,
     ) -> JobViewCountPayload:
-        from app.organizations.types import OrganizationAuthorizationErrorType
-
         result = await job_metric_service.get_impression_count(
-            account=info.context["current_user"],
             job_id=ObjectId(self.id),
-            organization_id=ObjectId(self.organization_id),
             event_type="view_start",
             start_date=start_date,
             end_date=end_date,
@@ -996,10 +980,6 @@ class JobType(BaseNodeType[Job]):
         match result:
             case Ok(count):
                 return JobViewCountSuccessType(count=count)
-            case Err(error):
-                match error:
-                    case OrganizationAuthorizationError():
-                        return OrganizationAuthorizationErrorType()
             case _ as unreachable:
                 assert_never(unreachable)
 

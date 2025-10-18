@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<304e969d7d0137f756909163191a6266>>
+ * @generated SignedSource<<f17209a6191b2a391b54dc19e6487f76>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -44,6 +44,12 @@ export type JobDetailsInternalFragment$data = {
   readonly title: string;
   readonly type: JobType | null | undefined;
   readonly vacancies: number | null | undefined;
+  readonly viewCount: {
+    readonly __typename: string;
+    readonly viewCount: {
+      readonly count: number;
+    } | null | undefined;
+  };
   readonly workMode: WorkMode | null | undefined;
   readonly " $fragmentType": "JobDetailsInternalFragment";
 };
@@ -57,6 +63,6 @@ const node: ReaderInlineDataFragment = {
   "name": "JobDetailsInternalFragment"
 };
 
-(node as any).hash = "6ff8b9be22545cc95656d70fb0a8ce22";
+(node as any).hash = "16b1bc6fb9ff4605a4674ddaca87ae91";
 
 export default node;

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<ea59aa857d33f711accc86a8de673968>>
- * @relayHash 81dec83a9cb36c3088a70ba71c484ea3
+ * @generated SignedSource<<0539c15152c5d42e772046d152177107>>
+ * @relayHash 801e172389a449111d6bd68f7e7bf0d5
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 81dec83a9cb36c3088a70ba71c484ea3
+// @relayRequestID 801e172389a449111d6bd68f7e7bf0d5
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -152,6 +152,13 @@ return {
                         "args": null,
                         "kind": "ScalarField",
                         "name": "isApplied",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "expiresAt",
                         "storageKey": null
                       },
                       {
@@ -329,7 +336,7 @@ return {
     ]
   },
   "params": {
-    "id": "81dec83a9cb36c3088a70ba71c484ea3",
+    "id": "801e172389a449111d6bd68f7e7bf0d5",
     "metadata": {},
     "name": "StickyJobApplyButtonQuery",
     "operationKind": "query",

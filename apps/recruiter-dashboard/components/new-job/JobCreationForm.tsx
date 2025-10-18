@@ -617,50 +617,7 @@ export default function JobCreationForm({ organization }: { organization: JobCre
 										errorMessage={errors.expiresAt?.message}
 										isInvalid={!!errors.expiresAt}
 										value={field.value ?? undefined}
-										onChange={(val: unknown) => {
-											if (val instanceof CalendarDateTime || val == null) {
-												field.onChange(val);
-											} else if (
-												typeof val === 'object' &&
-												val !== null &&
-												'calendar' in val &&
-												'era' in val &&
-												'year' in val &&
-												'month' in val &&
-												'day' in val &&
-												'hour' in val &&
-												'minute' in val &&
-												'second' in val &&
-												'millisecond' in val
-											) {
-												const v = val as {
-													calendar?: { identifier: string };
-													era: string;
-													year: number;
-													month: number;
-													day: number;
-													hour: number;
-													minute: number;
-													second: number;
-													millisecond: number;
-												};
-												field.onChange(
-													new CalendarDateTime(
-														createCalendar((v.calendar?.identifier ?? 'gregory') as CalendarIdentifier),
-														v.era,
-														v.year,
-														v.month,
-														v.day,
-														v.hour,
-														v.minute,
-														v.second,
-														v.millisecond
-													)
-												);
-											} else {
-												field.onChange(null);
-											}
-										}}
+										onChange={field.onChange}
 									/>
 								)}
 							/>

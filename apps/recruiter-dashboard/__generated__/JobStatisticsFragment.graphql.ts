@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e9f11ed4c231164bacc2c941d3a30d70>>
+ * @generated SignedSource<<81b5618de0852eada6718f2f5518f7fe>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,9 +14,6 @@ export type JobStatisticsFragment$data = {
   readonly viewCount: {
     readonly __typename: "JobViewCountSuccess";
     readonly count: number;
-  } | {
-    readonly __typename: "OrganizationAuthorizationError";
-    readonly __typename: "OrganizationAuthorizationError";
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -128,6 +125,6 @@ return {
 };
 })();
 
-(node as any).hash = "a15142c18d1f72062e17b48f398e6eda";
+(node as any).hash = "0f87c37e261984fef3fc38b568c2f4b3";
 
 export default node;
