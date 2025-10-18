@@ -140,7 +140,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 				options: {
 					cache: 'force-cache',
 					next: {
-						revalidate: false,
+						revalidate: 60 * 60, // revalidate this after 60 minutes
 						tags: [`job:${slug}:${jobSlug}`, `organization:${slug}`] // invalidate this cache when job is updated
 					}
 				}
