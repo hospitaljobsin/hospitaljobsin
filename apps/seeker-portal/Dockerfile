@@ -11,7 +11,6 @@ RUN npm install -g pnpm@latest-10
 ENV PNPM_HOME=/app/.pnpm
 ENV PATH=$PATH:$PNPM_HOME
 
-
 WORKDIR /app
 
 COPY ./apps/seeker-portal/package.json ./apps/seeker-portal/.npmrc ./apps/seeker-portal/
