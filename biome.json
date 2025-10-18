@@ -5,11 +5,11 @@
 		"enabled": true,
 		"clientKind": "git",
 		"useIgnoreFile": true,
-		"defaultBranch": "main"
+		"defaultBranch": "staging"
 	},
 	"files": {
 		"ignoreUnknown": true,
-		"includes": ["**", "!**/build", "!**/.sanity", "!**/dist", "!**/.next"],
+		"includes": ["**", "!**/build", "!**/.sanity", "!**/dist", "!**/.next", "!**/.sst"],
 		"maxSize": 4000000
 	},
 	"formatter": {
