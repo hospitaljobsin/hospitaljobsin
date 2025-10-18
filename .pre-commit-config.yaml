@@ -7,7 +7,7 @@ repos:
       - id: check-yaml
       - id: check-toml
       - id: check-added-large-files
-        args: ["--maxkb=2000"]
+        args: ["--maxkb=4000"]
         exclude: \.(yaml|lock|png|jpg|jpeg|gif|svg|webp|ico|bmp|tiff)$
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
