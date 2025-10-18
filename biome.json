@@ -1,15 +1,16 @@
 {
-	"root": false,
+	"root": true,
 	"$schema": "https://biomejs.dev/schemas/2.2.3/schema.json",
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
 		"useIgnoreFile": true,
-		"defaultBranch": "main"
+		"defaultBranch": "staging"
 	},
 	"files": {
 		"ignoreUnknown": true,
-		"includes": ["**", "!**/build", "!**/.sanity", "!**/dist", "!**/.next"]
+		"includes": ["**", "!**/build", "!**/.sanity", "!**/dist", "!**/.next", "!**/.sst"],
+		"maxSize": 4000000
 	},
 	"formatter": {
 		"enabled": true,

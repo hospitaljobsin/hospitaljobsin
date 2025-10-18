@@ -7,7 +7,7 @@ repos:
       - id: check-yaml
       - id: check-toml
       - id: check-added-large-files
-        args: ["--maxkb=2000"]
+        args: ["--maxkb=4000"]
         exclude: \.(yaml|lock|png|jpg|jpeg|gif|svg|webp|ico|bmp|tiff)$
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
@@ -25,7 +25,7 @@ repos:
       # - id: biome-check
       #   files: "\\.(jsx?|tsx?|c(js|ts)|m(js|ts)|d\\.(ts|cts|mts)|jsonc?|css|svelte|vue|astro|graphql|gql)$"
       - id: biome-format
-        files: "\\.(jsx?|tsx?|c(js|ts)|m(js|ts)|d\\.(ts|cts|mts)|jsonc?|css|svelte|vue|astro|graphql|gql)$"
+        files: "\\.(jsx?|tsx?|c(js|ts)|m(js|ts)|d\\.(ts|cts|mts)|jsonc?|json|css|svelte|vue|astro|graphql|gql)$"
         exclude: ^(__generated__|.*/__generated__)/
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.101.1
