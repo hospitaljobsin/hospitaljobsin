@@ -49,7 +49,7 @@ dependencies = [
     "granian[pname,uvloop]==2.5.5",
     "phonenumbers==9.0.10",
     "watchfiles==1.1.0",
-    "posthog==6.7.6",
+    "posthog==6.7.8",
     "beautifulsoup4==4.13.4",
     "markdown==3.8.2",
     "filelock==3.19.1",
@@ -62,6 +62,7 @@ dependencies = [
 
 [tool.uv]
 add-bounds = "exact"
+required-version = ">=0.9.2"
 
 [tool.pyright]
 include = ["app", "tests"]
