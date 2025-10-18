@@ -1,6 +1,6 @@
 'use client';
 import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Tooltip } from '@heroui/react';
-import { Briefcase, Clock, ExternalLinkIcon, Globe, HandshakeIcon, IndianRupee, MapPin, Users, VerifiedIcon } from 'lucide-react';
+import { Briefcase, Clock, ExternalLinkIcon, EyeIcon, Globe, HandshakeIcon, IndianRupee, MapPin, Users, VerifiedIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -64,6 +64,12 @@ const JobDetailsInternalFragment = graphql`
     createdAt
 	vacancies
     isSalaryNegotiable
+	viewCount {
+		__typename
+		... on JobViewCountSuccess @alias(as: "viewCount") {
+			count
+		}
+	}
     organization {
       slug
       name
@@ -199,9 +205,17 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 			<Card fullWidth className='p-4 sm:p-6 gap-4' shadow='none'>
 				<CardHeader>
 					<div className='flex flex-row w-full justify-between gap-6 sm:gap-4 items-start sm:items-center'>
-						<h2 className='text-lg sm:text-xl md:text-2xl font-medium break-words leading-snug text-foreground-900 w-full sm:max-w-96'>
-							{data.title}
-						</h2>
+						<div className='flex flex-col gap-4'>
+							<h2 className='text-lg sm:text-xl md:text-2xl font-medium break-words leading-snug text-foreground-900 w-full sm:max-w-96'>
+								{data.title}
+							</h2>
+							<div className='flex items-center gap-2 text-sm sm:text-base font-normal text-primary sm:hidden'>
+								<EyeIcon size={16} />
+								<span>
+									{data.viewCount.viewCount?.count} {data.viewCount?.viewCount?.count === 1 ? 'View' : 'Views'}
+								</span>
+							</div>
+						</div>
 						<JobControlsClientComponent slug={data.organization?.slug || ''} jobSlug={data.slug} />
 					</div>
 				</CardHeader>
@@ -239,14 +253,22 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 					<div className='flex flex-col sm:flex-row justify-between items-end sm:items-center w-full gap-4 sm:gap-6'>
 						<div className='justify-between w-full gap-8 items-center hidden sm:flex'>
 							<p className='text-foreground-500 text-base font-normal'>Posted on {formattedCreatedAt}</p>
-							{typeof data.vacancies === 'number' && (
-								<div className='flex items-center gap-2 text-sm sm:text-base font-normal text-foreground-500'>
-									<Users size={16} />
+							<div className='flex items-center gap-6'>
+								<div className='flex items-center gap-2 text-sm sm:text-base font-normal text-primary'>
+									<EyeIcon size={16} />
 									<span>
-										{data.vacancies} {data.vacancies === 1 ? 'Vacancy' : 'Vacancies'}
+										{data.viewCount.viewCount?.count} {data.viewCount?.viewCount?.count === 1 ? 'View' : 'Views'}
 									</span>
 								</div>
-							)}
+								{typeof data.vacancies === 'number' && (
+									<div className='flex items-center gap-2 text-sm sm:text-base font-normal text-foreground-500'>
+										<Users size={16} />
+										<span>
+											{data.vacancies} {data.vacancies === 1 ? 'Vacancy' : 'Vacancies'}
+										</span>
+									</div>
+								)}
+							</div>
 						</div>
 						<div className='w-full sm:w-auto flex justify-between items-center gap-4 sm:hidden'>
 							<p className='text-foreground-500 text-xs block sm:hidden w-full'>{formattedCreatedAt}</p>

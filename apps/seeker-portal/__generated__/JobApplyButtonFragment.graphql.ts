@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f0d2ee94d5be92ffd732586ec07d27c9>>
+ * @generated SignedSource<<d9ec9f8a670c05d7ac7b417be30bfb32>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,6 +15,7 @@ export type JobApplyButtonFragment$data = {
     readonly __typename: "Organization";
     readonly job: {
       readonly __typename: "Job";
+      readonly expiresAt: any | null | undefined;
       readonly externalApplicationUrl: string | null | undefined;
       readonly id: string;
       readonly isApplied: boolean;
@@ -141,6 +142,13 @@ return {
                       "storageKey": null
                     },
                     {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "expiresAt",
+                      "storageKey": null
+                    },
+                    {
                       "args": null,
                       "kind": "FragmentSpread",
                       "name": "JobApplicationFlowJobFragment"
@@ -211,6 +219,6 @@ return {
 };
 })();
 
-(node as any).hash = "74035101125b1eebddd4768bfd68f64d";
+(node as any).hash = "ea05afc70bf201c60bd120ce40288af9";
 
 export default node;

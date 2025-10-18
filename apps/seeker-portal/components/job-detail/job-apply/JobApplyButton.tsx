@@ -1,5 +1,5 @@
 import { Button } from '@heroui/react';
-import { ExternalLinkIcon } from 'lucide-react';
+import { Clock, ExternalLinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -27,6 +27,7 @@ const JobApplyButtonFragment = graphql`
                     slug
                     externalApplicationUrl
                     isApplied
+                    expiresAt
                     ...JobApplicationFlowJobFragment
             }
         }
@@ -45,6 +46,18 @@ const JobApplyButtonFragment = graphql`
 }
   `;
 
+function getTimeRemaining(expiresAt: string | null) {
+	if (!expiresAt) return null;
+	const now = new Date();
+	const expiry = new Date(expiresAt);
+	const diff = expiry.getTime() - now.getTime();
+	if (diff <= 0) return { expired: true, text: 'Expired' };
+	const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+	const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	if (days > 0) return { expired: false, text: `${days}d left`, urgent: days <= 3 };
+	return { expired: false, text: `${hours}h left`, urgent: true };
+}
+
 export default function JobApplyButton({ query, sticky = false }: { query: JobApplyButtonFragment$key; sticky?: boolean }) {
 	const root = useFragment(JobApplyButtonFragment, query);
 	const [mounted, setMounted] = useState(false);
@@ -60,52 +73,84 @@ export default function JobApplyButton({ query, sticky = false }: { query: JobAp
 	const isAuthenticated = root.viewer.__typename === 'Account';
 
 	const data = root.organization.job;
+	const timeRemaining = getTimeRemaining(data.expiresAt);
 
 	const buttonContent = () => {
 		if (data.externalApplicationUrl !== null) {
 			return (
-				<Button
-					as={Link}
-					href={data.externalApplicationUrl}
-					size='lg'
-					color='primary'
-					className='w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3'
-					target='_blank'
-					rel='noopener noreferrer'
-					isDisabled={data.isApplied}
-					startContent={<ExternalLinkIcon size={16} />}
-				>
-					{data.isApplied ? 'Already Applied' : 'Apply now'}
-				</Button>
+				<div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto'>
+					<Button
+						as={Link}
+						href={data.externalApplicationUrl}
+						size='lg'
+						color='primary'
+						className='w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3 flex items-center gap-4'
+						target='_blank'
+						rel='noopener noreferrer'
+						isDisabled={data.isApplied || timeRemaining?.expired}
+						startContent={<ExternalLinkIcon size={16} />}
+					>
+						{data.isApplied ? 'Already Applied' : timeRemaining?.expired ? 'Expired' : 'Apply now'}
+					</Button>
+					{timeRemaining && !timeRemaining.expired && (
+						<div
+							className={`flex items-center gap-2 text-primary-foreground ${timeRemaining.urgent ? 'font-semibold animate-pulse' : 'font-medium'}`}
+						>
+							<Clock size={16} />
+							<span className='text-sm font-semibold whitespace-nowrap'>{timeRemaining.text}</span>
+						</div>
+					)}
+				</div>
 			);
 		}
 
 		if (!isAuthenticated) {
 			return (
-				<Button
-					as={Link}
-					href={links.login(`${env.NEXT_PUBLIC_URL}${links.jobDetail(root.organization.slug, root.organization.job.slug)}`)}
-					size='lg'
-					color='primary'
-					className='w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3'
-				>
-					Log In to Apply
-				</Button>
+				<div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto'>
+					<Button
+						as={Link}
+						href={links.login(`${env.NEXT_PUBLIC_URL}${links.jobDetail(root.organization.slug, root.organization.job.slug)}`)}
+						size='lg'
+						color='primary'
+						className='w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3 flex items-center gap-4'
+						isDisabled={timeRemaining?.expired}
+					>
+						{timeRemaining?.expired ? 'Expired' : 'Log In to Apply'}
+						{timeRemaining && !timeRemaining.expired && (
+							<div
+								className={`flex items-center gap-2 text-primary-foreground ${timeRemaining.urgent ? 'font-semibold animate-pulse' : 'font-medium'}`}
+							>
+								<Clock size={16} />
+								<span className='text-sm font-semibold whitespace-nowrap'>{timeRemaining.text}</span>
+							</div>
+						)}
+					</Button>
+				</div>
 			);
 		}
 
 		return (
 			<JobApplicationFlow account={root.viewer} job={root.organization.job}>
 				{({ onApply }) => (
-					<Button
-						onPress={onApply}
-						size='lg'
-						color='primary'
-						className='w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3'
-						isDisabled={data.isApplied}
-					>
-						{data.isApplied ? 'Already Applied' : 'Apply now'}
-					</Button>
+					<div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto'>
+						<Button
+							onPress={onApply}
+							size='lg'
+							color='primary'
+							className='w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3 flex items-center gap-4'
+							isDisabled={data.isApplied || timeRemaining?.expired}
+						>
+							{data.isApplied ? 'Already Applied' : timeRemaining?.expired ? 'Expired' : 'Apply now'}
+							{timeRemaining && !timeRemaining.expired && (
+								<div
+									className={`flex items-center gap-2 text-primary-foreground ${timeRemaining.urgent ? 'font-semibold animate-pulse' : 'font-medium'}`}
+								>
+									<Clock size={16} />
+									<span className='text-sm font-semibold whitespace-nowrap'>{timeRemaining.text}</span>
+								</div>
+							)}
+						</Button>
+					</div>
 				)}
 			</JobApplicationFlow>
 		);

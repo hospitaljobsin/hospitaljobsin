@@ -162,13 +162,7 @@ const formSchema = z
 		maxSalary: z.number().positive().nullable().optional(),
 		minExperience: z.number().nonnegative().max(100).nullable().optional(),
 		maxExperience: z.number().nonnegative().max(100).nullable().optional(),
-		expiresAt: z
-			.custom<CalendarDateTime>(data => {
-				console.log(data);
-				console.log(typeof data, data instanceof CalendarDateTime);
-				return data instanceof CalendarDateTime;
-			})
-			.nullable(),
+		expiresAt: z.any().nullable().optional(),
 		jobType: z.enum(['CONTRACT', 'FULL_TIME', 'INTERNSHIP', 'PART_TIME', 'LOCUM', 'UNSPECIFIED']).nullable(),
 		workMode: z.enum(['HYBRID', 'OFFICE', 'REMOTE', 'UNSPECIFIED']).nullable(),
 		isSalaryNegotiable: z.boolean()
@@ -228,7 +222,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 			maxSalary: jobData.maxSalary ?? null,
 			minExperience: jobData.minExperience ?? null,
 			maxExperience: jobData.maxExperience ?? null,
-			expiresAt: jobData.expiresAt ?? null,
+			expiresAt: jobData.expiresAt ? toCalendarDateTime(parseAbsoluteToLocal(jobData.expiresAt)) : null,
 			jobType: jobData.type === null ? 'UNSPECIFIED' : jobData.type,
 			workMode: jobData.workMode === null ? 'UNSPECIFIED' : jobData.workMode,
 			isSalaryNegotiable: jobData.isSalaryNegotiable ?? false

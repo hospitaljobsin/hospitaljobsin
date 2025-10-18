@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<d1b8606a7d5171ccb75fe180d5e49f60>>
- * @relayHash 629a45bc6cddcba0ac4a8557515d1667
+ * @generated SignedSource<<19d5e4733619f3fd72e5a2606dff6eb6>>
+ * @relayHash 74a4cc8d1b2700c2abf2873d90b54985
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 629a45bc6cddcba0ac4a8557515d1667
+// @relayRequestID 74a4cc8d1b2700c2abf2873d90b54985
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -271,6 +271,13 @@ return {
                       {
                         "alias": null,
                         "args": null,
+                        "kind": "ScalarField",
+                        "name": "expiresAt",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
                         "concreteType": "JobApplicationForm",
                         "kind": "LinkedField",
                         "name": "applicationForm",
@@ -489,7 +496,7 @@ return {
     ]
   },
   "params": {
-    "id": "629a45bc6cddcba0ac4a8557515d1667",
+    "id": "74a4cc8d1b2700c2abf2873d90b54985",
     "metadata": {},
     "name": "JobControlsClientComponentQuery",
     "operationKind": "query",
