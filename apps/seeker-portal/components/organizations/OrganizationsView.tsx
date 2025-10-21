@@ -30,7 +30,7 @@ export default function OrganizationsView({ query }: OrganizationsViewProps) {
 		<>
 			<title>{`Browse Recruiters | ${APP_NAME}`}</title>
 			<div className='w-full flex flex-col h-full bg-background-600'>
-				<DashboardHeader query={query} />
+				<DashboardHeader query={data} />
 				<div className='w-full flex flex-col gap-8 py-8 px-6 max-w-7xl mx-auto bg-background-600'>
 					<div className='flex flex-col gap-4 w-full'>
 						<div className='w-full flex flex-col sm:flex-row justify-between sm:items-end gap-6'>
