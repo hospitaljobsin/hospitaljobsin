@@ -1,8 +1,8 @@
+import { fileURLToPath } from 'node:url';
 import createMDX from '@next/mdx';
 import { withSentryConfig } from '@sentry/nextjs';
 import { createJiti } from 'jiti';
 import type { NextConfig } from 'next';
-import { fileURLToPath } from 'node:url';
 import { env } from './lib/env/client';
 import links from './lib/links';
 
@@ -106,6 +106,10 @@ const nextConfig: NextConfig = {
 			{
 				source: '/search/:speciality-jobs-in-:location',
 				destination: '/search/:speciality/jobs-in/:location?via_rewrite=true'
+			},
+			{
+				source: '/organizations/:slug/jobs/:jobSlug.md',
+				destination: '/organizations/:slug/jobs-md/:jobSlug?via_rewrite=true'
 			}
 		];
 	},
@@ -151,6 +155,18 @@ const nextConfig: NextConfig = {
 					}
 				],
 				destination: '/search/:speciality-jobs-in-:location',
+				permanent: false
+			},
+			{
+				source: '/organizations/:slug/jobs/:jobSlug',
+				has: [
+					{
+						type: 'query',
+						key: 'via_rewrite',
+						value: undefined
+					}
+				],
+				destination: '/organizations/:slug/jobs/:jobSlug.md',
 				permanent: false
 			}
 		];
