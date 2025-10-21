@@ -57,6 +57,8 @@ class Organization(Document):
     internal_logo_url: str | None = Field(default=None, alias="logo_url")
     internal_banner_url: str | None = Field(default=None, alias="banner_url")
 
+    is_spam: bool = False
+
     @property
     def logo_url(self) -> str:
         """Return the organization's logo URL, or a placeholder."""

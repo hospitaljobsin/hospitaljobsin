@@ -180,6 +180,7 @@ class OrganizationRepo:
                 last=last,
                 before=ObjectId(before) if before else None,
                 after=ObjectId(after) if after else None,
+                additional_pipeline=[{"$match": {"is_spam": False}}],
             )
 
         paginator = Paginator(
@@ -190,7 +191,7 @@ class OrganizationRepo:
             calculate_total_count=True,
         )
         return await paginator.paginate(
-            search_criteria=Organization.find(),
+            search_criteria=Organization.find(Organization.is_spam == False),
             first=first,
             last=last,
             before=ObjectId(before) if before else None,
