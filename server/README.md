@@ -95,3 +95,11 @@ To import geospatial data (regions) into the database, run the following command
 ```bash
 uv run -m scripts.utils.import_regions
 ```
+
+### 4. Run Migrations
+
+If you are on a previous version of the database schema and want to upgrade, run forward migrations with:
+
+```bash
+uv run beanie migrate -uri 'mongodb://user:pass@localhost:27017/?directConnection=true' -db medicaljobs -p ./migrations
+```
