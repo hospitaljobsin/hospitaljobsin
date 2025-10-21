@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<2bad6ab1e213f8ba5a2284dbd943d48e>>
- * @relayHash dd9f0062eb7403d1a8cc87f6f308cdf5
+ * @generated SignedSource<<9a282d97b01449fba438d25469e55104>>
+ * @relayHash 010a984306cbf864dfae11c9f3b152ec
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID dd9f0062eb7403d1a8cc87f6f308cdf5
+// @relayRequestID 010a984306cbf864dfae11c9f3b152ec
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -34,7 +34,7 @@ var v0 = [
     "name": "after"
   },
   {
-    "defaultValue": 12,
+    "defaultValue": 50,
     "kind": "LocalArgument",
     "name": "first"
   },
@@ -253,7 +253,7 @@ return {
     ]
   },
   "params": {
-    "id": "dd9f0062eb7403d1a8cc87f6f308cdf5",
+    "id": "010a984306cbf864dfae11c9f3b152ec",
     "metadata": {},
     "name": "OrganizationsGridPaginationQuery",
     "operationKind": "query",
@@ -262,6 +262,6 @@ return {
 };
 })();
 
-(node as any).hash = "e9c741740ea0c03c3d30a747a96642a5";
+(node as any).hash = "f869b1d179747dc91758ebef922216ac";
 
 export default node;

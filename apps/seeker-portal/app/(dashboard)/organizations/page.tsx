@@ -1,11 +1,12 @@
-import { Suspense } from 'react';
+'use client';
+import dynamic from 'next/dynamic';
 import OrganizationsViewSkeleton from '@/components/organizations/OrganizationsViewSkeleton';
-import OrganizationsViewClientComponent from './OrganizationsViewClientComponent';
+
+const OrganizationsViewClientComponent = dynamic(() => import('./OrganizationsViewClientComponent'), {
+	ssr: false,
+	loading: () => <OrganizationsViewSkeleton />
+});
 
 export default function OrganizationsPage() {
-	return (
-		<Suspense fallback={<OrganizationsViewSkeleton />}>
-			<OrganizationsViewClientComponent />
-		</Suspense>
-	);
+	return <OrganizationsViewClientComponent />;
 }

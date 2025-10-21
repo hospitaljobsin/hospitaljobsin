@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<73baa7cebfe703d635ebf3793f028101>>
- * @relayHash 9a69575cefaa747b7c7a38ca0a665e43
+ * @generated SignedSource<<dff9c94d95c2234dc13e10e83dfc7969>>
+ * @relayHash f387381092a2dc31fd3099055d5ad9b1
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 9a69575cefaa747b7c7a38ca0a665e43
+// @relayRequestID f387381092a2dc31fd3099055d5ad9b1
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -41,7 +41,7 @@ v2 = [
   {
     "kind": "Literal",
     "name": "first",
-    "value": 12
+    "value": 50
   }
 ];
 return {
@@ -272,7 +272,7 @@ return {
             "storageKey": null
           }
         ],
-        "storageKey": "organizations(first:12)"
+        "storageKey": "organizations(first:50)"
       },
       {
         "alias": null,
@@ -288,7 +288,7 @@ return {
     ]
   },
   "params": {
-    "id": "9a69575cefaa747b7c7a38ca0a665e43",
+    "id": "f387381092a2dc31fd3099055d5ad9b1",
     "metadata": {},
     "name": "OrganizationsViewClientComponentQuery",
     "operationKind": "query",
