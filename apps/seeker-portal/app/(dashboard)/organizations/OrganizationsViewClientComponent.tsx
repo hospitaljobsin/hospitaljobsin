@@ -6,7 +6,6 @@ import OrganizationsView from '@/components/organizations/OrganizationsView';
 
 const organizationsQuery = graphql`
 	query OrganizationsViewClientComponentQuery {
-		...DashboardHeaderFragment
 		...OrganizationsViewFragment
 	}
 `;

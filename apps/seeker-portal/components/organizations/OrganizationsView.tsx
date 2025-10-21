@@ -13,6 +13,7 @@ import OrganizationsGridSkeleton from './OrganizationsGridSkeleton';
 
 const OrganizationsViewFragment = graphql`
 	fragment OrganizationsViewFragment on Query {
+		...DashboardHeaderFragment
 		...OrganizationsGridFragment
 	}
 `;

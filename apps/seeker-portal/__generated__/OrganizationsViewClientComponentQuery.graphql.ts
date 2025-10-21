@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<3fcb5a43670cd205b3c1cd7a8d40a0ec>>
- * @relayHash 67c7353e964a4bcee213ed2f5cc943e3
+ * @generated SignedSource<<2c22f03c095b9d4b756f1876ba04e88d>>
+ * @relayHash 54727a43a5663cc8903bcccf74ac2382
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,13 +9,13 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 67c7353e964a4bcee213ed2f5cc943e3
+// @relayRequestID 54727a43a5663cc8903bcccf74ac2382
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type OrganizationsViewClientComponentQuery$variables = Record<PropertyKey, never>;
 export type OrganizationsViewClientComponentQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderFragment" | "OrganizationsViewFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"OrganizationsViewFragment">;
 };
 export type OrganizationsViewClientComponentQuery = {
   response: OrganizationsViewClientComponentQuery$data;
@@ -51,11 +51,6 @@ return {
     "metadata": null,
     "name": "OrganizationsViewClientComponentQuery",
     "selections": [
-      {
-        "args": null,
-        "kind": "FragmentSpread",
-        "name": "DashboardHeaderFragment"
-      },
       {
         "args": null,
         "kind": "FragmentSpread",
@@ -288,7 +283,7 @@ return {
     ]
   },
   "params": {
-    "id": "67c7353e964a4bcee213ed2f5cc943e3",
+    "id": "54727a43a5663cc8903bcccf74ac2382",
     "metadata": {},
     "name": "OrganizationsViewClientComponentQuery",
     "operationKind": "query",
@@ -297,6 +292,6 @@ return {
 };
 })();
 
-(node as any).hash = "10b6a0d12dafe55d45006969b753ad26";
+(node as any).hash = "d3e76946d1f5a045611e24f4acc3be59";
 
 export default node;
