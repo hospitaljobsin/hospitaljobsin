@@ -1,0 +1,22 @@
+Hey {{ user_name }},
+
+Thanks for joining {{ app_name }}. To help you find the right opportunities, we need one more thing from you.
+
+UPLOAD YOUR RESUME, GET AI-POWERED JOB MATCHES
+
+Our AI analyzes your experience and skills to send you job alerts that actually fit what you're looking for.
+
+You'll also be able to:
+
+• Apply to jobs with one click
+• Let recruiters find you based on your experience
+
+Upload your resume here: {{ upload_resume_url }}
+
+Takes less than a minute. You can update it anytime.
+
+Need help? Contact our support team at {{ support_email }}
+
+---
+Sent by Team {{ app_name }}
+{{ company_name }} {{ current_year }}
