@@ -1,4 +1,4 @@
-name: Deploy and Run E2E
+name: Run E2E and Deployments
 
 on:
   push:
