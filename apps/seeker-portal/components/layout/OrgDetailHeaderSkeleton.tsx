@@ -1,12 +1,11 @@
 'use client';
-import { APP_NAME } from '@/lib/constants';
-import links from '@/lib/links';
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@heroui/react';
 import { SearchIcon } from 'lucide-react';
 import Link from 'next/link';
+import { APP_NAME } from '@/lib/constants';
+import links from '@/lib/links';
 import JobSearchAutocomplete from '../forms/JobSearchAutocomplete';
 import Logo from '../Logo';
-import OrganizationTabsSkeleton from '../organization-detail/OrganizationTabsSkeleton';
 
 export default function OrgDetailHeaderSkeleton() {
 	return (
@@ -41,9 +40,6 @@ export default function OrgDetailHeaderSkeleton() {
 					</NavbarItem>
 				</NavbarContent>
 			</Navbar>
-			<div className='w-full max-w-7xl mx-auto flex items-center justify-between'>
-				<OrganizationTabsSkeleton />
-			</div>
 		</div>
 	);
 }

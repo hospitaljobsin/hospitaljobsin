@@ -1,8 +1,4 @@
 'use client';
-import type { OrgDetailHeaderFragment$key } from '@/__generated__/OrgDetailHeaderFragment.graphql';
-import { APP_NAME } from '@/lib/constants';
-import { env } from '@/lib/env/client';
-import links from '@/lib/links';
 import { useRouter } from '@bprogress/next';
 import { Button, Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@heroui/react';
 import { ExternalLinkIcon, SearchIcon } from 'lucide-react';
@@ -10,10 +6,13 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import type { OrgDetailHeaderFragment$key } from '@/__generated__/OrgDetailHeaderFragment.graphql';
+import { APP_NAME } from '@/lib/constants';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
 import JobSearchAutocomplete from '../forms/JobSearchAutocomplete';
 import GoogleOneTapLogin from '../GoogleOneTapLogin';
 import Logo from '../Logo';
-import OrganizationTabs from '../organization-detail/OrganizationTabs';
 import AuthDropdown from './AuthNavigation';
 
 export const OrgDetailHeaderFragment = graphql`
@@ -138,11 +137,6 @@ export default function OrgDetailHeader({ root }: { root: OrgDetailHeaderFragmen
 					)}
 				</NavbarContent>
 			</Navbar>
-			{data.organization.__typename === 'Organization' && (
-				<div className='w-full max-w-7xl mx-auto flex items-center justify-between'>
-					<OrganizationTabs />
-				</div>
-			)}
 		</div>
 	);
 }

@@ -91,6 +91,17 @@ class Organization(Document):
 
     class Settings:
         name = "organizations"
+        indexes: ClassVar[list[IndexModel]] = [
+            IndexModel(
+                [
+                    ("name", pymongo.TEXT),
+                    ("description_cleaned", pymongo.TEXT),
+                    ("location", pymongo.TEXT),
+                ],
+                name="organization_text_index",
+                default_language="english",
+            ),
+        ]
 
 
 class OrganizationMember(Document):

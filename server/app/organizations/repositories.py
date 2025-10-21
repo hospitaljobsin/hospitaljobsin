@@ -15,7 +15,7 @@ from app.core.constants import (
     OrganizationMemberRoleType,
 )
 from app.core.formatting import clean_markdown_text, markdown_to_clean_html, slugify
-from app.database.paginator import PaginatedResult, Paginator
+from app.database.paginator import PaginatedResult, Paginator, TextSearchPaginator
 from app.jobs.documents import Job, JobApplicant, SavedJob
 
 from .documents import (
@@ -164,16 +164,31 @@ class OrganizationRepo:
         last: int | None = None,
         before: str | None = None,
         after: str | None = None,
+        search_term: str | None = None,
     ) -> PaginatedResult[Organization, ObjectId]:
         """Get all organizations."""
-        paginator: Paginator[Organization, ObjectId] = Paginator(
+        if search_term:
+            paginator = TextSearchPaginator(
+                document_cls=Organization,
+                paginate_by="_id",
+                entity_paginate_by="id",
+                calculate_total_count=True,
+            )
+            return await paginator.paginate(
+                search_term=search_term,
+                first=first,
+                last=last,
+                before=ObjectId(before) if before else None,
+                after=ObjectId(after) if after else None,
+            )
+
+        paginator = Paginator(
             reverse=True,
             document_cls=Organization,
             paginate_by="_id",
             entity_paginate_by="id",
             calculate_total_count=True,
         )
-
         return await paginator.paginate(
             search_criteria=Organization.find(),
             first=first,
@@ -326,6 +341,7 @@ class OrganizationMemberRepo:
             reverse=True,
             document_cls=OrganizationMember,
             paginate_by="account.id",
+            entity_paginate_by="account.id",
         )
 
         search_criteria = OrganizationMember.find(

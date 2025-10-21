@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f31128bda10cbbff3c285eb40d007077>>
+ * @generated SignedSource<<4e69831d7e48a8518325aa69ffdf1fb8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,58 +10,52 @@
 
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type OrganizationMembersListInternalFragment$data = {
-  readonly id: string;
-  readonly members: {
+export type OrganizationsGridFragment$data = {
+  readonly organizations: {
     readonly edges: ReadonlyArray<{
       readonly node: {
         readonly id: string;
+        readonly " $fragmentSpreads": FragmentRefs<"OrganizationCardFragment">;
       };
-      readonly " $fragmentSpreads": FragmentRefs<"MemberFragment">;
     }>;
-    readonly pageInfo: {
-      readonly hasNextPage: boolean;
-    };
   };
-  readonly " $fragmentType": "OrganizationMembersListInternalFragment";
+  readonly " $fragmentType": "OrganizationsGridFragment";
 };
-export type OrganizationMembersListInternalFragment$key = {
-  readonly " $data"?: OrganizationMembersListInternalFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"OrganizationMembersListInternalFragment">;
+export type OrganizationsGridFragment$key = {
+  readonly " $data"?: OrganizationsGridFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"OrganizationsGridFragment">;
 };
 
-import OrganizationMembersListPaginationQuery_graphql from './OrganizationMembersListPaginationQuery.graphql';
+import OrganizationsGridPaginationQuery_graphql from './OrganizationsGridPaginationQuery.graphql';
 
 const node: ReaderFragment = (function(){
 var v0 = [
-  "members"
-],
-v1 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-};
+  "organizations"
+];
 return {
   "argumentDefinitions": [
     {
-      "defaultValue": 10,
+      "defaultValue": null,
       "kind": "LocalArgument",
-      "name": "count"
+      "name": "after"
+    },
+    {
+      "defaultValue": 50,
+      "kind": "LocalArgument",
+      "name": "first"
     },
     {
       "defaultValue": null,
       "kind": "LocalArgument",
-      "name": "cursor"
+      "name": "searchTerm"
     }
   ],
   "kind": "Fragment",
   "metadata": {
     "connection": [
       {
-        "count": "count",
-        "cursor": "cursor",
+        "count": "first",
+        "cursor": "after",
         "direction": "forward",
         "path": (v0/*: any*/)
       }
@@ -69,36 +63,36 @@ return {
     "refetch": {
       "connection": {
         "forward": {
-          "count": "count",
-          "cursor": "cursor"
+          "count": "first",
+          "cursor": "after"
         },
         "backward": null,
         "path": (v0/*: any*/)
       },
-      "fragmentPathInResult": [
-        "node"
-      ],
-      "operation": OrganizationMembersListPaginationQuery_graphql,
-      "identifierInfo": {
-        "identifierField": "id",
-        "identifierQueryVariableName": "id"
-      }
+      "fragmentPathInResult": [],
+      "operation": OrganizationsGridPaginationQuery_graphql
     }
   },
-  "name": "OrganizationMembersListInternalFragment",
+  "name": "OrganizationsGridFragment",
   "selections": [
     {
-      "alias": "members",
-      "args": null,
-      "concreteType": "OrganizationMemberConnection",
+      "alias": "organizations",
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "searchTerm",
+          "variableName": "searchTerm"
+        }
+      ],
+      "concreteType": "OrganizationConnection",
       "kind": "LinkedField",
-      "name": "__OrganizationMembersListInternalFragment_members_connection",
+      "name": "__OrganizationsGridFragment_organizations_connection",
       "plural": false,
       "selections": [
         {
           "alias": null,
           "args": null,
-          "concreteType": "OrganizationMemberEdge",
+          "concreteType": "OrganizationEdge",
           "kind": "LinkedField",
           "name": "edges",
           "plural": true,
@@ -106,12 +100,23 @@ return {
             {
               "alias": null,
               "args": null,
-              "concreteType": "Account",
+              "concreteType": "Organization",
               "kind": "LinkedField",
               "name": "node",
               "plural": false,
               "selections": [
-                (v1/*: any*/),
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "id",
+                  "storageKey": null
+                },
+                {
+                  "args": null,
+                  "kind": "FragmentSpread",
+                  "name": "OrganizationCardFragment"
+                },
                 {
                   "alias": null,
                   "args": null,
@@ -121,11 +126,6 @@ return {
                 }
               ],
               "storageKey": null
-            },
-            {
-              "args": null,
-              "kind": "FragmentSpread",
-              "name": "MemberFragment"
             },
             {
               "alias": null,
@@ -149,14 +149,14 @@ return {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
-              "name": "hasNextPage",
+              "name": "endCursor",
               "storageKey": null
             },
             {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
-              "name": "endCursor",
+              "name": "hasNextPage",
               "storageKey": null
             }
           ],
@@ -164,14 +164,13 @@ return {
         }
       ],
       "storageKey": null
-    },
-    (v1/*: any*/)
+    }
   ],
-  "type": "Organization",
+  "type": "Query",
   "abstractKey": null
 };
 })();
 
-(node as any).hash = "72e7dcc89502b28d5261aac24ccdad98";
+(node as any).hash = "f869b1d179747dc91758ebef922216ac";
 
 export default node;

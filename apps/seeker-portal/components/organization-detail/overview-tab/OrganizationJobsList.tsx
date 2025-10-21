@@ -1,13 +1,13 @@
-import { Briefcase } from "lucide-react";
-import { useEffect, useRef } from "react";
-import { useFragment, usePaginationFragment } from "react-relay";
-import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
-import type { OrganizationJobsListFragment$key } from "@/__generated__/OrganizationJobsListFragment.graphql";
-import type { OrganizationJobsListInternalFragment$key } from "@/__generated__/OrganizationJobsListInternalFragment.graphql";
-import type { pageOrganizationDetailViewQuery } from "@/__generated__/pageOrganizationDetailViewQuery.graphql";
-import Job from "../../landing/Job";
-import JobListSkeleton from "../../landing/JobListSkeleton";
+import { Briefcase } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { useFragment, usePaginationFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import invariant from 'tiny-invariant';
+import type { OrganizationJobsListFragment$key } from '@/__generated__/OrganizationJobsListFragment.graphql';
+import type { OrganizationJobsListInternalFragment$key } from '@/__generated__/OrganizationJobsListInternalFragment.graphql';
+import type { pageOrganizationDetailViewQuery } from '@/__generated__/pageOrganizationDetailViewQuery.graphql';
+import Job from '../../landing/Job';
+import JobListSkeleton from '../../landing/JobListSkeleton';
 
 const OrganizationJobsListFragment = graphql`
 fragment OrganizationJobsListFragment on Query @argumentDefinitions(
@@ -56,10 +56,7 @@ type Props = {
 
 export default function OrganizationJobsList({ rootQuery }: Props) {
 	const root = useFragment(OrganizationJobsListFragment, rootQuery);
-	invariant(
-		root.organization.__typename === "Organization",
-		"Expected 'Organization' node type",
-	);
+	invariant(root.organization.__typename === 'Organization', "Expected 'Organization' node type");
 	const { data, loadNext, isLoadingNext } = usePaginationFragment<
 		pageOrganizationDetailViewQuery,
 		OrganizationJobsListInternalFragment$key
@@ -71,17 +68,13 @@ export default function OrganizationJobsList({ rootQuery }: Props) {
 		if (!observerRef.current) return;
 
 		const observer = new IntersectionObserver(
-			(entries) => {
+			entries => {
 				const entry = entries[0];
-				if (
-					entry.isIntersecting &&
-					data.jobs.pageInfo.hasNextPage &&
-					!isLoadingNext
-				) {
+				if (entry.isIntersecting && data.jobs.pageInfo.hasNextPage && !isLoadingNext) {
 					loadNext(25);
 				}
 			},
-			{ threshold: 1.0 },
+			{ threshold: 1.0 }
 		);
 
 		observer.observe(observerRef.current);
@@ -89,24 +82,37 @@ export default function OrganizationJobsList({ rootQuery }: Props) {
 	}, [data.jobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
-		return null;
+		return (
+			<div className='w-full flex flex-col gap-6'>
+				<div className='w-full flex items-center gap-4 px-2 text-foreground-600'>
+					<Briefcase className='w-5 h-5' />
+					<p>Posted Jobs</p>
+				</div>
+				<div className='w-full bg-default-50 rounded-lg border border-default-200 p-8'>
+					<div className='flex items-start gap-4'>
+						<div className='flex flex-col gap-1'>
+							<h3 className='text-base font-medium text-foreground'>No Active Jobs</h3>
+							<p className='text-sm text-foreground-500'>
+								This organization doesn't have any active job postings at the moment. Check back later for new opportunities.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
 	}
 
 	return (
-		<div className="w-full flex flex-col gap-6">
-			<div className="w-full flex items-center gap-4 px-2 text-foreground-600">
-				<Briefcase className="w-5 h-5" />
+		<div className='w-full flex flex-col gap-6'>
+			<div className='w-full flex items-center gap-4 px-2 text-foreground-600'>
+				<Briefcase className='w-5 h-5' />
 				<p>Posted Jobs</p>
 			</div>
-			<div className="w-full flex flex-col gap-8 pb-6">
-				{data.jobs.edges.map((jobEdge) => (
-					<Job
-						job={jobEdge.node}
-						key={jobEdge.node.id}
-						authQueryRef={root.viewer}
-					/>
+			<div className='w-full flex flex-col gap-8 pb-6'>
+				{data.jobs.edges.map(jobEdge => (
+					<Job job={jobEdge.node} key={jobEdge.node.id} authQueryRef={root.viewer} />
 				))}
-				<div ref={observerRef} className="h-10" />
+				<div ref={observerRef} className='h-10' />
 				{isLoadingNext && <JobListSkeleton />}
 			</div>
 		</div>

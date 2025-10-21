@@ -1,0 +1,539 @@
+{
+	"name": "Newsletter Regeneration Sub Workflow",
+	"nodes": [
+		{
+			"parameters": {
+				"jsonSchemaExample": "{\n\t\"articleContent\": \"Regenerated Linkedin Newsletter content goes here\"\n}",
+				"autoFix": true
+			},
+			"type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+			"typeVersion": 1.3,
+			"position": [-3680, -2240],
+			"id": "19c1ce90-77cc-4969-8bc5-b7c7e2b0a8e1",
+			"name": "Structured Output Parser3"
+		},
+		{
+			"parameters": {
+				"promptType": "define",
+				"text": "=Topic: {{$('Set Input').item.json.Topic}}\nDescription: {{$('Set Input').item.json.Description}}\n\n## Existing Newsletter:\n\n{{$('Set Input').item.json.existingNewsletter}}\n\n---\n\n## User Inputs (Changes):\n{{ $json.feedback }}",
+				"hasOutputParser": true,
+				"needsFallback": true,
+				"options": {
+					"systemMessage": "You are an expert Indian healthcare recruitment consultant tasked with rewriting the existing LinkedIn newsletter content for the **Indian healthcare hiring niche**. Your role is to act as a seasoned advisor to HR leaders, recruiters, and healthcare professionals. Carefully review the topic, description, user feedback, and existing content.\n\n**Before rewriting**, perform **deep research** on the topic and description. Gather the latest trends, statistics, case studies, and insights from credible, up-to-date sources in Indian healthcare recruitment, covering:\n\n* Demand for specific healthcare roles (doctors, nurses, allied health staff, hospital administration)\n* Salary benchmarks, hiring incentives, and compensation trends\n* Relevant government policies, schemes, and regulatory changes affecting recruitment\n* Innovations in talent acquisition, recruiting technology, and workforce management\n* Skills gaps, shortages, workforce development strategies and training initiatives\n* Examples, success stories, and best practices from hospitals, startups, or recruitment agencies\n\nApply these insights to craft a **data-driven, conversational, and engaging newsletter** tailored for your audience.\n\n**Requirements:**\n\n* Preserve the original structure and tone (hook, insights, takeaways, and closing)\n* Enhance clarity, coherence, and impact according to the user’s feedback\n* Keep total length within 3000 characters\n* Do not use emojis, and maintain a professional style\n* Output only the final revised, readable article content (do not label sections such as \"Hook\" or \"Introduction\").\n* Never include citations in the final revised article content",
+					"returnIntermediateSteps": true
+				}
+			},
+			"type": "@n8n/n8n-nodes-langchain.agent",
+			"typeVersion": 2.2,
+			"position": [-3968, -2464],
+			"id": "8e8375dd-6a29-4f8d-8154-1fdcbe7fb04d",
+			"name": "Newsletter Regeneration Agent",
+			"retryOnFail": true,
+			"maxTries": 2
+		},
+		{
+			"parameters": {
+				"messages": {
+					"message": [
+						{
+							"content": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('message0_Text', ``, 'string') }}"
+						}
+					]
+				},
+				"options": {
+					"returnImages": false,
+					"returnRelatedQuestions": true
+				},
+				"requestOptions": {}
+			},
+			"type": "n8n-nodes-base.perplexityTool",
+			"typeVersion": 1,
+			"position": [-3808, -2240],
+			"id": "5edd6176-d1f8-44c2-8160-5bed6ad96d35",
+			"name": "Deep Research Tool1",
+			"credentials": {
+				"perplexityApi": {
+					"id": "YswPRc7PQc8GGnAY",
+					"name": "Perplexity account"
+				}
+			}
+		},
+		{
+			"parameters": {
+				"model": "amazon.nova-pro-v1:0",
+				"options": {}
+			},
+			"type": "@n8n/n8n-nodes-langchain.lmChatAwsBedrock",
+			"typeVersion": 1.1,
+			"position": [-4064, -2240],
+			"id": "30b594f1-85bf-4566-9c8d-dbcc421b4623",
+			"name": "AWS Bedrock Chat Model6",
+			"credentials": {
+				"aws": {
+					"id": "F9DUQMlsY23L235b",
+					"name": "AWS account"
+				}
+			}
+		},
+		{
+			"parameters": {
+				"model": "amazon.nova-pro-v1:0",
+				"options": {}
+			},
+			"type": "@n8n/n8n-nodes-langchain.lmChatAwsBedrock",
+			"typeVersion": 1.1,
+			"position": [-3936, -2240],
+			"id": "e031f17a-9487-42be-b904-00fbfdd4a6f2",
+			"name": "AWS Bedrock Chat Model7",
+			"credentials": {
+				"aws": {
+					"id": "F9DUQMlsY23L235b",
+					"name": "AWS account"
+				}
+			}
+		},
+		{
+			"parameters": {
+				"workflowInputs": {
+					"values": [
+						{
+							"name": "recipient"
+						},
+						{
+							"name": "Topic"
+						},
+						{
+							"name": "Description"
+						},
+						{
+							"name": "existingNewsletter"
+						},
+						{
+							"name": "Feedback"
+						}
+					]
+				}
+			},
+			"id": "d0d668da-3e03-44ce-8e61-73d8702ca5ec",
+			"typeVersion": 1.1,
+			"name": "Start",
+			"type": "n8n-nodes-base.executeWorkflowTrigger",
+			"position": [-4512, -2368]
+		},
+		{
+			"parameters": {
+				"mode": "raw",
+				"jsonOutput": "={{ \n  {\n    \"recipient\": $json.recipient,\n    \"Topic\": $json.Topic,\n    \"Description\": $json.Description,\n    \"existingNewsletter\": $json.existingNewsletter\n  }\n}}\n",
+				"options": {}
+			},
+			"type": "n8n-nodes-base.set",
+			"typeVersion": 3.4,
+			"position": [-4288, -2464],
+			"id": "544c58e7-9593-4368-960b-3c8fa43e7efb",
+			"name": "Set Input"
+		},
+		{
+			"parameters": {
+				"operation": "checkIfEvaluating"
+			},
+			"type": "n8n-nodes-base.evaluation",
+			"typeVersion": 4.8,
+			"position": [-3472, -2464],
+			"id": "2f699087-5577-4b7d-80f5-c30acb3399ab",
+			"name": "Evaluation"
+		},
+		{
+			"parameters": {},
+			"type": "n8n-nodes-base.noOp",
+			"typeVersion": 1,
+			"position": [-3184, -2160],
+			"id": "ba7298a3-c8ba-4714-aba2-8f82afc8a182",
+			"name": "No Operation, do nothing"
+		},
+		{
+			"parameters": {
+				"source": "googleSheets",
+				"documentId": {
+					"__rl": true,
+					"value": "1MRK3TvdThmkUW2c1R4IgqoPJMtsiedIfx_vXZtG_Vgk",
+					"mode": "list",
+					"cachedResultName": "N8N Agent Evaluation Database",
+					"cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MRK3TvdThmkUW2c1R4IgqoPJMtsiedIfx_vXZtG_Vgk/edit?usp=drivesdk"
+				},
+				"sheetName": {
+					"__rl": true,
+					"value": 1357675469,
+					"mode": "list",
+					"cachedResultName": "Newsletter Regeneration Agent",
+					"cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MRK3TvdThmkUW2c1R4IgqoPJMtsiedIfx_vXZtG_Vgk/edit#gid=1357675469"
+				},
+				"limitRows": true
+			},
+			"type": "n8n-nodes-base.evaluationTrigger",
+			"typeVersion": 4.7,
+			"position": [-4736, -2560],
+			"id": "4b438d3f-e4a9-42e0-9533-8754ab108648",
+			"name": "When fetching a dataset row",
+			"credentials": {
+				"googleSheetsOAuth2Api": {
+					"id": "AcaKFTi8PBpZtyv1",
+					"name": "Google Sheets account"
+				}
+			}
+		},
+		{
+			"parameters": {
+				"jsCode": "// Input: items[0].json = your original array\n\nconst input = items[0].json;\n\n// If input itself is an array (like your example)\nconst dataArray = Array.isArray(input) ? input : [input];\n\nconst results = dataArray.map(entry => {\n  const data = entry[\"Existing Topics (and descriptions)\"];\n\n  const Topic = entry[\"Original Topic\"];\n\n  const Description = entry[\"Original Description\"];\n\n  const existingNewsletter = entry[\"Existing Newsletter\"];\n\n  const userInput = entry[\"User input/ Suggested Changes\"];\n\n  // Defensive check\n  if (!data) return { json: { Topic: null, Description: null, existingNewsletter: null } };\n\n\n  return {\n    json: {\n      Topic, \n      Description, \n      existingNewsletter,\n      Feedback: userInput,\n      recipient: \"aryaniyappan2006@gmail.com\"\n    }\n  };\n});\n\nreturn results;\n"
+			},
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [-4512, -2560],
+			"id": "5417c6d3-5bc7-457c-a474-42696af277bd",
+			"name": "Match Test Instance Data"
+		},
+		{
+			"parameters": {
+				"operation": "setMetrics",
+				"expectedAnswer": "=Topic: {{$('Set Input').item.json.Topic}}\\nDescription: {{$('Set Input').item.json.Description}}\\nExisting Newsletter:  {{$('Set Input').item.json.existingNewsletter}}",
+				"actualAnswer": "=Newly generated newsletter: \\n{{ $('Newsletter Regeneration Agent').item.json.output.articleContent }}",
+				"prompt": "You are an expert evaluator for regenerated LinkedIn newsletters in the Indian healthcare hiring niche.\n\nAssess whether the regenerated newsletter meaningfully improves the original newsletter and aligns with editorial requirements, given the inputs.\n\nThe given input contains:\n\n* original topic and description,\n* the original newsletter content,\n* existing topic list (to check duplicates),\n* any user feedback or change requests.\n\nEvaluation goals (rate 1–5):\n\n1. **Feedback incorporation** — Does the newly generated newsletter apply the user’s edits or directions?\n2. **Novelty / duplication** — Is the new newsletter distinct from the original and existing topics?\n3. **Domain relevance** — Is it specifically targeted to Indian healthcare hiring (doctors, nurses, allied health, HR, recruiters, hospitals)?\n4. **Improvement quality** — Is it clearer, more actionable, more timely, and more engaging than the original?\n5. **Structure & LinkedIn fit** — Does it follow newsletter requirements (hook, context, insights, takeaways, closing) and read well on LinkedIn?\n6. **Data & credibility** — Uses current facts, examples, or concrete evidence where useful.\n7. **Timeliness** — Reflects current trends or immediate relevance.\n\nScoring criteria\n\n* 5 = Excellent: Fully incorporates feedback, clearly improved, on-niche, not duplicated, timely, actionable, LinkedIn-ready.\n* 4 = Good: Mostly incorporates feedback, noticeable improvement, minor gaps in novelty, data, or structure.\n* 3 = Fair: Partial incorporation, limited improvement, some off-niche or repetitive elements.\n* 2 = Weak: Minimal incorporation or improvement; still duplicative or off-niche.\n* 1 = Poor: Ignores feedback, duplicates existing content, off-topic, or degrades quality.\n\nEvaluation steps\n\n1. For each goal above produce concise supporting evidence. Quote brief examples if relevant.\n2. Produce a final score 1–5.\n\nOutput only this JSON:\n\n```json\n{\n  \"extended_reasoning\": \"<step-by-step analysis addressing feedback incorporation, novelty, domain relevance, improvement quality, structure/LinkedIn fit, data/credibility, and timeliness>\",\n  \"reasoning_summary\": \"<one-sentence summary of the regeneration quality>\",\n  \"score\": <integer 1-5>\n}\n```\n",
+				"options": {
+					"inputPrompt": "{actual_answer}\n\n{expected_answer}"
+				}
+			},
+			"type": "n8n-nodes-base.evaluation",
+			"typeVersion": 4.8,
+			"position": [-3248, -2560],
+			"id": "185d142e-cc19-44d3-9ba7-87c0b3fb21f6",
+			"name": "Evaluation1"
+		},
+		{
+			"parameters": {
+				"source": "googleSheets",
+				"documentId": {
+					"__rl": true,
+					"value": "1MRK3TvdThmkUW2c1R4IgqoPJMtsiedIfx_vXZtG_Vgk",
+					"mode": "list",
+					"cachedResultName": "N8N Agent Evaluation Database",
+					"cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MRK3TvdThmkUW2c1R4IgqoPJMtsiedIfx_vXZtG_Vgk/edit?usp=drivesdk"
+				},
+				"sheetName": {
+					"__rl": true,
+					"value": 1357675469,
+					"mode": "list",
+					"cachedResultName": "Newsletter Regeneration Agent",
+					"cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MRK3TvdThmkUW2c1R4IgqoPJMtsiedIfx_vXZtG_Vgk/edit#gid=1357675469"
+				},
+				"outputs": {
+					"values": [
+						{
+							"outputName": "Newly Generated Newsletter",
+							"outputValue": "={{ $('Newsletter Regeneration Agent').item.json.output.articleContent }}"
+						},
+						{
+							"outputName": "Score",
+							"outputValue": "={{ $json.Correctness }}"
+						},
+						{
+							"outputName": "Tools Used",
+							"outputValue": "={{ $json['Tools Used'] }}"
+						}
+					]
+				}
+			},
+			"type": "n8n-nodes-base.evaluation",
+			"typeVersion": 4.8,
+			"position": [-2672, -2608],
+			"id": "10391116-303b-4f87-8e48-6e294da0d790",
+			"name": "Evaluation2",
+			"credentials": {
+				"googleSheetsOAuth2Api": {
+					"id": "AcaKFTi8PBpZtyv1",
+					"name": "Google Sheets account"
+				}
+			}
+		},
+		{
+			"parameters": {
+				"model": "amazon.nova-pro-v1:0",
+				"options": {}
+			},
+			"type": "@n8n/n8n-nodes-langchain.lmChatAwsBedrock",
+			"typeVersion": 1.1,
+			"position": [-3184, -2336],
+			"id": "13597c4b-dce0-4c4b-b95e-123a0e9e3e0d",
+			"name": "AWS Bedrock Chat Model",
+			"credentials": {
+				"aws": {
+					"id": "F9DUQMlsY23L235b",
+					"name": "AWS account"
+				}
+			}
+		},
+		{
+			"parameters": {
+				"operation": "setMetrics",
+				"metric": "toolsUsed",
+				"expectedTools": "Deep_Research_Tool1",
+				"intermediateSteps": "={{ $json.intermediateSteps }}",
+				"options": {}
+			},
+			"type": "n8n-nodes-base.evaluation",
+			"typeVersion": 4.8,
+			"position": [-3184, -2752],
+			"id": "6f5e2017-8679-4337-beed-3c325fafb2f0",
+			"name": "Evaluation4"
+		},
+		{
+			"parameters": {
+				"mode": "combine",
+				"combineBy": "combineByPosition",
+				"options": {}
+			},
+			"type": "n8n-nodes-base.merge",
+			"typeVersion": 3.2,
+			"position": [-2896, -2608],
+			"id": "d391f395-bff4-41ad-ab3d-3a1a9bbd12f5",
+			"name": "Merge"
+		},
+		{
+			"parameters": {
+				"model": "amazon.nova-pro-v1:0",
+				"options": {}
+			},
+			"type": "@n8n/n8n-nodes-langchain.lmChatAwsBedrock",
+			"typeVersion": 1.1,
+			"position": [-3760, -2032],
+			"id": "86371005-a593-431c-adea-5ea9494a6c74",
+			"name": "AWS Bedrock Chat Model1",
+			"credentials": {
+				"aws": {
+					"id": "F9DUQMlsY23L235b",
+					"name": "AWS account"
+				}
+			}
+		},
+		{
+			"parameters": {
+				"assignments": {
+					"assignments": [
+						{
+							"id": "58e8655f-6f60-4067-beea-782fdac38298",
+							"name": "articleContent",
+							"value": "={{ $('Newsletter Regeneration Agent').item.json.output.articleContent }}",
+							"type": "string"
+						}
+					]
+				},
+				"options": {}
+			},
+			"type": "n8n-nodes-base.set",
+			"typeVersion": 3.4,
+			"position": [-2912, -2176],
+			"id": "3e1b7d86-081e-4f29-980f-e5dd9bdc5c55",
+			"name": "Return"
+		}
+	],
+	"pinData": {},
+	"connections": {
+		"Structured Output Parser3": {
+			"ai_outputParser": [
+				[
+					{
+						"node": "Newsletter Regeneration Agent",
+						"type": "ai_outputParser",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Newsletter Regeneration Agent": {
+			"main": [
+				[
+					{
+						"node": "Evaluation",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Deep Research Tool1": {
+			"ai_tool": [
+				[
+					{
+						"node": "Newsletter Regeneration Agent",
+						"type": "ai_tool",
+						"index": 0
+					}
+				]
+			]
+		},
+		"AWS Bedrock Chat Model6": {
+			"ai_languageModel": [
+				[
+					{
+						"node": "Newsletter Regeneration Agent",
+						"type": "ai_languageModel",
+						"index": 0
+					}
+				]
+			]
+		},
+		"AWS Bedrock Chat Model7": {
+			"ai_languageModel": [
+				[
+					{
+						"node": "Newsletter Regeneration Agent",
+						"type": "ai_languageModel",
+						"index": 1
+					}
+				]
+			]
+		},
+		"Start": {
+			"main": [
+				[
+					{
+						"node": "Set Input",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Set Input": {
+			"main": [
+				[
+					{
+						"node": "Newsletter Regeneration Agent",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Evaluation": {
+			"main": [
+				[
+					{
+						"node": "Evaluation1",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Evaluation4",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "No Operation, do nothing",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"No Operation, do nothing": {
+			"main": [
+				[
+					{
+						"node": "Return",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"When fetching a dataset row": {
+			"main": [
+				[
+					{
+						"node": "Match Test Instance Data",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Match Test Instance Data": {
+			"main": [
+				[
+					{
+						"node": "Set Input",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Evaluation1": {
+			"main": [
+				[
+					{
+						"node": "Merge",
+						"type": "main",
+						"index": 1
+					}
+				]
+			]
+		},
+		"AWS Bedrock Chat Model": {
+			"ai_languageModel": [
+				[
+					{
+						"node": "Evaluation1",
+						"type": "ai_languageModel",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Evaluation4": {
+			"main": [
+				[
+					{
+						"node": "Merge",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Merge": {
+			"main": [
+				[
+					{
+						"node": "Evaluation2",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"AWS Bedrock Chat Model1": {
+			"ai_languageModel": [
+				[
+					{
+						"node": "Structured Output Parser3",
+						"type": "ai_languageModel",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"active": false,
+	"settings": {
+		"executionOrder": "v1"
+	},
+	"versionId": "c302a9bb-db54-42ce-a5c6-2663c50efd5d",
+	"meta": {
+		"templateCredsSetupCompleted": true,
+		"instanceId": "d9ba04e66b9e95422c24c5344855adfbbaed0237b2885856c8e66b8cb77c9b54"
+	},
+	"id": "DDu7E6M6cAZGQc3S",
+	"tags": []
+}

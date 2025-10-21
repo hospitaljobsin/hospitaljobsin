@@ -239,6 +239,14 @@ resource "github_actions_environment_variable" "send_job_alerts_lambda_function_
   value         = var.send_job_alerts_lambda_function_arn
 }
 
+resource "github_actions_environment_variable" "send_resume_upload_reminders_lambda_function_arn" {
+  count         = var.environment_name == "production" ? 1 : 0
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "SEND_RESUME_UPLOAD_REMINDERS_LAMBDA_FUNCTION_ARN"
+  value         = var.send_resume_upload_reminders_lambda_function_arn
+}
+
 resource "github_actions_environment_variable" "actions_runner_security_group_id" {
   repository    = data.github_repository.this.name
   environment   = github_repository_environment.this.environment
