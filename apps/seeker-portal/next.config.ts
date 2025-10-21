@@ -109,7 +109,11 @@ const nextConfig: NextConfig = {
 			},
 			{
 				source: '/organizations/:slug/jobs/:jobSlug.md',
-				destination: '/organizations/:slug/jobs-md/:jobSlug?via_rewrite=true'
+				destination: '/organizations-md/:slug/jobs-md/:jobSlug?via_rewrite=true'
+			},
+			{
+				source: '/organizations/:slug.md',
+				destination: '/organizations-md/:slug?via_rewrite=true'
 			}
 		];
 	},
@@ -167,6 +171,18 @@ const nextConfig: NextConfig = {
 					}
 				],
 				destination: '/organizations/:slug/jobs/:jobSlug.md',
+				permanent: false
+			},
+			{
+				source: '/organizations/:slug',
+				has: [
+					{
+						type: 'query',
+						key: 'via_rewrite',
+						value: undefined
+					}
+				],
+				destination: '/organizations/:slug.md',
 				permanent: false
 			}
 		];
