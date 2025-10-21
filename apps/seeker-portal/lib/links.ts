@@ -28,7 +28,6 @@ const links = {
 	organizations: '/organizations',
 	jobDetail: (slug: string, jobSlug: string) => `/organizations/${slug}/jobs/${jobSlug}`,
 	organizationDetail: (slug: string) => `/organizations/${slug}`,
-	organizationDetailMembers: (slug: string) => `/organizations/${slug}/members`,
 	organizationDetailSettings: (slug: string) => `/organizations/${slug}/settings`,
 	login: (returnTo: string | undefined = undefined) =>
 		returnTo ? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login?return_to=${returnTo}` : `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login`,
