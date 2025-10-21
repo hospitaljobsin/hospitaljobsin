@@ -25,6 +25,7 @@ const links = {
 	savedJobs: '/saved',
 	appliedJobs: '/applied',
 	jobAlerts: '/my-alerts',
+	organizations: '/organizations',
 	jobDetail: (slug: string, jobSlug: string) => `/organizations/${slug}/jobs/${jobSlug}`,
 	organizationDetail: (slug: string) => `/organizations/${slug}`,
 	organizationDetailMembers: (slug: string) => `/organizations/${slug}/members`,

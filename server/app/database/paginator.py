@@ -13,6 +13,14 @@ from pydantic import BaseModel
 from app.base.models import BaseSearchable
 from app.core.constants import MAX_PAGINATION_LIMIT
 
+__all__ = [
+    "PageInfo",
+    "PaginatedResult",
+    "Paginator",
+    "TextSearchPaginator",
+    "SearchPaginator",
+]
+
 ModelType = TypeVar("ModelType", bound=Document)
 
 ProjectionModelType = TypeVar("ProjectionModelType", bound=BaseModel, default=ModelType)
@@ -259,6 +267,132 @@ class Paginator(Generic[ModelType, CursorType, ProjectionModelType], BasePaginat
             has_previous_page = len(results) > pagination_limit
         else:
             # we are paginating forwards by default
+            entities = results[:pagination_limit]
+            has_next_page = len(results) > pagination_limit
+            has_previous_page = after is not None
+
+        start_cursor = (
+            operator.attrgetter(self._entity_paginate_by)(entities[0])
+            if entities
+            else None
+        )
+        end_cursor = (
+            operator.attrgetter(self._entity_paginate_by)(entities[-1])
+            if entities
+            else None
+        )
+
+        return PaginatedResult(
+            entities=entities,
+            total_count=total_count,
+            page_info=PageInfo(
+                has_next_page=has_next_page,
+                has_previous_page=has_previous_page,
+                start_cursor=start_cursor,
+                end_cursor=end_cursor,
+            ),
+        )
+
+
+class TextSearchPaginator(Generic[ModelType, CursorType], BasePaginator):
+    """
+    Paginator for MongoDB text search queries.
+
+    This paginator handles text search with proper text score metadata handling.
+    """
+
+    def __init__(
+        self,
+        *,
+        document_cls: type[ModelType],
+        paginate_by: str,
+        entity_paginate_by: str | None = None,
+        calculate_total_count: bool = False,
+    ) -> None:
+        super().__init__(calculate_total_count=calculate_total_count)
+        self._document_cls = document_cls
+        self._paginate_by = paginate_by
+        self._entity_paginate_by = entity_paginate_by or self._paginate_by
+
+    async def paginate(
+        self,
+        *,
+        search_term: str,
+        first: int | None = None,
+        last: int | None = None,
+        before: CursorType | None = None,
+        after: CursorType | None = None,
+    ) -> PaginatedResult[ModelType, CursorType]:
+        """Paginate text search results."""
+        pagination_limit = self.validate_arguments(
+            first=first,
+            last=last,
+            before=before,
+            after=after,
+        )
+
+        # Build base pipeline: $match must come first, then add text score
+        base_pipeline = [
+            {"$match": {"$text": {"$search": search_term}}},
+            {"$addFields": {"text_score": {"$meta": "textScore"}}},
+        ]
+
+        # Build data pipeline with filters and sorting
+        data_pipeline = []
+        if after is not None:
+            data_pipeline.append({"$match": {self._paginate_by: {"$lt": after}}})
+        elif before is not None:
+            data_pipeline.append({"$match": {self._paginate_by: {"$gt": before}}})
+
+        data_pipeline.append({"$sort": {"text_score": -1, self._paginate_by: -1}})
+        data_pipeline.append({"$limit": pagination_limit + 1})
+
+        total_count = None
+
+        if self.calculate_total_count:
+            # $match and $addFields must come before $facet
+            facet_pipeline = base_pipeline + [
+                {
+                    "$facet": {
+                        "data": data_pipeline,
+                        "totalCount": [{"$count": "count"}],
+                    }
+                },
+                {
+                    "$project": {
+                        "data": 1,
+                        "totalCount": {
+                            "$ifNull": [{"$arrayElemAt": ["$totalCount.count", 0]}, 0]
+                        },
+                    }
+                },
+            ]
+
+            facet_results = await self._document_cls.aggregate(
+                facet_pipeline, projection_model=None
+            ).to_list()
+            results = [
+                self._document_cls(**result)
+                for result in facet_results[0].get("data", [])
+            ]
+            total_count = facet_results[0]["totalCount"]
+        else:
+            full_pipeline = base_pipeline + data_pipeline
+            results = await self._document_cls.aggregate(
+                full_pipeline, projection_model=self._document_cls
+            ).to_list()
+
+        if last is not None:
+            entities = list(
+                reversed(
+                    results[-pagination_limit:]
+                    if len(results) > pagination_limit
+                    else results
+                )
+            )
+            has_next_page = before is not None
+            has_previous_page = len(results) > pagination_limit
+        else:
             entities = results[:pagination_limit]
             has_next_page = len(results) > pagination_limit
             has_previous_page = after is not None

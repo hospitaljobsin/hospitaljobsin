@@ -55,12 +55,19 @@ class OrganizationQuery:
                 description="How many items to return before the cursor?",
             ),
         ] = None,
+        search_term: Annotated[
+            str | None,
+            strawberry.argument(
+                description="Search term for organization name or slug",
+            ),
+        ] = None,
     ) -> OrganizationConnectionType:
         paginated_result = await organization_repo.get_all(
             first=first,
             last=last,
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),
+            search_term=search_term,
         )
 
         return OrganizationConnectionType.marshal(
