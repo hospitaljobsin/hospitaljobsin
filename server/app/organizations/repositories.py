@@ -180,6 +180,7 @@ class OrganizationRepo:
                 last=last,
                 before=ObjectId(before) if before else None,
                 after=ObjectId(after) if after else None,
+                additional_pipeline=[{"$match": {"is_spam": False}}],
             )
 
         paginator = Paginator(

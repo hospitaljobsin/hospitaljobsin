@@ -405,3 +405,70 @@ async def test_organizations_query_pagination_consistency(
         return response["data"]["organizations"]
 
     await assert_full_pagination_flow(paginate_orgs, {}, 2, 3)
+
+
+async def test_organizations_query_excludes_spam(
+    graphql_client: GraphQLClient,
+    organization_repo: OrganizationRepo,
+    organization_member_repo: OrganizationMemberRepo,
+    password_account: Account,
+) -> None:
+    """Test organizations query excludes spam organizations."""
+    spam_org = await organization_repo.create(
+        name="Spam Organization",
+        slug=generate_test_slug(),
+    )
+    spam_org.is_spam = True
+    await spam_org.save()
+    org_member = await organization_member_repo.create(
+        account=password_account,
+        organization_id=spam_org.id,
+        role="admin",
+    )
+
+    response = await graphql_client(
+        ORGANIZATIONS_QUERY,
+        variables={"first": 100},
+    )
+
+    data = response["data"]["organizations"]
+    org_ids = [edge["node"]["id"] for edge in data["edges"]]
+    assert str(spam_org.id) not in org_ids
+
+    await organization_member_repo.delete(org_member)
+    await organization_repo.delete(spam_org)
+
+
+async def test_organizations_query_excludes_spam_with_search(
+    graphql_client: GraphQLClient,
+    organization_repo: OrganizationRepo,
+    organization_member_repo: OrganizationMemberRepo,
+    password_account: Account,
+) -> None:
+    """Test organizations query excludes spam organizations when searching."""
+    spam_org = await organization_repo.create(
+        name="Spam Healthcare Center",
+        slug=generate_test_slug(),
+        description="Spam healthcare services",
+    )
+    spam_org.is_spam = True
+    await spam_org.save()
+    org_member = await organization_member_repo.create(
+        account=password_account,
+        organization_id=spam_org.id,
+        role="admin",
+    )
+
+    await asyncio.sleep(1.5)
+
+    response = await graphql_client(
+        ORGANIZATIONS_QUERY,
+        variables={"first": 100, "searchTerm": "Spam"},
+    )
+
+    data = response["data"]["organizations"]
+    org_ids = [edge["node"]["id"] for edge in data["edges"]]
+    assert str(spam_org.id) not in org_ids
+
+    await organization_member_repo.delete(org_member)
+    await organization_repo.delete(spam_org)

@@ -322,6 +322,7 @@ class TextSearchPaginator(Generic[ModelType, CursorType], BasePaginator):
         last: int | None = None,
         before: CursorType | None = None,
         after: CursorType | None = None,
+        additional_pipeline: list[Mapping[str, Any]] | None = None,
     ) -> PaginatedResult[ModelType, CursorType]:
         """Paginate text search results."""
         pagination_limit = self.validate_arguments(
@@ -336,6 +337,10 @@ class TextSearchPaginator(Generic[ModelType, CursorType], BasePaginator):
             {"$match": {"$text": {"$search": search_term}}},
             {"$addFields": {"text_score": {"$meta": "textScore"}}},
         ]
+
+        # Add additional pipeline stages if provided
+        if additional_pipeline:
+            base_pipeline.extend(additional_pipeline)
 
         # Build data pipeline with filters and sorting
         data_pipeline = []

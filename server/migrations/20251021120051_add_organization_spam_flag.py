@@ -1,8 +1,8 @@
-import os
 import sys
+from pathlib import Path
 from typing import Annotated, ClassVar
 
-sys.path.insert(0, os.getcwd())
+sys.path.insert(0, Path.cwd())
 
 import pymongo
 from app.organizations.documents import OrganizationVerificationRequest
