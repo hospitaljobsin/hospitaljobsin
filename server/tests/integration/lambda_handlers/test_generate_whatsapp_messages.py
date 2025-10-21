@@ -36,6 +36,7 @@ async def valid_organization(
         account=password_account,
         role="admin",
     )
+
     yield org
     await organization_repo.delete(org)
 
