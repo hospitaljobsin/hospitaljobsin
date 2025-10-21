@@ -21,7 +21,7 @@ from lambda_handlers.generate_whatsapp_messages import (
 
 
 @pytest.fixture
-async def test_organization(
+async def valid_organization(
     organization_repo: OrganizationRepo,
     organization_member_repo: OrganizationMemberRepo,
     password_account: Account,
@@ -43,10 +43,10 @@ async def test_organization(
 @pytest.fixture
 async def active_job_without_whatsapp_post(
     job_repo: JobRepo,
-    test_organization: Organization,
+    valid_organization: Organization,
 ) -> Job:
     job = await job_repo.create(
-        organization=test_organization,
+        organization=valid_organization,
         title="Senior Nurse",
         description="Looking for experienced nurses",
         location="Mumbai, Maharashtra",
@@ -67,10 +67,10 @@ async def active_job_without_whatsapp_post(
 @pytest.fixture
 async def active_job_already_posted(
     job_repo: JobRepo,
-    test_organization: Organization,
+    valid_organization: Organization,
 ) -> Job:
     job = await job_repo.create(
-        organization=test_organization,
+        organization=valid_organization,
         title="Junior Doctor",
         description="Entry level position",
         location="Delhi",
@@ -88,10 +88,10 @@ async def active_job_already_posted(
 @pytest.fixture
 async def expired_job(
     job_repo: JobRepo,
-    test_organization: Organization,
+    valid_organization: Organization,
 ) -> Job:
     job = await job_repo.create(
-        organization=test_organization,
+        organization=valid_organization,
         title="Expired Position",
         description="This job has expired",
         expires_at=datetime.now(UTC) - timedelta(days=1),
@@ -105,10 +105,10 @@ async def expired_job(
 @pytest.fixture
 async def inactive_job(
     job_repo: JobRepo,
-    test_organization: Organization,
+    valid_organization: Organization,
 ) -> Job:
     job = await job_repo.create(
-        organization=test_organization,
+        organization=valid_organization,
         title="Inactive Position",
         description="This job is inactive",
     )
@@ -116,7 +116,7 @@ async def inactive_job(
     await job_repo.delete(job)
 
 
-def test_with_min_and_max_salary() -> None:
+async def test_with_min_and_max_salary() -> None:
     job = Job(
         title="Test",
         description="Test",
@@ -132,7 +132,7 @@ def test_with_min_and_max_salary() -> None:
     assert format_salary(job) == "₹50000 - ₹80000"
 
 
-def test_with_only_min_salary() -> None:
+async def test_with_only_min_salary() -> None:
     job = Job(
         title="Test",
         description="Test",
@@ -148,7 +148,7 @@ def test_with_only_min_salary() -> None:
     assert format_salary(job) == "From ₹50000"
 
 
-def test_with_only_max_salary() -> None:
+async def test_with_only_max_salary() -> None:
     job = Job(
         title="Test",
         description="Test",
@@ -164,7 +164,7 @@ def test_with_only_max_salary() -> None:
     assert format_salary(job) == "Up to ₹80000"
 
 
-def test_with_no_salary() -> None:
+async def test_with_no_salary() -> None:
     job = Job(
         title="Test",
         description="Test",
@@ -180,7 +180,7 @@ def test_with_no_salary() -> None:
     assert format_salary(job) == "Not specified"
 
 
-def test_with_min_and_max_experience() -> None:
+async def test_with_min_and_max_experience() -> None:
     job = Job(
         title="Test",
         description="Test",
@@ -196,7 +196,7 @@ def test_with_min_and_max_experience() -> None:
     assert format_experience(job) == "2 - 5 years"
 
 
-def test_with_only_min_experience() -> None:
+async def test_with_only_min_experience() -> None:
     job = Job(
         title="Test",
         description="Test",
@@ -212,7 +212,7 @@ def test_with_only_min_experience() -> None:
     assert format_experience(job) == "From 2 years"
 
 
-def test_with_only_max_experience() -> None:
+async def test_with_only_max_experience() -> None:
     job = Job(
         title="Test",
         description="Test",
@@ -228,7 +228,7 @@ def test_with_only_max_experience() -> None:
     assert format_experience(job) == "Up to 5 years"
 
 
-def test_with_no_experience() -> None:
+async def test_with_no_experience() -> None:
     job = Job(
         title="Test",
         description="Test",
@@ -244,7 +244,7 @@ def test_with_no_experience() -> None:
     assert format_experience(job) == "Not specified"
 
 
-async def test_complete_job_formatting(active_job_without_whatsapp_post: Job):
+async def test_complete_job_formatting(active_job_without_whatsapp_post: Job) -> None:
     message = format_job_for_whatsapp_message(active_job_without_whatsapp_post)
 
     assert "*Senior Nurse*" in message
@@ -257,10 +257,10 @@ async def test_complete_job_formatting(active_job_without_whatsapp_post: Job):
 
 
 async def test_job_with_missing_fields(
-    test_organization: Organization, job_repo: JobRepo
-):
+    valid_organization: Organization, job_repo: JobRepo
+) -> None:
     job = await job_repo.create(
-        organization=test_organization,
+        organization=valid_organization,
         title="Basic Job",
         description="Minimal job posting",
     )
@@ -281,7 +281,7 @@ async def test_job_with_missing_fields(
 
 async def test_creates_zip_with_correct_files(
     active_job_without_whatsapp_post: Job,
-):
+) -> None:
     messages = [format_job_for_whatsapp_message(active_job_without_whatsapp_post)]
     jobs = [active_job_without_whatsapp_post]
 
@@ -304,12 +304,12 @@ async def test_creates_zip_with_correct_files(
 
 async def test_creates_zip_with_multiple_jobs(
     job_repo: JobRepo,
-    test_organization: Organization,
-):
+    valid_organization: Organization,
+) -> None:
     jobs = []
     for i in range(3):
         job = await job_repo.create(
-            organization=test_organization,
+            organization=valid_organization,
             title=f"Job {i + 1}",
             description=f"Description {i + 1}",
         )
@@ -330,7 +330,7 @@ async def test_creates_zip_with_multiple_jobs(
         await job_repo.delete(job)
 
 
-async def test_zip_filename_format(active_job_without_whatsapp_post: Job):
+async def test_zip_filename_format(active_job_without_whatsapp_post: Job) -> None:
     messages = [format_job_for_whatsapp_message(active_job_without_whatsapp_post)]
     jobs = [active_job_without_whatsapp_post]
 
@@ -343,7 +343,7 @@ async def test_zip_filename_format(active_job_without_whatsapp_post: Job):
     cleanup_temp_files(zip_path)
 
 
-async def test_cleanup_existing_file(active_job_without_whatsapp_post: Job):
+async def test_cleanup_existing_file(active_job_without_whatsapp_post: Job) -> None:
     messages = [format_job_for_whatsapp_message(active_job_without_whatsapp_post)]
     jobs = [active_job_without_whatsapp_post]
 
@@ -354,7 +354,7 @@ async def test_cleanup_existing_file(active_job_without_whatsapp_post: Job):
     assert not Path(zip_path).exists()
 
 
-def test_cleanup_nonexistent_file() -> None:
+async def test_cleanup_nonexistent_file() -> None:
     cleanup_temp_files("/tmp/nonexistent_file.zip")
 
 
@@ -369,7 +369,7 @@ async def test_no_jobs_to_process() -> None:
 async def test_processes_active_unposted_jobs(
     active_job_without_whatsapp_post: Job,
     job_repo: JobRepo,
-):
+) -> None:
     result = await process_wa_messages_generation_event()
     result_data = json.loads(result)
 
@@ -383,7 +383,7 @@ async def test_processes_active_unposted_jobs(
 async def test_ignores_already_posted_jobs(
     active_job_already_posted: Job,
     job_repo: JobRepo,
-):
+) -> None:
     original_posted_at = active_job_already_posted.whatsapp_channel_posted_at
 
     result = await process_wa_messages_generation_event()
@@ -398,7 +398,7 @@ async def test_ignores_already_posted_jobs(
 async def test_ignores_expired_jobs(
     expired_job: Job,
     job_repo: JobRepo,
-):
+) -> None:
     result = await process_wa_messages_generation_event()
     result_data = json.loads(result)
 
@@ -411,7 +411,7 @@ async def test_ignores_expired_jobs(
 async def test_ignores_inactive_jobs(
     inactive_job: Job,
     job_repo: JobRepo,
-):
+) -> None:
     result = await process_wa_messages_generation_event()
     result_data = json.loads(result)
 
@@ -423,12 +423,12 @@ async def test_ignores_inactive_jobs(
 
 async def test_multiple_jobs_processed(
     job_repo: JobRepo,
-    test_organization: Organization,
-):
+    valid_organization: Organization,
+) -> None:
     jobs = []
     for i in range(5):
         job = await job_repo.create(
-            organization=test_organization,
+            organization=valid_organization,
             title=f"Bulk Job {i + 1}",
             description=f"Description {i + 1}",
         )
@@ -449,10 +449,10 @@ async def test_multiple_jobs_processed(
 
 async def test_job_with_no_expiry_date(
     job_repo: JobRepo,
-    test_organization: Organization,
-):
+    valid_organization: Organization,
+) -> None:
     job = await job_repo.create(
-        organization=test_organization,
+        organization=valid_organization,
         title="No Expiry Job",
         description="This job has no expiry date",
         expires_at=None,
@@ -473,10 +473,10 @@ async def test_job_with_no_expiry_date(
 
 async def test_job_with_future_expiry_date(
     job_repo: JobRepo,
-    test_organization: Organization,
-):
+    valid_organization: Organization,
+) -> None:
     job = await job_repo.create(
-        organization=test_organization,
+        organization=valid_organization,
         title="Future Expiry Job",
         description="This job expires in the future",
         expires_at=datetime.now(UTC) + timedelta(days=30),

@@ -10,7 +10,7 @@ import OrganizationsGridSkeleton from './OrganizationsGridSkeleton';
 const OrganizationsGridFragment = graphql`
 	fragment OrganizationsGridFragment on Query
 	@refetchable(queryName: "OrganizationsGridPaginationQuery")
-	@argumentDefinitions(first: { type: "Int", defaultValue: 50 }, after: { type: "ID" }, searchTerm: { type: "String" }) {
+	@argumentDefinitions(first: { type: "Int", defaultValue: 54 }, after: { type: "ID" }, searchTerm: { type: "String" }) {
 		organizations(first: $first, after: $after, searchTerm: $searchTerm) @connection(key: "OrganizationsGridFragment_organizations", filters: ["searchTerm"]) {
 			edges {
 				node {
@@ -45,7 +45,7 @@ export default function OrganizationsGrid({ query, searchTerm }: OrganizationsGr
 		observerRef.current = new IntersectionObserver(
 			entries => {
 				if (entries[0].isIntersecting) {
-					loadNext(50);
+					loadNext(54);
 				}
 			},
 			{ threshold: 0.1 }
