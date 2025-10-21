@@ -390,7 +390,7 @@
 					"cachedResultName": "Aryan Iyappan",
 					"cachedResultUrl": "https://backend.blotato.com/v2/accounts/7519"
 				},
-				"postContentText": "={{ $('Call Newsletter Regeneration Sub Workflow').item.json.articleContent }}",
+				"postContentText": "={{ $('Set Newsletter Input Data').item.json.articleContent }}",
 				"postContentMediaUrls": "={{ $('Call Thumbnail Generation Sub Workflow').item.json.mediaUrl }}",
 				"options": {
 					"linkedinPageId": {
@@ -1995,7 +1995,7 @@
 		"errorWorkflow": "fzyJPiqDip1SuZew",
 		"timeSavedPerExecution": 30
 	},
-	"versionId": "6214185c-6c11-45c5-9089-8e59571e66d3",
+	"versionId": "3d016dff-eda3-48df-b6d4-51fe0c6bb939",
 	"meta": {
 		"templateCredsSetupCompleted": true,
 		"instanceId": "d9ba04e66b9e95422c24c5344855adfbbaed0237b2885856c8e66b8cb77c9b54"
