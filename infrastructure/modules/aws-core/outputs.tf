@@ -162,6 +162,10 @@ output "send_job_alerts_lambda_function_arn" {
   value = try(aws_lambda_function.send_job_alerts[0].arn, null)
 }
 
+output "send_resume_upload_reminders_lambda_function_arn" {
+  value = try(aws_lambda_function.send_resume_upload_reminders[0].arn, null)
+}
+
 # GitHub Actions Runner Outputs
 output "actions_runner_security_group_id" {
   value       = aws_security_group.actions_runner.id

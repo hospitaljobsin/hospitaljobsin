@@ -1,0 +1,52 @@
+name: Deploy Lambda Functions
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'server/**'
+      - '.github/workflows/deploy-lambdas.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: aws-actions/setup-sam@v2
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: SAM Build
+        working-directory: ./server
+        run: sam build
+
+      - name: SAM Deploy
+        working-directory: ./server
+        run: |
+          sam deploy \
+            --config-env production \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --parameter-overrides \
+              MongoDBConnectionString=${{ secrets.MONGODB_CONNECTION_STRING }} \
+              MongoDBDatabaseName=${{ secrets.MONGODB_DATABASE_NAME }} \
+              RedisHost=${{ secrets.REDIS_HOST }} \
+              RedisPort=${{ secrets.REDIS_PORT }} \
+              DomainName=${{ secrets.DOMAIN_NAME }} \
+              SentryDSN=${{ secrets.SENTRY_DSN }} \
+              WhatsappAccessToken=${{ secrets.WHATSAPP_ACCESS_TOKEN }} \
+              WhatsappPhoneNumberId=${{ secrets.WHATSAPP_PHONE_NUMBER_ID }} \
+              EmailFrom=${{ secrets.EMAIL_FROM }}

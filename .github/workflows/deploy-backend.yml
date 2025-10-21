@@ -231,3 +231,11 @@ jobs:
           IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
           IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
         run: aws lambda update-function-code --function-name ${{ vars.SEND_JOB_ALERTS_LAMBDA_FUNCTION_ARN }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+
+      - name: Update AWS Lambda Send Resume Upload Reminders function
+        if: ${{ inputs.run-deploy && github.ref_name == 'production' }}
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
+          IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
+        run: aws lambda update-function-code --function-name ${{ vars.SEND_RESUME_UPLOAD_REMINDERS_LAMBDA_FUNCTION_ARN }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
