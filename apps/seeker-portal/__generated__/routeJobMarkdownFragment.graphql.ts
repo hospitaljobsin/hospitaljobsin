@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<42adf9a258895eed3ade8e2d926f8c23>>
+ * @generated SignedSource<<9a616ed78b8fa4110400afc9c7a8b0ec>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -29,6 +29,20 @@ export type routeJobMarkdownFragment$data = {
       readonly maxSalary: number | null | undefined;
       readonly minExperience: number | null | undefined;
       readonly minSalary: number | null | undefined;
+      readonly relatedJobs: {
+        readonly edges: ReadonlyArray<{
+          readonly node: {
+            readonly currency: Currency;
+            readonly location: string | null | undefined;
+            readonly maxSalary: number | null | undefined;
+            readonly minSalary: number | null | undefined;
+            readonly slug: string;
+            readonly title: string;
+            readonly type: JobType | null | undefined;
+            readonly workMode: WorkMode | null | undefined;
+          };
+        }>;
+      };
       readonly skills: ReadonlyArray<string>;
       readonly title: string;
       readonly type: JobType | null | undefined;
@@ -41,6 +55,7 @@ export type routeJobMarkdownFragment$data = {
     };
     readonly location: string | null | undefined;
     readonly name: string;
+    readonly slug: string;
     readonly website: string | null | undefined;
   } | {
     // This will never be '%other', but we need some
@@ -59,6 +74,6 @@ const node: ReaderInlineDataFragment = {
   "name": "routeJobMarkdownFragment"
 };
 
-(node as any).hash = "ed33fe156ac52406cda3b92c8ed3107d";
+(node as any).hash = "d87a109b51730a29a9c5b7024c2ab938";
 
 export default node;

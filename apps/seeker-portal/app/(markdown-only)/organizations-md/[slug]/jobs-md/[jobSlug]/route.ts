@@ -27,6 +27,7 @@ const RouteJobMarkdownFragment = graphql`
 			location
 			website
 			descriptionCleaned
+			slug
 			job(slug: $jobSlug) {
 			__typename
 			... on Job {
@@ -45,6 +46,20 @@ const RouteJobMarkdownFragment = graphql`
 				maxExperience
 				vacancies
 				isSalaryNegotiable
+				relatedJobs(first: 5) {
+					edges {
+						node {
+							title
+							slug
+							location
+							type
+							workMode
+							minSalary
+							maxSalary
+							currency
+						}
+					}
+				}
 			}
 			}
 		}
@@ -125,9 +140,45 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
 	const orgDetailUrl = `${env.NEXT_PUBLIC_URL}${links.organizationDetail(slug)}`;
 	const title = `Job Opening for ${job.title} in ${job.location}`;
 
+	const jsonLd = {
+		'@context': 'https://schema.org',
+		'@type': 'JobPosting',
+		title: job.title,
+		url: jobDetailUrl,
+		description: job.descriptionCleaned,
+		datePosted: new Date(job.createdAt).toISOString(),
+		employmentType: job.type,
+		jobLocationType: job.workMode === 'REMOTE' ? 'TELECOMMUTE' : undefined,
+		hiringOrganization: {
+			'@type': 'Organization',
+			name: org.name,
+			description: org.descriptionCleaned || undefined,
+			sameAs: org.website || undefined
+		},
+		baseSalary:
+			job.minSalary || job.maxSalary
+				? {
+						'@type': 'MonetaryAmount',
+						currency: job.currency,
+						value: {
+							'@type': 'QuantitativeValue',
+							unitText: 'MONTH',
+							minValue: job.minSalary || undefined,
+							maxValue: job.maxSalary || undefined
+						}
+					}
+				: undefined
+	};
+
 	const markdown = `Title: ${title}
 
 URL Source: ${jobDetailUrl}
+
+JSON-LD Schema:
+\`\`\`json
+${JSON.stringify(jsonLd, null, 2)}
+\`\`\`
+
 
 Markdown Content:
 [](${env.NEXT_PUBLIC_URL} "Visit ${APP_NAME} home page")
@@ -158,6 +209,24 @@ ${job.skills.length > 0 ? job.skills.map(skill => `- ${skill}`).join('\n') : 'No
 ---
 ${job.descriptionCleaned}
 ---
+
+## Related Jobs
+
+${
+	job.relatedJobs.edges.length > 0
+		? job.relatedJobs.edges
+				.map(edge => {
+					const relatedJob = edge.node;
+					const relatedJobUrl = `${env.NEXT_PUBLIC_URL}${links.jobDetail(org.slug, relatedJob.slug)}`;
+					const salaryInfo =
+						relatedJob.minSalary || relatedJob.maxSalary
+							? ` • ${formatSalary(relatedJob.minSalary, relatedJob.maxSalary, relatedJob.currency, false)}`
+							: '';
+					return `- [${relatedJob.title}](${relatedJobUrl}) • ${relatedJob.location || 'Location not specified'}${relatedJob.type ? ` • ${formatJobType(relatedJob.type)}` : ''}${relatedJob.workMode ? ` • ${formatWorkMode(relatedJob.workMode)}` : ''}${salaryInfo}`;
+				})
+				.join('\n')
+		: 'No related jobs available.'
+}
 `;
 
 	return new Response(markdown, {
