@@ -207,46 +207,6 @@ resource "github_actions_environment_variable" "public_root_domain" {
 }
 
 
-resource "github_actions_environment_variable" "staging_environment_setup_lambda_function_arn" {
-  count         = var.environment_name == "staging" ? 1 : 0
-  repository    = data.github_repository.this.name
-  environment   = github_repository_environment.this.environment
-  variable_name = "STAGING_ENVIRONMENT_SETUP_LAMBDA_FUNCTION_ARN"
-  value         = var.staging_environment_setup_lambda_function_arn
-}
-
-resource "github_actions_environment_variable" "staging_environment_teardown_lambda_function_arn" {
-  count         = var.environment_name == "staging" ? 1 : 0
-  repository    = data.github_repository.this.name
-  environment   = github_repository_environment.this.environment
-  variable_name = "STAGING_ENVIRONMENT_TEARDOWN_LAMBDA_FUNCTION_ARN"
-  value         = var.staging_environment_teardown_lambda_function_arn
-}
-
-resource "github_actions_environment_variable" "process_job_alerts_lambda_function_arn" {
-  count         = var.environment_name == "production" ? 1 : 0
-  repository    = data.github_repository.this.name
-  environment   = github_repository_environment.this.environment
-  variable_name = "PROCESS_JOB_ALERTS_LAMBDA_FUNCTION_ARN"
-  value         = var.process_job_alerts_lambda_function_arn
-}
-
-resource "github_actions_environment_variable" "send_job_alerts_lambda_function_arn" {
-  count         = var.environment_name == "production" ? 1 : 0
-  repository    = data.github_repository.this.name
-  environment   = github_repository_environment.this.environment
-  variable_name = "SEND_JOB_ALERTS_LAMBDA_FUNCTION_ARN"
-  value         = var.send_job_alerts_lambda_function_arn
-}
-
-resource "github_actions_environment_variable" "send_resume_upload_reminders_lambda_function_arn" {
-  count         = var.environment_name == "production" ? 1 : 0
-  repository    = data.github_repository.this.name
-  environment   = github_repository_environment.this.environment
-  variable_name = "SEND_RESUME_UPLOAD_REMINDERS_LAMBDA_FUNCTION_ARN"
-  value         = var.send_resume_upload_reminders_lambda_function_arn
-}
-
 resource "github_actions_environment_variable" "actions_runner_security_group_id" {
   repository    = data.github_repository.this.name
   environment   = github_repository_environment.this.environment

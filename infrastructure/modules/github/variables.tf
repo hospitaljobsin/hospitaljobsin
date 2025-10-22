@@ -226,35 +226,8 @@ variable "basic_auth_password" {
   sensitive = true
 }
 
-variable "staging_environment_setup_lambda_function_arn" {
-  type     = string
-  nullable = true
-  default  = null
-}
 
-variable "staging_environment_teardown_lambda_function_arn" {
-  type     = string
-  nullable = true
-  default  = null
-}
 
-variable "process_job_alerts_lambda_function_arn" {
-  type     = string
-  nullable = true
-  default  = null
-}
-
-variable "send_job_alerts_lambda_function_arn" {
-  type     = string
-  nullable = true
-  default  = null
-}
-
-variable "send_resume_upload_reminders_lambda_function_arn" {
-  type     = string
-  nullable = true
-  default  = null
-}
 
 variable "actions_runner_security_group_id" {
   type        = string

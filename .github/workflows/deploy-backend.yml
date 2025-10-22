@@ -184,58 +184,23 @@ jobs:
             AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Update AWS Lambda Worker function
+      - name: Update AWS Lambda functions
         if: ${{ inputs.run-deploy }}
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
           IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
-        run: aws lambda update-function-code --function-name ${{ vars.AWS_WORKER_FUNCTION_NAME }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+          ENVIRONMENT: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
+        run: |
+          IMAGE_URI="$REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
+          FUNCTIONS=$(aws resourcegroupstaggingapi get-resources \
+            --resource-type-filters lambda:function \
+            --tag-filters Key=Environment,Values=$ENVIRONMENT Key=ManagedBy,Values=terraform Key=ImageType,Values=worker \
+            --query 'ResourceTagMappingList[].ResourceARN' \
+            --output text)
 
-      - name: Update AWS Lambda Automation Generate WA Messages function
-        if: ${{ inputs.run-deploy }}
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
-          IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
-        run: aws lambda update-function-code --function-name ${{ vars.AWS_AUTOMATION_GENERATE_WA_MESSAGES_FUNCTION_NAME }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
-
-      - name: Update AWS Lambda Staging Setup function
-        if: ${{ inputs.run-deploy && github.ref_name == 'staging' }}
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
-          IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
-        run: aws lambda update-function-code --function-name ${{ vars.STAGING_ENVIRONMENT_SETUP_LAMBDA_FUNCTION_ARN }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
-
-      - name: Update AWS Lambda Staging Teardown function
-        if: ${{ inputs.run-deploy && github.ref_name == 'staging' }}
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
-          IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
-        run: aws lambda update-function-code --function-name ${{ vars.STAGING_ENVIRONMENT_TEARDOWN_LAMBDA_FUNCTION_ARN }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
-
-      - name: Update AWS Lambda Process Job Alerts function
-        if: ${{ inputs.run-deploy && github.ref_name == 'production' }}
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
-          IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
-        run: aws lambda update-function-code --function-name ${{ vars.PROCESS_JOB_ALERTS_LAMBDA_FUNCTION_ARN }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
-
-      - name: Update AWS Lambda Send Job Alerts function
-        if: ${{ inputs.run-deploy && github.ref_name == 'production' }}
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
-          IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
-        run: aws lambda update-function-code --function-name ${{ vars.SEND_JOB_ALERTS_LAMBDA_FUNCTION_ARN }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
-
-      - name: Update AWS Lambda Send Resume Upload Reminders function
-        if: ${{ inputs.run-deploy && github.ref_name == 'production' }}
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
-          IMAGE_TAG: ${{ github.ref_name == 'production' && 'production' || 'staging' }}-${{ github.sha }}
-        run: aws lambda update-function-code --function-name ${{ vars.SEND_RESUME_UPLOAD_REMINDERS_LAMBDA_FUNCTION_ARN }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+          for ARN in $FUNCTIONS; do
+            FUNCTION_NAME=$(echo $ARN | awk -F: '{print $NF}')
+            echo "Updating Lambda function: $FUNCTION_NAME"
+            aws lambda update-function-code --function-name $FUNCTION_NAME --image-uri $IMAGE_URI
+          done

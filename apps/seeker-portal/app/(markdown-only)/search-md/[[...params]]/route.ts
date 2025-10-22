@@ -109,7 +109,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ para
 	const segments = pathParams.params || [];
 	const url = new URL(request.url);
 	const searchParams = Object.fromEntries(url.searchParams.entries());
-	const cursor = searchParams.cursor && isValidBase64Cursor(searchParams.cursor) ? searchParams.cursor : null;
+	const nextPage = searchParams.nextPage && isValidBase64Cursor(searchParams.nextPage) ? searchParams.nextPage : null;
 
 	let speciality: string | null = null;
 	let location: string | null = null;
@@ -134,7 +134,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ para
 
 	const preloadedQuery = await loadSerializableQuery<typeof RouteSearchMarkdownQueryNode, routeSearchMarkdownQuery>(
 		RouteSearchMarkdownQuery,
-		{ ...variables, after: cursor, searchTerm: speciality, location },
+		{ ...variables, after: nextPage, searchTerm: speciality, location },
 		{ metadata: { options: { cache: 'no-store' } } }
 	);
 
@@ -150,13 +150,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ para
 	if (location) title += ` in ${location}`;
 
 	const nextPageUrl =
-		hasNextPage && nextCursor ? `${url.pathname}?${new URLSearchParams({ ...searchParams, cursor: nextCursor }).toString()}` : null;
+		hasNextPage && nextCursor ? `${searchUrl}?${new URLSearchParams({ ...searchParams, nextPage: nextCursor }).toString()}` : null;
 
-	const markdown = `# ${title}
+	const markdown = `Title: ${title}
 
-**Page Title:** ${title}
+Source URL: ${searchUrl}
 
-**Source URL:** ${searchUrl}
+Markdown Content:
 
 **Total Jobs Found:** ${totalCount}
 
@@ -167,6 +167,8 @@ ${nextPageUrl ? `**Next Page:** ${nextPageUrl}` : '**Next Page:** None (last pag
 ---
 
 ## Job Listings
+
+${data.jobs.edges.length > 0 ? '' : 'No jobs found.'}
 
 ${data.jobs.edges
 	.map(({ node: job }, idx) => {

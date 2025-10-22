@@ -1,0 +1,5 @@
+{% if applicant_count == 1 %}
+  New Application: {{ applicants[0].account_full_name }} applied for {{ job.title }}
+{% else %}
+  {{ applicant_count }} New Applications for {{ job.title }}
+{% endif %}

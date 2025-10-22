@@ -625,12 +625,13 @@ class AccountMutation:
     @inject
     async def update_profile_career_profile(
         self,
+        *,
         info: AuthInfo,
         profile_service: Annotated[ProfileService, Inject],
         current_industry: Annotated[
             str | None,
             strawberry.argument(description="The current industry of the user."),
-        ],
+        ] = None,
         desired_job_types: Annotated[
             list[JobTypeEnum],
             strawberry.argument(
@@ -646,7 +647,7 @@ class AccountMutation:
         expected_salary: Annotated[
             float | None,
             strawberry.argument(description="The expected salary."),
-        ],
+        ] = None,
         locations_open_to_work: Annotated[
             list[str],
             strawberry.argument(
