@@ -3,6 +3,7 @@ import { graphql, readInlineData } from 'relay-runtime';
 import type { routeSearchMarkdownFragment$key } from '@/__generated__/routeSearchMarkdownFragment.graphql';
 import type RouteSearchMarkdownQueryNode from '@/__generated__/routeSearchMarkdownQuery.graphql';
 import type { routeSearchMarkdownQuery } from '@/__generated__/routeSearchMarkdownQuery.graphql';
+import { isValidBase64Cursor } from '@/lib/cursor';
 import { env } from '@/lib/env/client';
 import { dateFormat, salaryFormat } from '@/lib/intl';
 import links from '@/lib/links';
@@ -11,6 +12,7 @@ import { parseSearchParams } from '@/lib/searchParams';
 
 const RouteSearchMarkdownQuery = graphql`
   query routeSearchMarkdownQuery(
+		$after: ID
 		$searchTerm: String
 		$minExperience: Int
 		$minSalary: Int
@@ -22,6 +24,7 @@ const RouteSearchMarkdownQuery = graphql`
 		$sortBy: JobSearchSortBy!
 	) {
 	...routeSearchMarkdownFragment @arguments(
+		after: $after
 		searchTerm: $searchTerm
 		minExperience: $minExperience
 		minSalary: $minSalary
@@ -37,6 +40,7 @@ const RouteSearchMarkdownQuery = graphql`
 
 const RouteSearchMarkdownFragment = graphql`
  fragment routeSearchMarkdownFragment on Query @inline @argumentDefinitions(
+		after: { type: "ID" }
 		searchTerm: { type: "String" }
 		minExperience: { type: "Int" }
 		minSalary: { type: "Int" }
@@ -47,8 +51,12 @@ const RouteSearchMarkdownFragment = graphql`
 		jobType: { type: "[JobTypeFilter!]!" }
 		sortBy: { type: "JobSearchSortBy!" }
     ) {
-		jobs(after: null, first: 50, searchTerm: $searchTerm, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType, sortBy: $sortBy, location: $location) {
+		jobs(after: $after, first: 25, searchTerm: $searchTerm, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType, sortBy: $sortBy, location: $location) {
 			totalCount
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
 			edges {
 				node {
 					id
@@ -101,6 +109,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ para
 	const segments = pathParams.params || [];
 	const url = new URL(request.url);
 	const searchParams = Object.fromEntries(url.searchParams.entries());
+	const cursor = searchParams.cursor && isValidBase64Cursor(searchParams.cursor) ? searchParams.cursor : null;
 
 	let speciality: string | null = null;
 	let location: string | null = null;
@@ -125,18 +134,23 @@ export async function GET(request: Request, { params }: { params: Promise<{ para
 
 	const preloadedQuery = await loadSerializableQuery<typeof RouteSearchMarkdownQueryNode, routeSearchMarkdownQuery>(
 		RouteSearchMarkdownQuery,
-		{ ...variables, searchTerm: speciality, location },
-		{ metadata: { options: { cache: 'force-cache', next: { revalidate: 60 * 60 } } } }
+		{ ...variables, after: cursor, searchTerm: speciality, location },
+		{ metadata: { options: { cache: 'no-store' } } }
 	);
 
 	const data = readInlineData<routeSearchMarkdownFragment$key>(RouteSearchMarkdownFragment, preloadedQuery.data);
 
 	const searchUrl = `${env.NEXT_PUBLIC_URL}${links.search(location || undefined, speciality || undefined)}`;
 	const totalCount = data.jobs.totalCount;
+	const hasNextPage = data.jobs.pageInfo.hasNextPage;
+	const nextCursor = data.jobs.pageInfo.endCursor;
 
 	let title = `${totalCount} Healthcare Jobs`;
 	if (speciality) title = `${totalCount} ${speciality} Jobs`;
 	if (location) title += ` in ${location}`;
+
+	const nextPageUrl =
+		hasNextPage && nextCursor ? `${url.pathname}?${new URLSearchParams({ ...searchParams, cursor: nextCursor }).toString()}` : null;
 
 	const markdown = `# ${title}
 
@@ -146,6 +160,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ para
 
 **Total Jobs Found:** ${totalCount}
 
+**Jobs Per Page:** 25
+
+${nextPageUrl ? `**Next Page:** ${nextPageUrl}` : '**Next Page:** None (last page)'}
+
 ---
 
 ## Job Listings
@@ -153,7 +171,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ para
 ${data.jobs.edges
 	.map(({ node: job }, idx) => {
 		const jobUrl = `${env.NEXT_PUBLIC_URL}${links.jobDetail(job.organization.slug, job.slug)}`;
-		const jobMdUrl = `${jobUrl}.md`;
 		return `### ${idx + 1}. ${job.title}
 
 **Organization:** ${job.organization.name}
@@ -166,7 +183,7 @@ ${data.jobs.edges
 - Salary Range: ${formatSalary(job.minSalary, job.maxSalary, job.currency)} per month
 - Posted Date: ${dateFormat.format(new Date(job.createdAt))}
 
-**Full Job Description:** [View Complete Details](${jobMdUrl})
+**Full Job Description:** [View Complete Details](${jobUrl})
 
 ---
 `;

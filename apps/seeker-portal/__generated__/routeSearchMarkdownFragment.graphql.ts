@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<05e7d949b0dc20ea60d8db54b2b36e27>>
+ * @generated SignedSource<<3bfd9b20ab68817a78d15ab4fc65a346>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -35,6 +35,10 @@ export type routeSearchMarkdownFragment$data = {
         readonly workMode: WorkMode | null | undefined;
       };
     }>;
+    readonly pageInfo: {
+      readonly endCursor: string | null | undefined;
+      readonly hasNextPage: boolean;
+    };
     readonly totalCount: number | null | undefined;
   };
   readonly " $fragmentType": "routeSearchMarkdownFragment";
@@ -49,6 +53,6 @@ const node: ReaderInlineDataFragment = {
   "name": "routeSearchMarkdownFragment"
 };
 
-(node as any).hash = "d952f53bf716095bb70d04ff96026812";
+(node as any).hash = "0474efe7d7ed77216a46ca020e69834d";
 
 export default node;
