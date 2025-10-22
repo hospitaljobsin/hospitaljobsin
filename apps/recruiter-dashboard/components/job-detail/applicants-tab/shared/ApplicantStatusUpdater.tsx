@@ -1,11 +1,8 @@
-"use client";
-import type {
-	ApplicantStatusUpdaterMutation,
-	JobApplicantStatus,
-} from "@/__generated__/ApplicantStatusUpdaterMutation.graphql";
-import type { ApplicantStatusUpdater_job$key } from "@/__generated__/ApplicantStatusUpdater_job.graphql";
-import { Select, SelectItem, addToast } from "@heroui/react";
-import { graphql, useFragment, useMutation } from "react-relay";
+'use client';
+import { addToast, Select, SelectItem } from '@heroui/react';
+import { graphql, useFragment, useMutation } from 'react-relay';
+import type { ApplicantStatusUpdater_job$key } from '@/__generated__/ApplicantStatusUpdater_job.graphql';
+import type { ApplicantStatusUpdaterMutation, JobApplicantStatus } from '@/__generated__/ApplicantStatusUpdaterMutation.graphql';
 
 const ApplicantStatusUpdaterJobFragment = graphql`
 	fragment ApplicantStatusUpdater_job on JobApplicant {
@@ -50,96 +47,85 @@ const UpdateStatusMutation = graphql`
 	}
 `;
 
-const statuses: JobApplicantStatus[] = [
-	"APPLIED",
-	"SHORTLISTED",
-	"INTERVIEWED",
-	"OFFERED",
-	"ONHOLD",
-];
+const statuses: JobApplicantStatus[] = ['APPLIED', 'SHORTLISTED', 'INTERVIEWED', 'OFFERED', 'ONHOLD'];
 
 export default function ApplicantStatusUpdater({
 	currentStatus,
-	applicant,
+	applicant
 }: {
 	currentStatus: JobApplicantStatus;
 	applicant: ApplicantStatusUpdater_job$key;
 }) {
 	const data = useFragment(ApplicantStatusUpdaterJobFragment, applicant);
-	const [commitMutation, isMutationInFlight] =
-		useMutation<ApplicantStatusUpdaterMutation>(UpdateStatusMutation);
+	const [commitMutation, isMutationInFlight] = useMutation<ApplicantStatusUpdaterMutation>(UpdateStatusMutation);
 
 	const handleStatusChange = (status: JobApplicantStatus) => {
 		commitMutation({
 			variables: {
 				jobId: data.job.id,
 				applicantIds: [data.id],
-				status,
+				status
 			},
 			onCompleted: (response, errors) => {
 				if (errors) {
 					addToast({
-						title: "Error",
+						title: 'Error',
 						description: errors[0].message,
-						color: "danger",
+						color: 'danger'
 					});
 					return;
 				}
 				switch (response.updateJobApplicantsStatus?.__typename) {
-					case "UpdateJobApplicantsStatusSuccess":
+					case 'UpdateJobApplicantsStatusSuccess':
 						addToast({
-							title: "Success",
-							description: "Status updated successfully",
-							color: "success",
+							title: 'Success',
+							description: 'Status updated successfully',
+							color: 'success'
 						});
 						break;
-					case "JobNotFoundError":
-					case "JobIsExternalError":
-					case "JobApplicantsNotFoundError":
-					case "OrganizationAuthorizationError":
+					case 'JobNotFoundError':
+					case 'JobIsExternalError':
+					case 'JobApplicantsNotFoundError':
+					case 'OrganizationAuthorizationError':
 						addToast({
-							title: "Error",
+							title: 'Error',
 							description: response.updateJobApplicantsStatus.message,
-							color: "danger",
+							color: 'danger'
 						});
 						break;
 					default:
 						addToast({
-							title: "Error",
-							description: "An unknown error occurred",
-							color: "danger",
+							title: 'Error',
+							description: 'An unknown error occurred',
+							color: 'danger'
 						});
 						break;
 				}
 			},
-			onError: (error) => {
+			onError: error => {
 				addToast({
-					title: "Error",
+					title: 'Error',
 					description: error.message,
-					color: "danger",
+					color: 'danger'
 				});
-			},
+			}
 		});
 	};
 
 	return (
-		<div className="w-full max-w-sm" data-prevent-progress>
+		<div className='w-full sm:max-w-sm' data-prevent-progress>
 			<Select
 				defaultSelectedKeys={[currentStatus]}
-				onSelectionChange={(keys) =>
-					handleStatusChange(Array.from(keys)[0] as JobApplicantStatus)
-				}
-				onClick={(e) => {
+				onSelectionChange={keys => handleStatusChange(Array.from(keys)[0] as JobApplicantStatus)}
+				onClick={e => {
 					e.preventDefault();
 					e.stopPropagation();
 				}}
-				aria-label="Update applicant status"
+				aria-label='Update applicant status'
 				isDisabled={isMutationInFlight}
 			>
-				{statuses.map((status) => (
-					<SelectItem key={status}>
-						{status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
-					</SelectItem>
+				{statuses.map(status => (
+					<SelectItem key={status}>{status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}</SelectItem>
 				))}
 			</Select>
 		</div>

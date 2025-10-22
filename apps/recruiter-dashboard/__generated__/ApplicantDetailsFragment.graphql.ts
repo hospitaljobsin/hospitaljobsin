@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<918461801fa93a9f4601751c0836af93>>
+ * @generated SignedSource<<01c062f5c075d2820efd827b2da141a4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -25,9 +25,10 @@ export type ApplicantDetailsFragment$data = {
   readonly id: string;
   readonly profileSnapshot: {
     readonly headline: string | null | undefined;
+    readonly resumeUrl: string | null | undefined;
   };
   readonly status: JobApplicantStatus;
-  readonly " $fragmentSpreads": FragmentRefs<"ApplicantStatusUpdater_job">;
+  readonly " $fragmentSpreads": FragmentRefs<"ApplicantStatusUpdater_job" | "ShowResumeModalFragment">;
   readonly " $fragmentType": "ApplicantDetailsFragment";
 };
 export type ApplicantDetailsFragment$key = {
@@ -94,6 +95,13 @@ const node: ReaderFragment = {
           "kind": "ScalarField",
           "name": "headline",
           "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "resumeUrl",
+          "storageKey": null
         }
       ],
       "storageKey": null
@@ -145,12 +153,17 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "FragmentSpread",
       "name": "ApplicantStatusUpdater_job"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "ShowResumeModalFragment"
     }
   ],
   "type": "JobApplicant",
   "abstractKey": null
 };
 
-(node as any).hash = "5a55918fb96e490151459912a0d973a4";
+(node as any).hash = "9a5b49beb25f8a83f1d4467606f43346";
 
 export default node;

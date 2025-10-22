@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<f9aef1d6a76f986adfcec33145b33b21>>
- * @relayHash 9008394c4f86b1c225a139d9fb3ff571
+ * @generated SignedSource<<15d257a57a31afff1ed69e0a50907658>>
+ * @relayHash ec147756619d7f5f4a08c8784d0a3f43
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 9008394c4f86b1c225a139d9fb3ff571
+// @relayRequestID ec147756619d7f5f4a08c8784d0a3f43
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -340,6 +340,13 @@ return {
                                     "args": null,
                                     "kind": "ScalarField",
                                     "name": "headline",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "resumeUrl",
                                     "storageKey": null
                                   },
                                   {
@@ -790,7 +797,7 @@ return {
     ]
   },
   "params": {
-    "id": "9008394c4f86b1c225a139d9fb3ff571",
+    "id": "ec147756619d7f5f4a08c8784d0a3f43",
     "metadata": {},
     "name": "JobApplicantDetailClientComponentQuery",
     "operationKind": "query",
