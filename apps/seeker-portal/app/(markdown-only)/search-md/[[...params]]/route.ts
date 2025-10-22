@@ -134,7 +134,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ para
 	const searchUrl = `${env.NEXT_PUBLIC_URL}${links.search(location || undefined, speciality || undefined)}`;
 	const totalCount = data.jobs.totalCount;
 
-	let title = `${totalCount} Hospital Jobs`;
+	let title = `${totalCount} Healthcare Jobs`;
 	if (speciality) title = `${totalCount} ${speciality} Jobs`;
 	if (location) title += ` in ${location}`;
 

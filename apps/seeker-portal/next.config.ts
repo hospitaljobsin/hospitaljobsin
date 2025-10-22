@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
 	},
 	typedRoutes: true,
 	poweredByHeader: false,
-	pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+	pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
 	experimental: {
 		mdxRs: true,
 		reactCompiler: true
@@ -96,18 +96,6 @@ const nextConfig: NextConfig = {
 	async rewrites() {
 		return [
 			{
-				source: '/search/jobs-in-:location',
-				destination: '/search/jobs-in/:location?via_rewrite=true'
-			},
-			{
-				source: '/search/:speciality-jobs',
-				destination: '/search/:speciality/jobs?via_rewrite=true'
-			},
-			{
-				source: '/search/:speciality-jobs-in-:location',
-				destination: '/search/:speciality/jobs-in/:location?via_rewrite=true'
-			},
-			{
 				source: '/organizations/:slug/jobs/:jobSlug.md',
 				destination: '/organizations-md/:slug/jobs-md/:jobSlug?via_markdown_rewrite=true'
 			},
@@ -130,6 +118,18 @@ const nextConfig: NextConfig = {
 			{
 				source: '/search/:speciality-jobs-in-:location.md',
 				destination: '/search-md/:speciality/jobs-in/:location?via_markdown_rewrite=true'
+			},
+			{
+				source: '/search/jobs-in-:location',
+				destination: '/search/jobs-in/:location?via_rewrite=true'
+			},
+			{
+				source: '/search/:speciality-jobs',
+				destination: '/search/:speciality/jobs?via_rewrite=true'
+			},
+			{
+				source: '/search/:speciality-jobs-in-:location',
+				destination: '/search/:speciality/jobs-in/:location?via_rewrite=true'
 			}
 		];
 	},
