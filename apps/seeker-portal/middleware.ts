@@ -28,6 +28,21 @@ function getAnonymousResponse(request: NextRequest): NextResponse {
 }
 
 export async function middleware(request: NextRequest) {
+	const { pathname, searchParams } = request.nextUrl;
+
+	if ((pathname.startsWith('/organizations-md') || pathname.startsWith('/search-md')) && !searchParams.has('via_markdown_rewrite')) {
+		return new NextResponse(null, { status: 404 });
+	}
+
+	if (
+		(pathname.match(/^\/search\/jobs-in\/[^/]+$/) ||
+			pathname.match(/^\/search\/[^/]+\/jobs$/) ||
+			pathname.match(/^\/search\/[^/]+\/jobs-in\/[^/]+$/)) &&
+		!searchParams.has('via_rewrite')
+	) {
+		return new NextResponse(null, { status: 404 });
+	}
+
 	const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 	const cspHeader = `
     default-src 'self';
@@ -88,13 +103,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
 	matcher: [
-		/*
-		 * Match all request paths except for the ones starting with:
-		 * - api (API routes)
-		 * - _next/static (static files)
-		 * - _next/image (image optimization files)
-		 * - favicon.ico (favicon file)
-		 */
 		{
 			source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
 			missing: [

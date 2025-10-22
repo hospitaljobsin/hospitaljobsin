@@ -109,11 +109,27 @@ const nextConfig: NextConfig = {
 			},
 			{
 				source: '/organizations/:slug/jobs/:jobSlug.md',
-				destination: '/organizations-md/:slug/jobs-md/:jobSlug?via_rewrite=true'
+				destination: '/organizations-md/:slug/jobs-md/:jobSlug?via_markdown_rewrite=true'
 			},
 			{
 				source: '/organizations/:slug.md',
-				destination: '/organizations-md/:slug?via_rewrite=true'
+				destination: '/organizations-md/:slug?via_markdown_rewrite=true'
+			},
+			{
+				source: '/search.md',
+				destination: '/search-md?via_markdown_rewrite=true'
+			},
+			{
+				source: '/search/:speciality-jobs.md',
+				destination: '/search-md/:speciality/jobs?via_markdown_rewrite=true'
+			},
+			{
+				source: '/search/jobs-in-:location.md',
+				destination: '/search-md/jobs-in/:location?via_markdown_rewrite=true'
+			},
+			{
+				source: '/search/:speciality-jobs-in-:location.md',
+				destination: '/search-md/:speciality/jobs-in/:location?via_markdown_rewrite=true'
 			}
 		];
 	},
@@ -162,27 +178,27 @@ const nextConfig: NextConfig = {
 				permanent: false
 			},
 			{
-				source: '/organizations/:slug/jobs/:jobSlug',
+				source: '/organizations-md/:path*',
 				has: [
 					{
 						type: 'query',
-						key: 'via_rewrite',
+						key: 'via_markdown_rewrite',
 						value: undefined
 					}
 				],
-				destination: '/organizations/:slug/jobs/:jobSlug.md',
+				destination: '/404',
 				permanent: false
 			},
 			{
-				source: '/organizations/:slug',
+				source: '/search-md/:path*',
 				has: [
 					{
 						type: 'query',
-						key: 'via_rewrite',
+						key: 'via_markdown_rewrite',
 						value: undefined
 					}
 				],
-				destination: '/organizations/:slug.md',
+				destination: '/404',
 				permanent: false
 			}
 		];
