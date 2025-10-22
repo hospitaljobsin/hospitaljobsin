@@ -207,8 +207,12 @@ class FrontendSettings(CoreSettings):
     # recruiter portal config
     recruiter_portal_base_url: str = "http://localtest.me:5001"
 
+    recruiter_dashboard_base_url: str = "https://localtest.me:5003"
+
     # seeker portal config
     seeker_portal_base_url: str = "http://localtest.me:5000"
+
+    base_domain: str = "localtest.me"
 
 
 class RevalidateSettings(CoreSettings):

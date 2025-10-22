@@ -106,11 +106,74 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
 
 }
 
+
+resource "aws_iam_policy" "ecs_custom_policy" {
+  name        = "${var.resource_prefix}-ecs-exec-custom-policy"
+  description = "Custom policy for ECS to access S3, Location and SES"
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:ListBucket",
+          "s3:GetObject",
+          "s3:PutObject"
+        ],
+        Resource = [
+          aws_s3_bucket.this.arn,
+          "${aws_s3_bucket.this.arn}/*"
+        ]
+      },
+      {
+        Effect   = "Allow",
+        Action   = ["ses:SendEmail", "ses:SendRawEmail"],
+        Resource = "*"
+      },
+      {
+        Effect   = "Allow",
+        Action   = ["secretsmanager:GetSecretValue"],
+        Resource = "*"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "textract:DetectDocumentText",
+          "textract:AnalyzeDocument",
+          "textract:GetDocumentTextDetection",
+          "textract:StartDocumentAnalysis",
+          "textract:GetDocumentAnalysis"
+        ],
+        Resource = "*"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream",
+          "bedrock:CreateModelInvocationJob"
+        ],
+        Resource = "*"
+      },
+      {
+        Effect   = "Allow",
+        Action   = ["sqs:SendMessage"],
+        Resource = [aws_sqs_queue.job_alerts.arn, "${aws_sqs_queue.job_alerts.arn}/*"]
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy" "ecs_task_custom_policy" {
   name = "${var.resource_prefix}-ecs-task-custom-policy"
   role = aws_iam_role.ecs_task_execution_role.id
 
-  policy = aws_iam_policy.lambda_custom_policy.policy
+  policy = aws_iam_policy.ecs_custom_policy.policy
 }
 
 resource "aws_iam_role_policy" "ecs_mongodb_aws_auth" {

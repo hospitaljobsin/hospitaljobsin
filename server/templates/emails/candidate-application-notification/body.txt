@@ -1,0 +1,37 @@
+{% extends "emails/base/body.txt" %}
+
+{% block title %}
+{% if applicant_count == 1 %}
+You have a new application!
+{% else %}
+You have {{ applicant_count }} new applications!
+{% endif %}
+{% endblock %}
+
+{% block content %}
+Hi {{ recruiter_name }},
+
+{% if applicant_count == 1 %}
+You have received a new application for the "{{ job.title }}" position. Please review the candidate's profile below.
+{% else %}
+You have received {{ applicant_count }} new applications for the "{{ job.title }}" position. Please review the candidate profiles below.
+{% endif %}
+
+{% for applicant in applicants %}
+******************
+{{ applicant.account_full_name }}
+******************
+
+{% if applicant.profile_snapshot.headline %}Headline: {{ applicant.profile_snapshot.headline }}{% endif %}
+{% if applicant.profile_snapshot.career_profile and applicant.profile_snapshot.career_profile.locations_open_to_work %}
+Locations: {{ applicant.profile_snapshot.career_profile.locations_open_to_work | join(", ") }}
+{% endif %}
+
+Applied on: {{ applicant.id.generation_time.strftime('%B %d, %Y at %I:%M %p') if applicant.id and applicant.id.generation_time else 'Recently' }}
+
+View application: {{ app_url }}/organizations/{{ organization.slug }}/jobs/{{ job.slug }}/applicants/{{ applicant.slug }}
+
+{% endfor %}
+
+View all applicants: {{ applicants_url }}
+{% endblock %}

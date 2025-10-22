@@ -23,11 +23,11 @@ output "aws_ecs_task_family" {
 }
 
 output "aws_lambda_worker_function_name" {
-  value = aws_lambda_function.worker.function_name
+  value = module.lambda_workers.worker_function_name
 }
 
 output "aws_lambda_automation_generate_wa_messages_function_name" {
-  value = aws_lambda_function.automation_generate_wa_messages.function_name
+  value = module.lambda_workers.automation_generate_wa_messages_function_name
 }
 
 
@@ -114,25 +114,16 @@ output "sst_vpc_security_groups" {
   value = join(",", data.aws_security_groups.vpc.ids)
 }
 
-output "worker_username" {
-  value = aws_iam_role.lambda_worker_exec_role.arn
-}
 
 output "lambda_username" {
-  value = aws_iam_role.lambda_exec_role.arn
+  value = module.lambda_workers.lambda_exec_role_arn
 }
 
 output "ecs_username" {
   value = aws_iam_role.ecs_task_execution_role.arn
 }
 
-output "staging_db_setup_lambda_username" {
-  value = aws_iam_role.lambda_staging_db_exec_role.arn
-}
 
-output "job_alerts_lambda_username" {
-  value = try(aws_iam_role.lambda_job_alerts_exec_role.arn, null)
-}
 
 output "basic_auth_username" {
   value = random_string.basic_auth_username.result
@@ -143,28 +134,6 @@ output "basic_auth_password" {
   sensitive = true
 }
 
-output "staging_environment_setup_lambda_function_arn" {
-
-  value = try(aws_lambda_function.staging_environment_setup[0].arn, null)
-}
-
-output "staging_environment_teardown_lambda_function_arn" {
-
-  value = try(aws_lambda_function.staging_environment_teardown[0].arn, null)
-}
-
-output "process_job_alerts_lambda_function_arn" {
-
-  value = try(aws_lambda_function.process_job_alerts[0].arn, null)
-}
-
-output "send_job_alerts_lambda_function_arn" {
-  value = try(aws_lambda_function.send_job_alerts[0].arn, null)
-}
-
-output "send_resume_upload_reminders_lambda_function_arn" {
-  value = try(aws_lambda_function.send_resume_upload_reminders[0].arn, null)
-}
 
 # GitHub Actions Runner Outputs
 output "actions_runner_security_group_id" {
@@ -201,4 +170,17 @@ output "sst_jwe_secret_key" {
 output "sst_revalidate_secret" {
   value     = random_bytes.revalidate_secret.hex
   sensitive = true
+}
+
+
+output "worker_username" {
+  value = module.lambda_workers.lambda_worker_exec_role_arn
+}
+
+output "job_alerts_lambda_username" {
+  value = module.lambda_workers.lambda_job_alerts_exec_role_arn
+}
+
+output "staging_db_setup_lambda_username" {
+  value = module.lambda_workers.lambda_staging_db_exec_role_arn
 }
