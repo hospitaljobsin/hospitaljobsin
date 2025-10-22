@@ -1,8 +1,8 @@
+import { fileURLToPath } from 'node:url';
 import createMDX from '@next/mdx';
 import { withSentryConfig } from '@sentry/nextjs';
 import { createJiti } from 'jiti';
 import type { NextConfig } from 'next';
-import { fileURLToPath } from 'node:url';
 import { env } from './lib/env/client';
 import links from './lib/links';
 
@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
 	},
 	typedRoutes: true,
 	poweredByHeader: false,
-	pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+	pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
 	experimental: {
 		mdxRs: true,
 		reactCompiler: true
@@ -96,6 +96,30 @@ const nextConfig: NextConfig = {
 	async rewrites() {
 		return [
 			{
+				source: '/organizations/:slug/jobs/:jobSlug.md',
+				destination: '/organizations-md/:slug/jobs-md/:jobSlug?via_markdown_rewrite=true'
+			},
+			{
+				source: '/organizations/:slug.md',
+				destination: '/organizations-md/:slug?via_markdown_rewrite=true'
+			},
+			{
+				source: '/search.md',
+				destination: '/search-md?via_markdown_rewrite=true'
+			},
+			{
+				source: '/search/:speciality-jobs.md',
+				destination: '/search-md/:speciality/jobs?via_markdown_rewrite=true'
+			},
+			{
+				source: '/search/jobs-in-:location.md',
+				destination: '/search-md/jobs-in/:location?via_markdown_rewrite=true'
+			},
+			{
+				source: '/search/:speciality-jobs-in-:location.md',
+				destination: '/search-md/:speciality/jobs-in/:location?via_markdown_rewrite=true'
+			},
+			{
 				source: '/search/jobs-in-:location',
 				destination: '/search/jobs-in/:location?via_rewrite=true'
 			},
@@ -151,6 +175,30 @@ const nextConfig: NextConfig = {
 					}
 				],
 				destination: '/search/:speciality-jobs-in-:location',
+				permanent: false
+			},
+			{
+				source: '/organizations-md/:path*',
+				has: [
+					{
+						type: 'query',
+						key: 'via_markdown_rewrite',
+						value: undefined
+					}
+				],
+				destination: '/404',
+				permanent: false
+			},
+			{
+				source: '/search-md/:path*',
+				has: [
+					{
+						type: 'query',
+						key: 'via_markdown_rewrite',
+						value: undefined
+					}
+				],
+				destination: '/404',
 				permanent: false
 			}
 		];
