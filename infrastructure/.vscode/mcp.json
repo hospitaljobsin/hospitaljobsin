@@ -12,6 +12,12 @@
 			"type": "stdio",
 			"command": "npx",
 			"args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+		},
+		"serena": {
+			"type": "stdio",
+			"command": "uvx",
+			"args": ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "--ide-assistant"]
 		}
-	}
+	},
+	"inputs": []
 }
