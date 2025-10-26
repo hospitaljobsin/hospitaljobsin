@@ -205,6 +205,10 @@ export default function JobMapView({ data, filters, onBoundsChange, onFiltersCha
 		[90, 180] // Northeast corner
 	];
 
+	// Zoom constraints to prevent ugly extreme zoom levels
+	const minZoom = 3; // Prevent zooming out too far (vertical strip issue)
+	const maxZoom = 18; // Standard max zoom for street-level detail
+
 	// Count active filters for badge (memoized for performance)
 	const activeFilterCount = useMemo(
 		() =>
@@ -253,6 +257,8 @@ export default function JobMapView({ data, filters, onBoundsChange, onFiltersCha
 				<MapContainer
 					center={defaultCenter}
 					zoom={defaultZoom}
+					minZoom={minZoom}
+					maxZoom={maxZoom}
 					className='h-full w-full [&_.leaflet-container]:touch-pan-x [&_.leaflet-container]:touch-pan-y [&_.leaflet-container]:h-full [&_.leaflet-container]:w-full'
 					ref={setMap}
 					zoomControl={false}
@@ -263,6 +269,7 @@ export default function JobMapView({ data, filters, onBoundsChange, onFiltersCha
 					maxBounds={worldBounds}
 					maxBoundsViscosity={0.5}
 					style={{ height: '100%', width: '100%' }}
+					bounceAtZoomLimits
 				>
 					<TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
 
