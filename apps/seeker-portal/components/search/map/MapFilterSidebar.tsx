@@ -4,6 +4,8 @@ import { Button, Checkbox, CheckboxGroup, Slider } from '@heroui/react';
 import JobSearchAutocomplete from '@/components/forms/JobSearchAutocomplete';
 import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
 
+import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
+
 interface MapFilterSidebarProps {
 	filters: {
 		searchTerm: string | null;
@@ -17,11 +19,18 @@ interface MapFilterSidebarProps {
 		sortBy: string;
 	};
 	onFiltersChange?: (filters: Partial<MapFilterSidebarProps['filters']>) => void;
+	onLocationSelect?: (location: SearchLocation) => void;
 	totalCount: number;
 	isPending?: boolean;
 }
 
-export default function MapFilterSidebar({ filters, onFiltersChange, totalCount, isPending = false }: MapFilterSidebarProps) {
+export default function MapFilterSidebar({
+	filters,
+	onFiltersChange,
+	onLocationSelect,
+	totalCount,
+	isPending = false
+}: MapFilterSidebarProps) {
 	const handleClearAll = () => {
 		onFiltersChange?.({
 			searchTerm: null,
@@ -61,6 +70,10 @@ export default function MapFilterSidebar({ filters, onFiltersChange, totalCount,
 
 			<LocationAutocomplete
 				value={filters.location || ''}
+				onChange={location => {
+					onFiltersChange?.({ location: location.address.displayName || null });
+					onLocationSelect?.(location);
+				}}
 				onValueChange={value => onFiltersChange?.({ location: value || null })}
 				onSubmit={value => onFiltersChange?.({ location: value || null })}
 				onClear={() => onFiltersChange?.({ location: null })}

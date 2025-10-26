@@ -32,6 +32,12 @@ class LocationAutocompleteSuggestionType:
     address: AddressType = strawberry.field(
         description="Display name of the location",
     )
+    longitude: float = strawberry.field(
+        description="Longitude coordinate of the location",
+    )
+    latitude: float = strawberry.field(
+        description="Latitude coordinate of the location",
+    )
 
     @classmethod
     def marshal(cls, data: LocationAutocompleteSuggestion) -> Self:
@@ -39,6 +45,8 @@ class LocationAutocompleteSuggestionType:
             place_id=data.place_id,
             address=AddressType.marshal(data.address),
             level=RegionLevel(data.level),
+            longitude=data.coordinates[0],
+            latitude=data.coordinates[1],
         )
 
 

@@ -4,6 +4,7 @@ import { Badge } from '@heroui/react';
 import { Filter } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
+import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
 import MapFilterSidebar from './MapFilterSidebar';
 
 interface FilterBottomSheetProps {
@@ -19,6 +20,7 @@ interface FilterBottomSheetProps {
 		sortBy: string;
 	};
 	onFiltersChange?: (filters: Partial<FilterBottomSheetProps['filters']>) => void;
+	onLocationSelect?: (location: SearchLocation) => void;
 	totalCount: number;
 	isPending?: boolean;
 	activeFilterCount: number;
@@ -27,6 +29,7 @@ interface FilterBottomSheetProps {
 export default function FilterSheet({
 	filters,
 	onFiltersChange,
+	onLocationSelect,
 	totalCount,
 	isPending = false,
 	activeFilterCount
@@ -95,7 +98,13 @@ export default function FilterSheet({
 					}}
 				>
 					<div className='px-6 pb-6 overflow-y-auto' style={{ maxHeight: 'calc(90vh - 100px)' }}>
-						<MapFilterSidebar filters={filters} onFiltersChange={onFiltersChange} totalCount={totalCount} isPending={isPending} />
+						<MapFilterSidebar
+							filters={filters}
+							onFiltersChange={onFiltersChange}
+							onLocationSelect={onLocationSelect}
+							totalCount={totalCount}
+							isPending={isPending}
+						/>
 					</div>
 				</Sheet.Content>
 			</Sheet.Container>

@@ -1,6 +1,5 @@
 'use client';
 
-import type { LocationAutocompleteQuery } from '@/__generated__/LocationAutocompleteQuery.graphql';
 import type { AutocompleteProps } from '@heroui/react';
 import { Autocomplete, AutocompleteItem } from '@heroui/react';
 import type { Key } from 'react';
@@ -9,6 +8,7 @@ import type { PreloadedQuery } from 'react-relay';
 import { usePreloadedQuery, useQueryLoader } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { useDebounce } from 'use-debounce';
+import type { LocationAutocompleteQuery } from '@/__generated__/LocationAutocompleteQuery.graphql';
 
 interface LocationAutocompleteProps extends Omit<AutocompleteProps<SearchLocation>, 'children' | 'onChange' | 'onSubmit'> {
 	value: string;
@@ -28,6 +28,8 @@ export type SearchLocation = {
 	};
 	placeId: string;
 	level: string;
+	longitude: number;
+	latitude: number;
 };
 
 const SearchLocationsQuery = graphql`
@@ -44,6 +46,8 @@ const SearchLocationsQuery = graphql`
 				}
 				level
 				placeId
+				longitude
+				latitude
 			}
 		}
 	}
@@ -70,7 +74,9 @@ function LocationResultControls({
 					postalCode: item.address.postalCode || null
 				},
 				placeId: item.placeId,
-				level: item.level
+				level: item.level,
+				longitude: item.longitude,
+				latitude: item.latitude
 			}));
 			onDataLoaded(mappedLocations);
 		} else {
@@ -142,7 +148,9 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 			onChange?.({
 				address: selected.address,
 				placeId: selected.placeId,
-				level: selected.level
+				level: selected.level,
+				longitude: selected.longitude,
+				latitude: selected.latitude
 			});
 
 			setIsLoading(false);

@@ -2184,6 +2184,16 @@ type LocationAutocompleteSuggestion {
 	Display name of the location
 	"""
 	address: Address!
+
+	"""
+	Longitude coordinate of the location
+	"""
+	longitude: Float!
+
+	"""
+	Latitude coordinate of the location
+	"""
+	latitude: Float!
 }
 
 """

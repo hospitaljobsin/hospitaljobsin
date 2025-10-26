@@ -4,6 +4,7 @@ import { useDisclosure } from '@heroui/react';
 import type { Map as LeafletMap } from 'leaflet';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
 
 // Dynamic imports for Leaflet components (SSR incompatible)
 const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
@@ -66,10 +67,18 @@ interface JobMapViewProps {
 	};
 	onBoundsChange?: (bounds: { swLat: number; swLng: number; neLat: number; neLng: number }) => void;
 	onFiltersChange?: (filters: Partial<JobMapViewProps['filters']>) => void;
+	onLocationSelect?: (location: SearchLocation) => void;
 	isPending?: boolean;
 }
 
-export default function JobMapView({ data, filters, onBoundsChange, onFiltersChange, isPending = false }: JobMapViewProps) {
+export default function JobMapView({
+	data,
+	filters,
+	onBoundsChange,
+	onFiltersChange,
+	onLocationSelect,
+	isPending = false
+}: JobMapViewProps) {
 	const [map, setMap] = useState<LeafletMap | null>(null);
 	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 	const [isMobile, setIsMobile] = useState(false);
@@ -79,6 +88,44 @@ export default function JobMapView({ data, filters, onBoundsChange, onFiltersCha
 
 	// Drawer state for mobile job preview
 	const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
+
+	// Handle location selection and zoom to it
+	const handleLocationSelect = useCallback(
+		(location: SearchLocation) => {
+			if (!map) return;
+
+			// Determine zoom level based on region level
+			let zoomLevel = 12; // Default for locality
+			switch (location.level.toLowerCase()) {
+				case 'continent':
+					zoomLevel = 3;
+					break;
+				case 'country':
+					zoomLevel = 5;
+					break;
+				case 'state':
+					zoomLevel = 7;
+					break;
+				case 'locality':
+					zoomLevel = 11;
+					break;
+				case 'neighbourhood':
+					zoomLevel = 13;
+					break;
+				case 'city':
+					zoomLevel = 10;
+					break;
+			}
+
+			// Fly to the location with smooth animation
+			map.flyTo([location.latitude, location.longitude], zoomLevel, {
+				duration: 1.5 // Animation duration in seconds
+			});
+
+			setAnnouncementMessage(`Zoomed to ${location.address.displayName}`);
+		},
+		[map]
+	);
 
 	// Ensure component only renders on client
 	useEffect(() => {
@@ -246,6 +293,7 @@ export default function JobMapView({ data, filters, onBoundsChange, onFiltersCha
 					<MapFilterSidebar
 						filters={filters}
 						onFiltersChange={onFiltersChange}
+						onLocationSelect={handleLocationSelect}
 						totalCount={(data as any)?.jobs?.totalCount || 0}
 						isPending={isPending}
 					/>
@@ -296,6 +344,7 @@ export default function JobMapView({ data, filters, onBoundsChange, onFiltersCha
 				<FilterBottomSheet
 					filters={filters}
 					onFiltersChange={onFiltersChange}
+					onLocationSelect={handleLocationSelect}
 					totalCount={(data as any)?.jobs?.totalCount || 0}
 					isPending={isPending}
 					activeFilterCount={activeFilterCount}
