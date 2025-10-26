@@ -2,9 +2,8 @@
 
 import { Button, Checkbox, CheckboxGroup, Slider } from '@heroui/react';
 import JobSearchAutocomplete from '@/components/forms/JobSearchAutocomplete';
-import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
-
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
+import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
 
 interface MapFilterSidebarProps {
 	filters: {

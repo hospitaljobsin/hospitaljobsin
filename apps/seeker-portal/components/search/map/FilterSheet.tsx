@@ -1,7 +1,5 @@
 'use client';
 
-import { Badge } from '@heroui/react';
-import { Filter } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
@@ -57,6 +55,7 @@ export default function FilterSheet({
 			snapPoints={snapPoints}
 			onSnap={snapIndex => setCurrentSnap(snapIndex)}
 			disableScrollLocking={true}
+			disableDismiss
 		>
 			<Sheet.Container
 				className='!bg-background !rounded-t-3xl !shadow-2xl'
@@ -74,20 +73,6 @@ export default function FilterSheet({
 				>
 					<div className='flex flex-col items-center gap-2'>
 						<div className='w-12 h-1 bg-default-300 rounded-full' />
-						<div className='w-full flex items-center justify-between'>
-							<div className='flex items-center gap-2'>
-								<Filter className='w-5 h-5 text-primary' />
-								<h3 className='text-lg font-semibold'>Filters</h3>
-								{activeFilterCount > 0 && (
-									<Badge color='danger' size='sm'>
-										{activeFilterCount}
-									</Badge>
-								)}
-							</div>
-							<p className='text-sm text-default-500'>
-								{totalCount} job{totalCount !== 1 ? 's' : ''}
-							</p>
-						</div>
 					</div>
 				</Sheet.Header>
 
