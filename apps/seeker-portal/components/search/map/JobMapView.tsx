@@ -262,6 +262,7 @@ export default function JobMapView({ data, filters, onBoundsChange, onFiltersCha
 					className='h-full w-full [&_.leaflet-container]:touch-pan-x [&_.leaflet-container]:touch-pan-y [&_.leaflet-container]:h-full [&_.leaflet-container]:w-full'
 					ref={setMap}
 					zoomControl={false}
+					attributionControl={false}
 					touchZoom={true}
 					dragging={true}
 					scrollWheelZoom={true}
