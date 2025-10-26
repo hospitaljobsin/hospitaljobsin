@@ -1014,6 +1014,34 @@ class GeoObjectType:
 
 #### **2.2.2 Repository Updates**
 
+**CRITICAL: MongoDB Geospatial Query Constraints**
+
+MongoDB has specific requirements for geospatial queries in aggregation pipelines:
+
+1. **$geoNear Stage Constraint:**
+
+   - `$geoNear` MUST be the **first stage** in an aggregation pipeline
+   - Cannot be preceded by any other stage (including `$match`)
+   - Limitation: This restricts our ability to filter active jobs first
+
+2. **$geoWithin with Variables:**
+
+   - `$geoWithin` **CANNOT** be used with pipeline variables in `$lookup` or `$expr`
+   - Variables like `$$boundingBox` will fail with `$geoWithin`
+   - Solution: Use direct `$match` with `$geoWithin` instead
+
+3. **Best Practice for Our Use Case:**
+
+   - Use `$match` with `$geoWithin` EARLY in the pipeline (position 1 or 2)
+   - Place geospatial filter BEFORE any `$lookup`, `$unwind`, or complex aggregations
+   - This ensures the `geo_2dsphere_index` is used efficiently
+   - Order: `is_active` filter → geospatial filter → other filters
+
+4. **Why Not $geoNear:**
+   - While `$geoNear` is more powerful (provides distance, sorting)
+   - It must be first, preventing us from filtering `is_active` first
+   - For bounding box queries, `$match` + `$geoWithin` is more flexible
+
 **Update JobRepo.get_all_active():**
 
 ```python
@@ -1026,24 +1054,35 @@ async def get_all_active(
 ) -> PaginatedResult[Job]:
     """Get all active jobs with optional geographic bounds filtering."""
 
-    # Existing logic...
+    # IMPORTANT: MongoDB Geospatial Query Stage Ordering
+    # - $geoWithin CANNOT be used with variables in aggregation pipelines
+    # - $geoNear MUST be the first stage if used
+    # - For bounding box queries, use $match + $geoWithin EARLY in pipeline
+    # - Place geospatial stages BEFORE lookups, grouping, or complex operations
 
-    # NEW: Add geospatial filtering by bounding box
+    pipeline: list[dict[str, Any]] = [
+        {"$match": {"is_active": True}},  # Initial filter
+    ]
+
+    # NEW: Add geospatial filter IMMEDIATELY after active filter
+    # This ensures the geo_2dsphere_index is used efficiently
     if bounds:
         pipeline.append({
             "$match": {
                 "geo": {
                     "$geoWithin": {
                         "$box": [
-                            [bounds.sw_lng, bounds.sw_lat],  # Southwest corner
-                            [bounds.ne_lng, bounds.ne_lat]   # Northeast corner
+                            [bounds.sw_lng, bounds.sw_lat],  # Southwest corner [lng, lat]
+                            [bounds.ne_lng, bounds.ne_lat]   # Northeast corner [lng, lat]
                         ]
                     }
                 }
             }
         })
 
-    # Continue with existing logic...
+    # Continue with existing filters (location, proximity, etc.)
+    # These should come AFTER the geospatial filter
+    # ... rest of existing pipeline stages ...
 ```
 
 **New BoundingBox Model:**
