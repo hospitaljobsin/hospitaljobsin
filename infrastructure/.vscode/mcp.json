@@ -3,6 +3,15 @@
 		"terraform": {
 			"command": "docker",
 			"args": ["run", "-i", "--rm", "hashicorp/terraform-mcp-server:0.3.0"]
+		},
+		"ddg-search": {
+			"command": "uvx",
+			"args": ["duckduckgo-mcp-server"]
+		},
+		"sequential-thinking": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
 		}
 	}
 }
