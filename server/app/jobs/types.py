@@ -32,6 +32,7 @@ from app.base.types import (
     BaseEdgeType,
     BaseErrorType,
     BaseNodeType,
+    GeoObjectType,
     InvalidLocationErrorType,
     JobTypeEnum,
     WorkModeEnum,
@@ -211,6 +212,17 @@ class JobApplicantCountNotFoundErrorType(BaseErrorType):
         description="Human readable error message.",
         default="Job applicant count not found!",
     )
+
+
+@strawberry.input(
+    name="BoundingBoxInput",
+    description="Geographic bounding box input for filtering jobs by map viewport.",
+)
+class BoundingBoxInput:
+    sw_lat: float = strawberry.field(description="Southwest corner latitude")
+    sw_lng: float = strawberry.field(description="Southwest corner longitude")
+    ne_lat: float = strawberry.field(description="Northeast corner latitude")
+    ne_lng: float = strawberry.field(description="Northeast corner longitude")
 
 
 @strawberry.input(
@@ -749,6 +761,10 @@ class JobType(BaseNodeType[Job]):
     address: AddressType | None = strawberry.field(
         description="The address of the job.",
     )
+    geo: GeoObjectType | None = strawberry.field(
+        default=None,
+        description="Geographic coordinates of the job location.",
+    )
     applicant_locations: list[str] = strawberry.field(
         description="The locations where applicants can be located.",
     )
@@ -822,6 +838,7 @@ class JobType(BaseNodeType[Job]):
             work_mode=WorkModeEnum[job.work_mode.upper()] if job.work_mode else None,
             location=job.location,
             address=AddressType.marshal(job.address) if job.address else None,
+            geo=GeoObjectType.marshal(job.geo) if job.geo else None,
             applicant_locations=job.applicant_locations,
             skills=job.skills,
             currency=CurrencyEnum[job.currency.upper()],

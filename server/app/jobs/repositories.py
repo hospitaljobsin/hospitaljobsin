@@ -15,7 +15,7 @@ from pydantic import ValidationError
 from redis.asyncio import Redis
 
 from app.accounts.documents import Account, BaseProfile, CareerProfile
-from app.base.models import Address, GeoObject
+from app.base.models import Address, BoundingBox, GeoObject
 from app.core.constants import (
     DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT,
     JOB_APPLICANT_EMBEDDING_DIMENSIONS,
@@ -513,6 +513,7 @@ class JobRepo:
         search_term: str | None = None,
         location: str | None = None,
         proximity_km: float | None = None,
+        bounds: BoundingBox | None = None,
         min_experience: int | None = None,
         max_experience: int | None = None,
         min_salary: int | None = None,
@@ -584,6 +585,26 @@ class JobRepo:
                         }
                     }
                 )
+
+        # Bounding box filter for map viewport
+        if bounds:
+            must_clauses.append(
+                {
+                    "geoWithin": {
+                        "box": {
+                            "bottomLeft": {
+                                "type": "Point",
+                                "coordinates": [bounds.sw_lng, bounds.sw_lat],
+                            },
+                            "topRight": {
+                                "type": "Point",
+                                "coordinates": [bounds.ne_lng, bounds.ne_lat],
+                            },
+                        },
+                        "path": "geo",
+                    }
+                }
+            )
 
         # Experience filters
         if min_experience is not None:

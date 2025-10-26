@@ -7,6 +7,7 @@ from strawberry import relay
 from strawberry.permission import PermissionExtension
 
 from app.auth.permissions import IsAuthenticated
+from app.base.models import BoundingBox
 from app.context import AuthInfo
 
 from .repositories import (
@@ -19,6 +20,7 @@ from .repositories import (
 )
 from .types import (
     AutocompleteJobsPayloadType,
+    BoundingBoxInput,
     JobApplicantConnectionType,
     JobAutocompleteSuggestionType,
     JobConnectionType,
@@ -67,6 +69,12 @@ class JobQuery:
             float | None,
             strawberry.argument(
                 description="The proximity in km to search for jobs",
+            ),
+        ] = None,
+        bounds: Annotated[
+            BoundingBoxInput | None,
+            strawberry.argument(
+                description="Geographic bounding box to filter jobs by map viewport",
             ),
         ] = None,
         search_term: Annotated[
@@ -128,6 +136,7 @@ class JobQuery:
             search_term=search_term,
             location=location,
             proximity_km=proximity_km,
+            bounds=BoundingBox(**bounds.__dict__) if bounds else None,
             min_experience=min_experience,
             max_experience=max_experience,
             min_salary=min_salary,

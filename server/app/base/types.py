@@ -6,7 +6,7 @@ from beanie import Document
 from pydantic import ValidationError
 from strawberry import field, relay
 
-from app.base.models import Address
+from app.base.models import Address, GeoObject
 from app.database.paginator import CursorType, PaginatedResult
 
 ModelType = TypeVar("ModelType", bound=Document)
@@ -246,3 +246,17 @@ class WorkModeEnum(Enum):
     REMOTE = "remote"
     HYBRID = "hybrid"
     OFFICE = "office"
+
+
+@strawberry.type(
+    name="GeoObject",
+    description="GeoJSON Point object for geographic coordinates.",
+)
+class GeoObjectType:
+    coordinates: list[float] = strawberry.field(
+        description="Coordinates as [longitude, latitude]",
+    )
+
+    @classmethod
+    def marshal(cls, geo: GeoObject) -> Self:
+        return cls(coordinates=list(geo.coordinates))
