@@ -327,37 +327,7 @@ Ensure geospatial indexes exist and are optimized for map queries.
 **Description:**
 Add required packages for map functionality using pnpm workspace commands.
 
-**Steps:**
-
-1. From the **repository root**, install all dependencies using pnpm workspace filter:
-
-   ```bash
-   # Install runtime dependencies
-   pnpm --filter seeker-portal add leaflet react-leaflet leaflet.markercluster
-
-   # Install dev dependencies
-   pnpm --filter seeker-portal add -D @types/leaflet @types/leaflet.markercluster
-   ```
-
-2. Verify installation by checking `apps/seeker-portal/package.json`:
-
-   ```json
-   {
-     "dependencies": {
-       "leaflet": "^1.9.4",
-       "react-leaflet": "^4.2.1",
-       "leaflet.markercluster": "^1.5.3"
-     },
-     "devDependencies": {
-       "@types/leaflet": "^1.9.8",
-       "@types/leaflet.markercluster": "^1.5.4"
-     }
-   }
-   ```
-
-3. Verify node_modules are created and packages are available
-
-**Note:** Since this is a pnpm monorepo, all package installation commands must be run from the repository root using the `--filter` flag to target the specific workspace package.
+**Status:** ✅ COMPLETED
 
 **Acceptance Criteria:**
 
@@ -378,53 +348,7 @@ Add required packages for map functionality using pnpm workspace commands.
 **Description:**
 Set up the Next.js route structure for the map view page.
 
-**Steps:**
-
-1. Create directory: `apps/seeker-portal/app/search/map/`
-2. Create `page.tsx` (Server Component):
-
-   ```tsx
-   import { Metadata } from "next";
-   import MapViewClientComponent from "./MapViewClientComponent";
-
-   export const metadata: Metadata = {
-     title: "Hospital Jobs Map - Find Healthcare Jobs Near You",
-     description:
-       "Explore hospital and healthcare job opportunities on an interactive map.",
-   };
-
-   export default async function MapPage() {
-     // Load initial data
-     return <MapViewClientComponent />;
-   }
-   ```
-
-3. Create `MapViewClientComponent.tsx` (Client Component):
-
-   ```tsx
-   "use client";
-
-   import dynamic from "next/dynamic";
-
-   const JobMapView = dynamic(
-     () => import("@/components/search/map/JobMapView"),
-     { ssr: false }
-   );
-
-   export default function MapViewClientComponent() {
-     return <JobMapView />;
-   }
-   ```
-
-4. Create `loading.tsx`:
-
-   ```tsx
-   import JobMapSkeleton from "@/components/search/map/JobMapSkeleton";
-
-   export default function Loading() {
-     return <JobMapSkeleton />;
-   }
-   ```
+**Status:** ✅ COMPLETED
 
 **Acceptance Criteria:**
 
@@ -444,22 +368,12 @@ Set up the Next.js route structure for the map view page.
 **Description:**
 Set up the directory structure for map components.
 
-**Steps:**
-
-1. Create directory: `apps/seeker-portal/components/search/map/`
-2. Create placeholder files for all components:
-   - JobMapView.tsx
-   - JobMapMarkers.tsx
-   - JobMapPopup.tsx
-   - JobPreviewDrawer.tsx
-   - MapFilterSidebar.tsx
-   - JobMapControls.tsx
-   - JobMapSkeleton.tsx
+**Status:** ✅ COMPLETED
 
 **Acceptance Criteria:**
 
 - Directory structure created
-- All component files exist (even if empty)
+- All component files exist (placeholder implementations)
 - Proper naming convention followed
 
 ---

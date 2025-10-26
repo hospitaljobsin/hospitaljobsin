@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<ba73886d683faa0a1f807a8bdc96be22>>
- * @relayHash c4b07526b014f73b383b76cf793df53c
+ * @generated SignedSource<<1ee7b5bfb3b025b2ba651319f0a6f8e3>>
+ * @relayHash fada442412692acaec7b39ee2940f446
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c4b07526b014f73b383b76cf793df53c
+// @relayRequestID fada442412692acaec7b39ee2940f446
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -258,14 +258,6 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "kind": "ScalarField",
-                    "name": "title",
-                    "storageKey": null
-                  },
-                  (v4/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
                     "concreteType": "GeoObject",
                     "kind": "LinkedField",
                     "name": "geo",
@@ -281,6 +273,14 @@ return {
                     ],
                     "storageKey": null
                   },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "title",
+                    "storageKey": null
+                  },
+                  (v4/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -384,7 +384,7 @@ return {
     ]
   },
   "params": {
-    "id": "c4b07526b014f73b383b76cf793df53c",
+    "id": "fada442412692acaec7b39ee2940f446",
     "metadata": {},
     "name": "MapViewClientComponentRefetchQuery",
     "operationKind": "query",
@@ -393,6 +393,6 @@ return {
 };
 })();
 
-(node as any).hash = "5c3cf58d87804b44a323e5a370cce5e1";
+(node as any).hash = "4a9b6c2d7585e3c302dcbea5acf0d21d";
 
 export default node;

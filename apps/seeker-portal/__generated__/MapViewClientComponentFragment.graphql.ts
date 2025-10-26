@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<569d0d54d5c2fc1b4db3eaa234438300>>
+ * @generated SignedSource<<875bc12a215748871598a219860f568f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,6 +14,14 @@ export type MapViewClientComponentFragment$data = {
   readonly jobs: {
     readonly edges: ReadonlyArray<{
       readonly node: {
+        readonly geo: {
+          readonly coordinates: ReadonlyArray<number>;
+        } | null | undefined;
+        readonly id: string;
+        readonly organization: {
+          readonly slug: string;
+        } | null | undefined;
+        readonly slug: string;
         readonly " $fragmentSpreads": FragmentRefs<"JobMapMarkersFragment_job" | "JobPreviewDrawerFragment_job">;
       };
     }>;
@@ -26,7 +34,17 @@ export type MapViewClientComponentFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"MapViewClientComponentFragment">;
 };
 
-const node: ReaderFragment = {
+import MapViewClientComponentRefetchQuery_graphql from './MapViewClientComponentRefetchQuery.graphql';
+
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "slug",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [
     {
       "defaultValue": null,
@@ -85,7 +103,13 @@ const node: ReaderFragment = {
     }
   ],
   "kind": "Fragment",
-  "metadata": null,
+  "metadata": {
+    "refetch": {
+      "connection": null,
+      "fragmentPathInResult": [],
+      "operation": MapViewClientComponentRefetchQuery_graphql
+    }
+  },
   "name": "MapViewClientComponentFragment",
   "selections": [
     {
@@ -169,6 +193,44 @@ const node: ReaderFragment = {
               "plural": false,
               "selections": [
                 {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "id",
+                  "storageKey": null
+                },
+                (v0/*: any*/),
+                {
+                  "alias": null,
+                  "args": null,
+                  "concreteType": "Organization",
+                  "kind": "LinkedField",
+                  "name": "organization",
+                  "plural": false,
+                  "selections": [
+                    (v0/*: any*/)
+                  ],
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "concreteType": "GeoObject",
+                  "kind": "LinkedField",
+                  "name": "geo",
+                  "plural": false,
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "coordinates",
+                      "storageKey": null
+                    }
+                  ],
+                  "storageKey": null
+                },
+                {
                   "args": null,
                   "kind": "FragmentSpread",
                   "name": "JobMapMarkersFragment_job"
@@ -198,7 +260,8 @@ const node: ReaderFragment = {
   "type": "Query",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "fed5255c5a285a9ea3c3622c00c40111";
+(node as any).hash = "4a9b6c2d7585e3c302dcbea5acf0d21d";
 
 export default node;

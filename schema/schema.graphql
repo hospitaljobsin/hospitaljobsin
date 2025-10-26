@@ -577,6 +577,31 @@ interface BaseProfile {
 }
 
 """
+Geographic bounding box input for filtering jobs by map viewport.
+"""
+input BoundingBoxInput {
+	"""
+	Southwest corner latitude
+	"""
+	swLat: Float!
+
+	"""
+	Southwest corner longitude
+	"""
+	swLng: Float!
+
+	"""
+	Northeast corner latitude
+	"""
+	neLat: Float!
+
+	"""
+	Northeast corner longitude
+	"""
+	neLng: Float!
+}
+
+"""
 Invite status type.
 """
 enum BusinessProof {
@@ -1088,6 +1113,16 @@ type GenerateProfileDocumentPresignedURLPayload {
 }
 
 """
+GeoJSON Point object for geographic coordinates.
+"""
+type GeoObject {
+	"""
+	Coordinates as [longitude, latitude]
+	"""
+	coordinates: [Float!]!
+}
+
+"""
 Used when a job has insufficient active vacancies.
 """
 type InsufficientActiveVacanciesError implements Error {
@@ -1355,6 +1390,11 @@ type Job implements Node {
 	The address of the job.
 	"""
 	address: Address
+
+	"""
+	Geographic coordinates of the job location.
+	"""
+	geo: GeoObject
 
 	"""
 	The locations where applicants can be located.
@@ -3161,7 +3201,7 @@ type Mutation {
 		"""
 		The current industry of the user.
 		"""
-		currentIndustry: String
+		currentIndustry: String = null
 
 		"""
 		The desired job types.
@@ -3176,7 +3216,7 @@ type Mutation {
 		"""
 		The expected salary.
 		"""
-		expectedSalary: Float
+		expectedSalary: Float = null
 
 		"""
 		Locations the user is open to work in.
@@ -4442,6 +4482,11 @@ type Query {
 		The proximity in km to search for jobs
 		"""
 		proximityKm: Float = null
+
+		"""
+		Geographic bounding box to filter jobs by map viewport
+		"""
+		bounds: BoundingBoxInput = null
 
 		"""
 		The search (query) term

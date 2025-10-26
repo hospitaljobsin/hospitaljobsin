@@ -10,6 +10,7 @@ const links = {
 				: speciality
 					? `/search/${speciality.trim().replace(/\s+/g, '-')}-jobs`
 					: '/search',
+	searchMap: () => '/search/map',
 	recruiterLanding: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/`,
 	profile: '/profile',
 	resumeBuilder: '/resume-builder',

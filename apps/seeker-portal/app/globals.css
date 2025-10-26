@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+@import "leaflet.markercluster/dist/MarkerCluster.css";
+@import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 @plugin './hero.mts';
 @plugin "@tailwindcss/typography";
@@ -18,5 +21,45 @@
 		@apply h-full;
 		@apply w-full;
 		@apply bg-background-600;
+	}
+
+	/* Leaflet map fixes */
+	.leaflet-container {
+		height: 100% !important;
+		width: 100% !important;
+		z-index: 0;
+	}
+
+	.leaflet-tile-container {
+		pointer-events: none;
+	}
+
+	/* Custom marker styles */
+	.custom-green-marker {
+		z-index: 1000 !important;
+	}
+
+	.custom-cluster-icon {
+		z-index: 1000 !important;
+	}
+
+	/* Ensure marker pane is visible */
+	.leaflet-marker-pane {
+		z-index: 600 !important;
+	}
+
+	.leaflet-shadow-pane {
+		z-index: 500 !important;
+	}
+
+	/* MarkerCluster specific */
+	.marker-cluster-small,
+	.marker-cluster-medium,
+	.marker-cluster-large {
+		z-index: 800 !important;
+	}
+
+	.leaflet-tile {
+		pointer-events: none;
 	}
 }

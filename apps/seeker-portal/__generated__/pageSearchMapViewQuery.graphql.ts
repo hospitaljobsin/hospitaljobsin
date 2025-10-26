@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<1671faff4481fde44565f02e2532f8cf>>
- * @relayHash 1c61de7ddead71891a3f10875ab0f74a
+ * @generated SignedSource<<1dfc77d5709131c74d315e31bc7f56a9>>
+ * @relayHash 76bbf8ce8f71fa5d38446f785ca5de26
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 1c61de7ddead71891a3f10875ab0f74a
+// @relayRequestID 76bbf8ce8f71fa5d38446f785ca5de26
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -252,11 +252,31 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "kind": "ScalarField",
-                    "name": "title",
+                    "concreteType": "Organization",
+                    "kind": "LinkedField",
+                    "name": "organization",
+                    "plural": false,
+                    "selections": [
+                      (v13/*: any*/),
+                      (v12/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "name",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "logoUrl",
+                        "storageKey": null
+                      },
+                      (v14/*: any*/)
+                    ],
                     "storageKey": null
                   },
-                  (v14/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -275,6 +295,14 @@ return {
                     ],
                     "storageKey": null
                   },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "title",
+                    "storageKey": null
+                  },
+                  (v14/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -308,34 +336,6 @@ return {
                     "args": null,
                     "kind": "ScalarField",
                     "name": "workMode",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "Organization",
-                    "kind": "LinkedField",
-                    "name": "organization",
-                    "plural": false,
-                    "selections": [
-                      (v12/*: any*/),
-                      (v13/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "name",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "logoUrl",
-                        "storageKey": null
-                      },
-                      (v14/*: any*/)
-                    ],
                     "storageKey": null
                   },
                   {
@@ -406,7 +406,7 @@ return {
     ]
   },
   "params": {
-    "id": "1c61de7ddead71891a3f10875ab0f74a",
+    "id": "76bbf8ce8f71fa5d38446f785ca5de26",
     "metadata": {},
     "name": "pageSearchMapViewQuery",
     "operationKind": "query",
