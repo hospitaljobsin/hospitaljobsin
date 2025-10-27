@@ -15,7 +15,10 @@ from pydantic import ValidationError
 from redis.asyncio import Redis
 
 from app.accounts.documents import Account, BaseProfile, CareerProfile
-from app.base.models import Address, BoundingBox, GeoObject
+from app.base.models import Address, GeoObject
+
+# Type alias for map bounds (dict with sw_lat, sw_lng, ne_lat, ne_lng keys)
+BoundingBox = dict[str, float]
 from app.core.constants import (
     DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT,
     JOB_APPLICANT_EMBEDDING_DIMENSIONS,
@@ -41,7 +44,10 @@ from app.jobs.agents.applicant_query_parser import (
     ApplicantQueryParserAgent,
     LocationWithRadius,
 )
-from app.jobs.models import JobAutocompleteSuggestion
+from app.jobs.models import (
+    JobAutocompleteSuggestion,
+    JobClusterFilters,
+)
 from app.organizations.documents import Organization
 
 from .documents import (
@@ -88,10 +94,577 @@ class JobType(Enum):
 
 class JobRepo:
     def __init__(
-        self, embeddings_service: BaseEmbeddingsService, region_repo: RegionRepo
+        self,
+        embeddings_service: BaseEmbeddingsService,
+        region_repo: RegionRepo,
+        redis_client: Redis,
     ) -> None:
         self._embeddings_service = embeddings_service
         self._region_repo = region_repo
+        self._redis_client = redis_client
+
+    def _compute_h3_indexes(self, geo: GeoObject | None) -> dict[str, str] | None:
+        """
+        Compute H3 indexes at multiple resolutions for a job location.
+
+        Args:
+            geo: GeoObject containing coordinates [lng, lat]
+
+        Returns:
+            Dictionary mapping resolution (as string) to H3 index,
+            or None if geo is None or invalid
+        """
+        if not geo or not geo.coordinates:
+            return None
+
+        import h3
+
+        lng, lat = geo.coordinates
+
+        # Compute indexes at resolutions we'll use for aggregation
+        resolutions = [1, 3, 5, 7, 9, 10, 11]
+        h3_indexes = {}
+
+        for resolution in resolutions:
+            h3_index = h3.latlng_to_cell(lat, lng, resolution)
+            h3_indexes[str(resolution)] = h3_index
+
+        return h3_indexes
+
+    def _generate_cluster_cache_key(
+        self,
+        bounds: BoundingBox,
+        h3_resolution: int,
+        filters: JobClusterFilters,
+    ) -> str:
+        """
+        Generate a cache key for job cluster results.
+
+        Args:
+            bounds: Bounding box for the map viewport
+            h3_resolution: H3 resolution level for clustering
+            filters: Job filters applied to the query
+
+        Returns:
+            Cache key string for Redis storage
+        """
+        # Round coordinates to 4 decimals to increase cache hits for similar viewports
+        bounds_str = f"{bounds['sw_lat']:.4f},{bounds['sw_lng']:.4f},{bounds['ne_lat']:.4f},{bounds['ne_lng']:.4f}"
+
+        # Convert filters to dict and hash for compact representation
+        filters_dict = filters.model_dump(exclude_none=True)
+        filters_json = str(sorted(filters_dict.items()))
+        filters_hash = hashlib.md5(filters_json.encode("utf-8")).hexdigest()[:8]
+
+        # Version allows cache invalidation when algorithm changes
+        version = "1"
+
+        return f"job_clusters:v{version}:{bounds_str}:res{h3_resolution}:{filters_hash}"
+
+    def _enrich_clusters_with_geometry(
+        self, aggregation_results: list[dict]
+    ) -> list[JobCluster]:
+        """
+        Enrich aggregation results with H3 hexagon geometry.
+
+        Takes raw aggregation results and adds center coordinates and boundary polygons
+        for each H3 hexagon cluster.
+
+        Args:
+            aggregation_results: List of dicts from MongoDB aggregation with h3_index and stats
+
+        Returns:
+            List of JobCluster domain models with geometry
+        """
+        import h3
+
+        clusters = []
+        for result in aggregation_results:
+            h3_index = result["_id"]
+
+            # Get center point coordinates (lat, lng)
+            lat, lng = h3.cell_to_latlng(h3_index)
+            center = {"type": "Point", "coordinates": [lng, lat]}
+
+            # Get hexagon boundary as list of [lng, lat] pairs
+            boundary = h3.cell_to_boundary(h3_index)
+            # Convert from (lat, lng) tuples to [[lng, lat], ...] format for GeoJSON
+            bounds = [[coord[1], coord[0]] for coord in boundary]
+
+            # Extract salary range
+            salary_range = SalaryRange(
+                min_salary=result.get("min_salary"),
+                max_salary=result.get("max_salary"),
+            )
+
+            clusters.append(
+                JobCluster(
+                    h3_index=h3_index,
+                    count=result["count"],
+                    center=center,
+                    bounds=bounds,
+                    salary_range=salary_range,
+                    top_specialties=result.get("top_specialties", []),
+                )
+            )
+
+        return clusters
+
+    async def _build_cluster_match_filters(
+        self,
+        bounds: BoundingBox,
+        filters: JobClusterFilters,
+    ) -> dict[str, Any]:
+        """
+        Build MongoDB match filters for job clustering queries.
+
+        Args:
+            bounds: Map viewport bounding box
+            filters: Job filter criteria
+
+        Returns:
+            MongoDB $match stage dict
+        """
+        match_filters: dict[str, Any] = {
+            "is_active": True,
+            "$or": [
+                {"expires_at": {"$gt": datetime.now(UTC)}},
+                {"expires_at": None},
+            ],
+        }
+
+        # Geospatial filter for bounding box
+        match_filters["geo"] = {
+            "$geoWithin": {
+                "$box": [
+                    [bounds["sw_lng"], bounds["sw_lat"]],
+                    [bounds["ne_lng"], bounds["ne_lat"]],
+                ]
+            }
+        }
+
+        # Work mode filter
+        if filters.work_mode:
+            match_filters["work_mode"] = {"$in": filters.work_mode}
+
+        # Job type filter
+        if filters.job_type:
+            match_filters["type"] = {"$in": filters.job_type}
+
+        # Experience filters
+        if filters.min_experience is not None or filters.max_experience is not None:
+            experience_conditions = []
+            if filters.min_experience is not None:
+                experience_conditions.append(
+                    {"max_experience": {"$gte": filters.min_experience}}
+                )
+                experience_conditions.append(
+                    {"min_experience": {"$gte": filters.min_experience}}
+                )
+            if filters.max_experience is not None:
+                experience_conditions.append(
+                    {"min_experience": {"$lte": filters.max_experience}}
+                )
+                experience_conditions.append(
+                    {"max_experience": {"$lte": filters.max_experience}}
+                )
+            if experience_conditions:
+                match_filters["$or"] = experience_conditions
+
+        # Salary filters
+        if filters.min_salary is not None or filters.max_salary is not None:
+            salary_conditions = []
+            if filters.min_salary is not None:
+                salary_conditions.append({"max_salary": {"$gte": filters.min_salary}})
+                salary_conditions.append({"min_salary": {"$gte": filters.min_salary}})
+            if filters.max_salary is not None:
+                salary_conditions.append({"min_salary": {"$lte": filters.max_salary}})
+                salary_conditions.append({"max_salary": {"$lte": filters.max_salary}})
+            if salary_conditions:
+                match_filters["$or"] = salary_conditions
+
+        return match_filters
+
+    async def _aggregate_direct(
+        self,
+        h3_resolution: int,
+        intersecting_hexes: list[str],
+        bounds: BoundingBox,
+        filters: JobClusterFilters,
+    ) -> list[dict]:
+        """
+        Aggregate jobs directly without Atlas Search (for non-text queries).
+
+        Args:
+            h3_resolution: H3 resolution level for clustering
+            intersecting_hexes: List of H3 indexes intersecting the viewport
+            bounds: Map viewport bounding box
+            filters: Job filter criteria
+
+        Returns:
+            List of aggregation results with cluster statistics
+        """
+        h3_field = f"h3_indexes.{h3_resolution}"
+
+        # Build match filters
+        match_filters = await self._build_cluster_match_filters(bounds, filters)
+
+        # Add H3 index filter
+        match_filters[h3_field] = {"$in": intersecting_hexes}
+
+        pipeline = [
+            {"$match": match_filters},
+            {
+                "$group": {
+                    "_id": f"${h3_field}",
+                    "count": {"$sum": 1},
+                    "min_salary": {"$min": "$min_salary"},
+                    "max_salary": {"$max": "$max_salary"},
+                    "skills": {"$push": "$skills"},
+                }
+            },
+            {
+                "$project": {
+                    "_id": 1,
+                    "count": 1,
+                    "min_salary": 1,
+                    "max_salary": 1,
+                    # Flatten skills arrays and get top 3
+                    "top_specialties": {
+                        "$slice": [
+                            {
+                                "$reduce": {
+                                    "input": "$skills",
+                                    "initialValue": [],
+                                    "in": {"$concatArrays": ["$$value", "$$this"]},
+                                }
+                            },
+                            3,
+                        ]
+                    },
+                }
+            },
+            {"$sort": {"count": -1}},
+            {"$limit": 1000},
+        ]
+
+        return await Job.aggregate(pipeline, projection_model=None).to_list()
+
+    async def _aggregate_with_search(
+        self,
+        h3_resolution: int,
+        intersecting_hexes: list[str],
+        bounds: BoundingBox,
+        filters: JobClusterFilters,
+    ) -> list[dict]:
+        """
+        Aggregate jobs with Atlas Search for text queries.
+
+        Two-phase approach:
+        1. Use Atlas Search to get job IDs matching search_term
+        2. Aggregate those jobs by H3 index
+
+        Args:
+            h3_resolution: H3 resolution level for clustering
+            intersecting_hexes: List of H3 indexes intersecting the viewport
+            bounds: Map viewport bounding box
+            filters: Job filter criteria (must include search_term)
+
+        Returns:
+            List of aggregation results with cluster statistics
+        """
+        h3_field = f"h3_indexes.{h3_resolution}"
+
+        # Phase 1: Atlas Search for job IDs
+        search_pipeline = [
+            {
+                "$search": {
+                    "index": JOB_SEARCH_INDEX_NAME,
+                    "compound": {
+                        "must": [
+                            {"equals": {"path": "is_active", "value": True}},
+                            {
+                                "compound": {
+                                    "should": [
+                                        {
+                                            "equals": {
+                                                "path": "expires_at",
+                                                "value": None,
+                                            }
+                                        },
+                                        {
+                                            "range": {
+                                                "path": "expires_at",
+                                                "gt": datetime.now(UTC),
+                                            }
+                                        },
+                                    ],
+                                    "minimumShouldMatch": 1,
+                                }
+                            },
+                            # Text search clause
+                            {
+                                "compound": {
+                                    "should": [
+                                        {
+                                            "text": {
+                                                "query": filters.search_term,
+                                                "path": "title",
+                                                "score": {"boost": {"value": 10}},
+                                            }
+                                        },
+                                        {
+                                            "text": {
+                                                "query": filters.search_term,
+                                                "path": "skills",
+                                                "score": {"boost": {"value": 8}},
+                                            }
+                                        },
+                                        {
+                                            "text": {
+                                                "query": filters.search_term,
+                                                "path": "description_cleaned",
+                                                "score": {"boost": {"value": 4}},
+                                            }
+                                        },
+                                    ],
+                                    "minimumShouldMatch": 1,
+                                }
+                            },
+                        ],
+                    },
+                }
+            },
+            {"$project": {"_id": 1}},
+            {"$limit": 5000},  # Limit search results for performance
+        ]
+
+        search_results = await Job.aggregate(
+            search_pipeline, projection_model=None
+        ).to_list()
+        job_ids = [result["_id"] for result in search_results]
+
+        if not job_ids:
+            return []
+
+        # Phase 2: Aggregate by H3 index
+        match_filters = await self._build_cluster_match_filters(bounds, filters)
+        match_filters["_id"] = {"$in": job_ids}
+        match_filters[h3_field] = {"$in": intersecting_hexes}
+
+        aggregation_pipeline = [
+            {"$match": match_filters},
+            {
+                "$group": {
+                    "_id": f"${h3_field}",
+                    "count": {"$sum": 1},
+                    "min_salary": {"$min": "$min_salary"},
+                    "max_salary": {"$max": "$max_salary"},
+                    "skills": {"$push": "$skills"},
+                }
+            },
+            {
+                "$project": {
+                    "_id": 1,
+                    "count": 1,
+                    "min_salary": 1,
+                    "max_salary": 1,
+                    "top_specialties": {
+                        "$slice": [
+                            {
+                                "$reduce": {
+                                    "input": "$skills",
+                                    "initialValue": [],
+                                    "in": {"$concatArrays": ["$$value", "$$this"]},
+                                }
+                            },
+                            3,
+                        ]
+                    },
+                }
+            },
+            {"$sort": {"count": -1}},
+            {"$limit": 1000},
+        ]
+
+        return await Job.aggregate(
+            aggregation_pipeline, projection_model=None
+        ).to_list()
+
+    async def get_aggregated_jobs_by_h3(
+        self,
+        bounds: BoundingBox,
+        h3_resolution: int,
+        filters: JobClusterFilters,
+    ) -> list[JobCluster]:
+        """
+        Get aggregated job clusters at specified H3 resolution.
+
+        This is the main clustering method that:
+        1. Determines which H3 hexagons intersect the viewport
+        2. Checks Redis cache
+        3. Aggregates jobs by H3 index with optional filters
+        4. Enriches results with geometry
+        5. Caches results
+
+        Args:
+            bounds: Map viewport bounding box
+            h3_resolution: H3 resolution level for clustering
+            filters: Job filter criteria
+
+        Returns:
+            List of job clusters with geometry and statistics
+        """
+        import json
+
+        import h3
+
+        # Generate cache key
+        cache_key = self._generate_cluster_cache_key(bounds, h3_resolution, filters)
+
+        # Check cache
+        cached_result = await self._redis_client.get(cache_key)
+        if cached_result:
+            # Deserialize cached clusters
+            clusters_data = json.loads(cached_result)
+            return [JobCluster(**cluster) for cluster in clusters_data]
+
+        # Calculate intersecting H3 hexagons
+        # Create polygon from bounding box
+        bbox_polygon = [
+            [bounds["sw_lng"], bounds["sw_lat"]],
+            [bounds["ne_lng"], bounds["sw_lat"]],
+            [bounds["ne_lng"], bounds["ne_lat"]],
+            [bounds["sw_lng"], bounds["ne_lat"]],
+            [bounds["sw_lng"], bounds["sw_lat"]],  # Close the polygon
+        ]
+
+        # Create GeoJSON polygon for H3
+        geojson_polygon = {
+            "type": "Polygon",
+            "coordinates": [bbox_polygon],
+        }
+
+        # Get intersecting hexagons
+        intersecting_hexes = list(h3.geo_to_cells(geojson_polygon, h3_resolution))
+
+        if not intersecting_hexes:
+            return []
+
+        # Choose aggregation method based on search_term
+        if filters.search_term:
+            aggregation_results = await self._aggregate_with_search(
+                h3_resolution, intersecting_hexes, bounds, filters
+            )
+        else:
+            aggregation_results = await self._aggregate_direct(
+                h3_resolution, intersecting_hexes, bounds, filters
+            )
+
+        # Enrich with geometry
+        clusters = self._enrich_clusters_with_geometry(aggregation_results)
+
+        # Cache results for 30 minutes
+        cache_data = json.dumps([cluster.model_dump() for cluster in clusters])
+        await self._redis_client.setex(cache_key, 1800, cache_data)
+
+        return clusters
+
+    async def get_jobs_in_h3_hexagon_paginated(
+        self,
+        h3_index: str,
+        h3_resolution: int,
+        filters: JobClusterFilters,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[Job, ObjectId]:
+        """
+        Get paginated jobs within a specific H3 hexagon (cluster drill-down).
+
+        Args:
+            h3_index: The H3 index to drill down into
+            h3_resolution: H3 resolution level of the index
+            filters: Job filter criteria
+            first: Number of items to fetch from the start
+            last: Number of items to fetch from the end
+            before: Cursor to fetch items before
+            after: Cursor to fetch items after
+
+        Returns:
+            Paginated result with jobs and page info
+        """
+        from app.database.paginator import Paginator
+
+        paginator: Paginator[Job, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=Job,
+            paginate_by="_id",
+            entity_paginate_by="id",
+            calculate_total_count=True,
+        )
+
+        h3_field = f"h3_indexes.{h3_resolution}"
+
+        # Build base query
+        search_criteria = Job.find(
+            {h3_field: h3_index},
+            Job.is_active == True,
+            Or(Job.expires_at == None, Job.expires_at > datetime.now(UTC)),
+            fetch_links=True,
+            nesting_depth=1,
+        )
+
+        # Apply filters
+        if filters.work_mode:
+            search_criteria = search_criteria.find(In(Job.work_mode, filters.work_mode))
+
+        if filters.job_type:
+            search_criteria = search_criteria.find(In(Job.type, filters.job_type))
+
+        if filters.min_experience is not None:
+            search_criteria = search_criteria.find(
+                Or(
+                    Job.max_experience >= filters.min_experience,
+                    Job.min_experience >= filters.min_experience,
+                )
+            )
+
+        if filters.max_experience is not None:
+            search_criteria = search_criteria.find(
+                Or(
+                    Job.min_experience <= filters.max_experience,
+                    Job.max_experience <= filters.max_experience,
+                )
+            )
+
+        if filters.min_salary is not None:
+            search_criteria = search_criteria.find(
+                Or(
+                    Job.max_salary >= filters.min_salary,
+                    Job.min_salary >= filters.min_salary,
+                )
+            )
+
+        if filters.max_salary is not None:
+            search_criteria = search_criteria.find(
+                Or(
+                    Job.min_salary <= filters.max_salary,
+                    Job.max_salary <= filters.max_salary,
+                )
+            )
+
+        # Sort by updated_at descending
+        search_criteria = search_criteria.sort(-Job.updated_at)
+
+        return await paginator.paginate(
+            search_criteria=search_criteria,
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
 
     async def generate_slug(self, title: str, organization_id: ObjectId) -> str:
         """Generate a slug from the job title."""
@@ -191,6 +764,10 @@ class JobRepo:
             ),
             dimensions=JOB_EMBEDDING_DIMENSIONS,
         )
+
+        # Compute H3 indexes for map clustering
+        h3_indexes = self._compute_h3_indexes(geo) if geo else None
+
         job = Job(
             title=title,
             description=description,
@@ -201,6 +778,7 @@ class JobRepo:
             location=location,
             applicant_locations=applicant_locations,
             geo=geo,
+            h3_indexes=h3_indexes,
             address=address,
             min_salary=min_salary,
             max_salary=max_salary,
@@ -249,6 +827,11 @@ class JobRepo:
                 ),
                 dimensions=JOB_EMBEDDING_DIMENSIONS,
             )
+
+            # Compute H3 indexes for map clustering
+            geo_obj = data.get("geo")
+            h3_indexes = self._compute_h3_indexes(geo_obj) if geo_obj else None
+
             job = Job(
                 title=data["title"],
                 description=data["description"],
@@ -258,7 +841,8 @@ class JobRepo:
                 vacancies=data.get("vacancies"),
                 location=data.get("location"),
                 applicant_locations=data.get("applicant_locations", []),
-                geo=data.get("geo"),
+                geo=geo_obj,
+                h3_indexes=h3_indexes,
                 address=data.get("address"),
                 min_salary=data.get("min_salary"),
                 max_salary=data.get("max_salary"),
@@ -336,6 +920,9 @@ class JobRepo:
         job.location = location
         job.applicant_locations = applicant_locations
         job.geo = geo
+        # Recompute H3 indexes if geo location changed
+        if orig["geo"] != geo:
+            job.h3_indexes = self._compute_h3_indexes(geo) if geo else None
         job.address = address
         job.min_salary = min_salary
         job.max_salary = max_salary
@@ -594,11 +1181,11 @@ class JobRepo:
                         "box": {
                             "bottomLeft": {
                                 "type": "Point",
-                                "coordinates": [bounds.sw_lng, bounds.sw_lat],
+                                "coordinates": [bounds["sw_lng"], bounds["sw_lat"]],
                             },
                             "topRight": {
                                 "type": "Point",
-                                "coordinates": [bounds.ne_lng, bounds.ne_lat],
+                                "coordinates": [bounds["ne_lng"], bounds["ne_lat"]],
                             },
                         },
                         "path": "geo",

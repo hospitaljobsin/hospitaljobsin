@@ -125,6 +125,7 @@ from app.jobs.services import (
     JobApplicantAnalysisService,
     JobApplicantService,
     JobApplicationFormService,
+    JobClusterService,
     JobMetricService,
     JobService,
     SavedJobService,
@@ -336,6 +337,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(EmailVerificationTokenRepo))
     container.register(aioinject.Singleton(PasswordResetTokenRepo))
     container.register(aioinject.Scoped(JobService))
+    container.register(aioinject.Scoped(JobClusterService))
     container.register(aioinject.Scoped(SavedJobService))
     container.register(aioinject.Scoped(JobMetricService))
     container.register(aioinject.Singleton(OrganizationRepo))

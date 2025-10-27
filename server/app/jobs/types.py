@@ -54,7 +54,7 @@ from app.jobs.exceptions import (
     JobApplicantCountNotFoundError,
     JobApplicantNotFoundError,
 )
-from app.jobs.models import JobAutocompleteSuggestion
+from app.jobs.models import JobAutocompleteSuggestion, JobCluster, SalaryRange
 from app.jobs.repositories import (
     JobApplicantRepo,
     JobApplicantsSortBy,
@@ -1624,3 +1624,96 @@ class AutocompleteJobsPayloadType:
     jobs: list[JobAutocompleteSuggestionType] = strawberry.field(
         description="List of autocomplete jobs.",
     )
+
+
+# Map clustering types
+
+
+@strawberry.type(
+    name="SalaryRange",
+    description="Salary range for a cluster of jobs.",
+)
+class SalaryRangeType:
+    min_salary: int | None = strawberry.field(
+        description="Minimum salary in the cluster (in local currency).",
+    )
+    max_salary: int | None = strawberry.field(
+        description="Maximum salary in the cluster (in local currency).",
+    )
+
+    @classmethod
+    def marshal(cls, salary_range: SalaryRange) -> Self:
+        """Marshal into a type instance."""
+        return cls(
+            min_salary=salary_range.min_salary,
+            max_salary=salary_range.max_salary,
+        )
+
+
+@strawberry.type(
+    name="JobCluster",
+    description="Aggregated job cluster at a specific H3 hexagon resolution.",
+)
+class JobClusterType:
+    h3_index: str = strawberry.field(
+        description="H3 hexagon index identifying this cluster.",
+    )
+    count: int = strawberry.field(
+        description="Number of jobs in this cluster.",
+    )
+    center: GeoObjectType = strawberry.field(
+        description="Geographic center point of the hexagon.",
+    )
+    bounds: list[list[float]] = strawberry.field(
+        description="Boundary coordinates of the hexagon as array of [lng, lat] pairs.",
+    )
+    salary_range: SalaryRangeType = strawberry.field(
+        description="Salary range across all jobs in the cluster.",
+    )
+    top_specialties: list[str] = strawberry.field(
+        description="Top 3 most common specialties/skills in the cluster.",
+    )
+
+    @classmethod
+    def marshal(cls, cluster: JobCluster) -> Self:
+        """Marshal into a type instance."""
+        from app.base.models import GeoObject
+
+        # Extract coordinates from center dict [lng, lat]
+        center_coords: list[float] = cluster.center["coordinates"]  # type: ignore[assignment]
+        center_type: str = cluster.center["type"]  # type: ignore[assignment]
+
+        return cls(
+            h3_index=cluster.h3_index,
+            count=cluster.count,
+            center=GeoObjectType.marshal(
+                GeoObject(
+                    type=center_type,
+                    coordinates=(center_coords[0], center_coords[1]),
+                )
+            ),
+            bounds=cluster.bounds,
+            salary_range=SalaryRangeType.marshal(cluster.salary_range),
+            top_specialties=cluster.top_specialties,
+        )
+
+
+@strawberry.type(
+    name="JobClusterConnection",
+    description="Connection type for job clusters with total count.",
+)
+class JobClusterConnectionType:
+    clusters: list[JobClusterType] = strawberry.field(
+        description="List of job clusters in the viewport.",
+    )
+    total_count: int = strawberry.field(
+        description="Total number of jobs across all clusters in the viewport.",
+    )
+
+    @classmethod
+    def marshal(cls, clusters: list[JobCluster], total_count: int) -> Self:
+        """Marshal into a connection type instance."""
+        return cls(
+            clusters=[JobClusterType.marshal(cluster) for cluster in clusters],
+            total_count=total_count,
+        )

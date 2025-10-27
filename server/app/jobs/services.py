@@ -1,6 +1,7 @@
 import logging
+import math
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Annotated, Any, Literal
 
 from beanie import Link
@@ -34,6 +35,7 @@ from app.core.constants import (
     JobKindType,
     WorkModeType,
 )
+from app.database.paginator import PaginatedResult
 from app.dataloaders import Dataloaders
 from app.geocoding.repositories import RegionRepo
 from app.jobs.agents.applicant_analysis import (
@@ -66,6 +68,8 @@ from app.jobs.exceptions import (
 )
 from app.jobs.models import (
     JobApplicantAnalysisEventBody,
+    JobCluster,
+    JobClusterFilters,
     JobExperienceRange,
     JobSalaryRange,
 )
@@ -82,6 +86,56 @@ from app.organizations.exceptions import (
 from app.organizations.repositories import OrganizationRepo
 from app.organizations.services import OrganizationMemberService
 from app.revalidation.services import BaseRevalidationService
+
+# Map clustering utilities
+
+
+def get_h3_resolution_from_zoom(
+    zoom_level: int, job_density: float | None = None
+) -> int:
+    """
+    Determine the appropriate H3 resolution based on map zoom level and job density.
+
+    Zoom-to-resolution mapping:
+    - zoom 1-4: resolution 1 (large hexagons, country-level)
+    - zoom 5-9: resolution 3 (state/province-level)
+    - zoom 10-11: resolution 7 (city-level)
+    - zoom 12-13: resolution 9 (neighborhood-level)
+    - zoom 14: resolution 10 (street-level)
+    - zoom 15+: resolution 11 (building-level)
+
+    Args:
+        zoom_level: Map zoom level (1-20)
+        job_density: Optional jobs per km² to adjust resolution
+
+    Returns:
+        H3 resolution (1-11)
+
+    """
+    # Base resolution from zoom level
+    if zoom_level <= 4:
+        base_resolution = 1
+    elif zoom_level <= 9:
+        base_resolution = 3
+    elif zoom_level <= 11:
+        base_resolution = 7
+    elif zoom_level <= 13:
+        base_resolution = 9
+    elif zoom_level == 14:
+        base_resolution = 10
+    else:  # zoom_level >= 15
+        base_resolution = 11
+
+    # Adjust based on density if provided
+    if job_density is not None:
+        if job_density > 100 and base_resolution < 11:
+            # High density: increase resolution for more granular clusters
+            return min(base_resolution + 1, 11)
+        if job_density < 10 and base_resolution > 1:
+            # Low density: decrease resolution for broader clusters
+            return max(base_resolution - 1, 1)
+
+    return base_resolution
 
 
 class SavedJobService:
@@ -1035,3 +1089,289 @@ class JobMetricService:
             event_type=event_type,
         )
         return Ok(result)
+
+
+class JobClusterService:
+    """Service for managing job clustering on maps using H3 hexagonal indexing."""
+
+    def __init__(self, job_repo: JobRepo) -> None:
+        """Initialize the JobClusterService.
+
+        Args:
+            job_repo: Repository for job data operations
+        """
+        self._job_repo = job_repo
+
+    async def get_job_clusters(
+        self,
+        bounds: dict[str, float],
+        zoom_level: int,
+        filters: JobClusterFilters,
+    ) -> tuple[list[JobCluster], int]:
+        """Get aggregated job clusters for a map viewport.
+
+        Args:
+            bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
+            zoom_level: Map zoom level (1-20)
+            filters: Filter criteria for jobs
+
+        Returns:
+            Tuple of (list of job clusters, total job count)
+
+        """
+        # Calculate job density for viewport
+        job_density = await self._calculate_job_density(bounds, filters)
+
+        # Determine H3 resolution based on zoom level and density
+        h3_resolution = get_h3_resolution_from_zoom(zoom_level, job_density)
+
+        # For very high zoom levels (15+), return individual jobs as clusters
+        # This provides the most detail when zoomed in
+        if zoom_level >= 15:  # noqa: PLR2004
+            return await self._get_individual_job_clusters(bounds, filters)
+
+        # For lower zoom levels, use H3 hexagonal aggregation
+        return await self._get_aggregated_clusters(bounds, h3_resolution, filters)
+
+    async def get_cluster_jobs_paginated(
+        self,
+        h3_index: str,
+        h3_resolution: int,
+        filters: JobClusterFilters,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult:
+        """Get paginated jobs within a specific H3 hexagon cluster.
+
+        Args:
+            h3_index: H3 hexagon index
+            h3_resolution: H3 resolution level
+            filters: Filter criteria for jobs
+            first: Number of items after cursor
+            last: Number of items before cursor
+            before: Cursor for backward pagination
+            after: Cursor for forward pagination
+
+        Returns:
+            Paginated result with jobs and page info
+        """
+        # Delegate to repository
+        return await self._job_repo.get_jobs_in_h3_hexagon_paginated(
+            h3_index=h3_index,
+            h3_resolution=h3_resolution,
+            filters=filters,
+            first=first,
+            last=last,
+            before=before,
+            after=after,
+        )
+
+    async def _calculate_job_density(
+        self, bounds: dict[str, float], filters: JobClusterFilters
+    ) -> float:
+        """Calculate job density (jobs per km²) for a viewport.
+
+        Args:
+            bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
+            filters: Filter criteria for jobs
+
+        Returns:
+            Jobs per square kilometer
+        """
+        # Calculate viewport area using haversine formula
+        sw_lat = bounds["sw_lat"]
+        sw_lng = bounds["sw_lng"]
+        ne_lat = bounds["ne_lat"]
+        ne_lng = bounds["ne_lng"]
+
+        # Earth radius in km
+        r = 6371.0
+
+        # Convert to radians
+        lat1 = math.radians(sw_lat)
+        lat2 = math.radians(ne_lat)
+        lng1 = math.radians(sw_lng)
+        lng2 = math.radians(ne_lng)
+
+        # Calculate height (north-south distance)
+        dlat = lat2 - lat1
+        a = math.sin(dlat / 2) ** 2
+        c = 2 * math.asin(math.sqrt(a))
+        height_km = r * c
+
+        # Calculate width (east-west distance) at center latitude
+        center_lat = (lat1 + lat2) / 2
+        dlng = lng2 - lng1
+        a = math.cos(center_lat) ** 2 * math.sin(dlng / 2) ** 2
+        c = 2 * math.asin(math.sqrt(a))
+        width_km = r * c
+
+        # Calculate area
+        area_km2 = height_km * width_km
+
+        # Avoid division by zero
+        if area_km2 == 0:
+            return 0.0
+
+        # Count jobs in the viewport using the repository's aggregation
+        # We use resolution 11 for fine-grained counting
+        _, total_count = await self._job_repo.get_aggregated_jobs_by_h3(
+            bounds=bounds, h3_resolution=11, filters=filters
+        )
+
+        # Calculate density
+        return total_count / area_km2
+
+    async def _get_aggregated_clusters(
+        self,
+        bounds: dict[str, float],
+        h3_resolution: int,
+        filters: JobClusterFilters,
+    ) -> tuple[list[JobCluster], int]:
+        """Get aggregated clusters using H3 hexagonal binning.
+
+        Args:
+            bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
+            h3_resolution: H3 resolution level to use
+            filters: Filter criteria for jobs
+
+        Returns:
+            Tuple of (list of job clusters, total job count)
+
+        """
+        # Delegate to repository's aggregation method
+        clusters, total_count = await self._job_repo.get_aggregated_jobs_by_h3(
+            bounds=bounds, h3_resolution=h3_resolution, filters=filters
+        )
+
+        return clusters, total_count
+
+    async def _get_individual_job_clusters(
+        self,
+        bounds: dict[str, float],
+        filters: JobClusterFilters,
+    ) -> tuple[list[JobCluster], int]:
+        """Get individual jobs as single-job clusters for high zoom levels.
+
+        Args:
+            bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
+            filters: Filter criteria for jobs
+
+        Returns:
+            Tuple of (list of single-job clusters, total job count)
+
+        """
+        # Build query for jobs within bounds and matching filters
+        sw_lat = bounds["sw_lat"]
+        sw_lng = bounds["sw_lng"]
+        ne_lat = bounds["ne_lat"]
+        ne_lng = bounds["ne_lng"]
+
+        # Use $geoWithin to find jobs in bounding box
+        query_conditions = [
+            {
+                "geo": {
+                    "$geoWithin": {
+                        "$box": [[sw_lng, sw_lat], [ne_lng, ne_lat]],
+                    }
+                }
+            },
+            {"is_active": True},
+            {
+                "$or": [
+                    {"expires_at": None},
+                    {"expires_at": {"$gt": datetime.now(UTC)}},
+                ]
+            },
+        ]
+
+        # Apply filters
+        filter_conditions = []
+
+        if filters.work_mode:
+            filter_conditions.append({"work_mode": {"$in": filters.work_mode}})
+
+        if filters.job_type:
+            filter_conditions.append({"type": {"$in": filters.job_type}})
+
+        if filters.min_experience is not None:
+            filter_conditions.append(
+                {
+                    "$or": [
+                        {"max_experience": {"$gte": filters.min_experience}},
+                        {"min_experience": {"$gte": filters.min_experience}},
+                    ]
+                }
+            )
+
+        if filters.max_experience is not None:
+            filter_conditions.append(
+                {
+                    "$or": [
+                        {"min_experience": {"$lte": filters.max_experience}},
+                        {"max_experience": {"$lte": filters.max_experience}},
+                    ]
+                }
+            )
+
+        if filters.min_salary is not None:
+            filter_conditions.append(
+                {
+                    "$or": [
+                        {"max_salary": {"$gte": filters.min_salary}},
+                        {"min_salary": {"$gte": filters.min_salary}},
+                    ]
+                }
+            )
+
+        if filters.max_salary is not None:
+            filter_conditions.append(
+                {
+                    "$or": [
+                        {"min_salary": {"$lte": filters.max_salary}},
+                        {"max_salary": {"$lte": filters.max_salary}},
+                    ]
+                }
+            )
+
+        # Combine all conditions
+        final_query = {"$and": query_conditions + filter_conditions}
+
+        # Fetch jobs (limit to 1000 for performance)
+        jobs = await Job.find(final_query, fetch_links=False, limit=1000).to_list()
+
+        # Wrap each job as a single-job cluster
+        clusters = []
+        for job in jobs:
+            if not job.geo:
+                continue
+
+            # Get H3 index at resolution 11 for this job
+            h3_index = h3.latlng_to_cell(
+                job.geo.coordinates[1], job.geo.coordinates[0], 11
+            )
+
+            # Get boundary for this hexagon
+            boundary_coords = h3.cell_to_boundary(h3_index)
+            bounds_list = [
+                [lng, lat] for lat, lng in boundary_coords
+            ]  # Convert to [lng, lat] format
+
+            # Create cluster
+            cluster = JobCluster(
+                h3_index=h3_index,
+                count=1,
+                center={"lat": job.geo.coordinates[1], "lng": job.geo.coordinates[0]},
+                bounds=bounds_list,
+                salary_range=None
+                if job.min_salary is None and job.max_salary is None
+                else JobSalaryRange(
+                    min_salary=job.min_salary, max_salary=job.max_salary
+                ),
+                top_specialties=[job.specialty] if job.specialty else [],
+            )
+            clusters.append(cluster)
+
+        return clusters, len(clusters)

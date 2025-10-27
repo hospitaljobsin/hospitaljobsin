@@ -46,6 +46,11 @@ class Job(Document):
     location: str | None = None
     address: Address | None = None
     geo: GeoObject | None = None
+    # H3 hexagonal indexes at multiple resolutions for map clustering
+    h3_indexes: dict[str, str] | None = Field(
+        default=None,
+        description="H3 indexes at different resolutions (0-11)",
+    )
     applicant_locations: list[CountryAlpha2] = []
     skills: list[str]
 
@@ -104,6 +109,11 @@ class Job(Document):
                 [("slug", pymongo.ASCENDING), ("organization", pymongo.ASCENDING)],
                 name="slug_organization_unique_index",
                 unique=True,
+            ),
+            # Wildcard index for H3 hexagonal clustering at all resolutions
+            IndexModel(
+                [("h3_indexes.$**", pymongo.ASCENDING)],
+                name="h3_indexes_wildcard",
             ),
         ]
 
