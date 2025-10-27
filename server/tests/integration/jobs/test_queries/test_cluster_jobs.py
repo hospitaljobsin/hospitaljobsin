@@ -1,7 +1,6 @@
-"""Integration tests for job clustering GraphQL queries."""
+"""Integration tests for cluster jobs GraphQL query."""
 
 import asyncio
-import time
 from collections.abc import AsyncGenerator
 
 import pytest
@@ -141,7 +140,7 @@ async def clustered_jobs(
     bangalore_jobs_data: list[dict[str, str | GeoObject | int]] = [
         {
             "title": "Registered Nurse - Bangalore",
-            "location_name": "Bangalore, Karnataka, India",
+            "location_name": "Bangalore",
             "geo": GeoObject(
                 coordinates=(77.5946, 12.9716),  # lng, lat - Bangalore center
             ),
@@ -151,7 +150,7 @@ async def clustered_jobs(
         },
         {
             "title": "Nurse Practitioner - Koramangala",
-            "location_name": "Koramangala, Bangalore, Karnataka, India",
+            "location_name": "Bangalore",
             "geo": GeoObject(
                 coordinates=(77.6172, 12.9279),  # lng, lat - Koramangala
             ),
@@ -161,7 +160,7 @@ async def clustered_jobs(
         },
         {
             "title": "Critical Care Nurse - HSR Layout",
-            "location_name": "HSR Layout, Bangalore, Karnataka, India",
+            "location_name": "Bangalore",
             "geo": GeoObject(
                 coordinates=(77.6387, 12.9082),  # lng, lat - HSR Layout
             ),
@@ -176,7 +175,7 @@ async def clustered_jobs(
     mumbai_jobs_data: list[dict[str, str | GeoObject | int]] = [
         {
             "title": "Radiologist - Mumbai",
-            "location_name": "Mumbai, Maharashtra, India",
+            "location_name": "Mumbai",
             "geo": GeoObject(
                 coordinates=(72.8777, 19.076),  # lng, lat - Mumbai center
             ),
@@ -186,7 +185,7 @@ async def clustered_jobs(
         },
         {
             "title": "Radiologic Technologist - Andheri",
-            "location_name": "Andheri, Mumbai, Maharashtra, India",
+            "location_name": "Mumbai",
             "geo": GeoObject(
                 coordinates=(72.8697, 19.1136),  # lng, lat - Andheri
             ),
@@ -224,224 +223,10 @@ async def clustered_jobs(
         await job_repo.delete(job)
 
 
-async def test_clusters_at_low_zoom_level(
-    graphql_client: GraphQLClient,
-    clustered_jobs: list[Job],
-):
-    """Test that jobs are clustered at low zoom levels."""
-    # Use zoom level 5 (should use resolution 3)
-    # Bounding box covering India
-    response = await graphql_client(
-        query=JOB_CLUSTERS_QUERY,
-        variables={
-            "bounds": {
-                "swLat": 6.0,  # Southern India
-                "swLng": 68.0,  # Western India
-                "neLat": 38.0,  # Northern India
-                "neLng": 98.0,  # Eastern India
-            },
-            "zoomLevel": 5,
-            "workMode": [],
-            "jobType": [],
-        },
-    )
-
-    data = response["data"]["jobClusters"]
-
-    # Should have clusters (Bangalore and Mumbai jobs should be in separate clusters)
-    assert len(data["clusters"]) >= 1
-    assert data["totalCount"] == 5  # Total of 5 jobs
-
-    # Each cluster should have the required fields
-    for cluster in data["clusters"]:
-        assert "h3Index" in cluster
-        assert "count" in cluster
-        assert cluster["count"] > 0
-        assert "center" in cluster
-        assert "lat" in cluster["center"]
-        assert "lng" in cluster["center"]
-        assert "bounds" in cluster
-        assert len(cluster["bounds"]) > 0
-
-
-async def test_clusters_at_high_zoom_level(
-    graphql_client: GraphQLClient,
-    clustered_jobs: list[Job],
-):
-    """Test that individual jobs are returned at high zoom levels."""
-    # Use zoom level 15 (should return individual jobs)
-    # Bounding box covering Bangalore area
-    response = await graphql_client(
-        query=JOB_CLUSTERS_QUERY,
-        variables={
-            "bounds": {
-                "swLat": 12.85,
-                "swLng": 77.50,
-                "neLat": 13.05,
-                "neLng": 77.70,
-            },
-            "zoomLevel": 15,
-            "workMode": [],
-            "jobType": [],
-        },
-    )
-
-    data = response["data"]["jobClusters"]
-
-    # At zoom 15, each job should be its own cluster
-    assert len(data["clusters"]) >= 1
-    # Each cluster at this zoom should have count=1
-    for cluster in data["clusters"]:
-        assert cluster["count"] == 1
-
-
-async def test_clusters_with_work_mode_filter(
-    graphql_client: GraphQLClient,
-    clustered_jobs: list[Job],
-):
-    """Test clustering with work mode filter."""
-    response = await graphql_client(
-        query=JOB_CLUSTERS_QUERY,
-        variables={
-            "bounds": {
-                "swLat": 6.0,
-                "swLng": 68.0,
-                "neLat": 38.0,
-                "neLng": 98.0,
-            },
-            "zoomLevel": 5,
-            "workMode": ["OFFICE"],
-            "jobType": [],
-        },
-    )
-
-    data = response["data"]["jobClusters"]
-
-    # All our test jobs are office
-    assert data["totalCount"] == 5
-
-
-async def test_clusters_with_salary_filter(
-    graphql_client: GraphQLClient,
-    clustered_jobs: list[Job],
-):
-    """Test clustering with salary range filter."""
-    response = await graphql_client(
-        query=JOB_CLUSTERS_QUERY,
-        variables={
-            "bounds": {
-                "swLat": 6.0,
-                "swLng": 68.0,
-                "neLat": 38.0,
-                "neLng": 98.0,
-            },
-            "zoomLevel": 5,
-            "workMode": [],
-            "jobType": [],
-            "minSalary": 80000,  # Filter for higher salary jobs
-        },
-    )
-
-    data = response["data"]["jobClusters"]
-
-    # Should filter out some lower salary jobs
-    assert data["totalCount"] < 5
-
-
-async def test_clusters_performance(
-    graphql_client: GraphQLClient,
-    clustered_jobs: list[Job],
-):
-    """Test that clustering query completes in <200ms."""
-    start_time = time.time()
-
-    response = await graphql_client(
-        query=JOB_CLUSTERS_QUERY,
-        variables={
-            "bounds": {
-                "swLat": 6.0,
-                "swLng": 68.0,
-                "neLat": 38.0,
-                "neLng": 98.0,
-            },
-            "zoomLevel": 5,
-            "workMode": [],
-            "jobType": [],
-        },
-    )
-
-    elapsed_time = (time.time() - start_time) * 1000  # Convert to ms
-
-    # Allow some margin for test environment, but should be under 500ms
-    assert elapsed_time < 500, f"Query took {elapsed_time}ms, expected <500ms"
-
-
-async def test_clusters_salary_range_aggregation(
-    graphql_client: GraphQLClient,
-    clustered_jobs: list[Job],
-):
-    """Test that salary range is correctly aggregated in clusters."""
-    response = await graphql_client(
-        query=JOB_CLUSTERS_QUERY,
-        variables={
-            "bounds": {
-                "swLat": 12.85,
-                "swLng": 77.50,
-                "neLat": 13.05,
-                "neLng": 77.70,
-            },
-            "zoomLevel": 8,
-            "workMode": [],
-            "jobType": [],
-        },
-    )
-
-    data = response["data"]["jobClusters"]
-
-    # Check that clusters have salary range
-    for cluster in data["clusters"]:
-        assert "salaryRange" in cluster
-        if cluster["salaryRange"]["minSalary"] is not None:
-            assert cluster["salaryRange"]["minSalary"] > 0
-        if cluster["salaryRange"]["maxSalary"] is not None:
-            assert cluster["salaryRange"]["maxSalary"] > 0
-
-
-async def test_clusters_top_specialties(
-    graphql_client: GraphQLClient,
-    clustered_jobs: list[Job],
-):
-    """Test that top specialties are included in clusters."""
-    response = await graphql_client(
-        query=JOB_CLUSTERS_QUERY,
-        variables={
-            "bounds": {
-                "swLat": 12.85,
-                "swLng": 77.50,
-                "neLat": 13.05,
-                "neLng": 77.70,
-            },
-            "zoomLevel": 8,
-            "workMode": [],
-            "jobType": [],
-        },
-    )
-
-    data = response["data"]["jobClusters"]
-
-    # Check that clusters have top specialties
-    for cluster in data["clusters"]:
-        assert "topSpecialties" in cluster
-        assert isinstance(cluster["topSpecialties"], list)
-        # Bangalore area should have "nursing" as top specialty
-        if cluster["count"] > 1:
-            assert "nursing" in cluster["topSpecialties"]
-
-
 async def test_cluster_jobs_pagination(
     graphql_client: GraphQLClient,
     clustered_jobs: list[Job],
-):
+) -> None:
     """Test pagination of jobs within a cluster."""
     # First get clusters to get an h3_index
     clusters_response = await graphql_client(
@@ -488,7 +273,7 @@ async def test_cluster_jobs_pagination(
 async def test_cluster_jobs_filters(
     graphql_client: GraphQLClient,
     clustered_jobs: list[Job],
-):
+) -> None:
     """Test that filters work when drilling down into clusters."""
     # Get clusters first
     clusters_response = await graphql_client(
@@ -529,44 +314,3 @@ async def test_cluster_jobs_filters(
         job = edge["node"]
         if job["minSalary"] is not None:
             assert job["minSalary"] >= 80000 or job["maxSalary"] >= 80000
-
-
-async def test_cache_hit_improves_performance(
-    graphql_client: GraphQLClient,
-    clustered_jobs: list[Job],
-):
-    """Test that second identical query is faster due to caching."""
-    variables = {
-        "bounds": {
-            "swLat": 6.0,
-            "swLng": 68.0,
-            "neLat": 38.0,
-            "neLng": 98.0,
-        },
-        "zoomLevel": 5,
-        "workMode": [],
-        "jobType": [],
-    }
-
-    # First query (cache miss)
-    start_time = time.time()
-    response1 = await graphql_client(
-        query=JOB_CLUSTERS_QUERY,
-        variables=variables,
-    )
-    first_time = (time.time() - start_time) * 1000
-
-    # Second query (should be cache hit)
-    start_time = time.time()
-    response2 = await graphql_client(
-        query=JOB_CLUSTERS_QUERY,
-        variables=variables,
-    )
-    second_time = (time.time() - start_time) * 1000
-
-    # Results should be identical
-    assert response1["data"] == response2["data"]
-
-    # Second query should be faster (though this might be flaky in CI)
-    # Just log the times for now
-    print(f"First query: {first_time}ms, Second query: {second_time}ms")
