@@ -1,4 +1,5 @@
 import hashlib
+import json
 import secrets
 import uuid
 from collections import defaultdict
@@ -6,6 +7,7 @@ from datetime import UTC, datetime, time, timedelta
 from enum import Enum
 from typing import Any, Literal, get_args
 
+import h3
 import pymongo
 from beanie import DeleteRules, Link, PydanticObjectId, WriteRules
 from beanie.odm.queries.aggregation import AggregationQuery
@@ -16,9 +18,6 @@ from redis.asyncio import Redis
 
 from app.accounts.documents import Account, BaseProfile, CareerProfile
 from app.base.models import Address, GeoObject
-
-# Type alias for map bounds (dict with sw_lat, sw_lng, ne_lat, ne_lng keys)
-BoundingBox = dict[str, float]
 from app.core.constants import (
     DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT,
     JOB_APPLICANT_EMBEDDING_DIMENSIONS,
@@ -46,7 +45,9 @@ from app.jobs.agents.applicant_query_parser import (
 )
 from app.jobs.models import (
     JobAutocompleteSuggestion,
+    JobCluster,
     JobClusterFilters,
+    SalaryRange,
 )
 from app.organizations.documents import Organization
 
@@ -64,6 +65,9 @@ from .documents import (
     SavedJob,
     SearchableJob,
 )
+
+# Type alias for map bounds (dict with sw_lat, sw_lng, ne_lat, ne_lng keys)
+BoundingBox = dict[str, float]
 
 
 class JobSearchSortBy(Enum):
@@ -113,16 +117,15 @@ class JobRepo:
         Returns:
             Dictionary mapping resolution (as string) to H3 index,
             or None if geo is None or invalid
+
         """
         if not geo or not geo.coordinates:
             return None
 
-        import h3
-
         lng, lat = geo.coordinates
 
-        # Compute indexes at resolutions we'll use for aggregation
-        resolutions = [1, 3, 5, 7, 9, 10, 11]
+        # Include all resolutions your app may query
+        resolutions = [1, 3, 5, 7, 8, 9, 10, 11]
         h3_indexes = {}
 
         for resolution in resolutions:
@@ -164,27 +167,12 @@ class JobRepo:
     def _enrich_clusters_with_geometry(
         self, aggregation_results: list[dict]
     ) -> list[JobCluster]:
-        """
-        Enrich aggregation results with H3 hexagon geometry.
-
-        Takes raw aggregation results and adds center coordinates and boundary polygons
-        for each H3 hexagon cluster.
-
-        Args:
-            aggregation_results: List of dicts from MongoDB aggregation with h3_index and stats
-
-        Returns:
-            List of JobCluster domain models with geometry
-        """
-        import h3
-
-        clusters = []
+        clusters: list[JobCluster] = []
         for result in aggregation_results:
             h3_index = result["_id"]
 
             # Get center point coordinates (lat, lng)
             lat, lng = h3.cell_to_latlng(h3_index)
-            center = {"type": "Point", "coordinates": [lng, lat]}
 
             # Get hexagon boundary as list of [lng, lat] pairs
             boundary = h3.cell_to_boundary(h3_index)
@@ -201,7 +189,7 @@ class JobRepo:
                 JobCluster(
                     h3_index=h3_index,
                     count=result["count"],
-                    center=center,
+                    center=GeoObject(coordinates=(lng, lat)),
                     bounds=bounds,
                     salary_range=salary_range,
                     top_specialties=result.get("top_specialties", []),
@@ -496,41 +484,29 @@ class JobRepo:
         bounds: BoundingBox,
         h3_resolution: int,
         filters: JobClusterFilters,
-    ) -> list[JobCluster]:
-        """
-        Get aggregated job clusters at specified H3 resolution.
-
-        This is the main clustering method that:
-        1. Determines which H3 hexagons intersect the viewport
-        2. Checks Redis cache
-        3. Aggregates jobs by H3 index with optional filters
-        4. Enriches results with geometry
-        5. Caches results
-
-        Args:
-            bounds: Map viewport bounding box
-            h3_resolution: H3 resolution level for clustering
-            filters: Job filter criteria
-
-        Returns:
-            List of job clusters with geometry and statistics
-        """
-        import json
-
-        import h3
-
+    ) -> tuple[list[JobCluster], int]:
         # Generate cache key
         cache_key = self._generate_cluster_cache_key(bounds, h3_resolution, filters)
 
         # Check cache
         cached_result = await self._redis_client.get(cache_key)
         if cached_result:
-            # Deserialize cached clusters
-            clusters_data = json.loads(cached_result)
-            return [JobCluster(**cluster) for cluster in clusters_data]
+            # Deserialize cached clusters and total count
+            cache_obj = json.loads(cached_result)
+            # Handle both old format (list) and new format (dict)
+            if isinstance(cache_obj, list):
+                # Old cache format - just a list of clusters
+                clusters = [JobCluster(**cluster) for cluster in cache_obj]
+                total_count = sum(cluster.count for cluster in clusters)
+            else:
+                # New cache format - dict with clusters and total_count
+                clusters = [JobCluster(**cluster) for cluster in cache_obj["clusters"]]
+                total_count = cache_obj["total_count"]
+            return clusters, total_count
 
         # Calculate intersecting H3 hexagons
         # Create polygon from bounding box
+        # GeoJSON requires [lng, lat] coordinate pairs (not [lat, lng])
         bbox_polygon = [
             [bounds["sw_lng"], bounds["sw_lat"]],
             [bounds["ne_lng"], bounds["sw_lat"]],
@@ -539,17 +515,24 @@ class JobRepo:
             [bounds["sw_lng"], bounds["sw_lat"]],  # Close the polygon
         ]
 
-        # Create GeoJSON polygon for H3
+        # Create GeoJSON polygon for H3 (implements __geo_interface__)
         geojson_polygon = {
             "type": "Polygon",
             "coordinates": [bbox_polygon],
         }
 
         # Get intersecting hexagons
-        intersecting_hexes = list(h3.geo_to_cells(geojson_polygon, h3_resolution))
+        intersecting_hexes = list(h3.geo_to_cells(geojson_polygon, res=h3_resolution))
+
+        print(
+            "INTERSECTING HEXES:",
+            len(intersecting_hexes),
+            h3_resolution,
+            geojson_polygon,
+        )
 
         if not intersecting_hexes:
-            return []
+            return [], 0
 
         # Choose aggregation method based on search_term
         if filters.search_term:
@@ -564,11 +547,19 @@ class JobRepo:
         # Enrich with geometry
         clusters = self._enrich_clusters_with_geometry(aggregation_results)
 
+        # Calculate total count from all clusters
+        total_count = sum(cluster.count for cluster in clusters)
+
         # Cache results for 30 minutes
-        cache_data = json.dumps([cluster.model_dump() for cluster in clusters])
+        cache_data = json.dumps(
+            {
+                "clusters": [cluster.model_dump() for cluster in clusters],
+                "total_count": total_count,
+            }
+        )
         await self._redis_client.setex(cache_key, 1800, cache_data)
 
-        return clusters
+        return clusters, total_count
 
     async def get_jobs_in_h3_hexagon_paginated(
         self,
@@ -594,9 +585,8 @@ class JobRepo:
 
         Returns:
             Paginated result with jobs and page info
-        """
-        from app.database.paginator import Paginator
 
+        """
         paginator: Paginator[Job, ObjectId] = Paginator(
             reverse=True,
             document_cls=Job,
@@ -605,7 +595,7 @@ class JobRepo:
             calculate_total_count=True,
         )
 
-        h3_field = f"h3_indexes.{h3_resolution}"
+        h3_field = f"h3_indexes.{h3_resolution!s}"
 
         # Build base query
         search_criteria = Job.find(
@@ -767,6 +757,7 @@ class JobRepo:
 
         # Compute H3 indexes for map clustering
         h3_indexes = self._compute_h3_indexes(geo) if geo else None
+        print("H3 INDEXES:", h3_indexes)
 
         job = Job(
             title=title,

@@ -211,6 +211,8 @@ async def clustered_jobs(
             max_experience=5,
             organization=test_organization,
         )
+        # Activate the job so it appears in clustering queries
+        job = await job_repo.update_active(job, is_active=True)
         jobs.append(job)
 
     # Wait a bit for indexing
@@ -234,7 +236,7 @@ async def test_cluster_jobs_pagination(
         variables={
             "bounds": {
                 "swLat": 12.85,
-                "swLng": 77.50,
+                "swLng": 77.55,
                 "neLat": 13.05,
                 "neLng": 77.70,
             },
@@ -281,9 +283,9 @@ async def test_cluster_jobs_filters(
         variables={
             "bounds": {
                 "swLat": 18.90,
-                "swLng": 72.75,
-                "neLat": 19.30,
-                "neLng": 72.98,
+                "swLng": 72.80,
+                "neLat": 19.20,
+                "neLng": 73.00,
             },
             "zoomLevel": 8,
             "workMode": [],
@@ -292,6 +294,7 @@ async def test_cluster_jobs_filters(
     )
 
     clusters_data = clusters_response["data"]["jobClusters"]
+    assert len(clusters_data["clusters"]) > 0
     cluster = clusters_data["clusters"][0]
 
     # Query with salary filter

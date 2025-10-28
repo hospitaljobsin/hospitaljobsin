@@ -3,6 +3,7 @@
 from unittest.mock import AsyncMock
 
 import pytest
+from app.base.models import GeoObject
 from app.jobs.models import JobCluster, JobClusterFilters, SalaryRange
 from app.jobs.services import JobClusterService, get_h3_resolution_from_zoom
 
@@ -10,21 +11,21 @@ from app.jobs.services import JobClusterService, get_h3_resolution_from_zoom
 class TestGetH3ResolutionFromZoom:
     """Test the get_h3_resolution_from_zoom function."""
 
-    def test_zoom_level_1_to_4_returns_resolution_1(self):
-        """Test that zoom levels 1-4 map to H3 resolution 1."""
-        assert get_h3_resolution_from_zoom(1, job_density=0) == 1
-        assert get_h3_resolution_from_zoom(2, job_density=0) == 1
-        assert get_h3_resolution_from_zoom(3, job_density=0) == 1
-        assert get_h3_resolution_from_zoom(4, job_density=0) == 1
+    def test_zoom_level_1_to_4_returns_resolution_5(self):
+        """Test that zoom levels 1-4 map to H3 resolution 5 (minimum practical resolution)."""
+        assert get_h3_resolution_from_zoom(1, job_density=50) == 5
+        assert get_h3_resolution_from_zoom(2, job_density=50) == 5
+        assert get_h3_resolution_from_zoom(3, job_density=50) == 5
+        assert get_h3_resolution_from_zoom(4, job_density=50) == 5
 
-    def test_zoom_level_5_to_9_returns_resolution_3(self):
-        """Test that zoom levels 5-9 map to H3 resolution 3 with medium density."""
+    def test_zoom_level_5_to_9_returns_resolution_6(self):
+        """Test that zoom levels 5-9 map to H3 resolution 6 with medium density."""
         # Use medium density (50) to get base resolution without adjustment
-        assert get_h3_resolution_from_zoom(5, job_density=50) == 3
-        assert get_h3_resolution_from_zoom(6, job_density=50) == 3
-        assert get_h3_resolution_from_zoom(7, job_density=50) == 3
-        assert get_h3_resolution_from_zoom(8, job_density=50) == 3
-        assert get_h3_resolution_from_zoom(9, job_density=50) == 3
+        assert get_h3_resolution_from_zoom(5, job_density=50) == 6
+        assert get_h3_resolution_from_zoom(6, job_density=50) == 6
+        assert get_h3_resolution_from_zoom(7, job_density=50) == 6
+        assert get_h3_resolution_from_zoom(8, job_density=50) == 6
+        assert get_h3_resolution_from_zoom(9, job_density=50) == 6
 
     def test_zoom_level_10_to_11_returns_resolution_7(self):
         """Test that zoom levels 10-11 map to H3 resolution 7 with medium density."""
@@ -48,8 +49,8 @@ class TestGetH3ResolutionFromZoom:
 
     def test_high_density_increases_resolution(self):
         """Test that high job density (>100/km²) increases resolution by 1."""
-        # Base resolution 3 at zoom 5, high density increases to 4
-        assert get_h3_resolution_from_zoom(5, job_density=150) == 4
+        # Base resolution 6 at zoom 5, high density increases to 7
+        assert get_h3_resolution_from_zoom(5, job_density=150) == 7
 
         # Base resolution 7 at zoom 10, high density increases to 8
         assert get_h3_resolution_from_zoom(10, job_density=200) == 8
@@ -64,43 +65,43 @@ class TestGetH3ResolutionFromZoom:
 
     def test_low_density_decreases_resolution(self):
         """Test that low job density (<10/km²) decreases resolution by 1."""
-        # Base resolution 3 at zoom 5, low density decreases to 2
-        assert get_h3_resolution_from_zoom(5, job_density=5) == 2
+        # Base resolution 6 at zoom 5, low density decreases to 5 (minimum)
+        assert get_h3_resolution_from_zoom(5, job_density=5) == 5
 
         # Base resolution 7 at zoom 10, low density decreases to 6
         assert get_h3_resolution_from_zoom(10, job_density=8) == 6
 
-        # Base resolution 1 at zoom 1, low density stays at 1 (clamped)
-        assert get_h3_resolution_from_zoom(1, job_density=2) == 1
+        # Base resolution 5 at zoom 1, low density stays at 5 (clamped to minimum)
+        assert get_h3_resolution_from_zoom(1, job_density=2) == 5
 
     def test_low_density_does_not_go_below_min_resolution(self):
-        """Test that resolution is clamped at 1 even with low density."""
-        # Zoom 1 already at min resolution 1
-        assert get_h3_resolution_from_zoom(1, job_density=0) == 1
+        """Test that resolution is clamped at 5 even with low density."""
+        # Zoom 1 already at min resolution 5
+        assert get_h3_resolution_from_zoom(1, job_density=0) == 5
 
     def test_medium_density_no_adjustment(self):
         """Test that medium density (10-100/km²) does not adjust resolution."""
-        assert get_h3_resolution_from_zoom(5, job_density=50) == 3
+        assert get_h3_resolution_from_zoom(5, job_density=50) == 6
         assert get_h3_resolution_from_zoom(10, job_density=30) == 7
         assert get_h3_resolution_from_zoom(14, job_density=75) == 10
 
     def test_boundary_conditions(self):
         """Test exact boundary values for density thresholds."""
         # Exactly 100 jobs/km² should NOT trigger high density adjustment
-        assert get_h3_resolution_from_zoom(5, job_density=100) == 3
+        assert get_h3_resolution_from_zoom(5, job_density=100) == 6
 
         # Just over 100 should trigger adjustment
-        assert get_h3_resolution_from_zoom(5, job_density=100.1) == 4
+        assert get_h3_resolution_from_zoom(5, job_density=100.1) == 7
 
         # Exactly 10 jobs/km² should NOT trigger low density adjustment
-        assert get_h3_resolution_from_zoom(5, job_density=10) == 3
+        assert get_h3_resolution_from_zoom(5, job_density=10) == 6
 
-        # Just under 10 should trigger adjustment
-        assert get_h3_resolution_from_zoom(5, job_density=9.9) == 2
+        # Just under 10 should trigger adjustment (but clamped to minimum 5)
+        assert get_h3_resolution_from_zoom(5, job_density=9.9) == 5
 
     def test_zero_density(self):
-        """Test that zero density decreases resolution."""
-        assert get_h3_resolution_from_zoom(5, job_density=0) == 2
+        """Test that zero density decreases resolution (clamped to minimum 5)."""
+        assert get_h3_resolution_from_zoom(5, job_density=0) == 5
         assert get_h3_resolution_from_zoom(10, job_density=0) == 6
 
 
@@ -172,7 +173,7 @@ class TestJobClusterService:
             JobCluster(
                 h3_index="871f1c4a7ffffff",
                 count=10,
-                center={"lat": [40.7128], "lng": [-74.0060]},
+                center=GeoObject(coordinates=(-74.0060, 40.7128)),
                 bounds=[[40.7, -74.1], [40.8, -74.0], [40.7, -73.9]],
                 salary_range=SalaryRange(min_salary=50000, max_salary=100000),
                 top_specialties=["nursing"],
@@ -223,7 +224,7 @@ class TestJobClusterService:
             JobCluster(
                 h3_index="871f1c4a7ffffff",
                 count=10,
-                center={"lat": [40.7128], "lng": [-74.0060]},
+                center=GeoObject(coordinates=(-74.0060, 40.7128)),
                 bounds=[[40.7, -74.1]],
                 salary_range=SalaryRange(min_salary=50000, max_salary=100000),
                 top_specialties=["nursing"],
@@ -257,7 +258,7 @@ class TestJobClusterService:
             JobCluster(
                 h3_index="8b1f1c4a7ffffff",
                 count=1,
-                center={"lat": [40.7128], "lng": [-74.0060]},
+                center=GeoObject(coordinates=(-74.0060, 40.7128)),
                 bounds=[[40.7, -74.1]],
                 salary_range=SalaryRange(min_salary=60000, max_salary=80000),
                 top_specialties=["nursing"],
@@ -292,13 +293,13 @@ class TestJobClusterService:
         bounds = {"sw_lat": 40.0, "sw_lng": -74.0, "ne_lat": 41.0, "ne_lng": -73.0}
         filters = JobClusterFilters()
 
-        # Zoom 5 normally uses resolution 3, but high density bumps to 4
+        # Zoom 5 normally uses resolution 6, but high density bumps to 7
         await service.get_job_clusters(bounds, 5, filters)
 
-        # Check that aggregation was called with resolution 4
+        # Check that aggregation was called with resolution 7
         # call_args is (args, kwargs) tuple, h3_resolution is 2nd positional arg
         call_args = service._get_aggregated_clusters.call_args
-        assert call_args[0][1] == 4  # bounds, h3_resolution, filters
+        assert call_args[0][1] == 7  # bounds, h3_resolution, filters
 
     @pytest.mark.anyio
     async def test_get_cluster_jobs_paginated_delegates_to_repo(

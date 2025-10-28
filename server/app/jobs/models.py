@@ -2,6 +2,8 @@ from typing import Annotated, Self
 
 from pydantic import BaseModel, Field, model_validator
 
+from app.base.models import GeoObject
+
 
 class JobApplicantAnalysisEventBody(BaseModel):
     account_id: str
@@ -68,7 +70,7 @@ class JobCluster(BaseModel):
 
     h3_index: str
     count: int
-    center: dict[str, list[float]]  # GeoObject as dict
+    center: GeoObject
     bounds: list[list[float]]
     salary_range: SalaryRange
     top_specialties: list[str]

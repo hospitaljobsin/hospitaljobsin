@@ -1016,6 +1016,8 @@ class JobType(BaseNodeType[Job]):
         info: AuthInfo,
         job_metric_service: Injected[JobMetricService],
     ) -> JobViewMetricPointsPayload:
+        from app.organizations.types import OrganizationAuthorizationErrorType
+
         match await job_metric_service.get_impression_metric_points(
             account=info.context["current_user"],
             job_id=ObjectId(self.id),
@@ -1677,21 +1679,10 @@ class JobClusterType:
     @classmethod
     def marshal(cls, cluster: JobCluster) -> Self:
         """Marshal into a type instance."""
-        from app.base.models import GeoObject
-
-        # Extract coordinates from center dict [lng, lat]
-        center_coords: list[float] = cluster.center["coordinates"]  # type: ignore[assignment]
-        center_type: str = cluster.center["type"]  # type: ignore[assignment]
-
         return cls(
             h3_index=cluster.h3_index,
             count=cluster.count,
-            center=GeoObjectType.marshal(
-                GeoObject(
-                    type=center_type,
-                    coordinates=(center_coords[0], center_coords[1]),
-                )
-            ),
+            center=GeoObjectType.marshal(cluster.center),
             bounds=cluster.bounds,
             salary_range=SalaryRangeType.marshal(cluster.salary_range),
             top_specialties=cluster.top_specialties,

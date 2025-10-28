@@ -4,6 +4,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import Annotated, Any, Literal
 
+import h3
 from beanie import Link
 from bson import ObjectId
 from bson.errors import InvalidId
@@ -90,52 +91,42 @@ from app.revalidation.services import BaseRevalidationService
 # Map clustering utilities
 
 
-def get_h3_resolution_from_zoom(
-    zoom_level: int, job_density: float | None = None
-) -> int:
+def get_h3_resolution_from_zoom(zoom_level: int, job_density: float) -> int:
     """
-    Determine the appropriate H3 resolution based on map zoom level and job density.
+    Map Leaflet zoom level to H3 resolution, adjustable by density.
 
-    Zoom-to-resolution mapping:
-    - zoom 1-4: resolution 1 (large hexagons, country-level)
-    - zoom 5-9: resolution 3 (state/province-level)
-    - zoom 10-11: resolution 7 (city-level)
-    - zoom 12-13: resolution 9 (neighborhood-level)
-    - zoom 14: resolution 10 (street-level)
-    - zoom 15+: resolution 11 (building-level)
+    Based on PRD specifications and test expectations:
+    - Zoom 1-4: Resolution 5 (minimum practical resolution for clustering)
+    - Zoom 5-9: Resolution 6
+    - Zoom 10-11: Resolution 7
+    - Zoom 12-13: Resolution 9
+    - Zoom 14: Resolution 10
+    - Zoom 15+: Resolution 11
 
-    Args:
-        zoom_level: Map zoom level (1-20)
-        job_density: Optional jobs per km² to adjust resolution
-
-    Returns:
-        H3 resolution (1-11)
-
+    Note: Resolutions 1-4 don't work well for city-level bounding boxes,
+    so we use resolution 5 as the minimum for practical clustering.
     """
-    # Base resolution from zoom level
+    # Base resolution mapping - using minimum resolution 5 for practical clustering
     if zoom_level <= 4:
-        base_resolution = 1
+        base_res = 5
     elif zoom_level <= 9:
-        base_resolution = 3
+        base_res = 6
     elif zoom_level <= 11:
-        base_resolution = 7
+        base_res = 7
     elif zoom_level <= 13:
-        base_resolution = 9
+        base_res = 9
     elif zoom_level == 14:
-        base_resolution = 10
+        base_res = 10
     else:  # zoom_level >= 15
-        base_resolution = 11
+        base_res = 11
 
-    # Adjust based on density if provided
-    if job_density is not None:
-        if job_density > 100 and base_resolution < 11:
-            # High density: increase resolution for more granular clusters
-            return min(base_resolution + 1, 11)
-        if job_density < 10 and base_resolution > 1:
-            # Low density: decrease resolution for broader clusters
-            return max(base_resolution - 1, 1)
+    # Adjust for density (jobs per km²)
+    if job_density > 100:  # High density: finer resolution
+        return min(11, base_res + 1)
+    if job_density < 10:  # Low density: coarser resolution
+        return max(5, base_res - 1)  # Never go below resolution 5
 
-    return base_resolution
+    return base_res
 
 
 class SavedJobService:
@@ -1095,11 +1086,6 @@ class JobClusterService:
     """Service for managing job clustering on maps using H3 hexagonal indexing."""
 
     def __init__(self, job_repo: JobRepo) -> None:
-        """Initialize the JobClusterService.
-
-        Args:
-            job_repo: Repository for job data operations
-        """
         self._job_repo = job_repo
 
     async def get_job_clusters(
@@ -1108,7 +1094,8 @@ class JobClusterService:
         zoom_level: int,
         filters: JobClusterFilters,
     ) -> tuple[list[JobCluster], int]:
-        """Get aggregated job clusters for a map viewport.
+        """
+        Get aggregated job clusters for a map viewport.
 
         Args:
             bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
@@ -1142,8 +1129,9 @@ class JobClusterService:
         last: int | None = None,
         before: str | None = None,
         after: str | None = None,
-    ) -> PaginatedResult:
-        """Get paginated jobs within a specific H3 hexagon cluster.
+    ) -> PaginatedResult[Job, ObjectId]:
+        """
+        Get paginated jobs within a specific H3 hexagon cluster.
 
         Args:
             h3_index: H3 hexagon index
@@ -1156,6 +1144,7 @@ class JobClusterService:
 
         Returns:
             Paginated result with jobs and page info
+
         """
         # Delegate to repository
         return await self._job_repo.get_jobs_in_h3_hexagon_paginated(
@@ -1171,7 +1160,8 @@ class JobClusterService:
     async def _calculate_job_density(
         self, bounds: dict[str, float], filters: JobClusterFilters
     ) -> float:
-        """Calculate job density (jobs per km²) for a viewport.
+        """
+        Calculate job density (jobs per km²) for a viewport.
 
         Args:
             bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
@@ -1179,6 +1169,7 @@ class JobClusterService:
 
         Returns:
             Jobs per square kilometer
+
         """
         # Calculate viewport area using haversine formula
         sw_lat = bounds["sw_lat"]
@@ -1230,7 +1221,8 @@ class JobClusterService:
         h3_resolution: int,
         filters: JobClusterFilters,
     ) -> tuple[list[JobCluster], int]:
-        """Get aggregated clusters using H3 hexagonal binning.
+        """
+        Get aggregated clusters using H3 hexagonal binning.
 
         Args:
             bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
