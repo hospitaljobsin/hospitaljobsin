@@ -1,12 +1,18 @@
 'use client';
 
-import { useDisclosure } from '@heroui/react';
 import { useProgress } from '@bprogress/next';
+import { useDisclosure } from '@heroui/react';
 import type { Map as LeafletMap } from 'leaflet';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
 import { calculateViewportArea, shouldShowClusters } from '@/lib/map/h3Utils';
+
+type ClusterInfo = {
+	hexId: string;
+	count: number;
+	center: [number, number];
+};
 
 // Dynamic imports for Leaflet components (SSR incompatible)
 const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
@@ -73,6 +79,7 @@ interface JobMapViewProps {
 	onZoomChange?: (zoom: number) => void; // Callback when zoom level changes
 	onFiltersChange?: (filters: Partial<JobMapViewProps['filters']>) => void;
 	onLocationSelect?: (location: SearchLocation) => void;
+	onClusterSelect?: (h3Index: string, clusterInfo: { count: number; center: [number, number] }) => void; // Callback when cluster is selected
 	isPending?: boolean;
 }
 
@@ -83,15 +90,18 @@ export default function JobMapView({
 	onBoundsChange,
 	onZoomChange,
 	onFiltersChange,
-	onLocationSelect,
+	onLocationSelect: _onLocationSelect,
+	onClusterSelect,
 	isPending = false
 }: JobMapViewProps) {
 	const [map, setMap] = useState<LeafletMap | null>(null);
 	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+	const [selectedCluster, setSelectedCluster] = useState<ClusterInfo | null>(null);
 	const [isMobile, setIsMobile] = useState(false);
 	const [lastBounds, setLastBounds] = useState<{ swLat: number; swLng: number; neLat: number; neLng: number } | null>(null);
 	const [announcementMessage, setAnnouncementMessage] = useState<string>('');
 	const [isMounted, setIsMounted] = useState(false);
+	const [isMapDataFetching, setIsMapDataFetching] = useState(false);
 
 	// BProgress hook for controlling the top progress bar
 	const { start, stop } = useProgress();
@@ -99,14 +109,22 @@ export default function JobMapView({
 	// Drawer state for mobile job preview
 	const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
 
-	// Control progress bar based on loading state
+	// Control progress bar based on loading state (both external isPending and map data fetching)
 	useEffect(() => {
-		if (isPending) {
+		if (isPending || isMapDataFetching) {
 			start();
 		} else {
 			stop();
 		}
-	}, [isPending, start, stop]);
+	}, [isPending, isMapDataFetching, start, stop]);
+
+	// Stop map data fetching progress when data loading completes
+	useEffect(() => {
+		if (isMapDataFetching && !isPending) {
+			// Data has finished loading, stop the map-initiated progress
+			setIsMapDataFetching(false);
+		}
+	}, [isPending, isMapDataFetching]);
 
 	// Handle location selection and zoom to it
 	const handleLocationSelect = useCallback(
@@ -243,7 +261,12 @@ export default function JobMapView({
 				}
 
 				setLastBounds(newBounds);
-				onBoundsChange(newBounds);
+
+				// Start progress bar for map data fetching (only if callback exists)
+				if (onBoundsChange) {
+					setIsMapDataFetching(true);
+					onBoundsChange(newBounds);
+				}
 			}, 800);
 		};
 
@@ -270,7 +293,7 @@ export default function JobMapView({
 		[isMobile, onDrawerOpen, data]
 	);
 
-	// Handle cluster click - zoom into cluster center
+	// Handle cluster click - zoom into cluster center and trigger sidebar population
 	const handleClusterClick = useCallback(
 		(h3Index: string, cluster: any) => {
 			if (!map) return;
@@ -278,13 +301,29 @@ export default function JobMapView({
 			const [lng, lat] = cluster.center.coordinates;
 			const targetZoom = Math.min(currentZoom + 2, 16); // Zoom in by 2 levels, max 16
 
+			// Zoom to cluster
 			map.flyTo([lat, lng], targetZoom, {
 				duration: 1.0
 			});
 
-			setAnnouncementMessage(`Zoomed into cluster with ${cluster.count} jobs`);
+			// Set selected cluster for sidebar display
+			setSelectedCluster({
+				hexId: h3Index,
+				count: cluster.count,
+				center: [lat, lng]
+			});
+
+			// Trigger sidebar population with cluster jobs (if callback provided)
+			if (onClusterSelect) {
+				onClusterSelect(h3Index, {
+					count: cluster.count,
+					center: [lat, lng]
+				});
+			}
+
+			setAnnouncementMessage(`Zoomed into cluster with ${cluster.count} jobs. Loading cluster details...`);
 		},
-		[map, currentZoom]
+		[map, currentZoom, onClusterSelect]
 	);
 
 	// Calculate viewport area for clustering decision
@@ -374,6 +413,8 @@ export default function JobMapView({
 						onLocationSelect={handleLocationSelect}
 						totalCount={(data as any)?.jobs?.totalCount || 0}
 						isPending={isPending}
+						selectedCluster={selectedCluster}
+						onJobSelect={setSelectedJobId}
 					/>
 				</div>
 			)}
@@ -434,6 +475,8 @@ export default function JobMapView({
 					totalCount={(data as any)?.jobs?.totalCount || 0}
 					isPending={isPending}
 					activeFilterCount={activeFilterCount}
+					selectedCluster={selectedCluster}
+					onJobSelect={setSelectedJobId}
 				/>
 			)}
 		</div>

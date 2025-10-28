@@ -5,6 +5,12 @@ import { Sheet, type SheetRef } from 'react-modal-sheet';
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
 import MapFilterSidebar from './MapFilterSidebar';
 
+type ClusterInfo = {
+	hexId: string;
+	count: number;
+	center: [number, number];
+};
+
 interface FilterBottomSheetProps {
 	filters: {
 		searchTerm: string | null;
@@ -22,6 +28,9 @@ interface FilterBottomSheetProps {
 	totalCount: number;
 	isPending?: boolean;
 	activeFilterCount: number;
+	// Cluster support props
+	selectedCluster?: ClusterInfo | null;
+	onJobSelect?: (jobId: string) => void;
 }
 
 export default function FilterSheet({
@@ -29,8 +38,10 @@ export default function FilterSheet({
 	onFiltersChange,
 	onLocationSelect,
 	totalCount,
-	isPending = false,
-	activeFilterCount
+	isPending,
+	activeFilterCount,
+	selectedCluster,
+	onJobSelect
 }: FilterBottomSheetProps) {
 	const ref = useRef<SheetRef>(null);
 	const [currentSnap, setCurrentSnap] = useState(1);
@@ -89,6 +100,8 @@ export default function FilterSheet({
 							onLocationSelect={onLocationSelect}
 							totalCount={totalCount}
 							isPending={isPending}
+							selectedCluster={selectedCluster}
+							onJobSelect={onJobSelect}
 						/>
 					</div>
 				</Sheet.Content>
