@@ -1112,13 +1112,33 @@ class JobClusterService:
         # Determine H3 resolution based on zoom level and density
         h3_resolution = get_h3_resolution_from_zoom(zoom_level, job_density)
 
+        # Debug logging
+        import logging
+
+        logger = logging.getLogger(__name__)
+        print(
+            f"🚀 JobClusterService.get_job_clusters: zoom_level={zoom_level}, "
+            f"job_density={job_density}, h3_resolution={h3_resolution}, bounds={bounds}"
+        )
+        logger.info(
+            f"JobClusterService.get_job_clusters: zoom_level={zoom_level}, "
+            f"job_density={job_density}, h3_resolution={h3_resolution}, bounds={bounds}"
+        )
+
         # For very high zoom levels (15+), return individual jobs as clusters
         # This provides the most detail when zoomed in
         if zoom_level >= 15:  # noqa: PLR2004
+            logger.info("Using individual job clusters for high zoom level")
             return await self._get_individual_job_clusters(bounds, filters)
 
         # For lower zoom levels, use H3 hexagonal aggregation
-        return await self._get_aggregated_clusters(bounds, h3_resolution, filters)
+        print("🏠 Using H3 aggregated clusters for low zoom level")
+        logger.info("Using H3 aggregated clusters for low zoom level")
+        result = await self._get_aggregated_clusters(bounds, h3_resolution, filters)
+        print(
+            f"🏠 _get_aggregated_clusters returned: {len(result[0])} clusters, {result[1]} total_count"
+        )
+        return result
 
     async def get_cluster_jobs_paginated(
         self,
@@ -1206,14 +1226,46 @@ class JobClusterService:
         if area_km2 == 0:
             return 0.0
 
-        # Count jobs in the viewport using the repository's aggregation
-        # We use resolution 11 for fine-grained counting
-        _, total_count = await self._job_repo.get_aggregated_jobs_by_h3(
-            bounds=bounds, h3_resolution=11, filters=filters
-        )
+        # For large areas, use a simple heuristic based on area size
+        # to avoid calling aggregation which might cause memory issues
+        if area_km2 > 50000:  # Very large area (like entire countries)
+            # Use low density assumption for very large areas
+            return 0.1  # jobs per km²
+        elif area_km2 > 5000:  # Large area (like states/provinces)
+            return 1.0  # jobs per km²
+        elif area_km2 > 500:  # Medium area (like cities)
+            return 5.0  # jobs per km²
+        else:
+            # For smaller areas, do actual job counting
+            # Use a simple MongoDB count query instead of full aggregation
+            try:
+                # Build a basic query without H3 aggregation
+                query_conditions = {
+                    "is_active": True,
+                    "geo": {
+                        "$geoWithin": {
+                            "$box": [
+                                [bounds["sw_lng"], bounds["sw_lat"]],
+                                [bounds["ne_lng"], bounds["ne_lat"]],
+                            ]
+                        }
+                    },
+                }
 
-        # Calculate density
-        return total_count / area_km2
+                # Add basic filters without complex logic
+                if filters.work_mode:
+                    query_conditions["work_mode"] = {"$in": filters.work_mode}
+                if filters.job_type:
+                    query_conditions["type"] = {"$in": filters.job_type}
+
+                from app.jobs.documents import Job
+
+                total_count = await Job.count(query_conditions)
+
+                return total_count / area_km2 if area_km2 > 0 else 0.0
+            except Exception:
+                # Fallback to medium density if query fails
+                return 10.0  # jobs per km²
 
     async def _get_aggregated_clusters(
         self,
