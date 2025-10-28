@@ -17,7 +17,7 @@ interface JobCluster {
 interface JobHexagonClustersProps {
 	clusters: JobCluster[];
 	onClusterClick: (h3Index: string, cluster: JobCluster) => void;
-	onClusterHover: (cluster: JobCluster | null) => void;
+	onClusterHover?: (cluster: JobCluster | null) => void;
 }
 
 /**
@@ -43,14 +43,14 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 		hexagonsRef.current.forEach(hex => hex.remove());
 		hexagonsRef.current.clear();
 
-		// Render new hexagons
+		// Render new hexagons with accessibility enhancements
 		clusters.forEach(cluster => {
 			const color = getClusterColor(cluster.count);
 
 			// Convert bounds to LatLng format
 			const latLngs = cluster.bounds.map(([lat, lng]) => L.latLng(lat, lng));
 
-			// Create polygon for hexagon
+			// Create polygon for hexagon with accessibility attributes
 			const hexagon = L.polygon(latLngs, {
 				color: color,
 				fillColor: color,
@@ -59,19 +59,50 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 				renderer: canvas
 			});
 
-			// Add interactivity
+			// Add accessibility and interactivity
+			const element = hexagon.getElement() as HTMLElement;
+			if (element) {
+				element.setAttribute('role', 'button');
+				element.setAttribute('tabindex', '0');
+				element.setAttribute(
+					'aria-label',
+					`Job cluster with ${cluster.count} jobs. Salary range: ₹${cluster.salaryRange.minSalary || 'N/A'} - ₹${cluster.salaryRange.maxSalary || 'N/A'}. Click to zoom in.`
+				);
+				element.style.cursor = 'pointer';
+
+				// Keyboard navigation
+				element.addEventListener('keydown', (e: KeyboardEvent) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						onClusterClick(cluster.h3Index, cluster);
+					}
+				});
+
+				// Focus states
+				element.addEventListener('focus', () => {
+					hexagon.setStyle({ fillOpacity: 0.6, weight: 3 });
+					onClusterHover?.(cluster);
+				});
+
+				element.addEventListener('blur', () => {
+					hexagon.setStyle({ fillOpacity: 0.4, weight: 2 });
+					onClusterHover?.(null);
+				});
+			}
+
+			// Mouse interactions
 			hexagon.on('click', () => {
 				onClusterClick(cluster.h3Index, cluster);
 			});
 
 			hexagon.on('mouseover', () => {
 				hexagon.setStyle({ fillOpacity: 0.6 });
-				onClusterHover(cluster);
+				onClusterHover?.(cluster);
 			});
 
 			hexagon.on('mouseout', () => {
 				hexagon.setStyle({ fillOpacity: 0.4 });
-				onClusterHover(null);
+				onClusterHover?.(null);
 			});
 
 			// Add to map
@@ -83,7 +114,9 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 
 		// Cleanup
 		return () => {
-			hexagonsRef.current.forEach(hex => hex.remove());
+			hexagonsRef.current.forEach(hex => {
+				hex.remove();
+			});
 			hexagonsRef.current.clear();
 		};
 	}, [clusters, map, onClusterClick, onClusterHover]);

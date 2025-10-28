@@ -1,17 +1,17 @@
 'use client';
-import { HeadersProvider } from '@/components/HeadersProvider';
-import { env } from '@/lib/env/client';
-import { getCurrentEnvironment } from '@/lib/relay/environments';
 import { AppProgressProvider as ProgressProvider } from '@bprogress/next';
 import { HeroUIProvider, ToastProvider } from '@heroui/react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { NavigationGuardProvider } from 'next-navigation-guard';
-import { ThemeProvider } from 'next-themes';
 import type { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
 import { useRouter } from 'next/navigation';
+import { NavigationGuardProvider } from 'next-navigation-guard';
+import { ThemeProvider } from 'next-themes';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { use, useMemo } from 'react';
 import { RelayEnvironmentProvider } from 'react-relay';
+import { HeadersProvider } from '@/components/HeadersProvider';
+import { env } from '@/lib/env/client';
+import { getCurrentEnvironment } from '@/lib/relay/environments';
 
 export default function Providers({ children, headersPromise }: { children: React.ReactNode; headersPromise: Promise<ReadonlyHeaders> }) {
 	const router = useRouter();

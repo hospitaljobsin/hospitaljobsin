@@ -1,6 +1,7 @@
 'use client';
 
 import { useDisclosure } from '@heroui/react';
+import { useProgress } from '@bprogress/next';
 import type { Map as LeafletMap } from 'leaflet';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -92,8 +93,20 @@ export default function JobMapView({
 	const [announcementMessage, setAnnouncementMessage] = useState<string>('');
 	const [isMounted, setIsMounted] = useState(false);
 
+	// BProgress hook for controlling the top progress bar
+	const { start, stop } = useProgress();
+
 	// Drawer state for mobile job preview
 	const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
+
+	// Control progress bar based on loading state
+	useEffect(() => {
+		if (isPending) {
+			start();
+		} else {
+			stop();
+		}
+	}, [isPending, start, stop]);
 
 	// Handle location selection and zoom to it
 	const handleLocationSelect = useCallback(
@@ -274,15 +287,6 @@ export default function JobMapView({
 		[map, currentZoom]
 	);
 
-	// Handle cluster hover - show tooltip info
-	const handleClusterHover = useCallback((cluster: any | null) => {
-		if (cluster) {
-			setAnnouncementMessage(
-				`${cluster.count} jobs - Salary: ₹${cluster.salaryRange.minSalary || 'N/A'} - ₹${cluster.salaryRange.maxSalary || 'N/A'}`
-			);
-		}
-	}, []);
-
 	// Calculate viewport area for clustering decision
 	const viewportArea = useMemo(() => {
 		if (!map) return 0;
@@ -300,8 +304,14 @@ export default function JobMapView({
 	// Get total job count for clustering decision
 	const totalJobs = (data as any)?.jobs?.totalCount || 0;
 
-	// Determine whether to show clusters based on zoom, job count, and viewport
-	const showClusters = shouldShowClusters(currentZoom, totalJobs, viewportArea);
+	// Determine whether to show clusters based on zoom, job count, viewport, and mobile state
+	const showClusters = useMemo(() => {
+		// On mobile, cluster more aggressively to avoid crowded markers
+		const mobileZoomAdjustment = isMobile ? -1 : 0;
+		const adjustedZoom = currentZoom + mobileZoomAdjustment;
+
+		return shouldShowClusters(adjustedZoom, totalJobs, viewportArea);
+	}, [currentZoom, totalJobs, viewportArea, isMobile]);
 
 	// Handle drawer close
 	const handleDrawerClose = useCallback(() => {
@@ -392,11 +402,7 @@ export default function JobMapView({
 
 					{/* Render job clusters when zoomed out */}
 					{showClusters && (data as any)?.jobClusters && (
-						<JobHexagonClusters
-							clusters={(data as any).jobClusters}
-							onClusterClick={handleClusterClick}
-							onClusterHover={handleClusterHover}
-						/>
+						<JobHexagonClusters clusters={(data as any).jobClusters} onClusterClick={handleClusterClick} />
 					)}
 
 					{/* Render individual job markers when zoomed in or no clusters available */}
