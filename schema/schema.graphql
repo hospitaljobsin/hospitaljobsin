@@ -1926,6 +1926,56 @@ type JobAutocompleteSuggestion {
 	displayName: String!
 }
 
+"""
+Aggregated job cluster at a specific H3 hexagon resolution.
+"""
+type JobCluster {
+	"""
+	H3 hexagon index identifying this cluster.
+	"""
+	h3Index: String!
+
+	"""
+	Number of jobs in this cluster.
+	"""
+	count: Int!
+
+	"""
+	Geographic center point of the hexagon.
+	"""
+	center: GeoObject!
+
+	"""
+	Boundary coordinates of the hexagon as array of [lng, lat] pairs.
+	"""
+	bounds: [[Float!]!]!
+
+	"""
+	Salary range across all jobs in the cluster.
+	"""
+	salaryRange: SalaryRange!
+
+	"""
+	Top 3 most common specialties/skills in the cluster.
+	"""
+	topSpecialties: [String!]!
+}
+
+"""
+Connection type for job clusters with total count.
+"""
+type JobClusterConnection {
+	"""
+	List of job clusters in the viewport.
+	"""
+	clusters: [JobCluster!]!
+
+	"""
+	Total number of jobs across all clusters in the viewport.
+	"""
+	totalCount: Int!
+}
+
 type JobConnection {
 	"""
 	Information to aid in pagination.
@@ -4630,6 +4680,146 @@ type Query {
 	): AutocompleteJobsPayload!
 
 	"""
+	Get aggregated job clusters for map visualization using H3 hexagonal indexing.
+	"""
+	jobClusters(
+		"""
+		Geographic bounding box for map viewport (required)
+		"""
+		bounds: BoundingBoxInput!
+
+		"""
+		Map zoom level (1-20) for determining clustering resolution
+		"""
+		zoomLevel: Int!
+
+		"""
+		Filter by work mode
+		"""
+		workMode: [JobWorkModeFilter!] = null
+
+		"""
+		Filter by job type
+		"""
+		jobType: [JobTypeFilter!] = null
+
+		"""
+		Search term for full-text search
+		"""
+		searchTerm: String = null
+
+		"""
+		Location filter for proximity search
+		"""
+		location: String = null
+
+		"""
+		Proximity radius in kilometers
+		"""
+		proximityKm: Float = null
+
+		"""
+		Minimum years of experience required
+		"""
+		minExperience: Int = null
+
+		"""
+		Maximum years of experience required
+		"""
+		maxExperience: Int = null
+
+		"""
+		Minimum salary for the job
+		"""
+		minSalary: Int = null
+
+		"""
+		Maximum salary for the job
+		"""
+		maxSalary: Int = null
+	): JobClusterConnection!
+
+	"""
+	Get paginated jobs within a specific H3 hexagon cluster for drill-down.
+	"""
+	clusterJobs(
+		"""
+		H3 hexagon index to retrieve jobs from
+		"""
+		h3Index: String!
+
+		"""
+		H3 resolution level used for clustering
+		"""
+		h3Resolution: Int!
+
+		"""
+		Filter by work mode
+		"""
+		workMode: [JobWorkModeFilter!] = null
+
+		"""
+		Filter by job type
+		"""
+		jobType: [JobTypeFilter!] = null
+
+		"""
+		Search term for full-text search
+		"""
+		searchTerm: String = null
+
+		"""
+		Location filter for proximity search
+		"""
+		location: String = null
+
+		"""
+		Proximity radius in kilometers
+		"""
+		proximityKm: Float = null
+
+		"""
+		Minimum years of experience required
+		"""
+		minExperience: Int = null
+
+		"""
+		Maximum years of experience required
+		"""
+		maxExperience: Int = null
+
+		"""
+		Minimum salary for the job
+		"""
+		minSalary: Int = null
+
+		"""
+		Maximum salary for the job
+		"""
+		maxSalary: Int = null
+
+		"""
+		Returns items before the given cursor
+		"""
+		before: ID = null
+
+		"""
+		Returns items after the given cursor
+		"""
+		after: ID = null
+
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
+
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): JobConnection!
+
+	"""
 	Get all organizations available.
 	"""
 	organizations(
@@ -4992,6 +5182,21 @@ union ResetPasswordPayload =
 	| InvalidPasswordResetTokenError
 	| PasswordNotStrongError
 	| TwoFactorAuthenticationChallengeNotFoundError
+
+"""
+Salary range for a cluster of jobs.
+"""
+type SalaryRange {
+	"""
+	Minimum salary in the cluster (in local currency).
+	"""
+	minSalary: Int
+
+	"""
+	Maximum salary in the cluster (in local currency).
+	"""
+	maxSalary: Int
+}
 
 """
 The save job payload.

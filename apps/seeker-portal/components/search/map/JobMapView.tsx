@@ -5,11 +5,13 @@ import type { Map as LeafletMap } from 'leaflet';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
+import { calculateViewportArea, shouldShowClusters } from '@/lib/map/h3Utils';
 
 // Dynamic imports for Leaflet components (SSR incompatible)
 const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
 const JobMapMarkers = dynamic(() => import('./JobMapMarkers'), { ssr: false });
+const JobHexagonClusters = dynamic(() => import('./JobHexagonClusters'), { ssr: false });
 const JobMapControls = dynamic(() => import('./JobMapControls'), { ssr: false });
 const JobPreviewDrawer = dynamic(() => import('./JobPreviewDrawer'), { ssr: false });
 const MapFilterSidebar = dynamic(() => import('./MapFilterSidebar'), { ssr: false });
@@ -65,7 +67,9 @@ interface JobMapViewProps {
 		jobType: readonly string[];
 		sortBy: string;
 	};
+	currentZoom?: number; // Current map zoom level for clustering
 	onBoundsChange?: (bounds: { swLat: number; swLng: number; neLat: number; neLng: number }) => void;
+	onZoomChange?: (zoom: number) => void; // Callback when zoom level changes
 	onFiltersChange?: (filters: Partial<JobMapViewProps['filters']>) => void;
 	onLocationSelect?: (location: SearchLocation) => void;
 	isPending?: boolean;
@@ -74,7 +78,9 @@ interface JobMapViewProps {
 export default function JobMapView({
 	data,
 	filters,
+	currentZoom = 5,
 	onBoundsChange,
+	onZoomChange,
 	onFiltersChange,
 	onLocationSelect,
 	isPending = false
@@ -143,6 +149,22 @@ export default function JobMapView({
 		window.addEventListener('resize', checkMobile);
 		return () => window.removeEventListener('resize', checkMobile);
 	}, []);
+
+	// Handle zoom changes for clustering
+	useEffect(() => {
+		if (!map || !onZoomChange) return;
+
+		const handleZoomEnd = () => {
+			const zoom = map.getZoom();
+			onZoomChange(zoom);
+		};
+
+		map.on('zoomend', handleZoomEnd);
+
+		return () => {
+			map.off('zoomend', handleZoomEnd);
+		};
+	}, [map, onZoomChange]);
 
 	// Invalidate map size when map is ready or when layout changes (fixes tile loading issue)
 	useEffect(() => {
@@ -235,6 +257,52 @@ export default function JobMapView({
 		[isMobile, onDrawerOpen, data]
 	);
 
+	// Handle cluster click - zoom into cluster center
+	const handleClusterClick = useCallback(
+		(h3Index: string, cluster: any) => {
+			if (!map) return;
+
+			const [lng, lat] = cluster.center.coordinates;
+			const targetZoom = Math.min(currentZoom + 2, 16); // Zoom in by 2 levels, max 16
+
+			map.flyTo([lat, lng], targetZoom, {
+				duration: 1.0
+			});
+
+			setAnnouncementMessage(`Zoomed into cluster with ${cluster.count} jobs`);
+		},
+		[map, currentZoom]
+	);
+
+	// Handle cluster hover - show tooltip info
+	const handleClusterHover = useCallback((cluster: any | null) => {
+		if (cluster) {
+			setAnnouncementMessage(
+				`${cluster.count} jobs - Salary: ₹${cluster.salaryRange.minSalary || 'N/A'} - ₹${cluster.salaryRange.maxSalary || 'N/A'}`
+			);
+		}
+	}, []);
+
+	// Calculate viewport area for clustering decision
+	const viewportArea = useMemo(() => {
+		if (!map) return 0;
+		const bounds = map.getBounds();
+		const sw = bounds.getSouthWest();
+		const ne = bounds.getNorthEast();
+		return calculateViewportArea({
+			swLat: sw.lat,
+			swLng: sw.lng,
+			neLat: ne.lat,
+			neLng: ne.lng
+		});
+	}, [map, currentZoom]);
+
+	// Get total job count for clustering decision
+	const totalJobs = (data as any)?.jobs?.totalCount || 0;
+
+	// Determine whether to show clusters based on zoom, job count, and viewport
+	const showClusters = shouldShowClusters(currentZoom, totalJobs, viewportArea);
+
 	// Handle drawer close
 	const handleDrawerClose = useCallback(() => {
 		onDrawerClose();
@@ -322,7 +390,19 @@ export default function JobMapView({
 				>
 					<TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
 
-					<JobMapMarkers data={data} onJobClick={handleJobClick} selectedJobId={selectedJobId} />
+					{/* Render job clusters when zoomed out */}
+					{showClusters && (data as any)?.jobClusters && (
+						<JobHexagonClusters
+							clusters={(data as any).jobClusters}
+							onClusterClick={handleClusterClick}
+							onClusterHover={handleClusterHover}
+						/>
+					)}
+
+					{/* Render individual job markers when zoomed in or no clusters available */}
+					{(!showClusters || !(data as any)?.jobClusters) && (
+						<JobMapMarkers data={data} onJobClick={handleJobClick} selectedJobId={selectedJobId} />
+					)}
 					<JobMapControls map={map} />
 				</MapContainer>
 

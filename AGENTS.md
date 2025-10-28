@@ -3,7 +3,7 @@
 ## Do
 
 - Always use context7 when I need code generation, setup or configuration steps, or library/API documentation. This means you should automatically use the Context7 MCP tools to resolve library id and get library docs without me having to explicitly ask.
-- Use Relay GraphQL client for data fetching
+- Use Relay GraphQL client for data fetching. The queries must be in the component files that need them, or in a separate hook file if they need to be reused.
 - Use Suspense with appropriate skeletons over components that fetch data
 - Declare fragments for each sub component that needs to read data.
 - Use HeroUI v2 components for the frontend, along with tailwindcss v4. Ensure your code is v4 compatible

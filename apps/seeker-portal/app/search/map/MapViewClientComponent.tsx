@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
-import { useCallback, useTransition } from 'react';
+import { useCallback, useState, useTransition } from 'react';
 import { graphql, usePreloadedQuery, useRefetchableFragment, useRelayEnvironment } from 'react-relay';
 import type { JobSearchSortBy, JobTypeFilter, JobWorkModeFilter } from '@/__generated__/MapViewClientComponentRefetchQuery.graphql';
 import type PageSearchMapViewQueryNode from '@/__generated__/pageSearchMapViewQuery.graphql';
@@ -31,7 +31,39 @@ const MapViewClientComponentFragment = graphql`
 		jobType: { type: "[JobTypeFilter!]!" }
 		sortBy: { type: "JobSearchSortBy!" }
 		first: { type: "Int!" }
+		# Clustering arguments
+		zoomLevel: { type: "Int" }
 	) {
+		# Job clusters query - used at low/medium zoom levels
+		jobClusters(
+			bounds: $bounds
+			zoomLevel: $zoomLevel
+			searchTerm: $searchTerm
+			minExperience: $minExperience
+			minSalary: $minSalary
+			maxSalary: $maxSalary
+			proximityKm: $proximityKm
+			location: $location
+			workMode: $workMode
+			jobType: $jobType
+		) @skip(if: false) {
+			clusters {
+				h3Index
+				count
+				center {
+					coordinates
+				}
+				bounds
+				salaryRange {
+					minSalary
+					maxSalary
+				}
+				topSpecialties
+			}
+			totalCount
+		}
+
+		# Individual jobs query - used at high zoom levels (15+)
 		jobs(
 			searchTerm: $searchTerm
 			minExperience: $minExperience
@@ -44,7 +76,7 @@ const MapViewClientComponentFragment = graphql`
 			jobType: $jobType
 			sortBy: $sortBy
 			first: $first
-		) {
+		) @skip(if: false) {
 			edges {
 				node {
 					id
@@ -52,9 +84,9 @@ const MapViewClientComponentFragment = graphql`
 					organization {
 						slug
 					}
-                    geo {
-                        coordinates
-                    }
+					geo {
+						coordinates
+					}
 					...JobMapMarkersFragment_job
 					...JobPreviewDrawerFragment_job
 				}
@@ -84,6 +116,10 @@ export default function MapViewClientComponent({
 		},
 		{ shallow: true }
 	);
+
+	// Map state for clustering logic
+	const [currentZoom, setCurrentZoom] = useState<number>(5); // Default zoom level
+	const [currentBounds, setCurrentBounds] = useState<{ swLat: number; swLng: number; neLat: number; neLng: number } | null>(null);
 	const environment = useRelayEnvironment();
 	const queryRef = useSerializablePreloadedQuery<typeof PageSearchMapViewQueryNode, pageSearchMapViewQuery>(
 		environment,
@@ -103,6 +139,8 @@ export default function MapViewClientComponent({
 	// Callback to handle bounds change and refetch
 	const handleBoundsChange = useCallback(
 		(bounds: { swLat: number; swLng: number; neLat: number; neLng: number }) => {
+			setCurrentBounds(bounds);
+
 			startTransition(() => {
 				refetch(
 					{
@@ -112,6 +150,7 @@ export default function MapViewClientComponent({
 							neLat: bounds.neLat,
 							neLng: bounds.neLng
 						},
+						zoomLevel: currentZoom, // Include zoom level for clustering
 						// Include current filters in refetch
 						searchTerm: filters.searchTerm || undefined,
 						location: filters.location || undefined,
@@ -121,7 +160,8 @@ export default function MapViewClientComponent({
 						proximityKm: filters.proximityKm,
 						workMode: filters.workMode as unknown as readonly JobWorkModeFilter[],
 						jobType: filters.jobType as unknown as readonly JobTypeFilter[],
-						sortBy: filters.sortBy as JobSearchSortBy
+						sortBy: filters.sortBy as JobSearchSortBy,
+						first: 100
 					},
 					{
 						fetchPolicy: 'store-or-network'
@@ -129,7 +169,40 @@ export default function MapViewClientComponent({
 				);
 			});
 		},
-		[refetch, filters]
+		[refetch, filters, currentZoom, setCurrentBounds]
+	);
+
+	// Callback to handle zoom changes
+	const handleZoomChange = useCallback(
+		(zoom: number) => {
+			setCurrentZoom(zoom);
+
+			// Refetch with new zoom level if bounds are available
+			if (currentBounds) {
+				startTransition(() => {
+					refetch(
+						{
+							bounds: currentBounds,
+							zoomLevel: zoom,
+							searchTerm: filters.searchTerm || undefined,
+							location: filters.location || undefined,
+							minExperience: filters.minExperience || undefined,
+							minSalary: filters.minSalary || undefined,
+							maxSalary: filters.maxSalary || undefined,
+							proximityKm: filters.proximityKm,
+							workMode: filters.workMode as unknown as readonly JobWorkModeFilter[],
+							jobType: filters.jobType as unknown as readonly JobTypeFilter[],
+							sortBy: filters.sortBy as JobSearchSortBy,
+							first: 100
+						},
+						{
+							fetchPolicy: 'store-or-network'
+						}
+					);
+				});
+			}
+		},
+		[refetch, filters, currentBounds, setCurrentZoom]
 	);
 
 	// Callback to handle filter changes
@@ -165,7 +238,9 @@ export default function MapViewClientComponent({
 		<JobMapView
 			data={fragmentData}
 			filters={filters}
+			currentZoom={currentZoom}
 			onBoundsChange={handleBoundsChange}
+			onZoomChange={handleZoomChange}
 			onFiltersChange={handleFiltersChange}
 			isPending={isPending}
 		/>

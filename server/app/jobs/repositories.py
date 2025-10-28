@@ -17,7 +17,7 @@ from pydantic import ValidationError
 from redis.asyncio import Redis
 
 from app.accounts.documents import Account, BaseProfile, CareerProfile
-from app.base.models import Address, GeoObject
+from app.base.models import Address, BoundingBox, GeoObject
 from app.core.constants import (
     DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT,
     JOB_APPLICANT_EMBEDDING_DIMENSIONS,
@@ -65,9 +65,6 @@ from .documents import (
     SavedJob,
     SearchableJob,
 )
-
-# Type alias for map bounds (dict with sw_lat, sw_lng, ne_lat, ne_lng keys)
-BoundingBox = dict[str, float]
 
 
 class JobSearchSortBy(Enum):
@@ -152,9 +149,10 @@ class JobRepo:
 
         Returns:
             Cache key string for Redis storage
+
         """
         # Round coordinates to 4 decimals to increase cache hits for similar viewports
-        bounds_str = f"{bounds['sw_lat']:.4f},{bounds['sw_lng']:.4f},{bounds['ne_lat']:.4f},{bounds['ne_lng']:.4f}"
+        bounds_str = f"{bounds.sw_lat:.4f},{bounds.sw_lng:.4f},{bounds.ne_lat:.4f},{bounds.ne_lng:.4f}"
 
         # Convert filters to dict and hash for compact representation
         filters_dict = filters.model_dump(exclude_none=True)
@@ -214,6 +212,7 @@ class JobRepo:
 
         Returns:
             MongoDB $match stage dict
+
         """
         match_filters: dict[str, Any] = {
             "is_active": True,
@@ -227,8 +226,8 @@ class JobRepo:
         match_filters["geo"] = {
             "$geoWithin": {
                 "$box": [
-                    [bounds["sw_lng"], bounds["sw_lat"]],
-                    [bounds["ne_lng"], bounds["ne_lat"]],
+                    [bounds.sw_lng, bounds.sw_lat],
+                    [bounds.ne_lng, bounds.ne_lat],
                 ]
             }
         }
@@ -592,8 +591,8 @@ class JobRepo:
             return clusters, total_count
 
         # Validate bounding box to prevent memory exhaustion
-        lat_diff = bounds["ne_lat"] - bounds["sw_lat"]
-        lng_diff = bounds["ne_lng"] - bounds["sw_lng"]
+        lat_diff = bounds.ne_lat - bounds.sw_lat
+        lng_diff = bounds.ne_lng - bounds.sw_lng
 
         # Calculate approximate area in square degrees
         area_sq_deg = lat_diff * lng_diff
@@ -639,11 +638,11 @@ class JobRepo:
         # Create polygon from bounding box
         # GeoJSON requires [lng, lat] coordinate pairs (not [lat, lng])
         bbox_polygon = [
-            [bounds["sw_lng"], bounds["sw_lat"]],
-            [bounds["ne_lng"], bounds["sw_lat"]],
-            [bounds["ne_lng"], bounds["ne_lat"]],
-            [bounds["sw_lng"], bounds["ne_lat"]],
-            [bounds["sw_lng"], bounds["sw_lat"]],  # Close the polygon
+            [bounds.sw_lng, bounds.sw_lat],
+            [bounds.ne_lng, bounds.sw_lat],
+            [bounds.ne_lng, bounds.ne_lat],
+            [bounds.sw_lng, bounds.ne_lat],
+            [bounds.sw_lng, bounds.sw_lat],  # Close the polygon
         ]
         print(f"🔶 bbox_polygon={bbox_polygon}")
 
@@ -1340,11 +1339,11 @@ class JobRepo:
                         "box": {
                             "bottomLeft": {
                                 "type": "Point",
-                                "coordinates": [bounds["sw_lng"], bounds["sw_lat"]],
+                                "coordinates": [bounds.sw_lng, bounds.sw_lat],
                             },
                             "topRight": {
                                 "type": "Point",
-                                "coordinates": [bounds["ne_lng"], bounds["ne_lat"]],
+                                "coordinates": [bounds.ne_lng, bounds.ne_lat],
                             },
                         },
                         "path": "geo",
