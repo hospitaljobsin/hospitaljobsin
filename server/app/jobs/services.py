@@ -1407,14 +1407,14 @@ class JobClusterService:
             cluster = JobCluster(
                 h3_index=h3_index,
                 count=1,
-                center={"lat": job.geo.coordinates[1], "lng": job.geo.coordinates[0]},
+                center=GeoObject(
+                    coordinates=(job.geo.coordinates[0], job.geo.coordinates[1])
+                ),
                 bounds=bounds_list,
                 salary_range=None
                 if job.min_salary is None and job.max_salary is None
-                else JobSalaryRange(
-                    min_salary=job.min_salary, max_salary=job.max_salary
-                ),
-                top_specialties=[job.specialty] if job.specialty else [],
+                else {"min_salary": job.min_salary, "max_salary": job.max_salary},
+                top_specialties=job.skills[:3] if job.skills else [],
             )
             clusters.append(cluster)
 
