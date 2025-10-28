@@ -119,9 +119,10 @@ export default function JobMapMarkers({ data, onJobClick }: JobMapMarkersProps) 
 							font-weight: bold;
 							color: white;
 							box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0,0,0,0.1);
+							gap: 6px;
 						">
 							<div style="width: 20px; height: 20px; color: white;">${crossIconSvg}</div>
-							<div style="font-size: 16px; line-height: 1; margin-top: 2px;">${childCount}</div>
+							<div style="font-size: 16px; line-height: 1;">${childCount}</div>
 						</div>
 					`,
 					className: 'custom-cluster-icon',

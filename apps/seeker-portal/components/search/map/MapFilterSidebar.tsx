@@ -236,9 +236,13 @@ export default function MapFilterSidebar({
 				</div>
 			</div>
 
-			{/* Cluster Jobs List - shown when a cluster is selected */}
+			{/* Cluster Jobs List - shown when a cluster is auto-detected in viewport */}
 			{selectedCluster && (
 				<div className='border-t border-divider pt-4'>
+					<div className='mb-3'>
+						<h3 className='text-sm font-medium text-foreground-700 mb-1'>Jobs in Current Area</h3>
+						<p className='text-xs text-foreground-500'>Showing {selectedCluster.count} jobs in the highlighted cluster</p>
+					</div>
 					<ClusterJobsList
 						h3Index={selectedCluster.hexId}
 						clusterInfo={{

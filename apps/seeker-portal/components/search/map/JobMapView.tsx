@@ -96,7 +96,7 @@ export default function JobMapView({
 }: JobMapViewProps) {
 	const [map, setMap] = useState<LeafletMap | null>(null);
 	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
-	const [selectedCluster, setSelectedCluster] = useState<ClusterInfo | null>(null);
+	const [autoSelectedCluster, setAutoSelectedCluster] = useState<ClusterInfo | null>(null);
 	const [isMobile, setIsMobile] = useState(false);
 	const [lastBounds, setLastBounds] = useState<{ swLat: number; swLng: number; neLat: number; neLng: number } | null>(null);
 	const [announcementMessage, setAnnouncementMessage] = useState<string>('');
@@ -306,13 +306,6 @@ export default function JobMapView({
 				duration: 1.0
 			});
 
-			// Set selected cluster for sidebar display
-			setSelectedCluster({
-				hexId: h3Index,
-				count: cluster.count,
-				center: [lat, lng]
-			});
-
 			// Trigger sidebar population with cluster jobs (if callback provided)
 			if (onClusterSelect) {
 				onClusterSelect(h3Index, {
@@ -351,6 +344,117 @@ export default function JobMapView({
 
 		return shouldShowClusters(adjustedZoom, totalJobs, viewportArea);
 	}, [currentZoom, totalJobs, viewportArea, isMobile]);
+
+	// Find the most prominent cluster in current viewport
+	const findMostProminentCluster = useCallback((clusters: any[], mapBounds: any) => {
+		if (!clusters || clusters.length === 0 || !mapBounds) {
+			console.log('❌ findMostProminentCluster early return:', {
+				hasClusters: !!clusters,
+				clustersLength: clusters?.length,
+				hasMapBounds: !!mapBounds
+			});
+			return null;
+		}
+
+		const bounds = mapBounds.getBounds();
+		const sw = bounds.getSouthWest();
+		const ne = bounds.getNorthEast();
+
+		console.log('🗺️ Map viewport bounds:', {
+			sw: { lat: sw.lat, lng: sw.lng },
+			ne: { lat: ne.lat, lng: ne.lng }
+		});
+
+		// Filter clusters that are visible in viewport
+		const visibleClusters = clusters.filter((cluster: any) => {
+			// Handle different possible coordinate formats
+			let lng: number;
+			let lat: number;
+
+			if (cluster.center?.coordinates) {
+				[lng, lat] = cluster.center.coordinates;
+			} else if (Array.isArray(cluster.center)) {
+				[lng, lat] = cluster.center;
+			} else if (cluster.lat && cluster.lng) {
+				lat = cluster.lat;
+				lng = cluster.lng;
+			} else {
+				console.warn('❓ Unknown cluster coordinate format:', cluster);
+				return false;
+			}
+
+			const isVisible = lat >= sw.lat && lat <= ne.lat && lng >= sw.lng && lng <= ne.lng;
+			console.log(`📍 Cluster ${cluster.h3Index || cluster.id}:`, {
+				center: [lat, lng],
+				count: cluster.count,
+				isVisible,
+				bounds: { sw: [sw.lat, sw.lng], ne: [ne.lat, ne.lng] }
+			});
+			return isVisible;
+		});
+
+		console.log(`👀 Visible clusters: ${visibleClusters.length} of ${clusters.length}`);
+
+		if (visibleClusters.length === 0) return null;
+
+		// Find cluster with highest job count (most prominent)
+		const mostProminent = visibleClusters.reduce((max: any, cluster: any) => (cluster.count > max.count ? cluster : max));
+
+		const [lng, lat] = mostProminent.center.coordinates;
+		const result = {
+			hexId: mostProminent.h3Index,
+			count: mostProminent.count,
+			center: [lat, lng] as [number, number] // Convert [lng, lat] to [lat, lng]
+		};
+
+		console.log('🏆 Most prominent cluster selected:', result);
+		return result;
+	}, []);
+
+	// Auto-select cluster based on zoom level and viewport
+	useEffect(() => {
+		console.log('🔍 Auto-selection check:', {
+			hasMap: !!map,
+			showClusters,
+			currentZoom,
+			hasData: !!data
+		});
+
+		if (!map || !showClusters || currentZoom < 10) {
+			// Clear auto-selection when zoomed out too far or no clusters
+			console.log('❌ Clearing auto-selection:', {
+				reason: !map ? 'no map' : !showClusters ? 'no clusters shown' : 'zoom too low',
+				currentZoom,
+				minZoomRequired: 10
+			});
+			setAutoSelectedCluster(null);
+			return;
+		}
+
+		const clusters = (data as any)?.jobClusters;
+		console.log('📊 Cluster data:', {
+			clustersExists: !!clusters,
+			clustersLength: clusters?.length,
+			clusters: clusters?.slice(0, 3) // Log first 3 clusters for debugging
+		});
+
+		if (!clusters || clusters.length === 0) {
+			console.log('❌ No clusters found');
+			setAutoSelectedCluster(null);
+			return;
+		}
+
+		// Only auto-select if there are few enough clusters to make it meaningful
+		if (clusters.length > 10) {
+			console.log('❌ Too many clusters:', clusters.length);
+			setAutoSelectedCluster(null);
+			return;
+		}
+
+		const prominentCluster = findMostProminentCluster(clusters, map);
+		console.log('🎯 Selected cluster:', prominentCluster);
+		setAutoSelectedCluster(prominentCluster);
+	}, [map, showClusters, currentZoom, data, findMostProminentCluster]);
 
 	// Handle drawer close
 	const handleDrawerClose = useCallback(() => {
@@ -413,7 +517,7 @@ export default function JobMapView({
 						onLocationSelect={handleLocationSelect}
 						totalCount={(data as any)?.jobs?.totalCount || 0}
 						isPending={isPending}
-						selectedCluster={selectedCluster}
+						selectedCluster={autoSelectedCluster}
 						onJobSelect={setSelectedJobId}
 					/>
 				</div>
@@ -475,7 +579,7 @@ export default function JobMapView({
 					totalCount={(data as any)?.jobs?.totalCount || 0}
 					isPending={isPending}
 					activeFilterCount={activeFilterCount}
-					selectedCluster={selectedCluster}
+					selectedCluster={autoSelectedCluster}
 					onJobSelect={setSelectedJobId}
 				/>
 			)}
