@@ -1,4 +1,4 @@
-"""Comprehensive integration tests for job_clusters GraphQL query covering all edge cases."""
+"""Integration tests for job_clusters GraphQL query."""
 
 import asyncio
 from collections.abc import AsyncGenerator
@@ -237,6 +237,41 @@ async def inactive_job(
     )
     yield job
     await job_repo.delete(job)
+
+
+async def test_clusters_at_low_zoom_level(
+    graphql_client: GraphQLClient,
+    diverse_jobs: list[Job],
+) -> None:
+    """Test that jobs are clustered at low zoom levels."""
+    response = await graphql_client(
+        query=JOB_CLUSTERS_QUERY,
+        variables={
+            "bounds": {
+                "swLat": 12.85,
+                "swLng": 77.55,
+                "neLat": 13.05,
+                "neLng": 77.70,
+            },
+            "zoomLevel": 8,
+            "workMode": [],
+            "jobType": [],
+        },
+    )
+
+    data = response["data"]["jobClusters"]
+    assert len(data["clusters"]) >= 1
+    assert data["totalCount"] == 3
+
+    for cluster in data["clusters"]:
+        assert "h3Index" in cluster
+        assert "count" in cluster
+        assert cluster["count"] > 0
+        assert "center" in cluster
+        assert "coordinates" in cluster["center"]
+        assert len(cluster["center"]["coordinates"]) == 2
+        assert "bounds" in cluster
+        assert len(cluster["bounds"]) > 0
 
 
 async def test_empty_bounds_returns_no_clusters(
@@ -778,7 +813,6 @@ async def test_expired_jobs_excluded(
     )
 
     data = response["data"]["jobClusters"]
-    # Count should not include expired job
     assert data["totalCount"] == len(
         [j for j in diverse_jobs if 12.85 <= j.geo.coordinates[1] <= 13.05]
     )
@@ -806,7 +840,6 @@ async def test_inactive_jobs_excluded(
     )
 
     data = response["data"]["jobClusters"]
-    # Count should not include inactive job
     assert data["totalCount"] == len(
         [j for j in diverse_jobs if 12.85 <= j.geo.coordinates[1] <= 13.05]
     )
@@ -845,32 +878,6 @@ async def test_cluster_structure(
     assert isinstance(cluster["bounds"], list)
     assert "salaryRange" in cluster
     assert "topSpecialties" in cluster
-
-
-async def test_no_filters_returns_all_active_jobs(
-    graphql_client: GraphQLClient,
-    diverse_jobs: list[Job],
-) -> None:
-    """Test that no filters returns jobs in bounds."""
-    response = await graphql_client(
-        query=JOB_CLUSTERS_QUERY,
-        variables={
-            "bounds": {
-                "swLat": 12.85,
-                "swLng": 77.55,
-                "neLat": 13.05,
-                "neLng": 77.70,
-            },
-            "zoomLevel": 10,
-            "workMode": [],
-            "jobType": [],
-        },
-    )
-
-    data = response["data"]["jobClusters"]
-    assert "clusters" in data
-    assert "totalCount" in data
-    assert data["totalCount"] >= 0
 
 
 async def test_very_small_bounds(
