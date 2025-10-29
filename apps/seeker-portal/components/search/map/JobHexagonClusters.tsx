@@ -58,12 +58,13 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 			// Convert bounds to LatLng format
 			const latLngs = cluster.bounds.map(([lat, lng]) => L.latLng(lat, lng));
 
-			// Create polygon for hexagon with accessibility attributes
+			// Create polygon for hexagon with sleek, minimalistic styling
 			const hexagon = L.polygon(latLngs, {
 				color: color,
 				fillColor: color,
-				fillOpacity: 0.4,
+				fillOpacity: 0.25,
 				weight: 2,
+				opacity: 0.7,
 				renderer: canvas
 			});
 
@@ -88,12 +89,12 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 
 				// Focus states
 				element.addEventListener('focus', () => {
-					hexagon.setStyle({ fillOpacity: 0.6, weight: 3 });
+					hexagon.setStyle({ fillOpacity: 0.45, weight: 3, opacity: 1 });
 					onClusterHover?.(cluster);
 				});
 
 				element.addEventListener('blur', () => {
-					hexagon.setStyle({ fillOpacity: 0.4, weight: 2 });
+					hexagon.setStyle({ fillOpacity: 0.25, weight: 2, opacity: 0.7 });
 					onClusterHover?.(null);
 				});
 			}
@@ -104,12 +105,12 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 			});
 
 			hexagon.on('mouseover', () => {
-				hexagon.setStyle({ fillOpacity: 0.6 });
+				hexagon.setStyle({ fillOpacity: 0.45, weight: 3, opacity: 1 });
 				onClusterHover?.(cluster);
 			});
 
 			hexagon.on('mouseout', () => {
-				hexagon.setStyle({ fillOpacity: 0.4 });
+				hexagon.setStyle({ fillOpacity: 0.25, weight: 2, opacity: 0.7 });
 				onClusterHover?.(null);
 			});
 

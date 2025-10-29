@@ -56,13 +56,13 @@ export function shouldShowClusters(zoomLevel: number, totalJobs: number, viewpor
 
 /**
  * Get color for cluster based on job count.
- * Color scheme as specified in PRD.
+ * Minimalistic color scheme with subtle gradients.
  */
 export function getClusterColor(count: number): string {
-	if (count < 10) return '#10b981'; // green
-	if (count < 50) return '#f59e0b'; // amber
-	if (count < 100) return '#f97316'; // orange
-	return '#ef4444'; // red
+	if (count < 10) return '#0ea5e9'; // sky blue - subtle
+	if (count < 50) return '#06b6d4'; // cyan - medium
+	if (count < 100) return '#8b5cf6'; // violet - higher density
+	return '#6366f1'; // indigo - highest density
 }
 
 /**

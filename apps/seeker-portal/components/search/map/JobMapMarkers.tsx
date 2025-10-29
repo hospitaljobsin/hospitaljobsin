@@ -60,48 +60,40 @@ export default function JobMapMarkers({ data, onJobClick }: JobMapMarkersProps) 
 		const hospitalIconSvg = renderToString(<Hospital className='w-4 h-4' />);
 		const mapPinIconSvg = renderToString(<MapPin className='w-4 h-4' />);
 
-		// Create healthcare-themed marker icon with medical cross
+		// Create sleek, minimalistic marker icon
 		const healthcareIcon = L.divIcon({
 			className: 'custom-healthcare-marker',
 			html: `
 				<div style="
-					width: 48px;
-					height: 48px;
-					background: ${primaryHsl};
-					border: 3px solid white;
-					border-radius: 12px;
-					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0,0,0,0.1);
+					width: 40px;
+					height: 40px;
+					background: white;
+					border: 2px solid ${primaryHsl};
+					border-radius: 50%;
+					box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0,0,0,0.08);
 					display: flex;
 					align-items: center;
 					justify-content: center;
 					position: relative;
-					transform: rotate(45deg);
 				">
 					<div style="
-						position: absolute;
+						width: 28px;
+						height: 28px;
+						background: ${primaryHsl};
+						border-radius: 50%;
+						display: flex;
+						align-items: center;
+						justify-content: center;
 						color: white;
-						transform: rotate(-45deg);
-						filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
 					">${crossIconSvg}</div>
 				</div>
-				<div style="
-					position: absolute;
-					bottom: -8px;
-					left: 50%;
-					transform: translateX(-50%);
-					width: 0;
-					height: 0;
-					border-left: 8px solid transparent;
-					border-right: 8px solid transparent;
-					border-top: 12px solid white;
-				"></div>
 			`,
-			iconSize: [48, 60],
-			iconAnchor: [24, 60],
-			popupAnchor: [0, -60]
+			iconSize: [40, 40],
+			iconAnchor: [20, 20],
+			popupAnchor: [0, -20]
 		});
 
-		// Create marker cluster group with healthcare-themed cluster icons
+		// Create marker cluster group with sleek, minimalistic cluster icons
 		const markers = L.markerClusterGroup({
 			chunkedLoading: true,
 			spiderfyOnMaxZoom: true,
@@ -110,29 +102,43 @@ export default function JobMapMarkers({ data, onJobClick }: JobMapMarkersProps) 
 			maxClusterRadius: 80,
 			iconCreateFunction: cluster => {
 				const childCount = cluster.getChildCount();
+				// Determine size based on count
+				let size = 48;
+				if (childCount >= 100) size = 64;
+				else if (childCount >= 50) size = 56;
+
 				return L.divIcon({
 					html: `
 						<div style="
-							width: 64px;
-							height: 64px;
-							background: ${primaryHsl};
-							border: 4px solid white;
+							width: ${size}px;
+							height: ${size}px;
+							background: white;
+							border: 2.5px solid ${primaryHsl};
 							border-radius: 50%;
 							display: flex;
-							flex-direction: column;
 							align-items: center;
 							justify-content: center;
-							font-weight: bold;
-							color: white;
-							box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0,0,0,0.1);
-							gap: 6px;
+							box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15), 0 1px 4px rgba(0,0,0,0.1);
+							position: relative;
 						">
-							<div style="width: 20px; height: 20px; color: white;">${crossIconSvg}</div>
-							<div style="font-size: 16px; line-height: 1;">${childCount}</div>
+							<div style="
+								width: ${size - 12}px;
+								height: ${size - 12}px;
+								background: ${primaryHsl};
+								border-radius: 50%;
+								display: flex;
+								align-items: center;
+								justify-content: center;
+								color: white;
+								font-weight: 700;
+								font-size: ${size >= 64 ? '18px' : size >= 56 ? '16px' : '15px'};
+								letter-spacing: -0.02em;
+								font-family: system-ui, -apple-system, sans-serif;
+							">${childCount}</div>
 						</div>
 					`,
 					className: 'custom-cluster-icon',
-					iconSize: [64, 64]
+					iconSize: [size, size]
 				});
 			}
 		});
