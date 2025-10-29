@@ -1,11 +1,10 @@
 'use client';
 
-import { Button, Chip, Input } from '@heroui/react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { Button, Input } from '@heroui/react';
+import { motion } from 'framer-motion';
 import { Filter, MapPin, Search, X } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
-import { filterChipsExpand, filterChipsTransition, getAnimationConfig } from '@/lib/animations';
 import MobileFilterScene from './MobileFilterScene';
 
 interface FloatingSearchBarProps {
@@ -170,7 +169,7 @@ export default function FloatingSearchBar({
 	}, [onFocusChange]);
 
 	return (
-		<motion.div layout className={`absolute top-4 left-4 right-4 z-[1000] ${className}`}>
+		<motion.div layout className={`absolute top-4 left-4 right-4 z-[1000] max-w-4xl ${className}`}>
 			<div className='bg-background/95 backdrop-blur-sm rounded-xl shadow-lg border border-divider'>
 				{/* Main Search Container */}
 				<div className='p-3'>
@@ -252,46 +251,6 @@ export default function FloatingSearchBar({
 						)}
 					</div>
 				</div>
-
-				{/* Mobile Filter Chips - Show on focus (disabled, using dedicated scene) */}
-				<AnimatePresence>
-					{isFocused && !isMobile && quickFilters.length > 0 && (
-						<motion.div
-							{...getAnimationConfig(filterChipsExpand, filterChipsTransition)}
-							className='border-t border-divider overflow-hidden'
-						>
-							<div className='p-3'>
-								<div className='flex flex-wrap gap-2 items-center'>
-									{/* Quick Filter Chips */}
-									{quickFilters.map(filter => (
-										<Chip
-											key={filter.value}
-											size='sm'
-											variant={filter.active ? 'solid' : 'flat'}
-											color={filter.active ? 'primary' : 'default'}
-											className='cursor-pointer transition-colors'
-											onClick={() => onQuickFilterToggle?.(filter.value)}
-										>
-											{filter.label}
-										</Chip>
-									))}
-
-									{/* More Filters Button */}
-									{onMoreFiltersClick && (
-										<Button
-											size='sm'
-											variant='flat'
-											onPress={onMoreFiltersClick}
-											className='ml-auto bg-default-100 hover:bg-default-200 transition-colors'
-										>
-											+ More Filters
-										</Button>
-									)}
-								</div>
-							</div>
-						</motion.div>
-					)}
-				</AnimatePresence>
 			</div>
 
 			{/* Mobile Filter Scene */}
