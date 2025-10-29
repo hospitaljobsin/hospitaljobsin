@@ -2,10 +2,12 @@
 
 import { useProgress } from '@bprogress/next';
 import { useDisclosure } from '@heroui/react';
+import { AnimatePresence, motion } from 'framer-motion';
 import type { Map as LeafletMap } from 'leaflet';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
+import { getAnimationConfig, sidebarSlide, sidebarTransition } from '@/lib/animations';
 import { calculateViewportArea, shouldShowClusters } from '@/lib/map/h3Utils';
 
 type ClusterInfo = {
@@ -22,7 +24,9 @@ const JobHexagonClusters = dynamic(() => import('./JobHexagonClusters'), { ssr: 
 const JobMapControls = dynamic(() => import('./JobMapControls'), { ssr: false });
 const JobPreviewDrawer = dynamic(() => import('./JobPreviewDrawer'), { ssr: false });
 const MapFilterSidebar = dynamic(() => import('./MapFilterSidebar'), { ssr: false });
-const FilterBottomSheet = dynamic(() => import('./FilterSheet'), { ssr: false });
+const ClusterBottomSheet = dynamic(() => import('./FilterSheet'), { ssr: false });
+const FloatingSearchBar = dynamic(() => import('./FloatingSearchBar'), { ssr: false });
+const FilterModal = dynamic(() => import('./FilterModal'), { ssr: false });
 
 // Helper function to normalize longitude to -180 to 180 range
 function normalizeLongitude(lng: number): number {
@@ -102,6 +106,10 @@ export default function JobMapView({
 	const [announcementMessage, setAnnouncementMessage] = useState<string>('');
 	const [isMounted, setIsMounted] = useState(false);
 	const [isMapDataFetching, setIsMapDataFetching] = useState(false);
+
+	// New state for enhanced UX
+	const [showFilterModal, setShowFilterModal] = useState(false);
+	const [isInputFocused, setIsInputFocused] = useState(false);
 
 	// BProgress hook for controlling the top progress bar
 	const { start, stop } = useProgress();
@@ -199,21 +207,27 @@ export default function JobMapView({
 
 	// Invalidate map size when map is ready or when layout changes (fixes tile loading issue)
 	useEffect(() => {
-		if (!map) return;
+		if (!map?.getContainer()) return;
 
 		// Invalidate size when map loads or when mobile state changes (sidebar toggle)
 		const timeoutId1 = setTimeout(() => {
-			map.invalidateSize();
+			if (map?.getContainer()) {
+				map.invalidateSize();
+			}
 		}, 100);
 
 		// Force another invalidation after a longer delay to ensure full map load
 		const timeoutId2 = setTimeout(() => {
-			map.invalidateSize();
+			if (map?.getContainer()) {
+				map.invalidateSize();
+			}
 		}, 500);
 
 		// Also invalidate on window resize to handle dynamic layout changes
 		const handleResize = () => {
-			map.invalidateSize();
+			if (map?.getContainer()) {
+				map.invalidateSize();
+			}
 		};
 
 		window.addEventListener('resize', handleResize);
@@ -508,81 +522,165 @@ export default function JobMapView({
 				{announcementMessage}
 			</div>
 
-			{/* Desktop Sidebar - Hidden on mobile/tablet */}
-			{!isMobile && (
-				<div className='w-80 h-full border-r border-divider overflow-y-auto bg-background z-10 relative'>
-					<MapFilterSidebar
-						filters={filters}
-						onFiltersChange={onFiltersChange}
-						onLocationSelect={handleLocationSelect}
-						totalCount={(data as any)?.jobs?.totalCount || 0}
-						isPending={isPending}
-						selectedCluster={autoSelectedCluster}
-						onJobSelect={setSelectedJobId}
-					/>
-				</div>
-			)}
+			{/* Conditional Desktop Sidebar - Only when cluster is selected */}
+			<AnimatePresence>
+				{!isMobile && autoSelectedCluster && (
+					<motion.div
+						{...getAnimationConfig(sidebarSlide, sidebarTransition)}
+						className='h-full border-r border-divider overflow-y-auto bg-background z-10 relative'
+					>
+						<MapFilterSidebar
+							filters={filters}
+							onFiltersChange={onFiltersChange}
+							totalCount={(data as any)?.jobs?.totalCount || 0}
+							isPending={isPending}
+							selectedCluster={autoSelectedCluster}
+							onJobSelect={setSelectedJobId}
+						/>
+					</motion.div>
+				)}
+			</AnimatePresence>
 
-			{/* Map Container */}
+			{/* Map Container with conditional dimming */}
 			<div className='flex-1 relative h-full overflow-hidden'>
-				<MapContainer
-					center={defaultCenter}
-					zoom={defaultZoom}
-					minZoom={minZoom}
-					maxZoom={maxZoom}
-					className='h-full w-full [&_.leaflet-container]:touch-pan-x [&_.leaflet-container]:touch-pan-y [&_.leaflet-container]:h-full [&_.leaflet-container]:w-full'
-					ref={setMap}
-					zoomControl={false}
-					attributionControl={false}
-					touchZoom={true}
-					dragging={true}
-					scrollWheelZoom={true}
-					doubleClickZoom={true}
-					maxBounds={worldBounds}
-					maxBoundsViscosity={0.5}
-					style={{ height: '100%', width: '100%' }}
-					bounceAtZoomLimits
-				>
-					<TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
+				<div className={`h-full w-full transition-opacity duration-300 ${isInputFocused && isMobile ? 'opacity-30' : 'opacity-100'}`}>
+					<MapContainer
+						center={defaultCenter}
+						zoom={defaultZoom}
+						minZoom={minZoom}
+						maxZoom={maxZoom}
+						className='h-full w-full [&_.leaflet-container]:h-full [&_.leaflet-container]:w-full [&_.leaflet-container]:block'
+						ref={setMap}
+						zoomControl={false}
+						attributionControl={false}
+						touchZoom={true}
+						dragging={true}
+						scrollWheelZoom={true}
+						doubleClickZoom={true}
+						maxBounds={worldBounds}
+						maxBoundsViscosity={0.5}
+						style={{ height: '100%', width: '100%', zIndex: 1 }}
+						bounceAtZoomLimits
+					>
+						<TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
 
-					{/* Render job clusters when zoomed out */}
-					{showClusters && (data as any)?.jobClusters && (
-						<JobHexagonClusters clusters={(data as any).jobClusters} onClusterClick={handleClusterClick} />
-					)}
+						{/* Render job clusters when zoomed out */}
+						{showClusters && (data as any)?.jobClusters && (
+							<JobHexagonClusters clusters={(data as any).jobClusters} onClusterClick={handleClusterClick} />
+						)}
 
-					{/* Render individual job markers when zoomed in or no clusters available */}
-					{(!showClusters || !(data as any)?.jobClusters) && (
-						<JobMapMarkers data={data} onJobClick={handleJobClick} selectedJobId={selectedJobId} />
-					)}
-					<JobMapControls map={map} />
-				</MapContainer>
+						{/* Render individual job markers when zoomed in or no clusters available */}
+						{(!showClusters || !(data as any)?.jobClusters) && (
+							<JobMapMarkers data={data} onJobClick={handleJobClick} selectedJobId={selectedJobId} />
+						)}
+						<JobMapControls map={map} />
+					</MapContainer>
+				</div>
+
+				{/* Enhanced Floating Search Bar */}
+				<FloatingSearchBar
+					searchTerm={filters.searchTerm}
+					location={filters.location}
+					onSearchTermChange={term => onFiltersChange?.({ searchTerm: term })}
+					onLocationChange={location => onFiltersChange?.({ location })}
+					onLocationSelect={handleLocationSelect}
+					onFocusChange={setIsInputFocused}
+					showFiltersButton={!isMobile}
+					activeFilterCount={activeFilterCount}
+					onFiltersClick={() => setShowFilterModal(true)}
+					// Mobile enhancement props
+					isMobile={isMobile}
+					quickFilters={[
+						{ label: 'Full-time', value: 'full_time', active: filters.jobType?.includes('full_time') || false },
+						{ label: 'Remote', value: 'remote', active: filters.workMode?.includes('remote') || false },
+						{ label: 'Entry Level', value: 'entry', active: filters.minExperience === 0 },
+						{ label: 'Senior Level', value: 'senior', active: (filters.minExperience || 0) >= 5 }
+					]}
+					onQuickFilterToggle={value => {
+						switch (value) {
+							case 'full_time':
+								onFiltersChange?.({
+									jobType: filters.jobType?.includes('full_time')
+										? filters.jobType.filter((t: string) => t !== 'full_time')
+										: [...(filters.jobType || []), 'full_time']
+								});
+								break;
+							case 'remote':
+								onFiltersChange?.({
+									workMode: filters.workMode?.includes('remote')
+										? filters.workMode.filter((m: string) => m !== 'remote')
+										: [...(filters.workMode || []), 'remote']
+								});
+								break;
+							case 'entry':
+								onFiltersChange?.({ minExperience: filters.minExperience === 0 ? null : 0 });
+								break;
+							case 'senior':
+								onFiltersChange?.({ minExperience: (filters.minExperience || 0) >= 5 ? null : 5 });
+								break;
+						}
+					}}
+					onMoreFiltersClick={() => {
+						// On mobile, trigger the filter bottom sheet to expand
+						// This will be enhanced when we implement the enhanced bottom sheet
+					}}
+					// Mobile filter scene props
+					filters={{
+						jobType: filters.jobType || [],
+						workMode: filters.workMode || [],
+						minExperience: filters.minExperience,
+						minSalary: filters.minSalary,
+						maxSalary: filters.maxSalary
+					}}
+					onFiltersChange={mobileFilters => {
+						// Handle mobile filter changes by mapping to the broader filter interface
+						if (mobileFilters) {
+							onFiltersChange?.(mobileFilters);
+						}
+					}}
+					resultCount={(data as any)?.jobs?.totalCount || 0} // eslint-disable-line @typescript-eslint/no-explicit-any
+					onExpand={
+						isMobile
+							? () => {
+									// On mobile, trigger the filter bottom sheet to expand
+									// This can be enhanced later with proper integration
+								}
+							: undefined
+					}
+					className={isMobile ? 'px-2 mr-12' : 'px-6 mr-16'}
+				/>
 
 				{/* Desktop Job Preview Popup (shown on marker click) */}
 				{!isMobile && selectedJobId && (
 					<div className='absolute top-4 right-4 w-96 bg-background shadow-xl rounded-lg border border-divider z-[1000] max-h-[80vh] overflow-y-auto'>
-						<JobPreviewDrawer jobId={selectedJobId} data={data} onClose={() => setSelectedJobId(null)} />
+						<JobPreviewDrawer jobId={selectedJobId} data={data as any} onClose={() => setSelectedJobId(null)} />
 					</div>
 				)}
 			</div>
 
 			{/* Mobile Job Preview Drawer */}
 			{isMobile && selectedJobId && (
-				<JobPreviewDrawer jobId={selectedJobId} data={data} isOpen={isDrawerOpen} onClose={handleDrawerClose} />
+				<JobPreviewDrawer jobId={selectedJobId} data={data as any} isOpen={isDrawerOpen} onClose={handleDrawerClose} />
 			)}
 
-			{/* Mobile Filter Bottom Sheet - Always visible on mobile, tucked in by default */}
+			{/* Mobile Cluster Bottom Sheet - Always visible on mobile, tucked in by default */}
 			{isMobile && (
-				<FilterBottomSheet
-					filters={filters}
-					onFiltersChange={onFiltersChange}
-					onLocationSelect={handleLocationSelect}
-					totalCount={(data as any)?.jobs?.totalCount || 0}
+				<ClusterBottomSheet
+					totalCount={(data as any)?.jobs?.totalCount || 0} // eslint-disable-line @typescript-eslint/no-explicit-any
 					isPending={isPending}
-					activeFilterCount={activeFilterCount}
 					selectedCluster={autoSelectedCluster}
-					onJobSelect={setSelectedJobId}
 				/>
 			)}
+
+			{/* Desktop Filter Modal */}
+			<FilterModal
+				isOpen={showFilterModal}
+				onClose={() => setShowFilterModal(false)}
+				filters={filters}
+				onFiltersChange={onFiltersChange}
+				resultCount={(data as any)?.jobs?.totalCount || 0} // eslint-disable-line @typescript-eslint/no-explicit-any
+				isPending={isPending}
+			/>
 		</div>
 	);
 }

@@ -1,9 +1,6 @@
 'use client';
 
 import { Button, Slider } from '@heroui/react';
-import JobSearchAutocomplete from '@/components/forms/JobSearchAutocomplete';
-import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
-import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
 import ClusterJobsList from './ClusterJobsList';
 
 type ClusterInfo = {
@@ -25,7 +22,6 @@ interface MapFilterSidebarProps {
 		sortBy: string;
 	};
 	onFiltersChange?: (filters: Partial<MapFilterSidebarProps['filters']>) => void;
-	onLocationSelect?: (location: SearchLocation) => void;
 	totalCount: number;
 	isPending?: boolean;
 	// Cluster support props
@@ -36,7 +32,6 @@ interface MapFilterSidebarProps {
 export default function MapFilterSidebar({
 	filters,
 	onFiltersChange,
-	onLocationSelect,
 	totalCount,
 	isPending = false,
 	selectedCluster,
@@ -44,8 +39,6 @@ export default function MapFilterSidebar({
 }: MapFilterSidebarProps) {
 	const handleClearAll = () => {
 		onFiltersChange?.({
-			searchTerm: null,
-			location: null,
 			minExperience: null,
 			minSalary: null,
 			maxSalary: null,
@@ -56,13 +49,7 @@ export default function MapFilterSidebar({
 	};
 
 	const hasActiveFilters =
-		filters.searchTerm ||
-		filters.location ||
-		filters.minExperience ||
-		filters.minSalary ||
-		filters.maxSalary ||
-		filters.jobType.length > 0 ||
-		filters.workMode.length > 0;
+		filters.minExperience || filters.minSalary || filters.maxSalary || filters.jobType.length > 0 || filters.workMode.length > 0;
 
 	return (
 		<div className='p-4 space-y-4'>
@@ -74,33 +61,6 @@ export default function MapFilterSidebar({
 						Clear All
 					</Button>
 				)}
-			</div>
-
-			{/* Compact Search Section */}
-			<div className='space-y-2'>
-				<JobSearchAutocomplete
-					value={filters.searchTerm || ''}
-					onValueChange={value => onFiltersChange?.({ searchTerm: value || null })}
-					onSubmit={value => onFiltersChange?.({ searchTerm: value || null })}
-					onClear={() => onFiltersChange?.({ searchTerm: null })}
-					placeholder='Job title or keyword...'
-					variant='flat'
-					size='sm'
-				/>
-
-				<LocationAutocomplete
-					value={filters.location || ''}
-					onChange={location => {
-						onFiltersChange?.({ location: location.address.displayName || null });
-						onLocationSelect?.(location);
-					}}
-					onValueChange={value => onFiltersChange?.({ location: value || null })}
-					onSubmit={value => onFiltersChange?.({ location: value || null })}
-					onClear={() => onFiltersChange?.({ location: null })}
-					placeholder='City, state or pincode...'
-					variant='flat'
-					size='sm'
-				/>
 			</div>
 
 			{/* Quick Filter Chips */}

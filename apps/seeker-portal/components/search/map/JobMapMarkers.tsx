@@ -43,6 +43,12 @@ export default function JobMapMarkers({ data, onJobClick }: JobMapMarkersProps) 
 	}
 
 	useEffect(() => {
+		// Early return if map is not ready or no container exists
+		if (!map || !map.getContainer()) {
+			console.log('JobMapMarkers: Map not ready, skipping initialization');
+			return;
+		}
+
 		console.log('JobMapMarkers useEffect - Running with', jobs.length, 'jobs');
 
 		// Get HeroUI primary color from CSS variables
@@ -228,8 +234,13 @@ export default function JobMapMarkers({ data, onJobClick }: JobMapMarkersProps) 
 		console.log('Total markers created:', markerCount);
 		console.log('Marker cluster bounds valid:', markers.getBounds().isValid());
 
-		map.addLayer(markers);
-		console.log('Marker cluster added to map');
+		// Safely add markers to map with additional check
+		if (map && map.getContainer() && markers) {
+			map.addLayer(markers);
+			console.log('Marker cluster added to map');
+		} else {
+			console.warn('Cannot add markers - map container not ready');
+		}
 
 		// Fit map to markers only on initial load (not on every data change)
 		if (!hasFitBoundsRef.current && jobs.length > 0 && markers.getBounds().isValid()) {
@@ -241,7 +252,15 @@ export default function JobMapMarkers({ data, onJobClick }: JobMapMarkersProps) 
 
 		return () => {
 			console.log('Cleaning up markers');
-			map.removeLayer(markers);
+			// Safely remove markers with container check
+			if (map && map.getContainer() && markers && map.hasLayer(markers)) {
+				try {
+					map.removeLayer(markers);
+					console.log('Markers successfully removed');
+				} catch (error) {
+					console.warn('Error removing markers:', error);
+				}
+			}
 		};
 	}, [jobs, map, onJobClick]);
 

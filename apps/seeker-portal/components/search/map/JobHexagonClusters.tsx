@@ -32,6 +32,12 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 	const hexagonsRef = useRef<Map<string, L.Polygon>>(new Map());
 
 	useEffect(() => {
+		// Early return if map is not ready or no container exists
+		if (!map || !map.getContainer()) {
+			console.log('JobHexagonClusters: Map not ready, skipping initialization');
+			return;
+		}
+
 		// Create canvas renderer if not exists
 		if (!canvasLayerRef.current) {
 			canvasLayerRef.current = L.canvas();
@@ -40,7 +46,9 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 		const canvas = canvasLayerRef.current;
 
 		// Clear existing hexagons
-		hexagonsRef.current.forEach(hex => hex.remove());
+		for (const hex of hexagonsRef.current.values()) {
+			hex.remove();
+		}
 		hexagonsRef.current.clear();
 
 		// Render new hexagons with accessibility enhancements
@@ -105,8 +113,14 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 				onClusterHover?.(null);
 			});
 
-			// Add to map
-			hexagon.addTo(map);
+			// Add to map with safety check
+			if (map?.getContainer()) {
+				try {
+					hexagon.addTo(map);
+				} catch (error) {
+					console.warn('Error adding hexagon to map:', error);
+				}
+			}
 
 			// Store reference
 			hexagonsRef.current.set(cluster.h3Index, hexagon);
@@ -114,10 +128,17 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 
 		// Cleanup
 		return () => {
-			hexagonsRef.current.forEach(hex => {
-				hex.remove();
-			});
-			hexagonsRef.current.clear();
+			if (map?.getContainer()) {
+				try {
+					for (const hex of hexagonsRef.current.values()) {
+						hex.remove();
+					}
+					hexagonsRef.current.clear();
+					console.log('Hexagon clusters successfully cleaned up');
+				} catch (error) {
+					console.warn('Error cleaning up hexagon clusters:', error);
+				}
+			}
 		};
 	}, [clusters, map, onClusterClick, onClusterHover]);
 
