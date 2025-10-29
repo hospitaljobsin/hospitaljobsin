@@ -3,7 +3,8 @@
 import { Button, Chip, Input } from '@heroui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, MapPin, Search, X } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
 
 interface MobileFilterSceneProps {
@@ -66,9 +67,53 @@ export default function MobileFilterScene({
 	const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm || '');
 	const [localLocation, setLocalLocation] = useState(location || '');
 	const [activeInput, setActiveInput] = useState<'search' | 'location'>(initialFocus);
+	const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
 
 	const searchInputRef = useRef<HTMLInputElement>(null);
 	const locationInputRef = useRef<HTMLInputElement>(null);
+
+	// Create or get the portal container with maximum z-index
+	useLayoutEffect(() => {
+		if (typeof document === 'undefined') return;
+
+		let container = document.getElementById('mobile-filter-portal-root');
+		if (!container) {
+			container = document.createElement('div');
+			container.id = 'mobile-filter-portal-root';
+			container.style.position = 'fixed';
+			container.style.top = '0';
+			container.style.left = '0';
+			container.style.width = '100%';
+			container.style.height = '100%';
+			container.style.pointerEvents = 'none'; // Allow clicks to pass through when empty
+			container.style.zIndex = '2147483647'; // Maximum z-index
+			container.style.isolation = 'isolate'; // Create new stacking context
+			document.body.appendChild(container);
+		}
+		setPortalContainer(container);
+
+		return () => {
+			// Don't remove the container on unmount as other instances might be using it
+			setPortalContainer(null);
+		};
+	}, []);
+
+	// Manage portal container pointer events based on modal state
+	useEffect(() => {
+		if (!portalContainer) return;
+
+		if (isOpen) {
+			portalContainer.style.pointerEvents = 'auto';
+		} else {
+			portalContainer.style.pointerEvents = 'none';
+		}
+
+		return () => {
+			if (portalContainer) {
+				portalContainer.style.pointerEvents = 'none';
+			}
+		};
+	}, [isOpen, portalContainer]);
 
 	// Sync with props
 	useEffect(() => {
@@ -158,7 +203,13 @@ export default function MobileFilterScene({
 		{ label: 'Executive', value: '10', active: filters.minExperience === 10 }
 	];
 
-	return (
+	// Use portal to render outside the normal DOM hierarchy to avoid z-index conflicts
+	// Return null on server side (SSR) or if portal container isn't ready
+	if (typeof document === 'undefined' || !portalContainer) {
+		return null;
+	}
+
+	return createPortal(
 		<AnimatePresence>
 			{isOpen && (
 				<motion.div
@@ -167,7 +218,16 @@ export default function MobileFilterScene({
 					animate='animate'
 					exit='exit'
 					transition={sceneTransition}
-					className='fixed inset-0 z-[9999] bg-background'
+					className='fixed inset-0 bg-background'
+					style={{
+						position: 'fixed',
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						pointerEvents: 'auto', // Enable interactions
+						zIndex: 'inherit' // Inherit from portal container
+					}}
 					onKeyDown={handleKeyDown}
 				>
 					{/* Header */}
@@ -340,6 +400,7 @@ export default function MobileFilterScene({
 					</div>
 				</motion.div>
 			)}
-		</AnimatePresence>
+		</AnimatePresence>,
+		portalContainer
 	);
 }
