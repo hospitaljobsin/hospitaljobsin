@@ -43,6 +43,29 @@
 		z-index: 1000 !important;
 	}
 
+	/* Disable transitions on custom healthcare markers to prevent jittering */
+	.custom-healthcare-marker,
+	.custom-healthcare-marker *,
+	.custom-healthcare-marker > div {
+		transition: none !important;
+		animation: none !important;
+		transform-origin: center center !important;
+		will-change: auto !important;
+	}
+
+	/* Ensure marker icons don't animate when repositioned by Leaflet */
+	.leaflet-marker-icon.custom-healthcare-marker {
+		transition: none !important;
+		animation: none !important;
+		will-change: auto !important;
+		pointer-events: auto !important;
+	}
+
+	/* Prevent any transform transitions on marker positioning */
+	.leaflet-marker-pane .custom-healthcare-marker {
+		transition: none !important;
+	}
+
 	/* Ensure marker pane is visible */
 	.leaflet-marker-pane {
 		z-index: 600 !important;
