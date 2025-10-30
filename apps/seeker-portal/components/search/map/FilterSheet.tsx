@@ -4,6 +4,7 @@ import { Button } from '@heroui/react';
 import { FileIcon, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
+import ViewportJobsList from './ClusterJobsList';
 
 type ClusterInfo = {
 	hexId: string;
@@ -16,11 +17,30 @@ interface ClusterSheetProps {
 	isPending?: boolean;
 	// Cluster support props
 	selectedCluster?: ClusterInfo | null;
+	// Viewport jobs props
+	bounds?: {
+		swLat: number;
+		swLng: number;
+		neLat: number;
+		neLng: number;
+	} | null;
+	filters: {
+		searchTerm: string | null;
+		location: string | null;
+		minExperience: number | null;
+		minSalary: number | null;
+		maxSalary: number | null;
+		proximityKm: number;
+		workMode: readonly string[];
+		jobType: readonly string[];
+		sortBy: string;
+	};
+	onJobSelect?: (jobId: string) => void;
 }
 
-export default function FilterSheet({ totalCount, isPending, selectedCluster }: ClusterSheetProps) {
+export default function FilterSheet({ totalCount, isPending, selectedCluster, bounds, filters, onJobSelect }: ClusterSheetProps) {
 	const ref = useRef<SheetRef>(null);
-	const [currentSnap, setCurrentSnap] = useState(2);
+	const [currentSnap, setCurrentSnap] = useState(1);
 
 	// Enhanced snap points based on PRD specifications:
 	// 0 = Hidden (fully closed) - 0
@@ -36,8 +56,8 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster }: 
 			// Snap to cluster state (index 3 - 60% viewport)
 			ref.current?.snapTo(3);
 		} else {
-			// Snap to no-cluster state (index 2 - 35% viewport)
-			ref.current?.snapTo(2);
+			// Keep tucked state (index 1) as default
+			ref.current?.snapTo(1);
 		}
 	}, [selectedCluster]);
 
@@ -68,25 +88,58 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster }: 
 						onClick={handleHandleTap}
 						aria-label='Expand cluster sheet'
 					/>
-					<p className='text-xs text-default-500 mt-2'>Pull up for jobs in area</p>
+					<p className='text-xs text-default-500 mt-2'>Pull up to see jobs in area</p>
 				</div>
 			);
 		}
 
-		// No cluster state
+		// No cluster state - show viewport jobs or empty state
 		if (!selectedCluster && currentSnap === 2) {
+			// Check if we have jobs data available
+			if (!bounds || totalCount === 0) {
+				return (
+					<div className='p-6 text-center'>
+						<button
+							type='button'
+							className='w-12 h-1 bg-default-300 rounded-full mx-auto mb-4 cursor-pointer block'
+							onClick={handleHandleTap}
+							aria-label='Toggle cluster sheet'
+						/>
+						<div className='space-y-3 flex flex-col items-center justify-center'>
+							<FileIcon className='text-foreground-400' />
+							<h3 className='text-lg font-medium text-foreground-700'>No Jobs Found</h3>
+							<p className='text-sm text-foreground-500 max-w-xs mx-auto'>Try zooming into an area to find jobs</p>
+						</div>
+					</div>
+				);
+			}
+
+			// Show viewport jobs list
 			return (
-				<div className='p-6 text-center'>
-					<button
-						type='button'
-						className='w-12 h-1 bg-default-300 rounded-full mx-auto mb-4 cursor-pointer block'
-						onClick={handleHandleTap}
-						aria-label='Toggle cluster sheet'
-					/>
-					<div className='space-y-3 flex flex-col items-center justify-center'>
-						<FileIcon className='text-foreground-400' />
-						<h3 className='text-lg font-medium text-foreground-700'>No Jobs Found</h3>
-						<p className='text-sm text-foreground-500 max-w-xs mx-auto'>Try zooming into an area to find jobs</p>
+				<div className='flex flex-col h-full'>
+					{/* Header */}
+					<div className='p-4 border-b border-divider bg-background sticky top-0 z-10'>
+						<button
+							type='button'
+							className='w-12 h-1 bg-default-300 rounded-full cursor-pointer block mx-auto mb-3'
+							onClick={handleHandleTap}
+							aria-label='Toggle cluster sheet'
+						/>
+						<div>
+							<h3 className='text-lg font-medium text-foreground-700'>Jobs in Current Area</h3>
+							<p className='text-sm text-foreground-500'>{totalCount} jobs available</p>
+						</div>
+					</div>
+
+					{/* Jobs List Content */}
+					<div className='flex-1 overflow-y-auto p-4'>
+						<ViewportJobsList
+							key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
+							bounds={bounds}
+							filters={filters}
+							onJobSelect={onJobSelect}
+							className='space-y-2'
+						/>
 					</div>
 				</div>
 			);
@@ -126,24 +179,42 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster }: 
 				</div>
 
 				{/* Content */}
-				<div className='flex-1 overflow-y-auto p-6'>
+				<div className='flex-1 overflow-y-auto p-4'>
 					{selectedCluster ? (
 						<div className='space-y-4'>
-							<div className='text-center'>
+							<div className='text-center mb-6'>
 								<div className='text-6xl mb-4'>📍</div>
 								<h3 className='text-xl font-semibold text-foreground-700 mb-2'>{selectedCluster.hexId || 'Selected Area'}</h3>
 								<p className='text-lg text-foreground-600 mb-4'>{selectedCluster.count} jobs found in this area</p>
-								<p className='text-sm text-foreground-500'>Tap on individual job markers to see details</p>
+								<p className='text-sm text-foreground-500'>Browse jobs below or tap on individual job markers on the map</p>
 							</div>
+
+							{/* Show jobs list if we have bounds data */}
+							{bounds && (
+								<ViewportJobsList
+									key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
+									bounds={bounds}
+									filters={filters}
+									onJobSelect={onJobSelect}
+									className='space-y-2'
+								/>
+							)}
 						</div>
+					) : bounds && totalCount > 0 ? (
+						// Show viewport jobs if no cluster is selected but we have jobs
+						<ViewportJobsList
+							key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
+							bounds={bounds}
+							filters={filters}
+							onJobSelect={onJobSelect}
+							className='space-y-2'
+						/>
 					) : (
+						// Show empty state if no jobs
 						<div className='text-center py-8'>
-							<div className='text-6xl mb-4'>🗺️</div>
-							<h3 className='text-xl font-semibold text-foreground-700 mb-2'>Explore Jobs on Map</h3>
-							<p className='text-sm text-foreground-500'>
-								Total jobs available: {totalCount}
-								{isPending && ' (loading...)'}
-							</p>
+							<FileIcon className='text-foreground-400 mx-auto mb-4' size={48} />
+							<h3 className='text-xl font-semibold text-foreground-700 mb-2'>No Jobs Found</h3>
+							<p className='text-sm text-foreground-500'>Try zooming into an area to find jobs</p>
 						</div>
 					)}
 				</div>
@@ -156,7 +227,7 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster }: 
 			ref={ref}
 			isOpen={true}
 			onClose={() => {}}
-			initialSnap={selectedCluster ? 3 : 2}
+			initialSnap={1}
 			snapPoints={snapPoints}
 			onSnap={snapIndex => setCurrentSnap(snapIndex)}
 			disableScrollLocking={true}

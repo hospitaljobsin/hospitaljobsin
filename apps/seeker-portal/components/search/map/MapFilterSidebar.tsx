@@ -47,7 +47,7 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, onJobSel
 						bounds={bounds}
 						filters={filters}
 						onJobSelect={onJobSelect}
-						className='max-h-96 overflow-y-auto'
+						className='h-full overflow-y-auto'
 					/>
 				</div>
 			)}

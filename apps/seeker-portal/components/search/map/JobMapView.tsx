@@ -724,6 +724,9 @@ export default function JobMapView({
 					totalCount={(data as any)?.jobs?.totalCount || 0} // eslint-disable-line @typescript-eslint/no-explicit-any
 					isPending={isPending}
 					selectedCluster={autoSelectedCluster}
+					bounds={currentBounds}
+					filters={filters}
+					onJobSelect={setSelectedJobId}
 				/>
 			)}
 

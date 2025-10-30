@@ -206,14 +206,6 @@ function ViewportJobsContent({ bounds, filters, onJobSelect, className = '' }: V
 
 	return (
 		<div className={className}>
-			{/* Viewport Jobs Header */}
-			{totalCount > 0 && (
-				<div className='mb-4 p-3 bg-primary-50 rounded-lg border border-primary-200'>
-					<h3 className='text-sm font-semibold text-primary-900 mb-1'>Jobs in Current Area</h3>
-					<p className='text-xs text-primary-700'>{totalCount} jobs found in the visible area</p>
-				</div>
-			)}
-
 			{/* Jobs List */}
 			<div className='space-y-2'>
 				{allJobs.map(job => (
