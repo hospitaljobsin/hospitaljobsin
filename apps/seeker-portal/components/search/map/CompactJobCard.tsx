@@ -132,84 +132,86 @@ export default function CompactJobCard({ job: jobKey, href, onClick, className =
 
 	const cardContent = (
 		<Card
-			className={`w-full cursor-pointer hover:shadow-md transition-shadow ${className}`}
+			className={`w-full cursor-pointer transition-colors ${className}`}
 			isPressable={!!href || !!onClick}
-			shadow='sm'
 			onPress={onClick}
+			shadow='none'
 		>
-			<CardBody className='p-3 space-y-2'>
+			<CardBody className='p-4 space-y-3'>
+				{/* Job Title */}
+
 				{/* Header with Organization */}
 				{showOrganization && job.organization && (
-					<div className='flex items-center gap-2 min-w-0'>
+					<div className='flex items-center gap-4 min-w-0'>
 						{job.organization.logoUrl && (
-							<div className='relative w-6 h-6 flex-shrink-0'>
-								<Image src={job.organization.logoUrl} alt={job.organization.name} fill className='rounded object-cover' sizes='24px' />
+							<div className='relative w-12 h-12 flex-shrink-0'>
+								<Image src={job.organization.logoUrl} alt={job.organization.name} fill className='rounded object-cover' sizes='48px' />
 							</div>
 						)}
-						<div className='flex items-center gap-1 min-w-0 flex-1'>
-							<span className='text-xs text-foreground-600 truncate font-medium'>{job.organization.name}</span>
-							{isVerified && (
-								<Tooltip content='Verified organization' size='sm'>
-									<VerifiedIcon className='w-3 h-3 text-primary flex-shrink-0' />
-								</Tooltip>
-							)}
+						<div className='flex flex-col w-full gap-2'>
+							<h3 className='text-base font-semibold text-foreground-900 line-clamp-2 leading-tight'>{job.title}</h3>
+							<div className='flex items-center gap-1 min-w-0 flex-1'>
+								<span className='text-sm text-foreground-700 truncate font-medium'>{job.organization.name}</span>
+								{isVerified && (
+									<Tooltip content='Verified organization' size='sm'>
+										<VerifiedIcon className='w-4 h-4 text-primary flex-shrink-0' />
+									</Tooltip>
+								)}
+							</div>
 						</div>
 					</div>
 				)}
 
-				{/* Job Title */}
-				<div>
-					<h3 className='text-sm font-semibold text-foreground-900 line-clamp-2 leading-tight'>{job.title}</h3>
-				</div>
+				{/* Primary Salary - Most Prominent */}
+				{salary && (
+					<div className='flex items-center gap-2'>
+						<IndianRupee size={16} className='text-foreground flex-shrink-0' />
+						<span className='text-lg font-semibold'>{salary}</span>
+						<span className='text-sm text-foreground-500'>/ month</span>
+					</div>
+				)}
 
-				{/* Job Details */}
-				<div className='flex flex-wrap gap-1 text-xs text-foreground-600'>
+				{/* Secondary Job Details */}
+				<div className='flex flex-wrap gap-3 text-sm text-foreground-600'>
 					{job.location && (
-						<div className='flex items-center gap-1'>
-							<MapPin size={12} className='flex-shrink-0' />
-							<span className='truncate max-w-20'>{job.location}</span>
+						<div className='flex items-center gap-1.5'>
+							<MapPin size={14} className='flex-shrink-0' />
+							<span className='truncate'>{job.location}</span>
 						</div>
 					)}
 
 					{experience && (
-						<div className='flex items-center gap-1'>
-							<Briefcase size={12} className='flex-shrink-0' />
+						<div className='flex items-center gap-1.5'>
+							<Briefcase size={14} className='flex-shrink-0' />
 							<span>{experience}</span>
-						</div>
-					)}
-
-					{salary && (
-						<div className='flex items-center gap-1'>
-							<IndianRupee size={12} className='flex-shrink-0' />
-							<span>{salary}</span>
 						</div>
 					)}
 				</div>
 
 				{/* Job Type and Work Mode Chips */}
-				<div className='flex gap-1 flex-wrap'>
+				<div className='flex gap-2 flex-wrap'>
 					{jobType && (
-						<Chip size='sm' variant='flat' color='primary' className='text-xs px-1 h-5'>
+						<Chip size='sm' variant='flat' color='primary' className='text-xs px-2 h-6'>
 							{jobType}
 						</Chip>
 					)}
 
 					{workMode && (
-						<Chip size='sm' variant='flat' color='secondary' className='text-xs px-1 h-5'>
+						<Chip size='sm' variant='flat' color='secondary' className='text-xs px-2 h-6'>
 							{workMode}
 						</Chip>
 					)}
 				</div>
 
-				{/* Skills (max 2) */}
+				{/* Skills (max 3) */}
 				{job.skills && job.skills.length > 0 && (
-					<div className='flex gap-1 flex-wrap'>
-						{job.skills.slice(0, 2).map((skill: string) => (
-							<Chip key={skill} size='sm' variant='flat' color='default' className='text-xs px-1 h-4 bg-default-100'>
+					<div className='flex gap-2 flex-wrap'>
+						{job.skills.slice(0, 3).map((skill: string) => (
+							<Chip key={skill} size='sm' variant='flat' color='default' className='text-xs px-2 h-6 bg-default-100'>
 								{skill}
 							</Chip>
 						))}
-						{job.skills.length > 2 && <span className='text-xs text-foreground-500 self-center'>+{job.skills.length - 2} more</span>}
+						{job.skills.length > 3 && <span className='text-xs text-foreground-500 self-center'>+{job.skills.length - 3} more</span>}
 					</div>
 				)}
 			</CardBody>

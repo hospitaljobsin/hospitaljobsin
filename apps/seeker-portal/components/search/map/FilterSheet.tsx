@@ -82,12 +82,6 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 		if (currentSnap <= 1) {
 			return (
 				<div className='p-4 text-center'>
-					<button
-						type='button'
-						className='w-12 h-1 bg-default-300 rounded-full mx-auto cursor-pointer block'
-						onClick={handleHandleTap}
-						aria-label='Expand cluster sheet'
-					/>
 					<p className='text-xs text-default-500 mt-2'>Pull up to see jobs in area</p>
 				</div>
 			);
@@ -99,12 +93,6 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 			if (!bounds || totalCount === 0) {
 				return (
 					<div className='p-6 text-center'>
-						<button
-							type='button'
-							className='w-12 h-1 bg-default-300 rounded-full mx-auto mb-4 cursor-pointer block'
-							onClick={handleHandleTap}
-							aria-label='Toggle cluster sheet'
-						/>
 						<div className='space-y-3 flex flex-col items-center justify-center'>
 							<FileIcon className='text-foreground-400' />
 							<h3 className='text-lg font-medium text-foreground-700'>No Jobs Found</h3>
@@ -119,12 +107,6 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 				<div className='flex flex-col h-full'>
 					{/* Header */}
 					<div className='p-4 border-b border-divider bg-background sticky top-0 z-10'>
-						<button
-							type='button'
-							className='w-12 h-1 bg-default-300 rounded-full cursor-pointer block mx-auto mb-3'
-							onClick={handleHandleTap}
-							aria-label='Toggle cluster sheet'
-						/>
 						<div>
 							<h3 className='text-lg font-medium text-foreground-700'>Jobs in Current Area</h3>
 							<p className='text-sm text-foreground-500'>{totalCount} jobs available</p>
@@ -151,12 +133,7 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 				{/* Header */}
 				<div className='p-4 border-b border-divider bg-background sticky top-0 z-10'>
 					<div className='flex items-center justify-between'>
-						<button
-							type='button'
-							className='w-12 h-1 bg-default-300 rounded-full cursor-pointer'
-							onClick={handleHandleTap}
-							aria-label='Toggle cluster sheet'
-						/>
+						<div className='flex-1' />
 						{currentSnap >= 4 && (
 							<Button
 								isIconOnly
@@ -231,9 +208,10 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 			snapPoints={snapPoints}
 			onSnap={snapIndex => setCurrentSnap(snapIndex)}
 			disableScrollLocking={true}
-			disableDismiss={currentSnap > 0 && currentSnap <= 2} // Prevent dismiss for persistent states, but allow full close
+			disableDrag={false}
 		>
 			<Sheet.Container className='!bg-background !rounded-t-3xl !shadow-2xl !z-[100]'>
+				<Sheet.Header />
 				<Sheet.Content className='!bg-background h-full'>{renderContent()}</Sheet.Content>
 			</Sheet.Container>
 
