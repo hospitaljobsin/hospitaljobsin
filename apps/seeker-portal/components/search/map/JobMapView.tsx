@@ -583,7 +583,7 @@ export default function JobMapView({
 				{!isMobile && (
 					<motion.div
 						{...getAnimationConfig(sidebarSlide, sidebarTransition)}
-						className='h-full border-r border-divider overflow-y-auto bg-background z-10 relative'
+						className='h-full bg-background z-10 relative overflow-visible'
 					>
 						<MapFilterSidebar
 							filters={filters}
