@@ -90,18 +90,17 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, onJobSel
 			{/* Main Sidebar Content */}
 			<div
 				className={`h-full flex flex-col p-4 bg-background transition-all duration-300 ease-in-out border-r border-divider ${
-					isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-80 opacity-100'
+					isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-md opacity-100'
 				}`}
 			>
 				{/* Header with Job Count */}
 				<div className='mb-4 w-full'>
-					<h2 className='text-base font-medium text-foreground-800'>{totalCount.toLocaleString()} Jobs</h2>
+					<h2 className='text-base font-medium text-foreground-800'>{totalCount.toLocaleString()} Jobs in Current Area</h2>
 				</div>
 
 				{/* Viewport Jobs List - always shown */}
 				<div className='w-full flex-1 flex flex-col min-h-0'>
 					<div className='mb-3 w-full flex-shrink-0'>
-						<h3 className='text-sm font-medium text-foreground-700 mb-1'>Jobs in Current Area</h3>
 						<p className='text-xs text-foreground-500'>Showing jobs in the current map view</p>
 					</div>
 					<div className='w-full flex-1 min-h-0 overflow-y-auto'>
@@ -146,16 +145,15 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, onJobSel
 			{/* Floating Chevron Toggle Button */}
 			<div
 				className={`absolute top-1/2 -translate-y-1/2 z-30 transition-all duration-300 ease-in-out ${
-					isCollapsed ? 'left-1' : 'left-full -translate-x-2'
+					isCollapsed ? 'left-1' : 'left-full -translate-x-4'
 				}`}
 			>
 				<Button
 					isIconOnly
 					size='sm'
 					variant='solid'
-					color='primary'
 					onPress={toggleCollapse}
-					className='h-10 w-10 rounded-full shadow-xl hover:shadow-2xl transition-shadow duration-200 border-2 border-white'
+					className='h-10 w-10 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-200 border-2 border-white'
 					aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
 				>
 					<ChevronLeft size={18} className={`transition-transform duration-300 ease-in-out ${isCollapsed ? 'rotate-180' : 'rotate-0'}`} />

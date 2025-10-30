@@ -189,7 +189,7 @@ function ViewportJobsContent({ bounds, filters, onJobSelect, className = '' }: V
 	return (
 		<div className={`w-full ${className}`}>
 			{/* Jobs List */}
-			<div className='w-full space-y-2'>
+			<div className='w-full space-y-6'>
 				{allJobs.map(job => (
 					<CompactJobCard
 						key={job.id}

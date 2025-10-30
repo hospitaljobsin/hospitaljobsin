@@ -10,9 +10,9 @@ export default function ClusterJobsListSkeleton({ count = 12 }: ClusterJobsListS
 	const skeletonItems = Array.from({ length: count }, (_, i) => `skeleton-item-${i}`);
 
 	return (
-		<div className='w-full space-y-2 overflow-y-hidden'>
+		<div className='w-full space-y-6 overflow-y-hidden'>
 			{skeletonItems.map(skeletonId => (
-				<Skeleton key={skeletonId} className='w-full min-w-96 h-24 rounded-lg' />
+				<Skeleton key={skeletonId} className='w-full min-w-96 h-64 rounded-lg' />
 			))}
 		</div>
 	);
