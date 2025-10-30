@@ -2,7 +2,7 @@
 
 import { Button } from '@heroui/react';
 import { ChevronLeft } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ViewportJobsList from './ClusterJobsList';
 
 interface MapFilterSidebarProps {
@@ -31,10 +31,58 @@ interface MapFilterSidebarProps {
 }
 
 export default function MapFilterSidebar({ filters, totalCount, bounds, onJobSelect, currentZoom }: MapFilterSidebarProps) {
-	const [isCollapsed, setIsCollapsed] = useState(false);
+	// State to track if sidebar was explicitly closed by user
+	const [wasExplicitlyClosed, setWasExplicitlyClosed] = useState(false);
+	// Track if we have jobs in the current viewport
+	const [hasJobsInViewport, setHasJobsInViewport] = useState(false);
+	// Main collapse state - starts collapsed if no jobs initially
+	const [isCollapsed, setIsCollapsed] = useState(true);
+
+	// Track if this is the initial mount
+	const isInitialMount = useRef(true);
+
+	// Monitor job availability and auto-open/close logic
+	useEffect(() => {
+		const shouldShowJobs = bounds && currentZoom >= 5;
+
+		if (isInitialMount.current) {
+			// On initial load, collapse if no jobs are available
+			setIsCollapsed(!shouldShowJobs || totalCount === 0);
+			isInitialMount.current = false;
+			return;
+		}
+
+		if (shouldShowJobs) {
+			// Jobs are available in viewport, track this
+			setHasJobsInViewport(true);
+
+			// Auto-open sidebar if user hasn't explicitly closed it
+			if (!wasExplicitlyClosed) {
+				setIsCollapsed(false);
+			}
+		} else {
+			// No jobs in viewport
+			setHasJobsInViewport(false);
+
+			// Auto-collapse if no jobs available (unless user explicitly opened it)
+			if (!wasExplicitlyClosed) {
+				setIsCollapsed(true);
+			}
+		}
+	}, [bounds, currentZoom, totalCount, wasExplicitlyClosed]);
 
 	const toggleCollapse = () => {
-		setIsCollapsed(!isCollapsed);
+		const newCollapsedState = !isCollapsed;
+		setIsCollapsed(newCollapsedState);
+
+		// Mark as explicitly closed/opened by user
+		setWasExplicitlyClosed(newCollapsedState);
+
+		// If user explicitly opens sidebar when no jobs, reset the explicit flag
+		// so it can auto-close again when jobs disappear
+		if (!newCollapsedState && !hasJobsInViewport) {
+			setWasExplicitlyClosed(false);
+		}
 	};
 
 	return (
@@ -57,7 +105,7 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, onJobSel
 						<p className='text-xs text-foreground-500'>Showing jobs in the current map view</p>
 					</div>
 					<div className='w-full flex-1 min-h-0 overflow-y-auto'>
-						{bounds && currentZoom >= 5 ? (
+						{!isCollapsed && bounds && currentZoom >= 5 ? (
 							<ViewportJobsList
 								key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
 								bounds={bounds}
@@ -79,10 +127,14 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, onJobSel
 										</svg>
 									</div>
 									<p className='text-sm font-medium text-foreground-600'>
-										{currentZoom < 5 ? 'Zoom in to see jobs' : 'Move the map to see jobs'}
+										{isCollapsed ? 'Expand sidebar to see jobs' : currentZoom < 5 ? 'Zoom in to see jobs' : 'Move the map to see jobs'}
 									</p>
 									<p className='text-xs text-foreground-500'>
-										{currentZoom < 5 ? 'Zoom to level 5 or higher to load job listings' : 'Pan or zoom the map to view available positions'}
+										{isCollapsed
+											? 'Click the expand button to view job listings'
+											: currentZoom < 5
+												? 'Zoom to level 5 or higher to load job listings'
+												: 'Pan or zoom the map to view available positions'}
 									</p>
 								</div>
 							</div>
