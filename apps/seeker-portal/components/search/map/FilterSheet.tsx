@@ -24,6 +24,7 @@ interface ClusterSheetProps {
 		neLat: number;
 		neLng: number;
 	} | null;
+	currentZoom: number;
 	filters: {
 		searchTerm: string | null;
 		location: string | null;
@@ -38,7 +39,15 @@ interface ClusterSheetProps {
 	onJobSelect?: (jobId: string) => void;
 }
 
-export default function FilterSheet({ totalCount, isPending, selectedCluster, bounds, filters, onJobSelect }: ClusterSheetProps) {
+export default function FilterSheet({
+	totalCount,
+	isPending,
+	selectedCluster,
+	bounds,
+	filters,
+	onJobSelect,
+	currentZoom
+}: ClusterSheetProps) {
 	const ref = useRef<SheetRef>(null);
 	const [currentSnap, setCurrentSnap] = useState(1);
 
@@ -89,14 +98,16 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 
 		// No cluster state - show viewport jobs or empty state
 		if (!selectedCluster && currentSnap === 2) {
-			// Check if we have jobs data available
-			if (!bounds || totalCount === 0) {
+			// Check if we have jobs data available and sufficient zoom level
+			if (!bounds || currentZoom < 5 || totalCount === 0) {
 				return (
 					<div className='p-6 text-center'>
 						<div className='space-y-3 flex flex-col items-center justify-center'>
 							<FileIcon className='text-foreground-400' />
-							<h3 className='text-lg font-medium text-foreground-700'>No Jobs Found</h3>
-							<p className='text-sm text-foreground-500 max-w-xs mx-auto'>Try zooming into an area to find jobs</p>
+							<h3 className='text-lg font-medium text-foreground-700'>{currentZoom < 5 ? 'Zoom In to See Jobs' : 'No Jobs Found'}</h3>
+							<p className='text-sm text-foreground-500 max-w-xs mx-auto'>
+								{currentZoom < 5 ? 'Zoom to level 5 or higher to load job listings' : 'Try zooming into an area to find jobs'}
+							</p>
 						</div>
 					</div>
 				);
@@ -115,13 +126,21 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 
 					{/* Jobs List Content */}
 					<div className='flex-1 overflow-y-auto p-4 w-full'>
-						<ViewportJobsList
-							key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
-							bounds={bounds}
-							filters={filters}
-							onJobSelect={onJobSelect}
-							className='w-full'
-						/>
+						{currentZoom >= 5 ? (
+							<ViewportJobsList
+								key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
+								bounds={bounds}
+								filters={filters}
+								onJobSelect={onJobSelect}
+								className='w-full'
+							/>
+						) : (
+							<div className='text-center py-8'>
+								<FileIcon className='text-foreground-400 mx-auto mb-4' size={48} />
+								<h3 className='text-lg font-medium text-foreground-700 mb-2'>Zoom In to See Jobs</h3>
+								<p className='text-sm text-foreground-500'>Zoom to level 5 or higher to load job listings</p>
+							</div>
+						)}
 					</div>
 				</div>
 			);
@@ -166,8 +185,8 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 								<p className='text-sm text-foreground-500'>Browse jobs below or tap on individual job markers on the map</p>
 							</div>
 
-							{/* Show jobs list if we have bounds data */}
-							{bounds && (
+							{/* Show jobs list if we have bounds data and sufficient zoom */}
+							{bounds && currentZoom >= 5 ? (
 								<ViewportJobsList
 									key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
 									bounds={bounds}
@@ -175,10 +194,16 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 									onJobSelect={onJobSelect}
 									className='w-full'
 								/>
-							)}
+							) : bounds && currentZoom < 5 ? (
+								<div className='text-center py-8'>
+									<FileIcon className='text-foreground-400 mx-auto mb-4' size={48} />
+									<h3 className='text-lg font-medium text-foreground-700 mb-2'>Zoom In to See Jobs</h3>
+									<p className='text-sm text-foreground-500'>Zoom to level 5 or higher to load job listings</p>
+								</div>
+							) : null}
 						</div>
-					) : bounds && totalCount > 0 ? (
-						// Show viewport jobs if no cluster is selected but we have jobs
+					) : bounds && totalCount > 0 && currentZoom >= 5 ? (
+						// Show viewport jobs if no cluster is selected but we have jobs and sufficient zoom
 						<ViewportJobsList
 							key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
 							bounds={bounds}
@@ -187,11 +212,15 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 							className='w-full'
 						/>
 					) : (
-						// Show empty state if no jobs
+						// Show empty state if no jobs or insufficient zoom
 						<div className='text-center py-8'>
 							<FileIcon className='text-foreground-400 mx-auto mb-4' size={48} />
-							<h3 className='text-xl font-semibold text-foreground-700 mb-2'>No Jobs Found</h3>
-							<p className='text-sm text-foreground-500'>Try zooming into an area to find jobs</p>
+							<h3 className='text-xl font-semibold text-foreground-700 mb-2'>
+								{currentZoom < 5 ? 'Zoom In to See Jobs' : 'No Jobs Found'}
+							</h3>
+							<p className='text-sm text-foreground-500'>
+								{currentZoom < 5 ? 'Zoom to level 5 or higher to load job listings' : 'Try zooming into an area to find jobs'}
+							</p>
 						</div>
 					)}
 				</div>

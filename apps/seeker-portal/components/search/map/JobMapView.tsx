@@ -578,9 +578,9 @@ export default function JobMapView({
 				{announcementMessage}
 			</div>
 
-			{/* Conditional Desktop Sidebar - Show when bounds are available, zoom is sufficient, and there are jobs */}
+			{/* Desktop Sidebar - Always visible on desktop */}
 			<AnimatePresence>
-				{!isMobile && currentBounds && currentZoom >= 5 && ((data as any)?.jobs?.totalCount || 0) > 0 && (
+				{!isMobile && (
 					<motion.div
 						{...getAnimationConfig(sidebarSlide, sidebarTransition)}
 						className='h-full border-r border-divider overflow-y-auto bg-background z-10 relative'
@@ -725,6 +725,7 @@ export default function JobMapView({
 					isPending={isPending}
 					selectedCluster={autoSelectedCluster}
 					bounds={currentBounds}
+					currentZoom={currentZoom}
 					filters={filters}
 					onJobSelect={setSelectedJobId}
 				/>

@@ -7,10 +7,12 @@ interface ClusterJobsListSkeletonProps {
 }
 
 export default function ClusterJobsListSkeleton({ count = 12 }: ClusterJobsListSkeletonProps) {
+	const skeletonItems = Array.from({ length: count }, (_, i) => `skeleton-item-${i}`);
+
 	return (
 		<div className='w-full space-y-2 overflow-y-hidden'>
-			{Array.from({ length: count }, (_, i) => `skeleton-${Date.now()}-${i}`).map(key => (
-				<Skeleton key={key} className='w-full min-w-96 h-24 rounded-lg' />
+			{skeletonItems.map(skeletonId => (
+				<Skeleton key={skeletonId} className='w-full min-w-96 h-24 rounded-lg' />
 			))}
 		</div>
 	);
