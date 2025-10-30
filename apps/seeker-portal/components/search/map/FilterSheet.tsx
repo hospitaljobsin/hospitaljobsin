@@ -209,6 +209,7 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 			onSnap={snapIndex => setCurrentSnap(snapIndex)}
 			disableScrollLocking={true}
 			disableDrag={false}
+			disableDismiss={true}
 		>
 			<Sheet.Container className='!bg-background !rounded-t-3xl !shadow-2xl !z-[100]'>
 				<Sheet.Header />
@@ -216,7 +217,7 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 			</Sheet.Container>
 
 			{/* Conditional Backdrop - only for full screen */}
-			{currentSnap >= 4 && <Sheet.Backdrop onTap={() => handleSnapTo(selectedCluster ? 3 : 2)} className='!bg-black/40 !z-[1400]' />}
+			{currentSnap >= 4 && <Sheet.Backdrop onTap={() => handleSnapTo(selectedCluster ? 3 : 2)} className='!bg-black/40 !z-[10]' />}
 		</Sheet>
 	);
 }
