@@ -1,11 +1,13 @@
 'use client';
 
-import { Button, Chip, Input } from '@heroui/react';
+import { Button, Chip } from '@heroui/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, MapPin, Search, X } from 'lucide-react';
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import JobSearchAutocomplete from '@/components/forms/JobSearchAutocomplete';
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
+import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
 
 interface MobileFilterSceneProps {
 	isOpen: boolean;
@@ -69,9 +71,6 @@ export default function MobileFilterScene({
 	const [activeInput, setActiveInput] = useState<'search' | 'location'>(initialFocus);
 	const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
 
-	const searchInputRef = useRef<HTMLInputElement>(null);
-	const locationInputRef = useRef<HTMLInputElement>(null);
-
 	// Create or get the portal container with maximum z-index
 	useLayoutEffect(() => {
 		if (typeof document === 'undefined') return;
@@ -124,16 +123,10 @@ export default function MobileFilterScene({
 		setLocalLocation(location || '');
 	}, [location]);
 
-	// Auto-focus the appropriate input when scene opens
+	// Set initial active input when scene opens
 	useEffect(() => {
 		if (isOpen) {
-			setTimeout(() => {
-				if (initialFocus === 'search') {
-					searchInputRef.current?.focus();
-				} else {
-					locationInputRef.current?.focus();
-				}
-			}, 300); // Delay to ensure animation completes
+			setActiveInput(initialFocus);
 		}
 	}, [isOpen, initialFocus]);
 
@@ -244,52 +237,37 @@ export default function MobileFilterScene({
 					<div className='p-4 space-y-3'>
 						{/* Search Input */}
 						<div className={`transition-all duration-200 ${activeInput === 'search' ? 'ring-2 ring-primary rounded-xl' : ''}`}>
-							<Input
-								ref={searchInputRef}
+							<JobSearchAutocomplete
 								value={localSearchTerm}
 								onValueChange={setLocalSearchTerm}
+								onSubmit={term => onSearchTermChange?.(term)}
+								onClear={handleSearchClear}
 								onFocus={() => setActiveInput('search')}
 								placeholder='Search jobs, skills, companies...'
 								variant='flat'
 								size='lg'
 								aria-label='Search for job titles, companies, or skills'
-								startContent={<Search size={20} className='text-default-400' />}
-								endContent={
-									localSearchTerm && (
-										<Button isIconOnly size='sm' variant='light' onPress={handleSearchClear} aria-label='Clear search'>
-											<X size={16} />
-										</Button>
-									)
-								}
 								classNames={{
-									base: 'w-full',
-									input: 'text-base'
+									base: 'w-full'
 								}}
 							/>
 						</div>
 
 						{/* Location Input */}
 						<div className={`transition-all duration-200 ${activeInput === 'location' ? 'ring-2 ring-primary rounded-xl' : ''}`}>
-							<Input
-								ref={locationInputRef}
+							<LocationAutocomplete
 								value={localLocation}
 								onValueChange={setLocalLocation}
+								onChange={_onLocationSelect}
+								onSubmit={location => onLocationChange?.(location)}
+								onClear={handleLocationClear}
 								onFocus={() => setActiveInput('location')}
 								placeholder='City, state, or zip code...'
 								variant='flat'
 								size='lg'
 								aria-label='Search by city, state, or area'
-								startContent={<MapPin size={20} className='text-default-400' />}
-								endContent={
-									localLocation && (
-										<Button isIconOnly size='sm' variant='light' onPress={handleLocationClear} aria-label='Clear location'>
-											<X size={16} />
-										</Button>
-									)
-								}
 								classNames={{
-									base: 'w-full',
-									input: 'text-base'
+									base: 'w-full'
 								}}
 							/>
 						</div>

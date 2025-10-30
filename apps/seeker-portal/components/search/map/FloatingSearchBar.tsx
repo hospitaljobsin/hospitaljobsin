@@ -1,10 +1,12 @@
 'use client';
 
-import { Button, Input } from '@heroui/react';
+import { Button } from '@heroui/react';
 import { motion } from 'framer-motion';
-import { Filter, MapPin, Search, X } from 'lucide-react';
+import { Filter } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+import JobSearchAutocomplete from '@/components/forms/JobSearchAutocomplete';
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
+import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
 import MobileFilterScene from './MobileFilterScene';
 
 interface FloatingSearchBarProps {
@@ -123,20 +125,6 @@ export default function FloatingSearchBar({
 		onLocationChange?.(null);
 	}, [onLocationChange]);
 
-	const handleKeyDown = useCallback(
-		(e: React.KeyboardEvent, type: 'search' | 'location') => {
-			if (e.key === 'Enter') {
-				e.preventDefault();
-				if (type === 'search') {
-					handleSearchSubmit();
-				} else {
-					handleLocationSubmit();
-				}
-			}
-		},
-		[handleSearchSubmit, handleLocationSubmit]
-	);
-
 	// Handle input focus for mobile enhancement
 	const handleInputFocus = useCallback(
 		(type: 'search' | 'location') => {
@@ -175,65 +163,38 @@ export default function FloatingSearchBar({
 				<div className='p-3'>
 					<div className='flex items-center gap-2'>
 						{/* Search Input */}
-						<Input
+						<JobSearchAutocomplete
 							value={localSearchTerm}
 							onValueChange={setLocalSearchTerm}
-							onKeyDown={e => handleKeyDown(e, 'search')}
+							onSubmit={handleSearchSubmit}
+							onClear={handleSearchClear}
 							onFocus={() => handleInputFocus('search')}
 							onBlur={handleInputBlur}
 							placeholder='Search jobs...'
 							variant='flat'
 							aria-label='Search for job titles, companies, or skills'
-							startContent={<Search size={16} className='text-default-400' aria-hidden='true' />}
-							endContent={
-								localSearchTerm && (
-									<Button
-										isIconOnly
-										size='sm'
-										variant='light'
-										onPress={handleSearchClear}
-										className='min-w-unit-6 w-6 h-6'
-										aria-label='Clear search'
-									>
-										<X size={12} />
-									</Button>
-								)
-							}
 							classNames={{
-								base: 'max-w-none',
-								input: 'text-sm'
+								base: 'max-w-none'
 							}}
+							size='sm'
 						/>
 
 						{/* Location Input */}
-						<Input
+						<LocationAutocomplete
 							value={localLocation}
 							onValueChange={setLocalLocation}
-							onKeyDown={e => handleKeyDown(e, 'location')}
+							onChange={_onLocationSelect}
+							onSubmit={handleLocationSubmit}
+							onClear={handleLocationClear}
 							onFocus={() => handleInputFocus('location')}
 							onBlur={handleInputBlur}
 							placeholder='City, state...'
 							variant='flat'
 							aria-label='Search by city, state, or area'
-							startContent={<MapPin size={16} className='text-default-400' aria-hidden='true' />}
-							endContent={
-								localLocation && (
-									<Button
-										isIconOnly
-										size='sm'
-										variant='light'
-										onPress={handleLocationClear}
-										className='min-w-unit-6 w-6 h-6'
-										aria-label='Clear location'
-									>
-										<X size={12} />
-									</Button>
-								)
-							}
 							classNames={{
-								base: 'max-w-none',
-								input: 'text-sm'
+								base: 'max-w-none'
 							}}
+							size='sm'
 						/>
 
 						{/* Desktop Filters Button */}
