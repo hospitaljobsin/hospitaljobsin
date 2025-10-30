@@ -132,13 +132,13 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 					</div>
 
 					{/* Jobs List Content */}
-					<div className='flex-1 overflow-y-auto p-4'>
+					<div className='flex-1 overflow-y-auto p-4 w-full'>
 						<ViewportJobsList
 							key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
 							bounds={bounds}
 							filters={filters}
 							onJobSelect={onJobSelect}
-							className='space-y-2'
+							className='w-full'
 						/>
 					</div>
 				</div>
@@ -196,7 +196,7 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 									bounds={bounds}
 									filters={filters}
 									onJobSelect={onJobSelect}
-									className='space-y-2'
+									className='w-full'
 								/>
 							)}
 						</div>
@@ -207,7 +207,7 @@ export default function FilterSheet({ totalCount, isPending, selectedCluster, bo
 							bounds={bounds}
 							filters={filters}
 							onJobSelect={onJobSelect}
-							className='space-y-2'
+							className='w-full'
 						/>
 					) : (
 						// Show empty state if no jobs

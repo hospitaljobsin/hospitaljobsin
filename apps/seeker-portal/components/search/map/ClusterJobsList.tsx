@@ -1,6 +1,6 @@
-import { Skeleton } from '@heroui/react';
 import React, { Suspense, useEffect, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
+import ClusterJobsListSkeleton from './ClusterJobsListSkeleton';
 import CompactJobCard from './CompactJobCard';
 
 // Error Boundary Component for Relay errors
@@ -39,24 +39,6 @@ class ViewportJobsErrorBoundary extends React.Component<{ children: React.ReactN
 
 		return this.props.children;
 	}
-}
-
-// Loading component for Suspense fallback
-function ViewportJobsLoading() {
-	return (
-		<div className='space-y-2'>
-			{Array.from({ length: 3 }, (_, i) => `loading-${Date.now()}-${i}`).map(key => (
-				<div key={key} className='p-3 border border-divider rounded-lg'>
-					<Skeleton className='h-4 w-3/4 rounded mb-2' />
-					<Skeleton className='h-3 w-1/2 rounded mb-2' />
-					<div className='flex gap-2'>
-						<Skeleton className='h-3 w-16 rounded' />
-						<Skeleton className='h-3 w-16 rounded' />
-					</div>
-				</div>
-			))}
-		</div>
-	);
 }
 
 // GraphQL query for viewport jobs
@@ -205,33 +187,20 @@ function ViewportJobsContent({ bounds, filters, onJobSelect, className = '' }: V
 	const totalCount = data?.jobs?.totalCount || 0;
 
 	return (
-		<div className={className}>
+		<div className={`w-full ${className}`}>
 			{/* Jobs List */}
-			<div className='space-y-2'>
+			<div className='w-full space-y-2'>
 				{allJobs.map(job => (
 					<CompactJobCard
 						key={job.id}
 						job={job}
 						onClick={() => onJobSelect?.(job.id)}
-						className='border border-divider hover:border-primary-200'
+						className='w-full border border-divider hover:border-primary-200'
 					/>
 				))}
 
 				{/* Loading State */}
-				{isLoadingMore && (
-					<div className='space-y-2'>
-						{Array.from({ length: 3 }, (_, i) => `loading-${Date.now()}-${i}`).map(key => (
-							<div key={key} className='p-3 border border-divider rounded-lg'>
-								<Skeleton className='h-4 w-3/4 rounded mb-2' />
-								<Skeleton className='h-3 w-1/2 rounded mb-2' />
-								<div className='flex gap-2'>
-									<Skeleton className='h-3 w-16 rounded' />
-									<Skeleton className='h-3 w-16 rounded' />
-								</div>
-							</div>
-						))}
-					</div>
-				)}
+				{isLoadingMore && <ClusterJobsListSkeleton count={3} />}
 
 				{/* Load More Button */}
 				{hasMoreJobs && !isLoadingMore && allJobs.length > 0 && (
@@ -250,7 +219,7 @@ function ViewportJobsContent({ bounds, filters, onJobSelect, className = '' }: V
 
 				{/* No Jobs Found */}
 				{allJobs.length === 0 && !isLoadingMore && (
-					<div className='text-center py-8'>
+					<div className='text-center py-8 w-full'>
 						<p className='text-sm text-foreground-500'>No jobs found in this area</p>
 					</div>
 				)}
@@ -264,10 +233,12 @@ export default function ViewportJobsList({ bounds, filters, onJobSelect, classNa
 
 	// Always render the viewport jobs (no zoom or cluster restrictions)
 	return (
-		<ViewportJobsErrorBoundary onRetry={() => setRetryKey(prev => prev + 1)}>
-			<Suspense fallback={<ViewportJobsLoading />}>
-				<ViewportJobsContent key={retryKey} bounds={bounds} filters={filters} onJobSelect={onJobSelect} className={className} />
-			</Suspense>
-		</ViewportJobsErrorBoundary>
+		<div className={`w-full ${className}`}>
+			<ViewportJobsErrorBoundary onRetry={() => setRetryKey(prev => prev + 1)}>
+				<Suspense fallback={<ClusterJobsListSkeleton />}>
+					<ViewportJobsContent key={retryKey} bounds={bounds} filters={filters} onJobSelect={onJobSelect} className='w-full' />
+				</Suspense>
+			</ViewportJobsErrorBoundary>
+		</div>
 	);
 }

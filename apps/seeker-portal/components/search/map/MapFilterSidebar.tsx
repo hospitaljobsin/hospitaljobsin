@@ -29,26 +29,28 @@ interface MapFilterSidebarProps {
 
 export default function MapFilterSidebar({ filters, totalCount, bounds, onJobSelect }: MapFilterSidebarProps) {
 	return (
-		<div className='p-4 space-y-4'>
+		<div className='w-full h-full flex flex-col p-4'>
 			{/* Header with Job Count */}
-			<div className='mb-4'>
+			<div className='mb-4 w-full'>
 				<h2 className='text-base font-medium text-foreground-800'>{totalCount.toLocaleString()} Jobs</h2>
 			</div>
 
 			{/* Viewport Jobs List - shown when bounds are available */}
 			{bounds && (
-				<div>
-					<div className='mb-3'>
+				<div className='w-full flex-1 flex flex-col min-h-0'>
+					<div className='mb-3 w-full flex-shrink-0'>
 						<h3 className='text-sm font-medium text-foreground-700 mb-1'>Jobs in Current Area</h3>
 						<p className='text-xs text-foreground-500'>Showing jobs in the current map view</p>
 					</div>
-					<ViewportJobsList
-						key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
-						bounds={bounds}
-						filters={filters}
-						onJobSelect={onJobSelect}
-						className='h-full overflow-y-auto'
-					/>
+					<div className='w-full flex-1 min-h-0 overflow-y-auto'>
+						<ViewportJobsList
+							key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
+							bounds={bounds}
+							filters={filters}
+							onJobSelect={onJobSelect}
+							className='w-full'
+						/>
+					</div>
 				</div>
 			)}
 		</div>
