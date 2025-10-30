@@ -26,13 +26,13 @@ const MapViewClientComponentFragment = graphql`
 		maxSalary: { type: "Int" }
 		proximityKm: { type: "Float" }
 		location: { type: "String" }
-		bounds: { type: "BoundingBoxInput" }
+		bounds: { type: "BoundingBoxInput!" }
 		workMode: { type: "[JobWorkModeFilter!]!" }
 		jobType: { type: "[JobTypeFilter!]!" }
 		sortBy: { type: "JobSearchSortBy!" }
 		first: { type: "Int!" }
 		# Clustering arguments
-		zoomLevel: { type: "Int" }
+		zoomLevel: { type: "Int!" }
 	) {
 		# Job clusters query - used at low/medium zoom levels
 		jobClusters(

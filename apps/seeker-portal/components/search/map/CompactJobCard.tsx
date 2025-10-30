@@ -4,30 +4,39 @@ import { Card, CardBody, Chip, Tooltip } from '@heroui/react';
 import { Briefcase, IndianRupee, MapPin, VerifiedIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { graphql, useFragment } from 'react-relay';
+import type { CompactJobCard_job$key } from '@/__generated__/CompactJobCard_job.graphql';
+
+// GraphQL fragment for CompactJobCard component
+export const CompactJobCardFragment = graphql`
+	fragment CompactJobCard_job on Job {
+		id
+		slug
+		title
+		location
+		minSalary
+		maxSalary
+		currency
+		minExperience
+		maxExperience
+		type
+		workMode
+		skills
+		organization {
+			name
+			slug
+			logoUrl
+			verificationStatus {
+				... on Verified {
+					verifiedAt
+				}
+			}
+		}
+	}
+`;
 
 interface CompactJobCardProps {
-	job: {
-		id: string;
-		slug: string;
-		title: string;
-		location?: string | null;
-		minSalary?: number | null;
-		maxSalary?: number | null;
-		currency?: string | null;
-		minExperience?: number | null;
-		maxExperience?: number | null;
-		type?: string | null;
-		workMode?: string | null;
-		skills?: string[] | null;
-		organization?: {
-			name: string;
-			slug?: string | null;
-			logoUrl?: string | null;
-			verificationStatus?: {
-				verified?: boolean;
-			} | null;
-		} | null;
-	};
+	job: CompactJobCard_job$key;
 	href?: string;
 	onClick?: () => void;
 	className?: string;
@@ -37,10 +46,12 @@ interface CompactJobCardProps {
 /**
  * CompactJobCard Component
  *
- * A compact job card designed for map clusters and dense listings.
+ * A compact job card designed for map clusters using Relay fragments.
  * Optimized for small spaces while showing essential job information.
  */
-export default function CompactJobCard({ job, href, onClick, className = '', showOrganization = true }: CompactJobCardProps) {
+export default function CompactJobCard({ job: jobKey, href, onClick, className = '', showOrganization = true }: CompactJobCardProps) {
+	const job = useFragment(CompactJobCardFragment, jobKey);
+
 	const formatSalary = () => {
 		if (!job.minSalary && !job.maxSalary) return null;
 
@@ -117,6 +128,7 @@ export default function CompactJobCard({ job, href, onClick, className = '', sho
 	const experience = formatExperience();
 	const jobType = formatJobType(job.type ?? null);
 	const workMode = formatWorkMode(job.workMode ?? null);
+	const isVerified = !!job.organization?.verificationStatus?.verifiedAt;
 
 	const cardContent = (
 		<Card
@@ -136,7 +148,7 @@ export default function CompactJobCard({ job, href, onClick, className = '', sho
 						)}
 						<div className='flex items-center gap-1 min-w-0 flex-1'>
 							<span className='text-xs text-foreground-600 truncate font-medium'>{job.organization.name}</span>
-							{job.organization.verificationStatus?.verified && (
+							{isVerified && (
 								<Tooltip content='Verified organization' size='sm'>
 									<VerifiedIcon className='w-3 h-3 text-primary flex-shrink-0' />
 								</Tooltip>
@@ -192,7 +204,7 @@ export default function CompactJobCard({ job, href, onClick, className = '', sho
 				{/* Skills (max 2) */}
 				{job.skills && job.skills.length > 0 && (
 					<div className='flex gap-1 flex-wrap'>
-						{job.skills.slice(0, 2).map(skill => (
+						{job.skills.slice(0, 2).map((skill: string) => (
 							<Chip key={skill} size='sm' variant='flat' color='default' className='text-xs px-1 h-4 bg-default-100'>
 								{skill}
 							</Chip>

@@ -28,7 +28,7 @@ from app.accounts.documents import Account
 from app.accounts.exceptions import AccountProfileIncompleteError
 from app.accounts.repositories import ProfileRepo
 from app.base.exceptions import InvalidLocationError
-from app.base.models import Address, GeoObject
+from app.base.models import Address, BoundingBox, GeoObject
 from app.config import AppSettings, AWSSettings, EnvironmentSettings
 from app.core.constants import (
     ImpressionJobMetricEventType,
@@ -1287,7 +1287,7 @@ class JobClusterService:
         """
         # Delegate to repository's aggregation method
         clusters, total_count = await self._job_repo.get_aggregated_jobs_by_h3(
-            bounds=bounds, h3_resolution=h3_resolution, filters=filters
+            bounds=BoundingBox(**bounds), h3_resolution=h3_resolution, filters=filters
         )
 
         return clusters, total_count

@@ -38,6 +38,12 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 			return;
 		}
 
+		// Safety guard: ensure clusters is an array
+		if (!Array.isArray(clusters)) {
+			console.warn('JobHexagonClusters: clusters is not an array:', typeof clusters, clusters);
+			return;
+		}
+
 		// Create canvas renderer if not exists
 		if (!canvasLayerRef.current) {
 			canvasLayerRef.current = L.canvas();

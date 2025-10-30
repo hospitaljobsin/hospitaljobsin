@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<1ee7b5bfb3b025b2ba651319f0a6f8e3>>
- * @relayHash fada442412692acaec7b39ee2940f446
+ * @generated SignedSource<<98f6e914cef5dffa5b5e1843102ffebe>>
+ * @relayHash 505874f200e4275febac0f1052a5608e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID fada442412692acaec7b39ee2940f446
+// @relayRequestID 505874f200e4275febac0f1052a5608e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -23,7 +23,7 @@ export type BoundingBoxInput = {
   swLng: number;
 };
 export type MapViewClientComponentRefetchQuery$variables = {
-  bounds?: BoundingBoxInput | null | undefined;
+  bounds: BoundingBoxInput;
   first: number;
   jobType: ReadonlyArray<JobTypeFilter>;
   location?: string | null | undefined;
@@ -34,6 +34,7 @@ export type MapViewClientComponentRefetchQuery$variables = {
   searchTerm?: string | null | undefined;
   sortBy: JobSearchSortBy;
   workMode: ReadonlyArray<JobWorkModeFilter>;
+  zoomLevel: number;
 };
 export type MapViewClientComponentRefetchQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"MapViewClientComponentFragment">;
@@ -99,80 +100,118 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "workMode"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "zoomLevel"
   }
 ],
-v1 = [
-  {
-    "kind": "Variable",
-    "name": "bounds",
-    "variableName": "bounds"
-  },
-  {
-    "kind": "Variable",
-    "name": "first",
-    "variableName": "first"
-  },
-  {
-    "kind": "Variable",
-    "name": "jobType",
-    "variableName": "jobType"
-  },
-  {
-    "kind": "Variable",
-    "name": "location",
-    "variableName": "location"
-  },
-  {
-    "kind": "Variable",
-    "name": "maxSalary",
-    "variableName": "maxSalary"
-  },
-  {
-    "kind": "Variable",
-    "name": "minExperience",
-    "variableName": "minExperience"
-  },
-  {
-    "kind": "Variable",
-    "name": "minSalary",
-    "variableName": "minSalary"
-  },
-  {
-    "kind": "Variable",
-    "name": "proximityKm",
-    "variableName": "proximityKm"
-  },
-  {
-    "kind": "Variable",
-    "name": "searchTerm",
-    "variableName": "searchTerm"
-  },
-  {
-    "kind": "Variable",
-    "name": "sortBy",
-    "variableName": "sortBy"
-  },
-  {
-    "kind": "Variable",
-    "name": "workMode",
-    "variableName": "workMode"
-  }
-],
+v1 = {
+  "kind": "Variable",
+  "name": "bounds",
+  "variableName": "bounds"
+},
 v2 = {
+  "kind": "Variable",
+  "name": "first",
+  "variableName": "first"
+},
+v3 = {
+  "kind": "Variable",
+  "name": "jobType",
+  "variableName": "jobType"
+},
+v4 = {
+  "kind": "Variable",
+  "name": "location",
+  "variableName": "location"
+},
+v5 = {
+  "kind": "Variable",
+  "name": "maxSalary",
+  "variableName": "maxSalary"
+},
+v6 = {
+  "kind": "Variable",
+  "name": "minExperience",
+  "variableName": "minExperience"
+},
+v7 = {
+  "kind": "Variable",
+  "name": "minSalary",
+  "variableName": "minSalary"
+},
+v8 = {
+  "kind": "Variable",
+  "name": "proximityKm",
+  "variableName": "proximityKm"
+},
+v9 = {
+  "kind": "Variable",
+  "name": "searchTerm",
+  "variableName": "searchTerm"
+},
+v10 = {
+  "kind": "Variable",
+  "name": "sortBy",
+  "variableName": "sortBy"
+},
+v11 = {
+  "kind": "Variable",
+  "name": "workMode",
+  "variableName": "workMode"
+},
+v12 = {
+  "kind": "Variable",
+  "name": "zoomLevel",
+  "variableName": "zoomLevel"
+},
+v13 = [
+  {
+    "alias": null,
+    "args": null,
+    "kind": "ScalarField",
+    "name": "coordinates",
+    "storageKey": null
+  }
+],
+v14 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "minSalary",
+  "storageKey": null
+},
+v15 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "maxSalary",
+  "storageKey": null
+},
+v16 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "totalCount",
+  "storageKey": null
+},
+v17 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v3 = {
+v18 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "slug",
   "storageKey": null
 },
-v4 = {
+v19 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -187,7 +226,20 @@ return {
     "name": "MapViewClientComponentRefetchQuery",
     "selections": [
       {
-        "args": (v1/*: any*/),
+        "args": [
+          (v1/*: any*/),
+          (v2/*: any*/),
+          (v3/*: any*/),
+          (v4/*: any*/),
+          (v5/*: any*/),
+          (v6/*: any*/),
+          (v7/*: any*/),
+          (v8/*: any*/),
+          (v9/*: any*/),
+          (v10/*: any*/),
+          (v11/*: any*/),
+          (v12/*: any*/)
+        ],
         "kind": "FragmentSpread",
         "name": "MapViewClientComponentFragment"
       }
@@ -203,7 +255,104 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": [
+          (v1/*: any*/),
+          (v3/*: any*/),
+          (v4/*: any*/),
+          (v5/*: any*/),
+          (v6/*: any*/),
+          (v7/*: any*/),
+          (v8/*: any*/),
+          (v9/*: any*/),
+          (v11/*: any*/),
+          (v12/*: any*/)
+        ],
+        "concreteType": "JobClusterConnection",
+        "kind": "LinkedField",
+        "name": "jobClusters",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "JobCluster",
+            "kind": "LinkedField",
+            "name": "clusters",
+            "plural": true,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "h3Index",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "count",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "GeoObject",
+                "kind": "LinkedField",
+                "name": "center",
+                "plural": false,
+                "selections": (v13/*: any*/),
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "bounds",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "SalaryRange",
+                "kind": "LinkedField",
+                "name": "salaryRange",
+                "plural": false,
+                "selections": [
+                  (v14/*: any*/),
+                  (v15/*: any*/)
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "topSpecialties",
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
+          (v16/*: any*/)
+        ],
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": [
+          (v1/*: any*/),
+          (v2/*: any*/),
+          (v3/*: any*/),
+          (v4/*: any*/),
+          (v5/*: any*/),
+          (v6/*: any*/),
+          (v7/*: any*/),
+          (v8/*: any*/),
+          (v9/*: any*/),
+          (v10/*: any*/),
+          (v11/*: any*/)
+        ],
         "concreteType": "JobConnection",
         "kind": "LinkedField",
         "name": "jobs",
@@ -225,8 +374,8 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v2/*: any*/),
-                  (v3/*: any*/),
+                  (v17/*: any*/),
+                  (v18/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -235,8 +384,8 @@ return {
                     "name": "organization",
                     "plural": false,
                     "selections": [
-                      (v3/*: any*/),
-                      (v2/*: any*/),
+                      (v18/*: any*/),
+                      (v17/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -251,7 +400,7 @@ return {
                         "name": "logoUrl",
                         "storageKey": null
                       },
-                      (v4/*: any*/)
+                      (v19/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -262,15 +411,7 @@ return {
                     "kind": "LinkedField",
                     "name": "geo",
                     "plural": false,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "coordinates",
-                        "storageKey": null
-                      }
-                    ],
+                    "selections": (v13/*: any*/),
                     "storageKey": null
                   },
                   {
@@ -280,21 +421,9 @@ return {
                     "name": "title",
                     "storageKey": null
                   },
-                  (v4/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "minSalary",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "maxSalary",
-                    "storageKey": null
-                  },
+                  (v19/*: any*/),
+                  (v14/*: any*/),
+                  (v15/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -371,20 +500,14 @@ return {
             ],
             "storageKey": null
           },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "totalCount",
-            "storageKey": null
-          }
+          (v16/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "fada442412692acaec7b39ee2940f446",
+    "id": "505874f200e4275febac0f1052a5608e",
     "metadata": {},
     "name": "MapViewClientComponentRefetchQuery",
     "operationKind": "query",
@@ -393,6 +516,6 @@ return {
 };
 })();
 
-(node as any).hash = "4a9b6c2d7585e3c302dcbea5acf0d21d";
+(node as any).hash = "b46df5e368d6049aafcf66071667c122";
 
 export default node;

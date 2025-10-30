@@ -103,6 +103,7 @@ export default function JobMapView({
 	const [autoSelectedCluster, setAutoSelectedCluster] = useState<ClusterInfo | null>(null);
 	const [isMobile, setIsMobile] = useState(false);
 	const [lastBounds, setLastBounds] = useState<{ swLat: number; swLng: number; neLat: number; neLng: number } | null>(null);
+	const [currentBounds, setCurrentBounds] = useState<{ swLat: number; swLng: number; neLat: number; neLng: number } | null>(null);
 	const [announcementMessage, setAnnouncementMessage] = useState<string>('');
 	const [isMounted, setIsMounted] = useState(false);
 	const [isMapDataFetching, setIsMapDataFetching] = useState(false);
@@ -189,13 +190,35 @@ export default function JobMapView({
 		return () => window.removeEventListener('resize', checkMobile);
 	}, []);
 
-	// Handle zoom changes for clustering
+	// Track zoom changes and invoke callback
 	useEffect(() => {
 		if (!map || !onZoomChange) return;
 
 		const handleZoomEnd = () => {
 			const zoom = map.getZoom();
 			onZoomChange(zoom);
+
+			// Also trigger bounds update on zoom (since zoom changes affect the visible area)
+			const bounds = map.getBounds();
+			const sw = bounds.getSouthWest();
+			const ne = bounds.getNorthEast();
+
+			const rawBounds = {
+				swLat: sw.lat,
+				swLng: sw.lng,
+				neLat: ne.lat,
+				neLng: ne.lng
+			};
+
+			const newBounds = normalizeBounds(rawBounds);
+			setLastBounds(newBounds);
+			setCurrentBounds(newBounds);
+
+			// Trigger bounds change callback for data fetching
+			if (onBoundsChange) {
+				setIsMapDataFetching(true);
+				onBoundsChange(newBounds);
+			}
 		};
 
 		map.on('zoomend', handleZoomEnd);
@@ -203,7 +226,7 @@ export default function JobMapView({
 		return () => {
 			map.off('zoomend', handleZoomEnd);
 		};
-	}, [map, onZoomChange]);
+	}, [map, onZoomChange, onBoundsChange, setIsMapDataFetching]);
 
 	// Invalidate map size when map is ready or when layout changes (fixes tile loading issue)
 	useEffect(() => {
@@ -238,6 +261,37 @@ export default function JobMapView({
 			window.removeEventListener('resize', handleResize);
 		};
 	}, [map, isMobile]); // Re-run when isMobile changes (sidebar toggle)
+
+	// Set initial bounds when map is ready
+	useEffect(() => {
+		if (!map || currentBounds) return; // Don't set if bounds already exist
+
+		// Wait a bit for the map to be fully initialized
+		const timeoutId = setTimeout(() => {
+			if (map.getContainer()) {
+				const bounds = map.getBounds();
+				const sw = bounds.getSouthWest();
+				const ne = bounds.getNorthEast();
+
+				const initialBounds = normalizeBounds({
+					swLat: sw.lat,
+					swLng: sw.lng,
+					neLat: ne.lat,
+					neLng: ne.lng
+				});
+
+				setCurrentBounds(initialBounds);
+				setLastBounds(initialBounds);
+
+				// Also trigger the parent callback if it exists
+				if (onBoundsChange) {
+					onBoundsChange(initialBounds);
+				}
+			}
+		}, 1000); // Wait 1 second for map to fully load
+
+		return () => clearTimeout(timeoutId);
+	}, [map, currentBounds, onBoundsChange]);
 
 	// Track bounds changes with debouncing
 	useEffect(() => {
@@ -275,6 +329,7 @@ export default function JobMapView({
 				}
 
 				setLastBounds(newBounds);
+				setCurrentBounds(newBounds);
 
 				// Start progress bar for map data fetching (only if callback exists)
 				if (onBoundsChange) {
@@ -448,12 +503,13 @@ export default function JobMapView({
 		const clusters = (data as any)?.jobClusters;
 		console.log('📊 Cluster data:', {
 			clustersExists: !!clusters,
+			isArray: Array.isArray(clusters),
 			clustersLength: clusters?.length,
-			clusters: clusters?.slice(0, 3) // Log first 3 clusters for debugging
+			clusters: Array.isArray(clusters) ? clusters?.slice(0, 3) : clusters // Log first 3 clusters for debugging
 		});
 
-		if (!clusters || clusters.length === 0) {
-			console.log('❌ No clusters found');
+		if (!Array.isArray(clusters) || clusters.length === 0) {
+			console.log('❌ No valid clusters found');
 			setAutoSelectedCluster(null);
 			return;
 		}
@@ -522,19 +578,18 @@ export default function JobMapView({
 				{announcementMessage}
 			</div>
 
-			{/* Conditional Desktop Sidebar - Only when cluster is selected */}
+			{/* Conditional Desktop Sidebar - Show when bounds are available, zoom is sufficient, and there are jobs */}
 			<AnimatePresence>
-				{!isMobile && autoSelectedCluster && (
+				{!isMobile && currentBounds && currentZoom >= 5 && ((data as any)?.jobs?.totalCount || 0) > 0 && (
 					<motion.div
 						{...getAnimationConfig(sidebarSlide, sidebarTransition)}
 						className='h-full border-r border-divider overflow-y-auto bg-background z-10 relative'
 					>
 						<MapFilterSidebar
 							filters={filters}
-							onFiltersChange={onFiltersChange}
 							totalCount={(data as any)?.jobs?.totalCount || 0}
-							isPending={isPending}
-							selectedCluster={autoSelectedCluster}
+							bounds={currentBounds}
+							currentZoom={currentZoom}
 							onJobSelect={setSelectedJobId}
 						/>
 					</motion.div>
@@ -565,12 +620,12 @@ export default function JobMapView({
 						<TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
 
 						{/* Render job clusters when zoomed out */}
-						{showClusters && (data as any)?.jobClusters && (
+						{showClusters && Array.isArray((data as any)?.jobClusters) && (data as any).jobClusters.length > 0 && (
 							<JobHexagonClusters clusters={(data as any).jobClusters} onClusterClick={handleClusterClick} />
 						)}
 
 						{/* Render individual job markers when zoomed in or no clusters available */}
-						{(!showClusters || !(data as any)?.jobClusters) && (
+						{(!showClusters || !Array.isArray((data as any)?.jobClusters) || (data as any).jobClusters.length === 0) && (
 							<JobMapMarkers data={data} onJobClick={handleJobClick} selectedJobId={selectedJobId} />
 						)}
 						<JobMapControls map={map} />

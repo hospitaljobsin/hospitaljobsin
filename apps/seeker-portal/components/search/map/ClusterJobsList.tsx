@@ -1,38 +1,120 @@
-'use client';
-
 import { Skeleton } from '@heroui/react';
-import { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import CompactJobCard from './CompactJobCard';
 
-interface ClusterJob {
-	id: string;
-	slug: string;
-	title: string;
-	location?: string | null;
-	minSalary?: number | null;
-	maxSalary?: number | null;
-	currency?: string | null;
-	minExperience?: number | null;
-	maxExperience?: number | null;
-	type?: string | null;
-	workMode?: string | null;
-	skills?: string[] | null;
-	organization?: {
-		name: string;
-		slug?: string | null;
-		logoUrl?: string | null;
-		verificationStatus?: {
-			verified?: boolean;
-		} | null;
-	} | null;
+// Error Boundary Component for Relay errors
+class ViewportJobsErrorBoundary extends React.Component<{ children: React.ReactNode; onRetry?: () => void }, { hasError: boolean }> {
+	constructor(props: { children: React.ReactNode; onRetry?: () => void }) {
+		super(props);
+		this.state = { hasError: false };
+	}
+
+	static getDerivedStateFromError() {
+		return { hasError: true };
+	}
+
+	componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+		console.error('ViewportJobsList Error:', error, errorInfo);
+	}
+
+	render() {
+		if (this.state.hasError) {
+			return (
+				<div className='text-center py-8'>
+					<p className='text-sm text-danger-600 mb-2'>Failed to load jobs</p>
+					<button
+						type='button'
+						onClick={() => {
+							this.setState({ hasError: false });
+							this.props.onRetry?.();
+						}}
+						className='text-xs text-primary-600 hover:underline'
+					>
+						Try again
+					</button>
+				</div>
+			);
+		}
+
+		return this.props.children;
+	}
 }
 
-interface ClusterJobsListProps {
-	h3Index: string | null;
-	clusterInfo?: {
-		count: number;
-		center: [number, number];
-	} | null;
+// Loading component for Suspense fallback
+function ViewportJobsLoading() {
+	return (
+		<div className='space-y-2'>
+			{Array.from({ length: 3 }, (_, i) => `loading-${Date.now()}-${i}`).map(key => (
+				<div key={key} className='p-3 border border-divider rounded-lg'>
+					<Skeleton className='h-4 w-3/4 rounded mb-2' />
+					<Skeleton className='h-3 w-1/2 rounded mb-2' />
+					<div className='flex gap-2'>
+						<Skeleton className='h-3 w-16 rounded' />
+						<Skeleton className='h-3 w-16 rounded' />
+					</div>
+				</div>
+			))}
+		</div>
+	);
+}
+
+// GraphQL query for viewport jobs
+const ViewportJobsQuery = graphql`
+	query ClusterJobsListQuery(
+		$bounds: BoundingBoxInput!
+		$workMode: [JobWorkModeFilter!]!
+		$jobType: [JobTypeFilter!]!
+		$searchTerm: String
+		$location: String
+		$minExperience: Int
+		$minSalary: Int
+		$maxSalary: Int
+		$proximityKm: Float
+		$first: Int
+		$after: ID
+	) {
+		jobs(
+			bounds: $bounds
+			workMode: $workMode
+			jobType: $jobType
+			searchTerm: $searchTerm
+			location: $location
+			minExperience: $minExperience
+			minSalary: $minSalary
+			maxSalary: $maxSalary
+			proximityKm: $proximityKm
+			first: $first
+			after: $after
+		) {
+			edges {
+				node {
+					...CompactJobCard_job
+				}
+				cursor
+			}
+			pageInfo {
+				hasNextPage
+				hasPreviousPage
+				startCursor
+				endCursor
+			}
+			totalCount
+		}
+	}
+`;
+
+// Use any for now until Relay generates proper types
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ViewportJob = any;
+
+interface ViewportJobsListProps {
+	bounds: {
+		swLat: number;
+		swLng: number;
+		neLat: number;
+		neLng: number;
+	};
 	filters: {
 		searchTerm: string | null;
 		location: string | null;
@@ -49,117 +131,92 @@ interface ClusterJobsListProps {
 }
 
 /**
- * ClusterJobsList Component
+ * ViewportJobsList Component
  *
- * Displays a list of jobs from a specific H3 cluster.
- * Loads jobs when a cluster is selected and provides infinite scroll.
+ * Displays a list of jobs from the current map viewport using GraphQL.
+ * Shows all jobs visible in the current map bounds regardless of zoom level.
  */
-export default function ClusterJobsList({ h3Index, clusterInfo, filters, onJobSelect, className = '' }: ClusterJobsListProps) {
-	const [jobs, setJobs] = useState<ClusterJob[]>([]);
-	const [isLoading, setIsLoading] = useState(false);
-	const [hasMore, setHasMore] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+// Separate component for when we have data
+function ViewportJobsContent({ bounds, filters, onJobSelect, className = '' }: ViewportJobsListProps) {
+	const [cursor, setCursor] = useState<string | null>(null);
+	const [allJobs, setAllJobs] = useState<ViewportJob[]>([]);
+	const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-	// Reset state when cluster changes
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const data = useLazyLoadQuery(ViewportJobsQuery, {
+		bounds,
+		workMode: filters.workMode.length > 0 ? (filters.workMode as readonly string[]) : ['OFFICE', 'REMOTE', 'HYBRID'], // Default to all work modes if none specified
+		jobType:
+			filters.jobType.length > 0 ? (filters.jobType as readonly string[]) : ['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'LOCUM'], // Default to all job types if none specified
+		searchTerm: filters.searchTerm || undefined,
+		location: filters.location || undefined,
+		minExperience: filters.minExperience || undefined,
+		minSalary: filters.minSalary || undefined,
+		maxSalary: filters.maxSalary || undefined,
+		proximityKm: filters.proximityKm || undefined,
+		first: 20,
+		after: cursor
+	}) as any;
+
+	// Reset accumulated jobs when bounds or filters change
 	useEffect(() => {
-		if (!h3Index) {
-			setJobs([]);
-			setIsLoading(false);
-			setHasMore(true);
-			setError(null);
-			return;
-		}
+		setAllJobs([]);
+		setCursor(null);
+		setIsLoadingMore(false);
+	}, [
+		bounds.swLat,
+		bounds.swLng,
+		bounds.neLat,
+		bounds.neLng,
+		filters.searchTerm,
+		filters.location,
+		filters.minExperience,
+		filters.minSalary,
+		filters.maxSalary,
+		filters.proximityKm,
+		filters.workMode,
+		filters.jobType
+	]);
 
-		// Load initial jobs for the cluster
-		loadClusterJobs(true);
-	}, [h3Index, filters]); // loadClusterJobs changes with state, so excluding it is intentional
-
-	const loadClusterJobs = (reset = false) => {
-		if (!h3Index || isLoading) return;
-
-		setIsLoading(true);
-		setError(null);
-
-		try {
-			// TODO: Replace with actual GraphQL query to cluster jobs endpoint
-			// This is a placeholder implementation
-			const mockJobs: ClusterJob[] = Array.from({ length: Math.min(20, clusterInfo?.count || 20) }, (_, i) => ({
-				id: `job-${h3Index}-${i}`,
-				slug: `job-${i}-slug`,
-				title: `Sample Job ${i + 1} in Cluster`,
-				location: 'Bangalore, Karnataka',
-				minSalary: 50000 + i * 10000,
-				maxSalary: 100000 + i * 15000,
-				currency: 'INR',
-				minExperience: Math.floor(i / 3),
-				maxExperience: Math.floor(i / 3) + 3,
-				type: ['FULL_TIME', 'PART_TIME', 'CONTRACT'][i % 3],
-				workMode: ['REMOTE', 'HYBRID', 'OFFICE'][i % 3],
-				skills: [`Skill ${i}`, `Technology ${i}`],
-				organization: {
-					name: `Company ${i + 1}`,
-					slug: `company-${i}`,
-					logoUrl: null,
-					verificationStatus: { verified: i % 3 === 0 }
-				}
-			}));
-
-			if (reset) {
-				setJobs(mockJobs);
+	// Accumulate jobs when new data arrives
+	useEffect(() => {
+		if (data?.jobs?.edges) {
+			if (cursor === null) {
+				// Initial load - replace all jobs
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				setAllJobs(data.jobs.edges.map((edge: any) => edge.node));
 			} else {
-				setJobs(prev => [...prev, ...mockJobs]);
+				// Load more - append to existing jobs
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				setAllJobs(prev => [...prev, ...data.jobs.edges.map((edge: any) => edge.node)]);
 			}
-
-			// Simulate pagination end
-			setHasMore(mockJobs.length === 20);
-		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Failed to load cluster jobs');
-		} finally {
-			setIsLoading(false);
+			setIsLoadingMore(false);
 		}
-	};
+	}, [data, cursor]);
 
-	const loadMoreJobs = () => {
-		if (hasMore && !isLoading) {
-			loadClusterJobs(false);
-		}
-	};
+	function loadMoreJobs() {
+		if (!data?.jobs?.pageInfo?.hasNextPage || isLoadingMore) return;
 
-	if (!h3Index) {
-		return (
-			<div className={`text-center py-8 ${className}`}>
-				<p className='text-sm text-foreground-500'>Click on a cluster to view jobs in that area</p>
-			</div>
-		);
+		setIsLoadingMore(true);
+		setCursor(data.jobs.pageInfo.endCursor);
 	}
 
-	if (error) {
-		return (
-			<div className={`text-center py-8 ${className}`}>
-				<p className='text-sm text-danger-600 mb-2'>Failed to load cluster jobs</p>
-				<button type='button' onClick={() => loadClusterJobs(true)} className='text-xs text-primary-600 hover:underline'>
-					Try again
-				</button>
-			</div>
-		);
-	}
+	const hasMoreJobs = data?.jobs?.pageInfo?.hasNextPage;
+	const totalCount = data?.jobs?.totalCount || 0;
 
 	return (
 		<div className={className}>
-			{/* Cluster Header */}
-			{clusterInfo && (
+			{/* Viewport Jobs Header */}
+			{totalCount > 0 && (
 				<div className='mb-4 p-3 bg-primary-50 rounded-lg border border-primary-200'>
-					<h3 className='text-sm font-semibold text-primary-900 mb-1'>Selected Cluster</h3>
-					<p className='text-xs text-primary-700'>{clusterInfo.count} jobs in this area</p>
-					<p className='text-xs text-primary-600'>
-						Center: {clusterInfo.center[0].toFixed(4)}, {clusterInfo.center[1].toFixed(4)}
-					</p>
+					<h3 className='text-sm font-semibold text-primary-900 mb-1'>Jobs in Current Area</h3>
+					<p className='text-xs text-primary-700'>{totalCount} jobs found in the visible area</p>
 				</div>
 			)}
 
 			{/* Jobs List */}
 			<div className='space-y-2'>
-				{jobs.map(job => (
+				{allJobs.map(job => (
 					<CompactJobCard
 						key={job.id}
 						job={job}
@@ -169,7 +226,7 @@ export default function ClusterJobsList({ h3Index, clusterInfo, filters, onJobSe
 				))}
 
 				{/* Loading State */}
-				{isLoading && (
+				{isLoadingMore && (
 					<div className='space-y-2'>
 						{Array.from({ length: 3 }, (_, i) => `loading-${Date.now()}-${i}`).map(key => (
 							<div key={key} className='p-3 border border-divider rounded-lg'>
@@ -185,19 +242,40 @@ export default function ClusterJobsList({ h3Index, clusterInfo, filters, onJobSe
 				)}
 
 				{/* Load More Button */}
-				{hasMore && !isLoading && jobs.length > 0 && (
+				{hasMoreJobs && !isLoadingMore && allJobs.length > 0 && (
 					<button
 						type='button'
 						onClick={loadMoreJobs}
-						className='w-full py-2 text-sm text-primary-600 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition-colors'
+						disabled={isLoadingMore}
+						className='w-full py-2 text-sm text-primary-600 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition-colors disabled:opacity-50'
 					>
-						Load more jobs ({clusterInfo?.count || 0} total)
+						Load more jobs ({totalCount} total)
 					</button>
 				)}
 
 				{/* No More Results */}
-				{!hasMore && jobs.length > 0 && <p className='text-center text-xs text-foreground-500 py-2'>All jobs in this cluster loaded</p>}
+				{!hasMoreJobs && allJobs.length > 0 && <p className='text-center text-xs text-foreground-500 py-2'>All jobs in this area loaded</p>}
+
+				{/* No Jobs Found */}
+				{allJobs.length === 0 && !isLoadingMore && (
+					<div className='text-center py-8'>
+						<p className='text-sm text-foreground-500'>No jobs found in this area</p>
+					</div>
+				)}
 			</div>
 		</div>
+	);
+}
+
+export default function ViewportJobsList({ bounds, filters, onJobSelect, className = '' }: ViewportJobsListProps) {
+	const [retryKey, setRetryKey] = useState(0);
+
+	// Always render the viewport jobs (no zoom or cluster restrictions)
+	return (
+		<ViewportJobsErrorBoundary onRetry={() => setRetryKey(prev => prev + 1)}>
+			<Suspense fallback={<ViewportJobsLoading />}>
+				<ViewportJobsContent key={retryKey} bounds={bounds} filters={filters} onJobSelect={onJobSelect} className={className} />
+			</Suspense>
+		</ViewportJobsErrorBoundary>
 	);
 }

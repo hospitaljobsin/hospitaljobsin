@@ -17,11 +17,12 @@ const PageSearchMapViewQuery = graphql`
 		$maxSalary: Int
 		$proximityKm: Float
 		$location: String
-		$bounds: BoundingBoxInput
+		$bounds: BoundingBoxInput!
 		$workMode: [JobWorkModeFilter!]!
 		$jobType: [JobTypeFilter!]!
 		$sortBy: JobSearchSortBy!
 		$first: Int!
+		$zoomLevel: Int!
 	) {
     ...MapViewClientComponentFragment @arguments(
 		searchTerm: $searchTerm
@@ -35,6 +36,7 @@ const PageSearchMapViewQuery = graphql`
 		jobType: $jobType
 		sortBy: $sortBy
 		first: $first
+		zoomLevel: $zoomLevel
 	)
   }
 `;
@@ -60,7 +62,13 @@ export default async function MapPage({ searchParams }: { searchParams: Promise<
 		PageSearchMapViewQuery,
 		{
 			...variables,
-			bounds: null, // Will be set by client on map interaction
+			bounds: {
+				swLat: 8.0883,
+				swLng: 68.1766,
+				neLat: 37.6173,
+				neLng: 97.3951
+			}, // Default bounds for India
+			zoomLevel: 5, // Default zoom level
 			first: 100 // Load more jobs for map view
 		},
 		{
