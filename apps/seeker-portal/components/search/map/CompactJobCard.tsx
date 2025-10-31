@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { graphql, useFragment } from 'react-relay';
 import type { CompactJobCard_job$key } from '@/__generated__/CompactJobCard_job.graphql';
+import links from '@/lib/links';
 
 // GraphQL fragment for CompactJobCard component
 export const CompactJobCardFragment = graphql`
@@ -37,8 +38,6 @@ export const CompactJobCardFragment = graphql`
 
 interface CompactJobCardProps {
 	job: CompactJobCard_job$key;
-	href?: string;
-	onClick?: () => void;
 	className?: string;
 	showOrganization?: boolean;
 }
@@ -49,7 +48,7 @@ interface CompactJobCardProps {
  * A compact job card designed for map clusters using Relay fragments.
  * Optimized for small spaces while showing essential job information.
  */
-export default function CompactJobCard({ job: jobKey, href, onClick, className = '', showOrganization = true }: CompactJobCardProps) {
+export default function CompactJobCard({ job: jobKey, className = '', showOrganization = true }: CompactJobCardProps) {
 	const job = useFragment(CompactJobCardFragment, jobKey);
 
 	const formatSalary = () => {
@@ -131,12 +130,7 @@ export default function CompactJobCard({ job: jobKey, href, onClick, className =
 	const isVerified = !!job.organization?.verificationStatus?.verifiedAt;
 
 	const cardContent = (
-		<Card
-			className={`w-full cursor-pointer transition-colors ${className}`}
-			isPressable={!!href || !!onClick}
-			onPress={onClick}
-			shadow='none'
-		>
+		<Card className={`w-full transition-colors ${className}`} shadow='none'>
 			<CardBody className='p-4 space-y-3'>
 				{/* Job Title */}
 
@@ -218,13 +212,9 @@ export default function CompactJobCard({ job: jobKey, href, onClick, className =
 		</Card>
 	);
 
-	if (href) {
-		return (
-			<Link href={href} className='block w-full'>
-				{cardContent}
-			</Link>
-		);
-	}
-
-	return cardContent;
+	return (
+		<Link href={links.jobDetail(job.organization?.slug, job.slug)} className='block w-full' target='_blank' rel='noopener noreferrer'>
+			{cardContent}
+		</Link>
+	);
 }

@@ -96,7 +96,8 @@ export default function JobMapMarkers({ data, onJobClick }: JobMapMarkersProps) 
 		// Create marker cluster group with sleek, minimalistic cluster icons
 		const markers = L.markerClusterGroup({
 			chunkedLoading: true,
-			spiderfyOnMaxZoom: true,
+			spiderfyOnMaxZoom: false,
+			spiderfyOnEveryZoom: false,
 			showCoverageOnHover: false,
 			zoomToBoundsOnClick: true,
 			maxClusterRadius: 80,

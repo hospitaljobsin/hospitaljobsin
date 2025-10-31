@@ -22,7 +22,6 @@ const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLaye
 const JobMapMarkers = dynamic(() => import('./JobMapMarkers'), { ssr: false });
 const JobHexagonClusters = dynamic(() => import('./JobHexagonClusters'), { ssr: false });
 const JobMapControls = dynamic(() => import('./JobMapControls'), { ssr: false });
-const JobPreviewDrawer = dynamic(() => import('./JobPreviewDrawer'), { ssr: false });
 const MapFilterSidebar = dynamic(() => import('./MapFilterSidebar'), { ssr: false });
 const ClusterBottomSheet = dynamic(() => import('./FilterSheet'), { ssr: false });
 const FloatingSearchBar = dynamic(() => import('./FloatingSearchBar'), { ssr: false });
@@ -704,19 +703,7 @@ export default function JobMapView({
 					}
 					className={isMobile ? 'px-2 mr-12' : 'px-6 mr-16'}
 				/>
-
-				{/* Desktop Job Preview Popup (shown on marker click) */}
-				{!isMobile && selectedJobId && (
-					<div className='absolute top-4 right-4 w-96 bg-background shadow-xl rounded-lg border border-divider z-[1000] max-h-[80vh] overflow-y-auto'>
-						<JobPreviewDrawer jobId={selectedJobId} data={data as any} onClose={() => setSelectedJobId(null)} />
-					</div>
-				)}
 			</div>
-
-			{/* Mobile Job Preview Drawer */}
-			{isMobile && selectedJobId && (
-				<JobPreviewDrawer jobId={selectedJobId} data={data as any} isOpen={isDrawerOpen} onClose={handleDrawerClose} />
-			)}
 
 			{/* Mobile Cluster Bottom Sheet - Always visible on mobile, tucked in by default */}
 			{isMobile && (

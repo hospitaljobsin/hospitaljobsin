@@ -137,7 +137,6 @@ interface ViewportJobsListProps {
 		jobType: readonly string[];
 		sortBy: string;
 	};
-	onJobSelect?: (jobId: string) => void;
 	className?: string;
 }
 
@@ -147,7 +146,7 @@ interface ViewportJobsListProps {
  * Displays a list of jobs from the current map viewport using GraphQL.
  * Shows all jobs visible in the current map bounds regardless of zoom level.
  */
-function ViewportJobsContent({ bounds, filters, onJobSelect, className = '' }: ViewportJobsListProps) {
+function ViewportJobsContent({ bounds, filters, className = '' }: ViewportJobsListProps) {
 	const queryData = useLazyLoadQuery<ClusterJobsListQuery>(ClusterJobsListQueryNode, {
 		bounds,
 		workMode: (filters.workMode.length > 0 ? filters.workMode : ['OFFICE', 'REMOTE', 'HYBRID']) as readonly JobWorkModeFilter[],
@@ -195,12 +194,7 @@ function ViewportJobsContent({ bounds, filters, onJobSelect, className = '' }: V
 			{/* Jobs List */}
 			<div className='w-full space-y-6'>
 				{allJobEdges.map(edge => (
-					<CompactJobCard
-						key={edge.node.id}
-						job={edge.node}
-						onClick={() => onJobSelect?.(edge.node.id)}
-						className='w-full border border-divider hover:border-primary-200'
-					/>
+					<CompactJobCard key={edge.node.id} job={edge.node} className='w-full border border-divider hover:border-primary-200' />
 				))}
 
 				{/* Infinite scroll trigger */}
@@ -220,7 +214,7 @@ function ViewportJobsContent({ bounds, filters, onJobSelect, className = '' }: V
 	);
 }
 
-export default function ViewportJobsList({ bounds, filters, onJobSelect, className = '' }: ViewportJobsListProps) {
+export default function ViewportJobsList({ bounds, filters, className = '' }: ViewportJobsListProps) {
 	const [retryKey, setRetryKey] = useState(0);
 
 	// Always render the viewport jobs (no zoom or cluster restrictions)
@@ -228,7 +222,7 @@ export default function ViewportJobsList({ bounds, filters, onJobSelect, classNa
 		<div className={`w-full ${className}`}>
 			<ViewportJobsErrorBoundary onRetry={() => setRetryKey(prev => prev + 1)}>
 				<Suspense fallback={<ClusterJobsListSkeleton />}>
-					<ViewportJobsContent key={retryKey} bounds={bounds} filters={filters} onJobSelect={onJobSelect} className='w-full' />
+					<ViewportJobsContent key={retryKey} bounds={bounds} filters={filters} className='w-full' />
 				</Suspense>
 			</ViewportJobsErrorBoundary>
 		</div>

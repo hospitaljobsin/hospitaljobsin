@@ -34,7 +34,7 @@ export default function Providers({ children, headersPromise }: { children: Reac
 							<RelayEnvironmentProvider environment={environment}>
 								<ProgressProvider
 									height='4px'
-									color='hsl(var(--heroui-primary-300))'
+									color='hsl(var(--heroui-primary-500))'
 									nonce={nonce}
 									options={{ showSpinner: false, positionUsing: 'margin' }}
 									shallowRouting
