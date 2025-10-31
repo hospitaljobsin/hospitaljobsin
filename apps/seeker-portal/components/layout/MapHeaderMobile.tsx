@@ -6,15 +6,15 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import type { MapHeaderFragment$key } from '@/__generated__/MapHeaderFragment.graphql';
+import type { MapHeaderMobileFragment$key } from '@/__generated__/MapHeaderMobileFragment.graphql';
 import links from '@/lib/links';
 import type { SearchLocation } from '../forms/LocationAutocomplete';
 import Logo from '../Logo';
 import MobileFilterScene from '../search/map/MobileFilterScene';
 import AuthNavigation from './AuthNavigation';
 
-export const MapHeaderFragment = graphql`
-  fragment MapHeaderFragment on Query {
+export const MapHeaderMobileFragment = graphql`
+  fragment MapHeaderMobileFragment on Query {
     viewer {
       ... on Account {
         __typename
@@ -28,7 +28,7 @@ export const MapHeaderFragment = graphql`
 `;
 
 interface MapHeaderMobileProps {
-	query: MapHeaderFragment$key;
+	query: MapHeaderMobileFragment$key;
 	searchTerm: string | null;
 	location: string | null;
 	onSearchTermChange?: (term: string | null) => void;
@@ -56,7 +56,7 @@ export default function MapHeaderMobile({
 	onFiltersChange,
 	resultCount = 0
 }: MapHeaderMobileProps) {
-	const data = useFragment(MapHeaderFragment, query);
+	const data = useFragment(MapHeaderMobileFragment, query);
 	const [showMobileScene, setShowMobileScene] = useState(false);
 
 	return (

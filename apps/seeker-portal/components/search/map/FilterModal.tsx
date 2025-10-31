@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Slider } from '@heroui/react';
+import { Button, Checkbox, CheckboxGroup, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Slider } from '@heroui/react';
 import { Filter } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -14,8 +14,8 @@ interface FilterModalProps {
 		minSalary: number | null;
 		maxSalary: number | null;
 		proximityKm: number;
-		workMode: readonly string[];
-		jobType: readonly string[];
+		workMode: string[];
+		jobType: string[];
 		sortBy: string;
 	};
 	onFiltersChange?: (filters: Partial<FilterModalProps['filters']>) => void;
@@ -91,87 +91,35 @@ export default function FilterModal({ isOpen, onClose, filters, onFiltersChange,
 						</ModalHeader>
 
 						<ModalBody className='space-y-6'>
-							{/* Job Type Filters */}
-							<div className='space-y-3'>
-								<h3 className='text-sm font-medium text-foreground-700'>Job Type</h3>
-								<div className='flex flex-wrap gap-2'>
-									{['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT', 'LOCUM'].map(type => {
-										const isSelected = localFilters.jobType.includes(type);
-										const labels = {
-											FULL_TIME: 'Full-time',
-											PART_TIME: 'Part-time',
-											INTERNSHIP: 'Internship',
-											CONTRACT: 'Contract',
-											LOCUM: 'Locum'
-										};
+							<CheckboxGroup
+								label='Job Type'
+								value={localFilters.jobType}
+								onValueChange={value => handleLocalFilterChange({ jobType: value })}
+								className='w-full'
+								orientation='horizontal'
+							>
+								<Checkbox value='FULL_TIME'>Full Time</Checkbox>
+								<Checkbox value='PART_TIME'>Part Time</Checkbox>
+								<Checkbox value='INTERNSHIP'>Internship</Checkbox>
+								<Checkbox value='CONTRACT'>Contract</Checkbox>
+								<Checkbox value='LOCUM'>Locum</Checkbox>
+							</CheckboxGroup>
 
-										return (
-											<Button
-												key={type}
-												size='sm'
-												variant={isSelected ? 'solid' : 'flat'}
-												color={isSelected ? 'primary' : 'default'}
-												onPress={() => {
-													const newJobType = isSelected ? localFilters.jobType.filter(t => t !== type) : [...localFilters.jobType, type];
-													handleLocalFilterChange({ jobType: newJobType });
-												}}
-												className='text-xs'
-											>
-												{labels[type as keyof typeof labels]}
-											</Button>
-										);
-									})}
-								</div>
-							</div>
+							<CheckboxGroup
+								label='Work Mode'
+								value={localFilters.workMode}
+								onValueChange={value => handleLocalFilterChange({ workMode: value })}
+								className='w-full'
+								orientation='horizontal'
+							>
+								<Checkbox value='REMOTE'>Remote</Checkbox>
+								<Checkbox value='HYBRID'>Hybrid</Checkbox>
+								<Checkbox value='OFFICE'>Office</Checkbox>
+							</CheckboxGroup>
 
-							{/* Work Mode Filters */}
-							<div className='space-y-3'>
-								<h3 className='text-sm font-medium text-foreground-700'>Work Mode</h3>
-								<div className='flex flex-wrap gap-2'>
-									{['REMOTE', 'HYBRID', 'ON_SITE'].map(mode => {
-										const isSelected = localFilters.workMode.includes(mode);
-										const labels = {
-											REMOTE: 'Remote',
-											HYBRID: 'Hybrid',
-											ON_SITE: 'On-site'
-										};
-
-										return (
-											<Button
-												key={mode}
-												size='sm'
-												variant={isSelected ? 'solid' : 'flat'}
-												color={isSelected ? 'primary' : 'default'}
-												onPress={() => {
-													const newWorkMode = isSelected ? localFilters.workMode.filter(m => m !== mode) : [...localFilters.workMode, mode];
-													handleLocalFilterChange({ workMode: newWorkMode });
-												}}
-												className='text-xs'
-											>
-												{labels[mode as keyof typeof labels]}
-											</Button>
-										);
-									})}
-								</div>
-							</div>
-
-							{/* Experience Range */}
-							<div className='space-y-3'>
-								<div className='flex items-center justify-between'>
-									<h3 className='text-sm font-medium text-foreground-700'>Experience</h3>
-									{localFilters.minExperience !== null && (
-										<Button
-											size='sm'
-											variant='light'
-											onPress={() => handleLocalFilterChange({ minExperience: null })}
-											className='text-xs px-2 h-6'
-										>
-											Clear
-										</Button>
-									)}
-								</div>
+							<div className='w-full flex flex-col gap-6'>
 								<Slider
-									size='sm'
+									label='Experience'
 									formatOptions={{
 										style: 'unit',
 										unit: 'year'
@@ -182,72 +130,52 @@ export default function FilterModal({ isOpen, onClose, filters, onFiltersChange,
 									value={localFilters.minExperience ?? 0}
 									onChange={val => {
 										const v = Array.isArray(val) ? val[0] : val;
-										handleLocalFilterChange({ minExperience: v === 0 ? null : v });
+										handleLocalFilterChange({ minExperience: v });
 									}}
 									showTooltip
 									className='w-full'
 								/>
+								<Button
+									size='sm'
+									variant='ghost'
+									className='w-full min-h-10 text-sm'
+									onPress={() => handleLocalFilterChange({ minExperience: null })}
+									isDisabled={localFilters.minExperience === null}
+								>
+									Clear
+								</Button>
 							</div>
 
-							{/* Salary Range */}
-							<div className='space-y-3'>
-								<div className='flex items-center justify-between'>
-									<h3 className='text-sm font-medium text-foreground-700'>Salary Range</h3>
-									{(localFilters.minSalary !== null || localFilters.maxSalary !== null) && (
-										<Button
-											size='sm'
-											variant='light'
-											onPress={() => handleLocalFilterChange({ minSalary: null, maxSalary: null })}
-											className='text-xs px-2 h-6'
-										>
-											Clear
-										</Button>
-									)}
-								</div>
-								<div className='space-y-2'>
-									<div>
-										<div className='text-xs text-foreground-600 mb-1'>Minimum Salary</div>
-										<Slider
-											size='sm'
-											formatOptions={{
-												style: 'currency',
-												currency: 'USD',
-												notation: 'compact'
-											}}
-											minValue={20000}
-											maxValue={200000}
-											step={5000}
-											value={localFilters.minSalary ?? 20000}
-											onChange={val => {
-												const v = Array.isArray(val) ? val[0] : val;
-												handleLocalFilterChange({ minSalary: v === 20000 ? null : v });
-											}}
-											showTooltip
-											className='w-full'
-										/>
-									</div>
-									<div>
-										<div className='text-xs text-foreground-600 mb-1'>Maximum Salary</div>
-										<Slider
-											size='sm'
-											formatOptions={{
-												style: 'currency',
-												currency: 'USD',
-												notation: 'compact'
-											}}
-											minValue={25000}
-											maxValue={500000}
-											step={5000}
-											value={localFilters.maxSalary ?? 200000}
-											onChange={val => {
-												const v = Array.isArray(val) ? val[0] : val;
-												handleLocalFilterChange({ maxSalary: v === 200000 ? null : v });
-											}}
-											showTooltip
-											className='w-full'
-										/>
-									</div>
-								</div>
+							<div className='w-full flex flex-col gap-6'>
+								<Slider
+									label='Salary'
+									minValue={0}
+									maxValue={500000}
+									formatOptions={{
+										style: 'currency',
+										currency: 'INR'
+									}}
+									step={1000}
+									value={[localFilters.minSalary ?? 0, localFilters.maxSalary ?? 500000]}
+									onChange={val => {
+										const [min, max] = Array.isArray(val) ? val : [val, val];
+										handleLocalFilterChange({
+											minSalary: min,
+											maxSalary: max
+										});
+									}}
+									showTooltip
+									className='w-full'
+								/>
+								<Button
+									size='sm'
+									variant='ghost'
+									className='w-full min-h-10 text-sm'
+									onPress={() => handleLocalFilterChange({ minSalary: null, maxSalary: null })}
+									isDisabled={localFilters.minSalary === null && localFilters.maxSalary === null}
+								>
+									Clear
+								</Button>
 							</div>
 						</ModalBody>
 
