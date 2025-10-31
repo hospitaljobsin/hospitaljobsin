@@ -214,9 +214,6 @@ function ViewportJobsContent({ bounds, filters, onJobSelect, className = '' }: V
 					</button>
 				)}
 
-				{/* No More Results */}
-				{!hasMoreJobs && allJobs.length > 0 && <p className='text-center text-xs text-foreground-500 py-2'>All jobs in this area loaded</p>}
-
 				{/* No Jobs Found */}
 				{allJobs.length === 0 && !isLoadingMore && (
 					<div className='text-center py-8 w-full'>
