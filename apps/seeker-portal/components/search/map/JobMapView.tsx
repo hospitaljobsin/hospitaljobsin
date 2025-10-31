@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import type { Map as LeafletMap } from 'leaflet';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { MapViewClientComponentFragment$data } from '@/__generated__/MapViewClientComponentFragment.graphql';
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
 import { getAnimationConfig, sidebarSlide, sidebarTransition } from '@/lib/animations';
 import { calculateViewportArea, shouldShowClusters } from '@/lib/map/h3Utils';
@@ -65,7 +66,7 @@ function normalizeBounds(bounds: { swLat: number; swLng: number; neLat: number; 
 }
 
 interface JobMapViewProps {
-	data: unknown; // Fragment data passed from parent
+	data: MapViewClientComponentFragment$data;
 	filters: {
 		searchTerm: string | null;
 		location: string | null;
@@ -350,15 +351,12 @@ export default function JobMapView({
 	const handleJobClick = useCallback(
 		(jobId: string) => {
 			setSelectedJobId(jobId);
-			const job = (data as any)?.jobs?.edges?.find((edge: any) => edge.node.id === jobId)?.node;
-			if (job) {
-				setAnnouncementMessage(`Selected job: ${job.title || 'Job'} at ${job.organization?.name || 'Unknown organization'}`);
-			}
+			// Note: We don't need to access job data here since the popup is handled by JobMapMarkers
 			if (isMobile) {
 				onDrawerOpen();
 			}
 		},
-		[isMobile, onDrawerOpen, data]
+		[isMobile, onDrawerOpen]
 	);
 
 	// Handle cluster click - zoom into cluster center and trigger sidebar population
@@ -402,7 +400,7 @@ export default function JobMapView({
 	}, [map, currentZoom]);
 
 	// Get total job count for clustering decision
-	const totalJobs = (data as any)?.jobs?.totalCount || 0;
+	const totalJobs = data.jobs?.totalCount || 0;
 
 	// Determine whether to show clusters based on zoom, job count, viewport, and mobile state
 	const showClusters = useMemo(() => {
@@ -499,7 +497,7 @@ export default function JobMapView({
 			return;
 		}
 
-		const clusters = (data as any)?.jobClusters;
+		const clusters = data.jobClusters?.clusters;
 		console.log('📊 Cluster data:', {
 			clustersExists: !!clusters,
 			isArray: Array.isArray(clusters),
@@ -586,7 +584,7 @@ export default function JobMapView({
 					>
 						<MapFilterSidebar
 							filters={filters}
-							totalCount={(data as any)?.jobs?.totalCount || 0}
+							totalCount={data.jobs?.totalCount || 0}
 							bounds={currentBounds}
 							currentZoom={currentZoom}
 							onJobSelect={setSelectedJobId}
@@ -619,13 +617,13 @@ export default function JobMapView({
 						<TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
 
 						{/* Render job clusters when zoomed out */}
-						{showClusters && Array.isArray((data as any)?.jobClusters) && (data as any).jobClusters.length > 0 && (
-							<JobHexagonClusters clusters={(data as any).jobClusters} onClusterClick={handleClusterClick} />
+						{showClusters && data.jobClusters?.clusters && data.jobClusters.clusters.length > 0 && (
+							<JobHexagonClusters clusters={data.jobClusters.clusters as any} onClusterClick={handleClusterClick} />
 						)}
 
 						{/* Render individual job markers when zoomed in or no clusters available */}
-						{(!showClusters || !Array.isArray((data as any)?.jobClusters) || (data as any).jobClusters.length === 0) && (
-							<JobMapMarkers data={data} onJobClick={handleJobClick} selectedJobId={selectedJobId} />
+						{(!showClusters || !data.jobClusters?.clusters || data.jobClusters.clusters.length === 0) && (
+							<JobMapMarkers dataRef={data as any} onJobClick={handleJobClick} selectedJobId={selectedJobId} />
 						)}
 						<JobMapControls map={map} />
 					</MapContainer>
@@ -692,7 +690,7 @@ export default function JobMapView({
 							onFiltersChange?.(mobileFilters);
 						}
 					}}
-					resultCount={(data as any)?.jobs?.totalCount || 0} // eslint-disable-line @typescript-eslint/no-explicit-any
+					resultCount={data.jobs?.totalCount || 0}
 					onExpand={
 						isMobile
 							? () => {
@@ -708,7 +706,7 @@ export default function JobMapView({
 			{/* Mobile Cluster Bottom Sheet - Always visible on mobile, tucked in by default */}
 			{isMobile && (
 				<ClusterBottomSheet
-					totalCount={(data as any)?.jobs?.totalCount || 0} // eslint-disable-line @typescript-eslint/no-explicit-any
+					totalCount={data.jobs?.totalCount || 0}
 					isPending={isPending}
 					selectedCluster={autoSelectedCluster}
 					bounds={currentBounds}
@@ -724,7 +722,7 @@ export default function JobMapView({
 				onClose={() => setShowFilterModal(false)}
 				filters={filters}
 				onFiltersChange={onFiltersChange}
-				resultCount={(data as any)?.jobs?.totalCount || 0} // eslint-disable-line @typescript-eslint/no-explicit-any
+				resultCount={data.jobs?.totalCount || 0}
 				isPending={isPending}
 			/>
 		</div>

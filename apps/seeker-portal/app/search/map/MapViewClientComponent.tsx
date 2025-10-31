@@ -18,22 +18,7 @@ const JobMapView = dynamic(() => import('@/components/search/map/JobMapView'), {
 
 const MapViewClientComponentFragment = graphql`
 	fragment MapViewClientComponentFragment on Query
-	@refetchable(queryName: "MapViewClientComponentRefetchQuery")
-	@argumentDefinitions(
-		searchTerm: { type: "String" }
-		minExperience: { type: "Int" }
-		minSalary: { type: "Int" }
-		maxSalary: { type: "Int" }
-		proximityKm: { type: "Float" }
-		location: { type: "String" }
-		bounds: { type: "BoundingBoxInput!" }
-		workMode: { type: "[JobWorkModeFilter!]!" }
-		jobType: { type: "[JobTypeFilter!]!" }
-		sortBy: { type: "JobSearchSortBy!" }
-		first: { type: "Int!" }
-		# Clustering arguments
-		zoomLevel: { type: "Int!" }
-	) {
+	@refetchable(queryName: "MapViewClientComponentRefetchQuery") {
 		# Job clusters query - used at low/medium zoom levels
 		jobClusters(
 			bounds: $bounds
@@ -63,36 +48,8 @@ const MapViewClientComponentFragment = graphql`
 			totalCount
 		}
 
-		# Individual jobs query - used at high zoom levels (15+)
-		jobs(
-			searchTerm: $searchTerm
-			minExperience: $minExperience
-			minSalary: $minSalary
-			maxSalary: $maxSalary
-			proximityKm: $proximityKm
-			location: $location
-			bounds: $bounds
-			workMode: $workMode
-			jobType: $jobType
-			sortBy: $sortBy
-			first: $first
-		) @skip(if: false) {
-			edges {
-				node {
-					id
-					slug
-					organization {
-						slug
-					}
-					geo {
-						coordinates
-					}
-					...JobMapMarkersFragment_job
-					...JobPreviewDrawerFragment_job
-				}
-			}
-			totalCount
-		}
+		# Spread the JobMapMarkers fragment to get all data it needs
+		...JobMapMarkersFragment_data
 	}
 `;
 
@@ -236,12 +193,12 @@ export default function MapViewClientComponent({
 
 	return (
 		<JobMapView
-			data={fragmentData}
+			data={fragmentData as any}
 			filters={filters}
 			currentZoom={currentZoom}
 			onBoundsChange={handleBoundsChange}
 			onZoomChange={handleZoomChange}
-			onFiltersChange={handleFiltersChange}
+			onFiltersChange={handleFiltersChange as any}
 			isPending={isPending}
 		/>
 	);
