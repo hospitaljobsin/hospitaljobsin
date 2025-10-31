@@ -2,7 +2,6 @@
 
 import { useProgress } from '@bprogress/next';
 import { useDisclosure } from '@heroui/react';
-import { AnimatePresence, motion } from 'framer-motion';
 import type { Map as LeafletMap } from 'leaflet';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -11,7 +10,6 @@ import { graphql } from 'relay-runtime';
 import type { MapViewClientComponentFragment$data } from '@/__generated__/MapViewClientComponentFragment.graphql';
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
 import MapHeader from '@/components/layout/MapHeader';
-import { getAnimationConfig, sidebarSlide, sidebarTransition } from '@/lib/animations';
 import { calculateViewportArea, shouldShowClusters } from '@/lib/map/h3Utils';
 
 type ClusterInfo = {
@@ -138,6 +136,7 @@ export default function JobMapView({
 	// New state for enhanced UX
 	const [showFilterModal, setShowFilterModal] = useState(false);
 	const [forceSidebarOpen, setForceSidebarOpen] = useState(false);
+	const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
 
 	// BProgress hook for controlling the top progress bar
 	const { start, stop } = useProgress();
@@ -287,7 +286,7 @@ export default function JobMapView({
 			clearTimeout(timeoutId2);
 			window.removeEventListener('resize', handleResize);
 		};
-	}, [map, isMobile]); // Re-run when isMobile changes (sidebar toggle)
+	}, [map, isMobile, isSidebarCollapsed]); // Re-run when isMobile or sidebar collapse state changes
 
 	// Set initial bounds when map is ready
 	useEffect(() => {
@@ -629,22 +628,18 @@ export default function JobMapView({
 			{/* Main Content Area */}
 			<div className='flex-1 flex overflow-hidden'>
 				{/* Desktop Sidebar - Always visible on desktop */}
-				<AnimatePresence>
-					{!isMobile && (
-						<motion.div
-							{...getAnimationConfig(sidebarSlide, sidebarTransition)}
-							className='h-full bg-background z-10 relative overflow-visible'
-						>
-							<MapFilterSidebar
-								filters={filters}
-								totalCount={jobsData.jobs?.totalCount || 0}
-								bounds={currentBounds}
-								currentZoom={currentZoom}
-								forceOpen={forceSidebarOpen}
-							/>
-						</motion.div>
-					)}
-				</AnimatePresence>
+				{!isMobile && (
+					<div className='h-full bg-background z-10 relative overflow-visible'>
+						<MapFilterSidebar
+							filters={filters}
+							totalCount={jobsData.jobs?.totalCount || 0}
+							bounds={currentBounds}
+							currentZoom={currentZoom}
+							forceOpen={forceSidebarOpen}
+							onCollapseChange={setIsSidebarCollapsed}
+						/>
+					</div>
+				)}
 
 				{/* Map Container */}
 				<div className='flex-1 relative h-full overflow-hidden'>

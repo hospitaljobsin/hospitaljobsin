@@ -28,9 +28,10 @@ interface MapFilterSidebarProps {
 	} | null;
 	currentZoom: number;
 	forceOpen?: boolean; // New prop to force the sidebar to open
+	onCollapseChange?: (isCollapsed: boolean) => void; // Callback to notify parent of collapse state changes
 }
 
-export default function MapFilterSidebar({ filters, totalCount, bounds, currentZoom, forceOpen }: MapFilterSidebarProps) {
+export default function MapFilterSidebar({ filters, totalCount, bounds, currentZoom, forceOpen, onCollapseChange }: MapFilterSidebarProps) {
 	// State to track if sidebar was explicitly closed by user
 	const [wasExplicitlyClosed, setWasExplicitlyClosed] = useState(false);
 	// Track if we have jobs in the current viewport
@@ -44,10 +45,16 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 	// Handle force open prop
 	useEffect(() => {
 		if (forceOpen) {
+			const wasCollapsed = isCollapsed;
 			setIsCollapsed(false);
 			setWasExplicitlyClosed(false); // Reset explicit close flag when forced open
+
+			// Notify parent if state changed
+			if (wasCollapsed) {
+				onCollapseChange?.(false);
+			}
 		}
-	}, [forceOpen]);
+	}, [forceOpen, isCollapsed, onCollapseChange]);
 
 	// Monitor job availability and auto-open/close logic
 	useEffect(() => {
@@ -55,7 +62,9 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 
 		if (isInitialMount.current) {
 			// On initial load, collapse if no jobs are available (unless forced open)
-			setIsCollapsed(!forceOpen && (!shouldShowJobs || totalCount === 0));
+			const initialCollapsedState = !forceOpen && (!shouldShowJobs || totalCount === 0);
+			setIsCollapsed(initialCollapsedState);
+			onCollapseChange?.(initialCollapsedState);
 			isInitialMount.current = false;
 			return;
 		}
@@ -70,19 +79,21 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 			setHasJobsInViewport(true);
 
 			// Auto-open sidebar if user hasn't explicitly closed it
-			if (!wasExplicitlyClosed) {
+			if (!wasExplicitlyClosed && isCollapsed) {
 				setIsCollapsed(false);
+				onCollapseChange?.(false);
 			}
 		} else {
 			// No jobs in viewport
 			setHasJobsInViewport(false);
 
 			// Auto-collapse if no jobs available (unless user explicitly opened it)
-			if (!wasExplicitlyClosed) {
+			if (!wasExplicitlyClosed && !isCollapsed) {
 				setIsCollapsed(true);
+				onCollapseChange?.(true);
 			}
 		}
-	}, [bounds, currentZoom, totalCount, wasExplicitlyClosed, forceOpen]);
+	}, [bounds, currentZoom, totalCount, wasExplicitlyClosed, forceOpen, isCollapsed, onCollapseChange]);
 
 	const toggleCollapse = () => {
 		const newCollapsedState = !isCollapsed;
@@ -96,6 +107,9 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 		if (!newCollapsedState && !hasJobsInViewport) {
 			setWasExplicitlyClosed(false);
 		}
+
+		// Notify parent component of collapse state change
+		onCollapseChange?.(newCollapsedState);
 	};
 
 	return (

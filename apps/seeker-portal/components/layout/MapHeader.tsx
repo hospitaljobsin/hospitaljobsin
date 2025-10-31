@@ -133,7 +133,7 @@ export default function MapHeader({
 			</NavbarContent>
 
 			{/* Desktop: Logo + Search Inputs */}
-			<NavbarContent justify='start' className='flex-1 w-full hidden md:flex gap-2 space-x-6'>
+			<NavbarContent justify='start' className='flex-1 w-full hidden md:flex gap-2 space-x-4'>
 				<NavbarItem className='shrink'>
 					<Link href={links.landing} className='font-medium text-inherit flex items-center gap-2 sm:gap-4'>
 						<Logo />
