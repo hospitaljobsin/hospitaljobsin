@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardBody, Chip, Tooltip } from '@heroui/react';
-import { Briefcase, IndianRupee, MapPin, VerifiedIcon } from 'lucide-react';
+import { Briefcase, MapPin, VerifiedIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { graphql, useFragment } from 'react-relay';
@@ -159,7 +159,6 @@ export default function CompactJobCard({ job: jobKey, className = '', showOrgani
 				{/* Primary Salary - Most Prominent */}
 				{salary && (
 					<div className='flex items-center gap-2'>
-						<IndianRupee size={16} className='text-foreground flex-shrink-0' />
 						<span className='text-lg font-semibold'>{salary}</span>
 						<span className='text-sm text-foreground-500'>/ month</span>
 					</div>

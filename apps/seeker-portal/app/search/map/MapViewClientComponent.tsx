@@ -50,6 +50,12 @@ const MapViewClientComponentFragment = graphql`
 
 		# Spread the JobMapMarkers fragment to get all data it needs
 		...JobMapMarkersFragment_data
+
+		# Spread the MapHeader fragment
+		...MapHeaderFragment
+
+		# Spread the JobMapView fragment
+		...JobMapViewFragment
 	}
 `;
 
@@ -194,6 +200,7 @@ export default function MapViewClientComponent({
 	return (
 		<JobMapView
 			data={fragmentData as any}
+			queryRef={fragmentData}
 			filters={filters}
 			currentZoom={currentZoom}
 			onBoundsChange={handleBoundsChange}

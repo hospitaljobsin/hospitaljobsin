@@ -9,6 +9,12 @@ import { graphql, useFragment } from 'react-relay';
 import 'leaflet.markercluster';
 import type { JobMapMarkersFragment_data$key } from '@/__generated__/JobMapMarkersFragment_data.graphql';
 
+// Type definition for MarkerCluster
+type MarkerClusterType = L.Layer & {
+	getAllChildMarkers(): L.Marker[];
+	getChildCount(): number;
+};
+
 // Fix Leaflet default marker icon issue
 // biome-ignore lint/suspicious/noExplicitAny: Leaflet internal API requires any
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -60,9 +66,10 @@ interface JobMapMarkersProps {
 	dataRef: JobMapMarkersFragment_data$key;
 	onJobClick: (jobId: string) => void;
 	selectedJobId: string | null;
+	onClusterCannotExpand?: () => void;
 }
 
-export default function JobMapMarkers({ dataRef, onJobClick }: JobMapMarkersProps) {
+export default function JobMapMarkers({ dataRef, onJobClick, onClusterCannotExpand }: JobMapMarkersProps) {
 	const data = useFragment(JobMapMarkersDataFragment, dataRef);
 	const map = useMap();
 
@@ -136,7 +143,7 @@ export default function JobMapMarkers({ dataRef, onJobClick }: JobMapMarkersProp
 			spiderfyOnMaxZoom: false,
 			spiderfyOnEveryZoom: false,
 			showCoverageOnHover: false,
-			zoomToBoundsOnClick: true,
+			zoomToBoundsOnClick: false, // Disable automatic zoom to prevent zoom conflicts
 			maxClusterRadius: 80,
 			iconCreateFunction: cluster => {
 				const childCount = cluster.getChildCount();
@@ -178,6 +185,42 @@ export default function JobMapMarkers({ dataRef, onJobClick }: JobMapMarkersProp
 					className: 'custom-cluster-icon',
 					iconSize: [size, size]
 				});
+			}
+		});
+
+		// Add click handler for clusters with controlled zoom behavior
+		markers.on('clusterclick', (event: L.LeafletEvent) => {
+			const cluster = event.layer as MarkerClusterType;
+			const childMarkers = cluster.getAllChildMarkers();
+
+			// Get the bounds of all child markers
+			const bounds = L.latLngBounds(childMarkers.map((marker: L.Marker) => marker.getLatLng()));
+
+			// Calculate the zoom level needed to show all markers
+			const targetZoom = map.getBoundsZoom(bounds);
+			const currentZoom = map.getZoom();
+
+			// Ensure we zoom to at least level 13 to guarantee individual markers are shown
+			// This prevents the issue where clusters don't transition to markers
+			const minZoom = 13;
+			const finalZoom = Math.max(minZoom, Math.min(targetZoom + 1, 16));
+
+			// Check if cluster cannot expand further (already at maximum zoom or markers are too close)
+			const canExpand = currentZoom < finalZoom && currentZoom < 16;
+			const markersAreTooClose = targetZoom <= currentZoom;
+
+			if (canExpand && !markersAreTooClose) {
+				// Zoom to show the cluster's children with padding
+				map.fitBounds(bounds, {
+					padding: [50, 50],
+					maxZoom: finalZoom
+				});
+			} else {
+				// Cluster cannot expand further - trigger sidebar/sheet opening
+				console.log('Cluster cannot expand further, opening sidebar/sheet');
+				if (onClusterCannotExpand) {
+					onClusterCannotExpand();
+				}
 			}
 		});
 
@@ -246,13 +289,12 @@ export default function JobMapMarkers({ dataRef, onJobClick }: JobMapMarkersProp
 						align-items: center;
 						gap: 8px;
 					">
-						<div style="width: 20px; height: 20px; flex-shrink: 0;">${crossIconSvg}</div>
-						<h3 style="font-weight: 600; margin: 0; font-size: 16px; line-height: 1.3;">${job.title || 'Healthcare Job'}</h3>
+						<h3 style="font-weight: 600; margin: 0; font-size: 16px; line-height: 1.3;">${job.title}</h3>
 					</div>
 					<div style="padding: 4px 0;">
 						<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: hsl(var(--heroui-default-600));">
 							<div style="width: 16px; height: 16px; flex-shrink: 0; color: hsl(var(--heroui-default-500));">${hospitalIconSvg}</div>
-							<p style="margin: 0; font-size: 14px; font-weight: 500; color: hsl(var(--heroui-foreground-700));">${job.organization?.name || 'Healthcare Facility'}</p>
+							<p style="margin: 0; font-size: 14px; font-weight: 500; color: hsl(var(--heroui-foreground-700));">${job.organization?.name}</p>
 						</div>
 						${
 							salary
@@ -293,7 +335,7 @@ export default function JobMapMarkers({ dataRef, onJobClick }: JobMapMarkersProp
 						onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0, 0, 0, 0.15)';"
 						onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0, 0, 0, 0.1)';"
 					>
-						View Job Details →
+						View Job →
 					</a>
 				</div>
 			`);
@@ -305,7 +347,7 @@ export default function JobMapMarkers({ dataRef, onJobClick }: JobMapMarkersProp
 		console.log('Marker cluster bounds valid:', markers.getBounds().isValid());
 
 		// Safely add markers to map with additional check
-		if (map && map.getContainer() && markers) {
+		if (map?.getContainer() && markers) {
 			map.addLayer(markers);
 			console.log('Marker cluster added to map');
 		} else {
@@ -323,7 +365,7 @@ export default function JobMapMarkers({ dataRef, onJobClick }: JobMapMarkersProp
 		return () => {
 			console.log('Cleaning up markers');
 			// Safely remove markers with container check
-			if (map && map.getContainer() && markers && map.hasLayer(markers)) {
+			if (map?.getContainer() && markers && map.hasLayer(markers)) {
 				try {
 					map.removeLayer(markers);
 					console.log('Markers successfully removed');
@@ -332,7 +374,7 @@ export default function JobMapMarkers({ dataRef, onJobClick }: JobMapMarkersProp
 				}
 			}
 		};
-	}, [jobs, map, onJobClick]);
+	}, [jobs, map, onJobClick, onClusterCannotExpand]);
 
 	return null;
 }

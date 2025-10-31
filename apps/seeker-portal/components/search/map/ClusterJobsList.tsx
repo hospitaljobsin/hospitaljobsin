@@ -222,7 +222,7 @@ export default function ViewportJobsList({ bounds, filters, className = '' }: Vi
 		<div className={`w-full ${className}`}>
 			<ViewportJobsErrorBoundary onRetry={() => setRetryKey(prev => prev + 1)}>
 				<Suspense fallback={<ClusterJobsListSkeleton />}>
-					<ViewportJobsContent key={retryKey} bounds={bounds} filters={filters} className='w-full' />
+					<ViewportJobsContent key={retryKey} bounds={bounds} filters={filters} className={className} />
 				</Suspense>
 			</ViewportJobsErrorBoundary>
 		</div>

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bd44c6afb3a79022b477c1fd4a5c03e7>>
+ * @generated SignedSource<<e9596ea4d4fa4fe098c95ea313466a3f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -27,7 +27,7 @@ export type MapViewClientComponentFragment$data = {
     }>;
     readonly totalCount: number;
   };
-  readonly " $fragmentSpreads": FragmentRefs<"JobMapMarkersFragment_data">;
+  readonly " $fragmentSpreads": FragmentRefs<"JobMapMarkersFragment_data" | "JobMapViewFragment" | "MapHeaderFragment">;
   readonly " $fragmentType": "MapViewClientComponentFragment";
 };
 export type MapViewClientComponentFragment$key = {
@@ -253,12 +253,22 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "FragmentSpread",
       "name": "JobMapMarkersFragment_data"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "MapHeaderFragment"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "JobMapViewFragment"
     }
   ],
   "type": "Query",
   "abstractKey": null
 };
 
-(node as any).hash = "d14ee80c10e684e1484a423e3b746c4c";
+(node as any).hash = "6237612176297b8aca6d9f82b32bb0e9";
 
 export default node;

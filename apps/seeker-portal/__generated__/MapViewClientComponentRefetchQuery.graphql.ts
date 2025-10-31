@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<f5dad5ff047e24c97451c05a3d2f4821>>
- * @relayHash b4bb3f217a203ca301e2313632b75bb2
+ * @generated SignedSource<<15fd467eee22fc0464d23e3b144b078e>>
+ * @relayHash 23870b3e161cd2a7f61aa5483bc6a424
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b4bb3f217a203ca301e2313632b75bb2
+// @relayRequestID 23870b3e161cd2a7f61aa5483bc6a424
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -179,10 +179,17 @@ v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "id",
+  "name": "totalCount",
   "storageKey": null
 },
 v14 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -296,13 +303,7 @@ return {
             ],
             "storageKey": null
           },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "totalCount",
-            "storageKey": null
-          }
+          (v13/*: any*/)
         ],
         "storageKey": null
       },
@@ -350,8 +351,8 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v13/*: any*/),
                   (v14/*: any*/),
+                  (v15/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -393,7 +394,7 @@ return {
                     "name": "organization",
                     "plural": false,
                     "selections": [
-                      (v14/*: any*/),
+                      (v15/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -401,7 +402,7 @@ return {
                         "name": "name",
                         "storageKey": null
                       },
-                      (v13/*: any*/)
+                      (v14/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -410,6 +411,73 @@ return {
               }
             ],
             "storageKey": null
+          },
+          (v13/*: any*/)
+        ],
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "viewer",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "__typename",
+            "storageKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "progressPercentage",
+                    "storageKey": null
+                  },
+                  (v14/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "type": "Account",
+            "abstractKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v14/*: any*/)
+            ],
+            "type": "Node",
+            "abstractKey": "__isNode"
           }
         ],
         "storageKey": null
@@ -417,7 +485,7 @@ return {
     ]
   },
   "params": {
-    "id": "b4bb3f217a203ca301e2313632b75bb2",
+    "id": "23870b3e161cd2a7f61aa5483bc6a424",
     "metadata": {},
     "name": "MapViewClientComponentRefetchQuery",
     "operationKind": "query",
@@ -426,6 +494,6 @@ return {
 };
 })();
 
-(node as any).hash = "d14ee80c10e684e1484a423e3b746c4c";
+(node as any).hash = "6237612176297b8aca6d9f82b32bb0e9";
 
 export default node;

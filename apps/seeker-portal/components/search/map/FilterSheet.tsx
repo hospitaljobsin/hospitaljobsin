@@ -1,7 +1,6 @@
 'use client';
 
-import { Button } from '@heroui/react';
-import { FileIcon, X } from 'lucide-react';
+import { FileIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 import ViewportJobsList from './ClusterJobsList';
@@ -36,18 +35,10 @@ interface ClusterSheetProps {
 		jobType: readonly string[];
 		sortBy: string;
 	};
-	onJobSelect?: (jobId: string) => void;
+	forceOpen?: boolean; // New prop to force the sheet to open when cluster cannot expand
 }
 
-export default function FilterSheet({
-	totalCount,
-	isPending,
-	selectedCluster,
-	bounds,
-	filters,
-	onJobSelect,
-	currentZoom
-}: ClusterSheetProps) {
+export default function FilterSheet({ totalCount, selectedCluster, bounds, filters, currentZoom, forceOpen }: ClusterSheetProps) {
 	const ref = useRef<SheetRef>(null);
 	const [currentSnap, setCurrentSnap] = useState(1);
 
@@ -59,16 +50,24 @@ export default function FilterSheet({
 	// 4 = Full screen (100% of viewport) - 1
 	const snapPoints = [0, 120, 0.35, 0.6, 1];
 
+	// Handle force open prop
+	useEffect(() => {
+		if (forceOpen) {
+			// Force open to default jobs view (index 2 - 35% viewport)
+			ref.current?.snapTo(2);
+		}
+	}, [forceOpen]);
+
 	// Auto-snap based on cluster state
 	useEffect(() => {
 		if (selectedCluster) {
 			// Snap to cluster state (index 3 - 60% viewport)
 			ref.current?.snapTo(3);
-		} else {
-			// Keep tucked state (index 1) as default
+		} else if (!forceOpen) {
+			// Keep tucked state (index 1) as default only if not forced open
 			ref.current?.snapTo(1);
 		}
-	}, [selectedCluster]);
+	}, [selectedCluster, forceOpen]);
 
 	const handleSnapTo = (index: number) => {
 		ref.current?.snapTo(index);
@@ -105,9 +104,7 @@ export default function FilterSheet({
 						<div className='space-y-3 flex flex-col items-center justify-center'>
 							<FileIcon className='text-foreground-400' />
 							<h3 className='text-lg font-medium text-foreground-700'>{currentZoom < 5 ? 'Zoom In to See Jobs' : 'No Jobs Found'}</h3>
-							<p className='text-sm text-foreground-500 max-w-xs mx-auto'>
-								{currentZoom < 5 ? 'Zoom to level 5 or higher to load job listings' : 'Try zooming into an area to find jobs'}
-							</p>
+							<p className='text-sm text-foreground-500 max-w-xs mx-auto'>Try zooming into an area to find jobs</p>
 						</div>
 					</div>
 				);
@@ -131,14 +128,13 @@ export default function FilterSheet({
 								key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
 								bounds={bounds}
 								filters={filters}
-								onJobSelect={onJobSelect}
 								className='w-full'
 							/>
 						) : (
 							<div className='text-center py-8'>
 								<FileIcon className='text-foreground-400 mx-auto mb-4' size={48} />
 								<h3 className='text-lg font-medium text-foreground-700 mb-2'>Zoom In to See Jobs</h3>
-								<p className='text-sm text-foreground-500'>Zoom to level 5 or higher to load job listings</p>
+								<p className='text-sm text-foreground-500 max-w-xs mx-auto'>Try zooming into an area to find jobs</p>
 							</div>
 						)}
 					</div>
@@ -151,27 +147,10 @@ export default function FilterSheet({
 			<div className='flex flex-col h-full'>
 				{/* Header */}
 				<div className='p-4 border-b border-divider bg-background sticky top-0 z-10'>
-					<div className='flex items-center justify-between'>
-						<div className='flex-1' />
-						{currentSnap >= 4 && (
-							<Button
-								isIconOnly
-								size='sm'
-								variant='light'
-								onPress={() => handleSnapTo(selectedCluster ? 3 : 2)}
-								aria-label='Close full screen'
-							>
-								<X size={16} />
-							</Button>
-						)}
+					<div>
+						<h3 className='text-lg font-medium text-foreground-700'>Jobs in Current Area</h3>
+						<p className='text-sm text-foreground-500'>{totalCount} jobs available</p>
 					</div>
-
-					{selectedCluster && (
-						<div className='mt-3'>
-							<h3 className='text-lg font-medium text-foreground-700'>📍 {selectedCluster.hexId || 'Selected Area'}</h3>
-							<p className='text-sm text-foreground-500'>{selectedCluster.count} jobs available</p>
-						</div>
-					)}
 				</div>
 
 				{/* Content */}
@@ -191,14 +170,13 @@ export default function FilterSheet({
 									key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
 									bounds={bounds}
 									filters={filters}
-									onJobSelect={onJobSelect}
 									className='w-full'
 								/>
 							) : bounds && currentZoom < 5 ? (
 								<div className='text-center py-8'>
 									<FileIcon className='text-foreground-400 mx-auto mb-4' size={48} />
 									<h3 className='text-lg font-medium text-foreground-700 mb-2'>Zoom In to See Jobs</h3>
-									<p className='text-sm text-foreground-500'>Zoom to level 5 or higher to load job listings</p>
+									<p className='text-sm text-foreground-500 max-w-xs mx-auto'>Try zooming into an area to find jobs</p>
 								</div>
 							) : null}
 						</div>
@@ -208,7 +186,6 @@ export default function FilterSheet({
 							key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
 							bounds={bounds}
 							filters={filters}
-							onJobSelect={onJobSelect}
 							className='w-full'
 						/>
 					) : (
@@ -218,9 +195,7 @@ export default function FilterSheet({
 							<h3 className='text-xl font-semibold text-foreground-700 mb-2'>
 								{currentZoom < 5 ? 'Zoom In to See Jobs' : 'No Jobs Found'}
 							</h3>
-							<p className='text-sm text-foreground-500'>
-								{currentZoom < 5 ? 'Zoom to level 5 or higher to load job listings' : 'Try zooming into an area to find jobs'}
-							</p>
+							<p className='text-sm text-foreground-500 max-w-xs mx-auto'>Try zooming into an area to find jobs</p>
 						</div>
 					)}
 				</div>

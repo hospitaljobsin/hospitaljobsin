@@ -27,10 +27,10 @@ interface MapFilterSidebarProps {
 		neLng: number;
 	} | null;
 	currentZoom: number;
-	onJobSelect?: (jobId: string) => void;
+	forceOpen?: boolean; // New prop to force the sidebar to open
 }
 
-export default function MapFilterSidebar({ filters, totalCount, bounds, onJobSelect, currentZoom }: MapFilterSidebarProps) {
+export default function MapFilterSidebar({ filters, totalCount, bounds, currentZoom, forceOpen }: MapFilterSidebarProps) {
 	// State to track if sidebar was explicitly closed by user
 	const [wasExplicitlyClosed, setWasExplicitlyClosed] = useState(false);
 	// Track if we have jobs in the current viewport
@@ -41,14 +41,27 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, onJobSel
 	// Track if this is the initial mount
 	const isInitialMount = useRef(true);
 
+	// Handle force open prop
+	useEffect(() => {
+		if (forceOpen) {
+			setIsCollapsed(false);
+			setWasExplicitlyClosed(false); // Reset explicit close flag when forced open
+		}
+	}, [forceOpen]);
+
 	// Monitor job availability and auto-open/close logic
 	useEffect(() => {
 		const shouldShowJobs = bounds && currentZoom >= 5;
 
 		if (isInitialMount.current) {
-			// On initial load, collapse if no jobs are available
-			setIsCollapsed(!shouldShowJobs || totalCount === 0);
+			// On initial load, collapse if no jobs are available (unless forced open)
+			setIsCollapsed(!forceOpen && (!shouldShowJobs || totalCount === 0));
 			isInitialMount.current = false;
+			return;
+		}
+
+		// Don't auto-close if forced open
+		if (forceOpen) {
 			return;
 		}
 
@@ -69,7 +82,7 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, onJobSel
 				setIsCollapsed(true);
 			}
 		}
-	}, [bounds, currentZoom, totalCount, wasExplicitlyClosed]);
+	}, [bounds, currentZoom, totalCount, wasExplicitlyClosed, forceOpen]);
 
 	const toggleCollapse = () => {
 		const newCollapsedState = !isCollapsed;
@@ -108,7 +121,6 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, onJobSel
 								key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
 								bounds={bounds}
 								filters={filters}
-								onJobSelect={onJobSelect}
 								className='w-full'
 							/>
 						) : (
@@ -127,13 +139,7 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, onJobSel
 									<p className='text-sm font-medium text-foreground-600'>
 										{isCollapsed ? 'Expand sidebar to see jobs' : currentZoom < 5 ? 'Zoom in to see jobs' : 'Move the map to see jobs'}
 									</p>
-									<p className='text-xs text-foreground-500'>
-										{isCollapsed
-											? 'Click the expand button to view job listings'
-											: currentZoom < 5
-												? 'Zoom to level 5 or higher to load job listings'
-												: 'Pan or zoom the map to view available positions'}
-									</p>
+									<p className='text-sm text-foreground-500 max-w-xs mx-auto'>Try zooming into an area to find jobs</p>
 								</div>
 							</div>
 						)}

@@ -50,8 +50,18 @@ export function shouldShowClusters(zoomLevel: number, totalJobs: number, viewpor
 	 * Determine if clusters should be shown based on zoom and density.
 	 * Returns true for clustering, false for individual markers.
 	 */
+	// At zoom 13+, always show individual markers to prevent the zoom-in issue
+	// where clusters don't transition to markers properly
+	if (zoomLevel >= 13) {
+		return false;
+	}
+
+	// For lower zoom levels, use density-based logic
 	const density = totalJobs / viewportArea;
-	return zoomLevel < 15 || totalJobs > 500 || density > 0.1;
+
+	// Show clusters if there are many jobs or high density
+	// But cap at zoom 12 to ensure smooth transition
+	return zoomLevel < 12 && (totalJobs > 500 || density > 0.1);
 }
 
 /**
