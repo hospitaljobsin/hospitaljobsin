@@ -36,7 +36,6 @@ from app.core.constants import (
     JobKindType,
     WorkModeType,
 )
-from app.database.paginator import PaginatedResult
 from app.dataloaders import Dataloaders
 from app.geocoding.repositories import RegionRepo
 from app.jobs.agents.applicant_analysis import (
@@ -1139,43 +1138,6 @@ class JobClusterService:
             f"🏠 _get_aggregated_clusters returned: {len(result[0])} clusters, {result[1]} total_count"
         )
         return result
-
-    async def get_cluster_jobs_paginated(
-        self,
-        h3_index: str,
-        h3_resolution: int,
-        filters: JobClusterFilters,
-        first: int | None = None,
-        last: int | None = None,
-        before: str | None = None,
-        after: str | None = None,
-    ) -> PaginatedResult[Job, ObjectId]:
-        """
-        Get paginated jobs within a specific H3 hexagon cluster.
-
-        Args:
-            h3_index: H3 hexagon index
-            h3_resolution: H3 resolution level
-            filters: Filter criteria for jobs
-            first: Number of items after cursor
-            last: Number of items before cursor
-            before: Cursor for backward pagination
-            after: Cursor for forward pagination
-
-        Returns:
-            Paginated result with jobs and page info
-
-        """
-        # Delegate to repository
-        return await self._job_repo.get_jobs_in_h3_hexagon_paginated(
-            h3_index=h3_index,
-            h3_resolution=h3_resolution,
-            filters=filters,
-            first=first,
-            last=last,
-            before=before,
-            after=after,
-        )
 
     async def _calculate_job_density(
         self, bounds: dict[str, float], filters: JobClusterFilters

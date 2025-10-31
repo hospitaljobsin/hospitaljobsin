@@ -23,6 +23,8 @@ from tests.helpers.pagination import (
 from tests.integration.graphql_client import GraphQLClient
 from tests.utils.slugs import generate_test_slug
 
+# TODO: add tests for bounding box filter here
+
 JOBS_QUERY = """
 query JobsQuery(
     $workMode: [JobWorkModeFilter!]!

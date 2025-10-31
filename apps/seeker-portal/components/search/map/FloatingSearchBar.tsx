@@ -2,7 +2,7 @@
 
 import { Button } from '@heroui/react';
 import { motion } from 'framer-motion';
-import { Filter } from 'lucide-react';
+import { Filter, MapPinIcon, SearchIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import JobSearchAutocomplete from '@/components/forms/JobSearchAutocomplete';
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
@@ -170,7 +170,8 @@ export default function FloatingSearchBar({
 							onClear={handleSearchClear}
 							onFocus={() => handleInputFocus('search')}
 							onBlur={handleInputBlur}
-							placeholder='Search jobs...'
+							placeholder='Speciality or Keyword'
+							startContent={<SearchIcon className='text-foreground-600' />}
 							variant='flat'
 							aria-label='Search for job titles, companies, or skills'
 							classNames={{
@@ -188,7 +189,8 @@ export default function FloatingSearchBar({
 							onClear={handleLocationClear}
 							onFocus={() => handleInputFocus('location')}
 							onBlur={handleInputBlur}
-							placeholder='City, state...'
+							placeholder='Location'
+							startContent={<MapPinIcon className='text-foreground-600' />}
 							variant='flat'
 							aria-label='Search by city, state, or area'
 							classNames={{

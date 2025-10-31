@@ -89,20 +89,19 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, onJobSel
 		<div className='relative h-full flex overflow-visible'>
 			{/* Main Sidebar Content */}
 			<div
-				className={`h-full flex flex-col p-4 bg-background transition-all duration-300 ease-in-out border-r border-divider ${
+				className={`h-full flex flex-col gap-6 p-4 bg-background transition-all duration-300 ease-in-out border-r border-divider ${
 					isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-md opacity-100'
 				}`}
 			>
 				{/* Header with Job Count */}
-				<div className='mb-4 w-full'>
+				<div className='mb-4 w-full flex flex-col gap-2'>
 					<h2 className='text-base font-medium text-foreground-800'>{totalCount.toLocaleString()} Jobs in Current Area</h2>
+
+					<p className='text-xs text-foreground-500'>Showing jobs in the current map view</p>
 				</div>
 
 				{/* Viewport Jobs List - always shown */}
 				<div className='w-full flex-1 flex flex-col min-h-0'>
-					<div className='mb-3 w-full flex-shrink-0'>
-						<p className='text-xs text-foreground-500'>Showing jobs in the current map view</p>
-					</div>
 					<div className='w-full flex-1 min-h-0 overflow-y-auto'>
 						{!isCollapsed && bounds && currentZoom >= 5 ? (
 							<ViewportJobsList
