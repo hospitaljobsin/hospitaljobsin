@@ -122,7 +122,7 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 			>
 				{/* Header with Job Count */}
 				<div className='mb-4 w-full flex flex-col gap-2'>
-					<h2 className='text-base font-medium text-foreground-800'>{totalCount.toLocaleString()} Jobs in Current Area</h2>
+					<h2 className='text-base font-medium text-foreground-800'>Viewing {totalCount.toLocaleString()} Jobs</h2>
 
 					<p className='text-xs text-foreground-500'>Showing jobs in the current map view</p>
 				</div>
@@ -132,7 +132,7 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 					<div className='w-full flex-1 min-h-0 overflow-y-auto'>
 						{!isCollapsed && bounds && currentZoom >= 5 ? (
 							<ViewportJobsList
-								key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
+								key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}-${filters.searchTerm || ''}-${filters.location || ''}-${filters.minExperience || ''}-${filters.minSalary || ''}-${filters.maxSalary || ''}-${filters.proximityKm}-${filters.workMode.join(',')}-${filters.jobType.join(',')}-${filters.sortBy}`}
 								bounds={bounds}
 								filters={filters}
 								className='w-full'

@@ -125,7 +125,7 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 					<div className='flex-1 overflow-y-auto p-4 w-full'>
 						{currentZoom >= 5 ? (
 							<ViewportJobsList
-								key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
+								key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}-${filters.searchTerm || ''}-${filters.location || ''}-${filters.minExperience || ''}-${filters.minSalary || ''}-${filters.maxSalary || ''}-${filters.proximityKm}-${filters.workMode.join(',')}-${filters.jobType.join(',')}-${filters.sortBy}`}
 								bounds={bounds}
 								filters={filters}
 								className='w-full'
@@ -167,7 +167,7 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 							{/* Show jobs list if we have bounds data and sufficient zoom */}
 							{bounds && currentZoom >= 5 ? (
 								<ViewportJobsList
-									key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
+									key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}-${filters.searchTerm || ''}-${filters.location || ''}-${filters.minExperience || ''}-${filters.minSalary || ''}-${filters.maxSalary || ''}-${filters.proximityKm}-${filters.workMode.join(',')}-${filters.jobType.join(',')}-${filters.sortBy}`}
 									bounds={bounds}
 									filters={filters}
 									className='w-full'
@@ -183,7 +183,7 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 					) : bounds && totalCount > 0 && currentZoom >= 5 ? (
 						// Show viewport jobs if no cluster is selected but we have jobs and sufficient zoom
 						<ViewportJobsList
-							key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}`}
+							key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}-${filters.searchTerm || ''}-${filters.location || ''}-${filters.minExperience || ''}-${filters.minSalary || ''}-${filters.maxSalary || ''}-${filters.proximityKm}-${filters.workMode.join(',')}-${filters.jobType.join(',')}-${filters.sortBy}`}
 							bounds={bounds}
 							filters={filters}
 							className='w-full'

@@ -174,10 +174,14 @@ export default function MapViewClientComponent({
 			// Update URL state
 			setFilters(newFilters);
 
-			// Trigger refetch with new filters (keeping current bounds from fragment data)
+			// Trigger refetch with new filters including current bounds and zoom level for job clusters
 			startTransition(() => {
 				refetch(
 					{
+						// Include bounds and zoom level for job clusters
+						bounds: currentBounds || undefined,
+						zoomLevel: currentZoom,
+						// Include all filter parameters
 						searchTerm: (newFilters.searchTerm ?? filters.searchTerm) || undefined,
 						location: (newFilters.location ?? filters.location) || undefined,
 						minExperience: (newFilters.minExperience ?? filters.minExperience) || undefined,
@@ -186,15 +190,16 @@ export default function MapViewClientComponent({
 						proximityKm: newFilters.proximityKm ?? filters.proximityKm,
 						workMode: (newFilters.workMode ?? filters.workMode) as unknown as readonly JobWorkModeFilter[],
 						jobType: (newFilters.jobType ?? filters.jobType) as unknown as readonly JobTypeFilter[],
-						sortBy: (newFilters.sortBy ?? filters.sortBy) as JobSearchSortBy
+						sortBy: (newFilters.sortBy ?? filters.sortBy) as JobSearchSortBy,
+						first: 100
 					},
 					{
-						fetchPolicy: 'store-or-network'
+						fetchPolicy: 'network-only' // Use network-only to ensure fresh data with new filters
 					}
 				);
 			});
 		},
-		[refetch, filters, setFilters]
+		[refetch, filters, setFilters, currentBounds, currentZoom]
 	);
 
 	return (
