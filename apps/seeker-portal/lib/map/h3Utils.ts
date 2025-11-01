@@ -69,13 +69,16 @@ export function shouldShowClusters(zoomLevel: number, _totalJobs: number, _viewp
 
 /**
  * Get color for cluster based on job count.
- * Minimalistic color scheme with subtle gradients.
+ * Uses HeroUI primary color shades - lighter for smaller clusters, darker for larger.
  */
 export function getClusterColor(count: number): string {
-	if (count < 10) return '#0ea5e9'; // sky blue - subtle
-	if (count < 50) return '#06b6d4'; // cyan - medium
-	if (count < 100) return '#8b5cf6'; // violet - higher density
-	return '#6366f1'; // indigo - highest density
+	// HeroUI primary colors from lightest to darkest based on cluster size
+	if (count < 5) return 'hsl(var(--heroui-primary-300))'; // Smallest clusters - primary-300
+	if (count < 10) return 'hsl(var(--heroui-primary-400))'; // Small clusters - primary-400
+	if (count < 25) return 'hsl(var(--heroui-primary-500))'; // Medium clusters - primary-500
+	if (count < 50) return 'hsl(var(--heroui-primary-600))'; // Medium-large clusters - primary-600
+	if (count < 100) return 'hsl(var(--heroui-primary-700))'; // Large clusters - primary-700
+	return 'hsl(var(--heroui-primary-800))'; // Largest clusters - primary-800
 }
 
 /**
