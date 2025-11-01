@@ -132,6 +132,7 @@ export default function JobMapView({
 	const [announcementMessage, setAnnouncementMessage] = useState<string>('');
 	const [isMounted, setIsMounted] = useState(false);
 	const [isMapDataFetching, setIsMapDataFetching] = useState(false);
+	const [isUserInteracting, setIsUserInteracting] = useState(false);
 
 	// New state for enhanced UX
 	const [showFilterModal, setShowFilterModal] = useState(false);
@@ -144,14 +145,16 @@ export default function JobMapView({
 	// Drawer state for mobile job preview
 	const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
 
-	// Control progress bar based on loading state (both external isPending and map data fetching)
+	// Enhanced progress bar control - start early on user interaction, stop when data is ready
 	useEffect(() => {
-		if (isPending || isMapDataFetching) {
+		const shouldShowProgress = isPending || isMapDataFetching || isUserInteracting;
+
+		if (shouldShowProgress) {
 			start();
 		} else {
 			stop();
 		}
-	}, [isPending, isMapDataFetching, start, stop]);
+	}, [isPending, isMapDataFetching, isUserInteracting, start, stop]);
 
 	// Stop map data fetching progress when data loading completes
 	useEffect(() => {
@@ -161,10 +164,35 @@ export default function JobMapView({
 		}
 	}, [isPending, isMapDataFetching]);
 
+	// Stop user interaction indicator when data becomes available or after timeout
+	useEffect(() => {
+		if (isUserInteracting && !isPending && !isMapDataFetching) {
+			// Data is ready or already cached, stop the interaction indicator
+			setIsUserInteracting(false);
+		}
+	}, [isPending, isMapDataFetching, isUserInteracting]);
+
+	// Timeout for user interaction to prevent progress bar from staying on indefinitely
+	useEffect(() => {
+		if (!isUserInteracting) return;
+
+		const timeoutId = setTimeout(() => {
+			// Stop user interaction indicator after 3 seconds if no actual data fetching occurs
+			if (!isPending && !isMapDataFetching) {
+				setIsUserInteracting(false);
+			}
+		}, 3000);
+
+		return () => clearTimeout(timeoutId);
+	}, [isUserInteracting, isPending, isMapDataFetching]);
+
 	// Handle location selection and zoom to it
 	const handleLocationSelect = useCallback(
 		(location: SearchLocation) => {
 			if (!map) return;
+
+			// Start progress bar immediately for location navigation
+			setIsUserInteracting(true);
 
 			// Determine zoom level based on region level
 			let zoomLevel = 12; // Default for locality
@@ -220,6 +248,11 @@ export default function JobMapView({
 	useEffect(() => {
 		if (!map || !onZoomChange) return;
 
+		const handleZoomStart = () => {
+			// Start progress bar immediately when user starts zooming
+			setIsUserInteracting(true);
+		};
+
 		const handleZoomEnd = () => {
 			const zoom = map.getZoom();
 			onZoomChange(zoom);
@@ -247,9 +280,11 @@ export default function JobMapView({
 			}
 		};
 
+		map.on('zoomstart', handleZoomStart);
 		map.on('zoomend', handleZoomEnd);
 
 		return () => {
+			map.off('zoomstart', handleZoomStart);
 			map.off('zoomend', handleZoomEnd);
 		};
 	}, [map, onZoomChange, onBoundsChange, setIsMapDataFetching]);
@@ -325,6 +360,11 @@ export default function JobMapView({
 
 		let timeoutId: NodeJS.Timeout;
 
+		const handleMapMoveStart = () => {
+			// Start progress bar immediately when user starts panning
+			setIsUserInteracting(true);
+		};
+
 		const handleMapMove = () => {
 			// Debounce bounds changes (800ms) - increased to prevent overwhelming backend
 			clearTimeout(timeoutId);
@@ -365,9 +405,11 @@ export default function JobMapView({
 			}, 800);
 		};
 
+		map.on('movestart', handleMapMoveStart);
 		map.on('moveend', handleMapMove);
 
 		return () => {
+			map.off('movestart', handleMapMoveStart);
 			map.off('moveend', handleMapMove);
 			clearTimeout(timeoutId);
 		};
@@ -400,6 +442,9 @@ export default function JobMapView({
 	const handleClusterClick = useCallback(
 		(h3Index: string, cluster: any) => {
 			if (!map) return;
+
+			// Start progress bar for cluster interaction
+			setIsUserInteracting(true);
 
 			const [lng, lat] = cluster.center.coordinates;
 			const targetZoom = Math.min(currentZoom + 2, 16); // Zoom in by 2 levels, max 16
