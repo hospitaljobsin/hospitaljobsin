@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<7c7a28ce37420843150bb9fa1f7ed36b>>
- * @relayHash 13644e9819d347402db30cb3e5aac40a
+ * @generated SignedSource<<476c84b872915715787267106506d238>>
+ * @relayHash c20df6ee7c6e2afb6b9db757245d5868
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 13644e9819d347402db30cb3e5aac40a
+// @relayRequestID c20df6ee7c6e2afb6b9db757245d5868
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -24,7 +24,6 @@ export type BoundingBoxInput = {
 };
 export type pageSearchMapLocationSpecialityViewQuery$variables = {
   bounds: BoundingBoxInput;
-  first: number;
   jobType: ReadonlyArray<JobTypeFilter>;
   location?: string | null | undefined;
   maxSalary?: number | null | undefined;
@@ -53,111 +52,101 @@ var v0 = {
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "first"
+  "name": "jobType"
 },
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "jobType"
+  "name": "location"
 },
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "location"
+  "name": "maxSalary"
 },
 v4 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "maxSalary"
+  "name": "minExperience"
 },
 v5 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minExperience"
+  "name": "minSalary"
 },
 v6 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minSalary"
+  "name": "proximityKm"
 },
 v7 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "proximityKm"
+  "name": "searchTerm"
 },
 v8 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "searchTerm"
+  "name": "sortBy"
 },
 v9 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "sortBy"
+  "name": "workMode"
 },
 v10 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "workMode"
-},
-v11 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
   "name": "zoomLevel"
 },
-v12 = {
-  "kind": "Variable",
-  "name": "bounds",
-  "variableName": "bounds"
-},
-v13 = {
+v11 = {
   "kind": "Variable",
   "name": "jobType",
   "variableName": "jobType"
 },
-v14 = {
+v12 = {
   "kind": "Variable",
   "name": "location",
   "variableName": "location"
 },
-v15 = {
+v13 = {
   "kind": "Variable",
   "name": "maxSalary",
   "variableName": "maxSalary"
 },
-v16 = {
+v14 = {
   "kind": "Variable",
   "name": "minExperience",
   "variableName": "minExperience"
 },
-v17 = {
+v15 = {
   "kind": "Variable",
   "name": "minSalary",
   "variableName": "minSalary"
 },
-v18 = {
+v16 = {
   "kind": "Variable",
   "name": "proximityKm",
   "variableName": "proximityKm"
 },
-v19 = {
+v17 = {
   "kind": "Variable",
   "name": "searchTerm",
   "variableName": "searchTerm"
 },
-v20 = {
+v18 = {
   "kind": "Variable",
   "name": "workMode",
   "variableName": "workMode"
 },
-v21 = {
+v19 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "totalCount",
   "storageKey": null
 },
-v22 = {
+v20 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -177,15 +166,65 @@ return {
       (v7/*: any*/),
       (v8/*: any*/),
       (v9/*: any*/),
-      (v10/*: any*/),
-      (v11/*: any*/)
+      (v10/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
     "name": "pageSearchMapLocationSpecialityViewQuery",
     "selections": [
       {
-        "args": null,
+        "args": [
+          {
+            "kind": "Variable",
+            "name": "inputJobType",
+            "variableName": "jobType"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputLocation",
+            "variableName": "location"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputMaxSalary",
+            "variableName": "maxSalary"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputMinExperience",
+            "variableName": "minExperience"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputMinSalary",
+            "variableName": "minSalary"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputProximityKm",
+            "variableName": "proximityKm"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputSearchTerm",
+            "variableName": "searchTerm"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputSortBy",
+            "variableName": "sortBy"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputWorkMode",
+            "variableName": "workMode"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputZoomLevel",
+            "variableName": "zoomLevel"
+          }
+        ],
         "kind": "FragmentSpread",
         "name": "MapViewClientComponentFragment"
       }
@@ -196,18 +235,17 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v8/*: any*/),
-      (v5/*: any*/),
-      (v6/*: any*/),
-      (v4/*: any*/),
       (v7/*: any*/),
+      (v4/*: any*/),
+      (v5/*: any*/),
       (v3/*: any*/),
-      (v0/*: any*/),
-      (v10/*: any*/),
+      (v6/*: any*/),
       (v2/*: any*/),
-      (v11/*: any*/),
+      (v0/*: any*/),
       (v9/*: any*/),
-      (v1/*: any*/)
+      (v1/*: any*/),
+      (v10/*: any*/),
+      (v8/*: any*/)
     ],
     "kind": "Operation",
     "name": "pageSearchMapLocationSpecialityViewQuery",
@@ -215,6 +253,12 @@ return {
       {
         "alias": null,
         "args": [
+          {
+            "kind": "Variable",
+            "name": "bounds",
+            "variableName": "bounds"
+          },
+          (v11/*: any*/),
           (v12/*: any*/),
           (v13/*: any*/),
           (v14/*: any*/),
@@ -222,8 +266,6 @@ return {
           (v16/*: any*/),
           (v17/*: any*/),
           (v18/*: any*/),
-          (v19/*: any*/),
-          (v20/*: any*/),
           {
             "kind": "Variable",
             "name": "zoomLevel",
@@ -285,7 +327,7 @@ return {
             ],
             "storageKey": null
           },
-          (v21/*: any*/)
+          (v19/*: any*/)
         ],
         "storageKey": null
       },
@@ -336,7 +378,7 @@ return {
                     "name": "progressPercentage",
                     "storageKey": null
                   },
-                  (v22/*: any*/)
+                  (v20/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -347,7 +389,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v22/*: any*/)
+              (v20/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -358,39 +400,38 @@ return {
       {
         "alias": null,
         "args": [
-          (v12/*: any*/),
           {
-            "kind": "Variable",
+            "kind": "Literal",
             "name": "first",
-            "variableName": "first"
+            "value": 100
           },
+          (v11/*: any*/),
+          (v12/*: any*/),
           (v13/*: any*/),
           (v14/*: any*/),
           (v15/*: any*/),
           (v16/*: any*/),
           (v17/*: any*/),
-          (v18/*: any*/),
-          (v19/*: any*/),
           {
             "kind": "Variable",
             "name": "sortBy",
             "variableName": "sortBy"
           },
-          (v20/*: any*/)
+          (v18/*: any*/)
         ],
         "concreteType": "JobConnection",
         "kind": "LinkedField",
         "name": "jobs",
         "plural": false,
         "selections": [
-          (v21/*: any*/)
+          (v19/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "13644e9819d347402db30cb3e5aac40a",
+    "id": "c20df6ee7c6e2afb6b9db757245d5868",
     "metadata": {},
     "name": "pageSearchMapLocationSpecialityViewQuery",
     "operationKind": "query",
@@ -399,6 +440,6 @@ return {
 };
 })();
 
-(node as any).hash = "e3cf1ad7f61e879fa43af521975865bc";
+(node as any).hash = "14c687b5a21d0b71d4616f75eb96e481";
 
 export default node;

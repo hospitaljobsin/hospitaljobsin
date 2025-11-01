@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c7d4fefdc4f645352ff7d5e4d0cbd95a>>
+ * @generated SignedSource<<5e3987e4b0a00ef514c55685f6902949>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -24,47 +24,58 @@ export type JobMapViewFragment$key = {
 const node: ReaderFragment = {
   "argumentDefinitions": [
     {
-      "kind": "RootArgument",
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "bounds"
     },
     {
-      "kind": "RootArgument",
+      "defaultValue": 100,
+      "kind": "LocalArgument",
       "name": "first"
     },
     {
-      "kind": "RootArgument",
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "jobType"
     },
     {
-      "kind": "RootArgument",
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "location"
     },
     {
-      "kind": "RootArgument",
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "maxSalary"
     },
     {
-      "kind": "RootArgument",
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "minExperience"
     },
     {
-      "kind": "RootArgument",
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "minSalary"
     },
     {
-      "kind": "RootArgument",
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "proximityKm"
     },
     {
-      "kind": "RootArgument",
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "searchTerm"
     },
     {
-      "kind": "RootArgument",
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "sortBy"
     },
     {
-      "kind": "RootArgument",
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "workMode"
     }
   ],
@@ -151,6 +162,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "ab64134d7dbb26ec8af5911aff3cf05e";
+(node as any).hash = "cbfee20fd849b1c3238ea6af2a25b841";
 
 export default node;

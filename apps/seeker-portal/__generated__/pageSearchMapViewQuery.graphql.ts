@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<afd790e85f9d8b90c00c117ccbf06f61>>
- * @relayHash deee98497a82a1d1c47c9496368d4641
+ * @generated SignedSource<<28c7d953874337d3b96d6c0d4fd52600>>
+ * @relayHash 755f4ef824cc791f980ae1bb768d80c1
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID deee98497a82a1d1c47c9496368d4641
+// @relayRequestID 755f4ef824cc791f980ae1bb768d80c1
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -24,7 +24,6 @@ export type BoundingBoxInput = {
 };
 export type pageSearchMapViewQuery$variables = {
   bounds: BoundingBoxInput;
-  first: number;
   jobType: ReadonlyArray<JobTypeFilter>;
   location?: string | null | undefined;
   maxSalary?: number | null | undefined;
@@ -53,111 +52,101 @@ var v0 = {
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "first"
+  "name": "jobType"
 },
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "jobType"
+  "name": "location"
 },
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "location"
+  "name": "maxSalary"
 },
 v4 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "maxSalary"
+  "name": "minExperience"
 },
 v5 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minExperience"
+  "name": "minSalary"
 },
 v6 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minSalary"
+  "name": "proximityKm"
 },
 v7 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "proximityKm"
+  "name": "searchTerm"
 },
 v8 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "searchTerm"
+  "name": "sortBy"
 },
 v9 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "sortBy"
+  "name": "workMode"
 },
 v10 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "workMode"
-},
-v11 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
   "name": "zoomLevel"
 },
-v12 = {
-  "kind": "Variable",
-  "name": "bounds",
-  "variableName": "bounds"
-},
-v13 = {
+v11 = {
   "kind": "Variable",
   "name": "jobType",
   "variableName": "jobType"
 },
-v14 = {
+v12 = {
   "kind": "Variable",
   "name": "location",
   "variableName": "location"
 },
-v15 = {
+v13 = {
   "kind": "Variable",
   "name": "maxSalary",
   "variableName": "maxSalary"
 },
-v16 = {
+v14 = {
   "kind": "Variable",
   "name": "minExperience",
   "variableName": "minExperience"
 },
-v17 = {
+v15 = {
   "kind": "Variable",
   "name": "minSalary",
   "variableName": "minSalary"
 },
-v18 = {
+v16 = {
   "kind": "Variable",
   "name": "proximityKm",
   "variableName": "proximityKm"
 },
-v19 = {
+v17 = {
   "kind": "Variable",
   "name": "searchTerm",
   "variableName": "searchTerm"
 },
-v20 = {
+v18 = {
   "kind": "Variable",
   "name": "workMode",
   "variableName": "workMode"
 },
-v21 = {
+v19 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "totalCount",
   "storageKey": null
 },
-v22 = {
+v20 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -177,15 +166,65 @@ return {
       (v7/*: any*/),
       (v8/*: any*/),
       (v9/*: any*/),
-      (v10/*: any*/),
-      (v11/*: any*/)
+      (v10/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
     "name": "pageSearchMapViewQuery",
     "selections": [
       {
-        "args": null,
+        "args": [
+          {
+            "kind": "Variable",
+            "name": "inputJobType",
+            "variableName": "jobType"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputLocation",
+            "variableName": "location"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputMaxSalary",
+            "variableName": "maxSalary"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputMinExperience",
+            "variableName": "minExperience"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputMinSalary",
+            "variableName": "minSalary"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputProximityKm",
+            "variableName": "proximityKm"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputSearchTerm",
+            "variableName": "searchTerm"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputSortBy",
+            "variableName": "sortBy"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputWorkMode",
+            "variableName": "workMode"
+          },
+          {
+            "kind": "Variable",
+            "name": "inputZoomLevel",
+            "variableName": "zoomLevel"
+          }
+        ],
         "kind": "FragmentSpread",
         "name": "MapViewClientComponentFragment"
       }
@@ -196,18 +235,17 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v8/*: any*/),
-      (v5/*: any*/),
-      (v6/*: any*/),
-      (v4/*: any*/),
       (v7/*: any*/),
+      (v4/*: any*/),
+      (v5/*: any*/),
       (v3/*: any*/),
-      (v0/*: any*/),
-      (v10/*: any*/),
+      (v6/*: any*/),
       (v2/*: any*/),
-      (v11/*: any*/),
+      (v0/*: any*/),
       (v9/*: any*/),
-      (v1/*: any*/)
+      (v1/*: any*/),
+      (v10/*: any*/),
+      (v8/*: any*/)
     ],
     "kind": "Operation",
     "name": "pageSearchMapViewQuery",
@@ -215,6 +253,12 @@ return {
       {
         "alias": null,
         "args": [
+          {
+            "kind": "Variable",
+            "name": "bounds",
+            "variableName": "bounds"
+          },
+          (v11/*: any*/),
           (v12/*: any*/),
           (v13/*: any*/),
           (v14/*: any*/),
@@ -222,8 +266,6 @@ return {
           (v16/*: any*/),
           (v17/*: any*/),
           (v18/*: any*/),
-          (v19/*: any*/),
-          (v20/*: any*/),
           {
             "kind": "Variable",
             "name": "zoomLevel",
@@ -285,7 +327,7 @@ return {
             ],
             "storageKey": null
           },
-          (v21/*: any*/)
+          (v19/*: any*/)
         ],
         "storageKey": null
       },
@@ -336,7 +378,7 @@ return {
                     "name": "progressPercentage",
                     "storageKey": null
                   },
-                  (v22/*: any*/)
+                  (v20/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -347,7 +389,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v22/*: any*/)
+              (v20/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -358,39 +400,38 @@ return {
       {
         "alias": null,
         "args": [
-          (v12/*: any*/),
           {
-            "kind": "Variable",
+            "kind": "Literal",
             "name": "first",
-            "variableName": "first"
+            "value": 100
           },
+          (v11/*: any*/),
+          (v12/*: any*/),
           (v13/*: any*/),
           (v14/*: any*/),
           (v15/*: any*/),
           (v16/*: any*/),
           (v17/*: any*/),
-          (v18/*: any*/),
-          (v19/*: any*/),
           {
             "kind": "Variable",
             "name": "sortBy",
             "variableName": "sortBy"
           },
-          (v20/*: any*/)
+          (v18/*: any*/)
         ],
         "concreteType": "JobConnection",
         "kind": "LinkedField",
         "name": "jobs",
         "plural": false,
         "selections": [
-          (v21/*: any*/)
+          (v19/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "deee98497a82a1d1c47c9496368d4641",
+    "id": "755f4ef824cc791f980ae1bb768d80c1",
     "metadata": {},
     "name": "pageSearchMapViewQuery",
     "operationKind": "query",
@@ -399,6 +440,6 @@ return {
 };
 })();
 
-(node as any).hash = "4267a4d27e7c16fcc54f93b735c1c476";
+(node as any).hash = "1c670a0fa40c98a7e30662725f9f1b1d";
 
 export default node;

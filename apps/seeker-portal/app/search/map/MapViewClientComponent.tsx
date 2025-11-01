@@ -19,19 +19,31 @@ const JobMapView = dynamic(() => import('@/components/search/map/JobMapView'), {
 
 const MapViewClientComponentFragment = graphql`
 	fragment MapViewClientComponentFragment on Query
-	@refetchable(queryName: "MapViewClientComponentRefetchQuery") {
+	 @argumentDefinitions(
+			inputJobType: { type: "[JobTypeFilter!]!" }
+			inputLocation: { type: "String" }
+			inputMaxSalary: { type: "Int" }
+			inputMinExperience: { type: "Int" }
+			inputMinSalary: { type: "Int" }
+			inputProximityKm: { type: "Float" }
+			inputSearchTerm: { type: "String" }
+			inputWorkMode: { type: "[JobWorkModeFilter!]!" }
+			inputZoomLevel: { type: "Int!" }
+			inputSortBy: { type: "JobSearchSortBy!" }
+		)
+		@refetchable(queryName: "MapViewClientComponentRefetchQuery") {
 		# Job clusters query - used at low/medium zoom levels
 		jobClusters(
 			bounds: $bounds
-			zoomLevel: $zoomLevel
-			searchTerm: $searchTerm
-			minExperience: $minExperience
-			minSalary: $minSalary
-			maxSalary: $maxSalary
-			proximityKm: $proximityKm
-			location: $location
-			workMode: $workMode
-			jobType: $jobType
+			zoomLevel: $inputZoomLevel
+			searchTerm: $inputSearchTerm
+			minExperience: $inputMinExperience
+			minSalary: $inputMinSalary
+			maxSalary: $inputMaxSalary
+			proximityKm: $inputProximityKm
+			location: $inputLocation
+			workMode: $inputWorkMode
+			jobType: $inputJobType
 		) @skip(if: false) {
 			clusters {
 				h3Index
@@ -49,7 +61,17 @@ const MapViewClientComponentFragment = graphql`
 		...MapHeaderMobileFragment
 
 		# Spread the JobMapView fragment
-		...JobMapViewFragment
+		...JobMapViewFragment @arguments(
+		searchTerm: $inputSearchTerm,
+		minExperience: $inputMinExperience,
+		minSalary: $inputMinSalary,
+		maxSalary: $inputMaxSalary,
+		proximityKm: $inputProximityKm,
+		location: $inputLocation,
+		workMode: $inputWorkMode,
+		jobType: $inputJobType,
+		sortBy: $inputSortBy,
+		)
 	}
 `;
 
@@ -251,17 +273,17 @@ export default function MapViewClientComponent({
 							neLat: bounds.neLat,
 							neLng: bounds.neLng
 						},
-						zoomLevel: currentZoom, // Include zoom level for clustering
+						inputZoomLevel: currentZoom, // Include zoom level for clustering
 						// Include current filters in refetch
-						searchTerm: debouncedSpeciality || undefined,
-						location: debouncedLocation || undefined,
-						minExperience: filters?.minExperience || undefined,
-						minSalary: filters?.minSalary || undefined,
-						maxSalary: filters?.maxSalary || undefined,
-						proximityKm: filters?.proximityKm ?? FILTER_DEFAULTS.proximityKm,
-						workMode: (filters?.workMode ?? FILTER_DEFAULTS.workMode) as unknown as readonly JobWorkModeFilter[],
-						jobType: (filters?.jobType ?? FILTER_DEFAULTS.jobType) as unknown as readonly JobTypeFilter[],
-						sortBy: (filters?.sortBy ?? 'RELEVANCE') as JobSearchSortBy,
+						inputSearchTerm: debouncedSpeciality || undefined,
+						inputLocation: debouncedLocation || undefined,
+						inputMinExperience: filters?.minExperience || undefined,
+						inputMinSalary: filters?.minSalary || undefined,
+						inputMaxSalary: filters?.maxSalary || undefined,
+						inputProximityKm: filters?.proximityKm ?? FILTER_DEFAULTS.proximityKm,
+						inputWorkMode: (filters?.workMode ?? FILTER_DEFAULTS.workMode) as unknown as readonly JobWorkModeFilter[],
+						inputJobType: (filters?.jobType ?? FILTER_DEFAULTS.jobType) as unknown as readonly JobTypeFilter[],
+						inputSortBy: (filters?.sortBy ?? 'RELEVANCE') as JobSearchSortBy,
 						first: 100
 					},
 					{
@@ -303,16 +325,16 @@ export default function MapViewClientComponent({
 					refetch(
 						{
 							bounds: currentBounds,
-							zoomLevel: zoom,
-							searchTerm: debouncedSpeciality || undefined,
-							location: debouncedLocation || undefined,
-							minExperience: filters?.minExperience || undefined,
-							minSalary: filters?.minSalary || undefined,
-							maxSalary: filters?.maxSalary || undefined,
-							proximityKm: filters?.proximityKm ?? FILTER_DEFAULTS.proximityKm,
-							workMode: (filters?.workMode ?? FILTER_DEFAULTS.workMode) as unknown as readonly JobWorkModeFilter[],
-							jobType: (filters?.jobType ?? FILTER_DEFAULTS.jobType) as unknown as readonly JobTypeFilter[],
-							sortBy: (filters?.sortBy ?? 'RELEVANCE') as JobSearchSortBy,
+							inputZoomLevel: zoom,
+							inputSearchTerm: debouncedSpeciality || undefined,
+							inputLocation: debouncedLocation || undefined,
+							inputMinExperience: filters?.minExperience || undefined,
+							inputMinSalary: filters?.minSalary || undefined,
+							inputMaxSalary: filters?.maxSalary || undefined,
+							inputProximityKm: filters?.proximityKm ?? FILTER_DEFAULTS.proximityKm,
+							inputWorkMode: (filters?.workMode ?? FILTER_DEFAULTS.workMode) as unknown as readonly JobWorkModeFilter[],
+							inputJobType: (filters?.jobType ?? FILTER_DEFAULTS.jobType) as unknown as readonly JobTypeFilter[],
+							inputSortBy: (filters?.sortBy ?? 'RELEVANCE') as JobSearchSortBy,
 							first: 100
 						},
 						{
@@ -354,17 +376,17 @@ export default function MapViewClientComponent({
 						{
 							// Include bounds and zoom level for job clusters
 							bounds: currentBounds || undefined,
-							zoomLevel: currentZoom,
+							inputZoomLevel: currentZoom,
 							// Include all filter parameters - use debounced values for searchTerm and location
-							searchTerm: debouncedSpeciality || undefined,
-							location: debouncedLocation || undefined,
-							minExperience: (newFilters.minExperience ?? filters.minExperience) || undefined,
-							minSalary: (newFilters.minSalary ?? filters.minSalary) || undefined,
-							maxSalary: (newFilters.maxSalary ?? filters.maxSalary) || undefined,
-							proximityKm: newFilters.proximityKm ?? filters.proximityKm,
-							workMode: (newFilters.workMode ?? filters.workMode) as unknown as readonly JobWorkModeFilter[],
-							jobType: (newFilters.jobType ?? filters.jobType) as unknown as readonly JobTypeFilter[],
-							sortBy: (newFilters.sortBy ?? filters.sortBy) as JobSearchSortBy,
+							inputSearchTerm: debouncedSpeciality || undefined,
+							inputLocation: debouncedLocation || undefined,
+							inputMinExperience: (newFilters.minExperience ?? filters.minExperience) || undefined,
+							inputMinSalary: (newFilters.minSalary ?? filters.minSalary) || undefined,
+							inputMaxSalary: (newFilters.maxSalary ?? filters.maxSalary) || undefined,
+							inputProximityKm: newFilters.proximityKm ?? filters.proximityKm,
+							inputWorkMode: (newFilters.workMode ?? filters.workMode) as unknown as readonly JobWorkModeFilter[],
+							inputJobType: (newFilters.jobType ?? filters.jobType) as unknown as readonly JobTypeFilter[],
+							inputSortBy: (newFilters.sortBy ?? filters.sortBy) as JobSearchSortBy,
 							first: 100
 						},
 						{
@@ -384,16 +406,16 @@ export default function MapViewClientComponent({
 				refetch(
 					{
 						bounds: currentBounds,
-						zoomLevel: currentZoom,
-						searchTerm: debouncedSpeciality || undefined,
-						location: debouncedLocation || undefined,
-						minExperience: filters?.minExperience || undefined,
-						minSalary: filters?.minSalary || undefined,
-						maxSalary: filters?.maxSalary || undefined,
-						proximityKm: filters?.proximityKm ?? FILTER_DEFAULTS.proximityKm,
-						workMode: (filters?.workMode ?? FILTER_DEFAULTS.workMode) as unknown as readonly JobWorkModeFilter[],
-						jobType: (filters?.jobType ?? FILTER_DEFAULTS.jobType) as unknown as readonly JobTypeFilter[],
-						sortBy: (filters?.sortBy ?? 'RELEVANCE') as JobSearchSortBy,
+						inputZoomLevel: currentZoom,
+						inputSearchTerm: debouncedSpeciality || undefined,
+						inputLocation: debouncedLocation || undefined,
+						inputMinExperience: filters?.minExperience || undefined,
+						inputMinSalary: filters?.minSalary || undefined,
+						inputMaxSalary: filters?.maxSalary || undefined,
+						inputProximityKm: filters?.proximityKm ?? FILTER_DEFAULTS.proximityKm,
+						inputWorkMode: (filters?.workMode ?? FILTER_DEFAULTS.workMode) as unknown as readonly JobWorkModeFilter[],
+						inputJobType: (filters?.jobType ?? FILTER_DEFAULTS.jobType) as unknown as readonly JobTypeFilter[],
+						inputSortBy: (filters?.sortBy ?? 'RELEVANCE') as JobSearchSortBy,
 						first: 100
 					},
 					{

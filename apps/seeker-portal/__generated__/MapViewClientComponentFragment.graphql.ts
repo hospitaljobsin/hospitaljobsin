@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<565feb3cbf2233750d6fa5d9d408190e>>
+ * @generated SignedSource<<d49e8372292b554e9f189efb3dbb9068>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -32,55 +32,102 @@ export type MapViewClientComponentFragment$key = {
 
 import MapViewClientComponentRefetchQuery_graphql from './MapViewClientComponentRefetchQuery.graphql';
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "kind": "Variable",
+  "name": "jobType",
+  "variableName": "inputJobType"
+},
+v1 = {
+  "kind": "Variable",
+  "name": "location",
+  "variableName": "inputLocation"
+},
+v2 = {
+  "kind": "Variable",
+  "name": "maxSalary",
+  "variableName": "inputMaxSalary"
+},
+v3 = {
+  "kind": "Variable",
+  "name": "minExperience",
+  "variableName": "inputMinExperience"
+},
+v4 = {
+  "kind": "Variable",
+  "name": "minSalary",
+  "variableName": "inputMinSalary"
+},
+v5 = {
+  "kind": "Variable",
+  "name": "proximityKm",
+  "variableName": "inputProximityKm"
+},
+v6 = {
+  "kind": "Variable",
+  "name": "searchTerm",
+  "variableName": "inputSearchTerm"
+},
+v7 = {
+  "kind": "Variable",
+  "name": "workMode",
+  "variableName": "inputWorkMode"
+};
+return {
   "argumentDefinitions": [
     {
       "kind": "RootArgument",
       "name": "bounds"
     },
     {
-      "kind": "RootArgument",
-      "name": "first"
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "inputJobType"
     },
     {
-      "kind": "RootArgument",
-      "name": "jobType"
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "inputLocation"
     },
     {
-      "kind": "RootArgument",
-      "name": "location"
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "inputMaxSalary"
     },
     {
-      "kind": "RootArgument",
-      "name": "maxSalary"
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "inputMinExperience"
     },
     {
-      "kind": "RootArgument",
-      "name": "minExperience"
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "inputMinSalary"
     },
     {
-      "kind": "RootArgument",
-      "name": "minSalary"
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "inputProximityKm"
     },
     {
-      "kind": "RootArgument",
-      "name": "proximityKm"
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "inputSearchTerm"
     },
     {
-      "kind": "RootArgument",
-      "name": "searchTerm"
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "inputSortBy"
     },
     {
-      "kind": "RootArgument",
-      "name": "sortBy"
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "inputWorkMode"
     },
     {
-      "kind": "RootArgument",
-      "name": "workMode"
-    },
-    {
-      "kind": "RootArgument",
-      "name": "zoomLevel"
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "inputZoomLevel"
     }
   ],
   "kind": "Fragment",
@@ -101,50 +148,18 @@ const node: ReaderFragment = {
           "name": "bounds",
           "variableName": "bounds"
         },
-        {
-          "kind": "Variable",
-          "name": "jobType",
-          "variableName": "jobType"
-        },
-        {
-          "kind": "Variable",
-          "name": "location",
-          "variableName": "location"
-        },
-        {
-          "kind": "Variable",
-          "name": "maxSalary",
-          "variableName": "maxSalary"
-        },
-        {
-          "kind": "Variable",
-          "name": "minExperience",
-          "variableName": "minExperience"
-        },
-        {
-          "kind": "Variable",
-          "name": "minSalary",
-          "variableName": "minSalary"
-        },
-        {
-          "kind": "Variable",
-          "name": "proximityKm",
-          "variableName": "proximityKm"
-        },
-        {
-          "kind": "Variable",
-          "name": "searchTerm",
-          "variableName": "searchTerm"
-        },
-        {
-          "kind": "Variable",
-          "name": "workMode",
-          "variableName": "workMode"
-        },
+        (v0/*: any*/),
+        (v1/*: any*/),
+        (v2/*: any*/),
+        (v3/*: any*/),
+        (v4/*: any*/),
+        (v5/*: any*/),
+        (v6/*: any*/),
+        (v7/*: any*/),
         {
           "kind": "Variable",
           "name": "zoomLevel",
-          "variableName": "zoomLevel"
+          "variableName": "inputZoomLevel"
         }
       ],
       "concreteType": "JobClusterConnection",
@@ -223,7 +238,21 @@ const node: ReaderFragment = {
       "name": "MapHeaderMobileFragment"
     },
     {
-      "args": null,
+      "args": [
+        (v0/*: any*/),
+        (v1/*: any*/),
+        (v2/*: any*/),
+        (v3/*: any*/),
+        (v4/*: any*/),
+        (v5/*: any*/),
+        (v6/*: any*/),
+        {
+          "kind": "Variable",
+          "name": "sortBy",
+          "variableName": "inputSortBy"
+        },
+        (v7/*: any*/)
+      ],
       "kind": "FragmentSpread",
       "name": "JobMapViewFragment"
     }
@@ -231,7 +260,8 @@ const node: ReaderFragment = {
   "type": "Query",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "8a2106c334a0f6fafc81e2d9dda30dc1";
+(node as any).hash = "1346aef84d4db284c4ff0f0f9fa3618a";
 
 export default node;

@@ -64,7 +64,19 @@ function normalizeBounds(bounds: { swLat: number; swLng: number; neLat: number; 
 }
 
 const JobMapViewFragment = graphql`
-	fragment JobMapViewFragment on Query {
+	fragment JobMapViewFragment on Query @argumentDefinitions(
+		searchTerm: { type: "String" }
+		minExperience: { type: "Int" }
+		minSalary: { type: "Int" }
+		maxSalary: { type: "Int" }
+		proximityKm: { type: "Float" }
+		location: { type: "String" }
+		bounds: { type: "BoundingBoxInput" }
+		workMode: { type: "[JobWorkModeFilter!]!" }
+		jobType: { type: "[JobTypeFilter!]!" }
+		sortBy: { type: "JobSearchSortBy!" }
+		first: { type: "Int", defaultValue: 100 }
+	) {
 		jobs(
 			searchTerm: $searchTerm
 			minExperience: $minExperience

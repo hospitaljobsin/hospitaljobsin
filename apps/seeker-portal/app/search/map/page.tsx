@@ -22,9 +22,19 @@ const PageSearchMapViewQuery = graphql`
 		$jobType: [JobTypeFilter!]!
 		$zoomLevel: Int!
 		$sortBy: JobSearchSortBy!
-		$first: Int!
 	) {
-    ...MapViewClientComponentFragment
+    ...MapViewClientComponentFragment  @arguments(
+		inputSearchTerm: $searchTerm,
+		inputMinExperience: $minExperience,
+		inputMinSalary: $minSalary,
+		inputMaxSalary: $maxSalary,
+		inputProximityKm: $proximityKm,
+		inputLocation: $location,
+		inputWorkMode: $workMode,
+		inputJobType: $jobType,
+		inputZoomLevel: $zoomLevel,
+		inputSortBy: $sortBy,
+	)
   }
 `;
 
