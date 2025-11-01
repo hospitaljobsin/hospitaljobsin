@@ -23,13 +23,12 @@ interface JobHexagonClustersProps {
 /**
  * JobHexagonClusters Component
  *
- * Renders H3 hexagon clusters using Leaflet Canvas renderer for performance.
- * Uses Canvas renderer instead of deprecated PIXI overlay as specified in PRD.
+ * Renders pre-clustered job data as circle markers with smooth animations.
+ * The clustering is already done on the backend via H3 hexagonal indexing.
  */
 export default function JobHexagonClusters({ clusters, onClusterClick, onClusterHover }: JobHexagonClustersProps) {
 	const map = useMap();
-	const canvasLayerRef = useRef<L.Canvas | null>(null);
-	const hexagonsRef = useRef<Map<string, L.Polygon>>(new Map());
+	const markersRef = useRef<Map<string, L.Marker>>(new Map());
 	const lastClusterIdsRef = useRef<Set<string>>(new Set());
 
 	useEffect(() => {
@@ -45,64 +44,153 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 			return;
 		}
 
-		// Check if clusters actually changed by comparing h3Index sets
+		console.log(`JobHexagonClusters: Processing ${clusters.length} clusters`);
+
+		// Get current cluster IDs
 		const currentClusterIds = new Set(clusters.map(c => c.h3Index));
-		const hasChanged =
-			currentClusterIds.size !== lastClusterIdsRef.current.size || [...currentClusterIds].some(id => !lastClusterIdsRef.current.has(id));
+		const previousClusterIds = lastClusterIdsRef.current;
 
-		if (!hasChanged && hexagonsRef.current.size > 0) {
-			// Clusters haven't changed, skip re-rendering
-			console.log('JobHexagonClusters: Clusters unchanged, skipping re-render');
-			return;
-		}
+		// Find clusters to add, remove, and keep
+		const toAdd = clusters.filter(c => !previousClusterIds.has(c.h3Index));
+		const toRemove = Array.from(previousClusterIds).filter(id => !currentClusterIds.has(id));
+		const toKeep = clusters.filter(c => previousClusterIds.has(c.h3Index));
 
-		// Update the last clusters reference
-		lastClusterIdsRef.current = currentClusterIds;
+		console.log(`📊 Cluster changes: +${toAdd.length} new, -${toRemove.length} removed, ${toKeep.length} kept`);
 
-		console.log(`JobHexagonClusters: Rendering ${clusters.length} clusters`);
+		// Remove old markers with fade-out animation
+		toRemove.forEach(h3Index => {
+			const marker = markersRef.current.get(h3Index);
+			if (marker) {
+				const element = marker.getElement();
+				if (element) {
+					const div = element.querySelector('div') as HTMLElement;
+					if (div) {
+						// Fade out animation
+						div.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+						div.style.opacity = '0';
+						div.style.transform = 'scale(0.5)';
+					}
+				}
 
-		// Create canvas renderer if not exists
-		if (!canvasLayerRef.current) {
-			canvasLayerRef.current = L.canvas();
-		}
+				// Remove after animation completes
+				setTimeout(() => {
+					marker.remove();
+					markersRef.current.delete(h3Index);
+				}, 300);
+			}
+		});
 
-		const canvas = canvasLayerRef.current;
+		// Update existing markers (smooth position transitions)
+		toKeep.forEach(cluster => {
+			const marker = markersRef.current.get(cluster.h3Index);
+			if (marker) {
+				const [lng, lat] = cluster.center.coordinates;
+				const newLatLng = L.latLng(lat, lng);
 
-		// Clear existing hexagons
-		for (const hex of hexagonsRef.current.values()) {
-			hex.remove();
-		}
-		hexagonsRef.current.clear();
+				// Leaflet handles smooth position transitions automatically
+				marker.setLatLng(newLatLng);
 
-		// Render new hexagons with accessibility enhancements
-		clusters.forEach(cluster => {
+				// Update count if changed
+				const element = marker.getElement();
+				if (element) {
+					const div = element.querySelector('div') as HTMLElement;
+					if (div && div.textContent !== cluster.count.toString()) {
+						div.textContent = cluster.count.toString();
+						// Pulse animation on count change
+						div.style.animation = 'pulse 0.3s ease';
+						setTimeout(() => {
+							div.style.animation = '';
+						}, 300);
+					}
+				}
+			}
+		});
+
+		// Add new markers with fade-in animation
+		toAdd.forEach(cluster => {
 			const color = getClusterColor(cluster.count);
 
-			// Convert bounds to LatLng format
-			// IMPORTANT: GeoJSON format is [lng, lat], but Leaflet expects [lat, lng]
-			const latLngs = cluster.bounds.map(([lng, lat]) => L.latLng(lat, lng));
+			// Convert center coordinates from GeoJSON [lng, lat] to Leaflet [lat, lng]
+			const [lng, lat] = cluster.center.coordinates;
+			const centerLatLng = L.latLng(lat, lng);
 
-			console.log(`Adding hexagon for cluster ${cluster.h3Index}:`, {
-				count: cluster.count,
-				color,
-				boundsCount: latLngs.length,
-				firstBound: latLngs[0],
-				originalBound: cluster.bounds[0]
+			// Calculate radius based on count
+			const radius = Math.min(50, Math.max(25, 25 + Math.log(cluster.count) * 6));
+
+			// Create a custom divIcon marker
+			const marker = L.marker(centerLatLng, {
+				icon: L.divIcon({
+					html: `<div style="
+						width: ${radius * 2}px;
+						height: ${radius * 2}px;
+						background-color: ${color};
+						border: 3px solid white;
+						border-radius: 50%;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						color: white;
+						font-weight: bold;
+						font-size: ${radius > 35 ? '16px' : '14px'};
+						box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+						transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+						cursor: pointer;
+						opacity: 0;
+						transform: scale(0.5);
+					">${cluster.count}</div>`,
+					className: 'custom-cluster-marker',
+					iconSize: L.point(radius * 2, radius * 2),
+					iconAnchor: L.point(radius, radius)
+				})
 			});
 
-			// Create polygon for hexagon with sleek, minimalistic styling
-			const hexagon = L.polygon(latLngs, {
-				color: color,
-				fillColor: color,
-				fillOpacity: 0.5, // Increased from 0.25 for better visibility
-				weight: 3, // Increased from 2 for better visibility
-				opacity: 1.0, // Increased from 0.7 for better visibility
-				renderer: canvas,
-				pane: 'overlayPane' // Ensure hexagons render above tiles
+			// Add click handler
+			marker.on('click', () => {
+				onClusterClick(cluster.h3Index, cluster);
 			});
 
-			// Add accessibility and interactivity
-			const element = hexagon.getElement() as HTMLElement;
+			// Add hover handlers with smooth scale effect
+			marker.on('mouseover', () => {
+				const element = marker.getElement();
+				if (element) {
+					const div = element.querySelector('div') as HTMLElement;
+					if (div) {
+						div.style.transform = 'scale(1.15)';
+						div.style.boxShadow = '0 4px 16px rgba(0,0,0,0.4)';
+					}
+				}
+				onClusterHover?.(cluster);
+			});
+
+			marker.on('mouseout', () => {
+				const element = marker.getElement();
+				if (element) {
+					const div = element.querySelector('div') as HTMLElement;
+					if (div) {
+						div.style.transform = 'scale(1)';
+						div.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+					}
+				}
+				onClusterHover?.(null);
+			});
+
+			// Add to map
+			marker.addTo(map);
+
+			// Trigger fade-in animation after a brief delay
+			requestAnimationFrame(() => {
+				const element = marker.getElement();
+				if (element) {
+					const div = element.querySelector('div') as HTMLElement;
+					if (div) {
+						div.style.opacity = '1';
+						div.style.transform = 'scale(1)';
+					}
+				}
+			});
+
+			// Add accessibility attributes
+			const element = marker.getElement();
 			if (element) {
 				element.setAttribute('role', 'button');
 				element.setAttribute('tabindex', '0');
@@ -110,75 +198,28 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 					'aria-label',
 					`Job cluster with ${cluster.count} jobs. Salary range: ₹${cluster.salaryRange.minSalary || 'N/A'} - ₹${cluster.salaryRange.maxSalary || 'N/A'}. Click to zoom in.`
 				);
-				element.style.cursor = 'pointer';
-
-				// Keyboard navigation
-				element.addEventListener('keydown', (e: KeyboardEvent) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						e.preventDefault();
-						onClusterClick(cluster.h3Index, cluster);
-					}
-				});
-
-				// Focus states
-				element.addEventListener('focus', () => {
-					hexagon.setStyle({ fillOpacity: 0.45, weight: 3, opacity: 1 });
-					onClusterHover?.(cluster);
-				});
-
-				element.addEventListener('blur', () => {
-					hexagon.setStyle({ fillOpacity: 0.25, weight: 2, opacity: 0.7 });
-					onClusterHover?.(null);
-				});
-			}
-
-			// Mouse interactions
-			hexagon.on('click', () => {
-				onClusterClick(cluster.h3Index, cluster);
-			});
-
-			hexagon.on('mouseover', () => {
-				hexagon.setStyle({ fillOpacity: 0.45, weight: 3, opacity: 1 });
-				onClusterHover?.(cluster);
-			});
-
-			hexagon.on('mouseout', () => {
-				hexagon.setStyle({ fillOpacity: 0.25, weight: 2, opacity: 0.7 });
-				onClusterHover?.(null);
-			});
-
-			// Add to map with safety check
-			if (map?.getContainer()) {
-				try {
-					hexagon.addTo(map);
-					console.log(`✅ Successfully added hexagon ${cluster.h3Index} to map`);
-				} catch (error) {
-					console.warn('Error adding hexagon to map:', error);
-				}
 			}
 
 			// Store reference
-			hexagonsRef.current.set(cluster.h3Index, hexagon);
+			markersRef.current.set(cluster.h3Index, marker);
 		});
 
-		console.log(`📍 Total hexagons on map: ${hexagonsRef.current.size}`);
+		// Update the last clusters reference
+		lastClusterIdsRef.current = currentClusterIds;
 
-		// Cleanup
-		return () => {
-			console.log('🧹 Cleanup function called - this should only happen when component unmounts or clusters change');
-			if (map?.getContainer()) {
-				try {
-					for (const hex of hexagonsRef.current.values()) {
-						hex.remove();
-					}
-					hexagonsRef.current.clear();
-					console.log('Hexagon clusters successfully cleaned up');
-				} catch (error) {
-					console.warn('Error cleaning up hexagon clusters:', error);
-				}
-			}
-		};
+		console.log(`📍 Total markers on map: ${markersRef.current.size}`);
 	}, [clusters, map, onClusterClick, onClusterHover]);
 
-	return null; // Canvas handles rendering
+	// Cleanup effect - only runs on unmount
+	useEffect(() => {
+		return () => {
+			console.log('🧹 Component unmounting - removing all markers');
+			for (const marker of markersRef.current.values()) {
+				marker.remove();
+			}
+			markersRef.current.clear();
+		};
+	}, []);
+
+	return null;
 }
