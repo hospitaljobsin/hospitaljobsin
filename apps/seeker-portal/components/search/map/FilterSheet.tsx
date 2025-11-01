@@ -73,23 +73,12 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 		ref.current?.snapTo(index);
 	};
 
-	// Handle tap on handle to toggle between tucked and default state
-	const handleHandleTap = () => {
-		if (currentSnap <= 1) {
-			// If tucked or hidden, go to default state
-			handleSnapTo(selectedCluster ? 3 : 2);
-		} else {
-			// If expanded, go to tucked state
-			handleSnapTo(1);
-		}
-	};
-
 	// Render different content based on current state
 	const renderContent = () => {
 		// Tucked state - minimal handle
 		if (currentSnap <= 1) {
 			return (
-				<div className='p-4 text-center'>
+				<div className='px-4 text-center'>
 					<p className='text-xs text-default-500 mt-2'>Pull up to see jobs in area</p>
 				</div>
 			);

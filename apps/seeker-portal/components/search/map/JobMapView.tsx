@@ -133,6 +133,7 @@ export default function JobMapView({
 	const [isMounted, setIsMounted] = useState(false);
 	const [isMapDataFetching, setIsMapDataFetching] = useState(false);
 	const [isUserInteracting, setIsUserInteracting] = useState(false);
+	const [isPendingMapOperation, setIsPendingMapOperation] = useState(false); // Bridge state for debounced operations
 
 	// New state for enhanced UX
 	const [showFilterModal, setShowFilterModal] = useState(false);
@@ -145,51 +146,54 @@ export default function JobMapView({
 	// Drawer state for mobile job preview
 	const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
 
-	// Enhanced progress bar control - start early on user interaction, stop when all operations complete
+	// Unified progress bar control - handles all loading states seamlessly
 	useEffect(() => {
-		const shouldShowProgress = isPending || isMapDataFetching || isUserInteracting;
+		const shouldShowProgress = isPending || isMapDataFetching || isUserInteracting || isPendingMapOperation;
 
 		if (shouldShowProgress) {
 			start();
 		} else {
 			stop();
 		}
-	}, [isPending, isMapDataFetching, isUserInteracting, start, stop]);
+	}, [isPending, isMapDataFetching, isUserInteracting, isPendingMapOperation, start, stop]);
 
-	// Stop map data fetching progress when data loading completes
+	// Clean up states when external loading completes
 	useEffect(() => {
-		if (isMapDataFetching && !isPending) {
-			// Data has finished loading, stop the map-initiated progress
-			setIsMapDataFetching(false);
+		if (!isPending) {
+			// When external data loading completes, clean up our internal states
+			if (isMapDataFetching) {
+				setIsMapDataFetching(false);
+			}
 		}
 	}, [isPending, isMapDataFetching]);
 
-	// Only stop user interaction when all operations are complete (no gap in progress)
+	// Clean up interaction states when all operations are truly complete
 	useEffect(() => {
-		if (isUserInteracting && !isPending && !isMapDataFetching) {
-			// Add a small delay to ensure smooth transition and catch immediate data fetches
+		if (!isPending && !isMapDataFetching && !isPendingMapOperation) {
+			// Only clear user interaction when ALL operations are complete
 			const timeoutId = setTimeout(() => {
-				// Double-check that no new operations started during the delay
-				if (!isPending && !isMapDataFetching) {
+				// Final check before clearing
+				if (!isPending && !isMapDataFetching && !isPendingMapOperation) {
 					setIsUserInteracting(false);
 				}
-			}, 100); // Short delay to bridge any gaps between interaction and fetching
+			}, 50); // Minimal delay for race condition protection
 
 			return () => clearTimeout(timeoutId);
 		}
-	}, [isPending, isMapDataFetching, isUserInteracting]);
+	}, [isPending, isMapDataFetching, isPendingMapOperation]);
 
-	// Failsafe timeout for user interaction to prevent progress bar from staying on indefinitely
+	// Failsafe timeout - last resort cleanup
 	useEffect(() => {
-		if (!isUserInteracting) return;
+		if (!isUserInteracting && !isPendingMapOperation) return;
 
 		const timeoutId = setTimeout(() => {
-			// Force stop user interaction indicator after 5 seconds as failsafe
+			// Emergency cleanup after 8 seconds
 			setIsUserInteracting(false);
-		}, 5000); // Increased to 5 seconds to allow for slower operations
+			setIsPendingMapOperation(false);
+		}, 8000);
 
 		return () => clearTimeout(timeoutId);
-	}, [isUserInteracting]); // Handle location selection and zoom to it
+	}, [isUserInteracting, isPendingMapOperation]); // Handle location selection and zoom to it
 	const handleLocationSelect = useCallback(
 		(location: SearchLocation) => {
 			if (!map) return;
@@ -260,6 +264,9 @@ export default function JobMapView({
 			const zoom = map.getZoom();
 			onZoomChange(zoom);
 
+			// Set pending operation to bridge any gap until data fetching starts
+			setIsPendingMapOperation(true);
+
 			// Also trigger bounds update on zoom (since zoom changes affect the visible area)
 			const bounds = map.getBounds();
 			const sw = bounds.getSouthWest();
@@ -276,8 +283,8 @@ export default function JobMapView({
 			setLastBounds(newBounds);
 			setCurrentBounds(newBounds);
 
-			// Trigger bounds change callback for data fetching
-			// Keep user interaction state active - let the unified logic handle stopping
+			// Clear pending and start actual data fetching
+			setIsPendingMapOperation(false);
 			if (onBoundsChange) {
 				setIsMapDataFetching(true);
 				onBoundsChange(newBounds);
@@ -370,6 +377,9 @@ export default function JobMapView({
 		};
 
 		const handleMapMove = () => {
+			// Set pending operation immediately to bridge the debounce gap
+			setIsPendingMapOperation(true);
+
 			// Debounce bounds changes (800ms) - increased to prevent overwhelming backend
 			clearTimeout(timeoutId);
 			timeoutId = setTimeout(() => {
@@ -394,14 +404,17 @@ export default function JobMapView({
 					const lngDiff = Math.abs(newBounds.swLng - lastBounds.swLng) + Math.abs(newBounds.neLng - lastBounds.neLng);
 
 					if (latDiff < 0.002 && lngDiff < 0.002) {
-						return; // Skip refetch for minor movements - keep progress running
+						// Clear pending operation for minor movements
+						setIsPendingMapOperation(false);
+						return;
 					}
 				}
 
 				setLastBounds(newBounds);
 				setCurrentBounds(newBounds);
 
-				// Start data fetching - keep user interaction active until this completes
+				// Clear pending operation and start actual data fetching
+				setIsPendingMapOperation(false);
 				if (onBoundsChange) {
 					setIsMapDataFetching(true);
 					onBoundsChange(newBounds);
@@ -416,6 +429,8 @@ export default function JobMapView({
 			map.off('movestart', handleMapMoveStart);
 			map.off('moveend', handleMapMove);
 			clearTimeout(timeoutId);
+			// Clean up pending operation on unmount
+			setIsPendingMapOperation(false);
 		};
 	}, [map, onBoundsChange, lastBounds]);
 
