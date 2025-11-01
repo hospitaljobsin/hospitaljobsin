@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardBody, Chip, Tooltip } from '@heroui/react';
+import { Card, CardBody, Tooltip } from '@heroui/react';
 import { Briefcase, Globe, IndianRupee, MapPin, VerifiedIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -142,7 +142,7 @@ export default function CompactJobCard({ job: jobKey, className = '' }: CompactJ
 
 	const cardContent = (
 		<Card className={`w-full transition-colors ${className}`} shadow='none'>
-			<CardBody className='p-4 space-y-3'>
+			<CardBody className='p-4 space-y-4'>
 				{/* Header with Organization */}
 				{job.organization && (
 					<div className='flex items-center gap-3 sm:gap-4 min-w-0'>
@@ -174,10 +174,10 @@ export default function CompactJobCard({ job: jobKey, className = '' }: CompactJ
 				)}
 
 				{/* Salary Range */}
-				<div className='mt-2 sm:mt-0 w-full sm:w-auto sm:flex-shrink-0 flex justify-start sm:justify-end'>{salaryRange}</div>
+				<div className='mt-2 sm:mt-0 w-full sm:w-auto sm:flex-shrink-0 flex justify-start'>{salaryRange}</div>
 
 				{/* Job Details with consistent styling */}
-				<div className='flex flex-wrap justify-start gap-2 sm:gap-8 items-start text-foreground-600 w-full text-left sm:text-center'>
+				<div className='flex flex-wrap justify-start gap-2 sm:gap-4 mt-4 items-start text-foreground-600 w-full text-left sm:text-center'>
 					{job.type && (
 						<p className='text-xs sm:text-base px-2 py-1 sm:p-0 bg-default-100 rounded-md sm:bg-transparent'>{jobType(job.type)}</p>
 					)}
@@ -204,18 +204,6 @@ export default function CompactJobCard({ job: jobKey, className = '' }: CompactJ
 						</div>
 					)}
 				</div>
-
-				{/* Skills */}
-				{job.skills && job.skills.length > 0 && (
-					<div className='flex flex-wrap gap-2 sm:gap-4 mt-1 sm:mt-2 w-full sm:w-auto justify-start'>
-						{job.skills.slice(0, 3).map((skill: string) => (
-							<Chip variant='flat' key={skill} className='text-xs sm:text-sm px-2 py-1'>
-								{skill}
-							</Chip>
-						))}
-						{job.skills.length > 3 && <span className='text-xs text-foreground-500 self-center'>+{job.skills.length - 3} more</span>}
-					</div>
-				)}
 			</CardBody>
 		</Card>
 	);

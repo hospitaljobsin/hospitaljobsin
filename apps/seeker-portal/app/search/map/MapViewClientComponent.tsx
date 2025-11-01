@@ -53,6 +53,7 @@ const MapViewClientComponentFragment = graphql`
 
 		# Spread the MapHeader fragment
 		...MapHeaderFragment
+		...MapHeaderMobileFragment
 
 		# Spread the JobMapView fragment
 		...JobMapViewFragment
