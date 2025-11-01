@@ -72,5 +72,3 @@ class JobCluster(BaseModel):
     count: int
     center: GeoObject
     bounds: list[list[float]]
-    salary_range: SalaryRange
-    top_specialties: list[str]

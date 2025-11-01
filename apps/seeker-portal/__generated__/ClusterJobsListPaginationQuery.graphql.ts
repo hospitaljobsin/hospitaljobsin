@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<6756cd49a8228e5bfb4c5a32d20ed5b3>>
- * @relayHash 0d5dc481704e1375250ed3ec9afa22a7
+ * @generated SignedSource<<d138a303e7334fbebb2289c54a088f01>>
+ * @relayHash 073b11be46078fdb73c75780cd91119c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,10 +9,11 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 0d5dc481704e1375250ed3ec9afa22a7
+// @relayRequestID 073b11be46078fdb73c75780cd91119c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
+export type JobSearchSortBy = "RELEVANCE" | "UPDATED_AT" | "%future added value";
 export type JobTypeFilter = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
 export type JobWorkModeFilter = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 export type BoundingBoxInput = {
@@ -32,6 +33,7 @@ export type ClusterJobsListPaginationQuery$variables = {
   minSalary?: number | null | undefined;
   proximityKm?: number | null | undefined;
   searchTerm?: string | null | undefined;
+  sortBy: JobSearchSortBy;
   workMode: ReadonlyArray<JobWorkModeFilter>;
 };
 export type ClusterJobsListPaginationQuery$data = {
@@ -97,6 +99,11 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
+    "name": "sortBy"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
     "name": "workMode"
   }
 ],
@@ -142,10 +149,15 @@ v8 = {
 },
 v9 = {
   "kind": "Variable",
+  "name": "sortBy",
+  "variableName": "sortBy"
+},
+v10 = {
+  "kind": "Variable",
   "name": "workMode",
   "variableName": "workMode"
 },
-v10 = [
+v11 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -164,23 +176,24 @@ v10 = [
   (v6/*: any*/),
   (v7/*: any*/),
   (v8/*: any*/),
-  (v9/*: any*/)
+  (v9/*: any*/),
+  (v10/*: any*/)
 ],
-v11 = {
+v12 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v12 = {
+v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "slug",
   "storageKey": null
 },
-v13 = {
+v14 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -214,7 +227,8 @@ return {
           (v6/*: any*/),
           (v7/*: any*/),
           (v8/*: any*/),
-          (v9/*: any*/)
+          (v9/*: any*/),
+          (v10/*: any*/)
         ],
         "kind": "FragmentSpread",
         "name": "ClusterJobsListInternalFragment"
@@ -231,7 +245,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v10/*: any*/),
+        "args": (v11/*: any*/),
         "concreteType": "JobConnection",
         "kind": "LinkedField",
         "name": "jobs",
@@ -253,8 +267,8 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v11/*: any*/),
                   (v12/*: any*/),
+                  (v13/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -340,7 +354,7 @@ return {
                         "name": "name",
                         "storageKey": null
                       },
-                      (v12/*: any*/),
+                      (v13/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -356,7 +370,7 @@ return {
                         "name": "verificationStatus",
                         "plural": false,
                         "selections": [
-                          (v13/*: any*/),
+                          (v14/*: any*/),
                           {
                             "kind": "InlineFragment",
                             "selections": [
@@ -374,11 +388,11 @@ return {
                         ],
                         "storageKey": null
                       },
-                      (v11/*: any*/)
+                      (v12/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v13/*: any*/)
+                  (v14/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -429,7 +443,7 @@ return {
       },
       {
         "alias": null,
-        "args": (v10/*: any*/),
+        "args": (v11/*: any*/),
         "filters": [
           "bounds",
           "workMode",
@@ -439,7 +453,8 @@ return {
           "minExperience",
           "minSalary",
           "maxSalary",
-          "proximityKm"
+          "proximityKm",
+          "sortBy"
         ],
         "handle": "connection",
         "key": "ClusterJobsListFragment_jobs",
@@ -449,7 +464,7 @@ return {
     ]
   },
   "params": {
-    "id": "0d5dc481704e1375250ed3ec9afa22a7",
+    "id": "073b11be46078fdb73c75780cd91119c",
     "metadata": {},
     "name": "ClusterJobsListPaginationQuery",
     "operationKind": "query",
@@ -458,6 +473,6 @@ return {
 };
 })();
 
-(node as any).hash = "197f654d7b7c8dfb5d1a4bbb89f1fdf4";
+(node as any).hash = "b7c086a040cd806a3d0d9ef84c9f3742";
 
 export default node;

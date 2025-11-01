@@ -54,7 +54,7 @@ from app.jobs.exceptions import (
     JobApplicantCountNotFoundError,
     JobApplicantNotFoundError,
 )
-from app.jobs.models import JobAutocompleteSuggestion, JobCluster, SalaryRange
+from app.jobs.models import JobAutocompleteSuggestion, JobCluster
 from app.jobs.repositories import (
     JobApplicantRepo,
     JobApplicantsSortBy,
@@ -1632,27 +1632,6 @@ class AutocompleteJobsPayloadType:
 
 
 @strawberry.type(
-    name="SalaryRange",
-    description="Salary range for a cluster of jobs.",
-)
-class SalaryRangeType:
-    min_salary: int | None = strawberry.field(
-        description="Minimum salary in the cluster (in local currency).",
-    )
-    max_salary: int | None = strawberry.field(
-        description="Maximum salary in the cluster (in local currency).",
-    )
-
-    @classmethod
-    def marshal(cls, salary_range: SalaryRange) -> Self:
-        """Marshal into a type instance."""
-        return cls(
-            min_salary=salary_range.min_salary,
-            max_salary=salary_range.max_salary,
-        )
-
-
-@strawberry.type(
     name="JobCluster",
     description="Aggregated job cluster at a specific H3 hexagon resolution.",
 )
@@ -1669,12 +1648,6 @@ class JobClusterType:
     bounds: list[list[float]] = strawberry.field(
         description="Boundary coordinates of the hexagon as array of [lng, lat] pairs.",
     )
-    salary_range: SalaryRangeType = strawberry.field(
-        description="Salary range across all jobs in the cluster.",
-    )
-    top_specialties: list[str] = strawberry.field(
-        description="Top 3 most common specialties/skills in the cluster.",
-    )
 
     @classmethod
     def marshal(cls, cluster: JobCluster) -> Self:
@@ -1684,8 +1657,6 @@ class JobClusterType:
             count=cluster.count,
             center=GeoObjectType.marshal(cluster.center),
             bounds=cluster.bounds,
-            salary_range=SalaryRangeType.marshal(cluster.salary_range),
-            top_specialties=cluster.top_specialties,
         )
 
 

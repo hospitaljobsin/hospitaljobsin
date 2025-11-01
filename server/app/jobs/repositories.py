@@ -47,7 +47,6 @@ from app.jobs.models import (
     JobAutocompleteSuggestion,
     JobCluster,
     JobClusterFilters,
-    SalaryRange,
 )
 from app.organizations.documents import Organization
 
@@ -179,20 +178,12 @@ class JobRepo:
             # Convert from (lat, lng) tuples to [[lng, lat], ...] format for GeoJSON
             bounds = [[coord[1], coord[0]] for coord in boundary]
 
-            # Extract salary range
-            salary_range = SalaryRange(
-                min_salary=result.get("min_salary"),
-                max_salary=result.get("max_salary"),
-            )
-
             clusters.append(
                 JobCluster(
                     h3_index=h3_index,
                     count=result["count"],
                     center=GeoObject(coordinates=(lng, lat)),
                     bounds=bounds,
-                    salary_range=salary_range,
-                    top_specialties=result.get("top_specialties", []),
                 )
             )
 
@@ -353,8 +344,6 @@ class JobRepo:
                 "$group": {
                     "_id": f"${h3_field}",
                     "count": {"$sum": 1},
-                    "min_salary": {"$min": "$min_salary"},
-                    "max_salary": {"$max": "$max_salary"},
                     "skills": {"$push": "$skills"},
                 }
             },
@@ -362,21 +351,6 @@ class JobRepo:
                 "$project": {
                     "_id": 1,
                     "count": 1,
-                    "min_salary": 1,
-                    "max_salary": 1,
-                    # Flatten skills arrays and get top 3
-                    "top_specialties": {
-                        "$slice": [
-                            {
-                                "$reduce": {
-                                    "input": "$skills",
-                                    "initialValue": [],
-                                    "in": {"$concatArrays": ["$$value", "$$this"]},
-                                }
-                            },
-                            3,
-                        ]
-                    },
                 }
             },
             {"$sort": {"count": -1}},
@@ -523,8 +497,6 @@ class JobRepo:
                 "$group": {
                     "_id": f"${h3_field}",
                     "count": {"$sum": 1},
-                    "min_salary": {"$min": "$min_salary"},
-                    "max_salary": {"$max": "$max_salary"},
                     "skills": {"$push": "$skills"},
                 }
             },
@@ -532,20 +504,6 @@ class JobRepo:
                 "$project": {
                     "_id": 1,
                     "count": 1,
-                    "min_salary": 1,
-                    "max_salary": 1,
-                    "top_specialties": {
-                        "$slice": [
-                            {
-                                "$reduce": {
-                                    "input": "$skills",
-                                    "initialValue": [],
-                                    "in": {"$concatArrays": ["$$value", "$$this"]},
-                                }
-                            },
-                            3,
-                        ]
-                    },
                 }
             },
             {"$sort": {"count": -1}},
@@ -572,39 +530,6 @@ class JobRepo:
         logger.info(
             f"JobRepo.get_aggregated_jobs_by_h3: START - bounds={bounds}, h3_resolution={h3_resolution}, filters={filters}"
         )
-
-        # Generate cache key
-        cache_key = self._generate_cluster_cache_key(bounds, h3_resolution, filters)
-        print(f"🔍 cache_key={cache_key}")
-        logger.info(f"JobRepo.get_aggregated_jobs_by_h3: cache_key={cache_key}")
-
-        # Check cache
-        cached_result = await self._redis_client.get(cache_key)
-        print(f"🔍 cached_result={cached_result}")
-        if cached_result:
-            print("🔍 CACHE HIT - returning cached result")
-            logger.info(
-                "JobRepo.get_aggregated_jobs_by_h3: CACHE HIT - returning cached result"
-            )
-        else:
-            print("🔍 CACHE MISS - proceeding with aggregation")
-            logger.info(
-                "JobRepo.get_aggregated_jobs_by_h3: CACHE MISS - proceeding with aggregation"
-            )
-
-        if cached_result:
-            # Deserialize cached clusters and total count
-            cache_obj = json.loads(cached_result)
-            # Handle both old format (list) and new format (dict)
-            if isinstance(cache_obj, list):
-                # Old cache format - just a list of clusters
-                clusters = [JobCluster(**cluster) for cluster in cache_obj]
-                total_count = sum(cluster.count for cluster in clusters)
-            else:
-                # New cache format - dict with clusters and total_count
-                clusters = [JobCluster(**cluster) for cluster in cache_obj["clusters"]]
-                total_count = cache_obj["total_count"]
-            return clusters, total_count
 
         # Calculate intersecting H3 hexagons
         print("🔶 Creating bbox polygon...")
@@ -698,7 +623,6 @@ class JobRepo:
                 "total_count": total_count,
             }
         )
-        await self._redis_client.setex(cache_key, 1800, cache_data)
 
         return clusters, total_count
 

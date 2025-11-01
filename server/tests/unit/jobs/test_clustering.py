@@ -105,7 +105,7 @@ class TestGetH3ResolutionFromZoom:
             "ne_lng": 180.0,
         }
         # Zoom 1 has minimum resolution of 1
-        resolution = get_h3_resolution_from_zoom(1, job_density=50, bounds=bounds)
+        resolution = get_h3_resolution_from_zoom(1, bounds=bounds)
         assert resolution >= 1
 
     def test_zoom_level_with_small_bounds(self):
@@ -118,16 +118,16 @@ class TestGetH3ResolutionFromZoom:
             "ne_lng": -74.0,
         }
         # Even at low zoom, small area should allow higher resolution
-        resolution = get_h3_resolution_from_zoom(5, job_density=50, bounds=bounds)
+        resolution = get_h3_resolution_from_zoom(5, bounds=bounds)
         # Should be higher than the zoom-based minimum of 3
         assert resolution >= 3
 
     def test_without_bounds_uses_zoom_only(self):
         """Test that without bounds, function uses only zoom level."""
         # Zoom 5 should give minimum resolution 3
-        assert get_h3_resolution_from_zoom(5, job_density=50, bounds=None) == 3
+        assert get_h3_resolution_from_zoom(5, bounds=None) == 3
         # Zoom 10 should give minimum resolution 9
-        assert get_h3_resolution_from_zoom(10, job_density=50, bounds=None) == 9
+        assert get_h3_resolution_from_zoom(10, bounds=None) == 9
 
     def test_bounds_constrain_resolution_to_max_hexagons(self):
         """Test that bounds prevent creating too many hexagons."""
@@ -139,7 +139,7 @@ class TestGetH3ResolutionFromZoom:
             "ne_lng": -60.0,
         }
         # Even at zoom 15 (which wants resolution 11), large bounds should force lower resolution
-        resolution = get_h3_resolution_from_zoom(15, job_density=50, bounds=bounds)
+        resolution = get_h3_resolution_from_zoom(15, bounds=bounds)
         # Should be much lower than 11 due to large area
         assert resolution < 5
 
@@ -158,8 +158,8 @@ class TestJobClusterService:
         return JobClusterService(job_repo=mock_job_repo)
 
     @pytest.mark.anyio
-    async def test_get_aggregated_clusters(self, service, mock_job_repo):
-        """Test _get_aggregated_clusters delegates to repository."""
+    async def test_get_job_clusters(self, service, mock_job_repo):
+        """Test get_job_clusters delegates to repository."""
         # Setup mock clusters
         mock_clusters = [
             JobCluster(
@@ -168,7 +168,6 @@ class TestJobClusterService:
                 center=GeoObject(coordinates=(-74.0060, 40.7128)),
                 bounds=[[40.7, -74.1], [40.8, -74.0], [40.7, -73.9]],
                 salary_range=SalaryRange(min_salary=50000, max_salary=100000),
-                top_specialties=["nursing"],
             )
         ]
         mock_job_repo.get_aggregated_jobs_by_h3 = AsyncMock(
@@ -177,13 +176,16 @@ class TestJobClusterService:
 
         bounds = {"sw_lat": 40.0, "sw_lng": -74.0, "ne_lat": 41.0, "ne_lng": -73.0}
         filters = JobClusterFilters()
+        zoom_level = 7
 
-        clusters, total = await service._get_aggregated_clusters(bounds, 7, filters)
+        clusters, total = await service.get_job_clusters(bounds, zoom_level, filters)
 
         # Verify delegation - note that service converts dict to BoundingBox
         expected_bounds = BoundingBox(**bounds)
+        # The service calculates h3_resolution from zoom and bounds
+        expected_resolution = get_h3_resolution_from_zoom(zoom_level, bounds)
         mock_job_repo.get_aggregated_jobs_by_h3.assert_called_once_with(
-            bounds=expected_bounds, h3_resolution=7, filters=filters
+            bounds=expected_bounds, h3_resolution=expected_resolution, filters=filters
         )
         assert clusters == mock_clusters
         assert total == 10

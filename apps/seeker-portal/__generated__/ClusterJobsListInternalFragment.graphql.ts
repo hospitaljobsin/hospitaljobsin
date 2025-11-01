@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<29a6e846839e63d80073555d6b1f8573>>
+ * @generated SignedSource<<6fd6ff990b275142d4823ec042a7c965>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -91,6 +91,11 @@ return {
     {
       "defaultValue": null,
       "kind": "LocalArgument",
+      "name": "sortBy"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "workMode"
     }
   ],
@@ -161,6 +166,11 @@ return {
           "kind": "Variable",
           "name": "searchTerm",
           "variableName": "searchTerm"
+        },
+        {
+          "kind": "Variable",
+          "name": "sortBy",
+          "variableName": "sortBy"
         },
         {
           "kind": "Variable",
@@ -262,6 +272,6 @@ return {
 };
 })();
 
-(node as any).hash = "197f654d7b7c8dfb5d1a4bbb89f1fdf4";
+(node as any).hash = "b7c086a040cd806a3d0d9ef84c9f3742";
 
 export default node;

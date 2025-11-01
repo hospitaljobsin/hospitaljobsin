@@ -114,8 +114,8 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 			const [lng, lat] = cluster.center.coordinates;
 			const centerLatLng = L.latLng(lat, lng);
 
-			// Calculate radius based on count
-			const radius = Math.min(50, Math.max(25, 25 + Math.log(cluster.count) * 6));
+			// Calculate radius based on count (reduced size)
+			const radius = Math.min(40, Math.max(18, 18 + Math.log(cluster.count) * 4));
 
 			// Create a custom divIcon marker
 			const marker = L.marker(centerLatLng, {
@@ -131,7 +131,7 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 						justify-content: center;
 						color: white;
 						font-weight: bold;
-						font-size: ${radius > 35 ? '16px' : '14px'};
+						font-size: ${radius > 28 ? '16px' : '14px'};
 						box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 						transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 						cursor: pointer;
@@ -194,10 +194,7 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 			if (element) {
 				element.setAttribute('role', 'button');
 				element.setAttribute('tabindex', '0');
-				element.setAttribute(
-					'aria-label',
-					`Job cluster with ${cluster.count} jobs. Salary range: ₹${cluster.salaryRange.minSalary || 'N/A'} - ₹${cluster.salaryRange.maxSalary || 'N/A'}. Click to zoom in.`
-				);
+				element.setAttribute('aria-label', `Job cluster with ${cluster.count} jobs. Click to zoom in.`);
 			}
 
 			// Store reference

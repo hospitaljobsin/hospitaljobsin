@@ -1,5 +1,6 @@
 'use client';
 
+import { Select, SelectItem } from '@heroui/react';
 import { FileIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
@@ -41,6 +42,7 @@ interface ClusterSheetProps {
 export default function FilterSheet({ totalCount, selectedCluster, bounds, filters, currentZoom, forceOpen }: ClusterSheetProps) {
 	const ref = useRef<SheetRef>(null);
 	const [currentSnap, setCurrentSnap] = useState(1);
+	const [sortBy, setSortBy] = useState<string>(filters.sortBy || 'RELEVANCE');
 
 	// Enhanced snap points based on PRD specifications:
 	// 0 = Hidden (fully closed) - 0
@@ -58,6 +60,11 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 		}
 	}, [forceOpen]);
 
+	// Sync sortBy state with filters prop
+	useEffect(() => {
+		setSortBy(filters.sortBy || 'RELEVANCE');
+	}, [filters.sortBy]);
+
 	// Auto-snap based on cluster state
 	useEffect(() => {
 		if (selectedCluster) {
@@ -72,6 +79,9 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 	const handleSnapTo = (index: number) => {
 		ref.current?.snapTo(index);
 	};
+
+	// Create updated filters with current sortBy
+	const updatedFilters = { ...filters, sortBy };
 
 	// Render different content based on current state
 	const renderContent = () => {
@@ -104,9 +114,26 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 				<div className='flex flex-col h-full'>
 					{/* Header */}
 					<div className='p-4 border-b border-divider bg-background sticky top-0 z-10'>
-						<div>
-							<h3 className='text-lg font-medium text-foreground-700'>Jobs in Current Area</h3>
-							<p className='text-sm text-foreground-500'>{totalCount} jobs available</p>
+						<div className='flex items-center justify-between gap-4'>
+							<div className='flex-1'>
+								<h3 className='text-lg font-medium text-foreground-700'>Jobs in Current Area</h3>
+								<p className='text-sm text-foreground-500'>{totalCount} jobs available</p>
+							</div>
+							<Select
+								size='sm'
+								label='Sort by'
+								labelPlacement='outside-left'
+								selectedKeys={[sortBy]}
+								onChange={e => setSortBy(e.target.value)}
+								className='max-w-[200px]'
+								classNames={{
+									label: 'text-xs text-foreground-600 whitespace-nowrap',
+									base: 'items-center'
+								}}
+							>
+								<SelectItem key='RELEVANCE'>Relevance</SelectItem>
+								<SelectItem key='CREATED_AT'>Newest First</SelectItem>
+							</Select>
 						</div>
 					</div>
 
@@ -114,9 +141,9 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 					<div className='flex-1 overflow-y-auto p-4 w-full'>
 						{currentZoom >= 5 ? (
 							<ViewportJobsList
-								key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}-${filters.searchTerm || ''}-${filters.location || ''}-${filters.minExperience || ''}-${filters.minSalary || ''}-${filters.maxSalary || ''}-${filters.proximityKm}-${filters.workMode.join(',')}-${filters.jobType.join(',')}-${filters.sortBy}`}
+								key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}-${updatedFilters.searchTerm || ''}-${updatedFilters.location || ''}-${updatedFilters.minExperience || ''}-${updatedFilters.minSalary || ''}-${updatedFilters.maxSalary || ''}-${updatedFilters.proximityKm}-${updatedFilters.workMode.join(',')}-${updatedFilters.jobType.join(',')}-${sortBy}`}
 								bounds={bounds}
-								filters={filters}
+								filters={updatedFilters}
 								className='w-full'
 							/>
 						) : (
@@ -136,9 +163,26 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 			<div className='flex flex-col h-full'>
 				{/* Header */}
 				<div className='p-4 border-b border-divider bg-background sticky top-0 z-10'>
-					<div>
-						<h3 className='text-lg font-medium text-foreground-700'>Jobs in Current Area</h3>
-						<p className='text-sm text-foreground-500'>{totalCount} jobs available</p>
+					<div className='flex items-center justify-between gap-4'>
+						<div className='flex-1'>
+							<h3 className='text-lg font-medium text-foreground-700'>Jobs in Current Area</h3>
+							<p className='text-sm text-foreground-500'>{totalCount} jobs available</p>
+						</div>
+						<Select
+							size='sm'
+							label='Sort by'
+							labelPlacement='inside'
+							selectedKeys={[sortBy]}
+							onChange={e => setSortBy(e.target.value)}
+							className='max-w-[200px]'
+							classNames={{
+								label: 'text-xs text-foreground-600 whitespace-nowrap',
+								base: 'items-center'
+							}}
+						>
+							<SelectItem key='RELEVANCE'>Relevance</SelectItem>
+							<SelectItem key='CREATED_AT'>Newest First</SelectItem>
+						</Select>
 					</div>
 				</div>
 
@@ -156,9 +200,9 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 							{/* Show jobs list if we have bounds data and sufficient zoom */}
 							{bounds && currentZoom >= 5 ? (
 								<ViewportJobsList
-									key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}-${filters.searchTerm || ''}-${filters.location || ''}-${filters.minExperience || ''}-${filters.minSalary || ''}-${filters.maxSalary || ''}-${filters.proximityKm}-${filters.workMode.join(',')}-${filters.jobType.join(',')}-${filters.sortBy}`}
+									key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}-${updatedFilters.searchTerm || ''}-${updatedFilters.location || ''}-${updatedFilters.minExperience || ''}-${updatedFilters.minSalary || ''}-${updatedFilters.maxSalary || ''}-${updatedFilters.proximityKm}-${updatedFilters.workMode.join(',')}-${updatedFilters.jobType.join(',')}-${sortBy}`}
 									bounds={bounds}
-									filters={filters}
+									filters={updatedFilters}
 									className='w-full'
 								/>
 							) : bounds && currentZoom < 5 ? (
@@ -172,9 +216,9 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 					) : bounds && totalCount > 0 && currentZoom >= 5 ? (
 						// Show viewport jobs if no cluster is selected but we have jobs and sufficient zoom
 						<ViewportJobsList
-							key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}-${filters.searchTerm || ''}-${filters.location || ''}-${filters.minExperience || ''}-${filters.minSalary || ''}-${filters.maxSalary || ''}-${filters.proximityKm}-${filters.workMode.join(',')}-${filters.jobType.join(',')}-${filters.sortBy}`}
+							key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}-${updatedFilters.searchTerm || ''}-${updatedFilters.location || ''}-${updatedFilters.minExperience || ''}-${updatedFilters.minSalary || ''}-${updatedFilters.maxSalary || ''}-${updatedFilters.proximityKm}-${updatedFilters.workMode.join(',')}-${updatedFilters.jobType.join(',')}-${sortBy}`}
 							bounds={bounds}
-							filters={filters}
+							filters={updatedFilters}
 							className='w-full'
 						/>
 					) : (

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@heroui/react';
+import { Button, Select, SelectItem } from '@heroui/react';
 import { ChevronLeft } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import ViewportJobsList from './ClusterJobsList';
@@ -38,9 +38,16 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 	const [hasJobsInViewport, setHasJobsInViewport] = useState(false);
 	// Main collapse state - starts collapsed if no jobs initially
 	const [isCollapsed, setIsCollapsed] = useState(true);
+	// Sort by state
+	const [sortBy, setSortBy] = useState<string>(filters.sortBy || 'RELEVANCE');
 
 	// Track if this is the initial mount
 	const isInitialMount = useRef(true);
+
+	// Sync sortBy state with filters prop
+	useEffect(() => {
+		setSortBy(filters.sortBy || 'RELEVANCE');
+	}, [filters.sortBy]);
 
 	// Handle force open prop
 	useEffect(() => {
@@ -112,6 +119,9 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 		onCollapseChange?.(newCollapsedState);
 	};
 
+	// Create updated filters with current sortBy
+	const updatedFilters = { ...filters, sortBy };
+
 	return (
 		<div className='relative h-full flex overflow-visible'>
 			{/* Main Sidebar Content */}
@@ -121,10 +131,28 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 				}`}
 			>
 				{/* Header with Job Count */}
-				<div className='mb-4 w-full flex flex-col gap-2'>
-					<h2 className='text-base font-medium text-foreground-800'>Viewing {totalCount.toLocaleString()} Jobs</h2>
-
-					<p className='text-xs text-foreground-500'>Showing jobs in the current map view</p>
+				<div className='mb-4 w-full flex flex-col gap-4'>
+					<div className='flex items-center justify-between gap-4'>
+						<div className='flex-1'>
+							<h2 className='text-base font-medium text-foreground-800'>Viewing {totalCount.toLocaleString()} Jobs</h2>
+							<p className='text-xs text-foreground-500'>in the current map view</p>
+						</div>
+						<Select
+							size='sm'
+							label='Sort by'
+							labelPlacement='inside'
+							selectedKeys={[sortBy]}
+							onChange={e => setSortBy(e.target.value)}
+							className='max-w-[200px]'
+							classNames={{
+								label: 'text-xs text-foreground-600 whitespace-nowrap',
+								base: 'items-center'
+							}}
+						>
+							<SelectItem key='RELEVANCE'>Relevance</SelectItem>
+							<SelectItem key='CREATED_AT'>Newest First</SelectItem>
+						</Select>
+					</div>
 				</div>
 
 				{/* Viewport Jobs List - always shown */}
@@ -132,9 +160,9 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 					<div className='w-full flex-1 min-h-0 overflow-y-auto'>
 						{!isCollapsed && bounds && currentZoom >= 5 ? (
 							<ViewportJobsList
-								key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}-${filters.searchTerm || ''}-${filters.location || ''}-${filters.minExperience || ''}-${filters.minSalary || ''}-${filters.maxSalary || ''}-${filters.proximityKm}-${filters.workMode.join(',')}-${filters.jobType.join(',')}-${filters.sortBy}`}
+								key={`${bounds.swLat}-${bounds.swLng}-${bounds.neLat}-${bounds.neLng}-${updatedFilters.searchTerm || ''}-${updatedFilters.location || ''}-${updatedFilters.minExperience || ''}-${updatedFilters.minSalary || ''}-${updatedFilters.maxSalary || ''}-${updatedFilters.proximityKm}-${updatedFilters.workMode.join(',')}-${updatedFilters.jobType.join(',')}-${sortBy}`}
 								bounds={bounds}
-								filters={filters}
+								filters={updatedFilters}
 								className='w-full'
 							/>
 						) : (

@@ -1949,16 +1949,6 @@ type JobCluster {
 	Boundary coordinates of the hexagon as array of [lng, lat] pairs.
 	"""
 	bounds: [[Float!]!]!
-
-	"""
-	Salary range across all jobs in the cluster.
-	"""
-	salaryRange: SalaryRange!
-
-	"""
-	Top 3 most common specialties/skills in the cluster.
-	"""
-	topSpecialties: [String!]!
 }
 
 """
@@ -5102,21 +5092,6 @@ union ResetPasswordPayload =
 	| InvalidPasswordResetTokenError
 	| PasswordNotStrongError
 	| TwoFactorAuthenticationChallengeNotFoundError
-
-"""
-Salary range for a cluster of jobs.
-"""
-type SalaryRange {
-	"""
-	Minimum salary in the cluster (in local currency).
-	"""
-	minSalary: Int
-
-	"""
-	Maximum salary in the cluster (in local currency).
-	"""
-	maxSalary: Int
-}
 
 """
 The save job payload.

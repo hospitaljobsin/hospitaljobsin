@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c8d722cc498dc51d8a0bbeaa65706abb>>
+ * @generated SignedSource<<565feb3cbf2233750d6fa5d9d408190e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,15 +19,10 @@ export type MapViewClientComponentFragment$data = {
       };
       readonly count: number;
       readonly h3Index: string;
-      readonly salaryRange: {
-        readonly maxSalary: number | null | undefined;
-        readonly minSalary: number | null | undefined;
-      };
-      readonly topSpecialties: ReadonlyArray<string>;
     }>;
     readonly totalCount: number;
   };
-  readonly " $fragmentSpreads": FragmentRefs<"JobMapMarkersFragment_data" | "JobMapViewFragment" | "MapHeaderFragment" | "MapHeaderMobileFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"JobMapViewFragment" | "MapHeaderFragment" | "MapHeaderMobileFragment">;
   readonly " $fragmentType": "MapViewClientComponentFragment";
 };
 export type MapViewClientComponentFragment$key = {
@@ -203,38 +198,6 @@ const node: ReaderFragment = {
               "kind": "ScalarField",
               "name": "bounds",
               "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "concreteType": "SalaryRange",
-              "kind": "LinkedField",
-              "name": "salaryRange",
-              "plural": false,
-              "selections": [
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "minSalary",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "maxSalary",
-                  "storageKey": null
-                }
-              ],
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "topSpecialties",
-              "storageKey": null
             }
           ],
           "storageKey": null
@@ -248,11 +211,6 @@ const node: ReaderFragment = {
         }
       ],
       "storageKey": null
-    },
-    {
-      "args": null,
-      "kind": "FragmentSpread",
-      "name": "JobMapMarkersFragment_data"
     },
     {
       "args": null,
@@ -274,6 +232,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "0b977c988274a00df0021868f64c992a";
+(node as any).hash = "8a2106c334a0f6fafc81e2d9dda30dc1";
 
 export default node;

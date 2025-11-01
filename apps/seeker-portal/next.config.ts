@@ -130,6 +130,18 @@ const nextConfig: NextConfig = {
 			{
 				source: '/search/:speciality-jobs-in-:location',
 				destination: '/search/:speciality/jobs-in/:location?via_rewrite=true'
+			},
+			{
+				source: '/search/map/jobs-in-:location',
+				destination: '/search/map/jobs-in/:location?via_rewrite=true'
+			},
+			{
+				source: '/search/map/:speciality-jobs',
+				destination: '/search/map/:speciality/jobs?via_rewrite=true'
+			},
+			{
+				source: '/search/map/:speciality-jobs-in-:location',
+				destination: '/search/map/:speciality/jobs-in/:location?via_rewrite=true'
 			}
 		];
 	},
@@ -175,6 +187,42 @@ const nextConfig: NextConfig = {
 					}
 				],
 				destination: '/search/:speciality-jobs-in-:location',
+				permanent: false
+			},
+			{
+				source: '/search/map/jobs-in/:location',
+				has: [
+					{
+						type: 'query',
+						key: 'via_rewrite',
+						value: undefined
+					}
+				],
+				destination: '/search/map/jobs-in-:location',
+				permanent: false
+			},
+			{
+				source: '/search/map/:speciality/jobs',
+				has: [
+					{
+						type: 'query',
+						key: 'via_rewrite',
+						value: undefined
+					}
+				],
+				destination: '/search/map/:speciality-jobs',
+				permanent: false
+			},
+			{
+				source: '/search/map/:speciality/jobs-in/:location',
+				has: [
+					{
+						type: 'query',
+						key: 'via_rewrite',
+						value: undefined
+					}
+				],
+				destination: '/search/map/:speciality-jobs-in-:location',
 				permanent: false
 			},
 			{

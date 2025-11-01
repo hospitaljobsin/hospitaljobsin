@@ -1195,41 +1195,6 @@ class JobClusterService:
         # The bounds ensure we don't create more than 1000 hexagons
         h3_resolution = get_h3_resolution_from_zoom(zoom_level, bounds)
 
-        # Debug logging
-        import logging
-
-        logger = logging.getLogger(__name__)
-
-        # For lower zoom levels, use H3 hexagonal aggregation
-        print("🏠 Using H3 aggregated clusters for low zoom level")
-        logger.info("Using H3 aggregated clusters for low zoom level")
-        result = await self._get_aggregated_clusters(bounds, h3_resolution, filters)
-        print(
-            f"🏠 _get_aggregated_clusters returned: {len(result[0])} clusters, {result[1]} total_count"
-        )
-        return result
-
-    async def _get_aggregated_clusters(
-        self,
-        bounds: dict[str, float],
-        h3_resolution: int,
-        filters: JobClusterFilters,
-    ) -> tuple[list[JobCluster], int]:
-        """
-        Get aggregated clusters using H3 hexagonal binning.
-
-        Args:
-            bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
-            h3_resolution: H3 resolution level to use
-            filters: Filter criteria for jobs
-
-        Returns:
-            Tuple of (list of job clusters, total job count)
-
-        """
-        # Delegate to repository's aggregation method
-        clusters, total_count = await self._job_repo.get_aggregated_jobs_by_h3(
+        return await self._job_repo.get_aggregated_jobs_by_h3(
             bounds=BoundingBox(**bounds), h3_resolution=h3_resolution, filters=filters
         )
-
-        return clusters, total_count

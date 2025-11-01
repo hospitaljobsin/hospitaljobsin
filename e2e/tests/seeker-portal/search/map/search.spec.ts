@@ -41,7 +41,7 @@ test.describe('Search Map Page', () => {
 
 		// Check job listings sidebar
 		await expect(page.getByRole('heading', { name: /Viewing \d+ Jobs/ })).toBeVisible();
-		await expect(page.getByText('Showing jobs in the current map view')).toBeVisible();
+		await expect(page.getByText('in the current map view')).toBeVisible();
 
 		// Check map controls
 		await expect(page.getByRole('button', { name: 'Zoom in' })).toBeVisible();

@@ -56,6 +56,7 @@ const ClusterJobsListQueryNode = graphql`
 		$minSalary: Int
 		$maxSalary: Int
 		$proximityKm: Float
+		$sortBy: JobSearchSortBy!
 	) {
 		...ClusterJobsListInternalFragment
 			@arguments(
@@ -68,6 +69,7 @@ const ClusterJobsListQueryNode = graphql`
 				minSalary: $minSalary
 				maxSalary: $maxSalary
 				proximityKm: $proximityKm
+				sortBy: $sortBy
 			)
 	}
 `;
@@ -87,6 +89,7 @@ const ClusterJobsListInternalFragment = graphql`
 		minSalary: { type: "Int" }
 		maxSalary: { type: "Int" }
 		proximityKm: { type: "Float" }
+		sortBy: { type: "JobSearchSortBy!" }
 	) {
 		jobs(
 			after: $cursor
@@ -100,10 +103,11 @@ const ClusterJobsListInternalFragment = graphql`
 			minSalary: $minSalary
 			maxSalary: $maxSalary
 			proximityKm: $proximityKm
+			sortBy: $sortBy
 		)
 			@connection(
 				key: "ClusterJobsListFragment_jobs"
-				filters: ["bounds", "workMode", "jobType", "searchTerm", "location", "minExperience", "minSalary", "maxSalary", "proximityKm"]
+				filters: ["bounds", "workMode", "jobType", "searchTerm", "location", "minExperience", "minSalary", "maxSalary", "proximityKm", "sortBy"]
 			) {
 			edges {
 				node {
@@ -147,6 +151,9 @@ interface ViewportJobsListProps {
  * Shows all jobs visible in the current map bounds regardless of zoom level.
  */
 function ViewportJobsContent({ bounds, filters, className = '' }: ViewportJobsListProps) {
+	// Map sortBy values: 'RELEVANCE' and 'CREATED_AT' are valid JobSearchSortBy enum values
+	const sortByValue = filters.sortBy === 'CREATED_AT' ? 'UPDATED_AT' : 'RELEVANCE';
+
 	const queryData = useLazyLoadQuery<ClusterJobsListQuery>(ClusterJobsListQueryNode, {
 		bounds,
 		workMode: (filters.workMode.length > 0 ? filters.workMode : ['OFFICE', 'REMOTE', 'HYBRID']) as readonly JobWorkModeFilter[],
@@ -158,9 +165,9 @@ function ViewportJobsContent({ bounds, filters, className = '' }: ViewportJobsLi
 		minExperience: filters.minExperience || undefined,
 		minSalary: filters.minSalary || undefined,
 		maxSalary: filters.maxSalary || undefined,
-		proximityKm: filters.proximityKm || undefined
+		proximityKm: filters.proximityKm || undefined,
+		sortBy: sortByValue
 	});
-
 	const { data, loadNext, isLoadingNext } = usePaginationFragment<ClusterJobsListPaginationQuery, ClusterJobsListInternalFragment$key>(
 		ClusterJobsListInternalFragment,
 		queryData

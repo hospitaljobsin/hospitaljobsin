@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<22352faec1cc51cce7f90f2cd9123300>>
- * @relayHash f8c4fe67ff7e479816e0f85a02110636
+ * @generated SignedSource<<afd790e85f9d8b90c00c117ccbf06f61>>
+ * @relayHash deee98497a82a1d1c47c9496368d4641
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID f8c4fe67ff7e479816e0f85a02110636
+// @relayRequestID deee98497a82a1d1c47c9496368d4641
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -150,48 +150,18 @@ v20 = {
   "name": "workMode",
   "variableName": "workMode"
 },
-v21 = [
-  {
-    "alias": null,
-    "args": null,
-    "kind": "ScalarField",
-    "name": "coordinates",
-    "storageKey": null
-  }
-],
-v22 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "minSalary",
-  "storageKey": null
-},
-v23 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "maxSalary",
-  "storageKey": null
-},
-v24 = {
+v21 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "totalCount",
   "storageKey": null
 },
-v25 = {
+v22 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
-  "storageKey": null
-},
-v26 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "slug",
   "storageKey": null
 };
 return {
@@ -294,7 +264,15 @@ return {
                 "kind": "LinkedField",
                 "name": "center",
                 "plural": false,
-                "selections": (v21/*: any*/),
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "coordinates",
+                    "storageKey": null
+                  }
+                ],
                 "storageKey": null
               },
               {
@@ -303,140 +281,11 @@ return {
                 "kind": "ScalarField",
                 "name": "bounds",
                 "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "SalaryRange",
-                "kind": "LinkedField",
-                "name": "salaryRange",
-                "plural": false,
-                "selections": [
-                  (v22/*: any*/),
-                  (v23/*: any*/)
-                ],
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "topSpecialties",
-                "storageKey": null
               }
             ],
             "storageKey": null
           },
-          (v24/*: any*/)
-        ],
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": [
-          (v12/*: any*/),
-          {
-            "kind": "Variable",
-            "name": "first",
-            "variableName": "first"
-          },
-          (v13/*: any*/),
-          (v14/*: any*/),
-          (v15/*: any*/),
-          (v16/*: any*/),
-          (v17/*: any*/),
-          (v18/*: any*/),
-          (v19/*: any*/),
-          {
-            "kind": "Variable",
-            "name": "sortBy",
-            "variableName": "sortBy"
-          },
-          (v20/*: any*/)
-        ],
-        "concreteType": "JobConnection",
-        "kind": "LinkedField",
-        "name": "jobs",
-        "plural": false,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "JobEdge",
-            "kind": "LinkedField",
-            "name": "edges",
-            "plural": true,
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Job",
-                "kind": "LinkedField",
-                "name": "node",
-                "plural": false,
-                "selections": [
-                  (v25/*: any*/),
-                  (v26/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "title",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "location",
-                    "storageKey": null
-                  },
-                  (v22/*: any*/),
-                  (v23/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "currency",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "GeoObject",
-                    "kind": "LinkedField",
-                    "name": "geo",
-                    "plural": false,
-                    "selections": (v21/*: any*/),
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "Organization",
-                    "kind": "LinkedField",
-                    "name": "organization",
-                    "plural": false,
-                    "selections": [
-                      (v26/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "name",
-                        "storageKey": null
-                      },
-                      (v25/*: any*/)
-                    ],
-                    "storageKey": null
-                  }
-                ],
-                "storageKey": null
-              }
-            ],
-            "storageKey": null
-          },
-          (v24/*: any*/)
+          (v21/*: any*/)
         ],
         "storageKey": null
       },
@@ -487,7 +336,7 @@ return {
                     "name": "progressPercentage",
                     "storageKey": null
                   },
-                  (v25/*: any*/)
+                  (v22/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -498,18 +347,50 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v25/*: any*/)
+              (v22/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
           }
         ],
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": [
+          (v12/*: any*/),
+          {
+            "kind": "Variable",
+            "name": "first",
+            "variableName": "first"
+          },
+          (v13/*: any*/),
+          (v14/*: any*/),
+          (v15/*: any*/),
+          (v16/*: any*/),
+          (v17/*: any*/),
+          (v18/*: any*/),
+          (v19/*: any*/),
+          {
+            "kind": "Variable",
+            "name": "sortBy",
+            "variableName": "sortBy"
+          },
+          (v20/*: any*/)
+        ],
+        "concreteType": "JobConnection",
+        "kind": "LinkedField",
+        "name": "jobs",
+        "plural": false,
+        "selections": [
+          (v21/*: any*/)
+        ],
+        "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "f8c4fe67ff7e479816e0f85a02110636",
+    "id": "deee98497a82a1d1c47c9496368d4641",
     "metadata": {},
     "name": "pageSearchMapViewQuery",
     "operationKind": "query",
