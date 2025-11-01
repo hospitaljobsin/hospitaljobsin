@@ -30,6 +30,7 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 	const map = useMap();
 	const canvasLayerRef = useRef<L.Canvas | null>(null);
 	const hexagonsRef = useRef<Map<string, L.Polygon>>(new Map());
+	const lastClusterIdsRef = useRef<Set<string>>(new Set());
 
 	useEffect(() => {
 		// Early return if map is not ready or no container exists
@@ -43,6 +44,22 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 			console.warn('JobHexagonClusters: clusters is not an array:', typeof clusters, clusters);
 			return;
 		}
+
+		// Check if clusters actually changed by comparing h3Index sets
+		const currentClusterIds = new Set(clusters.map(c => c.h3Index));
+		const hasChanged =
+			currentClusterIds.size !== lastClusterIdsRef.current.size || [...currentClusterIds].some(id => !lastClusterIdsRef.current.has(id));
+
+		if (!hasChanged && hexagonsRef.current.size > 0) {
+			// Clusters haven't changed, skip re-rendering
+			console.log('JobHexagonClusters: Clusters unchanged, skipping re-render');
+			return;
+		}
+
+		// Update the last clusters reference
+		lastClusterIdsRef.current = currentClusterIds;
+
+		console.log(`JobHexagonClusters: Rendering ${clusters.length} clusters`);
 
 		// Create canvas renderer if not exists
 		if (!canvasLayerRef.current) {
@@ -62,16 +79,26 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 			const color = getClusterColor(cluster.count);
 
 			// Convert bounds to LatLng format
-			const latLngs = cluster.bounds.map(([lat, lng]) => L.latLng(lat, lng));
+			// IMPORTANT: GeoJSON format is [lng, lat], but Leaflet expects [lat, lng]
+			const latLngs = cluster.bounds.map(([lng, lat]) => L.latLng(lat, lng));
+
+			console.log(`Adding hexagon for cluster ${cluster.h3Index}:`, {
+				count: cluster.count,
+				color,
+				boundsCount: latLngs.length,
+				firstBound: latLngs[0],
+				originalBound: cluster.bounds[0]
+			});
 
 			// Create polygon for hexagon with sleek, minimalistic styling
 			const hexagon = L.polygon(latLngs, {
 				color: color,
 				fillColor: color,
-				fillOpacity: 0.25,
-				weight: 2,
-				opacity: 0.7,
-				renderer: canvas
+				fillOpacity: 0.5, // Increased from 0.25 for better visibility
+				weight: 3, // Increased from 2 for better visibility
+				opacity: 1.0, // Increased from 0.7 for better visibility
+				renderer: canvas,
+				pane: 'overlayPane' // Ensure hexagons render above tiles
 			});
 
 			// Add accessibility and interactivity
@@ -124,6 +151,7 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 			if (map?.getContainer()) {
 				try {
 					hexagon.addTo(map);
+					console.log(`✅ Successfully added hexagon ${cluster.h3Index} to map`);
 				} catch (error) {
 					console.warn('Error adding hexagon to map:', error);
 				}
@@ -133,8 +161,11 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 			hexagonsRef.current.set(cluster.h3Index, hexagon);
 		});
 
+		console.log(`📍 Total hexagons on map: ${hexagonsRef.current.size}`);
+
 		// Cleanup
 		return () => {
+			console.log('🧹 Cleanup function called - this should only happen when component unmounts or clusters change');
 			if (map?.getContainer()) {
 				try {
 					for (const hex of hexagonsRef.current.values()) {

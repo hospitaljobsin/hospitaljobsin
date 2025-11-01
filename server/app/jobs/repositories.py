@@ -392,6 +392,22 @@ class JobRepo:
         print(f"🔥 MongoDB returned {len(results)} results")
         if results:
             print(f"🔥 First result: {results[0]}")
+
+        # DEBUG: Log detailed count information for debugging zoom-level mismatches
+        total_jobs_in_clusters = sum(r.get("count", 0) for r in results)
+        print("🔥 DEBUG COUNT ANALYSIS:")
+        print(f"   - Resolution: {h3_resolution}")
+        print(f"   - Number of clusters: {len(results)}")
+        print(f"   - Total jobs across all clusters: {total_jobs_in_clusters}")
+        print(
+            f"   - Viewport bounds: sw_lat={bounds.sw_lat:.4f}, sw_lng={bounds.sw_lng:.4f}, ne_lat={bounds.ne_lat:.4f}, ne_lng={bounds.ne_lng:.4f}"
+        )
+        if results:
+            print("   - Top 5 clusters by count:")
+            for i, r in enumerate(
+                sorted(results, key=lambda x: x.get("count", 0), reverse=True)[:5]
+            ):
+                print(f"     {i + 1}. H3={r.get('_id')}: count={r.get('count')}")
         logger.info(
             f"JobRepo._aggregate_direct: pipeline returned {len(results)} results"
         )
@@ -590,49 +606,6 @@ class JobRepo:
                 total_count = cache_obj["total_count"]
             return clusters, total_count
 
-        # Validate bounding box to prevent memory exhaustion
-        lat_diff = bounds.ne_lat - bounds.sw_lat
-        lng_diff = bounds.ne_lng - bounds.sw_lng
-
-        # Calculate approximate area in square degrees
-        area_sq_deg = lat_diff * lng_diff
-
-        # Prevent excessive H3 hexagon generation for large bounding boxes
-        # Maximum area limits based on H3 resolution
-        max_area_limits = {
-            0: 36000,  # Global scale
-            1: 5000,  # Continental scale
-            2: 1000,  # Large country scale
-            3: 200,  # Country/state scale
-            4: 50,  # State/province scale
-            5: 10,  # Large city scale
-            6: 2,  # City scale
-            7: 0.5,  # District scale
-            8: 0.1,  # Neighborhood scale
-            9: 0.02,  # Block scale
-            10: 0.005,  # Building scale
-            11: 0.001,  # Fine detail scale
-        }
-
-        max_area = max_area_limits.get(h3_resolution, 0.001)
-        print(
-            f"📐 Area check: area_sq_deg={area_sq_deg:.6f}, max_area={max_area}, h3_resolution={h3_resolution}"
-        )
-        if area_sq_deg > max_area:
-            # Log the issue for monitoring
-            import logging
-
-            logger = logging.getLogger(__name__)
-            logger.warning(
-                f"Bounding box too large for H3 resolution {h3_resolution}: "
-                f"area={area_sq_deg:.4f} sq_deg > max={max_area} sq_deg. "
-                f"bounds={bounds}"
-            )
-            print("📐 AREA TOO LARGE - returning early!")
-            return [], 0
-
-        print("📐 Area check passed - proceeding")
-
         # Calculate intersecting H3 hexagons
         print("🔶 Creating bbox polygon...")
         # Create polygon from bounding box
@@ -674,15 +647,16 @@ class JobRepo:
             f"H3 clustering debug: h3_resolution={h3_resolution}, "
             f"intersecting_hexes_count={len(intersecting_hexes)}, "
             f"intersecting_hexes={intersecting_hexes[:10]}, "  # Show first 10 for comparison
-            f"area_sq_deg={area_sq_deg:.6f}, "
             f"bounds={bounds}"
         )
 
-        # Additional safeguard: limit number of hexagons
-        max_hexagons = 10000  # Reasonable limit for performance
-        if len(intersecting_hexes) > max_hexagons:
+        # Safety check: ensure we don't create too many hexagons
+        # This should rarely trigger since resolution is calculated dynamically,
+        # but serves as a failsafe for edge cases
+        MAX_HEXAGONS_SAFETY_LIMIT = 2000  # Allow some buffer over the 1000 target
+        if len(intersecting_hexes) > MAX_HEXAGONS_SAFETY_LIMIT:
             logger.warning(
-                f"Too many H3 hexagons generated: {len(intersecting_hexes)} > {max_hexagons}. "
+                f"Too many H3 hexagons generated: {len(intersecting_hexes)} > {MAX_HEXAGONS_SAFETY_LIMIT}. "
                 f"h3_resolution={h3_resolution}, bounds={bounds}"
             )
             return [], 0

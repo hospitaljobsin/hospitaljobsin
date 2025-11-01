@@ -89,42 +89,129 @@ from app.revalidation.services import BaseRevalidationService
 # Map clustering utilities
 
 
-def get_h3_resolution_from_zoom(zoom_level: int, job_density: float) -> int:
+def get_h3_resolution_from_bounds(
+    bounds: dict[str, float], max_hexagons: int = 1000
+) -> int:
     """
-    Map Leaflet zoom level to H3 resolution, adjustable by density.
+    Calculate optimal H3 resolution based on bounding box area.
 
-    Based on PRD specifications and test expectations:
-    - Zoom 1-4: Resolution 5 (minimum practical resolution for clustering)
-    - Zoom 5-9: Resolution 6
-    - Zoom 10-11: Resolution 7
-    - Zoom 12-13: Resolution 9
-    - Zoom 14: Resolution 10
-    - Zoom 15+: Resolution 11
+    Given any bounds, selects the H3 resolution such that not more than
+    max_hexagons can be created within the bounds.
 
-    Note: Resolutions 1-4 don't work well for city-level bounding boxes,
-    so we use resolution 5 as the minimum for practical clustering.
+    Args:
+        bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
+        max_hexagons: Maximum number of hexagons allowed (default: 1000)
+
+    Returns:
+        H3 resolution level (0-15)
     """
-    # Base resolution mapping - using minimum resolution 5 for practical clustering
-    if zoom_level <= 4:
-        base_res = 5
+    import h3
+
+    # Calculate viewport area using haversine formula
+    sw_lat = bounds["sw_lat"]
+    sw_lng = bounds["sw_lng"]
+    ne_lat = bounds["ne_lat"]
+    ne_lng = bounds["ne_lng"]
+
+    # Earth radius in km
+    r = 6371.0
+
+    # Convert to radians
+    lat1 = math.radians(sw_lat)
+    lat2 = math.radians(ne_lat)
+    lng1 = math.radians(sw_lng)
+    lng2 = math.radians(ne_lng)
+
+    # Calculate height (north-south distance)
+    dlat = lat2 - lat1
+    a = math.sin(dlat / 2) ** 2
+    c = 2 * math.asin(math.sqrt(a))
+    height_km = r * c
+
+    # Calculate width (east-west distance) at center latitude
+    center_lat = (lat1 + lat2) / 2
+    dlng = lng2 - lng1
+    a = math.cos(center_lat) ** 2 * math.sin(dlng / 2) ** 2
+    c = 2 * math.asin(math.sqrt(a))
+    width_km = r * c
+
+    # Calculate area
+    area_km2 = height_km * width_km
+
+    # Start from the highest resolution and work down to find
+    # the finest resolution that keeps hexagons under the limit
+    for resolution in range(15, -1, -1):  # H3 resolutions go from 0 to 15
+        # Get average hexagon area at this resolution
+        avg_hex_area_km2 = h3.average_hexagon_area(resolution, unit="km^2")
+
+        # Estimate number of hexagons needed to cover the area
+        # Add 20% buffer to account for irregular coverage at edges
+        estimated_hexagons = (area_km2 / avg_hex_area_km2) * 1.2
+
+        if estimated_hexagons <= max_hexagons:
+            return resolution
+
+    # If even resolution 0 would create too many hexagons,
+    # return 0 (coarsest resolution available)
+    return 0
+
+
+def get_h3_resolution_from_zoom(
+    zoom_level: int, bounds: dict[str, float] | None = None
+) -> int:
+    """
+    Calculate optimal H3 resolution based on bounds and zoom level.
+
+    The primary calculation is based on the bounding box area to ensure
+    that no more than 1000 hexagons are created. The zoom level is used
+    as a secondary constraint to ensure minimum resolution.
+
+    Args:
+        zoom_level: Map zoom level (1-20)
+        job_density: Jobs per square kilometer (used for legacy compatibility)
+        bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
+
+    Returns:
+        H3 resolution level (0-15)
+
+    Zoom level minimum resolution mapping:
+    - Zoom 0-3: Min resolution 1 (Country/Continent view)
+    - Zoom 4-5: Min resolution 3 (State/Province view)
+    - Zoom 6-7: Min resolution 5 (City view)
+    - Zoom 8-9: Min resolution 7 (Neighborhood view)
+    - Zoom 10-11: Min resolution 9 (District view)
+    - Zoom 12: Min resolution 10 (Street view)
+    - Zoom 13-14: Min resolution 11 (Block view)
+    - Zoom 15+: Min resolution 11 (Individual markers shown instead)
+    """
+    # Determine minimum resolution based on zoom level
+    if zoom_level <= 3:
+        min_resolution = 1
+    elif zoom_level <= 5:
+        min_resolution = 3
+    elif zoom_level <= 7:
+        min_resolution = 5
     elif zoom_level <= 9:
-        base_res = 6
+        min_resolution = 7
     elif zoom_level <= 11:
-        base_res = 7
-    elif zoom_level <= 13:
-        base_res = 9
-    elif zoom_level == 14:
-        base_res = 10
-    else:  # zoom_level >= 15
-        base_res = 11
+        min_resolution = 9
+    elif zoom_level == 12:
+        min_resolution = 10
+    else:  # zoom_level >= 13
+        min_resolution = 11
 
-    # Adjust for density (jobs per km²)
-    if job_density > 100:  # High density: finer resolution
-        return min(11, base_res + 1)
-    if job_density < 10:  # Low density: coarser resolution
-        return max(5, base_res - 1)  # Never go below resolution 5
+    # If no bounds provided, just use the zoom-based minimum
+    if bounds is None:
+        return min_resolution
 
-    return base_res
+    # Calculate bounds-based max resolution (finest we can use without exceeding 1000 hexagons)
+    max_resolution = get_h3_resolution_from_bounds(bounds, max_hexagons=1000)
+
+    # The final resolution should be:
+    # - At least min_resolution (to ensure appropriate detail for zoom)
+    # - At most max_resolution (to ensure we don't exceed 1000 hexagons)
+    # If these constraints conflict (min > max), we must respect the bounds limit
+    return min(min_resolution, max_resolution)
 
 
 class SavedJobService:
@@ -1104,24 +1191,14 @@ class JobClusterService:
             Tuple of (list of job clusters, total job count)
 
         """
-        # Calculate job density for viewport
-        job_density = await self._calculate_job_density(bounds, filters)
-
-        # Determine H3 resolution based on zoom level and density
-        h3_resolution = get_h3_resolution_from_zoom(zoom_level, job_density)
+        # Determine H3 resolution based on bounds and zoom level
+        # The bounds ensure we don't create more than 1000 hexagons
+        h3_resolution = get_h3_resolution_from_zoom(zoom_level, bounds)
 
         # Debug logging
         import logging
 
         logger = logging.getLogger(__name__)
-        print(
-            f"🚀 JobClusterService.get_job_clusters: zoom_level={zoom_level}, "
-            f"job_density={job_density}, h3_resolution={h3_resolution}, bounds={bounds}"
-        )
-        logger.info(
-            f"JobClusterService.get_job_clusters: zoom_level={zoom_level}, "
-            f"job_density={job_density}, h3_resolution={h3_resolution}, bounds={bounds}"
-        )
 
         # For lower zoom levels, use H3 hexagonal aggregation
         print("🏠 Using H3 aggregated clusters for low zoom level")
@@ -1131,96 +1208,6 @@ class JobClusterService:
             f"🏠 _get_aggregated_clusters returned: {len(result[0])} clusters, {result[1]} total_count"
         )
         return result
-
-    async def _calculate_job_density(
-        self, bounds: dict[str, float], filters: JobClusterFilters
-    ) -> float:
-        """
-        Calculate job density (jobs per km²) for a viewport.
-
-        Args:
-            bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
-            filters: Filter criteria for jobs
-
-        Returns:
-            Jobs per square kilometer
-
-        """
-        # Calculate viewport area using haversine formula
-        sw_lat = bounds["sw_lat"]
-        sw_lng = bounds["sw_lng"]
-        ne_lat = bounds["ne_lat"]
-        ne_lng = bounds["ne_lng"]
-
-        # Earth radius in km
-        r = 6371.0
-
-        # Convert to radians
-        lat1 = math.radians(sw_lat)
-        lat2 = math.radians(ne_lat)
-        lng1 = math.radians(sw_lng)
-        lng2 = math.radians(ne_lng)
-
-        # Calculate height (north-south distance)
-        dlat = lat2 - lat1
-        a = math.sin(dlat / 2) ** 2
-        c = 2 * math.asin(math.sqrt(a))
-        height_km = r * c
-
-        # Calculate width (east-west distance) at center latitude
-        center_lat = (lat1 + lat2) / 2
-        dlng = lng2 - lng1
-        a = math.cos(center_lat) ** 2 * math.sin(dlng / 2) ** 2
-        c = 2 * math.asin(math.sqrt(a))
-        width_km = r * c
-
-        # Calculate area
-        area_km2 = height_km * width_km
-
-        # Avoid division by zero
-        if area_km2 == 0:
-            return 0.0
-
-        # For large areas, use a simple heuristic based on area size
-        # to avoid calling aggregation which might cause memory issues
-        if area_km2 > 50000:  # Very large area (like entire countries)
-            # Use low density assumption for very large areas
-            return 0.1  # jobs per km²
-        elif area_km2 > 5000:  # Large area (like states/provinces)
-            return 1.0  # jobs per km²
-        elif area_km2 > 500:  # Medium area (like cities)
-            return 5.0  # jobs per km²
-        else:
-            # For smaller areas, do actual job counting
-            # Use a simple MongoDB count query instead of full aggregation
-            try:
-                # Build a basic query without H3 aggregation
-                query_conditions = {
-                    "is_active": True,
-                    "geo": {
-                        "$geoWithin": {
-                            "$box": [
-                                [bounds["sw_lng"], bounds["sw_lat"]],
-                                [bounds["ne_lng"], bounds["ne_lat"]],
-                            ]
-                        }
-                    },
-                }
-
-                # Add basic filters without complex logic
-                if filters.work_mode:
-                    query_conditions["work_mode"] = {"$in": filters.work_mode}
-                if filters.job_type:
-                    query_conditions["type"] = {"$in": filters.job_type}
-
-                from app.jobs.documents import Job
-
-                total_count = await Job.count(query_conditions)
-
-                return total_count / area_km2 if area_km2 > 0 else 0.0
-            except Exception:
-                # Fallback to medium density if query fails
-                return 10.0  # jobs per km²
 
     async def _get_aggregated_clusters(
         self,

@@ -105,6 +105,26 @@ export default function MapViewClientComponent({
 		(bounds: { swLat: number; swLng: number; neLat: number; neLng: number }) => {
 			setCurrentBounds(bounds);
 
+			// Calculate area for debugging
+			const latDiff = bounds.neLat - bounds.swLat;
+			const lngDiff = bounds.neLng - bounds.swLng;
+			const areaSqDeg = latDiff * lngDiff;
+
+			console.log('🗺️ Frontend: Bounds changed, sending to backend:', {
+				bounds: {
+					swLat: bounds.swLat,
+					swLng: bounds.swLng,
+					neLat: bounds.neLat,
+					neLng: bounds.neLng
+				},
+				zoomLevel: currentZoom,
+				calculated: {
+					latDiff: latDiff.toFixed(6),
+					lngDiff: lngDiff.toFixed(6),
+					areaSqDeg: areaSqDeg.toFixed(6)
+				}
+			});
+
 			startTransition(() => {
 				refetch(
 					{
@@ -141,8 +161,29 @@ export default function MapViewClientComponent({
 		(zoom: number) => {
 			setCurrentZoom(zoom);
 
+			console.log('🔍 Frontend: Zoom changed:', {
+				newZoom: zoom,
+				oldZoom: currentZoom,
+				hasBounds: !!currentBounds,
+				bounds: currentBounds
+			});
+
 			// Refetch with new zoom level if bounds are available
 			if (currentBounds) {
+				const latDiff = currentBounds.neLat - currentBounds.swLat;
+				const lngDiff = currentBounds.neLng - currentBounds.swLng;
+				const areaSqDeg = latDiff * lngDiff;
+
+				console.log('🗺️ Frontend: Zoom change refetch:', {
+					zoomLevel: zoom,
+					bounds: currentBounds,
+					calculated: {
+						latDiff: latDiff.toFixed(6),
+						lngDiff: lngDiff.toFixed(6),
+						areaSqDeg: areaSqDeg.toFixed(6)
+					}
+				});
+
 				startTransition(() => {
 					refetch(
 						{

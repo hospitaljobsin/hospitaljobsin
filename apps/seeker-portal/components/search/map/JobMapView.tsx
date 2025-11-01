@@ -4,13 +4,12 @@ import { useProgress } from '@bprogress/next';
 import { useDisclosure } from '@heroui/react';
 import type { Map as LeafletMap } from 'leaflet';
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import type { MapViewClientComponentFragment$data } from '@/__generated__/MapViewClientComponentFragment.graphql';
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
 import MapHeader from '@/components/layout/MapHeader';
-import { calculateViewportArea, shouldShowClusters } from '@/lib/map/h3Utils';
 
 type ClusterInfo = {
 	hexId: string;
@@ -21,7 +20,6 @@ type ClusterInfo = {
 // Dynamic imports for Leaflet components (SSR incompatible)
 const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
-const JobMapMarkers = dynamic(() => import('./JobMapMarkers'), { ssr: false });
 const JobHexagonClusters = dynamic(() => import('./JobHexagonClusters'), { ssr: false });
 const JobMapControls = dynamic(() => import('./JobMapControls'), { ssr: false });
 const MapFilterSidebar = dynamic(() => import('./MapFilterSidebar'), { ssr: false });
@@ -280,6 +278,23 @@ export default function JobMapView({
 			};
 
 			const newBounds = normalizeBounds(rawBounds);
+
+			// Calculate area for debugging
+			const latDiff = newBounds.neLat - newBounds.swLat;
+			const lngDiff = newBounds.neLng - newBounds.swLng;
+			const areaSqDeg = latDiff * lngDiff;
+
+			console.log('📐 Frontend: Bounds calculated on zoom end:', {
+				zoom,
+				rawBounds,
+				normalizedBounds: newBounds,
+				calculated: {
+					latDiff: latDiff.toFixed(6),
+					lngDiff: lngDiff.toFixed(6),
+					areaSqDeg: areaSqDeg.toFixed(6)
+				}
+			});
+
 			setLastBounds(newBounds);
 			setCurrentBounds(newBounds);
 
@@ -398,12 +413,28 @@ export default function JobMapView({
 				// Normalize bounds to ensure valid lat/lng ranges for MongoDB
 				const newBounds = normalizeBounds(rawBounds);
 
+				// Calculate area for debugging
+				const latDiff = newBounds.neLat - newBounds.swLat;
+				const lngDiff = newBounds.neLng - newBounds.swLng;
+				const areaSqDeg = latDiff * lngDiff;
+
+				console.log('🗺️ Frontend: Map moveend - bounds calculated:', {
+					rawBounds,
+					normalizedBounds: newBounds,
+					currentZoom,
+					calculated: {
+						latDiff: latDiff.toFixed(6),
+						lngDiff: lngDiff.toFixed(6),
+						areaSqDeg: areaSqDeg.toFixed(6)
+					}
+				});
+
 				// Only trigger refetch if bounds changed significantly (>0.001 degrees ~110m)
 				if (lastBounds) {
-					const latDiff = Math.abs(newBounds.swLat - lastBounds.swLat) + Math.abs(newBounds.neLat - lastBounds.neLat);
-					const lngDiff = Math.abs(newBounds.swLng - lastBounds.swLng) + Math.abs(newBounds.neLng - lastBounds.neLng);
+					const latDiffFromLast = Math.abs(newBounds.swLat - lastBounds.swLat) + Math.abs(newBounds.neLat - lastBounds.neLat);
+					const lngDiffFromLast = Math.abs(newBounds.swLng - lastBounds.swLng) + Math.abs(newBounds.neLng - lastBounds.neLng);
 
-					if (latDiff < 0.002 && lngDiff < 0.002) {
+					if (latDiffFromLast < 0.002 && lngDiffFromLast < 0.002) {
 						// Clear pending operation for minor movements
 						setIsPendingMapOperation(false);
 						return;
@@ -434,29 +465,6 @@ export default function JobMapView({
 		};
 	}, [map, onBoundsChange, lastBounds]);
 
-	// Handle job marker click
-	const handleJobClick = useCallback(
-		(jobId: string) => {
-			setSelectedJobId(jobId);
-			// Note: We don't need to access job data here since the popup is handled by JobMapMarkers
-			if (isMobile) {
-				onDrawerOpen();
-			}
-		},
-		[isMobile, onDrawerOpen]
-	);
-
-	// Handle cluster that cannot expand further
-	const handleClusterCannotExpand = useCallback(() => {
-		console.log('Cluster cannot expand, forcing sidebar/sheet open');
-		setForceSidebarOpen(true);
-
-		// Reset the force open state after a short delay to allow normal behavior to resume
-		setTimeout(() => {
-			setForceSidebarOpen(false);
-		}, 1000);
-	}, []);
-
 	// Handle cluster click - zoom into cluster center and trigger sidebar population
 	const handleClusterClick = useCallback(
 		(h3Index: string, cluster: any) => {
@@ -485,32 +493,6 @@ export default function JobMapView({
 		},
 		[map, currentZoom, onClusterSelect]
 	);
-
-	// Calculate viewport area for clustering decision
-	const viewportArea = useMemo(() => {
-		if (!map) return 0;
-		const bounds = map.getBounds();
-		const sw = bounds.getSouthWest();
-		const ne = bounds.getNorthEast();
-		return calculateViewportArea({
-			swLat: sw.lat,
-			swLng: sw.lng,
-			neLat: ne.lat,
-			neLng: ne.lng
-		});
-	}, [map, currentZoom]);
-
-	// Get total job count for clustering decision
-	const totalJobs = jobsData.jobs?.totalCount || 0;
-
-	// Determine whether to show clusters based on zoom, job count, viewport, and mobile state
-	const showClusters = useMemo(() => {
-		// On mobile, cluster more aggressively to avoid crowded markers
-		const mobileZoomAdjustment = isMobile ? -1 : 0;
-		const adjustedZoom = currentZoom + mobileZoomAdjustment;
-
-		return shouldShowClusters(adjustedZoom, totalJobs, viewportArea);
-	}, [currentZoom, totalJobs, viewportArea, isMobile]);
 
 	// Find the most prominent cluster in current viewport
 	const findMostProminentCluster = useCallback((clusters: any[], mapBounds: any) => {
@@ -582,15 +564,16 @@ export default function JobMapView({
 	useEffect(() => {
 		console.log('🔍 Auto-selection check:', {
 			hasMap: !!map,
-			showClusters,
 			currentZoom,
-			hasData: !!data
+			hasData: !!data,
+			hasClusters: !!data.jobClusters?.clusters,
+			clusterCount: data.jobClusters?.clusters?.length || 0
 		});
 
-		if (!map || !showClusters || currentZoom < 10) {
-			// Clear auto-selection when zoomed out too far or no clusters
+		if (!map || currentZoom < 10) {
+			// Clear auto-selection when zoomed out too far
 			console.log('❌ Clearing auto-selection:', {
-				reason: !map ? 'no map' : !showClusters ? 'no clusters shown' : 'zoom too low',
+				reason: !map ? 'no map' : 'zoom too low',
 				currentZoom,
 				minZoomRequired: 10
 			});
@@ -622,7 +605,7 @@ export default function JobMapView({
 		const prominentCluster = findMostProminentCluster(clusters, map);
 		console.log('🎯 Selected cluster:', prominentCluster);
 		setAutoSelectedCluster(prominentCluster);
-	}, [map, showClusters, currentZoom, data, findMostProminentCluster]);
+	}, [map, currentZoom, data, findMostProminentCluster]);
 
 	// Handle drawer close
 	const handleDrawerClose = useCallback(() => {
@@ -728,20 +711,11 @@ export default function JobMapView({
 						>
 							<TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
 
-							{/* Render job clusters when zoomed out */}
-							{showClusters && data.jobClusters?.clusters && data.jobClusters.clusters.length > 0 && (
+							{/* Always render job clusters at all zoom levels */}
+							{data.jobClusters?.clusters && data.jobClusters.clusters.length > 0 && (
 								<JobHexagonClusters clusters={data.jobClusters.clusters as any} onClusterClick={handleClusterClick} />
 							)}
 
-							{/* Render individual job markers when zoomed in or no clusters available */}
-							{(!showClusters || !data.jobClusters?.clusters || data.jobClusters.clusters.length === 0) && (
-								<JobMapMarkers
-									dataRef={data as any}
-									onJobClick={handleJobClick}
-									selectedJobId={selectedJobId}
-									onClusterCannotExpand={handleClusterCannotExpand}
-								/>
-							)}
 							<JobMapControls map={map} />
 						</MapContainer>
 					</div>
