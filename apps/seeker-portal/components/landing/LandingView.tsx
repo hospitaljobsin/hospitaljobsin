@@ -6,8 +6,8 @@ import Link from 'next/link';
 import type { SiteStatsFragment$key } from '@/__generated__/SiteStatsFragment.graphql';
 import links from '@/lib/links';
 import LandingHeaderSkeleton from '../layout/LandingHeaderSkeleton';
+import AboutAndMapSection from './AboutAndMapSection';
 import CompanyLogos from './CompanyLogos';
-import Introduction from './Introduction';
 import JobListSkeleton from './JobListSkeleton';
 import { LandingSearchController } from './LandingSearchController';
 import SiteStats from './SiteStats';
@@ -86,7 +86,7 @@ export default function LandingView({ siteStatsData }: { siteStatsData: SiteStat
 
 			<CompanyLogos />
 
-			<Introduction />
+			<AboutAndMapSection />
 
 			{/* Trending Jobs Section */}
 			<div className='py-8 sm:py-16 flex flex-col gap-8 max-w-7xl w-full px-4 sm:px-5 mx-auto bg-background-600'>

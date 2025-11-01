@@ -145,7 +145,7 @@ export default function JobMapView({
 	// Drawer state for mobile job preview
 	const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
 
-	// Enhanced progress bar control - start early on user interaction, stop when data is ready
+	// Enhanced progress bar control - start early on user interaction, stop when all operations complete
 	useEffect(() => {
 		const shouldShowProgress = isPending || isMapDataFetching || isUserInteracting;
 
@@ -164,29 +164,32 @@ export default function JobMapView({
 		}
 	}, [isPending, isMapDataFetching]);
 
-	// Stop user interaction indicator when data becomes available or after timeout
+	// Only stop user interaction when all operations are complete (no gap in progress)
 	useEffect(() => {
 		if (isUserInteracting && !isPending && !isMapDataFetching) {
-			// Data is ready or already cached, stop the interaction indicator
-			setIsUserInteracting(false);
+			// Add a small delay to ensure smooth transition and catch immediate data fetches
+			const timeoutId = setTimeout(() => {
+				// Double-check that no new operations started during the delay
+				if (!isPending && !isMapDataFetching) {
+					setIsUserInteracting(false);
+				}
+			}, 100); // Short delay to bridge any gaps between interaction and fetching
+
+			return () => clearTimeout(timeoutId);
 		}
 	}, [isPending, isMapDataFetching, isUserInteracting]);
 
-	// Timeout for user interaction to prevent progress bar from staying on indefinitely
+	// Failsafe timeout for user interaction to prevent progress bar from staying on indefinitely
 	useEffect(() => {
 		if (!isUserInteracting) return;
 
 		const timeoutId = setTimeout(() => {
-			// Stop user interaction indicator after 3 seconds if no actual data fetching occurs
-			if (!isPending && !isMapDataFetching) {
-				setIsUserInteracting(false);
-			}
-		}, 3000);
+			// Force stop user interaction indicator after 5 seconds as failsafe
+			setIsUserInteracting(false);
+		}, 5000); // Increased to 5 seconds to allow for slower operations
 
 		return () => clearTimeout(timeoutId);
-	}, [isUserInteracting, isPending, isMapDataFetching]);
-
-	// Handle location selection and zoom to it
+	}, [isUserInteracting]); // Handle location selection and zoom to it
 	const handleLocationSelect = useCallback(
 		(location: SearchLocation) => {
 			if (!map) return;
@@ -274,6 +277,7 @@ export default function JobMapView({
 			setCurrentBounds(newBounds);
 
 			// Trigger bounds change callback for data fetching
+			// Keep user interaction state active - let the unified logic handle stopping
 			if (onBoundsChange) {
 				setIsMapDataFetching(true);
 				onBoundsChange(newBounds);
@@ -287,7 +291,7 @@ export default function JobMapView({
 			map.off('zoomstart', handleZoomStart);
 			map.off('zoomend', handleZoomEnd);
 		};
-	}, [map, onZoomChange, onBoundsChange, setIsMapDataFetching]);
+	}, [map, onZoomChange, onBoundsChange]);
 
 	// Invalidate map size when map is ready or when layout changes (fixes tile loading issue)
 	useEffect(() => {
@@ -390,14 +394,14 @@ export default function JobMapView({
 					const lngDiff = Math.abs(newBounds.swLng - lastBounds.swLng) + Math.abs(newBounds.neLng - lastBounds.neLng);
 
 					if (latDiff < 0.002 && lngDiff < 0.002) {
-						return; // Skip refetch for minor movements
+						return; // Skip refetch for minor movements - keep progress running
 					}
 				}
 
 				setLastBounds(newBounds);
 				setCurrentBounds(newBounds);
 
-				// Start progress bar for map data fetching (only if callback exists)
+				// Start data fetching - keep user interaction active until this completes
 				if (onBoundsChange) {
 					setIsMapDataFetching(true);
 					onBoundsChange(newBounds);
