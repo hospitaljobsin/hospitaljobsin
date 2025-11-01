@@ -9,169 +9,133 @@ export default function AboutAndMapSection() {
 	const patternId = useId();
 	return (
 		<div className='relative py-8 sm:py-12 bg-background-500 overflow-hidden'>
-			{/* Full-width background map - South India outline */}
+			{/* Full-width background map */}
 			<div className='absolute inset-0 opacity-15'>
-				{/* biome-ignore lint/a11y/noSvgWithoutTitle: decorative background map of South India */}
+				{/* biome-ignore lint/a11y/noSvgWithoutTitle: decorative background map pattern */}
 				<svg viewBox='0 0 1440 320' fill='none' xmlns='http://www.w3.org/2000/svg' className='w-full h-full'>
-					{/* South India coastline and state boundaries */}
+					{/* City blocks and streets */}
+					<defs>
+						<pattern id={patternId} patternUnits='userSpaceOnUse' width='120' height='80'>
+							<rect width='120' height='80' fill='none' />
+							{/* City blocks */}
+							<rect x='10' y='10' width='30' height='25' fill='currentColor' className='text-background-300' opacity='0.3' />
+							<rect x='45' y='10' width='25' height='30' fill='currentColor' className='text-background-300' opacity='0.2' />
+							<rect x='75' y='15' width='35' height='20' fill='currentColor' className='text-background-300' opacity='0.4' />
+							<rect x='10' y='40' width='40' height='25' fill='currentColor' className='text-background-300' opacity='0.25' />
+							<rect x='55' y='45' width='30' height='20' fill='currentColor' className='text-background-300' opacity='0.35' />
+							<rect x='90' y='40' width='20' height='30' fill='currentColor' className='text-background-300' opacity='0.3' />
+							{/* Streets */}
+							<line x1='0' y1='35' x2='120' y2='35' stroke='currentColor' strokeWidth='2' className='text-foreground-300' />
+							<line x1='40' y1='0' x2='40' y2='80' stroke='currentColor' strokeWidth='2' className='text-foreground-300' />
+							<line x1='72' y1='0' x2='72' y2='80' stroke='currentColor' strokeWidth='1.5' className='text-foreground-300' />
+							<line x1='0' y1='65' x2='120' y2='65' stroke='currentColor' strokeWidth='1.5' className='text-foreground-300' />
+						</pattern>
+					</defs>
+
+					{/* Apply city block pattern */}
+					<rect width='1440' height='320' fill={`url(#${patternId})`} />
+
+					{/* Major roads and highways */}
+					<path
+						d='M0 160 Q360 140 720 160 Q900 170 1080 155 Q1200 145 1440 160'
+						stroke='currentColor'
+						strokeWidth='4'
+						fill='none'
+						className='text-foreground-400'
+					/>
+					<path
+						d='M360 0 Q380 80 360 160 Q340 240 360 320'
+						stroke='currentColor'
+						strokeWidth='4'
+						fill='none'
+						className='text-foreground-400'
+					/>
+					<path
+						d='M720 0 Q700 80 720 160 Q740 240 720 320'
+						stroke='currentColor'
+						strokeWidth='3'
+						fill='none'
+						className='text-foreground-400'
+					/>
+					<path
+						d='M1080 0 Q1060 80 1080 160 Q1100 240 1080 320'
+						stroke='currentColor'
+						strokeWidth='3'
+						fill='none'
+						className='text-foreground-400'
+					/>
+
+					{/* Secondary roads */}
+					<path
+						d='M0 80 Q180 70 360 80 Q540 90 720 80 Q900 70 1080 85 Q1260 75 1440 80'
+						stroke='currentColor'
+						strokeWidth='2'
+						fill='none'
+						className='text-foreground-350'
+					/>
+					<path
+						d='M0 240 Q180 250 360 240 Q540 230 720 240 Q900 250 1080 235 Q1260 245 1440 240'
+						stroke='currentColor'
+						strokeWidth='2'
+						fill='none'
+						className='text-foreground-350'
+					/>
+
+					{/* Curved roads */}
+					<path
+						d='M180 0 Q200 40 180 80 Q160 120 180 160 Q200 200 180 240 Q160 280 180 320'
+						stroke='currentColor'
+						strokeWidth='2'
+						fill='none'
+						className='text-foreground-350'
+					/>
+					<path
+						d='M540 40 Q560 80 540 120 Q520 160 540 200 Q560 240 540 280'
+						stroke='currentColor'
+						strokeWidth='2'
+						fill='none'
+						className='text-foreground-350'
+					/>
+					<path
+						d='M900 60 Q920 100 900 140 Q880 180 900 220 Q920 260 900 300'
+						stroke='currentColor'
+						strokeWidth='2'
+						fill='none'
+						className='text-foreground-350'
+					/>
+
+					{/* Roundabouts */}
+					<circle cx='360' cy='160' r='12' fill='none' stroke='currentColor' strokeWidth='2' className='text-foreground-400' />
+					<circle cx='720' cy='160' r='10' fill='none' stroke='currentColor' strokeWidth='2' className='text-foreground-400' />
+					<circle cx='1080' cy='160' r='8' fill='none' stroke='currentColor' strokeWidth='1.5' className='text-foreground-400' />
+
+					{/* Hospital/Job location markers */}
 					<g>
-						{/* Karnataka outline */}
-						<path
-							d='M200 80 L350 85 L380 120 L370 160 L340 190 L300 180 L250 200 L200 180 L180 140 L200 100 Z'
-							fill='currentColor'
-							stroke='currentColor'
-							strokeWidth='1'
-							className='text-background-300'
-							opacity='0.2'
-						/>
-
-						{/* Tamil Nadu outline */}
-						<path
-							d='M350 120 L480 130 L520 170 L530 220 L510 280 L480 300 L430 290 L400 260 L380 220 L350 180 Z'
-							fill='currentColor'
-							stroke='currentColor'
-							strokeWidth='1'
-							className='text-background-300'
-							opacity='0.25'
-						/>
-
-						{/* Kerala outline */}
-						<path
-							d='M300 180 L340 190 L380 220 L390 260 L380 300 L350 310 L320 300 L300 280 L290 240 L300 200 Z'
-							fill='currentColor'
-							stroke='currentColor'
-							strokeWidth='1'
-							className='text-background-300'
-							opacity='0.2'
-						/>
-
-						{/* Andhra Pradesh/Telangana outline */}
-						<path
-							d='M380 50 L550 60 L580 90 L570 130 L540 150 L480 140 L420 120 L380 100 Z'
-							fill='currentColor'
-							stroke='currentColor'
-							strokeWidth='1'
-							className='text-background-300'
-							opacity='0.18'
-						/>
-
-						{/* Goa outline (small) */}
-						<path
-							d='M180 140 L220 145 L230 160 L220 175 L200 180 L180 170 Z'
-							fill='currentColor'
-							stroke='currentColor'
-							strokeWidth='1'
-							className='text-background-300'
-							opacity='0.3'
-						/>
-
-						{/* Coastline - Arabian Sea */}
-						<path
-							d='M180 140 C160 150 150 180 160 220 C170 260 180 290 200 310 L320 300 L380 300 C390 290 400 280 410 270'
-							stroke='currentColor'
-							strokeWidth='2'
-							fill='none'
-							className='text-foreground-400'
-							opacity='0.4'
-						/>
-
-						{/* Coastline - Bay of Bengal */}
-						<path
-							d='M530 220 C540 240 550 260 560 280 C570 300 580 310 590 315 L480 300 L530 280 L540 260 L530 240'
-							stroke='currentColor'
-							strokeWidth='2'
-							fill='none'
-							className='text-foreground-400'
-							opacity='0.4'
-						/>
-
-						{/* Major rivers */}
-						<path
-							d='M380 50 Q420 80 460 110 Q500 140 530 170'
-							stroke='currentColor'
-							strokeWidth='1.5'
-							fill='none'
-							className='text-foreground-350'
-							opacity='0.6'
-						/>
-						<path
-							d='M200 100 Q250 130 300 160 Q350 190 400 220'
-							stroke='currentColor'
-							strokeWidth='1.5'
-							fill='none'
-							className='text-foreground-350'
-							opacity='0.6'
-						/>
-
-						{/* Repeat pattern across the width */}
-						<g transform='translate(600, 0)'>
-							{/* Karnataka outline */}
-							<path
-								d='M200 80 L350 85 L380 120 L370 160 L340 190 L300 180 L250 200 L200 180 L180 140 L200 100 Z'
-								fill='currentColor'
-								stroke='currentColor'
-								strokeWidth='1'
-								className='text-background-300'
-								opacity='0.15'
-							/>
-							{/* Tamil Nadu outline */}
-							<path
-								d='M350 120 L480 130 L520 170 L530 220 L510 280 L480 300 L430 290 L400 260 L380 220 L350 180 Z'
-								fill='currentColor'
-								stroke='currentColor'
-								strokeWidth='1'
-								className='text-background-300'
-								opacity='0.18'
-							/>
-						</g>
-					</g>
-
-					{/* Hospital/Healthcare facility markers positioned on major cities */}
-					<g>
-						{/* Major hospitals in Bangalore */}
+						{/* Hospital icons (larger markers) */}
 						<circle cx='280' cy='150' r='8' fill='currentColor' className='text-primary-600' />
 						<path d='M276 150 L284 150 M280 146 L280 154' stroke='white' strokeWidth='2' strokeLinecap='round' />
 
-						{/* Major hospitals in Chennai */}
-						<circle cx='480' cy='200' r='8' fill='currentColor' className='text-primary-600' />
-						<path d='M476 200 L484 200 M480 196 L480 204' stroke='white' strokeWidth='2' strokeLinecap='round' />
+						<circle cx='520' cy='170' r='8' fill='currentColor' className='text-primary-600' />
+						<path d='M516 170 L524 170 M520 166 L520 174' stroke='white' strokeWidth='2' strokeLinecap='round' />
 
-						{/* Major hospitals in Hyderabad */}
-						<circle cx='520' cy='100' r='8' fill='currentColor' className='text-primary-600' />
-						<path d='M516 100 L524 100 M520 96 L520 104' stroke='white' strokeWidth='2' strokeLinecap='round' />
+						<circle cx='760' cy='145' r='8' fill='currentColor' className='text-primary-600' />
+						<path d='M756 145 L764 145 M760 141 L760 149' stroke='white' strokeWidth='2' strokeLinecap='round' />
 
-						{/* Major hospitals in Kochi */}
-						<circle cx='340' cy='250' r='8' fill='currentColor' className='text-primary-600' />
-						<path d='M336 250 L344 250 M340 246 L340 254' stroke='white' strokeWidth='2' strokeLinecap='round' />
+						<circle cx='1000' cy='175' r='8' fill='currentColor' className='text-primary-600' />
+						<path d='M996 175 L1004 175 M1000 171 L1000 179' stroke='white' strokeWidth='2' strokeLinecap='round' />
 
-						{/* Major hospitals in Coimbatore */}
-						<circle cx='420' cy='180' r='8' fill='currentColor' className='text-primary-600' />
-						<path d='M416 180 L424 180 M420 176 L420 184' stroke='white' strokeWidth='2' strokeLinecap='round' />
+						<circle cx='1200' cy='155' r='8' fill='currentColor' className='text-primary-600' />
+						<path d='M1196 155 L1204 155 M1200 151 L1200 159' stroke='white' strokeWidth='2' strokeLinecap='round' />
 
-						{/* Repeated pattern for right side */}
-						{/* Major hospitals in Bangalore (repeated) */}
-						<circle cx='880' cy='150' r='8' fill='currentColor' className='text-primary-600' />
-						<path d='M876 150 L884 150 M880 146 L880 154' stroke='white' strokeWidth='2' strokeLinecap='round' />
-
-						{/* Major hospitals in Chennai (repeated) */}
-						<circle cx='1080' cy='200' r='8' fill='currentColor' className='text-primary-600' />
-						<path d='M1076 200 L1084 200 M1080 196 L1080 204' stroke='white' strokeWidth='2' strokeLinecap='round' />
-
-						{/* Smaller healthcare facilities */}
-						<circle cx='220' cy='120' r='5' fill='currentColor' className='text-accent-400' />
-						<circle cx='380' cy='130' r='5' fill='currentColor' className='text-accent-400' />
-						<circle cx='450' cy='160' r='5' fill='currentColor' className='text-accent-400' />
-						<circle cx='360' cy='220' r='5' fill='currentColor' className='text-accent-400' />
-						<circle cx='500' cy='240' r='5' fill='currentColor' className='text-accent-400' />
-						<circle cx='320' cy='280' r='5' fill='currentColor' className='text-accent-400' />
-
-						{/* Repeated smaller facilities */}
-						<circle cx='820' cy='120' r='5' fill='currentColor' className='text-accent-400' />
-						<circle cx='980' cy='130' r='5' fill='currentColor' className='text-accent-400' />
-						<circle cx='1050' cy='160' r='5' fill='currentColor' className='text-accent-400' />
-						<circle cx='960' cy='220' r='5' fill='currentColor' className='text-accent-400' />
-						<circle cx='1100' cy='240' r='5' fill='currentColor' className='text-accent-400' />
-						<circle cx='920' cy='280' r='5' fill='currentColor' className='text-accent-400' />
+						{/* Clinic locations (smaller markers) */}
+						<circle cx='180' cy='90' r='5' fill='currentColor' className='text-accent-400' />
+						<circle cx='420' cy='200' r='5' fill='currentColor' className='text-accent-400' />
+						<circle cx='660' cy='120' r='5' fill='currentColor' className='text-accent-400' />
+						<circle cx='840' cy='190' r='5' fill='currentColor' className='text-accent-400' />
+						<circle cx='1120' cy='130' r='5' fill='currentColor' className='text-accent-400' />
+						<circle cx='300' cy='250' r='5' fill='currentColor' className='text-accent-400' />
+						<circle cx='600' cy='80' r='5' fill='currentColor' className='text-accent-400' />
+						<circle cx='950' cy='260' r='5' fill='currentColor' className='text-accent-400' />
 					</g>
 				</svg>
 			</div>

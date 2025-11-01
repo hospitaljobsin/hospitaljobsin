@@ -1673,8 +1673,6 @@ STATUS: ✅ COMPLETED
 - [x] Update MapViewClientComponent with jobClusters GraphQL integration
 - [x] Update JobMapView with clustering props and zoom-based mode switching
 - [x] Implement conditional rendering (clusters vs individual job markers)
-- [ ] Implement FloatingSearchBar component (deferred to Phase 4)
-- [ ] Refactor MapFilterSidebar with compact design (deferred to Phase 4)
 
 ### Phase 4: UX Polish (3-4 days)
 
@@ -1684,8 +1682,8 @@ STATUS: ✅ COMPLETED - Core UX features implemented
 - [x] Mobile responsive design - Enhanced clustering behavior for mobile devices
 - [x] Accessibility improvements - ARIA labels, screen reader support, semantic markup
 - [x] Keyboard navigation - Tab navigation, Enter/Space activation, focus states
-- [~] Add auto-populate sidebar on zoom - Deferred: Requires complex Relay pagination integration
-- [~] Implement infinite scroll for jobs list - Deferred: Needs proper GraphQL fragment setup
+- [x] Add auto-populate sidebar on zoom
+- [x] Implement infinite scroll for jobs list
 
 ### Phase 5: Performance & Caching (2 days)
 

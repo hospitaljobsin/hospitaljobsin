@@ -1,10 +1,9 @@
 import logging
 import math
 import uuid
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Annotated, Any, Literal
 
-import h3
 from beanie import Link
 from bson import ObjectId
 from bson.errors import InvalidId
@@ -1124,12 +1123,6 @@ class JobClusterService:
             f"job_density={job_density}, h3_resolution={h3_resolution}, bounds={bounds}"
         )
 
-        # For very high zoom levels (15+), return individual jobs as clusters
-        # This provides the most detail when zoomed in
-        if zoom_level >= 15:  # noqa: PLR2004
-            logger.info("Using individual job clusters for high zoom level")
-            return await self._get_individual_job_clusters(bounds, filters)
-
         # For lower zoom levels, use H3 hexagonal aggregation
         print("🏠 Using H3 aggregated clusters for low zoom level")
         logger.info("Using H3 aggregated clusters for low zoom level")
@@ -1253,131 +1246,3 @@ class JobClusterService:
         )
 
         return clusters, total_count
-
-    async def _get_individual_job_clusters(
-        self,
-        bounds: dict[str, float],
-        filters: JobClusterFilters,
-    ) -> tuple[list[JobCluster], int]:
-        """Get individual jobs as single-job clusters for high zoom levels.
-
-        Args:
-            bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
-            filters: Filter criteria for jobs
-
-        Returns:
-            Tuple of (list of single-job clusters, total job count)
-
-        """
-        # Build query for jobs within bounds and matching filters
-        sw_lat = bounds["sw_lat"]
-        sw_lng = bounds["sw_lng"]
-        ne_lat = bounds["ne_lat"]
-        ne_lng = bounds["ne_lng"]
-
-        # Use $geoWithin to find jobs in bounding box
-        query_conditions = [
-            {
-                "geo": {
-                    "$geoWithin": {
-                        "$box": [[sw_lng, sw_lat], [ne_lng, ne_lat]],
-                    }
-                }
-            },
-            {"is_active": True},
-            {
-                "$or": [
-                    {"expires_at": None},
-                    {"expires_at": {"$gt": datetime.now(UTC)}},
-                ]
-            },
-        ]
-
-        # Apply filters
-        filter_conditions = []
-
-        if filters.work_mode:
-            filter_conditions.append({"work_mode": {"$in": filters.work_mode}})
-
-        if filters.job_type:
-            filter_conditions.append({"type": {"$in": filters.job_type}})
-
-        if filters.min_experience is not None:
-            filter_conditions.append(
-                {
-                    "$or": [
-                        {"max_experience": {"$gte": filters.min_experience}},
-                        {"min_experience": {"$gte": filters.min_experience}},
-                    ]
-                }
-            )
-
-        if filters.max_experience is not None:
-            filter_conditions.append(
-                {
-                    "$or": [
-                        {"min_experience": {"$lte": filters.max_experience}},
-                        {"max_experience": {"$lte": filters.max_experience}},
-                    ]
-                }
-            )
-
-        if filters.min_salary is not None:
-            filter_conditions.append(
-                {
-                    "$or": [
-                        {"max_salary": {"$gte": filters.min_salary}},
-                        {"min_salary": {"$gte": filters.min_salary}},
-                    ]
-                }
-            )
-
-        if filters.max_salary is not None:
-            filter_conditions.append(
-                {
-                    "$or": [
-                        {"min_salary": {"$lte": filters.max_salary}},
-                        {"max_salary": {"$lte": filters.max_salary}},
-                    ]
-                }
-            )
-
-        # Combine all conditions
-        final_query = {"$and": query_conditions + filter_conditions}
-
-        # Fetch jobs (limit to 1000 for performance)
-        jobs = await Job.find(final_query, fetch_links=False, limit=1000).to_list()
-
-        # Wrap each job as a single-job cluster
-        clusters = []
-        for job in jobs:
-            if not job.geo:
-                continue
-
-            # Get H3 index at resolution 11 for this job
-            h3_index = h3.latlng_to_cell(
-                job.geo.coordinates[1], job.geo.coordinates[0], 11
-            )
-
-            # Get boundary for this hexagon
-            boundary_coords = h3.cell_to_boundary(h3_index)
-            bounds_list = [
-                [lng, lat] for lat, lng in boundary_coords
-            ]  # Convert to [lng, lat] format
-
-            # Create cluster
-            cluster = JobCluster(
-                h3_index=h3_index,
-                count=1,
-                center=GeoObject(
-                    coordinates=(job.geo.coordinates[0], job.geo.coordinates[1])
-                ),
-                bounds=bounds_list,
-                salary_range=None
-                if job.min_salary is None and job.max_salary is None
-                else {"min_salary": job.min_salary, "max_salary": job.max_salary},
-                top_specialties=job.skills[:3] if job.skills else [],
-            )
-            clusters.append(cluster)
-
-        return clusters, len(clusters)
