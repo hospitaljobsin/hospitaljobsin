@@ -48,11 +48,6 @@ query JobClustersQuery(
                 coordinates
             }
             bounds
-            salaryRange {
-                minSalary
-                maxSalary
-            }
-            topSpecialties
         }
         totalCount
     }
@@ -876,8 +871,6 @@ async def test_cluster_structure(
     assert len(cluster["center"]["coordinates"]) == 2
     assert "bounds" in cluster
     assert isinstance(cluster["bounds"], list)
-    assert "salaryRange" in cluster
-    assert "topSpecialties" in cluster
 
 
 async def test_very_small_bounds(

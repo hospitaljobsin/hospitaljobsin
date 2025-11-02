@@ -10,8 +10,6 @@ interface JobCluster {
 	count: number;
 	center: { coordinates: [number, number] };
 	bounds: Array<[number, number]>;
-	salaryRange: { minSalary?: number; maxSalary?: number };
-	topSpecialties: string[];
 }
 
 interface JobHexagonClustersProps {
