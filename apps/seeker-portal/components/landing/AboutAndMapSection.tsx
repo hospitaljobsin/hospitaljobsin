@@ -10,14 +10,14 @@ export default function AboutAndMapSection() {
 				{/* biome-ignore lint/a11y/noSvgWithoutTitle: decorative background city map */}
 
 				<svg
-					baseprofile='tiny'
+					baseProfile='tiny'
 					className='fill-primary-300 stroke-primary-500'
 					height='857'
-					stroke-linecap='round'
-					stroke-linejoin='round'
-					stroke-width='.2'
+					strokeLinecap='round'
+					strokeLinejoin='round'
+					strokeWidth='.2'
 					version='1.2'
-					viewbox='0 0 2000 857'
+					viewBox='0 0 2000 857'
 					width='2000'
 					xmlns='http://www.w3.org/2000/svg'
 				>
