@@ -118,8 +118,8 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 					<div className='p-4 border-b border-divider bg-background sticky top-0 z-10'>
 						<div className='flex items-center justify-between gap-4'>
 							<div className='flex-1'>
-								<h3 className='text-lg font-medium text-foreground-700'>Jobs in Current Area</h3>
-								<p className='text-sm text-foreground-500'>{actualTotalCount} jobs available</p>
+								<h3 className='text-md font-medium text-foreground-700'>Viewing {actualTotalCount} Jobs</h3>
+								<p className='text-xs text-foreground-500'>In Current Area</p>
 							</div>
 							<Select
 								size='sm'
@@ -168,8 +168,8 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 				<div className='p-4 border-b border-divider bg-background sticky top-0 z-10'>
 					<div className='flex items-center justify-between gap-4'>
 						<div className='flex-1'>
-							<h3 className='text-lg font-medium text-foreground-700'>Jobs in Current Area</h3>
-							<p className='text-sm text-foreground-500'>{actualTotalCount} jobs available</p>
+							<h3 className='text-md font-medium text-foreground-700'>Viewing {actualTotalCount} Jobs</h3>
+							<p className='text-xs text-foreground-500'>In Current Area</p>
 						</div>
 						<Select
 							size='sm'

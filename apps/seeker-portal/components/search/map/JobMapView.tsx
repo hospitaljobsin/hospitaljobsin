@@ -758,7 +758,6 @@ export default function JobMapView({
 					onClose={() => setShowFilterModal(false)}
 					filters={filters}
 					onFiltersChange={onFiltersChange}
-					resultCount={jobsData.jobs?.totalCount || 0}
 					isPending={isPending}
 				/>
 			</div>

@@ -19,11 +19,10 @@ interface FilterModalProps {
 		sortBy: string;
 	};
 	onFiltersChange?: (filters: Partial<FilterModalProps['filters']>) => void;
-	resultCount: number;
 	isPending?: boolean;
 }
 
-export default function FilterModal({ isOpen, onClose, filters, onFiltersChange, resultCount, isPending = false }: FilterModalProps) {
+export default function FilterModal({ isOpen, onClose, filters, onFiltersChange, isPending = false }: FilterModalProps) {
 	const [localFilters, setLocalFilters] = useState(filters);
 
 	// Sync local filters with props
@@ -192,7 +191,7 @@ export default function FilterModal({ isOpen, onClose, filters, onFiltersChange,
 									Cancel
 								</Button>
 								<Button color='primary' onPress={handleApply} isLoading={isPending} className='min-w-24'>
-									Apply ({resultCount.toLocaleString()})
+									Apply
 								</Button>
 							</div>
 						</ModalFooter>

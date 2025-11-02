@@ -258,7 +258,7 @@ export default function MobileFilterScene({
 							<LocationAutocomplete
 								value={localLocation}
 								onValueChange={setLocalLocation}
-								onChange={_onLocationSelect}
+								onLocationSelect={_onLocationSelect}
 								onSubmit={location => onLocationChange?.(location)}
 								onClear={handleLocationClear}
 								onFocus={() => setActiveInput('location')}

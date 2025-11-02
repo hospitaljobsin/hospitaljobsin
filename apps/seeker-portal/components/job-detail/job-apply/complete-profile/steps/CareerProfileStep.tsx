@@ -108,7 +108,7 @@ export default function CareerProfileStep({ account }: CareerProfileStepProps) {
 					<LocationAutocomplete
 						value={inputValue}
 						onValueChange={setInputValue}
-						onChange={location => {
+						onLocationSelect={location => {
 							if (location.address.displayName && !locations.includes(location.address.displayName)) {
 								setValue('locationsOpenToWork', [...locations, location.address.displayName] as string[], {
 									shouldValidate: true,

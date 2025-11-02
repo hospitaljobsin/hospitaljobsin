@@ -75,9 +75,10 @@ export default function MapHeader({
 		onSearchTermChange?.(searchTerm.trim() || null);
 	};
 
-	const handleLocationSubmit = useCallback(() => {
-		onLocationChange?.(localLocation.trim() || null);
-	}, [localLocation, onLocationChange]);
+	const handleLocationSubmit = (location: string) => {
+		setLocalLocation(location);
+		onLocationChange?.(location.trim() || null);
+	};
 
 	const handleSearchClear = useCallback(() => {
 		setLocalSearchTerm('');
@@ -164,8 +165,7 @@ export default function MapHeader({
 							<LocationAutocomplete
 								value={localLocation}
 								onValueChange={setLocalLocation}
-								onSelectionChange={key => setLocalLocation(key?.toString() || '')}
-								onChange={onLocationSelect}
+								onLocationSelect={onLocationSelect}
 								onSubmit={handleLocationSubmit}
 								onClear={handleLocationClear}
 								placeholder='Location'

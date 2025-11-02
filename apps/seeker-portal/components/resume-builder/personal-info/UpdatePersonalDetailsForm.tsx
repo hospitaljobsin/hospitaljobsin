@@ -1,12 +1,12 @@
-import type { UpdatePersonalDetailsFormFragment$key } from '@/__generated__/UpdatePersonalDetailsFormFragment.graphql';
-import type { UpdatePersonalDetailsFormMutation as UpdatePersonalDetailsFormMutationType } from '@/__generated__/UpdatePersonalDetailsFormMutation.graphql';
-import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
 import { DatePicker, Input, Select, SelectItem } from '@heroui/react';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { CalendarDate, parseDate } from '@internationalized/date';
 import { Controller, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod/v4-mini';
+import type { UpdatePersonalDetailsFormFragment$key } from '@/__generated__/UpdatePersonalDetailsFormFragment.graphql';
+import type { UpdatePersonalDetailsFormMutation as UpdatePersonalDetailsFormMutationType } from '@/__generated__/UpdatePersonalDetailsFormMutation.graphql';
+import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
 import { UnsavedChangesFormWrapper } from '../unsaved-changes';
 
 const UpdatePersonalDetailsFormMutation = graphql`
@@ -215,7 +215,7 @@ export default function UpdatePersonalDetailsForm({ rootQuery, onSaveChanges }: 
 									variant='bordered'
 									value={field.value || ''}
 									onValueChange={field.onChange}
-									onChange={location => {
+									onLocationSelect={location => {
 										if (location.address.displayName) field.onChange(location.address.displayName);
 									}}
 									placeholder='Enter your address'

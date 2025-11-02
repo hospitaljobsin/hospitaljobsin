@@ -60,7 +60,7 @@ export function LandingSearchController({ isDisabled }: { isDisabled?: boolean }
 							console.log('on value change: ', val);
 							setLocationInput(val);
 						}}
-						onChange={loc => {
+						onLocationSelect={loc => {
 							console.log('changed: ', loc);
 							setLocationInput(loc.address.displayName || '');
 						}}

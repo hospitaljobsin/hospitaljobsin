@@ -86,7 +86,7 @@ export default function AddressStep({ account }: AddressStepProps) {
 						variant='bordered'
 						value={field.value || ''}
 						onValueChange={field.onChange}
-						onChange={location => {
+						onLocationSelect={location => {
 							if (location.address.displayName) field.onChange(location.address.displayName);
 						}}
 						placeholder='Enter your address'
