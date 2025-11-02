@@ -609,7 +609,7 @@ export default function JobMapView({
 			clusterCount: data.jobClusters?.clusters?.length || 0
 		});
 
-		if (!map || currentZoom < 13) {
+		if (!map || currentZoom < 10) {
 			// Clear auto-selection when zoomed out too far
 			console.log('❌ Clearing auto-selection:', {
 				reason: !map ? 'no map' : 'zoom too low',
@@ -635,7 +635,8 @@ export default function JobMapView({
 		}
 
 		// Only auto-select if there are few enough clusters to make it meaningful
-		if (clusters.length > 10) {
+		// Increased from 10 to 50 to allow auto-selection at moderate zoom levels
+		if (clusters.length > 50) {
 			console.log('❌ Too many clusters:', clusters.length);
 			setAutoSelectedCluster(null);
 			return;
@@ -645,6 +646,15 @@ export default function JobMapView({
 		console.log('🎯 Selected cluster:', prominentCluster);
 		setAutoSelectedCluster(prominentCluster);
 	}, [map, currentZoom, data, findMostProminentCluster]);
+
+	// Debug: Log when autoSelectedCluster changes
+	useEffect(() => {
+		console.log('🔄 autoSelectedCluster changed:', {
+			cluster: autoSelectedCluster,
+			currentZoom,
+			isMobile
+		});
+	}, [autoSelectedCluster, currentZoom, isMobile]);
 
 	// Handle drawer close
 	const handleDrawerClose = useCallback(() => {
