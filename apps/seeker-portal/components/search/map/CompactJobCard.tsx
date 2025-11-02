@@ -161,7 +161,7 @@ export default function CompactJobCard({ job: jobKey, className = '' }: CompactJ
 							<h4 className='text-base sm:text-xl font-medium truncate w-full'>{job.title}</h4>
 							{job.organization.name && (
 								<div className='flex flex-row items-center gap-2 min-w-0'>
-									<p className='text-xs sm:text-base font-normal text-foreground-500 truncate'>{job.organization.name}</p>
+									<p className='text-xs sm:text-base font-normal text-foreground-500 truncate w-full'>{job.organization.name}</p>
 									{isVerified && (
 										<Tooltip content='This organization is verified' placement='right'>
 											<VerifiedIcon className='w-4 h-4 text-primary' strokeWidth={2.5} />
