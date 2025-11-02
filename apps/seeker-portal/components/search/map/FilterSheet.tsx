@@ -193,13 +193,6 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 				<div className='flex-1 overflow-y-auto p-4'>
 					{selectedCluster ? (
 						<div className='space-y-4'>
-							<div className='text-center mb-6'>
-								<div className='text-6xl mb-4'>📍</div>
-								<h3 className='text-xl font-semibold text-foreground-700 mb-2'>{selectedCluster.hexId || 'Selected Area'}</h3>
-								<p className='text-lg text-foreground-600 mb-4'>{selectedCluster.count} jobs found in this area</p>
-								<p className='text-sm text-foreground-500'>Browse jobs below or tap on individual job markers on the map</p>
-							</div>
-
 							{/* Show jobs list if we have bounds data and sufficient zoom */}
 							{bounds && currentZoom >= 5 ? (
 								<ViewportJobsList
