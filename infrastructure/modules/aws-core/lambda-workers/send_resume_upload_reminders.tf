@@ -22,10 +22,14 @@ resource "aws_lambda_function" "send_resume_upload_reminders" {
     variables = {
       SERVER_DATABASE_URL              = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
       SERVER_DEFAULT_DATABASE_NAME     = var.mongodb_database_name
+      SERVER_REDIS_HOST                = var.redis_host
+      SERVER_REDIS_PORT                = var.redis_port
+      SERVER_REDIS_USERNAME            = "default"
+      SERVER_REDIS_SSL                 = "True"
       SERVER_LOG_LEVEL                 = "DEBUG"
       SERVER_ENVIRONMENT               = var.environment_name
       SERVER_DEBUG                     = "True"
-      SERVER_EMAIl_PROVIDER            = "aws_ses"
+      SERVER_EMAIL_PROVIDER            = "aws_ses"
       SERVER_EMAIL_FROM                = var.ses_email_identity
       SERVER_ACCOUNTS_BASE_URL         = "https://accounts.${var.domain_name}"
       SERVER_RECRUITER_PORTAL_BASE_URL = "https://recruiter.${var.domain_name}"

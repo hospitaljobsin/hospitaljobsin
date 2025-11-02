@@ -4,7 +4,7 @@ import { useProgress } from '@bprogress/next';
 import { useDisclosure } from '@heroui/react';
 import type { Map as LeafletMap } from 'leaflet';
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import type { MapViewClientComponentFragment$data } from '@/__generated__/MapViewClientComponentFragment.graphql';
@@ -152,6 +152,9 @@ export default function JobMapView({
 	const [isPendingMapOperation, setIsPendingMapOperation] = useState(false); // Bridge state for debounced operations
 	const [lastZoomEndTime, setLastZoomEndTime] = useState<number>(0); // Track when last zoom ended
 
+	// Ref to track manual location selections (from dropdown) to prevent double zooming
+	const lastManualLocationZoomRef = useRef<number>(0);
+
 	// New state for enhanced UX
 	const [showFilterModal, setShowFilterModal] = useState(false);
 	const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
@@ -212,7 +215,19 @@ export default function JobMapView({
 	}, [isUserInteracting, isPendingMapOperation]); // Handle location selection and zoom to it
 	const handleLocationSelect = useCallback(
 		(location: SearchLocation) => {
-			if (!map) return;
+			console.log('🗺️ JobMapView handleLocationSelect called:', {
+				location,
+				hasMap: !!map,
+				mapReady: map !== null
+			});
+
+			if (!map) {
+				console.error('❌ Map not ready for location selection');
+				return;
+			}
+
+			// Mark that we just did a manual location zoom (from dropdown selection)
+			lastManualLocationZoomRef.current = Date.now();
 
 			// Start progress bar immediately for location navigation
 			setIsUserInteracting(true);
@@ -239,6 +254,13 @@ export default function JobMapView({
 					zoomLevel = 10;
 					break;
 			}
+
+			console.log('🎯 Zooming map to (dropdown selection):', {
+				lat: location.latitude,
+				lng: location.longitude,
+				zoomLevel,
+				level: location.level
+			});
 
 			// Fly to the location with smooth animation
 			map.flyTo([location.latitude, location.longitude], zoomLevel, {
@@ -503,6 +525,45 @@ export default function JobMapView({
 			setIsPendingMapOperation(false);
 		};
 	}, [map, onBoundsChange, lastBounds, lastZoomEndTime]);
+
+	// Zoom to location viewport when it changes (from backend location search)
+	// This handles the case where user types a location manually (not from dropdown)
+	// and the backend returns coordinates via locationViewport
+	useEffect(() => {
+		if (!map || !initialViewport) return;
+
+		// Skip viewport zoom if we just did a manual location selection (within last 2 seconds)
+		// This prevents double zooming when user selects from dropdown
+		const timeSinceManualZoom = Date.now() - lastManualLocationZoomRef.current;
+		if (timeSinceManualZoom < 2000) {
+			console.log('⏭️ Skipping viewport zoom - manual location zoom just happened', {
+				timeSinceManualZoom,
+				lastManualZoom: lastManualLocationZoomRef.current
+			});
+			return;
+		}
+
+		// Only zoom if we have valid viewport data
+		if (initialViewport.latitude && initialViewport.longitude && initialViewport.zoomLevel) {
+			console.log('📍 Backend returned location viewport, zooming map (manual typing):', {
+				lat: initialViewport.latitude,
+				lng: initialViewport.longitude,
+				zoom: initialViewport.zoomLevel,
+				currentLocation: filters.location
+			});
+
+			// Start progress bar for viewport navigation
+			setIsUserInteracting(true);
+
+			// Use flyTo for smooth animation to the new viewport
+			map.flyTo([initialViewport.latitude, initialViewport.longitude], initialViewport.zoomLevel, {
+				duration: 1.5
+			});
+
+			const locationName = filters.location || 'location';
+			setAnnouncementMessage(`Zoomed to ${locationName}`);
+		}
+	}, [map, initialViewport?.latitude, initialViewport?.longitude, initialViewport?.zoomLevel, filters.location]);
 
 	// Handle cluster click - zoom into cluster center and trigger sidebar population
 	const handleClusterClick = useCallback(
