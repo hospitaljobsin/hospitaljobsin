@@ -306,6 +306,7 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 			disableScrollLocking={true}
 			disableDrag={false}
 			disableDismiss={true}
+			style={{ zIndex: 50 }}
 		>
 			<Sheet.Container className='!bg-background !rounded-t-3xl !shadow-2xl' style={{ zIndex: 50 }}>
 				<Sheet.Header />
