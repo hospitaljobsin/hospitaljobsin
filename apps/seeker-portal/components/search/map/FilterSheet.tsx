@@ -176,7 +176,7 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 			return (
 				<div className='flex flex-col h-full'>
 					{/* Header */}
-					<div className='p-4 border-b border-divider bg-background sticky top-0 z-10'>
+					<div className='p-4 border-b dividerborder- bg-background sticky top-0 z-10'>
 						<div className='flex items-center justify-between gap-4'>
 							<div className='flex-1'>
 								<h3 className='text-md font-medium text-foreground-700'>Viewing {actualTotalCount} Jobs</h3>
@@ -307,13 +307,15 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 			disableDrag={false}
 			disableDismiss={true}
 		>
-			<Sheet.Container className='!bg-background !rounded-t-3xl !shadow-2xl !z-[100]'>
+			<Sheet.Container className='!bg-background !rounded-t-3xl !shadow-2xl' style={{ zIndex: 50 }}>
 				<Sheet.Header />
 				<Sheet.Content className='!bg-background h-full'>{renderContent()}</Sheet.Content>
 			</Sheet.Container>
 
 			{/* Conditional Backdrop - only for full screen */}
-			{currentSnap >= 4 && <Sheet.Backdrop onTap={() => handleSnapTo(selectedCluster ? 3 : 2)} className='!bg-black/40 !z-[10]' />}
+			{currentSnap >= 4 && (
+				<Sheet.Backdrop onTap={() => handleSnapTo(selectedCluster ? 3 : 2)} className='!bg-black/40' style={{ zIndex: 40 }} />
+			)}
 		</Sheet>
 	);
 }

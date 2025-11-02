@@ -131,4 +131,21 @@
 		backface-visibility: hidden;
 		image-rendering: crisp-edges;
 	}
+
+	/* React Modal Sheet z-index overrides - must be lower than mobile filter scene (z-150) */
+	/* Target the root wrapper that contains everything */
+	.react-modal-sheet-backdrop,
+	.react-modal-sheet-container {
+		z-index: 50 !important;
+	}
+
+	/* Ensure backdrop is below container */
+	.react-modal-sheet-backdrop {
+		z-index: 40 !important;
+	}
+
+	/* Target any parent wrapper divs that might have z-index */
+	[class*="react-modal-sheet"] {
+		z-index: 50 !important;
+	}
 }

@@ -9,6 +9,7 @@ import type { JobSearchSortBy, JobTypeFilter, JobWorkModeFilter } from '@/__gene
 import type PageSearchMapViewQueryNode from '@/__generated__/pageSearchMapViewQuery.graphql';
 import type { pageSearchMapViewQuery } from '@/__generated__/pageSearchMapViewQuery.graphql';
 import PageSearchMapViewQuery from '@/__generated__/pageSearchMapViewQuery.graphql';
+import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
 import { FILTER_DEFAULTS } from '@/lib/constants';
 import links from '@/lib/links';
 import type { SerializablePreloadedQuery } from '@/lib/relay/serializablePreloadedQuery';
@@ -316,12 +317,20 @@ export default function MapViewClientComponent({
 			const searchTermChanged = newFilters.searchTerm !== undefined && newFilters.searchTerm !== internalSpeciality;
 			const locationChanged = newFilters.location !== undefined && newFilters.location !== internalLocation;
 
-			// If searchTerm or location changed, navigate to new URL with current filters
+			// If searchTerm or location changed, update internal state AND URL path
 			if (searchTermChanged || locationChanged) {
 				const newSearchTerm = searchTermChanged ? newFilters.searchTerm : internalSpeciality;
 				const newLocation = locationChanged ? newFilters.location : internalLocation;
 
-				// Build the new URL with current filter query params
+				// Update internal state (will trigger debounced refetch)
+				if (searchTermChanged) {
+					setInternalSpeciality(newSearchTerm ?? null);
+				}
+				if (locationChanged) {
+					setInternalLocation(newLocation ?? null);
+				}
+
+				// Build the new URL path with current filter query params
 				const baseUrl = links.searchMap(newLocation || undefined, newSearchTerm || undefined);
 				const params = new URLSearchParams();
 
@@ -355,39 +364,47 @@ export default function MapViewClientComponent({
 				const queryString = params.toString();
 				const newUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
 
-				// Navigate to new URL
-				router.push(newUrl);
+				// Update URL path with shallow navigation
+				router.push(newUrl, { scroll: false });
+
+				// Note: The zoom will be triggered by onLocationSelect callback in JobMapView
+				// The refetch will be triggered by the useEffect watching debouncedSpeciality/debouncedLocation
 				return;
 			}
 
 			// For other filter changes (not location/searchTerm), update URL state with nuqs
 			const { location: _, searchTerm: __, ...filtersWithoutLocationAndSearchTerm } = newFilters;
-			setFilters(filtersWithoutLocationAndSearchTerm);
+			if (Object.keys(filtersWithoutLocationAndSearchTerm).length > 0) {
+				setFilters(filtersWithoutLocationAndSearchTerm);
+			}
 
-			// Trigger refetch with new filters including current bounds and zoom level for job clusters
-			startTransition(() => {
-				refetch(
-					{
-						// Include bounds and zoom level for job clusters
-						bounds: currentBounds || undefined,
-						inputZoomLevel: currentZoom,
-						// Include all filter parameters - use debounced values for searchTerm and location
-						inputSearchTerm: debouncedSpeciality || undefined,
-						inputLocation: debouncedLocation || undefined,
-						inputMinExperience: (newFilters.minExperience ?? filters.minExperience) || undefined,
-						inputMinSalary: (newFilters.minSalary ?? filters.minSalary) || undefined,
-						inputMaxSalary: (newFilters.maxSalary ?? filters.maxSalary) || undefined,
-						inputProximityKm: newFilters.proximityKm ?? filters.proximityKm,
-						inputWorkMode: (newFilters.workMode ?? filters.workMode) as unknown as readonly JobWorkModeFilter[],
-						inputJobType: (newFilters.jobType ?? filters.jobType) as unknown as readonly JobTypeFilter[],
-						inputSortBy: (newFilters.sortBy ?? filters.sortBy) as JobSearchSortBy,
-						first: 100
-					},
-					{
-						fetchPolicy: 'network-only' // Use network-only to ensure fresh data with new filters
-					}
-				);
-			});
+			// If only searchTerm or location changed, the useEffect will handle the refetch after debouncing
+			// For other filters, trigger immediate refetch
+			if (!searchTermChanged && !locationChanged && Object.keys(filtersWithoutLocationAndSearchTerm).length > 0) {
+				startTransition(() => {
+					refetch(
+						{
+							// Include bounds and zoom level for job clusters
+							bounds: currentBounds || undefined,
+							inputZoomLevel: currentZoom,
+							// Include all filter parameters - use debounced values for searchTerm and location
+							inputSearchTerm: debouncedSpeciality || undefined,
+							inputLocation: debouncedLocation || undefined,
+							inputMinExperience: (newFilters.minExperience ?? filters.minExperience) || undefined,
+							inputMinSalary: (newFilters.minSalary ?? filters.minSalary) || undefined,
+							inputMaxSalary: (newFilters.maxSalary ?? filters.maxSalary) || undefined,
+							inputProximityKm: newFilters.proximityKm ?? filters.proximityKm,
+							inputWorkMode: (newFilters.workMode ?? filters.workMode) as unknown as readonly JobWorkModeFilter[],
+							inputJobType: (newFilters.jobType ?? filters.jobType) as unknown as readonly JobTypeFilter[],
+							inputSortBy: (newFilters.sortBy ?? filters.sortBy) as JobSearchSortBy,
+							first: 100
+						},
+						{
+							fetchPolicy: 'network-only' // Use network-only to ensure fresh data with new filters
+						}
+					);
+				});
+			}
 		},
 		[
 			refetch,
@@ -399,6 +416,8 @@ export default function MapViewClientComponent({
 			debouncedLocation,
 			internalSpeciality,
 			internalLocation,
+			setInternalSpeciality,
+			setInternalLocation,
 			router
 		]
 	);
@@ -430,6 +449,13 @@ export default function MapViewClientComponent({
 		}
 	}, [debouncedSpeciality, debouncedLocation, currentBounds, currentZoom, filters, refetch]);
 
+	// Callback to handle location selection and zoom
+	const handleLocationSelect = useCallback((location: SearchLocation) => {
+		// This will be passed down to JobMapView -> MapHeader -> MobileFilterScene
+		// JobMapView's own handleLocationSelect will handle the actual map zooming
+		console.log('📍 Location selected in MapViewClientComponent:', location);
+	}, []);
+
 	return (
 		<JobMapView
 			data={fragmentData as any}
@@ -449,6 +475,7 @@ export default function MapViewClientComponent({
 			onBoundsChange={handleBoundsChange}
 			onZoomChange={handleZoomChange}
 			onFiltersChange={handleFiltersChange as any}
+			onLocationSelect={handleLocationSelect}
 			isPending={isPending}
 			initialViewport={(fragmentData as any)?.jobClusters?.locationViewport ?? null}
 		/>

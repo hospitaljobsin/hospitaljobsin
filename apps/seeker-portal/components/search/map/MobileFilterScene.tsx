@@ -64,6 +64,7 @@ export default function MobileFilterScene({
 }: MobileFilterSceneProps) {
 	const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm || '');
 	const [localLocation, setLocalLocation] = useState(location || '');
+	const [selectedLocationData, setSelectedLocationData] = useState<SearchLocation | null>(null);
 	const [activeInput, setActiveInput] = useState<'search' | 'location'>(initialFocus);
 	const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
 
@@ -91,7 +92,7 @@ export default function MobileFilterScene({
 			container.style.width = '100%';
 			container.style.height = '100%';
 			container.style.pointerEvents = 'none'; // Allow clicks to pass through when empty
-			container.style.zIndex = '2147483647'; // Maximum z-index
+			container.style.zIndex = '180'; // Higher than FilterSheet (z-50 via CSS) but lower than popovers (z-200+)
 			container.style.isolation = 'isolate'; // Create new stacking context
 			document.body.appendChild(container);
 		}
@@ -138,12 +139,11 @@ export default function MobileFilterScene({
 
 	const handleSearchClear = useCallback(() => {
 		setLocalSearchTerm('');
-		onSearchTermChange?.(null);
 	}, [onSearchTermChange]);
 
 	const handleLocationClear = useCallback(() => {
 		setLocalLocation('');
-		onLocationChange?.(null);
+		setSelectedLocationData(null);
 	}, [onLocationChange]);
 
 	const handleKeyDown = useCallback(
@@ -156,9 +156,25 @@ export default function MobileFilterScene({
 	);
 
 	const handleApply = useCallback(() => {
+		console.log('🎯 MobileFilterScene handleApply called:', {
+			localSearchTerm,
+			localLocation,
+			selectedLocationData,
+			hasLocationData: !!selectedLocationData
+		});
+
 		// Trigger final updates if needed
 		onSearchTermChange?.(localSearchTerm.trim() || null);
 		onLocationChange?.(localLocation.trim() || null);
+
+		// If a location was selected from dropdown, trigger the location select callback
+		if (selectedLocationData) {
+			console.log('📍 Calling _onLocationSelect with:', selectedLocationData);
+			_onLocationSelect?.(selectedLocationData);
+		} else {
+			console.log('⚠️ No selectedLocationData, skipping _onLocationSelect');
+		}
+
 		// Apply all filter changes at once - ensure arrays are properly passed
 		onFiltersChange?.({
 			jobType: localFilters.jobType,
@@ -168,12 +184,40 @@ export default function MobileFilterScene({
 			maxSalary: localFilters.maxSalary
 		});
 		onClose();
-	}, [localSearchTerm, localLocation, localFilters, onSearchTermChange, onLocationChange, onFiltersChange, onClose]);
+	}, [
+		localSearchTerm,
+		localLocation,
+		selectedLocationData,
+		localFilters,
+		onSearchTermChange,
+		onLocationChange,
+		_onLocationSelect,
+		onFiltersChange,
+		onClose
+	]);
 
 	// Local filter update handler
 	const handleLocalFilterChange = useCallback((updates: Partial<typeof localFilters>) => {
 		setLocalFilters(prev => ({ ...prev, ...updates }));
 	}, []);
+
+	// Handle location selection from autocomplete dropdown
+	const handleLocationSelect = useCallback((location: SearchLocation) => {
+		setSelectedLocationData(location);
+		setLocalLocation(location.address.displayName || '');
+	}, []);
+
+	// Handle manual location text changes (typing)
+	const handleLocationValueChange = useCallback(
+		(value: string) => {
+			setLocalLocation(value);
+			// Clear selected location data if user manually types (without selecting from dropdown)
+			if (selectedLocationData && value !== selectedLocationData.address.displayName) {
+				setSelectedLocationData(null);
+			}
+		},
+		[selectedLocationData]
+	);
 
 	// Use portal to render outside the normal DOM hierarchy to avoid z-index conflicts
 	// Return null on server side (SSR) or if portal container isn't ready
@@ -219,7 +263,7 @@ export default function MobileFilterScene({
 							<JobSearchAutocomplete
 								value={localSearchTerm}
 								onValueChange={setLocalSearchTerm}
-								onSubmit={term => onSearchTermChange?.(term)}
+								onSubmit={term => onSearchTermChange?.(term?.trim() || null)}
 								onClear={handleSearchClear}
 								onFocus={() => setActiveInput('search')}
 								placeholder='Search jobs, skills, companies...'
@@ -243,9 +287,9 @@ export default function MobileFilterScene({
 						<div className={`transition-all duration-200 ${activeInput === 'location' ? 'ring-2 ring-primary rounded-xl' : ''}`}>
 							<LocationAutocomplete
 								value={localLocation}
-								onValueChange={setLocalLocation}
-								onLocationSelect={_onLocationSelect}
-								onSubmit={location => onLocationChange?.(location)}
+								onValueChange={handleLocationValueChange}
+								onLocationSelect={handleLocationSelect}
+								onSubmit={location => onLocationChange?.(location?.trim() || null)}
 								onClear={handleLocationClear}
 								onFocus={() => setActiveInput('location')}
 								placeholder='City, state, or zip code...'
@@ -363,9 +407,9 @@ export default function MobileFilterScene({
 					</div>
 
 					{/* Bottom Action Bar */}
-					<div className='sticky bottom-0 bg-background border-t border-divider p-4 safe-area-inset-bottom'>
+					<div className='sticky bottom-0 bg-background p-4 safe-area-inset-bottom'>
 						<div className='flex items-center justify-between'>
-							<Button color='primary' size='lg' onPress={handleApply} className='px-8'>
+							<Button color='primary' size='lg' onPress={handleApply} className='px-8' fullWidth>
 								Apply Filters
 							</Button>
 						</div>
