@@ -96,11 +96,9 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 			// No jobs in viewport
 			setHasJobsInViewport(false);
 
-			// Auto-collapse if no jobs available (unless user explicitly opened it)
-			if (!wasExplicitlyClosed && !isCollapsed) {
-				setIsCollapsed(true);
-				onCollapseChange?.(true);
-			}
+			// Don't auto-collapse when zoomed out - just show a message instead
+			// Only auto-collapse if user navigates to area with no jobs at appropriate zoom level
+			// This prevents janky UX when zooming out
 		}
 	}, [bounds, currentZoom, totalCount, wasExplicitlyClosed, forceOpen, isCollapsed, onCollapseChange]);
 
@@ -132,30 +130,32 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 					isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-lg opacity-100'
 				}`}
 			>
-				{/* Header with Job Count */}
-				<div className='mb-4 w-full flex flex-col gap-4'>
-					<div className='flex items-center justify-between gap-4'>
-						<div className='flex-1'>
-							<h2 className='text-base font-medium text-foreground-800'>Viewing {actualTotalCount.toLocaleString()} Jobs</h2>
-							<p className='text-xs text-foreground-500'>in the current map view</p>
+				{/* Header with Job Count - only show when jobs are visible */}
+				{bounds && currentZoom >= 5 && (
+					<div className='mb-4 w-full flex flex-col gap-4'>
+						<div className='flex items-center justify-between gap-4'>
+							<div className='flex-1'>
+								<h2 className='text-base font-medium text-foreground-800'>Viewing {actualTotalCount.toLocaleString()} Jobs</h2>
+								<p className='text-xs text-foreground-500'>in the current map view</p>
+							</div>
+							<Select
+								size='sm'
+								label='Sort by'
+								labelPlacement='inside'
+								selectedKeys={[sortBy]}
+								onChange={e => setSortBy(e.target.value)}
+								className='max-w-[200px]'
+								classNames={{
+									label: 'text-xs text-foreground-600 whitespace-nowrap',
+									base: 'items-center'
+								}}
+							>
+								<SelectItem key='RELEVANCE'>Relevance</SelectItem>
+								<SelectItem key='CREATED_AT'>Newest First</SelectItem>
+							</Select>
 						</div>
-						<Select
-							size='sm'
-							label='Sort by'
-							labelPlacement='inside'
-							selectedKeys={[sortBy]}
-							onChange={e => setSortBy(e.target.value)}
-							className='max-w-[200px]'
-							classNames={{
-								label: 'text-xs text-foreground-600 whitespace-nowrap',
-								base: 'items-center'
-							}}
-						>
-							<SelectItem key='RELEVANCE'>Relevance</SelectItem>
-							<SelectItem key='CREATED_AT'>Newest First</SelectItem>
-						</Select>
 					</div>
-				</div>
+				)}
 
 				{/* Viewport Jobs List - always shown */}
 				<div className='w-full flex-1 flex flex-col min-h-0'>
