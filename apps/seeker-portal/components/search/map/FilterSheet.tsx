@@ -45,6 +45,21 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 	const [sortBy, setSortBy] = useState<string>(filters.sortBy || 'RELEVANCE');
 	// Track the actual total count from the jobs list query
 	const [actualTotalCount, setActualTotalCount] = useState<number>(totalCount);
+	// Track if user has manually tucked the sheet
+	const [isManuallyTucked, setIsManuallyTucked] = useState(false);
+	// Track programmatic snaps to avoid treating them as manual
+	const isProgrammaticSnapRef = useRef(false);
+	// Track if this is the initial mount to avoid treating initial snap as manual
+	const isInitialMountRef = useRef(true);
+
+	// Debug: Log all props on every render
+	console.log('🔍 FilterSheet render:', {
+		selectedCluster,
+		currentZoom,
+		isManuallyTucked,
+		currentSnap,
+		totalCount
+	});
 
 	// Enhanced snap points based on PRD specifications:
 	// 0 = Hidden (fully closed) - 0
@@ -56,11 +71,19 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 
 	// Handle force open prop
 	useEffect(() => {
+		// Respect user's manual tuck choice - don't force open if manually tucked
+		if (isManuallyTucked) {
+			console.log('⏸️ Force open blocked: user manually tucked');
+			return;
+		}
+
 		if (forceOpen) {
+			console.log('🔓 Force opening sheet to 35%');
 			// Force open to default jobs view (index 2 - 35% viewport)
+			isProgrammaticSnapRef.current = true;
 			ref.current?.snapTo(2);
 		}
-	}, [forceOpen]);
+	}, [forceOpen, isManuallyTucked]);
 
 	// Sync sortBy state with filters prop
 	useEffect(() => {
@@ -69,17 +92,55 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 
 	// Auto-snap based on cluster state
 	useEffect(() => {
-		if (selectedCluster) {
-			// Snap to cluster state (index 3 - 60% viewport)
-			ref.current?.snapTo(3);
-		} else if (!forceOpen) {
-			// Keep tucked state (index 1) as default only if not forced open
-			ref.current?.snapTo(1);
+		// If user has manually tucked the sheet, respect their choice - never auto-open
+		if (isManuallyTucked) {
+			console.log('⏸️ Auto-snap blocked: user manually tucked (will stay tucked)');
+			return;
 		}
-	}, [selectedCluster, forceOpen]);
+
+		// Only auto-open if we have a selected cluster at the right zoom level
+		if (selectedCluster && currentZoom >= 10) {
+			console.log('� Auto-opening sheet to 60% for cluster:', selectedCluster);
+			// Snap to cluster state (index 3 - 60% viewport) when cluster is selected at zoom 10+
+			isProgrammaticSnapRef.current = true;
+			ref.current?.snapTo(3);
+		}
+		// Don't auto-tuck when cluster is deselected - let user control the position
+	}, [selectedCluster, currentZoom, isManuallyTucked]);
 
 	const handleSnapTo = (index: number) => {
 		ref.current?.snapTo(index);
+	};
+
+	// Track user's manual snap changes
+	const handleSnapChange = (snapIndex: number) => {
+		setCurrentSnap(snapIndex);
+
+		// Ignore initial mount snap - the sheet starts at position 1 by default
+		if (isInitialMountRef.current) {
+			console.log('🆕 Initial mount snap detected, ignoring');
+			isInitialMountRef.current = false;
+			return;
+		}
+
+		// Check if this is a programmatic snap (auto-triggered)
+		if (isProgrammaticSnapRef.current) {
+			console.log('🤖 Programmatic snap detected, ignoring for manual tuck tracking');
+			isProgrammaticSnapRef.current = false;
+			return;
+		}
+
+		console.log('👆 User manual snap to index:', snapIndex);
+
+		// If user manually snaps to tucked position (index 1 or 0), mark as manually tucked
+		if (snapIndex <= 1) {
+			console.log('📥 User manually tucked sheet');
+			setIsManuallyTucked(true);
+		} else {
+			// If user opens the sheet to any other position, clear the manual tuck flag
+			console.log('📤 User manually opened sheet, clearing tuck flag');
+			setIsManuallyTucked(false);
+		}
 	};
 
 	// Create updated filters with current sortBy
@@ -241,7 +302,7 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 			onClose={() => {}}
 			initialSnap={1}
 			snapPoints={snapPoints}
-			onSnap={snapIndex => setCurrentSnap(snapIndex)}
+			onSnap={handleSnapChange}
 			disableScrollLocking={true}
 			disableDrag={false}
 			disableDismiss={true}

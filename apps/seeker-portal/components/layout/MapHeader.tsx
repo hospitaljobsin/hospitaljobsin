@@ -99,6 +99,18 @@ export default function MapHeader({
 		[onSearchTermChange]
 	);
 
+	const handleLocationSelect = useCallback(
+		(location: SearchLocation) => {
+			// When a location is selected from autocomplete, update the value and trigger the callback
+			const locationName = location.address.displayName || '';
+			setLocalLocation(locationName);
+			onLocationSelect?.(location);
+			// Also trigger the location change callback to update the URL
+			onLocationChange?.(locationName.trim() || null);
+		},
+		[onLocationSelect, onLocationChange]
+	);
+
 	return (
 		<>
 			{/* Mobile Header - Single NavContent with full-width search */}
@@ -165,7 +177,7 @@ export default function MapHeader({
 							<LocationAutocomplete
 								value={localLocation}
 								onValueChange={setLocalLocation}
-								onLocationSelect={onLocationSelect}
+								onLocationSelect={handleLocationSelect}
 								onSubmit={handleLocationSubmit}
 								onClear={handleLocationClear}
 								placeholder='Location'
@@ -251,37 +263,6 @@ export default function MapHeader({
 							}
 						}
 						onFiltersChange={onFiltersChange}
-						quickFilters={[
-							{ label: 'Full-time', value: 'full_time', active: filters?.jobType?.includes('full_time') || false },
-							{ label: 'Remote', value: 'remote', active: filters?.workMode?.includes('remote') || false },
-							{ label: 'Entry Level', value: 'entry', active: filters?.minExperience === 0 },
-							{ label: 'Senior Level', value: 'senior', active: (filters?.minExperience || 0) >= 5 }
-						]}
-						onQuickFilterToggle={value => {
-							if (!onFiltersChange) return;
-							switch (value) {
-								case 'full_time':
-									onFiltersChange({
-										jobType: filters?.jobType?.includes('full_time')
-											? filters.jobType.filter((t: string) => t !== 'full_time')
-											: [...(filters?.jobType || []), 'full_time']
-									});
-									break;
-								case 'remote':
-									onFiltersChange({
-										workMode: filters?.workMode?.includes('remote')
-											? filters.workMode.filter((m: string) => m !== 'remote')
-											: [...(filters?.workMode || []), 'remote']
-									});
-									break;
-								case 'entry':
-									onFiltersChange({ minExperience: filters?.minExperience === 0 ? null : 0 });
-									break;
-								case 'senior':
-									onFiltersChange({ minExperience: (filters?.minExperience || 0) >= 5 ? null : 5 });
-									break;
-							}
-						}}
 						resultCount={resultCount}
 						initialFocus='search'
 					/>

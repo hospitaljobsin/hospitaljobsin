@@ -55,18 +55,23 @@ export default async function MapPage({ searchParams }: { searchParams: Promise<
 	const filterParams = await searchParams;
 	const variables = parseSearchParams(filterParams);
 
+	// Extract location and searchTerm from query params if provided
+	const location = typeof filterParams.location === 'string' ? filterParams.location : undefined;
+	const searchTerm = typeof filterParams.searchTerm === 'string' ? filterParams.searchTerm : undefined;
+
 	const preloadedQuery = await loadSerializableQuery<typeof SearchMapViewQueryNode, pageSearchMapViewQuery>(
 		PageSearchMapViewQuery,
 		{
 			...variables,
+			location: location || null,
+			searchTerm: searchTerm || null,
 			bounds: {
 				swLat: 8.0883,
 				swLng: 68.1766,
 				neLat: 37.6173,
 				neLng: 97.3951
 			}, // Default bounds for India
-			zoomLevel: 5, // Default zoom level
-			first: 100 // Load more jobs for map view
+			zoomLevel: 5 // Default zoom level
 		},
 		{
 			metadata: {
@@ -75,5 +80,5 @@ export default async function MapPage({ searchParams }: { searchParams: Promise<
 		}
 	);
 
-	return <MapViewClientComponent preloadedQuery={preloadedQuery} />;
+	return <MapViewClientComponent preloadedQuery={preloadedQuery} location={location} searchTerm={searchTerm} />;
 }
