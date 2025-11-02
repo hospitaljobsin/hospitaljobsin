@@ -1,0 +1,23 @@
+{
+	"mcpServers": {
+		"terraform": {
+			"command": "docker",
+			"args": ["run", "-i", "--rm", "hashicorp/terraform-mcp-server:0.3.0"]
+		},
+		"ddg-search": {
+			"command": "uvx",
+			"args": ["duckduckgo-mcp-server"]
+		},
+		"sequential-thinking": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+		},
+		"serena": {
+			"type": "stdio",
+			"command": "uvx",
+			"args": ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide-assistant"]
+		}
+	},
+	"inputs": []
+}

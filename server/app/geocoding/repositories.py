@@ -208,6 +208,8 @@ class RegionRepo:
         suggestions: list[LocationAutocompleteSuggestion] = []
         for result in results:
             place_id = str(uuid.uuid4())
+            # Extract coordinates from GeoJSON Point format
+            coords = result["coordinates"]["coordinates"]  # [longitude, latitude]
             suggestions.append(
                 LocationAutocompleteSuggestion(
                     place_id=place_id,
@@ -220,6 +222,7 @@ class RegionRepo:
                         country=result["address"].get("country"),
                         postal_code=result["address"].get("postal_code"),
                     ),
+                    coordinates=(coords[0], coords[1]),  # (longitude, latitude)
                 )
             )
 

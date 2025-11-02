@@ -1,4 +1,5 @@
 import logging
+import math
 import uuid
 from datetime import datetime
 from typing import Annotated, Any, Literal
@@ -26,7 +27,7 @@ from app.accounts.documents import Account
 from app.accounts.exceptions import AccountProfileIncompleteError
 from app.accounts.repositories import ProfileRepo
 from app.base.exceptions import InvalidLocationError
-from app.base.models import Address, GeoObject
+from app.base.models import Address, BoundingBox, GeoObject
 from app.config import AppSettings, AWSSettings, EnvironmentSettings
 from app.core.constants import (
     ImpressionJobMetricEventType,
@@ -66,6 +67,8 @@ from app.jobs.exceptions import (
 )
 from app.jobs.models import (
     JobApplicantAnalysisEventBody,
+    JobCluster,
+    JobClusterFilters,
     JobExperienceRange,
     JobSalaryRange,
 )
@@ -82,6 +85,133 @@ from app.organizations.exceptions import (
 from app.organizations.repositories import OrganizationRepo
 from app.organizations.services import OrganizationMemberService
 from app.revalidation.services import BaseRevalidationService
+
+# Map clustering utilities
+
+
+def get_h3_resolution_from_bounds(
+    bounds: dict[str, float], max_hexagons: int = 1000
+) -> int:
+    """
+    Calculate optimal H3 resolution based on bounding box area.
+
+    Given any bounds, selects the H3 resolution such that not more than
+    max_hexagons can be created within the bounds.
+
+    Args:
+        bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
+        max_hexagons: Maximum number of hexagons allowed (default: 1000)
+
+    Returns:
+        H3 resolution level (0-15)
+    """
+    import h3
+
+    # Calculate viewport area using haversine formula
+    sw_lat = bounds["sw_lat"]
+    sw_lng = bounds["sw_lng"]
+    ne_lat = bounds["ne_lat"]
+    ne_lng = bounds["ne_lng"]
+
+    # Earth radius in km
+    r = 6371.0
+
+    # Convert to radians
+    lat1 = math.radians(sw_lat)
+    lat2 = math.radians(ne_lat)
+    lng1 = math.radians(sw_lng)
+    lng2 = math.radians(ne_lng)
+
+    # Calculate height (north-south distance)
+    dlat = lat2 - lat1
+    a = math.sin(dlat / 2) ** 2
+    c = 2 * math.asin(math.sqrt(a))
+    height_km = r * c
+
+    # Calculate width (east-west distance) at center latitude
+    center_lat = (lat1 + lat2) / 2
+    dlng = lng2 - lng1
+    a = math.cos(center_lat) ** 2 * math.sin(dlng / 2) ** 2
+    c = 2 * math.asin(math.sqrt(a))
+    width_km = r * c
+
+    # Calculate area
+    area_km2 = height_km * width_km
+
+    # Start from the highest resolution and work down to find
+    # the finest resolution that keeps hexagons under the limit
+    for resolution in range(15, -1, -1):  # H3 resolutions go from 0 to 15
+        # Get average hexagon area at this resolution
+        avg_hex_area_km2 = h3.average_hexagon_area(resolution, unit="km^2")
+
+        # Estimate number of hexagons needed to cover the area
+        # Add 20% buffer to account for irregular coverage at edges
+        estimated_hexagons = (area_km2 / avg_hex_area_km2) * 1.2
+
+        if estimated_hexagons <= max_hexagons:
+            return resolution
+
+    # If even resolution 0 would create too many hexagons,
+    # return 0 (coarsest resolution available)
+    return 0
+
+
+def get_h3_resolution_from_zoom(
+    zoom_level: int, bounds: dict[str, float] | None = None
+) -> int:
+    """
+    Calculate optimal H3 resolution based on bounds and zoom level.
+
+    The primary calculation is based on the bounding box area to ensure
+    that no more than 1000 hexagons are created. The zoom level is used
+    as a secondary constraint to ensure minimum resolution.
+
+    Args:
+        zoom_level: Map zoom level (1-20)
+        job_density: Jobs per square kilometer (used for legacy compatibility)
+        bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
+
+    Returns:
+        H3 resolution level (0-15)
+
+    Zoom level minimum resolution mapping:
+    - Zoom 0-3: Min resolution 1 (Country/Continent view)
+    - Zoom 4-5: Min resolution 3 (State/Province view)
+    - Zoom 6-7: Min resolution 5 (City view)
+    - Zoom 8-9: Min resolution 7 (Neighborhood view)
+    - Zoom 10-11: Min resolution 9 (District view)
+    - Zoom 12: Min resolution 10 (Street view)
+    - Zoom 13-14: Min resolution 11 (Block view)
+    - Zoom 15+: Min resolution 11 (Individual markers shown instead)
+    """
+    # Determine minimum resolution based on zoom level
+    if zoom_level <= 3:
+        min_resolution = 1
+    elif zoom_level <= 5:
+        min_resolution = 3
+    elif zoom_level <= 7:
+        min_resolution = 5
+    elif zoom_level <= 9:
+        min_resolution = 7
+    elif zoom_level <= 11:
+        min_resolution = 9
+    elif zoom_level == 12:
+        min_resolution = 10
+    else:  # zoom_level >= 13
+        min_resolution = 11
+
+    # If no bounds provided, just use the zoom-based minimum
+    if bounds is None:
+        return min_resolution
+
+    # Calculate bounds-based max resolution (finest we can use without exceeding 1000 hexagons)
+    max_resolution = get_h3_resolution_from_bounds(bounds, max_hexagons=1000)
+
+    # The final resolution should be:
+    # - At least min_resolution (to ensure appropriate detail for zoom)
+    # - At most max_resolution (to ensure we don't exceed 1000 hexagons)
+    # If these constraints conflict (min > max), we must respect the bounds limit
+    return min(min_resolution, max_resolution)
 
 
 class SavedJobService:
@@ -1035,3 +1165,81 @@ class JobMetricService:
             event_type=event_type,
         )
         return Ok(result)
+
+
+class JobClusterService:
+    """Service for managing job clustering on maps using H3 hexagonal indexing."""
+
+    def __init__(self, job_repo: JobRepo, region_repo: RegionRepo) -> None:
+        self._job_repo = job_repo
+        self._region_repo = region_repo
+
+    async def get_job_clusters(
+        self,
+        bounds: dict[str, float],
+        zoom_level: int,
+        filters: JobClusterFilters,
+    ) -> tuple[list[JobCluster], int, tuple[float, float, int] | None]:
+        """
+        Get aggregated job clusters for a map viewport.
+
+        Args:
+            bounds: Bounding box with sw_lat, sw_lng, ne_lat, ne_lng
+            zoom_level: Map zoom level (1-20)
+            filters: Filter criteria for jobs
+
+        Returns:
+            Tuple of (list of job clusters, total job count, optional location viewport)
+            Location viewport is (latitude, longitude, zoom_level) if location filter is provided
+
+        """
+        # Determine H3 resolution based on bounds and zoom level
+        # The bounds ensure we don't create more than 1000 hexagons
+        h3_resolution = get_h3_resolution_from_zoom(zoom_level, bounds)
+
+        # Get job clusters
+        clusters, total_count = await self._job_repo.get_aggregated_jobs_by_h3(
+            bounds=BoundingBox(**bounds), h3_resolution=h3_resolution, filters=filters
+        )
+
+        # Calculate location viewport if location filter is provided
+        location_viewport = None
+        if filters.location:
+            location_viewport = await self._calculate_location_viewport(
+                filters.location
+            )
+
+        return clusters, total_count, location_viewport
+
+    async def _calculate_location_viewport(
+        self, location_name: str
+    ) -> tuple[float, float, int] | None:
+        """
+        Calculate recommended viewport for a location.
+
+        Args:
+            location_name: Name of the location to search for
+
+        Returns:
+            Tuple of (latitude, longitude, zoom_level) or None if location not found
+
+        """
+        # Fetch location data from RegionRepo
+        region = await self._region_repo.get_by_name(location_name)
+
+        if not region:
+            return None
+
+        # Extract coordinates from GeoJSON Point
+        longitude, latitude = region.coordinates.coordinates
+
+        # Determine zoom level based on region level
+        zoom_level_map = {
+            "continent": 3,
+            "country": 5,
+            "state": 7,
+            "locality": 11,
+        }
+        zoom_level = zoom_level_map.get(region.level, 7)  # Default to state level
+
+        return (latitude, longitude, zoom_level)

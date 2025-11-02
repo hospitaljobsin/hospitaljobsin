@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import { Work_Sans } from 'next/font/google';
 import { headers } from 'next/headers';
 import CookieBanner from '@/components/CookieBanner';
-import Footer from '@/components/layout/Footer';
 import PostHogIdentifier from '@/components/PostHogIdentifier';
 import { ReactScan } from '@/components/ReactScanComponent';
 import { APP_DESCRIPTION, APP_TITLE } from '@/lib/constants';
@@ -55,7 +54,6 @@ export default function RootLayout({
 					<PostHogIdentifier />
 					<CookieBanner />
 					{children}
-					<Footer />
 				</Providers>
 			</body>
 		</html>

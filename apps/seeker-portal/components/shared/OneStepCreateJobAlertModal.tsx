@@ -1,6 +1,5 @@
 'use client';
 
-import type { CreateJobAlertModalMutation as CreateJobAlertMutationType } from '@/__generated__/CreateJobAlertModalMutation.graphql';
 import {
 	Accordion,
 	AccordionItem,
@@ -23,6 +22,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-relay';
 import { ConnectionHandler, graphql } from 'relay-runtime';
 import { z } from 'zod';
+import type { CreateJobAlertModalMutation as CreateJobAlertMutationType } from '@/__generated__/CreateJobAlertModalMutation.graphql';
 import JobSearchAutocomplete from '../forms/JobSearchAutocomplete';
 import LocationAutocomplete from '../forms/LocationAutocomplete';
 
@@ -290,7 +290,7 @@ export default function OneStepCreateJobAlertModal({ isOpen, onOpenChange, filte
 										allowsCustomValue
 										value={field.value || ''}
 										onValueChange={value => field.onChange(value || null)}
-										onChange={location => {
+										onLocationSelect={location => {
 											field.onChange(location?.address?.displayName || null);
 										}}
 										errorMessage={errors.location?.message}

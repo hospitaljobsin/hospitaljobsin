@@ -1,4 +1,5 @@
 import hashlib
+import json
 import secrets
 import uuid
 from collections import defaultdict
@@ -6,6 +7,7 @@ from datetime import UTC, datetime, time, timedelta
 from enum import Enum
 from typing import Any, Literal, get_args
 
+import h3
 import pymongo
 from beanie import DeleteRules, Link, PydanticObjectId, WriteRules
 from beanie.odm.queries.aggregation import AggregationQuery
@@ -15,7 +17,7 @@ from pydantic import ValidationError
 from redis.asyncio import Redis
 
 from app.accounts.documents import Account, BaseProfile, CareerProfile
-from app.base.models import Address, GeoObject
+from app.base.models import Address, BoundingBox, GeoObject
 from app.core.constants import (
     DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT,
     JOB_APPLICANT_EMBEDDING_DIMENSIONS,
@@ -41,7 +43,11 @@ from app.jobs.agents.applicant_query_parser import (
     ApplicantQueryParserAgent,
     LocationWithRadius,
 )
-from app.jobs.models import JobAutocompleteSuggestion
+from app.jobs.models import (
+    JobAutocompleteSuggestion,
+    JobCluster,
+    JobClusterFilters,
+)
 from app.organizations.documents import Organization
 
 from .documents import (
@@ -88,10 +94,537 @@ class JobType(Enum):
 
 class JobRepo:
     def __init__(
-        self, embeddings_service: BaseEmbeddingsService, region_repo: RegionRepo
+        self,
+        embeddings_service: BaseEmbeddingsService,
+        region_repo: RegionRepo,
+        redis_client: Redis,
     ) -> None:
         self._embeddings_service = embeddings_service
         self._region_repo = region_repo
+        self._redis_client = redis_client
+
+    def _compute_h3_indexes(self, geo: GeoObject | None) -> dict[str, str] | None:
+        """
+        Compute H3 indexes at multiple resolutions for a job location.
+
+        Args:
+            geo: GeoObject containing coordinates [lng, lat]
+
+        Returns:
+            Dictionary mapping resolution (as string) to H3 index,
+            or None if geo is None or invalid
+
+        """
+        if not geo or not geo.coordinates:
+            return None
+
+        lng, lat = geo.coordinates
+
+        # Include all H3 resolutions (0-15) to prevent future indexing issues
+        resolutions = list(
+            range(16)
+        )  # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+        h3_indexes = {}
+
+        for resolution in resolutions:
+            h3_index = h3.latlng_to_cell(lat, lng, resolution)
+            h3_indexes[str(resolution)] = h3_index
+
+        return h3_indexes
+
+    def _generate_cluster_cache_key(
+        self,
+        bounds: BoundingBox,
+        h3_resolution: int,
+        filters: JobClusterFilters,
+    ) -> str:
+        """
+        Generate a cache key for job cluster results.
+
+        Args:
+            bounds: Bounding box for the map viewport
+            h3_resolution: H3 resolution level for clustering
+            filters: Job filters applied to the query
+
+        Returns:
+            Cache key string for Redis storage
+
+        """
+        # Round coordinates to 4 decimals to increase cache hits for similar viewports
+        bounds_str = f"{bounds.sw_lat:.4f},{bounds.sw_lng:.4f},{bounds.ne_lat:.4f},{bounds.ne_lng:.4f}"
+
+        # Convert filters to dict and hash for compact representation
+        filters_dict = filters.model_dump(exclude_none=True)
+        filters_json = str(sorted(filters_dict.items()))
+        filters_hash = hashlib.md5(filters_json.encode("utf-8")).hexdigest()[:8]
+
+        # Version allows cache invalidation when algorithm changes
+        version = "1"
+
+        return f"job_clusters:v{version}:{bounds_str}:res{h3_resolution}:{filters_hash}"
+
+    def _enrich_clusters_with_geometry(
+        self, aggregation_results: list[dict]
+    ) -> list[JobCluster]:
+        clusters: list[JobCluster] = []
+        for result in aggregation_results:
+            h3_index = result["_id"]
+
+            # Get center point coordinates (lat, lng)
+            lat, lng = h3.cell_to_latlng(h3_index)
+
+            # Get hexagon boundary as list of [lng, lat] pairs
+            boundary = h3.cell_to_boundary(h3_index)
+            # Convert from (lat, lng) tuples to [[lng, lat], ...] format for GeoJSON
+            bounds = [[coord[1], coord[0]] for coord in boundary]
+
+            clusters.append(
+                JobCluster(
+                    h3_index=h3_index,
+                    count=result["count"],
+                    center=GeoObject(coordinates=(lng, lat)),
+                    bounds=bounds,
+                )
+            )
+
+        return clusters
+
+    async def _build_cluster_match_filters(
+        self,
+        bounds: BoundingBox,
+        filters: JobClusterFilters,
+    ) -> dict[str, Any]:
+        """
+        Build MongoDB match filters for job clustering queries.
+
+        Args:
+            bounds: Map viewport bounding box
+            filters: Job filter criteria
+
+        Returns:
+            MongoDB $match stage dict
+
+        """
+        match_filters: dict[str, Any] = {
+            "is_active": True,
+            "$or": [
+                {"expires_at": {"$gt": datetime.now(UTC)}},
+                {"expires_at": None},
+            ],
+        }
+
+        # Geospatial filter for bounding box
+        match_filters["geo"] = {
+            "$geoWithin": {
+                "$box": [
+                    [bounds.sw_lng, bounds.sw_lat],
+                    [bounds.ne_lng, bounds.ne_lat],
+                ]
+            }
+        }
+
+        # Work mode filter
+        if filters.work_mode:
+            match_filters["work_mode"] = {"$in": filters.work_mode}
+
+        # Job type filter
+        if filters.job_type:
+            match_filters["type"] = {"$in": filters.job_type}
+
+        # Build combined conditions that need to be $or-ed
+        or_conditions = []
+
+        # Experience filters - jobs that overlap with the experience range
+        if filters.min_experience is not None or filters.max_experience is not None:
+            experience_or_conditions = []
+            if filters.min_experience is not None:
+                # Job's max_experience should be >= filter's min_experience
+                # OR job's min_experience should be >= filter's min_experience
+                experience_or_conditions.extend(
+                    [
+                        {"max_experience": {"$gte": filters.min_experience}},
+                        {"min_experience": {"$gte": filters.min_experience}},
+                    ]
+                )
+            if filters.max_experience is not None:
+                # Job's min_experience should be <= filter's max_experience
+                # OR job's max_experience should be <= filter's max_experience
+                experience_or_conditions.extend(
+                    [
+                        {"min_experience": {"$lte": filters.max_experience}},
+                        {"max_experience": {"$lte": filters.max_experience}},
+                    ]
+                )
+            if experience_or_conditions:
+                or_conditions.append({"$or": experience_or_conditions})
+
+        # Salary filters - jobs that overlap with the salary range
+        if filters.min_salary is not None or filters.max_salary is not None:
+            salary_or_conditions = []
+            if filters.min_salary is not None:
+                # Job's max_salary should be >= filter's min_salary
+                # OR job's min_salary should be >= filter's min_salary
+                salary_or_conditions.extend(
+                    [
+                        {"max_salary": {"$gte": filters.min_salary}},
+                        {"min_salary": {"$gte": filters.min_salary}},
+                    ]
+                )
+            if filters.max_salary is not None:
+                # Job's min_salary should be <= filter's max_salary
+                # OR job's max_salary should be <= filter's max_salary
+                salary_or_conditions.extend(
+                    [
+                        {"min_salary": {"$lte": filters.max_salary}},
+                        {"max_salary": {"$lte": filters.max_salary}},
+                    ]
+                )
+            if salary_or_conditions:
+                or_conditions.append({"$or": salary_or_conditions})
+
+        # Combine all OR conditions with AND
+        if or_conditions:
+            if len(or_conditions) == 1:
+                # Single OR condition, add directly
+                match_filters.update(or_conditions[0])
+            else:
+                # Multiple OR conditions, combine with $and
+                match_filters["$and"] = or_conditions
+
+        return match_filters
+
+    async def _aggregate_direct(
+        self,
+        h3_resolution: int,
+        intersecting_hexes: list[str],
+        bounds: BoundingBox,
+        filters: JobClusterFilters,
+    ) -> list[dict]:
+        """
+        Aggregate jobs directly without Atlas Search (for non-text queries).
+
+        Args:
+            h3_resolution: H3 resolution level for clustering
+            intersecting_hexes: List of H3 indexes intersecting the viewport
+            bounds: Map viewport bounding box
+            filters: Job filter criteria
+
+        Returns:
+            List of aggregation results with cluster statistics
+        """
+        import logging
+
+        logger = logging.getLogger(__name__)
+        print(
+            f"🔥 _aggregate_direct: START with h3_resolution={h3_resolution}, {len(intersecting_hexes)} hexes"
+        )
+        print(f"🔥 intersecting_hexes: {intersecting_hexes}")
+        logger.info(
+            f"JobRepo._aggregate_direct: h3_resolution={h3_resolution}, bounds={bounds}"
+        )
+        logger.info(
+            f"JobRepo._aggregate_direct: intersecting_hexes count={len(intersecting_hexes)}, first 10: {intersecting_hexes[:10]}"
+        )
+
+        h3_field = f"h3_indexes.{h3_resolution}"
+
+        # Build match filters
+        match_filters = await self._build_cluster_match_filters(bounds, filters)
+        logger.info(f"JobRepo._aggregate_direct: base match_filters={match_filters}")
+
+        # Add H3 index filter
+        match_filters[h3_field] = {"$in": intersecting_hexes}
+        logger.info(
+            f"JobRepo._aggregate_direct: final match_filters with H3={match_filters}"
+        )
+
+        pipeline = [
+            {"$match": match_filters},
+            {
+                "$group": {
+                    "_id": f"${h3_field}",
+                    "count": {"$sum": 1},
+                    "skills": {"$push": "$skills"},
+                }
+            },
+            {
+                "$project": {
+                    "_id": 1,
+                    "count": 1,
+                }
+            },
+            {"$sort": {"count": -1}},
+            {"$limit": 1000},
+        ]
+
+        print(f"🔥 Executing pipeline with {len(pipeline)} stages")
+        print(f"🔥 Pipeline: {pipeline}")
+        logger.info(
+            f"JobRepo._aggregate_direct: executing pipeline with {len(pipeline)} stages"
+        )
+        results = await Job.aggregate(pipeline, projection_model=None).to_list()
+        print(f"🔥 MongoDB returned {len(results)} results")
+        if results:
+            print(f"🔥 First result: {results[0]}")
+
+        # DEBUG: Log detailed count information for debugging zoom-level mismatches
+        total_jobs_in_clusters = sum(r.get("count", 0) for r in results)
+        print("🔥 DEBUG COUNT ANALYSIS:")
+        print(f"   - Resolution: {h3_resolution}")
+        print(f"   - Number of clusters: {len(results)}")
+        print(f"   - Total jobs across all clusters: {total_jobs_in_clusters}")
+        print(
+            f"   - Viewport bounds: sw_lat={bounds.sw_lat:.4f}, sw_lng={bounds.sw_lng:.4f}, ne_lat={bounds.ne_lat:.4f}, ne_lng={bounds.ne_lng:.4f}"
+        )
+        if results:
+            print("   - Top 5 clusters by count:")
+            for i, r in enumerate(
+                sorted(results, key=lambda x: x.get("count", 0), reverse=True)[:5]
+            ):
+                print(f"     {i + 1}. H3={r.get('_id')}: count={r.get('count')}")
+        logger.info(
+            f"JobRepo._aggregate_direct: pipeline returned {len(results)} results"
+        )
+        if results:
+            logger.info(f"JobRepo._aggregate_direct: first result: {results[0]}")
+        return results
+
+    async def _aggregate_with_search(
+        self,
+        h3_resolution: int,
+        intersecting_hexes: list[str],
+        bounds: BoundingBox,
+        filters: JobClusterFilters,
+    ) -> list[dict]:
+        """
+        Aggregate jobs with Atlas Search for text queries.
+
+        Two-phase approach:
+        1. Use Atlas Search to get job IDs matching search_term
+        2. Aggregate those jobs by H3 index
+
+        Args:
+            h3_resolution: H3 resolution level for clustering
+            intersecting_hexes: List of H3 indexes intersecting the viewport
+            bounds: Map viewport bounding box
+            filters: Job filter criteria (must include search_term)
+
+        Returns:
+            List of aggregation results with cluster statistics
+        """
+        h3_field = f"h3_indexes.{h3_resolution}"
+
+        # Phase 1: Atlas Search for job IDs
+        search_pipeline = [
+            {
+                "$search": {
+                    "index": JOB_SEARCH_INDEX_NAME,
+                    "compound": {
+                        "must": [
+                            {"equals": {"path": "is_active", "value": True}},
+                            {
+                                "compound": {
+                                    "should": [
+                                        {
+                                            "equals": {
+                                                "path": "expires_at",
+                                                "value": None,
+                                            }
+                                        },
+                                        {
+                                            "range": {
+                                                "path": "expires_at",
+                                                "gt": datetime.now(UTC),
+                                            }
+                                        },
+                                    ],
+                                    "minimumShouldMatch": 1,
+                                }
+                            },
+                            # Text search clause
+                            {
+                                "compound": {
+                                    "should": [
+                                        {
+                                            "text": {
+                                                "query": filters.search_term,
+                                                "path": "title",
+                                                "score": {"boost": {"value": 10}},
+                                            }
+                                        },
+                                        {
+                                            "text": {
+                                                "query": filters.search_term,
+                                                "path": "skills",
+                                                "score": {"boost": {"value": 8}},
+                                            }
+                                        },
+                                        {
+                                            "text": {
+                                                "query": filters.search_term,
+                                                "path": "description_cleaned",
+                                                "score": {"boost": {"value": 4}},
+                                            }
+                                        },
+                                    ],
+                                    "minimumShouldMatch": 1,
+                                }
+                            },
+                        ],
+                    },
+                }
+            },
+            {"$project": {"_id": 1}},
+            {"$limit": 5000},  # Limit search results for performance
+        ]
+
+        search_results = await Job.aggregate(
+            search_pipeline, projection_model=None
+        ).to_list()
+        job_ids = [result["_id"] for result in search_results]
+
+        if not job_ids:
+            return []
+
+        # Phase 2: Aggregate by H3 index
+        match_filters = await self._build_cluster_match_filters(bounds, filters)
+        match_filters["_id"] = {"$in": job_ids}
+        match_filters[h3_field] = {"$in": intersecting_hexes}
+
+        aggregation_pipeline = [
+            {"$match": match_filters},
+            {
+                "$group": {
+                    "_id": f"${h3_field}",
+                    "count": {"$sum": 1},
+                    "skills": {"$push": "$skills"},
+                }
+            },
+            {
+                "$project": {
+                    "_id": 1,
+                    "count": 1,
+                }
+            },
+            {"$sort": {"count": -1}},
+            {"$limit": 1000},
+        ]
+
+        return await Job.aggregate(
+            aggregation_pipeline, projection_model=None
+        ).to_list()
+
+    async def get_aggregated_jobs_by_h3(
+        self,
+        bounds: BoundingBox,
+        h3_resolution: int,
+        filters: JobClusterFilters,
+    ) -> tuple[list[JobCluster], int]:
+        # Add debug logging at the start
+        import logging
+
+        logger = logging.getLogger(__name__)
+        print(
+            f"🔍 JobRepo.get_aggregated_jobs_by_h3: START - bounds={bounds}, h3_resolution={h3_resolution}"
+        )
+        logger.info(
+            f"JobRepo.get_aggregated_jobs_by_h3: START - bounds={bounds}, h3_resolution={h3_resolution}, filters={filters}"
+        )
+
+        # Calculate intersecting H3 hexagons
+        print("🔶 Creating bbox polygon...")
+        # Create polygon from bounding box
+        # GeoJSON requires [lng, lat] coordinate pairs (not [lat, lng])
+        bbox_polygon = [
+            [bounds.sw_lng, bounds.sw_lat],
+            [bounds.ne_lng, bounds.sw_lat],
+            [bounds.ne_lng, bounds.ne_lat],
+            [bounds.sw_lng, bounds.ne_lat],
+            [bounds.sw_lng, bounds.sw_lat],  # Close the polygon
+        ]
+        print(f"🔶 bbox_polygon={bbox_polygon}")
+
+        # Create GeoJSON polygon for H3 (implements __geo_interface__)
+        geojson_polygon = {
+            "type": "Polygon",
+            "coordinates": [bbox_polygon],
+        }
+        print(f"🔶 geojson_polygon={geojson_polygon}")
+
+        # Get intersecting hexagons
+        print(f"🔶 Calling h3.geo_to_cells with resolution {h3_resolution}...")
+        try:
+            intersecting_hexes = list(
+                h3.geo_to_cells(geojson_polygon, res=h3_resolution)
+            )
+            print(
+                f"🔶 Got {len(intersecting_hexes)} intersecting hexes: {intersecting_hexes[:5]}"
+            )
+        except Exception as e:
+            print(f"🔶 ERROR in h3.geo_to_cells: {e}")
+            raise
+
+        # Debug logging
+        import logging
+
+        logger = logging.getLogger(__name__)
+        logger.info(
+            f"H3 clustering debug: h3_resolution={h3_resolution}, "
+            f"intersecting_hexes_count={len(intersecting_hexes)}, "
+            f"intersecting_hexes={intersecting_hexes[:10]}, "  # Show first 10 for comparison
+            f"bounds={bounds}"
+        )
+
+        # Safety check: ensure we don't create too many hexagons
+        # This should rarely trigger since resolution is calculated dynamically,
+        # but serves as a failsafe for edge cases
+        MAX_HEXAGONS_SAFETY_LIMIT = 2000  # Allow some buffer over the 1000 target
+        if len(intersecting_hexes) > MAX_HEXAGONS_SAFETY_LIMIT:
+            logger.warning(
+                f"Too many H3 hexagons generated: {len(intersecting_hexes)} > {MAX_HEXAGONS_SAFETY_LIMIT}. "
+                f"h3_resolution={h3_resolution}, bounds={bounds}"
+            )
+            return [], 0
+
+        if not intersecting_hexes:
+            logger.warning(
+                f"No intersecting hexagons found for bounds={bounds}, resolution={h3_resolution}"
+            )
+            return [], 0
+
+        # Choose aggregation method based on search_term
+        print(f"🔍 filters.search_term={filters.search_term}")
+        if filters.search_term:
+            print("🔍 Using _aggregate_with_search")
+            aggregation_results = await self._aggregate_with_search(
+                h3_resolution, intersecting_hexes, bounds, filters
+            )
+        else:
+            print("🔍 Using _aggregate_direct")
+            aggregation_results = await self._aggregate_direct(
+                h3_resolution, intersecting_hexes, bounds, filters
+            )
+
+        print(f"🔍 aggregation_results returned: {len(aggregation_results)} results")
+        logger.info(
+            f"Aggregation results: {len(aggregation_results)} raw clusters found"
+        )
+
+        # Enrich with geometry
+        clusters = self._enrich_clusters_with_geometry(aggregation_results)
+
+        # Calculate total count from all clusters
+        total_count = sum(cluster.count for cluster in clusters)
+
+        # Cache results for 30 minutes
+        cache_data = json.dumps(
+            {
+                "clusters": [cluster.model_dump() for cluster in clusters],
+                "total_count": total_count,
+            }
+        )
+
+        return clusters, total_count
 
     async def generate_slug(self, title: str, organization_id: ObjectId) -> str:
         """Generate a slug from the job title."""
@@ -191,6 +724,11 @@ class JobRepo:
             ),
             dimensions=JOB_EMBEDDING_DIMENSIONS,
         )
+
+        # Compute H3 indexes for map clustering
+        h3_indexes = self._compute_h3_indexes(geo) if geo else None
+        print("H3 INDEXES:", h3_indexes)
+
         job = Job(
             title=title,
             description=description,
@@ -201,6 +739,7 @@ class JobRepo:
             location=location,
             applicant_locations=applicant_locations,
             geo=geo,
+            h3_indexes=h3_indexes,
             address=address,
             min_salary=min_salary,
             max_salary=max_salary,
@@ -249,6 +788,11 @@ class JobRepo:
                 ),
                 dimensions=JOB_EMBEDDING_DIMENSIONS,
             )
+
+            # Compute H3 indexes for map clustering
+            geo_obj = data.get("geo")
+            h3_indexes = self._compute_h3_indexes(geo_obj) if geo_obj else None
+
             job = Job(
                 title=data["title"],
                 description=data["description"],
@@ -258,7 +802,8 @@ class JobRepo:
                 vacancies=data.get("vacancies"),
                 location=data.get("location"),
                 applicant_locations=data.get("applicant_locations", []),
-                geo=data.get("geo"),
+                geo=geo_obj,
+                h3_indexes=h3_indexes,
                 address=data.get("address"),
                 min_salary=data.get("min_salary"),
                 max_salary=data.get("max_salary"),
@@ -336,6 +881,9 @@ class JobRepo:
         job.location = location
         job.applicant_locations = applicant_locations
         job.geo = geo
+        # Recompute H3 indexes if geo location changed
+        if orig["geo"] != geo:
+            job.h3_indexes = self._compute_h3_indexes(geo) if geo else None
         job.address = address
         job.min_salary = min_salary
         job.max_salary = max_salary
@@ -513,6 +1061,7 @@ class JobRepo:
         search_term: str | None = None,
         location: str | None = None,
         proximity_km: float | None = None,
+        bounds: BoundingBox | None = None,
         min_experience: int | None = None,
         max_experience: int | None = None,
         min_salary: int | None = None,
@@ -584,6 +1133,26 @@ class JobRepo:
                         }
                     }
                 )
+
+        # Bounding box filter for map viewport
+        if bounds:
+            must_clauses.append(
+                {
+                    "geoWithin": {
+                        "box": {
+                            "bottomLeft": {
+                                "type": "Point",
+                                "coordinates": [bounds.sw_lng, bounds.sw_lat],
+                            },
+                            "topRight": {
+                                "type": "Point",
+                                "coordinates": [bounds.ne_lng, bounds.ne_lat],
+                            },
+                        },
+                        "path": "geo",
+                    }
+                }
+            )
 
         # Experience filters
         if min_experience is not None:

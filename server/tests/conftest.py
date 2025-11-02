@@ -1,6 +1,7 @@
 import logging
 import os
 import pkgutil
+from typing import Any
 
 import pytest
 
@@ -20,8 +21,8 @@ pytest_plugins = [
 
 
 @pytest.fixture(scope="session", autouse=True)
-def anyio_backend() -> str:
-    return "asyncio"
+def anyio_backend() -> tuple[str, dict[str, Any]]:
+    return ("asyncio", {"use_uvloop": True})
 
 
 def pytest_configure(config):

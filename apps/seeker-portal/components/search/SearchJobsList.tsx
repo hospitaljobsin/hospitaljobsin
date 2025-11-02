@@ -1,3 +1,11 @@
+import { Card, CardBody, Select, SelectItem } from '@heroui/react';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useRef, useState, useTransition } from 'react';
+import { useFragment, usePaginationFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { WindowVirtualizer } from 'virtua';
 import type { SearchJobsListFragment$key } from '@/__generated__/SearchJobsListFragment.graphql';
 import type { SearchJobsListInternalFragment$key } from '@/__generated__/SearchJobsListInternalFragment.graphql';
 import type {
@@ -12,13 +20,6 @@ import Job from '@/components/landing/Job';
 import JobListSkeleton from '@/components/landing/JobListSkeleton';
 import { APP_TITLE, REASONABLE_JOB_COUNT } from '@/lib/constants';
 import usePageTitle from '@/lib/hooks/usePageTitle';
-import { Card, CardBody, Select, SelectItem } from '@heroui/react';
-import dynamic from 'next/dynamic';
-import Image from 'next/image';
-import { Suspense, useEffect, useRef, useState, useTransition } from 'react';
-import { useFragment, usePaginationFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import { WindowVirtualizer } from 'virtua';
 import OneStepCreateJobAlertModal from '../shared/OneStepCreateJobAlertModal';
 import FallbackJobsListSkeleton from './FallbackJobsListSkeleton';
 
@@ -114,6 +115,8 @@ export default function SearchJobsList({
 		SearchClientComponentQueryType,
 		SearchJobsListInternalFragment$key
 	>(SearchJobsListInternalFragment, root);
+	const pathName = usePathname();
+	const searchParams = useSearchParams();
 
 	const hasMountedRef = useRef(false);
 
@@ -229,11 +232,19 @@ export default function SearchJobsList({
 	return (
 		<div className='w-full h-full'>
 			<div className='w-full flex gap-12 justify-between items-center mb-6 sm:mb-8'>
-				<h2 className='text-base sm:text-lg text-foreground-600 whitespace-nowrap'>
-					<span className='font-medium'>{data.jobs.totalCount}</span>{' '}
-					{searchTerm ? <span className='font-medium'>{searchTerm}</span> : ' hospital'}
-					{location ? ` jobs found in ${location}` : ' jobs found'}
-				</h2>
+				<div className='flex flex-col sm:flex-row sm:items-center sm:gap-4'>
+					<h2 className='text-base sm:text-lg text-foreground-600 whitespace-nowrap'>
+						<span className='font-medium'>{data.jobs.totalCount}</span>{' '}
+						{searchTerm ? <span className='font-medium'>{searchTerm}</span> : ' hospital'}
+						{location ? ` jobs found in ${location}` : ' jobs found'}
+					</h2>
+					<a
+						href={pathName.replace('/search', '/search/map') + searchParams.toString()}
+						className='text-sm text-primary hover:text-primary/80 underline underline-offset-2 whitespace-nowrap'
+					>
+						View in map
+					</a>
+				</div>
 				<div className='flex gap-2 w-full sm:max-w-xs'>
 					<Select
 						label='Sort by'

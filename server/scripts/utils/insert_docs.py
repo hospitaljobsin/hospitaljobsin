@@ -1,518 +1,330 @@
 import asyncio
+import random
 from datetime import UTC, datetime, timedelta
 
+from app.base.models import GeoObject
 from app.config import DatabaseSettings, get_settings
 from app.container import create_container
-from app.core.constants import JOB_EMBEDDING_DIMENSIONS
-from app.core.embeddings import EmbeddingsService
 from app.database import initialize_database
-from app.jobs.documents import Job
 from app.jobs.repositories import JobRepo
 from app.organizations.documents import Organization
+from pymongo import AsyncMongoClient
 
 
-async def insert_healthcare_jobs():
+async def insert_healthcare_jobs() -> None:
+    """Insert 500+ diverse healthcare jobs across various regions for clustering demonstration."""
     # Find the organization with slug "aryan"
     await initialize_database(
-        str(get_settings(DatabaseSettings).database_url),
         get_settings(DatabaseSettings).default_database_name,
+        db_client=AsyncMongoClient(str(get_settings(DatabaseSettings).database_url)),
     )
 
     container = create_container()
     async with container.context() as ctx:
-        embeddings_service = await ctx.resolve(EmbeddingsService)
+        job_repo = await ctx.resolve(JobRepo)
+
     org = await Organization.find_one({"slug": "aryan"})
     if not org:
-        print("Organization with slug 'aryan' not found.")
-        return
+        msg = "Organization with slug 'aryan' not found."
+        raise RuntimeError(msg)
 
-    jobs = [
-        Job(
-            title="Senior Cardiologist",
-            slug="senior-cardiologist",
-            description="""
-We are seeking an **experienced Cardiologist** to join our cardiac care team at a leading hospital in Mumbai. This is a unique opportunity to work with a multidisciplinary team and make a significant impact on patient care.
-
-## Responsibilities
-
-- **Diagnostic Testing:** Perform advanced diagnostic tests and procedures, including echocardiograms, stress tests, and cardiac catheterizations.
-- **Treatment Planning:** Develop and implement comprehensive treatment plans for patients with a variety of heart conditions, including chronic and acute cases.
-- **Collaboration:** Work closely with surgeons, nurses, and other healthcare professionals to ensure optimal patient outcomes.
-- **Research & Clinical Trials:** Participate in ongoing research projects and clinical trials to advance the field of cardiology and improve patient care protocols.
-- **Mentorship:** Mentor and guide junior cardiologists, medical residents, and support staff, fostering a culture of continuous learning.
-- **Patient Education:** Educate patients and their families about heart health, preventive measures, and post-treatment care.
-
-## Qualifications
-
-- Board certification in Cardiology
-- Minimum 8 years of experience in a clinical setting
-- Strong leadership and communication skills
-- Commitment to patient-centered care
-
-## Location
-
-Mumbai, Maharashtra
-""",
-            type="full_time",
-            work_mode="office",
-            location="Mumbai, Maharashtra",
-            geo=None,
-            skills=[
-                "cardiology",
-                "echocardiography",
-                "patient care",
-                "medical leadership",
-            ],
-            currency="INR",
-            min_salary=2500000,
-            max_salary=3500000,
-            min_experience=8,
-            max_experience=15,
-            vacancies=1,
-            updated_at=datetime.now(UTC),
-            expires_at=datetime.now(UTC) + timedelta(days=30),
-            is_active=True,
-            organization=org,
-        ),
-        Job(
-            title="Telemedicine Physician",
-            slug="telemedicine-physician",
-            description="""
-Join our **growing telemedicine team** to provide virtual healthcare services to patients across India. This role is ideal for physicians who are passionate about digital health and want to make healthcare more accessible.
-
-## Responsibilities
-
-- **Virtual Consultations:** Conduct thorough virtual consultations with patients using secure telemedicine platforms.
-- **Diagnosis & Treatment:** Diagnose and treat a wide range of common medical conditions, providing evidence-based care remotely.
-- **Medication Management:** Prescribe medications when appropriate and ensure patients understand their treatment plans.
-- **Electronic Health Records:** Maintain detailed and accurate electronic health records for all patient interactions.
-- **Follow-up Care:** Provide follow-up care, referrals to specialists, and coordinate with other healthcare providers as needed.
-- **Patient Education:** Educate patients on preventive care, chronic disease management, and healthy lifestyle choices.
-
-## Qualifications
-
-- MBBS or equivalent medical degree
-- Minimum 3 years of clinical experience
-- Experience with telemedicine platforms is a plus
-- Excellent communication and digital literacy skills
-
-## Location
-
-Remote (Work from anywhere)
-""",
-            type="full_time",
-            work_mode="remote",
-            location="Remote",
-            geo=None,
-            skills=[
-                "telemedicine",
-                "primary care",
-                "digital health",
-                "patient communication",
-            ],
-            currency="INR",
-            min_salary=1200000,
-            max_salary=1800000,
-            min_experience=3,
-            max_experience=8,
-            vacancies=2,
-            updated_at=datetime.now(UTC),
-            expires_at=datetime.now(UTC) + timedelta(days=45),
-            is_active=True,
-            organization=org,
-        ),
-        Job(
-            title="Pediatric Nurse Practitioner",
-            slug="pediatric-nurse-practitioner",
-            description="""
-We are seeking a **Pediatric Nurse Practitioner** to provide comprehensive care to children from birth through adolescence. This role is perfect for compassionate professionals dedicated to child health and development.
-
-## Responsibilities
-
-- **Physical Examinations:** Perform thorough physical exams and developmental assessments for pediatric patients.
-- **Diagnosis & Treatment:** Diagnose and treat common childhood illnesses and injuries, ensuring timely and effective care.
-- **Preventive Care:** Administer vaccinations, conduct health screenings, and provide preventive care education to families.
-- **Parental Guidance:** Educate parents and caregivers on child health, nutrition, and developmental milestones.
-- **Collaboration:** Work closely with pediatricians, specialists, and allied health professionals to coordinate care.
-- **Record Keeping:** Maintain accurate and confidential patient records in compliance with healthcare regulations.
-
-## Qualifications
-
-- Registered Nurse with Pediatric specialization
-- 2+ years of experience in pediatric care
-- Strong communication and interpersonal skills
-
-## Location
-
-Delhi, NCR (Hybrid)
-""",
-            type="full_time",
-            work_mode="hybrid",
-            location="Delhi, NCR",
-            geo=None,
-            skills=[
-                "pediatrics",
-                "nursing",
-                "child development",
-                "patient education",
-            ],
-            currency="INR",
-            min_salary=800000,
-            max_salary=1200000,
-            min_experience=2,
-            max_experience=5,
-            vacancies=1,
-            updated_at=datetime.now(UTC),
-            expires_at=datetime.now(UTC) + timedelta(days=60),
-            is_active=True,
-            organization=org,
-        ),
-        Job(
-            title="Medical Laboratory Technician",
-            slug="medical-laboratory-technician",
-            description="""
-Join our **state-of-the-art medical laboratory team** and play a crucial role in patient diagnosis and treatment. This position offers hands-on experience with advanced laboratory equipment and technologies.
-
-## Responsibilities
-
-- **Laboratory Testing:** Perform routine and specialized laboratory tests on blood, tissue, and other samples.
-- **Equipment Maintenance:** Operate, calibrate, and maintain laboratory equipment to ensure accuracy and safety.
-- **Quality Control:** Implement and monitor quality control procedures to maintain high standards of laboratory practice.
-- **Data Analysis:** Record, analyze, and interpret test results, providing critical information to healthcare providers.
-- **Collaboration:** Work with physicians, nurses, and other lab staff to support patient care.
-- **Safety Compliance:** Adhere to all safety and infection control protocols.
-
-## Qualifications
-
-- Diploma or degree in Medical Laboratory Technology
-- 1-3 years of laboratory experience
-- Attention to detail and strong analytical skills
-
-## Location
-
-Bangalore, Karnataka
-""",
-            type="full_time",
-            work_mode="office",
-            location="Bangalore, Karnataka",
-            geo=None,
-            skills=[
-                "laboratory testing",
-                "medical equipment",
-                "quality control",
-                "data analysis",
-            ],
-            currency="INR",
-            min_salary=400000,
-            max_salary=600000,
-            min_experience=1,
-            max_experience=3,
-            vacancies=2,
-            updated_at=datetime.now(UTC),
-            expires_at=datetime.now(UTC) + timedelta(days=30),
-            is_active=True,
-            organization=org,
-        ),
-        Job(
-            title="Mental Health Counselor",
-            slug="mental-health-counselor",
-            description="""
-We're looking for a **compassionate Mental Health Counselor** to provide therapy and support services to individuals and groups. This role is vital in promoting mental wellness and resilience in our community.
-
-## Responsibilities
-
-- **Therapy Sessions:** Conduct individual and group therapy sessions using evidence-based approaches.
-- **Treatment Planning:** Develop personalized treatment plans tailored to each client's needs and goals.
-- **Record Keeping:** Maintain confidential and accurate patient records, documenting progress and outcomes.
-- **Collaboration:** Work with psychiatrists, psychologists, and other healthcare providers to coordinate care.
-- **Crisis Intervention:** Provide immediate support and intervention during mental health crises.
-- **Community Outreach:** Participate in mental health awareness programs and workshops.
-
-## Qualifications
-
-- Master's degree in Counseling, Psychology, or related field
-- 2+ years of clinical experience
-- Strong empathy and communication skills
-
-## Location
-
-Hyderabad, Telangana (Hybrid)
-""",
-            type="part_time",
-            work_mode="hybrid",
-            location="Hyderabad, Telangana",
-            geo=None,
-            skills=[
-                "counseling",
-                "mental health",
-                "therapy",
-                "crisis intervention",
-            ],
-            currency="INR",
-            min_salary=600000,
-            max_salary=900000,
-            min_experience=2,
-            max_experience=5,
-            vacancies=1,
-            updated_at=datetime.now(UTC),
-            expires_at=datetime.now(UTC) + timedelta(days=45),
-            is_active=True,
-            organization=org,
-        ),
-        Job(
-            title="Healthcare IT Specialist",
-            slug="healthcare-it-specialist",
-            description="""
-Join our **IT team** to support and optimize healthcare technology systems in a dynamic environment. This role is ideal for tech-savvy professionals passionate about improving healthcare delivery through technology.
-
-## Responsibilities
-
-- **System Maintenance:** Maintain and optimize electronic health record (EHR) systems and other healthcare software.
-- **Implementation:** Assist in the implementation of new healthcare software solutions and upgrades.
-- **Compliance:** Ensure HIPAA compliance and robust data security across all systems.
-- **Technical Support:** Provide technical support and training to healthcare staff on IT systems and best practices.
-- **Troubleshooting:** Diagnose and resolve technical issues promptly to minimize downtime.
-- **Documentation:** Maintain comprehensive documentation of IT processes and system configurations.
-
-## Qualifications
-
-- Degree in Information Technology, Computer Science, or related field
-- 3+ years of experience in healthcare IT
-- Knowledge of EHR systems and healthcare regulations
-
-## Location
-
-Pune, Maharashtra (Hybrid)
-""",
-            type="full_time",
-            work_mode="hybrid",
-            location="Pune, Maharashtra",
-            geo=None,
-            skills=[
-                "healthcare IT",
-                "EHR systems",
-                "HIPAA compliance",
-                "technical support",
-            ],
-            currency="INR",
-            min_salary=800000,
-            max_salary=1200000,
-            min_experience=3,
-            max_experience=6,
-            vacancies=1,
-            updated_at=datetime.now(UTC),
-            expires_at=datetime.now(UTC) + timedelta(days=30),
-            is_active=True,
-            organization=org,
-        ),
-        Job(
-            title="Physical Therapist",
-            slug="physical-therapist",
-            description="""
-We are seeking a **Physical Therapist** to help patients recover from injuries, surgeries, and chronic conditions. This role is essential for improving patient mobility and quality of life.
-
-## Responsibilities
-
-- **Treatment Planning:** Develop personalized rehabilitation plans based on patient assessments and goals.
-- **Therapeutic Exercises:** Guide patients through therapeutic exercises and use specialized equipment for rehabilitation.
-- **Progress Monitoring:** Monitor and document patient progress, adjusting treatment plans as needed.
-- **Patient Education:** Educate patients and families on exercises, injury prevention, and healthy lifestyle habits.
-- **Collaboration:** Work with physicians, nurses, and other therapists to coordinate comprehensive care.
-- **Record Keeping:** Maintain accurate and confidential patient records.
-
-## Qualifications
-
-- Degree in Physical Therapy
-- 2+ years of clinical experience
-- Strong interpersonal and motivational skills
-
-## Location
-
-Chennai, Tamil Nadu
-""",
-            type="full_time",
-            work_mode="office",
-            location="Chennai, Tamil Nadu",
-            geo=None,
-            skills=[
-                "physical therapy",
-                "rehabilitation",
-                "patient care",
-                "therapeutic exercises",
-            ],
-            currency="INR",
-            min_salary=700000,
-            max_salary=1000000,
-            min_experience=2,
-            max_experience=5,
-            vacancies=1,
-            updated_at=datetime.now(UTC),
-            expires_at=datetime.now(UTC) + timedelta(days=60),
-            is_active=True,
-            organization=org,
-        ),
-        Job(
-            title="Medical Billing Specialist",
-            slug="medical-billing-specialist",
-            description="""
-Join our **finance team** to handle medical billing and insurance claims in a fast-paced healthcare environment. This position is crucial for ensuring accurate and timely reimbursement for services rendered.
-
-## Responsibilities
-
-- **Claims Processing:** Process medical claims and insurance billing with attention to detail and accuracy.
-- **Insurance Verification:** Verify insurance coverage and benefits for patients, resolving discrepancies as needed.
-- **Patient Inquiries:** Handle patient billing inquiries with professionalism and empathy.
-- **Record Maintenance:** Maintain accurate and up-to-date billing records in compliance with healthcare regulations.
-- **Compliance:** Ensure all billing practices adhere to healthcare billing regulations and standards.
-- **Collaboration:** Work with healthcare providers and insurance companies to resolve billing issues.
-
-## Qualifications
-
-- Degree or diploma in Medical Billing, Healthcare Administration, or related field
-- 1-3 years of experience in medical billing
-- Strong organizational and communication skills
-
-## Location
-
-Remote (Work from anywhere)
-""",
-            type="full_time",
-            work_mode="remote",
-            location="Remote",
-            geo=None,
-            skills=[
-                "medical billing",
-                "insurance claims",
-                "healthcare finance",
-                "patient billing",
-            ],
-            currency="INR",
-            min_salary=400000,
-            max_salary=600000,
-            min_experience=1,
-            max_experience=3,
-            vacancies=2,
-            updated_at=datetime.now(UTC),
-            expires_at=datetime.now(UTC) + timedelta(days=45),
-            is_active=True,
-            organization=org,
-        ),
-        Job(
-            title="Emergency Room Nurse",
-            slug="emergency-room-nurse",
-            description="""
-We are seeking **experienced ER Nurses** to provide critical care in our emergency department. This is a high-impact role for professionals who thrive in fast-paced, challenging environments.
-
-## Responsibilities
-
-- **Triage & Assessment:** Triage patients and assess their conditions quickly and accurately.
-- **Emergency Care:** Provide emergency medical care, including administering medications and treatments.
-- **Collaboration:** Work closely with emergency physicians and other healthcare staff to deliver coordinated care.
-- **Equipment Management:** Maintain and operate emergency room equipment, ensuring readiness for all situations.
-- **Patient Advocacy:** Advocate for patients and provide emotional support to families during emergencies.
-- **Documentation:** Maintain detailed and accurate records of patient care and interventions.
-
-## Qualifications
-
-- Registered Nurse (RN) with ER experience
-- 2+ years in emergency care
-- Ability to remain calm under pressure
-
-## Location
-
-Kolkata, West Bengal
-""",
-            type="full_time",
-            work_mode="office",
-            location="Kolkata, West Bengal",
-            geo=None,
-            skills=[
-                "emergency care",
-                "triage",
-                "critical care",
-                "patient assessment",
-            ],
-            currency="INR",
-            min_salary=600000,
-            max_salary=900000,
-            min_experience=2,
-            max_experience=5,
-            vacancies=3,
-            updated_at=datetime.now(UTC),
-            expires_at=datetime.now(UTC) + timedelta(days=30),
-            is_active=True,
-            organization=org,
-        ),
-        Job(
-            title="Healthcare Administrator",
-            slug="healthcare-administrator",
-            description="""
-Join our **management team** to oversee healthcare operations and ensure the smooth functioning of our facility. This leadership role is ideal for professionals with a passion for healthcare management and organizational excellence.
-
-## Responsibilities
-
-- **Operations Management:** Oversee daily healthcare facility operations, ensuring efficiency and quality of care.
-- **Policy Implementation:** Develop and implement healthcare policies and procedures in line with regulatory standards.
-- **Staff Coordination:** Coordinate with medical staff and departments to optimize resource allocation and workflow.
-- **Budgeting:** Handle budgeting, financial planning, and resource allocation to support organizational goals.
-- **Compliance:** Ensure compliance with all healthcare regulations and accreditation requirements.
-- **Continuous Improvement:** Lead quality improvement initiatives and foster a culture of excellence.
-
-## Qualifications
-
-- Degree in Healthcare Administration or related field
-- 5+ years of experience in healthcare management
-- Strong leadership and organizational skills
-
-## Location
-
-Ahmedabad, Gujarat
-""",
-            type="full_time",
-            work_mode="office",
-            location="Ahmedabad, Gujarat",
-            geo=None,
-            skills=[
-                "healthcare management",
-                "operations",
-                "budgeting",
-                "regulatory compliance",
-            ],
-            currency="INR",
-            min_salary=1000000,
-            max_salary=1500000,
-            min_experience=5,
-            max_experience=10,
-            vacancies=1,
-            updated_at=datetime.now(UTC),
-            expires_at=datetime.now(UTC) + timedelta(days=60),
-            is_active=True,
-            organization=org,
-        ),
+    # Define Indian cities with coordinates for geographic clustering
+    cities = [
+        ("Mumbai", 72.8777, 19.076),
+        ("Delhi", 77.2090, 28.6139),
+        ("Bangalore", 77.5946, 12.9716),
+        ("Hyderabad", 78.4867, 17.3850),
+        ("Chennai", 80.2707, 13.0827),
+        ("Kolkata", 88.3639, 22.5726),
+        ("Pune", 73.8567, 18.5204),
+        ("Ahmedabad", 72.5714, 23.0225),
+        ("Surat", 72.8311, 21.1702),
+        ("Jaipur", 75.7873, 26.9124),
+        ("Lucknow", 80.9462, 26.8467),
+        ("Kanpur", 80.3319, 26.4499),
+        ("Nagpur", 79.0882, 21.1458),
+        ("Indore", 75.8577, 22.7196),
+        ("Thane", 72.9781, 19.2183),
+        ("Bhopal", 77.4126, 23.2599),
+        ("Visakhapatnam", 83.2185, 17.6868),
+        ("Pimpri-Chinchwad", 73.8067, 18.6298),
+        ("Patna", 85.1376, 25.5941),
+        ("Vadodara", 73.1812, 22.3072),
+        ("Ghaziabad", 77.4538, 28.6692),
+        ("Ludhiana", 75.8573, 30.9010),
+        ("Agra", 78.0081, 27.1767),
+        ("Nashik", 73.7898, 19.9975),
+        ("Faridabad", 77.3178, 28.4089),
+        ("Meerut", 77.7064, 28.9845),
+        ("Rajkot", 70.8022, 22.3039),
+        ("Kalyan-Dombivali", 73.1535, 19.2403),
+        ("Vasai-Virar", 72.8397, 19.4919),
+        ("Varanasi", 82.9739, 25.3176),
+        ("Srinagar", 74.7973, 34.0837),
+        ("Aurangabad", 75.3433, 19.8762),
+        ("Dhanbad", 86.4304, 23.7957),
+        ("Amritsar", 74.8723, 31.6340),
+        ("Navi Mumbai", 73.0297, 19.0330),
+        ("Allahabad", 81.8463, 25.4358),
+        ("Ranchi", 85.3096, 23.3441),
+        ("Howrah", 88.3109, 22.5958),
+        ("Coimbatore", 76.9558, 11.0168),
+        ("Jabalpur", 79.9864, 23.1815),
+        ("Gwalior", 78.1828, 26.2124),
+        ("Vijayawada", 80.6480, 16.5062),
+        ("Jodhpur", 73.0243, 26.2389),
+        ("Madurai", 78.1198, 9.9252),
+        ("Raipur", 81.6296, 21.2514),
+        ("Kota", 75.8648, 25.2138),
+        ("Chandigarh", 76.7794, 30.7333),
+        ("Guwahati", 91.7898, 26.1445),
+        ("Solapur", 75.9064, 17.6599),
+        ("Hubli-Dharwad", 75.1240, 15.3647),
+        ("Bareilly", 79.4304, 28.3670),
+        ("Moradabad", 78.7733, 28.8386),
+        ("Mysore", 76.6413, 12.2958),
+        ("Gurgaon", 77.0266, 28.4595),
+        ("Aligarh", 78.0880, 27.8974),
+        ("Jalandhar", 75.5762, 31.3260),
+        ("Tiruchirappalli", 78.7047, 10.7905),
+        ("Bhubaneswar", 85.8245, 20.2961),
+        ("Salem", 78.1460, 11.6643),
+        ("Warangal", 79.5941, 18.0061),
+        ("Guntur", 80.4365, 16.3067),
+        ("Bhiwandi", 73.0632, 19.2948),
+        ("Saharanpur", 77.5460, 29.9680),
+        ("Gorakhpur", 83.3732, 26.7606),
+        ("Bikaner", 73.3119, 28.0229),
+        ("Amravati", 77.7795, 20.9374),
+        ("Noida", 77.3910, 28.5355),
+        ("Jamshedpur", 86.1844, 22.8046),
+        ("Bhilai", 81.3509, 21.1938),
+        ("Cuttack", 85.8781, 20.4625),
+        ("Firozabad", 78.3957, 27.1592),
+        ("Kochi", 76.2673, 9.9312),
+        ("Bhavnagar", 72.1519, 21.7645),
+        ("Dehradun", 78.0322, 30.3165),
+        ("Durgapur", 87.3119, 23.5204),
+        ("Asansol", 86.9842, 23.6739),
+        ("Nanded", 77.2663, 19.1383),
+        ("Kolhapur", 74.2433, 16.7050),
+        ("Ajmer", 74.6399, 26.4499),
+        ("Akola", 77.0082, 20.7002),
+        ("Gulbarga", 76.8343, 17.3297),
+        ("Jamnagar", 70.0708, 22.4697),
+        ("Ujjain", 75.7849, 23.1765),
+        ("Loni", 77.2863, 28.7508),
+        ("Siliguri", 88.3945, 26.7271),
+        ("Jhansi", 78.5685, 25.4484),
+        ("Ulhasnagar", 73.1648, 19.2215),
+        ("Jammu", 74.8570, 32.7266),
+        ("Sangli-Miraj & Kupwad", 74.5815, 16.8524),
+        ("Mangalore", 74.8560, 12.9141),
+        ("Erode", 77.7172, 11.3410),
+        ("Belgaum", 74.4977, 15.8497),
+        ("Ambattur", 80.1674, 13.1143),
+        ("Tirunelveli", 77.6869, 8.7139),
+        ("Malegaon", 74.5255, 20.5579),
+        ("Gaya", 85.0002, 24.7914),
+        ("Jalgaon", 75.5626, 21.0077),
+        ("Udaipur", 73.7125, 24.5854),
+        ("Maheshtala", 88.2548, 22.5092),
     ]
 
-    for job in jobs:
-        job.embedding = await embeddings_service.generate_embeddings(
-            JobRepo.format_job_for_embedding(
-                title=job.title,
-                description=job.description,
-                skills=job.skills,
-                location=job.location,
-                geo=job.geo,
-                min_salary=job.min_salary,
-                max_salary=job.max_salary,
-                min_experience=job.min_experience,
-                max_experience=job.max_experience,
-                job_type=job.type,
-                work_mode=job.work_mode,
-                currency=job.currency,
-            ),
-            dimensions=JOB_EMBEDDING_DIMENSIONS,
-        )
+    # Job titles and their variations
+    job_titles = [
+        "Cardiologist",
+        "Surgeon",
+        "General Physician",
+        "Pediatrician",
+        "Gynecologist",
+        "Orthopedic Surgeon",
+        "Neurologist",
+        "Anesthetist",
+        "Radiologist",
+        "Pathologist",
+        "Dermatologist",
+        "Psychiatrist",
+        "Ophthalmologist",
+        "ENT Specialist",
+        "Urologist",
+        "Oncologist",
+        "Gastroenterologist",
+        "Endocrinologist",
+        "Nephrologist",
+        "Pulmonologist",
+        "Staff Nurse",
+        "ICU Nurse",
+        "Emergency Nurse",
+        "OT Nurse",
+        "Pediatric Nurse",
+        "Cardiac Nurse",
+        "Mental Health Nurse",
+        "Community Health Nurse",
+        "Nurse Practitioner",
+        "Medical Laboratory Technician",
+        "Radiology Technician",
+        "OT Technician",
+        "Dialysis Technician",
+        "ECG Technician",
+        "Physiotherapist",
+        "Occupational Therapist",
+        "Speech Therapist",
+        "Respiratory Therapist",
+        "Pharmacist",
+        "Clinical Pharmacist",
+        "Medical Assistant",
+        "Medical Secretary",
+        "Medical Billing Specialist",
+        "Healthcare Administrator",
+        "Hospital Manager",
+        "Quality Assurance Manager",
+        "Infection Control Nurse",
+        "Clinical Research Coordinator",
+        "Medical Social Worker",
+        "Nutritionist",
+        "Dietitian",
+        "Health Educator",
+        "Medical Records Officer",
+        "Biomedical Engineer",
+        "Healthcare IT Specialist",
+        "Telemedicine Coordinator",
+    ]
 
-    await Job.insert_many(jobs)
-    print("Inserted 10 healthcare jobs under organization 'aryan'.")
+    # Skills pools by category
+    clinical_skills = [
+        "patient care",
+        "clinical assessment",
+        "medical diagnosis",
+        "treatment planning",
+        "emergency care",
+        "critical care",
+        "surgical procedures",
+        "wound care",
+        "medication administration",
+        "patient monitoring",
+        "infection control",
+    ]
+
+    technical_skills = [
+        "medical equipment",
+        "laboratory testing",
+        "radiology",
+        "ECG interpretation",
+        "ventilator management",
+        "dialysis",
+        "IV therapy",
+        "blood transfusion",
+        "electronic health records",
+        "medical imaging",
+        "pathology",
+    ]
+
+    soft_skills = [
+        "communication",
+        "empathy",
+        "leadership",
+        "teamwork",
+        "time management",
+        "problem solving",
+        "stress management",
+        "cultural sensitivity",
+        "patient education",
+        "family counseling",
+        "crisis intervention",
+    ]
+
+    # Job types and work modes
+    job_types = ["full_time", "part_time", "contract", "locum", "internship"]
+    work_modes = ["office", "hybrid", "remote"]
+
+    # Generate job descriptions templates
+    description_templates = [
+        "We are seeking a skilled {title} to join our healthcare team. This role offers excellent opportunities for professional growth and making a meaningful impact on patient care.",
+        "Join our dynamic medical facility as a {title}. We provide a supportive environment focused on delivering exceptional healthcare services to our community.",
+        "Exciting opportunity for an experienced {title} to contribute to our mission of providing quality healthcare. We offer competitive compensation and comprehensive benefits.",
+        "We are looking for a dedicated {title} to enhance our medical services. This position is perfect for professionals committed to excellence in patient care.",
+        "Our healthcare organization is expanding and we need a qualified {title} to join our team. Be part of our commitment to improving community health outcomes.",
+    ]
+
+    jobs_data = []
+
+    for _ in range(600):  # Generate 600 jobs for good clustering demonstration
+        # Randomly select city and job title
+        city, lng, lat = random.choice(cities)
+        title = random.choice(job_titles)
+
+        # Add some variation to coordinates for realistic clustering
+        lat_variation = random.uniform(-0.05, 0.05)  # ~5km variation
+        lng_variation = random.uniform(-0.05, 0.05)
+
+        # Build skills list
+        skills = []
+        skills.extend(random.sample(clinical_skills, random.randint(2, 4)))
+        skills.extend(random.sample(technical_skills, random.randint(1, 3)))
+        skills.extend(random.sample(soft_skills, random.randint(1, 2)))
+
+        # Generate salary based on job level and type
+        base_salary = random.randint(300000, 2500000)
+        min_salary = base_salary
+        max_salary = int(base_salary * random.uniform(1.2, 1.8))
+
+        # Experience requirements
+        min_exp = random.randint(0, 8)
+        max_exp = min_exp + random.randint(2, 10)
+
+        job_data = {
+            "title": title,
+            "description": random.choice(description_templates).format(title=title),
+            "skills": skills,
+            "location": city,
+            "geo": GeoObject(coordinates=(lng + lng_variation, lat + lat_variation)),
+            "job_type": random.choice(job_types),
+            "work_mode": random.choice(work_modes) if city != "Remote" else "remote",
+            "min_salary": min_salary,
+            "max_salary": max_salary,
+            "min_experience": min_exp,
+            "max_experience": max_exp,
+            "vacancies": random.randint(1, 5),
+            "expires_at": datetime.now(UTC) + timedelta(days=random.randint(15, 90)),
+        }
+        jobs_data.append(job_data)
+
+    # Create jobs in batches using individual job creation to avoid embedding issues
+    total_jobs = []
+
+    for job_data in jobs_data:
+        try:
+            job = await job_repo.create(
+                organization=org,
+                title=job_data["title"],
+                description=job_data["description"],
+                skills=job_data["skills"],
+                location=job_data["location"],
+                geo=job_data["geo"],
+                job_type=job_data["job_type"],
+                work_mode=job_data["work_mode"],
+                min_salary=job_data["min_salary"],
+                max_salary=job_data["max_salary"],
+                min_experience=job_data["min_experience"],
+                max_experience=job_data["max_experience"],
+                vacancies=job_data["vacancies"],
+                expires_at=job_data["expires_at"],
+            )
+            # Activate the job
+            await job_repo.update_active(job, is_active=True)
+            total_jobs.append(job)
+        except Exception as e:
+            # Skip jobs that fail to create (e.g., due to network issues with embeddings)
+            continue
+
+    # Success message (using a proper return instead of print)
+    return len(total_jobs)
 
 
 # Run the async function
-asyncio.run(insert_healthcare_jobs())
+if __name__ == "__main__":
+    total_jobs = asyncio.run(insert_healthcare_jobs())
+    print(
+        f"Successfully inserted {total_jobs} healthcare jobs for clustering demonstration."
+    )

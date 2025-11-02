@@ -7,8 +7,10 @@ from strawberry import relay
 from strawberry.permission import PermissionExtension
 
 from app.auth.permissions import IsAuthenticated
+from app.base.models import BoundingBox
 from app.context import AuthInfo
 
+from .models import JobClusterFilters
 from .repositories import (
     JobApplicantRepo,
     JobRepo,
@@ -17,10 +19,13 @@ from .repositories import (
     JobWorkMode,
     SavedJobRepo,
 )
+from .services import JobClusterService
 from .types import (
     AutocompleteJobsPayloadType,
+    BoundingBoxInput,
     JobApplicantConnectionType,
     JobAutocompleteSuggestionType,
+    JobClusterConnectionType,
     JobConnectionType,
     JobSearchSortByEnum,
     JobTypeFilterEnum,
@@ -67,6 +72,12 @@ class JobQuery:
             float | None,
             strawberry.argument(
                 description="The proximity in km to search for jobs",
+            ),
+        ] = None,
+        bounds: Annotated[
+            BoundingBoxInput | None,
+            strawberry.argument(
+                description="Geographic bounding box to filter jobs by map viewport",
             ),
         ] = None,
         search_term: Annotated[
@@ -128,6 +139,7 @@ class JobQuery:
             search_term=search_term,
             location=location,
             proximity_km=proximity_km,
+            bounds=BoundingBox(**bounds.__dict__) if bounds else None,
             min_experience=min_experience,
             max_experience=max_experience,
             min_salary=min_salary,
@@ -310,4 +322,119 @@ class JobQuery:
 
         return AutocompleteJobsPayloadType(
             jobs=[JobAutocompleteSuggestionType.marshal(job) for job in results],
+        )
+
+    @strawberry.field(  # type: ignore[misc]
+        graphql_type=JobClusterConnectionType,
+        description="Get aggregated job clusters for map visualization using H3 hexagonal indexing.",
+    )
+    @inject
+    async def job_clusters(
+        self,
+        job_cluster_service: Annotated[JobClusterService, Inject],
+        bounds: Annotated[
+            BoundingBoxInput,
+            strawberry.argument(
+                description="Geographic bounding box for map viewport (required)",
+            ),
+        ],
+        zoom_level: Annotated[
+            int,
+            strawberry.argument(
+                description="Map zoom level (1-20) for determining clustering resolution",
+            ),
+        ],
+        work_mode: Annotated[
+            list[JobWorkModeFilterEnum] | None,
+            strawberry.argument(
+                description="Filter by work mode",
+            ),
+        ] = None,
+        job_type: Annotated[
+            list[JobTypeFilterEnum] | None,
+            strawberry.argument(
+                description="Filter by job type",
+            ),
+        ] = None,
+        search_term: Annotated[
+            str | None,
+            strawberry.argument(
+                description="Search term for full-text search",
+            ),
+        ] = None,
+        location: Annotated[
+            str | None,
+            strawberry.argument(
+                description="Location filter for proximity search",
+            ),
+        ] = None,
+        proximity_km: Annotated[
+            float | None,
+            strawberry.argument(
+                description="Proximity radius in kilometers",
+            ),
+        ] = None,
+        min_experience: Annotated[
+            int | None,
+            strawberry.argument(
+                description="Minimum years of experience required",
+            ),
+        ] = None,
+        max_experience: Annotated[
+            int | None,
+            strawberry.argument(
+                description="Maximum years of experience required",
+            ),
+        ] = None,
+        min_salary: Annotated[
+            int | None,
+            strawberry.argument(
+                description="Minimum salary for the job",
+            ),
+        ] = None,
+        max_salary: Annotated[
+            int | None,
+            strawberry.argument(
+                description="Maximum salary for the job",
+            ),
+        ] = None,
+    ) -> JobClusterConnectionType:
+        # Convert bounds input to dict
+        bounds_dict = {
+            "sw_lat": bounds.sw_lat,
+            "sw_lng": bounds.sw_lng,
+            "ne_lat": bounds.ne_lat,
+            "ne_lng": bounds.ne_lng,
+        }
+
+        # Build filters
+        filters = JobClusterFilters(
+            search_term=search_term,
+            location=location,
+            work_mode=[mode.value.lower() for mode in work_mode] if work_mode else [],
+            job_type=[given_type.value.lower() for given_type in job_type]
+            if job_type
+            else [],
+            proximity_km=proximity_km,
+            min_experience=min_experience,
+            max_experience=max_experience,
+            min_salary=min_salary,
+            max_salary=max_salary,
+        )
+
+        # Get clustered jobs and location viewport
+        (
+            clusters,
+            total_count,
+            location_viewport,
+        ) = await job_cluster_service.get_job_clusters(
+            bounds=bounds_dict,
+            zoom_level=zoom_level,
+            filters=filters,
+        )
+
+        return JobClusterConnectionType.marshal(
+            clusters=clusters,
+            total_count=total_count,
+            location_viewport=location_viewport,
         )

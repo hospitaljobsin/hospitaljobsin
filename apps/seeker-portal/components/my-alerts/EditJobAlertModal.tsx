@@ -1,7 +1,5 @@
 'use client';
 
-import type { EditJobAlertModalFragment$key } from '@/__generated__/EditJobAlertModalFragment.graphql';
-import type { EditJobAlertModalMutation as EditJobAlertModalMutationType } from '@/__generated__/EditJobAlertModalMutation.graphql';
 import {
 	Accordion,
 	AccordionItem,
@@ -24,6 +22,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { useFragment, useMutation } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { z } from 'zod';
+import type { EditJobAlertModalFragment$key } from '@/__generated__/EditJobAlertModalFragment.graphql';
+import type { EditJobAlertModalMutation as EditJobAlertModalMutationType } from '@/__generated__/EditJobAlertModalMutation.graphql';
 import JobSearchAutocomplete from '../forms/JobSearchAutocomplete';
 import LocationAutocomplete from '../forms/LocationAutocomplete';
 
@@ -302,7 +302,7 @@ export default function EditJobAlertModal({ isOpen, onOpenChange, jobAlert }: Ed
 											placeholder='City, state, or country'
 											value={field.value || ''}
 											onValueChange={value => field.onChange(value || null)}
-											onChange={location => field.onChange(location.address.displayName || null)}
+											onLocationSelect={location => field.onChange(location.address.displayName || null)}
 											errorMessage={errors.location?.message}
 											isInvalid={!!errors.location}
 											allowsCustomValue

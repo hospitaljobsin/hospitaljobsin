@@ -32,6 +32,7 @@ from app.base.types import (
     BaseEdgeType,
     BaseErrorType,
     BaseNodeType,
+    GeoObjectType,
     InvalidLocationErrorType,
     JobTypeEnum,
     WorkModeEnum,
@@ -53,7 +54,7 @@ from app.jobs.exceptions import (
     JobApplicantCountNotFoundError,
     JobApplicantNotFoundError,
 )
-from app.jobs.models import JobAutocompleteSuggestion
+from app.jobs.models import JobAutocompleteSuggestion, JobCluster
 from app.jobs.repositories import (
     JobApplicantRepo,
     JobApplicantsSortBy,
@@ -211,6 +212,17 @@ class JobApplicantCountNotFoundErrorType(BaseErrorType):
         description="Human readable error message.",
         default="Job applicant count not found!",
     )
+
+
+@strawberry.input(
+    name="BoundingBoxInput",
+    description="Geographic bounding box input for filtering jobs by map viewport.",
+)
+class BoundingBoxInput:
+    sw_lat: float = strawberry.field(description="Southwest corner latitude")
+    sw_lng: float = strawberry.field(description="Southwest corner longitude")
+    ne_lat: float = strawberry.field(description="Northeast corner latitude")
+    ne_lng: float = strawberry.field(description="Northeast corner longitude")
 
 
 @strawberry.input(
@@ -749,6 +761,10 @@ class JobType(BaseNodeType[Job]):
     address: AddressType | None = strawberry.field(
         description="The address of the job.",
     )
+    geo: GeoObjectType | None = strawberry.field(
+        default=None,
+        description="Geographic coordinates of the job location.",
+    )
     applicant_locations: list[str] = strawberry.field(
         description="The locations where applicants can be located.",
     )
@@ -822,6 +838,7 @@ class JobType(BaseNodeType[Job]):
             work_mode=WorkModeEnum[job.work_mode.upper()] if job.work_mode else None,
             location=job.location,
             address=AddressType.marshal(job.address) if job.address else None,
+            geo=GeoObjectType.marshal(job.geo) if job.geo else None,
             applicant_locations=job.applicant_locations,
             skills=job.skills,
             currency=CurrencyEnum[job.currency.upper()],
@@ -999,6 +1016,8 @@ class JobType(BaseNodeType[Job]):
         info: AuthInfo,
         job_metric_service: Injected[JobMetricService],
     ) -> JobViewMetricPointsPayload:
+        from app.organizations.types import OrganizationAuthorizationErrorType
+
         match await job_metric_service.get_impression_metric_points(
             account=info.context["current_user"],
             job_id=ObjectId(self.id),
@@ -1607,3 +1626,96 @@ class AutocompleteJobsPayloadType:
     jobs: list[JobAutocompleteSuggestionType] = strawberry.field(
         description="List of autocomplete jobs.",
     )
+
+
+# Map clustering types
+
+
+@strawberry.type(
+    name="JobCluster",
+    description="Aggregated job cluster at a specific H3 hexagon resolution.",
+)
+class JobClusterType:
+    h3_index: str = strawberry.field(
+        description="H3 hexagon index identifying this cluster.",
+    )
+    count: int = strawberry.field(
+        description="Number of jobs in this cluster.",
+    )
+    center: GeoObjectType = strawberry.field(
+        description="Geographic center point of the hexagon.",
+    )
+    bounds: list[list[float]] = strawberry.field(
+        description="Boundary coordinates of the hexagon as array of [lng, lat] pairs.",
+    )
+
+    @classmethod
+    def marshal(cls, cluster: JobCluster) -> Self:
+        """Marshal into a type instance."""
+        return cls(
+            h3_index=cluster.h3_index,
+            count=cluster.count,
+            center=GeoObjectType.marshal(cluster.center),
+            bounds=cluster.bounds,
+        )
+
+
+@strawberry.type(
+    name="LocationViewport",
+    description="Recommended viewport for a location (coordinates and zoom level).",
+)
+class LocationViewportType:
+    latitude: float = strawberry.field(
+        description="Latitude of the location center.",
+    )
+    longitude: float = strawberry.field(
+        description="Longitude of the location center.",
+    )
+    zoom_level: int = strawberry.field(
+        description="Recommended zoom level for the location.",
+    )
+
+
+@strawberry.type(
+    name="JobClusterConnection",
+    description="Connection type for job clusters with total count.",
+)
+class JobClusterConnectionType:
+    clusters: list[JobClusterType] = strawberry.field(
+        description="List of job clusters in the viewport.",
+    )
+    total_count: int = strawberry.field(
+        description="Total number of jobs across all clusters in the viewport.",
+    )
+    location_viewport: LocationViewportType | None = strawberry.field(
+        default=None,
+        description="Recommended viewport (center coordinates and zoom level) for the filtered location. Only present when location filter is provided.",
+    )
+
+    @classmethod
+    def marshal(
+        cls,
+        clusters: list[JobCluster],
+        total_count: int,
+        location_viewport: tuple[float, float, int] | None = None,
+    ) -> Self:
+        """
+        Marshal into a connection type instance.
+
+        Args:
+            clusters: List of job clusters
+            total_count: Total number of jobs
+            location_viewport: Optional tuple of (latitude, longitude, zoom_level)
+
+        """
+        return cls(
+            clusters=[JobClusterType.marshal(cluster) for cluster in clusters],
+            total_count=total_count,
+            location_viewport=LocationViewportType(
+                latitude=location_viewport[0],
+                longitude=location_viewport[1],
+                zoom_level=location_viewport[2],
+            )
+            if location_viewport
+            else None,
+        )

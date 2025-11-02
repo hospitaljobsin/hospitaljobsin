@@ -75,7 +75,7 @@ export default function JobAlertStep1({ control, errors }: Step1Props) {
 									field.onChange(value || null);
 									send({ type: 'UPDATE_FIELD', field: 'location', value: value || null });
 								}}
-								onChange={location => {
+								onLocationSelect={location => {
 									field.onChange(location.address.displayName || null);
 									send({ type: 'UPDATE_FIELD', field: 'location', value: location.address.displayName || null });
 								}}

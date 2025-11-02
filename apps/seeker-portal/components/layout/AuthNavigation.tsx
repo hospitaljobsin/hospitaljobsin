@@ -1,7 +1,4 @@
 'use client';
-import type { AuthNavigationFragment$key } from '@/__generated__/AuthNavigationFragment.graphql';
-import { getResumeProgressColor } from '@/lib/color';
-import links from '@/lib/links';
 import {
 	Button,
 	Divider,
@@ -23,6 +20,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import type { AuthNavigationFragment$key } from '@/__generated__/AuthNavigationFragment.graphql';
+import { getResumeProgressColor } from '@/lib/color';
+import links from '@/lib/links';
 import LogoutModal from './LogoutModal';
 
 const AuthNavigationFragment = graphql`
@@ -47,9 +47,9 @@ export default function AuthNavigation({ rootQuery }: Props) {
 
 	return (
 		<>
-			<NavbarItem className='block md:hidden'>
-				<Button disableRipple isIconOnly radius='sm' variant='light' onPress={onDrawerOpen}>
-					<Image src={data.avatarUrl} alt={data.fullName} width={32} height={32} className='rounded-full' />
+			<NavbarItem className='block md:hidden flex-shrink-0'>
+				<Button disableRipple isIconOnly radius='sm' variant='light' onPress={onDrawerOpen} size='sm' className='min-w-8 w-8 h-8'>
+					<Image src={data.avatarUrl} alt={data.fullName} width={24} height={24} className='rounded-full' />
 				</Button>
 			</NavbarItem>
 

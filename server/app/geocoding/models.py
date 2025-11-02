@@ -8,11 +8,12 @@ class LocationAutocompleteSuggestion(BaseModel):
     place_id: str
     level: RegionLevel
     address: Address
+    coordinates: tuple[float, float]  # (longitude, latitude)
 
     class Config:
         frozen = True
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash((self.place_id, self.address.display_name))
 
 

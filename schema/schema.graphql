@@ -577,6 +577,31 @@ interface BaseProfile {
 }
 
 """
+Geographic bounding box input for filtering jobs by map viewport.
+"""
+input BoundingBoxInput {
+	"""
+	Southwest corner latitude
+	"""
+	swLat: Float!
+
+	"""
+	Southwest corner longitude
+	"""
+	swLng: Float!
+
+	"""
+	Northeast corner latitude
+	"""
+	neLat: Float!
+
+	"""
+	Northeast corner longitude
+	"""
+	neLng: Float!
+}
+
+"""
 Invite status type.
 """
 enum BusinessProof {
@@ -1088,6 +1113,16 @@ type GenerateProfileDocumentPresignedURLPayload {
 }
 
 """
+GeoJSON Point object for geographic coordinates.
+"""
+type GeoObject {
+	"""
+	Coordinates as [longitude, latitude]
+	"""
+	coordinates: [Float!]!
+}
+
+"""
 Used when a job has insufficient active vacancies.
 """
 type InsufficientActiveVacanciesError implements Error {
@@ -1355,6 +1390,11 @@ type Job implements Node {
 	The address of the job.
 	"""
 	address: Address
+
+	"""
+	Geographic coordinates of the job location.
+	"""
+	geo: GeoObject
 
 	"""
 	The locations where applicants can be located.
@@ -1886,6 +1926,51 @@ type JobAutocompleteSuggestion {
 	displayName: String!
 }
 
+"""
+Aggregated job cluster at a specific H3 hexagon resolution.
+"""
+type JobCluster {
+	"""
+	H3 hexagon index identifying this cluster.
+	"""
+	h3Index: String!
+
+	"""
+	Number of jobs in this cluster.
+	"""
+	count: Int!
+
+	"""
+	Geographic center point of the hexagon.
+	"""
+	center: GeoObject!
+
+	"""
+	Boundary coordinates of the hexagon as array of [lng, lat] pairs.
+	"""
+	bounds: [[Float!]!]!
+}
+
+"""
+Connection type for job clusters with total count.
+"""
+type JobClusterConnection {
+	"""
+	List of job clusters in the viewport.
+	"""
+	clusters: [JobCluster!]!
+
+	"""
+	Total number of jobs across all clusters in the viewport.
+	"""
+	totalCount: Int!
+
+	"""
+	Recommended viewport (center coordinates and zoom level) for the filtered location. Only present when location filter is provided.
+	"""
+	locationViewport: LocationViewport
+}
+
 type JobConnection {
 	"""
 	Information to aid in pagination.
@@ -2144,6 +2229,36 @@ type LocationAutocompleteSuggestion {
 	Display name of the location
 	"""
 	address: Address!
+
+	"""
+	Longitude coordinate of the location
+	"""
+	longitude: Float!
+
+	"""
+	Latitude coordinate of the location
+	"""
+	latitude: Float!
+}
+
+"""
+Recommended viewport for a location (coordinates and zoom level).
+"""
+type LocationViewport {
+	"""
+	Latitude of the location center.
+	"""
+	latitude: Float!
+
+	"""
+	Longitude of the location center.
+	"""
+	longitude: Float!
+
+	"""
+	Recommended zoom level for the location.
+	"""
+	zoomLevel: Int!
 }
 
 """
@@ -3161,7 +3276,7 @@ type Mutation {
 		"""
 		The current industry of the user.
 		"""
-		currentIndustry: String
+		currentIndustry: String = null
 
 		"""
 		The desired job types.
@@ -3176,7 +3291,7 @@ type Mutation {
 		"""
 		The expected salary.
 		"""
-		expectedSalary: Float
+		expectedSalary: Float = null
 
 		"""
 		Locations the user is open to work in.
@@ -4444,6 +4559,11 @@ type Query {
 		proximityKm: Float = null
 
 		"""
+		Geographic bounding box to filter jobs by map viewport
+		"""
+		bounds: BoundingBoxInput = null
+
+		"""
 		The search (query) term
 		"""
 		searchTerm: String = null
@@ -4573,6 +4693,66 @@ type Query {
 		"""
 		searchTerm: String!
 	): AutocompleteJobsPayload!
+
+	"""
+	Get aggregated job clusters for map visualization using H3 hexagonal indexing.
+	"""
+	jobClusters(
+		"""
+		Geographic bounding box for map viewport (required)
+		"""
+		bounds: BoundingBoxInput!
+
+		"""
+		Map zoom level (1-20) for determining clustering resolution
+		"""
+		zoomLevel: Int!
+
+		"""
+		Filter by work mode
+		"""
+		workMode: [JobWorkModeFilter!] = null
+
+		"""
+		Filter by job type
+		"""
+		jobType: [JobTypeFilter!] = null
+
+		"""
+		Search term for full-text search
+		"""
+		searchTerm: String = null
+
+		"""
+		Location filter for proximity search
+		"""
+		location: String = null
+
+		"""
+		Proximity radius in kilometers
+		"""
+		proximityKm: Float = null
+
+		"""
+		Minimum years of experience required
+		"""
+		minExperience: Int = null
+
+		"""
+		Maximum years of experience required
+		"""
+		maxExperience: Int = null
+
+		"""
+		Minimum salary for the job
+		"""
+		minSalary: Int = null
+
+		"""
+		Maximum salary for the job
+		"""
+		maxSalary: Int = null
+	): JobClusterConnection!
 
 	"""
 	Get all organizations available.

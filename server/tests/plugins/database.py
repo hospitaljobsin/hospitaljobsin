@@ -5,17 +5,19 @@ from pathlib import Path
 
 import pytest
 from app.base.models import Address
-from app.config import DatabaseSettings, get_settings
+from app.config import DatabaseSettings, RedisSettings, get_settings
 from app.core.constants import (
     JOB_APPLICANT_EMBEDDING_INDEX_NAME,
     JOB_SEARCH_INDEX_NAME,
     REGION_SEARCH_INDEX_NAME,
 )
+from app.core.redis_client import create_redis_client
 from app.database import initialize_database
 from app.geocoding.documents import Region
 from app.geocoding.models import GeoJSONMultiPolygon, GeoJSONPoint, GeoJSONPolygon
 from app.jobs.documents import Job, JobApplicant
 from pymongo import AsyncMongoClient
+from redis.asyncio import Redis
 from structlog import get_logger
 
 from tests.utils.database import wait_for_search_indexes
@@ -32,6 +34,30 @@ def db_settings() -> DatabaseSettings:
 def db_name(worker_id: str) -> str:
     """Get a test database name, unique per pytest-xdist worker."""
     return f"testmedicaljobs_{worker_id}"
+
+
+@pytest.fixture(scope="session")
+def redis_settings() -> RedisSettings:
+    return get_settings(RedisSettings)
+
+
+@pytest.fixture(scope="session")
+async def redis_client(redis_settings: RedisSettings) -> AsyncGenerator[Redis]:
+    """Create a Redis client for testing."""
+    client = create_redis_client(redis_settings)
+    yield client
+    await client.aclose()
+
+
+@pytest.fixture(scope="module", autouse=True)
+async def purge_redis_cache(redis_client: Redis) -> AsyncGenerator[None]:
+    """Purge all Redis caches before each test."""
+    logger.info("Purging Redis cache before test")
+    await redis_client.flushall()
+    yield
+    # Optionally clean up after test too
+    logger.info("Cleaning up Redis cache after test")
+    await redis_client.flushall()
 
 
 @pytest.fixture(scope="session")

@@ -30,6 +30,7 @@ query JobsQuery(
     $sortBy: JobSearchSortBy = RELEVANCE
     $location: String
     $proximityKm: Float
+    $bounds: BoundingBoxInput
     $searchTerm: String
     $minExperience: Int
     $maxExperience: Int
@@ -46,6 +47,7 @@ query JobsQuery(
         sortBy: $sortBy
         location: $location
         proximityKm: $proximityKm
+        bounds: $bounds
         searchTerm: $searchTerm
         minExperience: $minExperience
         maxExperience: $maxExperience
@@ -307,6 +309,153 @@ async def test_work_mode_filter_remote_only(
     assert len(data["edges"]) == 1
     assert data["edges"][0]["node"]["workMode"] == "REMOTE"
     assert data["edges"][0]["node"]["title"] == "Senior Python Developer"
+
+
+async def test_bounds_filter_mumbai_area(
+    graphql_client: GraphQLClient,
+    sample_jobs: list[Job],
+) -> None:
+    """Test filtering jobs within Mumbai bounding box."""
+    response = await graphql_client(
+        JOBS_QUERY,
+        variables={
+            "workMode": [],
+            "jobType": [],
+            "bounds": {
+                "swLat": 18.9,
+                "swLng": 72.7,
+                "neLat": 19.3,
+                "neLng": 73.0,
+            },
+            "first": 10,
+        },
+    )
+
+    assert "errors" not in response
+    data = response["data"]["jobs"]
+
+    # Should return 3 jobs in Mumbai area
+    assert len(data["edges"]) == 3
+    titles = {edge["node"]["title"] for edge in data["edges"]}
+    assert titles == {
+        "Senior Python Developer",
+        "Frontend JavaScript Developer",
+        "Medical Intern",
+    }
+
+
+async def test_bounds_filter_india_wide(
+    graphql_client: GraphQLClient,
+    sample_jobs: list[Job],
+) -> None:
+    """Test filtering jobs within India-wide bounding box."""
+    response = await graphql_client(
+        JOBS_QUERY,
+        variables={
+            "workMode": [],
+            "jobType": [],
+            "bounds": {
+                "swLat": 8.0,
+                "swLng": 68.0,
+                "neLat": 35.0,
+                "neLng": 97.0,
+            },
+            "first": 10,
+        },
+    )
+
+    assert "errors" not in response
+    data = response["data"]["jobs"]
+
+    # Should return all 5 active jobs
+    assert len(data["edges"]) == 5
+
+
+async def test_bounds_filter_no_results(
+    graphql_client: GraphQLClient,
+    sample_jobs: list[Job],
+) -> None:
+    """Test filtering with bounds that exclude all jobs."""
+    response = await graphql_client(
+        JOBS_QUERY,
+        variables={
+            "workMode": [],
+            "jobType": [],
+            "bounds": {
+                "swLat": 40.0,
+                "swLng": -75.0,
+                "neLat": 41.0,
+                "neLng": -74.0,
+            },
+            "first": 10,
+        },
+    )
+
+    assert "errors" not in response
+    data = response["data"]["jobs"]
+
+    # Should return no jobs
+    assert len(data["edges"]) == 0
+    assert data["totalCount"] == 0
+
+
+async def test_bounds_with_work_mode_filter(
+    graphql_client: GraphQLClient,
+    sample_jobs: list[Job],
+) -> None:
+    """Test combining bounds filter with work mode filter."""
+    response = await graphql_client(
+        JOBS_QUERY,
+        variables={
+            "workMode": ["OFFICE"],
+            "jobType": [],
+            "bounds": {
+                "swLat": 18.9,
+                "swLng": 72.7,
+                "neLat": 19.3,
+                "neLng": 73.0,
+            },
+            "first": 10,
+        },
+    )
+
+    assert "errors" not in response
+    data = response["data"]["jobs"]
+
+    # Should return 1 office job in Mumbai
+    assert len(data["edges"]) == 1
+    assert data["edges"][0]["node"]["title"] == "Medical Intern"
+    assert data["edges"][0]["node"]["workMode"] == "OFFICE"
+
+
+async def test_bounds_with_salary_filter(
+    graphql_client: GraphQLClient,
+    sample_jobs: list[Job],
+) -> None:
+    """Test combining bounds filter with salary range."""
+    response = await graphql_client(
+        JOBS_QUERY,
+        variables={
+            "workMode": [],
+            "jobType": [],
+            "bounds": {
+                "swLat": 18.9,
+                "swLng": 72.7,
+                "neLat": 19.3,
+                "neLng": 73.0,
+            },
+            "minSalary": 500000,
+            "first": 10,
+        },
+    )
+
+    assert "errors" not in response
+    data = response["data"]["jobs"]
+
+    # Should return 2 jobs with salary >= 500000 in Mumbai
+    assert len(data["edges"]) == 2
+    titles = {edge["node"]["title"] for edge in data["edges"]}
+    assert titles == {"Senior Python Developer", "Frontend JavaScript Developer"}
 
 
 async def test_work_mode_filter_multiple(
