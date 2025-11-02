@@ -153,9 +153,14 @@ class TestJobClusterService:
         return AsyncMock()
 
     @pytest.fixture
-    def service(self, mock_job_repo):
+    def mock_region_repo(self):
+        """Create a mock RegionRepo."""
+        return AsyncMock()
+
+    @pytest.fixture
+    def service(self, mock_job_repo, mock_region_repo):
         """Create a JobClusterService with mocked dependencies."""
-        return JobClusterService(job_repo=mock_job_repo)
+        return JobClusterService(job_repo=mock_job_repo, region_repo=mock_region_repo)
 
     @pytest.mark.anyio
     async def test_get_job_clusters(self, service, mock_job_repo):
@@ -178,7 +183,9 @@ class TestJobClusterService:
         filters = JobClusterFilters()
         zoom_level = 7
 
-        clusters, total = await service.get_job_clusters(bounds, zoom_level, filters)
+        clusters, total, location_viewport = await service.get_job_clusters(
+            bounds, zoom_level, filters
+        )
 
         # Verify delegation - note that service converts dict to BoundingBox
         expected_bounds = BoundingBox(**bounds)
@@ -189,3 +196,4 @@ class TestJobClusterService:
         )
         assert clusters == mock_clusters
         assert total == 10
+        assert location_viewport is None  # No location filter provided
