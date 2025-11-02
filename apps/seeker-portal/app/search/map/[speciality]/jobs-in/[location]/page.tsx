@@ -203,8 +203,7 @@ export default async function MapPage({
 				neLat: 37.6173,
 				neLng: 97.3951
 			}, // Default bounds for India
-			zoomLevel: 5, // Default zoom level
-			first: 100 // Load more jobs for map view
+			zoomLevel: 5 // Default zoom level
 		},
 		{
 			metadata: {
