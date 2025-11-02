@@ -1,5 +1,4 @@
 import hashlib
-import json
 import secrets
 import uuid
 from collections import defaultdict
@@ -399,9 +398,8 @@ class JobRepo:
         """
         Aggregate jobs with Atlas Search for text queries.
 
-        Two-phase approach:
-        1. Use Atlas Search to get job IDs matching search_term
-        2. Aggregate those jobs by H3 index
+        Performs search and aggregation in a single pipeline using Atlas Search,
+        with filtering logic consistent with get_all_active method.
 
         Args:
             h3_resolution: H3 resolution level for clustering
@@ -414,105 +412,280 @@ class JobRepo:
         """
         h3_field = f"h3_indexes.{h3_resolution}"
 
-        # Phase 1: Atlas Search for job IDs
-        search_pipeline = [
+        # Build Atlas Search compound query (consistent with get_all_active)
+        must_clauses = []
+        filter_clauses = []
+
+        # Always filter for active jobs
+        must_clauses.append({"equals": {"path": "is_active", "value": True}})
+
+        # Filter for non-expired jobs
+        must_clauses.append(
+            {
+                "compound": {
+                    "should": [
+                        {"equals": {"path": "expires_at", "value": None}},
+                        {"range": {"path": "expires_at", "gt": datetime.now(UTC)}},
+                    ],
+                    "minimumShouldMatch": 1,
+                }
+            }
+        )
+
+        # Bounding box filter for map viewport
+        must_clauses.append(
+            {
+                "geoWithin": {
+                    "box": {
+                        "bottomLeft": {
+                            "type": "Point",
+                            "coordinates": [bounds.sw_lng, bounds.sw_lat],
+                        },
+                        "topRight": {
+                            "type": "Point",
+                            "coordinates": [bounds.ne_lng, bounds.ne_lat],
+                        },
+                    },
+                    "path": "geo",
+                }
+            }
+        )
+
+        # Location filter (region-based)
+        if filters.location:
+            region = await self._region_repo.get_by_name(filters.location)
+            if not region:
+                return []
+
+            if region.geometry:
+                must_clauses.append(
+                    {
+                        "geoWithin": {
+                            "path": "geo",
+                            "geometry": region.geometry.model_dump(),
+                        }
+                    }
+                )
+            else:
+                max_distance_meters = (filters.proximity_km or 1.0) * 1000.0
+                must_clauses.append(
+                    {
+                        "geoWithin": {
+                            "circle": {
+                                "center": {
+                                    "type": "Point",
+                                    "coordinates": region.coordinates.coordinates,
+                                },
+                                "radius": max_distance_meters,
+                            },
+                            "path": "geo",
+                        }
+                    }
+                )
+
+        # Experience filters
+        if filters.min_experience is not None:
+            must_clauses.append(
+                {
+                    "compound": {
+                        "should": [
+                            {
+                                "range": {
+                                    "path": "max_experience",
+                                    "gte": filters.min_experience,
+                                }
+                            },
+                            {
+                                "range": {
+                                    "path": "min_experience",
+                                    "gte": filters.min_experience,
+                                }
+                            },
+                        ]
+                    }
+                }
+            )
+        if filters.max_experience is not None:
+            must_clauses.append(
+                {
+                    "compound": {
+                        "should": [
+                            {
+                                "range": {
+                                    "path": "min_experience",
+                                    "lte": filters.max_experience,
+                                }
+                            },
+                            {
+                                "range": {
+                                    "path": "max_experience",
+                                    "lte": filters.max_experience,
+                                }
+                            },
+                        ]
+                    }
+                }
+            )
+
+        # Salary filters
+        if filters.min_salary is not None:
+            must_clauses.append(
+                {
+                    "compound": {
+                        "should": [
+                            {
+                                "range": {
+                                    "path": "max_salary",
+                                    "gte": filters.min_salary,
+                                }
+                            },
+                            {
+                                "range": {
+                                    "path": "min_salary",
+                                    "gte": filters.min_salary,
+                                }
+                            },
+                        ]
+                    }
+                }
+            )
+        if filters.max_salary is not None:
+            must_clauses.append(
+                {
+                    "compound": {
+                        "should": [
+                            {
+                                "range": {
+                                    "path": "min_salary",
+                                    "lte": filters.max_salary,
+                                }
+                            },
+                            {
+                                "range": {
+                                    "path": "max_salary",
+                                    "lte": filters.max_salary,
+                                }
+                            },
+                        ]
+                    }
+                }
+            )
+
+        # Work mode and Job type filters
+        if filters.work_mode:
+            filter_clauses.append(
+                {
+                    "text": {
+                        "query": filters.work_mode,
+                        "path": "work_mode",
+                    }
+                }
+            )
+        if filters.job_type:
+            filter_clauses.append({"text": {"query": filters.job_type, "path": "type"}})
+
+        # Text search clause (consistent with get_all_active)
+        if filters.search_term:
+            must_clauses.append(
+                {
+                    "compound": {
+                        "should": [
+                            # Exact phrase match in title (highest priority)
+                            {
+                                "phrase": {
+                                    "query": filters.search_term,
+                                    "path": "title",
+                                    "score": {"boost": {"value": 100}},
+                                }
+                            },
+                            # Exact phrase match in skills (very high priority for skill-based searches)
+                            {
+                                "phrase": {
+                                    "query": filters.search_term,
+                                    "path": "skills",
+                                    "score": {"boost": {"value": 80}},
+                                }
+                            },
+                            # Exact phrase match in description (high priority)
+                            {
+                                "phrase": {
+                                    "query": filters.search_term,
+                                    "path": "description_cleaned",
+                                    "score": {"boost": {"value": 40}},
+                                }
+                            },
+                            # Single word or very controlled fuzzy matching (much lower priority)
+                            *(
+                                [
+                                    {
+                                        "text": {
+                                            "query": filters.search_term,
+                                            "path": "title",
+                                            "score": {"boost": {"value": 20}},
+                                            "fuzzy": {
+                                                "maxEdits": 1,
+                                                "prefixLength": 3,
+                                                "maxExpansions": 10,
+                                            },
+                                        }
+                                    },
+                                    {
+                                        "text": {
+                                            "query": filters.search_term,
+                                            "path": "skills",
+                                            "score": {"boost": {"value": 15}},
+                                            "fuzzy": {
+                                                "maxEdits": 1,
+                                                "prefixLength": 3,
+                                                "maxExpansions": 10,
+                                            },
+                                        }
+                                    },
+                                ]
+                                if len(filters.search_term.split()) == 1
+                                and len(filters.search_term) > 4
+                                else []
+                            ),
+                            # Location match (lowest priority for search relevance)
+                            {
+                                "text": {
+                                    "query": filters.search_term,
+                                    "path": "location",
+                                    "score": {"boost": {"value": 5}},
+                                }
+                            },
+                        ],
+                        "minimumShouldMatch": 1,
+                    }
+                }
+            )
+
+        # Build complete aggregation pipeline with Atlas Search
+        pipeline = [
             {
                 "$search": {
                     "index": JOB_SEARCH_INDEX_NAME,
                     "compound": {
-                        "must": [
-                            {"equals": {"path": "is_active", "value": True}},
-                            {
-                                "compound": {
-                                    "should": [
-                                        {
-                                            "equals": {
-                                                "path": "expires_at",
-                                                "value": None,
-                                            }
-                                        },
-                                        {
-                                            "range": {
-                                                "path": "expires_at",
-                                                "gt": datetime.now(UTC),
-                                            }
-                                        },
-                                    ],
-                                    "minimumShouldMatch": 1,
-                                }
-                            },
-                            # Text search clause
-                            {
-                                "compound": {
-                                    "should": [
-                                        {
-                                            "text": {
-                                                "query": filters.search_term,
-                                                "path": "title",
-                                                "score": {"boost": {"value": 10}},
-                                            }
-                                        },
-                                        {
-                                            "text": {
-                                                "query": filters.search_term,
-                                                "path": "skills",
-                                                "score": {"boost": {"value": 8}},
-                                            }
-                                        },
-                                        {
-                                            "text": {
-                                                "query": filters.search_term,
-                                                "path": "description_cleaned",
-                                                "score": {"boost": {"value": 4}},
-                                            }
-                                        },
-                                    ],
-                                    "minimumShouldMatch": 1,
-                                }
-                            },
-                        ],
+                        "must": must_clauses,
+                        "filter": filter_clauses,
                     },
                 }
             },
-            {"$project": {"_id": 1}},
-            {"$limit": 5000},  # Limit search results for performance
-        ]
-
-        search_results = await Job.aggregate(
-            search_pipeline, projection_model=None
-        ).to_list()
-        job_ids = [result["_id"] for result in search_results]
-
-        if not job_ids:
-            return []
-
-        # Phase 2: Aggregate by H3 index
-        match_filters = await self._build_cluster_match_filters(bounds, filters)
-        match_filters["_id"] = {"$in": job_ids}
-        match_filters[h3_field] = {"$in": intersecting_hexes}
-
-        aggregation_pipeline = [
-            {"$match": match_filters},
+            # Match H3 indexes within viewport
+            {"$match": {h3_field: {"$in": intersecting_hexes}}},
+            # Group by H3 index
             {
                 "$group": {
                     "_id": f"${h3_field}",
                     "count": {"$sum": 1},
-                    "skills": {"$push": "$skills"},
                 }
             },
-            {
-                "$project": {
-                    "_id": 1,
-                    "count": 1,
-                }
-            },
+            {"$project": {"_id": 1, "count": 1}},
             {"$sort": {"count": -1}},
             {"$limit": 1000},
         ]
 
-        return await Job.aggregate(
-            aggregation_pipeline, projection_model=None
-        ).to_list()
+        return await Job.aggregate(pipeline, projection_model=None).to_list()
 
     async def get_aggregated_jobs_by_h3(
         self,
@@ -524,12 +697,6 @@ class JobRepo:
         import logging
 
         logger = logging.getLogger(__name__)
-        print(
-            f"🔍 JobRepo.get_aggregated_jobs_by_h3: START - bounds={bounds}, h3_resolution={h3_resolution}"
-        )
-        logger.info(
-            f"JobRepo.get_aggregated_jobs_by_h3: START - bounds={bounds}, h3_resolution={h3_resolution}, filters={filters}"
-        )
 
         # Calculate intersecting H3 hexagons
         print("🔶 Creating bbox polygon...")
@@ -615,14 +782,6 @@ class JobRepo:
 
         # Calculate total count from all clusters
         total_count = sum(cluster.count for cluster in clusters)
-
-        # Cache results for 30 minutes
-        cache_data = json.dumps(
-            {
-                "clusters": [cluster.model_dump() for cluster in clusters],
-                "total_count": total_count,
-            }
-        )
 
         return clusters, total_count
 
