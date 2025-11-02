@@ -116,6 +116,11 @@ interface JobMapViewProps {
 	onLocationSelect?: (location: SearchLocation) => void;
 	onClusterSelect?: (h3Index: string, clusterInfo: { count: number; center: [number, number] }) => void; // Callback when cluster is selected
 	isPending?: boolean;
+	initialViewport?: {
+		latitude: number;
+		longitude: number;
+		zoomLevel: number;
+	} | null;
 }
 
 export default function JobMapView({
@@ -128,7 +133,8 @@ export default function JobMapView({
 	onFiltersChange,
 	onLocationSelect: _onLocationSelect,
 	onClusterSelect,
-	isPending = false
+	isPending = false,
+	initialViewport
 }: JobMapViewProps) {
 	// Use fragment to get jobs data
 	const jobsData = useFragment(JobMapViewFragment, queryRef);
@@ -383,6 +389,7 @@ export default function JobMapView({
 				setLastBounds(initialBounds);
 
 				// Also trigger the parent callback if it exists
+				// This will refetch clusters with the correct bounds and zoom for the viewport
 				if (onBoundsChange) {
 					onBoundsChange(initialBounds);
 				}
@@ -625,9 +632,9 @@ export default function JobMapView({
 		setSelectedJobId(null);
 	}, [onDrawerClose]);
 
-	// Default center (India)
-	const defaultCenter: [number, number] = [20.5937, 78.9629];
-	const defaultZoom = 5;
+	// Default center (India) - overridden by initialViewport if location filter is provided
+	const defaultCenter: [number, number] = initialViewport ? [initialViewport.latitude, initialViewport.longitude] : [20.5937, 78.9629];
+	const defaultZoom = initialViewport ? initialViewport.zoomLevel : 5;
 
 	// Set max bounds to prevent wrapping around the world multiple times
 	// This helps prevent invalid longitude values

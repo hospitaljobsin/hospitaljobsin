@@ -51,7 +51,6 @@ const ClusterJobsListQueryNode = graphql`
 		$workMode: [JobWorkModeFilter!]!
 		$jobType: [JobTypeFilter!]!
 		$searchTerm: String
-		$location: String
 		$minExperience: Int
 		$minSalary: Int
 		$maxSalary: Int
@@ -64,7 +63,6 @@ const ClusterJobsListQueryNode = graphql`
 				workMode: $workMode
 				jobType: $jobType
 				searchTerm: $searchTerm
-				location: $location
 				minExperience: $minExperience
 				minSalary: $minSalary
 				maxSalary: $maxSalary
@@ -84,7 +82,6 @@ const ClusterJobsListInternalFragment = graphql`
 		workMode: { type: "[JobWorkModeFilter!]!" }
 		jobType: { type: "[JobTypeFilter!]!" }
 		searchTerm: { type: "String" }
-		location: { type: "String" }
 		minExperience: { type: "Int" }
 		minSalary: { type: "Int" }
 		maxSalary: { type: "Int" }
@@ -98,7 +95,6 @@ const ClusterJobsListInternalFragment = graphql`
 			workMode: $workMode
 			jobType: $jobType
 			searchTerm: $searchTerm
-			location: $location
 			minExperience: $minExperience
 			minSalary: $minSalary
 			maxSalary: $maxSalary
@@ -107,7 +103,7 @@ const ClusterJobsListInternalFragment = graphql`
 		)
 			@connection(
 				key: "ClusterJobsListFragment_jobs"
-				filters: ["bounds", "workMode", "jobType", "searchTerm", "location", "minExperience", "minSalary", "maxSalary", "proximityKm", "sortBy"]
+				filters: ["bounds", "workMode", "jobType", "searchTerm", "minExperience", "minSalary", "maxSalary", "proximityKm", "sortBy"]
 			) {
 			edges {
 				node {
@@ -142,6 +138,7 @@ interface ViewportJobsListProps {
 		sortBy: string;
 	};
 	className?: string;
+	onTotalCountChange?: (count: number) => void;
 }
 
 /**
@@ -150,7 +147,7 @@ interface ViewportJobsListProps {
  * Displays a list of jobs from the current map viewport using GraphQL.
  * Shows all jobs visible in the current map bounds regardless of zoom level.
  */
-function ViewportJobsContent({ bounds, filters, className = '' }: ViewportJobsListProps) {
+function ViewportJobsContent({ bounds, filters, className = '', onTotalCountChange }: ViewportJobsListProps) {
 	// Map sortBy values: 'RELEVANCE' and 'CREATED_AT' are valid JobSearchSortBy enum values
 	const sortByValue = filters.sortBy === 'CREATED_AT' ? 'UPDATED_AT' : 'RELEVANCE';
 
@@ -161,7 +158,6 @@ function ViewportJobsContent({ bounds, filters, className = '' }: ViewportJobsLi
 			? filters.jobType
 			: ['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'LOCUM']) as readonly JobTypeFilter[],
 		searchTerm: filters.searchTerm || undefined,
-		location: filters.location || undefined,
 		minExperience: filters.minExperience || undefined,
 		minSalary: filters.minSalary || undefined,
 		maxSalary: filters.maxSalary || undefined,
@@ -174,6 +170,13 @@ function ViewportJobsContent({ bounds, filters, className = '' }: ViewportJobsLi
 	);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
+
+	// Notify parent of total count changes
+	useEffect(() => {
+		if (onTotalCountChange && data.jobs.totalCount != null) {
+			onTotalCountChange(data.jobs.totalCount);
+		}
+	}, [data.jobs.totalCount, onTotalCountChange]);
 
 	// Set up IntersectionObserver for infinite scroll
 	useEffect(() => {
@@ -221,7 +224,7 @@ function ViewportJobsContent({ bounds, filters, className = '' }: ViewportJobsLi
 	);
 }
 
-export default function ViewportJobsList({ bounds, filters, className = '' }: ViewportJobsListProps) {
+export default function ViewportJobsList({ bounds, filters, className = '', onTotalCountChange }: ViewportJobsListProps) {
 	const [retryKey, setRetryKey] = useState(0);
 
 	// Always render the viewport jobs (no zoom or cluster restrictions)
@@ -229,7 +232,13 @@ export default function ViewportJobsList({ bounds, filters, className = '' }: Vi
 		<div className={`w-full ${className}`}>
 			<ViewportJobsErrorBoundary onRetry={() => setRetryKey(prev => prev + 1)}>
 				<Suspense fallback={<ClusterJobsListSkeleton />}>
-					<ViewportJobsContent key={retryKey} bounds={bounds} filters={filters} className={className} />
+					<ViewportJobsContent
+						key={retryKey}
+						bounds={bounds}
+						filters={filters}
+						className={className}
+						onTotalCountChange={onTotalCountChange}
+					/>
 				</Suspense>
 			</ViewportJobsErrorBoundary>
 		</div>

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<3e47debfac048adb9ee451fce762354e>>
- * @relayHash 35849b7d01ed8abc542abe794b7b61ba
+ * @generated SignedSource<<700aa39c42207ef1f0cdfdec04245cea>>
+ * @relayHash 2176fa2f488d155b51122b11d6d79826
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 35849b7d01ed8abc542abe794b7b61ba
+// @relayRequestID 2176fa2f488d155b51122b11d6d79826
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -327,7 +327,39 @@ return {
             ],
             "storageKey": null
           },
-          (v19/*: any*/)
+          (v19/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "LocationViewport",
+            "kind": "LinkedField",
+            "name": "locationViewport",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "latitude",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "longitude",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "zoomLevel",
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          }
         ],
         "storageKey": null
       },
@@ -431,7 +463,7 @@ return {
     ]
   },
   "params": {
-    "id": "35849b7d01ed8abc542abe794b7b61ba",
+    "id": "2176fa2f488d155b51122b11d6d79826",
     "metadata": {},
     "name": "pageSearchMapSpecialityViewQuery",
     "operationKind": "query",

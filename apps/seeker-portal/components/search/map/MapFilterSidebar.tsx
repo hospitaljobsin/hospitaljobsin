@@ -40,6 +40,8 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 	const [isCollapsed, setIsCollapsed] = useState(true);
 	// Sort by state
 	const [sortBy, setSortBy] = useState<string>(filters.sortBy || 'RELEVANCE');
+	// Track the actual total count from the jobs list query
+	const [actualTotalCount, setActualTotalCount] = useState<number>(totalCount);
 
 	// Track if this is the initial mount
 	const isInitialMount = useRef(true);
@@ -134,7 +136,7 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 				<div className='mb-4 w-full flex flex-col gap-4'>
 					<div className='flex items-center justify-between gap-4'>
 						<div className='flex-1'>
-							<h2 className='text-base font-medium text-foreground-800'>Viewing {totalCount.toLocaleString()} Jobs</h2>
+							<h2 className='text-base font-medium text-foreground-800'>Viewing {actualTotalCount.toLocaleString()} Jobs</h2>
 							<p className='text-xs text-foreground-500'>in the current map view</p>
 						</div>
 						<Select
@@ -164,6 +166,7 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 								bounds={bounds}
 								filters={updatedFilters}
 								className='w-full'
+								onTotalCountChange={setActualTotalCount}
 							/>
 						) : (
 							<div className='w-full h-full flex items-center justify-center text-center py-8'>

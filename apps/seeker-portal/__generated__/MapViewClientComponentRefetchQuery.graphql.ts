@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<fabd3570ccd102742aa5752a33be13b3>>
- * @relayHash e2b1d154c84b95eba095b9b134a6dbee
+ * @generated SignedSource<<8c8ecfb4816b611b62b14e63a3a4c7d2>>
+ * @relayHash 2ed64b143626ee6d5144c4b6374c9978
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID e2b1d154c84b95eba095b9b134a6dbee
+// @relayRequestID 2ed64b143626ee6d5144c4b6374c9978
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -305,7 +305,39 @@ return {
             ],
             "storageKey": null
           },
-          (v9/*: any*/)
+          (v9/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "LocationViewport",
+            "kind": "LinkedField",
+            "name": "locationViewport",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "latitude",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "longitude",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "zoomLevel",
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          }
         ],
         "storageKey": null
       },
@@ -409,7 +441,7 @@ return {
     ]
   },
   "params": {
-    "id": "e2b1d154c84b95eba095b9b134a6dbee",
+    "id": "2ed64b143626ee6d5144c4b6374c9978",
     "metadata": {},
     "name": "MapViewClientComponentRefetchQuery",
     "operationKind": "query",
@@ -418,6 +450,6 @@ return {
 };
 })();
 
-(node as any).hash = "1346aef84d4db284c4ff0f0f9fa3618a";
+(node as any).hash = "ca2419df881a0153f76e933c3603b8aa";
 
 export default node;

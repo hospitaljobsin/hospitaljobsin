@@ -1964,6 +1964,11 @@ type JobClusterConnection {
 	Total number of jobs across all clusters in the viewport.
 	"""
 	totalCount: Int!
+
+	"""
+	Recommended viewport (center coordinates and zoom level) for the filtered location. Only present when location filter is provided.
+	"""
+	locationViewport: LocationViewport
 }
 
 type JobConnection {
@@ -2234,6 +2239,26 @@ type LocationAutocompleteSuggestion {
 	Latitude coordinate of the location
 	"""
 	latitude: Float!
+}
+
+"""
+Recommended viewport for a location (coordinates and zoom level).
+"""
+type LocationViewport {
+	"""
+	Latitude of the location center.
+	"""
+	latitude: Float!
+
+	"""
+	Longitude of the location center.
+	"""
+	longitude: Float!
+
+	"""
+	Recommended zoom level for the location.
+	"""
+	zoomLevel: Int!
 }
 
 """

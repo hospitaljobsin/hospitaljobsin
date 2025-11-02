@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<aca63c96504d5d2669a373766bb9ee70>>
- * @relayHash 2eb1ae44c2a4cf391e131c63a640385a
+ * @generated SignedSource<<2d56f22a12cfe471f0d9220d9eab6682>>
+ * @relayHash 0e1bf45d2c1d7147390b613d0da06b23
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 2eb1ae44c2a4cf391e131c63a640385a
+// @relayRequestID 0e1bf45d2c1d7147390b613d0da06b23
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -25,7 +25,6 @@ export type BoundingBoxInput = {
 export type ClusterJobsListQuery$variables = {
   bounds: BoundingBoxInput;
   jobType: ReadonlyArray<JobTypeFilter>;
-  location?: string | null | undefined;
   maxSalary?: number | null | undefined;
   minExperience?: number | null | undefined;
   minSalary?: number | null | undefined;
@@ -56,125 +55,114 @@ v1 = {
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "location"
+  "name": "maxSalary"
 },
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "maxSalary"
+  "name": "minExperience"
 },
 v4 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minExperience"
+  "name": "minSalary"
 },
 v5 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minSalary"
+  "name": "proximityKm"
 },
 v6 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "proximityKm"
+  "name": "searchTerm"
 },
 v7 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "searchTerm"
+  "name": "sortBy"
 },
 v8 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "sortBy"
-},
-v9 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
   "name": "workMode"
 },
-v10 = {
+v9 = {
   "kind": "Variable",
   "name": "bounds",
   "variableName": "bounds"
 },
-v11 = {
+v10 = {
   "kind": "Variable",
   "name": "jobType",
   "variableName": "jobType"
 },
-v12 = {
-  "kind": "Variable",
-  "name": "location",
-  "variableName": "location"
-},
-v13 = {
+v11 = {
   "kind": "Variable",
   "name": "maxSalary",
   "variableName": "maxSalary"
 },
-v14 = {
+v12 = {
   "kind": "Variable",
   "name": "minExperience",
   "variableName": "minExperience"
 },
-v15 = {
+v13 = {
   "kind": "Variable",
   "name": "minSalary",
   "variableName": "minSalary"
 },
-v16 = {
+v14 = {
   "kind": "Variable",
   "name": "proximityKm",
   "variableName": "proximityKm"
 },
-v17 = {
+v15 = {
   "kind": "Variable",
   "name": "searchTerm",
   "variableName": "searchTerm"
 },
-v18 = {
+v16 = {
   "kind": "Variable",
   "name": "sortBy",
   "variableName": "sortBy"
 },
-v19 = {
+v17 = {
   "kind": "Variable",
   "name": "workMode",
   "variableName": "workMode"
 },
-v20 = [
-  (v10/*: any*/),
+v18 = [
+  (v9/*: any*/),
   {
     "kind": "Literal",
     "name": "first",
     "value": 20
   },
+  (v10/*: any*/),
   (v11/*: any*/),
   (v12/*: any*/),
   (v13/*: any*/),
   (v14/*: any*/),
   (v15/*: any*/),
   (v16/*: any*/),
-  (v17/*: any*/),
-  (v18/*: any*/),
-  (v19/*: any*/)
+  (v17/*: any*/)
 ],
-v21 = {
+v19 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v22 = {
+v20 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "slug",
   "storageKey": null
 },
-v23 = {
+v21 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -192,8 +180,7 @@ return {
       (v5/*: any*/),
       (v6/*: any*/),
       (v7/*: any*/),
-      (v8/*: any*/),
-      (v9/*: any*/)
+      (v8/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -201,6 +188,7 @@ return {
     "selections": [
       {
         "args": [
+          (v9/*: any*/),
           (v10/*: any*/),
           (v11/*: any*/),
           (v12/*: any*/),
@@ -208,9 +196,7 @@ return {
           (v14/*: any*/),
           (v15/*: any*/),
           (v16/*: any*/),
-          (v17/*: any*/),
-          (v18/*: any*/),
-          (v19/*: any*/)
+          (v17/*: any*/)
         ],
         "kind": "FragmentSpread",
         "name": "ClusterJobsListInternalFragment"
@@ -223,22 +209,21 @@ return {
   "operation": {
     "argumentDefinitions": [
       (v0/*: any*/),
-      (v9/*: any*/),
+      (v8/*: any*/),
       (v1/*: any*/),
-      (v7/*: any*/),
-      (v2/*: any*/),
-      (v4/*: any*/),
-      (v5/*: any*/),
-      (v3/*: any*/),
       (v6/*: any*/),
-      (v8/*: any*/)
+      (v3/*: any*/),
+      (v4/*: any*/),
+      (v2/*: any*/),
+      (v5/*: any*/),
+      (v7/*: any*/)
     ],
     "kind": "Operation",
     "name": "ClusterJobsListQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v20/*: any*/),
+        "args": (v18/*: any*/),
         "concreteType": "JobConnection",
         "kind": "LinkedField",
         "name": "jobs",
@@ -260,8 +245,8 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v21/*: any*/),
-                  (v22/*: any*/),
+                  (v19/*: any*/),
+                  (v20/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -347,7 +332,7 @@ return {
                         "name": "name",
                         "storageKey": null
                       },
-                      (v22/*: any*/),
+                      (v20/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -363,7 +348,7 @@ return {
                         "name": "verificationStatus",
                         "plural": false,
                         "selections": [
-                          (v23/*: any*/),
+                          (v21/*: any*/),
                           {
                             "kind": "InlineFragment",
                             "selections": [
@@ -381,11 +366,11 @@ return {
                         ],
                         "storageKey": null
                       },
-                      (v21/*: any*/)
+                      (v19/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v23/*: any*/)
+                  (v21/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -436,13 +421,12 @@ return {
       },
       {
         "alias": null,
-        "args": (v20/*: any*/),
+        "args": (v18/*: any*/),
         "filters": [
           "bounds",
           "workMode",
           "jobType",
           "searchTerm",
-          "location",
           "minExperience",
           "minSalary",
           "maxSalary",
@@ -457,7 +441,7 @@ return {
     ]
   },
   "params": {
-    "id": "2eb1ae44c2a4cf391e131c63a640385a",
+    "id": "0e1bf45d2c1d7147390b613d0da06b23",
     "metadata": {},
     "name": "ClusterJobsListQuery",
     "operationKind": "query",
@@ -466,6 +450,6 @@ return {
 };
 })();
 
-(node as any).hash = "53445308c1e50e0248808a4c4d1c8f64";
+(node as any).hash = "5babfe629043ced63378124903644ced";
 
 export default node;

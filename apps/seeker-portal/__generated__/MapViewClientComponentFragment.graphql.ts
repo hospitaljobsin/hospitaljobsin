@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d49e8372292b554e9f189efb3dbb9068>>
+ * @generated SignedSource<<539dfee9612cc55c4f1af29de65d526c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -20,9 +20,14 @@ export type MapViewClientComponentFragment$data = {
       readonly count: number;
       readonly h3Index: string;
     }>;
+    readonly locationViewport: {
+      readonly latitude: number;
+      readonly longitude: number;
+      readonly zoomLevel: number;
+    } | null | undefined;
     readonly totalCount: number;
   };
-  readonly " $fragmentSpreads": FragmentRefs<"JobMapViewFragment" | "MapHeaderFragment" | "MapHeaderMobileFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"JobMapViewFragment" | "MapHeaderFragment">;
   readonly " $fragmentType": "MapViewClientComponentFragment";
 };
 export type MapViewClientComponentFragment$key = {
@@ -223,6 +228,38 @@ return {
           "kind": "ScalarField",
           "name": "totalCount",
           "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "concreteType": "LocationViewport",
+          "kind": "LinkedField",
+          "name": "locationViewport",
+          "plural": false,
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "latitude",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "longitude",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "zoomLevel",
+              "storageKey": null
+            }
+          ],
+          "storageKey": null
         }
       ],
       "storageKey": null
@@ -231,11 +268,6 @@ return {
       "args": null,
       "kind": "FragmentSpread",
       "name": "MapHeaderFragment"
-    },
-    {
-      "args": null,
-      "kind": "FragmentSpread",
-      "name": "MapHeaderMobileFragment"
     },
     {
       "args": [
@@ -262,6 +294,6 @@ return {
 };
 })();
 
-(node as any).hash = "1346aef84d4db284c4ff0f0f9fa3618a";
+(node as any).hash = "ca2419df881a0153f76e933c3603b8aa";
 
 export default node;

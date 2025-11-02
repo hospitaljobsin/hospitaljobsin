@@ -422,8 +422,12 @@ class JobQuery:
             max_salary=max_salary,
         )
 
-        # Get clustered jobs
-        clusters, total_count = await job_cluster_service.get_job_clusters(
+        # Get clustered jobs and location viewport
+        (
+            clusters,
+            total_count,
+            location_viewport,
+        ) = await job_cluster_service.get_job_clusters(
             bounds=bounds_dict,
             zoom_level=zoom_level,
             filters=filters,
@@ -432,4 +436,5 @@ class JobQuery:
         return JobClusterConnectionType.marshal(
             clusters=clusters,
             total_count=total_count,
+            location_viewport=location_viewport,
         )

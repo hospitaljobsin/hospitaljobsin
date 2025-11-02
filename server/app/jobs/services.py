@@ -1170,15 +1170,16 @@ class JobMetricService:
 class JobClusterService:
     """Service for managing job clustering on maps using H3 hexagonal indexing."""
 
-    def __init__(self, job_repo: JobRepo) -> None:
+    def __init__(self, job_repo: JobRepo, region_repo: RegionRepo) -> None:
         self._job_repo = job_repo
+        self._region_repo = region_repo
 
     async def get_job_clusters(
         self,
         bounds: dict[str, float],
         zoom_level: int,
         filters: JobClusterFilters,
-    ) -> tuple[list[JobCluster], int]:
+    ) -> tuple[list[JobCluster], int, tuple[float, float, int] | None]:
         """
         Get aggregated job clusters for a map viewport.
 
@@ -1188,13 +1189,57 @@ class JobClusterService:
             filters: Filter criteria for jobs
 
         Returns:
-            Tuple of (list of job clusters, total job count)
+            Tuple of (list of job clusters, total job count, optional location viewport)
+            Location viewport is (latitude, longitude, zoom_level) if location filter is provided
 
         """
         # Determine H3 resolution based on bounds and zoom level
         # The bounds ensure we don't create more than 1000 hexagons
         h3_resolution = get_h3_resolution_from_zoom(zoom_level, bounds)
 
-        return await self._job_repo.get_aggregated_jobs_by_h3(
+        # Get job clusters
+        clusters, total_count = await self._job_repo.get_aggregated_jobs_by_h3(
             bounds=BoundingBox(**bounds), h3_resolution=h3_resolution, filters=filters
         )
+
+        # Calculate location viewport if location filter is provided
+        location_viewport = None
+        if filters.location:
+            location_viewport = await self._calculate_location_viewport(
+                filters.location
+            )
+
+        return clusters, total_count, location_viewport
+
+    async def _calculate_location_viewport(
+        self, location_name: str
+    ) -> tuple[float, float, int] | None:
+        """
+        Calculate recommended viewport for a location.
+
+        Args:
+            location_name: Name of the location to search for
+
+        Returns:
+            Tuple of (latitude, longitude, zoom_level) or None if location not found
+
+        """
+        # Fetch location data from RegionRepo
+        region = await self._region_repo.get_by_name(location_name)
+
+        if not region:
+            return None
+
+        # Extract coordinates from GeoJSON Point
+        longitude, latitude = region.coordinates.coordinates
+
+        # Determine zoom level based on region level
+        zoom_level_map = {
+            "continent": 3,
+            "country": 5,
+            "state": 7,
+            "locality": 11,
+        }
+        zoom_level = zoom_level_map.get(region.level, 7)  # Default to state level
+
+        return (latitude, longitude, zoom_level)

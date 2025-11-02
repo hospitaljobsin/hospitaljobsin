@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e110cc5c23cc01940f953f47e68cf3a0>>
+ * @generated SignedSource<<a80020c69b45c9be3c177fbd9c387bb6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,6 +21,7 @@ export type MapHeaderFragment$data = {
     // value in case none of the concrete values match.
     readonly __typename: "%other";
   };
+  readonly " $fragmentSpreads": FragmentRefs<"MapHeaderMobileFragment">;
   readonly " $fragmentType": "MapHeaderFragment";
 };
 export type MapHeaderFragment$key = {
@@ -42,6 +43,11 @@ return {
   "metadata": null,
   "name": "MapHeaderFragment",
   "selections": [
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "MapHeaderMobileFragment"
+    },
     {
       "alias": null,
       "args": null,
@@ -80,6 +86,6 @@ return {
 };
 })();
 
-(node as any).hash = "f4f353a23beacbebb2743d8e1be56174";
+(node as any).hash = "f1a6c70182f57a14559ffb0ebaebbbb3";
 
 export default node;

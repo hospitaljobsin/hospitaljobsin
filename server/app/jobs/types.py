@@ -1661,6 +1661,22 @@ class JobClusterType:
 
 
 @strawberry.type(
+    name="LocationViewport",
+    description="Recommended viewport for a location (coordinates and zoom level).",
+)
+class LocationViewportType:
+    latitude: float = strawberry.field(
+        description="Latitude of the location center.",
+    )
+    longitude: float = strawberry.field(
+        description="Longitude of the location center.",
+    )
+    zoom_level: int = strawberry.field(
+        description="Recommended zoom level for the location.",
+    )
+
+
+@strawberry.type(
     name="JobClusterConnection",
     description="Connection type for job clusters with total count.",
 )
@@ -1671,11 +1687,35 @@ class JobClusterConnectionType:
     total_count: int = strawberry.field(
         description="Total number of jobs across all clusters in the viewport.",
     )
+    location_viewport: LocationViewportType | None = strawberry.field(
+        default=None,
+        description="Recommended viewport (center coordinates and zoom level) for the filtered location. Only present when location filter is provided.",
+    )
 
     @classmethod
-    def marshal(cls, clusters: list[JobCluster], total_count: int) -> Self:
-        """Marshal into a connection type instance."""
+    def marshal(
+        cls,
+        clusters: list[JobCluster],
+        total_count: int,
+        location_viewport: tuple[float, float, int] | None = None,
+    ) -> Self:
+        """
+        Marshal into a connection type instance.
+
+        Args:
+            clusters: List of job clusters
+            total_count: Total number of jobs
+            location_viewport: Optional tuple of (latitude, longitude, zoom_level)
+
+        """
         return cls(
             clusters=[JobClusterType.marshal(cluster) for cluster in clusters],
             total_count=total_count,
+            location_viewport=LocationViewportType(
+                latitude=location_viewport[0],
+                longitude=location_viewport[1],
+                zoom_level=location_viewport[2],
+            )
+            if location_viewport
+            else None,
         )

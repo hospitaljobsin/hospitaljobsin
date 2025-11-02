@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6fd6ff990b275142d4823ec042a7c965>>
+ * @generated SignedSource<<c395d9ca95d451a27e4e1734c017f567>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -57,11 +57,6 @@ return {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "jobType"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "location"
     },
     {
       "defaultValue": null,
@@ -136,11 +131,6 @@ return {
           "kind": "Variable",
           "name": "jobType",
           "variableName": "jobType"
-        },
-        {
-          "kind": "Variable",
-          "name": "location",
-          "variableName": "location"
         },
         {
           "kind": "Variable",
@@ -272,6 +262,6 @@ return {
 };
 })();
 
-(node as any).hash = "b7c086a040cd806a3d0d9ef84c9f3742";
+(node as any).hash = "9e8d4c03e767288034dffd278d587902";
 
 export default node;

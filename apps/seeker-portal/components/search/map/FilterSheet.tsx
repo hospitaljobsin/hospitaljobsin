@@ -43,6 +43,8 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 	const ref = useRef<SheetRef>(null);
 	const [currentSnap, setCurrentSnap] = useState(1);
 	const [sortBy, setSortBy] = useState<string>(filters.sortBy || 'RELEVANCE');
+	// Track the actual total count from the jobs list query
+	const [actualTotalCount, setActualTotalCount] = useState<number>(totalCount);
 
 	// Enhanced snap points based on PRD specifications:
 	// 0 = Hidden (fully closed) - 0
@@ -97,7 +99,7 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 		// No cluster state - show viewport jobs or empty state
 		if (!selectedCluster && currentSnap === 2) {
 			// Check if we have jobs data available and sufficient zoom level
-			if (!bounds || currentZoom < 5 || totalCount === 0) {
+			if (!bounds || currentZoom < 5 || actualTotalCount === 0) {
 				return (
 					<div className='p-6 text-center'>
 						<div className='space-y-3 flex flex-col items-center justify-center'>
@@ -117,7 +119,7 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 						<div className='flex items-center justify-between gap-4'>
 							<div className='flex-1'>
 								<h3 className='text-lg font-medium text-foreground-700'>Jobs in Current Area</h3>
-								<p className='text-sm text-foreground-500'>{totalCount} jobs available</p>
+								<p className='text-sm text-foreground-500'>{actualTotalCount} jobs available</p>
 							</div>
 							<Select
 								size='sm'
@@ -145,6 +147,7 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 								bounds={bounds}
 								filters={updatedFilters}
 								className='w-full'
+								onTotalCountChange={setActualTotalCount}
 							/>
 						) : (
 							<div className='text-center py-8'>
@@ -166,7 +169,7 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 					<div className='flex items-center justify-between gap-4'>
 						<div className='flex-1'>
 							<h3 className='text-lg font-medium text-foreground-700'>Jobs in Current Area</h3>
-							<p className='text-sm text-foreground-500'>{totalCount} jobs available</p>
+							<p className='text-sm text-foreground-500'>{actualTotalCount} jobs available</p>
 						</div>
 						<Select
 							size='sm'
@@ -204,6 +207,7 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 									bounds={bounds}
 									filters={updatedFilters}
 									className='w-full'
+									onTotalCountChange={setActualTotalCount}
 								/>
 							) : bounds && currentZoom < 5 ? (
 								<div className='text-center py-8'>
@@ -220,6 +224,7 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 							bounds={bounds}
 							filters={updatedFilters}
 							className='w-full'
+							onTotalCountChange={setActualTotalCount}
 						/>
 					) : (
 						// Show empty state if no jobs or insufficient zoom

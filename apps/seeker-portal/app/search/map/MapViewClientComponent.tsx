@@ -54,11 +54,16 @@ const MapViewClientComponentFragment = graphql`
 				bounds
 			}
 			totalCount
+			locationViewport {
+				latitude
+				longitude
+				zoomLevel
+			}
 		}
 
 		# Spread the MapHeader fragment
 		...MapHeaderFragment
-		...MapHeaderMobileFragment
+
 
 		# Spread the JobMapView fragment
 		...JobMapViewFragment @arguments(
@@ -182,7 +187,7 @@ export default function MapViewClientComponent({
 		}
 	}, [internalSpeciality, internalLocation, filters]);
 
-	// Map state for clustering logic
+	// Map state for clustering logic - will be updated after we get fragmentData
 	const [currentZoom, setCurrentZoom] = useState<number>(5); // Default zoom level
 	const [currentBounds, setCurrentBounds] = useState<{ swLat: number; swLng: number; neLat: number; neLng: number } | null>(null);
 	const environment = useRelayEnvironment();
@@ -200,6 +205,14 @@ export default function MapViewClientComponent({
 	const data = usePreloadedQuery(PageSearchMapViewQuery, queryRef);
 	const [fragmentData, refetch] = useRefetchableFragment(MapViewClientComponentFragment, data);
 	const [isPending, startTransition] = useTransition();
+
+	// Sync currentZoom with locationViewport when location filter changes
+	useEffect(() => {
+		const viewportZoom = (fragmentData as any)?.jobClusters?.locationViewport?.zoomLevel;
+		if (viewportZoom) {
+			setCurrentZoom(viewportZoom);
+		}
+	}, [internalLocation, (fragmentData as any)?.jobClusters?.locationViewport?.zoomLevel]);
 
 	// Update page title based on current filters
 	useEffect(() => {
@@ -446,6 +459,7 @@ export default function MapViewClientComponent({
 			onZoomChange={handleZoomChange}
 			onFiltersChange={handleFiltersChange as any}
 			isPending={isPending}
+			initialViewport={(fragmentData as any)?.jobClusters?.locationViewport ?? null}
 		/>
 	);
 }

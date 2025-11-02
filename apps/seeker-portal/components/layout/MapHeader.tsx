@@ -21,6 +21,7 @@ import MapHeaderMobile from './MapHeaderMobile';
 
 export const MapHeaderFragment = graphql`
   fragment MapHeaderFragment on Query {
+	...MapHeaderMobileFragment
     viewer {
       ... on Account {
         __typename
@@ -69,9 +70,10 @@ export default function MapHeader({
 	const [localLocation, setLocalLocation] = useState(location || '');
 	const [showMobileScene, setShowMobileScene] = useState(false);
 
-	const handleSearchSubmit = useCallback(() => {
-		onSearchTermChange?.(localSearchTerm.trim() || null);
-	}, [localSearchTerm, onSearchTermChange]);
+	const handleSearchSubmit = (searchTerm: string) => {
+		setLocalSearchTerm(searchTerm);
+		onSearchTermChange?.(searchTerm.trim() || null);
+	};
 
 	const handleLocationSubmit = useCallback(() => {
 		onLocationChange?.(localLocation.trim() || null);
@@ -87,12 +89,21 @@ export default function MapHeader({
 		onLocationChange?.(null);
 	}, [onLocationChange]);
 
+	const handleJobSelect = useCallback(
+		(job: { displayName: string }) => {
+			// When a job is selected from autocomplete, update the value and immediately submit the search
+			setLocalSearchTerm(job.displayName);
+			onSearchTermChange?.(job.displayName.trim() || null);
+		},
+		[onSearchTermChange]
+	);
+
 	return (
 		<>
 			{/* Mobile Header - Single NavContent with full-width search */}
 			<div className='block md:hidden'>
 				<MapHeaderMobile
-					query={query}
+					query={data}
 					searchTerm={searchTerm}
 					location={location}
 					onSearchTermChange={onSearchTermChange}
@@ -130,10 +141,15 @@ export default function MapHeader({
 							<JobSearchAutocomplete
 								value={localSearchTerm}
 								onValueChange={setLocalSearchTerm}
-								onSubmit={handleSearchSubmit}
+								onSubmit={searchTerm => {
+									handleSearchSubmit(searchTerm);
+								}}
 								onClear={handleSearchClear}
+								onJobSelect={handleJobSelect}
 								placeholder='Speciality or Keyword'
 								startContent={<SearchIcon className='text-foreground-600' size={16} />}
+								allowsEmptyCollection
+								allowsCustomValue
 								variant='faded'
 								size='md'
 								fullWidth
@@ -148,6 +164,7 @@ export default function MapHeader({
 							<LocationAutocomplete
 								value={localLocation}
 								onValueChange={setLocalLocation}
+								onSelectionChange={key => setLocalLocation(key?.toString() || '')}
 								onChange={onLocationSelect}
 								onSubmit={handleLocationSubmit}
 								onClear={handleLocationClear}
@@ -156,6 +173,8 @@ export default function MapHeader({
 								variant='faded'
 								size='md'
 								fullWidth
+								allowsEmptyCollection
+								allowsCustomValue
 								inputProps={{
 									classNames: {
 										inputWrapper: 'bg-background/50'
