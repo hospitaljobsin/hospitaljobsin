@@ -154,7 +154,6 @@ export default function JobMapView({
 
 	// New state for enhanced UX
 	const [showFilterModal, setShowFilterModal] = useState(false);
-	const [forceSidebarOpen, setForceSidebarOpen] = useState(false);
 	const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
 
 	// BProgress hook for controlling the top progress bar
@@ -610,12 +609,12 @@ export default function JobMapView({
 			clusterCount: data.jobClusters?.clusters?.length || 0
 		});
 
-		if (!map || currentZoom < 10) {
+		if (!map || currentZoom < 13) {
 			// Clear auto-selection when zoomed out too far
 			console.log('❌ Clearing auto-selection:', {
 				reason: !map ? 'no map' : 'zoom too low',
 				currentZoom,
-				minZoomRequired: 10
+				minZoomRequired: 13
 			});
 			setAutoSelectedCluster(null);
 			return;
@@ -722,7 +721,7 @@ export default function JobMapView({
 							totalCount={jobsData.jobs?.totalCount || 0}
 							bounds={currentBounds}
 							currentZoom={currentZoom}
-							forceOpen={forceSidebarOpen}
+							forceOpen={false}
 							onCollapseChange={setIsSidebarCollapsed}
 						/>
 					</div>
@@ -769,7 +768,7 @@ export default function JobMapView({
 						bounds={currentBounds}
 						currentZoom={currentZoom}
 						filters={filters}
-						forceOpen={forceSidebarOpen}
+						forceOpen={false}
 					/>
 				)}
 
