@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Chip } from '@heroui/react';
+import { Button, Checkbox, CheckboxGroup, Slider } from '@heroui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
@@ -26,8 +26,6 @@ interface MobileFilterSceneProps {
 		maxSalary: number | null;
 	};
 	onFiltersChange?: (filters: Partial<MobileFilterSceneProps['filters']>) => void;
-	quickFilters?: Array<{ label: string; value: string; active: boolean }>;
-	onQuickFilterToggle?: (value: string) => void;
 	resultCount?: number;
 	initialFocus?: 'search' | 'location';
 }
@@ -61,8 +59,6 @@ export default function MobileFilterScene({
 	onLocationSelect: _onLocationSelect,
 	filters,
 	onFiltersChange,
-	quickFilters = [],
-	onQuickFilterToggle,
 	resultCount = 0,
 	initialFocus = 'search'
 }: MobileFilterSceneProps) {
@@ -70,6 +66,16 @@ export default function MobileFilterScene({
 	const [localLocation, setLocalLocation] = useState(location || '');
 	const [activeInput, setActiveInput] = useState<'search' | 'location'>(initialFocus);
 	const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
+
+	// Local filter state - allows changes without triggering URL updates until Apply is clicked
+	const [localFilters, setLocalFilters] = useState(filters);
+
+	// Sync local filters with prop filters when modal opens or filters change externally
+	useEffect(() => {
+		if (isOpen) {
+			setLocalFilters(filters);
+		}
+	}, [isOpen, filters]);
 
 	// Create or get the portal container with maximum z-index
 	useLayoutEffect(() => {
@@ -130,25 +136,6 @@ export default function MobileFilterScene({
 		}
 	}, [isOpen, initialFocus]);
 
-	// Debounced updates
-	useEffect(() => {
-		if (localSearchTerm !== (searchTerm || '')) {
-			const timeoutId = setTimeout(() => {
-				onSearchTermChange?.(localSearchTerm.trim() || null);
-			}, 400);
-			return () => clearTimeout(timeoutId);
-		}
-	}, [localSearchTerm, searchTerm, onSearchTermChange]);
-
-	useEffect(() => {
-		if (localLocation !== (location || '')) {
-			const timeoutId = setTimeout(() => {
-				onLocationChange?.(localLocation.trim() || null);
-			}, 400);
-			return () => clearTimeout(timeoutId);
-		}
-	}, [localLocation, location, onLocationChange]);
-
 	const handleSearchClear = useCallback(() => {
 		setLocalSearchTerm('');
 		onSearchTermChange?.(null);
@@ -172,29 +159,21 @@ export default function MobileFilterScene({
 		// Trigger final updates if needed
 		onSearchTermChange?.(localSearchTerm.trim() || null);
 		onLocationChange?.(localLocation.trim() || null);
+		// Apply all filter changes at once - ensure arrays are properly passed
+		onFiltersChange?.({
+			jobType: localFilters.jobType,
+			workMode: localFilters.workMode,
+			minExperience: localFilters.minExperience,
+			minSalary: localFilters.minSalary,
+			maxSalary: localFilters.maxSalary
+		});
 		onClose();
-	}, [localSearchTerm, localLocation, onSearchTermChange, onLocationChange, onClose]);
+	}, [localSearchTerm, localLocation, localFilters, onSearchTermChange, onLocationChange, onFiltersChange, onClose]);
 
-	// Generate additional filter sections based on current filters
-	const jobTypeFilters = [
-		{ label: 'Full-time', value: 'full_time', active: filters.jobType?.includes('full_time') || false },
-		{ label: 'Part-time', value: 'part_time', active: filters.jobType?.includes('part_time') || false },
-		{ label: 'Contract', value: 'contract', active: filters.jobType?.includes('contract') || false },
-		{ label: 'Temporary', value: 'temporary', active: filters.jobType?.includes('temporary') || false }
-	];
-
-	const workModeFilters = [
-		{ label: 'Remote', value: 'remote', active: filters.workMode?.includes('remote') || false },
-		{ label: 'Hybrid', value: 'hybrid', active: filters.workMode?.includes('hybrid') || false },
-		{ label: 'Office', value: 'office', active: filters.workMode?.includes('office') || false }
-	];
-
-	const experienceFilters = [
-		{ label: 'Entry Level', value: '0', active: filters.minExperience === 0 },
-		{ label: 'Mid Level', value: '2', active: filters.minExperience === 2 },
-		{ label: 'Senior Level', value: '5', active: filters.minExperience === 5 },
-		{ label: 'Executive', value: '10', active: filters.minExperience === 10 }
-	];
+	// Local filter update handler
+	const handleLocalFilterChange = useCallback((updates: Partial<typeof localFilters>) => {
+		setLocalFilters(prev => ({ ...prev, ...updates }));
+	}, []);
 
 	// Use portal to render outside the normal DOM hierarchy to avoid z-index conflicts
 	// Return null on server side (SSR) or if portal container isn't ready
@@ -250,6 +229,13 @@ export default function MobileFilterScene({
 								classNames={{
 									base: 'w-full'
 								}}
+								popoverProps={{
+									classNames: {
+										content: 'z-[2147483648]' // Higher than modal container
+									},
+									placement: 'bottom',
+									shouldBlockScroll: false
+								}}
 							/>
 						</div>
 
@@ -269,6 +255,13 @@ export default function MobileFilterScene({
 								classNames={{
 									base: 'w-full'
 								}}
+								popoverProps={{
+									classNames: {
+										content: 'z-[2147483648]' // Higher than modal container
+									},
+									placement: 'bottom',
+									shouldBlockScroll: false
+								}}
 							/>
 						</div>
 					</div>
@@ -276,93 +269,95 @@ export default function MobileFilterScene({
 					{/* Filters Content */}
 					<div className='flex-1 overflow-y-auto px-4 pb-20'>
 						<div className='space-y-6'>
-							{/* Quick Filters */}
-							{quickFilters.length > 0 && (
-								<div>
-									<h3 className='text-sm font-medium text-foreground-700 mb-3'>Quick Filters</h3>
-									<div className='flex flex-wrap gap-2'>
-										{quickFilters.map(filter => (
-											<Chip
-												key={filter.value}
-												size='md'
-												variant={filter.active ? 'solid' : 'flat'}
-												color={filter.active ? 'primary' : 'default'}
-												className='cursor-pointer transition-all'
-												onClick={() => onQuickFilterToggle?.(filter.value)}
-											>
-												{filter.label}
-											</Chip>
-										))}
-									</div>
-								</div>
-							)}
+							<CheckboxGroup
+								label='Job Type'
+								value={localFilters.jobType as string[]}
+								onValueChange={value => handleLocalFilterChange({ jobType: value as readonly string[] })}
+								className='w-full'
+								classNames={{
+									wrapper: 'flex-row flex-wrap gap-2'
+								}}
+							>
+								<Checkbox value='FULL_TIME'>Full Time</Checkbox>
+								<Checkbox value='PART_TIME'>Part Time</Checkbox>
+								<Checkbox value='INTERNSHIP'>Internship</Checkbox>
+								<Checkbox value='CONTRACT'>Contract</Checkbox>
+								<Checkbox value='LOCUM'>Locum</Checkbox>
+							</CheckboxGroup>
 
-							{/* Job Type */}
-							<div>
-								<h3 className='text-sm font-medium text-foreground-700 mb-3'>Job Type</h3>
-								<div className='flex flex-wrap gap-2'>
-									{jobTypeFilters.map(filter => (
-										<Chip
-											key={filter.value}
-											size='md'
-											variant={filter.active ? 'solid' : 'flat'}
-											color={filter.active ? 'primary' : 'default'}
-											className='cursor-pointer transition-all'
-											onClick={() => {
-												const currentTypes = filters.jobType || [];
-												const newTypes = filter.active ? currentTypes.filter(t => t !== filter.value) : [...currentTypes, filter.value];
-												onFiltersChange?.({ jobType: newTypes });
-											}}
-										>
-											{filter.label}
-										</Chip>
-									))}
-								</div>
+							<CheckboxGroup
+								label='Work Mode'
+								value={localFilters.workMode as string[]}
+								onValueChange={value => handleLocalFilterChange({ workMode: value as readonly string[] })}
+								className='w-full'
+								classNames={{
+									wrapper: 'flex-row flex-wrap gap-2'
+								}}
+							>
+								<Checkbox value='REMOTE'>Remote</Checkbox>
+								<Checkbox value='HYBRID'>Hybrid</Checkbox>
+								<Checkbox value='OFFICE'>Office</Checkbox>
+							</CheckboxGroup>
+
+							<div className='w-full flex flex-col gap-6'>
+								<Slider
+									label='Experience'
+									formatOptions={{
+										style: 'unit',
+										unit: 'year'
+									}}
+									minValue={0}
+									maxValue={30}
+									step={1}
+									value={localFilters.minExperience ?? 0}
+									onChange={val => {
+										const v = Array.isArray(val) ? val[0] : val;
+										handleLocalFilterChange({ minExperience: v });
+									}}
+									showTooltip
+									className='w-full'
+								/>
+								<Button
+									size='sm'
+									variant='ghost'
+									className='w-full min-h-10 text-sm'
+									onPress={() => handleLocalFilterChange({ minExperience: null })}
+									isDisabled={localFilters.minExperience === null}
+								>
+									Clear
+								</Button>
 							</div>
 
-							{/* Work Mode */}
-							<div>
-								<h3 className='text-sm font-medium text-foreground-700 mb-3'>Work Mode</h3>
-								<div className='flex flex-wrap gap-2'>
-									{workModeFilters.map(filter => (
-										<Chip
-											key={filter.value}
-											size='md'
-											variant={filter.active ? 'solid' : 'flat'}
-											color={filter.active ? 'primary' : 'default'}
-											className='cursor-pointer transition-all'
-											onClick={() => {
-												const currentModes = filters.workMode || [];
-												const newModes = filter.active ? currentModes.filter(m => m !== filter.value) : [...currentModes, filter.value];
-												onFiltersChange?.({ workMode: newModes });
-											}}
-										>
-											{filter.label}
-										</Chip>
-									))}
-								</div>
-							</div>
-
-							{/* Experience Level */}
-							<div>
-								<h3 className='text-sm font-medium text-foreground-700 mb-3'>Experience Level</h3>
-								<div className='flex flex-wrap gap-2'>
-									{experienceFilters.map(filter => (
-										<Chip
-											key={filter.value}
-											size='md'
-											variant={filter.active ? 'solid' : 'flat'}
-											color={filter.active ? 'primary' : 'default'}
-											className='cursor-pointer transition-all'
-											onClick={() => {
-												const newExperience = filter.active ? null : Number.parseInt(filter.value, 10);
-												onFiltersChange?.({ minExperience: newExperience });
-											}}
-										>
-											{filter.label}
-										</Chip>
-									))}
-								</div>
+							<div className='w-full flex flex-col gap-6'>
+								<Slider
+									label='Salary'
+									minValue={0}
+									maxValue={500000}
+									formatOptions={{
+										style: 'currency',
+										currency: 'INR'
+									}}
+									step={1000}
+									value={[localFilters.minSalary ?? 0, localFilters.maxSalary ?? 500000]}
+									onChange={val => {
+										const [min, max] = Array.isArray(val) ? val : [val, val];
+										handleLocalFilterChange({
+											minSalary: min,
+											maxSalary: max
+										});
+									}}
+									showTooltip
+									className='w-full'
+								/>
+								<Button
+									size='sm'
+									variant='ghost'
+									className='w-full min-h-10 text-sm'
+									onPress={() => handleLocalFilterChange({ minSalary: null, maxSalary: null })}
+									isDisabled={localFilters.minSalary === null && localFilters.maxSalary === null}
+								>
+									Clear
+								</Button>
 							</div>
 						</div>
 					</div>
@@ -370,7 +365,6 @@ export default function MobileFilterScene({
 					{/* Bottom Action Bar */}
 					<div className='sticky bottom-0 bg-background border-t border-divider p-4 safe-area-inset-bottom'>
 						<div className='flex items-center justify-between'>
-							<div className='text-sm text-foreground-500'>{resultCount > 0 ? `${resultCount} jobs found` : 'No jobs found'}</div>
 							<Button color='primary' size='lg' onPress={handleApply} className='px-8'>
 								Apply Filters
 							</Button>

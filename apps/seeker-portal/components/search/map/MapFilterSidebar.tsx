@@ -129,7 +129,7 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 			{/* Main Sidebar Content */}
 			<div
 				className={`h-full flex flex-col gap-6 p-4 bg-background transition-all duration-300 ease-in-out border-r border-divider ${
-					isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-md opacity-100'
+					isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-lg opacity-100'
 				}`}
 			>
 				{/* Header with Job Count */}

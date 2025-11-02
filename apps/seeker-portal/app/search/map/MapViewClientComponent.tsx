@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
 import { useCallback, useEffect, useState, useTransition } from 'react';
 import { graphql, usePreloadedQuery, useRefetchableFragment, useRelayEnvironment } from 'react-relay';
@@ -89,6 +90,8 @@ export default function MapViewClientComponent({
 	location?: string | undefined;
 	searchTerm?: string | undefined;
 }) {
+	const router = useRouter();
+
 	// URL state management with nuqs
 	const [filters, setFilters] = useQueryStates(
 		{
@@ -140,52 +143,6 @@ export default function MapViewClientComponent({
 	useEffect(() => {
 		setInternalLocation(location || null);
 	}, [location]);
-
-	// Update URL when searchTerm or location changes (shallow update without page reload)
-	useEffect(() => {
-		// Guard: Don't run if filters aren't initialized yet
-		if (!filters) return;
-
-		// Build the new URL based on current searchTerm and location
-		const baseUrl = links.searchMap(internalLocation || undefined, internalSpeciality || undefined);
-
-		// Build query params from current filters
-		const params = new URLSearchParams();
-
-		if (filters.minExperience !== null) {
-			params.set('minExperience', String(filters.minExperience));
-		}
-		if (filters.minSalary !== null) {
-			params.set('minSalary', String(filters.minSalary));
-		}
-		if (filters.maxSalary !== null) {
-			params.set('maxSalary', String(filters.maxSalary));
-		}
-		if (filters.proximityKm !== FILTER_DEFAULTS.proximityKm) {
-			params.set('proximityKm', String(filters.proximityKm));
-		}
-		if (filters.workMode.length > 0 && JSON.stringify(filters.workMode) !== JSON.stringify(FILTER_DEFAULTS.workMode)) {
-			for (const mode of filters.workMode) {
-				params.append('workMode', mode);
-			}
-		}
-		if (filters.jobType.length > 0 && JSON.stringify(filters.jobType) !== JSON.stringify(FILTER_DEFAULTS.jobType)) {
-			for (const type of filters.jobType) {
-				params.append('jobType', type);
-			}
-		}
-		if (filters.sortBy !== 'RELEVANCE') {
-			params.set('sortBy', filters.sortBy);
-		}
-
-		const queryString = params.toString();
-		const newUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
-
-		// Only update if the URL actually changed
-		if (newUrl !== window.location.pathname + window.location.search) {
-			window.history.pushState(null, '', newUrl);
-		}
-	}, [internalSpeciality, internalLocation, filters]);
 
 	// Map state for clustering logic - will be updated after we get fragmentData
 	const [currentZoom, setCurrentZoom] = useState<number>(5); // Default zoom level
@@ -359,52 +316,91 @@ export default function MapViewClientComponent({
 			const searchTermChanged = newFilters.searchTerm !== undefined && newFilters.searchTerm !== internalSpeciality;
 			const locationChanged = newFilters.location !== undefined && newFilters.location !== internalLocation;
 
-			// If searchTerm (speciality) changed, update internal state
-			if (searchTermChanged) {
-				setInternalSpeciality(newFilters.searchTerm ?? null);
+			// If searchTerm or location changed, navigate to new URL with current filters
+			if (searchTermChanged || locationChanged) {
+				const newSearchTerm = searchTermChanged ? newFilters.searchTerm : internalSpeciality;
+				const newLocation = locationChanged ? newFilters.location : internalLocation;
+
+				// Build the new URL with current filter query params
+				const baseUrl = links.searchMap(newLocation || undefined, newSearchTerm || undefined);
+				const params = new URLSearchParams();
+
+				// Add current filters to the new URL
+				if (filters.minExperience !== null) {
+					params.set('minExperience', String(filters.minExperience));
+				}
+				if (filters.minSalary !== null) {
+					params.set('minSalary', String(filters.minSalary));
+				}
+				if (filters.maxSalary !== null) {
+					params.set('maxSalary', String(filters.maxSalary));
+				}
+				if (filters.proximityKm !== FILTER_DEFAULTS.proximityKm) {
+					params.set('proximityKm', String(filters.proximityKm));
+				}
+				if (filters.workMode.length > 0 && JSON.stringify(filters.workMode) !== JSON.stringify(FILTER_DEFAULTS.workMode)) {
+					for (const mode of filters.workMode) {
+						params.append('workMode', mode);
+					}
+				}
+				if (filters.jobType.length > 0 && JSON.stringify(filters.jobType) !== JSON.stringify(FILTER_DEFAULTS.jobType)) {
+					for (const type of filters.jobType) {
+						params.append('jobType', type);
+					}
+				}
+				if (filters.sortBy !== 'RELEVANCE') {
+					params.set('sortBy', filters.sortBy);
+				}
+
+				const queryString = params.toString();
+				const newUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+
+				// Navigate to new URL
+				router.push(newUrl);
+				return;
 			}
 
-			// If location changed, update internal location state
-			if (locationChanged) {
-				setInternalLocation(newFilters.location ?? null);
-			}
-
-			// Update URL state without page reload (for all filter changes except location and searchTerm)
-			// Remove location and searchTerm from newFilters before passing to setFilters
+			// For other filter changes (not location/searchTerm), update URL state with nuqs
 			const { location: _, searchTerm: __, ...filtersWithoutLocationAndSearchTerm } = newFilters;
 			setFilters(filtersWithoutLocationAndSearchTerm);
 
-			// Note: We don't refetch immediately for searchTerm or location changes - the debounced values
-			// will trigger a refetch via the useEffect below
-			// For other filter changes, we refetch immediately
-			if (!searchTermChanged && !locationChanged) {
-				// Trigger refetch with new filters including current bounds and zoom level for job clusters
-				startTransition(() => {
-					refetch(
-						{
-							// Include bounds and zoom level for job clusters
-							bounds: currentBounds || undefined,
-							inputZoomLevel: currentZoom,
-							// Include all filter parameters - use debounced values for searchTerm and location
-							inputSearchTerm: debouncedSpeciality || undefined,
-							inputLocation: debouncedLocation || undefined,
-							inputMinExperience: (newFilters.minExperience ?? filters.minExperience) || undefined,
-							inputMinSalary: (newFilters.minSalary ?? filters.minSalary) || undefined,
-							inputMaxSalary: (newFilters.maxSalary ?? filters.maxSalary) || undefined,
-							inputProximityKm: newFilters.proximityKm ?? filters.proximityKm,
-							inputWorkMode: (newFilters.workMode ?? filters.workMode) as unknown as readonly JobWorkModeFilter[],
-							inputJobType: (newFilters.jobType ?? filters.jobType) as unknown as readonly JobTypeFilter[],
-							inputSortBy: (newFilters.sortBy ?? filters.sortBy) as JobSearchSortBy,
-							first: 100
-						},
-						{
-							fetchPolicy: 'network-only' // Use network-only to ensure fresh data with new filters
-						}
-					);
-				});
-			}
+			// Trigger refetch with new filters including current bounds and zoom level for job clusters
+			startTransition(() => {
+				refetch(
+					{
+						// Include bounds and zoom level for job clusters
+						bounds: currentBounds || undefined,
+						inputZoomLevel: currentZoom,
+						// Include all filter parameters - use debounced values for searchTerm and location
+						inputSearchTerm: debouncedSpeciality || undefined,
+						inputLocation: debouncedLocation || undefined,
+						inputMinExperience: (newFilters.minExperience ?? filters.minExperience) || undefined,
+						inputMinSalary: (newFilters.minSalary ?? filters.minSalary) || undefined,
+						inputMaxSalary: (newFilters.maxSalary ?? filters.maxSalary) || undefined,
+						inputProximityKm: newFilters.proximityKm ?? filters.proximityKm,
+						inputWorkMode: (newFilters.workMode ?? filters.workMode) as unknown as readonly JobWorkModeFilter[],
+						inputJobType: (newFilters.jobType ?? filters.jobType) as unknown as readonly JobTypeFilter[],
+						inputSortBy: (newFilters.sortBy ?? filters.sortBy) as JobSearchSortBy,
+						first: 100
+					},
+					{
+						fetchPolicy: 'network-only' // Use network-only to ensure fresh data with new filters
+					}
+				);
+			});
 		},
-		[refetch, filters, setFilters, currentBounds, currentZoom, debouncedSpeciality, debouncedLocation, internalSpeciality, internalLocation]
+		[
+			refetch,
+			filters,
+			setFilters,
+			currentBounds,
+			currentZoom,
+			debouncedSpeciality,
+			debouncedLocation,
+			internalSpeciality,
+			internalLocation,
+			router
+		]
 	);
 
 	// Refetch when debouncedSpeciality or debouncedLocation changes

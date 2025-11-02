@@ -25,10 +25,12 @@ interface FilterModalProps {
 export default function FilterModal({ isOpen, onClose, filters, onFiltersChange, isPending = false }: FilterModalProps) {
 	const [localFilters, setLocalFilters] = useState(filters);
 
-	// Sync local filters with props
+	// Sync local filters with props only when modal opens
 	useEffect(() => {
-		setLocalFilters(filters);
-	}, [filters]);
+		if (isOpen) {
+			setLocalFilters(filters);
+		}
+	}, [isOpen, filters]);
 
 	// Local filter updates
 	const handleLocalFilterChange = useCallback((updates: Partial<typeof filters>) => {
@@ -37,7 +39,14 @@ export default function FilterModal({ isOpen, onClose, filters, onFiltersChange,
 
 	// Apply filters
 	const handleApply = useCallback(() => {
-		onFiltersChange?.(localFilters);
+		// Apply all filter changes - ensure arrays are properly passed
+		onFiltersChange?.({
+			jobType: localFilters.jobType,
+			workMode: localFilters.workMode,
+			minExperience: localFilters.minExperience,
+			minSalary: localFilters.minSalary,
+			maxSalary: localFilters.maxSalary
+		});
 		onClose();
 	}, [localFilters, onFiltersChange, onClose]);
 
