@@ -178,6 +178,7 @@ export default function LocationAutocomplete({ value, onChange, onClear, onValue
 			e.preventDefault();
 			setJustSubmitted(true);
 			onSubmit?.(value);
+			handleInputChange(value);
 
 			// Blur the input to remove focus
 			inputRef.current?.blur();

@@ -174,7 +174,6 @@ export default function MapHeader({
 								size='md'
 								fullWidth
 								allowsEmptyCollection
-								allowsCustomValue
 								inputProps={{
 									classNames: {
 										inputWrapper: 'bg-background/50'

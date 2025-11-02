@@ -164,12 +164,15 @@ export default function JobSearchAutocomplete({
 				const selectedJob = suggestions.find(job => job.jobId === selectedKey);
 				if (selectedJob) {
 					onSubmit?.(selectedJob.displayName);
+					setInputValue(selectedJob.displayName);
 				} else {
 					onSubmit?.(inputValue);
+					setInputValue(inputValue);
 				}
 			} else {
 				// No selection, use the typed value
 				onSubmit?.(inputValue);
+				setInputValue(inputValue);
 			}
 
 			// Blur the input to remove focus and close menu
