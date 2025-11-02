@@ -313,9 +313,7 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 			</Sheet.Container>
 
 			{/* Conditional Backdrop - only for full screen */}
-			{currentSnap >= 4 && (
-				<Sheet.Backdrop onTap={() => handleSnapTo(selectedCluster ? 3 : 2)} className='!bg-black/40' style={{ zIndex: 40 }} />
-			)}
+			{currentSnap >= 4 && <Sheet.Backdrop onTap={() => handleSnapTo(selectedCluster ? 3 : 2)} className='!bg-black/40' />}
 		</Sheet>
 	);
 }
