@@ -103,6 +103,11 @@ export default function JobHexagonClusters({ clusters, onClusterClick, onCluster
 						}, 300);
 					}
 				}
+			} else {
+				// Marker doesn't exist but should be kept - add it to the toAdd list
+				// This handles the case where a marker was removed but the cluster reappeared
+				console.log(`⚠️ Cluster ${cluster.h3Index} marked as 'kept' but marker doesn't exist - adding it`);
+				toAdd.push(cluster);
 			}
 		});
 

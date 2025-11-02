@@ -206,6 +206,18 @@ export default function MapViewClientComponent({
 	const [fragmentData, refetch] = useRefetchableFragment(MapViewClientComponentFragment, data);
 	const [isPending, startTransition] = useTransition();
 
+	// Debug: Log when fragment data changes
+	useEffect(() => {
+		const clusterCount = (fragmentData as any)?.jobClusters?.clusters?.length || 0;
+		const totalCount = (fragmentData as any)?.jobClusters?.totalCount || 0;
+		console.log('📊 Fragment data updated:', {
+			clusterCount,
+			totalCount,
+			isPending,
+			currentZoom
+		});
+	}, [fragmentData, isPending, currentZoom]);
+
 	// Sync currentZoom with locationViewport when location filter changes
 	useEffect(() => {
 		const viewportZoom = (fragmentData as any)?.jobClusters?.locationViewport?.zoomLevel;
@@ -254,8 +266,11 @@ export default function MapViewClientComponent({
 
 	// Callback to handle bounds change and refetch
 	const handleBoundsChange = useCallback(
-		(bounds: { swLat: number; swLng: number; neLat: number; neLng: number }) => {
+		(bounds: { swLat: number; swLng: number; neLat: number; neLng: number }, zoom?: number) => {
 			setCurrentBounds(bounds);
+
+			// Use provided zoom if available, otherwise fall back to currentZoom from state
+			const zoomToUse = zoom !== undefined ? zoom : currentZoom;
 
 			// Calculate area for debugging
 			const latDiff = bounds.neLat - bounds.swLat;
@@ -269,12 +284,21 @@ export default function MapViewClientComponent({
 					neLat: bounds.neLat,
 					neLng: bounds.neLng
 				},
-				zoomLevel: currentZoom,
+				zoomLevel: zoomToUse,
+				providedZoom: zoom,
+				stateZoom: currentZoom,
 				calculated: {
 					latDiff: latDiff.toFixed(6),
 					lngDiff: lngDiff.toFixed(6),
 					areaSqDeg: areaSqDeg.toFixed(6)
 				}
+			});
+
+			console.log('🔄 Triggering refetch with params:', {
+				inputZoomLevel: zoomToUse,
+				boundsArea: areaSqDeg.toFixed(6),
+				fetchPolicy: 'network-only',
+				timestamp: Date.now()
 			});
 
 			startTransition(() => {
@@ -286,7 +310,7 @@ export default function MapViewClientComponent({
 							neLat: bounds.neLat,
 							neLng: bounds.neLng
 						},
-						inputZoomLevel: currentZoom, // Include zoom level for clustering
+						inputZoomLevel: zoomToUse, // Use the correct zoom level
 						// Include current filters in refetch
 						inputSearchTerm: debouncedSpeciality || undefined,
 						inputLocation: debouncedLocation || undefined,
@@ -300,64 +324,35 @@ export default function MapViewClientComponent({
 						first: 100
 					},
 					{
-						fetchPolicy: 'store-or-network'
+						fetchPolicy: 'network-only', // Always fetch fresh data to prevent stale cache issues
+						onComplete: error => {
+							if (error) {
+								console.error('❌ Refetch failed:', error);
+							} else {
+								console.log('✅ Refetch completed successfully for zoom:', zoomToUse);
+							}
+						}
 					}
 				);
 			});
 		},
 		[refetch, filters, currentZoom, setCurrentBounds, debouncedSpeciality, debouncedLocation]
 	); // Callback to handle zoom changes
+	// Callback to handle zoom changes
+	// Note: This only updates zoom state. The actual refetch happens in handleBoundsChange
+	// which is called by the zoom handler after updating zoom state.
 	const handleZoomChange = useCallback(
 		(zoom: number) => {
 			setCurrentZoom(zoom);
 
-			console.log('🔍 Frontend: Zoom changed:', {
+			console.log('� Frontend: Zoom changed:', {
 				newZoom: zoom,
 				oldZoom: currentZoom,
 				hasBounds: !!currentBounds,
 				bounds: currentBounds
 			});
-
-			// Refetch with new zoom level if bounds are available
-			if (currentBounds) {
-				const latDiff = currentBounds.neLat - currentBounds.swLat;
-				const lngDiff = currentBounds.neLng - currentBounds.swLng;
-				const areaSqDeg = latDiff * lngDiff;
-
-				console.log('🗺️ Frontend: Zoom change refetch:', {
-					zoomLevel: zoom,
-					bounds: currentBounds,
-					calculated: {
-						latDiff: latDiff.toFixed(6),
-						lngDiff: lngDiff.toFixed(6),
-						areaSqDeg: areaSqDeg.toFixed(6)
-					}
-				});
-
-				startTransition(() => {
-					refetch(
-						{
-							bounds: currentBounds,
-							inputZoomLevel: zoom,
-							inputSearchTerm: debouncedSpeciality || undefined,
-							inputLocation: debouncedLocation || undefined,
-							inputMinExperience: filters?.minExperience || undefined,
-							inputMinSalary: filters?.minSalary || undefined,
-							inputMaxSalary: filters?.maxSalary || undefined,
-							inputProximityKm: filters?.proximityKm ?? FILTER_DEFAULTS.proximityKm,
-							inputWorkMode: (filters?.workMode ?? FILTER_DEFAULTS.workMode) as unknown as readonly JobWorkModeFilter[],
-							inputJobType: (filters?.jobType ?? FILTER_DEFAULTS.jobType) as unknown as readonly JobTypeFilter[],
-							inputSortBy: (filters?.sortBy ?? 'RELEVANCE') as JobSearchSortBy,
-							first: 100
-						},
-						{
-							fetchPolicy: 'store-or-network'
-						}
-					);
-				});
-			}
 		},
-		[refetch, filters, currentBounds, setCurrentZoom, debouncedSpeciality, debouncedLocation]
+		[currentZoom, currentBounds]
 	); // Callback to handle filter changes
 	const handleFiltersChange = useCallback(
 		(newFilters: Partial<typeof filters> & { searchTerm?: string | null; location?: string | null }) => {

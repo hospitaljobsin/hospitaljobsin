@@ -110,7 +110,7 @@ interface JobMapViewProps {
 		sortBy: string;
 	};
 	currentZoom?: number; // Current map zoom level for clustering
-	onBoundsChange?: (bounds: { swLat: number; swLng: number; neLat: number; neLng: number }) => void;
+	onBoundsChange?: (bounds: { swLat: number; swLng: number; neLat: number; neLng: number }, zoom?: number) => void;
 	onZoomChange?: (zoom: number) => void; // Callback when zoom level changes
 	onFiltersChange?: (filters: Partial<JobMapViewProps['filters']>) => void;
 	onLocationSelect?: (location: SearchLocation) => void;
@@ -150,6 +150,7 @@ export default function JobMapView({
 	const [isMapDataFetching, setIsMapDataFetching] = useState(false);
 	const [isUserInteracting, setIsUserInteracting] = useState(false);
 	const [isPendingMapOperation, setIsPendingMapOperation] = useState(false); // Bridge state for debounced operations
+	const [lastZoomEndTime, setLastZoomEndTime] = useState<number>(0); // Track when last zoom ended
 
 	// New state for enhanced UX
 	const [showFilterModal, setShowFilterModal] = useState(false);
@@ -278,7 +279,14 @@ export default function JobMapView({
 
 		const handleZoomEnd = () => {
 			const zoom = map.getZoom();
-			onZoomChange(zoom);
+
+			// Mark that a zoom just completed to prevent move handler from interfering
+			setLastZoomEndTime(Date.now());
+
+			// Update zoom state in parent FIRST
+			if (onZoomChange) {
+				onZoomChange(zoom);
+			}
 
 			// Set pending operation to bridge any gap until data fetching starts
 			setIsPendingMapOperation(true);
@@ -317,10 +325,11 @@ export default function JobMapView({
 			setCurrentBounds(newBounds);
 
 			// Clear pending and start actual data fetching
+			// Pass zoom level to onBoundsChange to ensure correct zoom is used in refetch
 			setIsPendingMapOperation(false);
 			if (onBoundsChange) {
 				setIsMapDataFetching(true);
-				onBoundsChange(newBounds);
+				onBoundsChange(newBounds, zoom); // Pass zoom as second parameter
 			}
 		};
 
@@ -417,6 +426,18 @@ export default function JobMapView({
 			// Debounce bounds changes (800ms) - increased to prevent overwhelming backend
 			clearTimeout(timeoutId);
 			timeoutId = setTimeout(() => {
+				// Skip move handler if a zoom just completed (within last 1 second)
+				// This prevents the move handler from interfering with zoom-triggered refetches
+				const timeSinceLastZoom = Date.now() - lastZoomEndTime;
+				if (timeSinceLastZoom < 1000) {
+					console.log('⏭️ Frontend: Skipping move handler - zoom just completed', {
+						timeSinceLastZoom,
+						lastZoomEndTime
+					});
+					setIsPendingMapOperation(false);
+					return;
+				}
+
 				const bounds = map.getBounds();
 				const sw = bounds.getSouthWest();
 				const ne = bounds.getNorthEast();
@@ -482,7 +503,7 @@ export default function JobMapView({
 			// Clean up pending operation on unmount
 			setIsPendingMapOperation(false);
 		};
-	}, [map, onBoundsChange, lastBounds]);
+	}, [map, onBoundsChange, lastBounds, lastZoomEndTime]);
 
 	// Handle cluster click - zoom into cluster center and trigger sidebar population
 	const handleClusterClick = useCallback(
