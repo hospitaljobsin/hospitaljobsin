@@ -48,6 +48,17 @@ export default function LandingHeader({ rootQuery }: { rootQuery: LandingHeaderF
 				</NavbarBrand>
 
 				<NavbarContent justify='end'>
+					<NavbarItem className='hidden md:block'>
+						<Link
+							href={links.faq}
+							target='_blank'
+							rel='noopener noreferrer'
+							color='foreground'
+							className={'text-primary-foreground flex items-center gap-2'}
+						>
+							FAQ
+						</Link>
+					</NavbarItem>
 					{data.viewer.__typename === 'Account' ? (
 						<>
 							<NavbarItem className='hidden md:block'>
