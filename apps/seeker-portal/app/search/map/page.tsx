@@ -39,9 +39,9 @@ const PageSearchMapViewQuery = graphql`
 `;
 
 export const metadata: Metadata = {
-	title: 'Healthcare Jobs - Map View',
+	title: 'Search Hospital Jobs by Location - Map-Based Healthcare Search',
 	description:
-		"Explore verified healthcare jobs for doctors, nurses, pharmacists, technicians & healthcare professionals on an interactive map. Apply directly to top hospitals, clinics & medical facilities across India's leading healthcare networks.",
+		'Looking for hospital jobs near you? Use our smart job map to explore real-time healthcare openings by location and apply quickly for roles that fit your expertise.',
 	robots: {
 		index: true,
 		follow: true

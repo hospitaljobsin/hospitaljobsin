@@ -107,7 +107,7 @@ export async function generateMetadata({
 	const jobCount = data.jobs.totalCount;
 	const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT; // Only show count if we have 50+ jobs
 
-	const title = hasReasonableCount ? `${jobCount} Healthcare Jobs` : 'Healthcare Jobs';
+	const title = hasReasonableCount ? `Search ${jobCount} Healthcare Jobs` : 'Search Healthcare Jobs';
 	let description = hasReasonableCount
 		? `Discover ${jobCount} verified healthcare jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
 		: 'Discover verified healthcare jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.';
