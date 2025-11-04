@@ -26,6 +26,9 @@ export default function Footer() {
 					</div>
 
 					<div className='w-full flex items-center gap-4 justify-end'>
+						<Link href={links.faq} color='foreground' size='sm' className='text-foreground-500 text-xs' isExternal>
+							FAQ
+						</Link>
 						<Link href={links.terms} color='foreground' size='sm' className='text-foreground-500 text-xs' isExternal>
 							Terms
 						</Link>
