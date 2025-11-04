@@ -128,27 +128,23 @@ export async function generateMetadata({
 	const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT;
 
 	let title = '';
-	let description = hasReasonableCount
-		? `Discover ${jobCount} verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
-		: 'Discover verified medical jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.';
+	let description = '';
 
 	if (speciality) {
 		// Enhance search term titles with medical context
 		if (hasReasonableCount) {
-			title = `${jobCount} ${speciality} Jobs`;
-			description = `Explore ${jobCount} ${speciality} positions on an interactive map. Find opportunities at leading healthcare institutions as a ${speciality.toLowerCase()} with competitive salaries & benefits.`;
+			title = `Search ${jobCount} ${speciality} Jobs`;
+			description = `Discover ${jobCount} ${speciality} jobs in ${location} through our map-based search. See live openings near you and apply directly to top hospitals.`;
 		} else {
-			title = `${speciality} Jobs`;
-			description = `Explore ${speciality} positions on an interactive map. Find opportunities at leading healthcare institutions as a ${speciality.toLowerCase()} with competitive salaries & benefits.`;
+			title = `Search ${speciality} Jobs`;
+			description = `Discover ${speciality} jobs in ${location} through our map-based search. See live openings near you and apply directly to top hospitals.`;
 		}
 	}
 
 	if (location) {
 		title += ` in ${location} - Map View`;
-		description += ` Browse medical career opportunities in ${location}'s premier hospitals, specialty clinics & healthcare centers.`;
 	} else {
 		title += ' - Map View';
-		description += " Browse nationwide medical career opportunities across India's leading healthcare networks.";
 	}
 
 	return {

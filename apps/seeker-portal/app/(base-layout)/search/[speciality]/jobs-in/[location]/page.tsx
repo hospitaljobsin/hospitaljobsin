@@ -131,10 +131,10 @@ export async function generateMetadata({
 	if (speciality) {
 		// Enhance search term titles with medical context
 		if (hasReasonableCount) {
-			title = `${jobCount} ${speciality} Jobs`;
+			title = `Search ${jobCount} ${speciality} Jobs`;
 			description = `Find ${jobCount} ${speciality} positions at leading healthcare institutions. Join top medical facilities as a ${speciality.toLowerCase()} with competitive salaries & benefits.`;
 		} else {
-			title = `${speciality} Jobs`;
+			title = `Search ${speciality} Jobs`;
 			description = `Find ${speciality} positions at leading healthcare institutions. Join top medical facilities as a ${speciality.toLowerCase()} with competitive salaries & benefits.`;
 		}
 	}

@@ -113,18 +113,11 @@ export async function generateMetadata({
 	const jobCount = data.jobs.totalCount;
 	const hasReasonableCount = jobCount && jobCount >= REASONABLE_JOB_COUNT;
 
-	let title = hasReasonableCount ? `${jobCount} Healthcare Jobs` : 'Healthcare Jobs';
-	let description = hasReasonableCount
-		? `Discover ${jobCount} verified healthcare jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.`
-		: 'Discover verified healthcare jobs for doctors, nurses, pharmacists, technicians & healthcare professionals. Apply directly to top hospitals, clinics & medical facilities.';
+	let title = hasReasonableCount ? `Search ${jobCount} Healthcare Jobs` : 'Search Healthcare Jobs';
+	let description = '';
 
-	if (location) {
-		title += ` in ${location} - Map View`;
-		description += ` Explore healthcare career opportunities in ${location}'s premier hospitals, specialty clinics & healthcare centers on an interactive map.`;
-	} else {
-		title += ' - Map View';
-		description += " Browse nationwide healthcare career opportunities across India's leading healthcare networks on an interactive map.";
-	}
+	title += ` in ${location} - Map View`;
+	description += ` Explore hospital jobs across ${location} using our interactive job map. View real-time openings near you and apply directly to nearby hospitals.`;
 
 	return {
 		title,
