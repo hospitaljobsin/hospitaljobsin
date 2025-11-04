@@ -242,7 +242,7 @@ export default function SearchJobsList({
 						href={pathName.replace('/search', '/search/map') + searchParams.toString()}
 						className='text-sm text-primary hover:text-primary/80 underline underline-offset-2 whitespace-nowrap'
 					>
-						View in map
+						View on map
 					</a>
 				</div>
 				<div className='flex gap-2 w-full sm:max-w-xs'>
