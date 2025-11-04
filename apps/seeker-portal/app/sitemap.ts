@@ -100,6 +100,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		}
 		// add more static pages here
 	];
+	if (env.NEXT_PUBLIC_ENVIRONMENT !== 'production') {
+		// only create sitemap for static pages in non-production environments
+		return staticPages;
+	}
 	const jobs = await genJobsSitemap();
 	const organizations = await genOrganizationsSitemap();
 
