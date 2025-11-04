@@ -10,7 +10,7 @@ import type PageSearchMapViewQueryNode from '@/__generated__/pageSearchMapViewQu
 import type { pageSearchMapViewQuery } from '@/__generated__/pageSearchMapViewQuery.graphql';
 import PageSearchMapViewQuery from '@/__generated__/pageSearchMapViewQuery.graphql';
 import type { SearchLocation } from '@/components/forms/LocationAutocomplete';
-import { FILTER_DEFAULTS } from '@/lib/constants';
+import { FILTER_DEFAULTS, REASONABLE_JOB_COUNT } from '@/lib/constants';
 import links from '@/lib/links';
 import type { SerializablePreloadedQuery } from '@/lib/relay/serializablePreloadedQuery';
 import useSerializablePreloadedQuery from '@/lib/relay/useSerializablePreloadedQuery';
@@ -187,37 +187,48 @@ export default function MapViewClientComponent({
 	// Update page title based on current filters
 	useEffect(() => {
 		const totalCount = (fragmentData as any)?.jobClusters?.totalCount || 0;
+		const hasReasonableCount = totalCount >= REASONABLE_JOB_COUNT;
 
-		// Build title parts
-		const parts: string[] = [];
+		let title = '';
 
-		if (internalSpeciality) {
-			// Capitalize first letter of each word
+		if (internalSpeciality && internalLocation) {
+			// Both speciality and location
 			const formattedSpeciality = internalSpeciality
 				.split(' ')
 				.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
 				.join(' ');
-			parts.push(`${formattedSpeciality} Jobs`);
-		} else {
-			parts.push('Jobs');
-		}
-
-		if (internalLocation) {
-			// Capitalize first letter of each word
 			const formattedLocation = internalLocation
 				.split(' ')
 				.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
 				.join(' ');
-			parts.push(`in ${formattedLocation}`);
-		}
 
-		// Add count if available
-		if (totalCount > 0) {
-			parts.push(`(${totalCount.toLocaleString()})`);
-		}
+			title = hasReasonableCount
+				? `Search ${totalCount.toLocaleString()} ${formattedSpeciality} Jobs in ${formattedLocation} - Map View`
+				: `Search ${formattedSpeciality} Jobs in ${formattedLocation} - Map View`;
+		} else if (internalSpeciality) {
+			// Speciality only
+			const formattedSpeciality = internalSpeciality
+				.split(' ')
+				.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+				.join(' ');
 
-		// Add "Map View" suffix and site name
-		const title = parts.length > 0 ? `${parts.join(' ')} - Map View | Hospital Jobs` : 'Job Search - Map View | Hospital Jobs';
+			title = hasReasonableCount
+				? `Search ${totalCount.toLocaleString()} ${formattedSpeciality} Jobs by Location - Map Based Healthcare Search`
+				: `Search ${formattedSpeciality} Jobs by Location - Map Based Healthcare Search`;
+		} else if (internalLocation) {
+			// Location only
+			const formattedLocation = internalLocation
+				.split(' ')
+				.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+				.join(' ');
+
+			title = hasReasonableCount
+				? `Search ${totalCount.toLocaleString()} Healthcare Jobs in ${formattedLocation} - Map View`
+				: `Search Healthcare Jobs in ${formattedLocation} - Map View`;
+		} else {
+			// Neither (base map page)
+			title = 'Search Hospital Jobs by Location - Map-Based Healthcare Search';
+		}
 
 		document.title = title;
 	}, [internalSpeciality, internalLocation, fragmentData]);

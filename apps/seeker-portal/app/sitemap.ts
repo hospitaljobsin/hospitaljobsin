@@ -97,6 +97,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 			lastModified: new Date(),
 			changeFrequency: 'daily',
 			priority: 1.0
+		},
+		{
+			url: `${env.NEXT_PUBLIC_URL}${links.faq}`,
+			lastModified: new Date(),
+			changeFrequency: 'monthly',
+			priority: 0.6
 		}
 		// add more static pages here
 	];
