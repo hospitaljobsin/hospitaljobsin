@@ -61,6 +61,7 @@ export async function networkFetch(
 	const headers: Record<string, string> = {
 		Accept: 'application/json',
 		'Accept-Encoding': 'gzip',
+		Connection: 'keep-alive',
 		...extraHeaders,
 		...(includeAuth && serverCookie ? { Cookie: serverCookie } : {})
 	};
@@ -91,32 +92,49 @@ export async function networkFetch(
 		});
 	}
 
-	const resp = await fetch(url, {
-		method,
-		headers,
-		body,
-		...options
-	});
-	const json = await resp.json();
+	// Create an AbortController with a 30-second timeout
+	const controller = new AbortController();
+	const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-	// GraphQL returns exceptions (for example, a missing required variable) in the "errors"
-	// property of the response. If any exceptions occurred when processing the request,
-	// throw an error to indicate to the developer what went wrong.
-	if (Array.isArray(json.errors)) {
-		for (const err of json.errors) {
-			switch (err.extensions?.code) {
-				// when an AuthenticationError is thrown in a resolver
-				case 'UNAUTHENTICATED':
-					redirect(links.login(links.landing));
+	try {
+		const resp = await fetch(url, {
+			method,
+			headers,
+			body,
+			signal: controller.signal,
+			keepalive: true,
+			...options
+		});
+		const json = await resp.json();
+		clearTimeout(timeoutId);
+
+		// GraphQL returns exceptions (for example, a missing required variable) in the "errors"
+		// property of the response. If any exceptions occurred when processing the request,
+		// throw an error to indicate to the developer what went wrong.
+		if (Array.isArray(json.errors)) {
+			for (const err of json.errors) {
+				switch (err.extensions?.code) {
+					// when an AuthenticationError is thrown in a resolver
+					case 'UNAUTHENTICATED':
+						redirect(links.login(links.landing));
+				}
 			}
+			console.error(json.errors);
+			throw new Error(
+				`Error fetching GraphQL query '${request.name}' with variables '${JSON.stringify(variables)}': ${JSON.stringify(json.errors)}`
+			);
 		}
-		console.error(json.errors);
-		throw new Error(
-			`Error fetching GraphQL query '${request.name}' with variables '${JSON.stringify(variables)}': ${JSON.stringify(json.errors)}`
-		);
-	}
 
-	return json;
+		return json;
+	} catch (error) {
+		clearTimeout(timeoutId);
+		if (error instanceof Error && error.name === 'AbortError') {
+			throw new Error(`Request timeout after 30s for GraphQL query '${request.name}'`);
+		}
+		throw error;
+	} finally {
+		clearTimeout(timeoutId);
+	}
 }
 
 function createNetwork() {
