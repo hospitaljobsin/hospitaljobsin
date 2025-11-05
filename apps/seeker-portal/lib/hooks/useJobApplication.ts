@@ -67,9 +67,11 @@ export function useJobApplication() {
 					onCompleted(response) {
 						if (response.createJobApplication.__typename === 'CreateJobApplicantSuccess') {
 							const job = response.createJobApplication.jobApplicant.job;
-							router.push(links.jobDetail(job.organization.slug, job.slug));
+
 							// send event to GTM for conversion tracking
 							sendGTMEvent({ event: 'job_applied', value: jobId });
+
+							router.push(links.jobDetail(job.organization.slug, job.slug));
 							resolve(true);
 						} else {
 							addToast({

@@ -111,6 +111,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ para
 	const searchParams = Object.fromEntries(url.searchParams.entries());
 	const nextPage = searchParams.nextPage && isValidBase64Cursor(searchParams.nextPage) ? searchParams.nextPage : null;
 
+	// Filter out internal params
+	const { via_markdown_rewrite, ...publicSearchParams } = searchParams;
+
 	let speciality: string | null = null;
 	let location: string | null = null;
 
@@ -150,7 +153,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ para
 	if (location) title += ` in ${location}`;
 
 	const nextPageUrl =
-		hasNextPage && nextCursor ? `${searchUrl}?${new URLSearchParams({ ...searchParams, nextPage: nextCursor }).toString()}` : null;
+		hasNextPage && nextCursor ? `${searchUrl}?${new URLSearchParams({ ...publicSearchParams, nextPage: nextCursor }).toString()}` : null;
 
 	const markdown = `Title: ${title}
 

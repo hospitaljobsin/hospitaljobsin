@@ -1,8 +1,8 @@
 'use client';
-import { env } from '@/lib/env/client';
-import links from '@/lib/links';
 import type { CacheConfig, GraphQLResponse, RequestParameters, Variables } from 'relay-runtime';
 import { Environment, Network, QueryResponseCache, RecordSource, Store } from 'relay-runtime';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
 
 const CACHE_TTL = 5 * 1000; // 5 seconds, to resolve preloaded results
 
@@ -12,7 +12,8 @@ export async function networkFetch(request: RequestParameters, variables: Variab
 	let body: string | undefined;
 	const headers: Record<string, string> = {
 		Accept: 'application/json',
-		'Accept-Encoding': 'gzip'
+		'Accept-Encoding': 'gzip',
+		Connection: 'keep-alive'
 	};
 
 	if (request.operationKind === 'query') {
@@ -38,37 +39,54 @@ export async function networkFetch(request: RequestParameters, variables: Variab
 		});
 	}
 
-	const resp = await fetch(url, {
-		method,
-		headers,
-		credentials: 'include',
-		body
-	});
-	const json = await resp.json();
+	// Create an AbortController with a 30-second timeout
+	const controller = new AbortController();
+	const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-	// GraphQL returns exceptions (for example, a missing required variable) in the "errors"
-	// property of the response. If any exceptions occurred when processing the request,
-	// throw an error to indicate to the developer what went wrong.
-	if (Array.isArray(json.errors)) {
-		for (const err of json.errors) {
-			switch (err.extensions?.code) {
-				// Apollo Server sets code to UNAUTHENTICATED
-				// when an AuthenticationError is thrown in a resolver
-				case 'UNAUTHENTICATED':
-					window.location.href = links.login(env.NEXT_PUBLIC_URL);
-					break;
-				case 'REQUIRES_SUDO_MODE':
-					window.location.href = links.accountSettingsRequestSudo(window.location.pathname);
-					break;
+	try {
+		const resp = await fetch(url, {
+			method,
+			headers,
+			credentials: 'include',
+			body,
+			signal: controller.signal,
+			keepalive: true
+		});
+		const json = await resp.json();
+		clearTimeout(timeoutId);
+
+		// GraphQL returns exceptions (for example, a missing required variable) in the "errors"
+		// property of the response. If any exceptions occurred when processing the request,
+		// throw an error to indicate to the developer what went wrong.
+		if (Array.isArray(json.errors)) {
+			for (const err of json.errors) {
+				switch (err.extensions?.code) {
+					// Apollo Server sets code to UNAUTHENTICATED
+					// when an AuthenticationError is thrown in a resolver
+					case 'UNAUTHENTICATED':
+						window.location.href = links.login(env.NEXT_PUBLIC_URL);
+						break;
+					case 'REQUIRES_SUDO_MODE':
+						window.location.href = links.accountSettingsRequestSudo(window.location.pathname);
+						break;
+				}
 			}
+			console.error(json.errors);
+			throw new Error(
+				`Error fetching GraphQL query '${request.name}' with variables '${JSON.stringify(variables)}': ${JSON.stringify(json.errors)}`
+			);
 		}
-		console.error(json.errors);
-		throw new Error(
-			`Error fetching GraphQL query '${request.name}' with variables '${JSON.stringify(variables)}': ${JSON.stringify(json.errors)}`
-		);
-	}
 
-	return json;
+		return json;
+	} catch (error) {
+		clearTimeout(timeoutId);
+		if (error instanceof Error && error.name === 'AbortError') {
+			throw new Error(`Request timeout after 30s for GraphQL query '${request.name}'`);
+		}
+		throw error;
+	} finally {
+		clearTimeout(timeoutId);
+	}
 }
 
 export const responseCache: QueryResponseCache = new QueryResponseCache({
