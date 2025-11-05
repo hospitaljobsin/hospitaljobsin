@@ -1,9 +1,9 @@
-import { env } from '@/lib/env/client';
-import links from '@/lib/links';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import type { GraphQLResponse, RequestParameters, Variables } from 'relay-runtime';
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
 
 export async function networkFetch(request: RequestParameters, variables: Variables): Promise<GraphQLResponse> {
 	const { cookies } = await import('next/headers');
