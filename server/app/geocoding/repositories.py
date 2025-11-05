@@ -115,6 +115,14 @@ class RegionRepo:
                                     "score": {"boost": {"value": 10}},
                                 }
                             },
+                            # Exact match on aliases (high priority for colloquial names)
+                            {
+                                "text": {
+                                    "query": search_term,
+                                    "path": "aliases",
+                                    "score": {"boost": {"value": 8}},
+                                }
+                            },
                             # Autocomplete match on name (high priority)
                             {
                                 "autocomplete": {
@@ -123,11 +131,29 @@ class RegionRepo:
                                     "score": {"boost": {"value": 5}},
                                 }
                             },
-                            # Autocomplete match on aliases (lower priority)
+                            # Autocomplete match on aliases (medium priority)
                             {
                                 "autocomplete": {
                                     "query": search_term,
                                     "path": "aliases",
+                                    "score": {"boost": {"value": 3}},
+                                }
+                            },
+                            # Fuzzy match on name (lower priority for typo tolerance)
+                            {
+                                "text": {
+                                    "query": search_term,
+                                    "path": "name",
+                                    "fuzzy": {"maxEdits": 1},
+                                    "score": {"boost": {"value": 2}},
+                                }
+                            },
+                            # Fuzzy match on aliases (lowest priority)
+                            {
+                                "text": {
+                                    "query": search_term,
+                                    "path": "aliases",
+                                    "fuzzy": {"maxEdits": 1},
                                     "score": {"boost": {"value": 1}},
                                 }
                             },
@@ -150,8 +176,8 @@ class RegionRepo:
                             "default": 5,
                         }
                     },
-                    # Add exact match bonus for the primary name
-                    "exactMatchBonus": {
+                    # Bonus for exact match on primary name
+                    "nameExactMatchBonus": {
                         "$cond": {
                             "if": {
                                 "$eq": [
@@ -159,12 +185,31 @@ class RegionRepo:
                                     {"$toLower": search_term},
                                 ]
                             },
-                            "then": 1000,  # High bonus for exact matches
+                            "then": 1000,
                             "else": 0,
                         }
                     },
-                    # Add starts-with bonus for the primary name
-                    "startsWithBonus": {
+                    # Bonus for exact match on any alias
+                    "aliasExactMatchBonus": {
+                        "$cond": {
+                            "if": {
+                                "$in": [
+                                    {"$toLower": search_term},
+                                    {
+                                        "$map": {
+                                            "input": {"$ifNull": ["$aliases", []]},
+                                            "as": "alias",
+                                            "in": {"$toLower": "$$alias"},
+                                        }
+                                    },
+                                ]
+                            },
+                            "then": 800,  # Slightly less than name match
+                            "else": 0,
+                        }
+                    },
+                    # Bonus for starts-with on primary name
+                    "nameStartsWithBonus": {
                         "$cond": {
                             "if": {
                                 "$regexMatch": {
@@ -172,16 +217,61 @@ class RegionRepo:
                                     "regex": f"^{search_term.lower()}",
                                 }
                             },
-                            "then": 100,  # Medium bonus for starts-with matches
+                            "then": 100,
                             "else": 0,
                         }
+                    },
+                    # Build contextual display name (e.g., "Velacheri, Chennai, Tamil Nadu")
+                    "contextualName": {
+                        "$concat": [
+                            "$name",
+                            {
+                                "$cond": {
+                                    "if": {"$ne": ["$address.address_locality", None]},
+                                    "then": {
+                                        "$concat": [
+                                            ", ",
+                                            {
+                                                "$ifNull": [
+                                                    "$address.address_locality",
+                                                    "",
+                                                ]
+                                            },
+                                        ]
+                                    },
+                                    "else": "",
+                                }
+                            },
+                            {
+                                "$cond": {
+                                    "if": {"$ne": ["$address.address_region", None]},
+                                    "then": {
+                                        "$concat": [
+                                            ", ",
+                                            {
+                                                "$ifNull": [
+                                                    "$address.address_region",
+                                                    "",
+                                                ]
+                                            },
+                                        ]
+                                    },
+                                    "else": "",
+                                }
+                            },
+                        ]
                     },
                 }
             },
             {
                 "$addFields": {
                     "finalScore": {
-                        "$add": ["$searchScore", "$exactMatchBonus", "$startsWithBonus"]
+                        "$add": [
+                            "$searchScore",
+                            "$nameExactMatchBonus",
+                            "$aliasExactMatchBonus",
+                            "$nameStartsWithBonus",
+                        ]
                     }
                 }
             },
@@ -192,6 +282,7 @@ class RegionRepo:
                     "finalScore": 1,
                     "level": 1,
                     "name": 1,
+                    "contextualName": 1,
                     "aliases": 1,
                     "coordinates": 1,
                     "geometry": 1,
@@ -200,29 +291,46 @@ class RegionRepo:
             },
             # Sort by final score (including bonuses) and then by level priority
             {"$sort": {"finalScore": -1, "levelPriority": 1}},
+            # Fetch exactly what we need (no over-fetching)
             {"$limit": DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT},
         ]
 
         results = await Region.aggregate(pipeline).to_list()
 
+        # Build suggestions with contextual display names
         suggestions: list[LocationAutocompleteSuggestion] = []
+        seen_coordinates: set[tuple[float, float]] = set()
+
         for result in results:
-            place_id = str(uuid.uuid4())
             # Extract coordinates from GeoJSON Point format
             coords = result["coordinates"]["coordinates"]  # [longitude, latitude]
+            coords_tuple = (coords[0], coords[1])
+
+            # Skip if we've already seen this exact coordinate
+            if coords_tuple in seen_coordinates:
+                continue
+
+            # Mark these coordinates as seen
+            seen_coordinates.add(coords_tuple)
+
+            place_id = str(uuid.uuid4())
+
+            # Use contextual name for better UX
+            display_name = result.get("contextualName", result["name"])
+
             suggestions.append(
                 LocationAutocompleteSuggestion(
                     place_id=place_id,
                     level=result["level"],
                     address=Address(
-                        display_name=result["name"],
+                        display_name=display_name,
                         street_address=result["address"].get("street_address"),
                         address_locality=result["address"].get("address_locality"),
                         address_region=result["address"].get("address_region"),
                         country=result["address"].get("country"),
                         postal_code=result["address"].get("postal_code"),
                     ),
-                    coordinates=(coords[0], coords[1]),  # (longitude, latitude)
+                    coordinates=coords_tuple,  # (longitude, latitude)
                 )
             )
 
