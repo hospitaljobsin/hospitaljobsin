@@ -230,65 +230,60 @@ class JobRepo:
         if filters.job_type:
             match_filters["type"] = {"$in": filters.job_type}
 
-        # Build combined conditions that need to be $or-ed
-        or_conditions = []
+        # Build combined conditions that need to be $and-ed
+        and_conditions = []
 
         # Experience filters - jobs that overlap with the experience range
-        if filters.min_experience is not None or filters.max_experience is not None:
-            experience_or_conditions = []
-            if filters.min_experience is not None:
-                # Job's max_experience should be >= filter's min_experience
-                # OR job's min_experience should be >= filter's min_experience
-                experience_or_conditions.extend(
-                    [
+        if filters.min_experience is not None:
+            # Job's max_experience should be >= filter's min_experience
+            # OR job's min_experience should be >= filter's min_experience
+            and_conditions.append(
+                {
+                    "$or": [
                         {"max_experience": {"$gte": filters.min_experience}},
                         {"min_experience": {"$gte": filters.min_experience}},
                     ]
-                )
-            if filters.max_experience is not None:
-                # Job's min_experience should be <= filter's max_experience
-                # OR job's max_experience should be <= filter's max_experience
-                experience_or_conditions.extend(
-                    [
+                }
+            )
+        if filters.max_experience is not None:
+            # Job's min_experience should be <= filter's max_experience
+            # OR job's max_experience should be <= filter's max_experience
+            and_conditions.append(
+                {
+                    "$or": [
                         {"min_experience": {"$lte": filters.max_experience}},
                         {"max_experience": {"$lte": filters.max_experience}},
                     ]
-                )
-            if experience_or_conditions:
-                or_conditions.append({"$or": experience_or_conditions})
+                }
+            )
 
         # Salary filters - jobs that overlap with the salary range
-        if filters.min_salary is not None or filters.max_salary is not None:
-            salary_or_conditions = []
-            if filters.min_salary is not None:
-                # Job's max_salary should be >= filter's min_salary
-                # OR job's min_salary should be >= filter's min_salary
-                salary_or_conditions.extend(
-                    [
+        if filters.min_salary is not None:
+            # Job's max_salary should be >= filter's min_salary
+            # OR job's min_salary should be >= filter's min_salary
+            and_conditions.append(
+                {
+                    "$or": [
                         {"max_salary": {"$gte": filters.min_salary}},
                         {"min_salary": {"$gte": filters.min_salary}},
                     ]
-                )
-            if filters.max_salary is not None:
-                # Job's min_salary should be <= filter's max_salary
-                # OR job's max_salary should be <= filter's max_salary
-                salary_or_conditions.extend(
-                    [
+                }
+            )
+        if filters.max_salary is not None:
+            # Job's min_salary should be <= filter's max_salary
+            # OR job's max_salary should be <= filter's max_salary
+            and_conditions.append(
+                {
+                    "$or": [
                         {"min_salary": {"$lte": filters.max_salary}},
                         {"max_salary": {"$lte": filters.max_salary}},
                     ]
-                )
-            if salary_or_conditions:
-                or_conditions.append({"$or": salary_or_conditions})
+                }
+            )
 
-        # Combine all OR conditions with AND
-        if or_conditions:
-            if len(or_conditions) == 1:
-                # Single OR condition, add directly
-                match_filters.update(or_conditions[0])
-            else:
-                # Multiple OR conditions, combine with $and
-                match_filters["$and"] = or_conditions
+        # Combine all AND conditions
+        if and_conditions:
+            match_filters["$and"] = and_conditions
 
         return match_filters
 
@@ -310,32 +305,15 @@ class JobRepo:
 
         Returns:
             List of aggregation results with cluster statistics
+
         """
-        import logging
-
-        logger = logging.getLogger(__name__)
-        print(
-            f"🔥 _aggregate_direct: START with h3_resolution={h3_resolution}, {len(intersecting_hexes)} hexes"
-        )
-        print(f"🔥 intersecting_hexes: {intersecting_hexes}")
-        logger.info(
-            f"JobRepo._aggregate_direct: h3_resolution={h3_resolution}, bounds={bounds}"
-        )
-        logger.info(
-            f"JobRepo._aggregate_direct: intersecting_hexes count={len(intersecting_hexes)}, first 10: {intersecting_hexes[:10]}"
-        )
-
         h3_field = f"h3_indexes.{h3_resolution}"
 
         # Build match filters
         match_filters = await self._build_cluster_match_filters(bounds, filters)
-        logger.info(f"JobRepo._aggregate_direct: base match_filters={match_filters}")
 
         # Add H3 index filter
         match_filters[h3_field] = {"$in": intersecting_hexes}
-        logger.info(
-            f"JobRepo._aggregate_direct: final match_filters with H3={match_filters}"
-        )
 
         pipeline = [
             {"$match": match_filters},
@@ -356,37 +334,7 @@ class JobRepo:
             {"$limit": 1000},
         ]
 
-        print(f"🔥 Executing pipeline with {len(pipeline)} stages")
-        print(f"🔥 Pipeline: {pipeline}")
-        logger.info(
-            f"JobRepo._aggregate_direct: executing pipeline with {len(pipeline)} stages"
-        )
-        results = await Job.aggregate(pipeline, projection_model=None).to_list()
-        print(f"🔥 MongoDB returned {len(results)} results")
-        if results:
-            print(f"🔥 First result: {results[0]}")
-
-        # DEBUG: Log detailed count information for debugging zoom-level mismatches
-        total_jobs_in_clusters = sum(r.get("count", 0) for r in results)
-        print("🔥 DEBUG COUNT ANALYSIS:")
-        print(f"   - Resolution: {h3_resolution}")
-        print(f"   - Number of clusters: {len(results)}")
-        print(f"   - Total jobs across all clusters: {total_jobs_in_clusters}")
-        print(
-            f"   - Viewport bounds: sw_lat={bounds.sw_lat:.4f}, sw_lng={bounds.sw_lng:.4f}, ne_lat={bounds.ne_lat:.4f}, ne_lng={bounds.ne_lng:.4f}"
-        )
-        if results:
-            print("   - Top 5 clusters by count:")
-            for i, r in enumerate(
-                sorted(results, key=lambda x: x.get("count", 0), reverse=True)[:5]
-            ):
-                print(f"     {i + 1}. H3={r.get('_id')}: count={r.get('count')}")
-        logger.info(
-            f"JobRepo._aggregate_direct: pipeline returned {len(results)} results"
-        )
-        if results:
-            logger.info(f"JobRepo._aggregate_direct: first result: {results[0]}")
-        return results
+        return await Job.aggregate(pipeline, projection_model=None).to_list()
 
     async def _aggregate_with_search(
         self,

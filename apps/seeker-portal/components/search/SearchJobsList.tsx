@@ -239,7 +239,7 @@ export default function SearchJobsList({
 						{location ? ` jobs found in ${location}` : ' jobs found'}
 					</h2>
 					<a
-						href={pathName.replace('/search', '/search/map') + searchParams.toString()}
+						href={`${pathName.replace('/search', '/search/map')}?${searchParams.toString()}`}
 						className='text-sm text-primary hover:text-primary/80 underline underline-offset-2 whitespace-nowrap'
 					>
 						View on map
