@@ -32,6 +32,12 @@ variable "ami_name" {
   default = "playwright-ami"
 }
 
+variable "build_timeout" {
+  type    = string
+  default = "30m"
+  description = "Maximum time to wait for build completion"
+}
+
 source "amazon-ebs" "playwright" {
   region                  = var.aws_region
   instance_type           = var.instance_type
@@ -40,6 +46,19 @@ source "amazon-ebs" "playwright" {
   ssh_username  = "ubuntu"
   ssh_pty       = true
   associate_public_ip_address = true
+
+  // Force terminate the instance on shutdown - critical for CI/CD environments
+  shutdown_behavior = "terminate"
+
+  // Use spot instances to save ~70% on build costs
+  spot_price = "auto"
+  spot_instance_types = [var.instance_type]
+
+  // Timeout to prevent hung builds in CI/CD
+  aws_polling {
+    delay_seconds = 15
+    max_attempts  = 120  // 30 minutes max with 15s delays
+  }
 
   source_ami_filter {
     filters = {
@@ -64,6 +83,7 @@ build {
 
   provisioner "shell" {
     script = "scripts/install_playwright.sh"
+    timeout = var.build_timeout
   }
 
   post-processor "manifest" {}
