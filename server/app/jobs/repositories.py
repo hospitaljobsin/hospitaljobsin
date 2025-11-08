@@ -2103,9 +2103,7 @@ class JobApplicantRepo:
             # Geocode if needed
             if isinstance(filters.location, LocationWithRadius):
                 location_names.append(filters.location)
-            elif isinstance(filters.location, list) and all(
-                isinstance(loc, LocationWithRadius) for loc in filters.location
-            ):
+            else:
                 location_names.extend(filters.location)
             if location_names:
                 for name in location_names:

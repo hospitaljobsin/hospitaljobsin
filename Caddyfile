@@ -22,6 +22,11 @@ https://recruiter.localtest.me {
 	reverse_proxy http://{$RECRUITER_PORTAL_CORE_HOST}:5003
 }
 
+https://content.localtest.me {
+	tls /etc/caddy/certs/localtest.me.pem /etc/caddy/certs/localtest.me-key.pem
+	reverse_proxy http://{$CMS_HOST}:5004
+}
+
 # Wildcard: any subdomain of localtest.me
 https://*.localtest.me {
 	tls /etc/caddy/certs/localtest.me.pem /etc/caddy/certs/localtest.me-key.pem

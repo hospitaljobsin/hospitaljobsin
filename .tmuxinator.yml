@@ -21,6 +21,9 @@ windows:
   - accounts:
       - pnpm --filter accounts dev
 
+  - cms:
+      - pnpm --filter cms dev
+
   - relay-compiler:
       - relay-compiler --watch
 

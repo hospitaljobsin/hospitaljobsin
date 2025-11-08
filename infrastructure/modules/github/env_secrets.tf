@@ -36,6 +36,14 @@ resource "github_actions_environment_secret" "accounts_sentry_dsn" {
   plaintext_value = var.sentry_accounts_ui_dsn
 }
 
+resource "github_actions_environment_secret" "cms_sentry_dsn" {
+  repository      = data.github_repository.this.name
+  environment     = github_repository_environment.this.environment
+  secret_name     = "CMS_SENTRY_DSN"
+  plaintext_value = var.sentry_cms_ui_dsn
+
+}
+
 resource "github_actions_environment_secret" "seeker_portal_sentry_dsn" {
   repository      = data.github_repository.this.name
   environment     = github_repository_environment.this.environment

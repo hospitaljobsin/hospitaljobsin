@@ -120,6 +120,13 @@ resource "github_actions_environment_variable" "sst_recruiter_dashboard_domain" 
   value         = var.sst_recruiter_dashboard_domain
 }
 
+resource "github_actions_environment_variable" "sst_cms_domain" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "SST_CMS_DOMAIN"
+  value         = var.sst_cms_domain
+}
+
 resource "github_actions_environment_variable" "sst_captcha_site_key" {
   repository    = data.github_repository.this.name
   environment   = github_repository_environment.this.environment
@@ -148,6 +155,13 @@ resource "github_actions_environment_variable" "sst_accounts_base_url" {
   value         = var.sst_accounts_base_url
 }
 
+resource "github_actions_environment_variable" "sst_cms_base_url" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "SST_CMS_BASE_URL"
+  value         = var.sst_cms_base_url
+
+}
 
 resource "github_actions_environment_variable" "sst_vpc_private_subnets" {
   repository    = data.github_repository.this.name
@@ -190,6 +204,12 @@ resource "github_actions_environment_variable" "accounts_sentry_project" {
   value         = var.sentry_accounts_ui_project
 }
 
+resource "github_actions_environment_variable" "cms_sentry_project" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "CMS_SENTRY_PROJECT"
+  value         = var.sentry_cms_ui_project
+}
 
 resource "github_actions_environment_variable" "sentry_organization" {
   repository    = data.github_repository.this.name

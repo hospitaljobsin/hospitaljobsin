@@ -5,12 +5,13 @@ from app.container import create_container
 from app.database import initialize_database
 from app.jobs.documents import JobApplicant
 from app.jobs.services import JobApplicantAnalysisService
+from pymongo import AsyncMongoClient
 
 
 async def insert_missing_analysis():
     await initialize_database(
-        str(get_settings(DatabaseSettings).database_url),
         get_settings(DatabaseSettings).default_database_name,
+        db_client=AsyncMongoClient(str(get_settings(DatabaseSettings).database_url)),
     )
 
     container = create_container()

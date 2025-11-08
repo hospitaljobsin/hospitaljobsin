@@ -17,9 +17,40 @@ resource "sentry_organization_code_mapping" "backend" {
   repository_id  = sentry_organization_repository.github.id
   project_id     = sentry_project.backend.internal_id
 
-  default_branch = "main"
+  default_branch = "production"
   stack_root     = "/"
   source_root    = "server/"
+}
+
+resource "sentry_project" "cms_ui" {
+  organization = sentry_team.main.organization
+  teams        = [sentry_team.main.id]
+  name         = "Hospital Jobs CMS UI"
+  platform     = "javascript-nextjs"
+
+  client_security = {
+    allowed_domains = [
+      "https://cms.${var.domain_name}",
+      "https://cms.localtest.me",
+    ]
+  }
+}
+
+resource "sentry_project_spike_protection" "cms_ui" {
+  organization = sentry_project.cms_ui.organization
+  project      = sentry_project.cms_ui.id
+  enabled      = true
+}
+
+resource "sentry_organization_code_mapping" "cms_ui" {
+  organization   = data.sentry_organization.main.id
+  integration_id = data.sentry_organization_integration.github.id
+  repository_id  = sentry_organization_repository.github.id
+  project_id     = sentry_project.cms_ui.internal_id
+
+  default_branch = "production"
+  stack_root     = "/"
+  source_root    = "apps/cms/"
 }
 
 resource "sentry_project" "accounts_ui" {
@@ -48,7 +79,7 @@ resource "sentry_organization_code_mapping" "accounts_ui" {
   repository_id  = sentry_organization_repository.github.id
   project_id     = sentry_project.accounts_ui.internal_id
 
-  default_branch = "main"
+  default_branch = "production"
   stack_root     = "/"
   source_root    = "apps/accounts/"
 }
@@ -78,7 +109,7 @@ resource "sentry_organization_code_mapping" "seeker_portal_ui" {
   repository_id  = sentry_organization_repository.github.id
   project_id     = sentry_project.seeker_portal_ui.internal_id
 
-  default_branch = "main"
+  default_branch = "production"
   stack_root     = "/"
   source_root    = "apps/seeker-portal/"
 }
@@ -109,7 +140,7 @@ resource "sentry_organization_code_mapping" "recruiter_portal_ui" {
   repository_id  = sentry_organization_repository.github.id
   project_id     = sentry_project.recruiter_portal_ui.internal_id
 
-  default_branch = "main"
+  default_branch = "production"
   stack_root     = "/"
   source_root    = "apps/recruiter-portal-core/"
 }
@@ -142,7 +173,7 @@ resource "sentry_organization_code_mapping" "recruiter_dashboard_ui" {
   repository_id  = sentry_organization_repository.github.id
   project_id     = sentry_project.recruiter_dashboard_ui.internal_id
 
-  default_branch = "main"
+  default_branch = "production"
   stack_root     = "/"
   source_root    = "apps/recruiter-dashboard/"
 }

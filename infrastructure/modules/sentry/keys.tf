@@ -14,6 +14,14 @@ resource "sentry_key" "accounts_ui" {
 }
 
 
+resource "sentry_key" "cms_ui" {
+  organization = data.sentry_organization.main.id
+
+  project = sentry_project.cms_ui.id
+  name    = "CMS UI Key"
+}
+
+
 resource "sentry_key" "seeker_portal_ui" {
   organization = data.sentry_organization.main.id
 

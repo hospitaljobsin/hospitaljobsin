@@ -61,6 +61,11 @@ variable "sst_recruiter_dashboard_domain" {
   description = "The domain for the recruiter dashboard."
 }
 
+variable "sst_cms_domain" {
+  type        = string
+  description = "The domain for the CMS"
+}
+
 variable "sst_jwe_secret_key" {
   type        = string
   description = "The JWE secret key for the SST application."
@@ -88,6 +93,17 @@ variable "sentry_accounts_ui_dsn" {
 variable "sentry_accounts_ui_project" {
   type        = string
   description = "The Sentry accounts UI project."
+}
+
+variable "sentry_cms_ui_dsn" {
+  type        = string
+  description = "The Sentry DSN for the CMS UI."
+  sensitive   = true
+}
+
+variable "sentry_cms_ui_project" {
+  type        = string
+  description = "The Sentry CMS UI project."
 }
 
 variable "sentry_seeker_portal_ui_dsn" {
@@ -153,6 +169,10 @@ variable "sst_accounts_base_url" {
   type        = string
 }
 
+variable "sst_cms_base_url" {
+  description = "The base URL for the CMS."
+  type        = string
+}
 
 variable "sst_vpc_private_subnets" {
   description = "The private subnets in the VPC."

@@ -1,0 +1,92 @@
+name: Build and Deploy CMS UI
+
+on:
+  workflow_call:
+    inputs:
+      run-deploy:
+        required: true
+        type: boolean
+
+concurrency:
+  group: deploy-cms-ui-${{ github.ref_name == 'production' && 'production' || 'staging' }} # Ensures only one run of this workflow at a time
+  cancel-in-progress: false # Waits instead of cancelling previous runs
+
+env: # repo-level and non-env-specific secrets/vars
+  AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  OST_GITHUB_SECRET: ${{ secrets.OST_GITHUB_SECRET }}
+  OST_GITHUB_ID: ${{ vars.OST_GITHUB_ID }}
+
+jobs:
+  build-and-push:
+    environment: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        if: ${{ inputs.run-deploy }}
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        if: ${{ inputs.run-deploy }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup pnpm
+        if: ${{ inputs.run-deploy }}
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.11.0
+
+      - name: Setup Node
+        if: ${{ inputs.run-deploy }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Cache dependencies
+        if: ${{ inputs.run-deploy }}
+        uses: actions/cache@v4
+        with:
+          # Cache the .next/cache folder for the apps/cms app
+          path: |
+            apps/cms/.next/cache
+          # Generate a new cache whenever the lockfile or source files change
+          key: ${{ runner.os }}-nextjs-cms-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/cms/**/*.[jt]s', 'apps/cms/**/*.[jt]sx', 'apps/cms/**/*.{css,md,mdx}') }}
+          # If source files changed but pnpm-lock.yaml didn’t, use the previous cache
+          restore-keys: |
+            ${{ runner.os }}-nextjs-cms-${{ hashFiles('pnpm-lock.yaml') }}-
+
+      - name: Install dependencies
+        if: ${{ inputs.run-deploy }}
+        run: pnpm install --filter cms --frozen-lockfile --shamefully-hoist
+
+      - name: SST Deploy
+        if: ${{ inputs.run-deploy }}
+        working-directory: ./apps/cms
+        run: npx sst deploy --stage ${{ github.ref_name == 'production' && 'production' || 'staging' }} --print-logs
+        env:
+          SST_VPC_PRIVATE_SUBNETS: ${{ vars.SST_VPC_PRIVATE_SUBNETS }}
+          SST_VPC_SECURITY_GROUPS: ${{ vars.SST_VPC_SECURITY_GROUPS }}
+          SST_CMS_DOMAIN: ${{vars.SST_CMS_DOMAIN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          NEXT_PUBLIC_URL: ${{ vars.SST_CMS_BASE_URL }}
+          NEXT_PUBLIC_ENVIRONMENT: production
+          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.CMS_SENTRY_DSN }}
+          NEXT_PUBLIC_SENTRY_ORGANIZATION: ${{ vars.SENTRY_ORGANIZATION }}
+          NEXT_PUBLIC_SENTRY_PROJECT: ${{vars.CMS_SENTRY_PROJECT}}
+          SKIP_ENV_VALIDATION: true
+          NODE_ENV: production
+          BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
+          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+          NEXT_PUBLIC_ROOT_DOMAIN: ${{ vars.PUBLIC_ROOT_DOMAIN }}
+          OST_GITHUB_SECRET: ${{ env.OST_GITHUB_SECRET }}
+          OST_GITHUB_ID: ${{ env.OST_GITHUB_ID }}
+          OST_REPO_SLUG: outstatic
+          OST_REPO_BRANCH: main
+          OST_REPO_OWNER: hospitaljobsin
