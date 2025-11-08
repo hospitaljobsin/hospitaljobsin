@@ -20,6 +20,7 @@ services:
       - SERVER_HOST=host.docker.internal
       - RECRUITER_PORTAL_CORE_HOST=host.docker.internal
       - RECRUITER_DASHBOARD_HOST=host.docker.internal
+      - CMS_HOST=host.docker.internal
 
   mongodb:
     image: mongodb/mongodb-atlas-local:8.0.1

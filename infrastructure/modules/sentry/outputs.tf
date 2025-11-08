@@ -22,6 +22,14 @@ output "sentry_recruiter_dashboard_ui_dsn" {
   value = sentry_key.recruiter_dashboard_ui.dsn["public"]
 }
 
+output "sentry_cms_ui_dsn" {
+  value = sentry_key.cms_ui.dsn["public"]
+}
+
+output "cms_sentry_project" {
+  value = sentry_project.cms_ui.id
+}
+
 output "recruiter_portal_sentry_project" {
   value = sentry_project.recruiter_portal_ui.id
 }

@@ -69,6 +69,10 @@ output "sst_recruiter_dashboard_domain" {
   value = "*.${var.domain_name}"
 }
 
+
+output "sst_cms_domain" {
+  value = "cms.${var.domain_name}"
+}
 output "recruiter_portal_sentry_dsn" {
   value     = var.sentry_recruiter_portal_ui_dsn
   sensitive = true
@@ -89,6 +93,11 @@ output "sst_seeker_portal_base_url" {
 
 output "sst_accounts_base_url" {
   value = "https://accounts.${var.domain_name}"
+}
+
+
+output "sst_cms_base_url" {
+  value = "https://cms.${var.domain_name}"
 }
 
 

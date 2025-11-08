@@ -27,6 +27,11 @@ output "sentry_recruiter_dashboard_ui_dsn" {
   sensitive = true
 }
 
+output "sentry_cms_ui_dsn" {
+  value     = module.sentry.sentry_cms_ui_dsn
+  sensitive = true
+}
+
 output "recruiter_portal_sentry_project" {
   value = module.sentry.recruiter_portal_sentry_project
 }
@@ -42,6 +47,10 @@ output "seeker_portal_sentry_project" {
 
 output "accounts_sentry_project" {
   value = module.sentry.accounts_sentry_project
+}
+
+output "cms_sentry_project" {
+  value = module.sentry.cms_sentry_project
 }
 
 
