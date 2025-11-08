@@ -6,17 +6,18 @@ on:
 
 jobs:
   changes:
-      runs-on: ubuntu-latest
-      outputs:
-        backend: ${{ steps.filter.outputs.backend }}
-        accounts_ui: ${{ steps.filter.outputs.accounts_ui }}
-        recruiter_dashboard_ui: ${{ steps.filter.outputs.recruiter_dashboard_ui }}
-        recruiter_portal_ui: ${{ steps.filter.outputs.recruiter_portal_ui }}
-        seeker_portal_ui: ${{ steps.filter.outputs.seeker_portal_ui }}
-        infra: ${{ steps.filter.outputs.infra }}
-        shared_infra: ${{ steps.filter.outputs.shared_infra }}
-        e2e_tests: ${{ steps.filter.outputs.e2e_tests }}
-      steps:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      accounts_ui: ${{ steps.filter.outputs.accounts_ui }}
+      recruiter_dashboard_ui: ${{ steps.filter.outputs.recruiter_dashboard_ui }}
+      recruiter_portal_ui: ${{ steps.filter.outputs.recruiter_portal_ui }}
+      seeker_portal_ui: ${{ steps.filter.outputs.seeker_portal_ui }}
+      cms_ui: ${{ steps.filter.outputs.cms_ui }}
+      infra: ${{ steps.filter.outputs.infra }}
+      shared_infra: ${{ steps.filter.outputs.shared_infra }}
+      e2e_tests: ${{ steps.filter.outputs.e2e_tests }}
+    steps:
       - uses: actions/checkout@v4
         with:
           # This may save additional git fetch roundtrip if
@@ -42,6 +43,9 @@ jobs:
             seeker_portal_ui:
               - 'apps/seeker-portal/**'
               - '.github/workflows/deploy-seeker-portal-ui.yml'
+            cms_ui:
+              - 'apps/cms/**'
+              - '.github/workflows/deploy-cms-ui.yml'
             e2e_tests:
               - '.github/workflows/e2e-tests.yml'
               - 'e2e/**'
@@ -57,18 +61,28 @@ jobs:
   deploy-backend:
     uses: ./.github/workflows/deploy-backend.yml
     with:
-        run-deploy: ${{ needs.changes.outputs.backend == 'true' }}
+      run-deploy: ${{ needs.changes.outputs.backend == 'true' }}
     secrets: inherit
     needs:
-        - changes
-        - deploy-shared-infra
-        - deploy-infra
+      - changes
+      - deploy-shared-infra
+      - deploy-infra
 
+  deploy-cms-ui:
+    uses: ./.github/workflows/deploy-cms-ui.yml
+    with:
+      run-deploy: ${{ needs.changes.outputs.cms_ui == 'true' }}
+    secrets: inherit
+    needs:
+      - changes
+      - deploy-backend
+      - deploy-shared-infra
+      - deploy-infra
 
   deploy-accounts-ui:
     uses: ./.github/workflows/deploy-accounts-ui.yml
     with:
-        run-deploy: ${{ needs.changes.outputs.accounts_ui == 'true' }}
+      run-deploy: ${{ needs.changes.outputs.accounts_ui == 'true' }}
     secrets: inherit
     needs:
       - changes
@@ -79,7 +93,7 @@ jobs:
   deploy-recruiter-dashboard-ui:
     uses: ./.github/workflows/deploy-recruiter-dashboard-ui.yml
     with:
-        run-deploy: ${{ needs.changes.outputs.recruiter_dashboard_ui == 'true' }}
+      run-deploy: ${{ needs.changes.outputs.recruiter_dashboard_ui == 'true' }}
     secrets: inherit
     needs:
       - changes
@@ -90,7 +104,7 @@ jobs:
   deploy-recruiter-portal-ui:
     uses: ./.github/workflows/deploy-recruiter-portal-core-ui.yml
     with:
-        run-deploy: ${{ needs.changes.outputs.recruiter_portal_ui == 'true' }}
+      run-deploy: ${{ needs.changes.outputs.recruiter_portal_ui == 'true' }}
     secrets: inherit
     needs:
       - changes
@@ -101,7 +115,7 @@ jobs:
   deploy-seeker-portal-ui:
     uses: ./.github/workflows/deploy-seeker-portal-ui.yml
     with:
-        run-deploy: ${{ needs.changes.outputs.seeker_portal_ui == 'true' }}
+      run-deploy: ${{ needs.changes.outputs.seeker_portal_ui == 'true' }}
     secrets: inherit
     needs:
       - changes
@@ -112,13 +126,13 @@ jobs:
   deploy-shared-infra:
     uses: ./.github/workflows/apply-shared-infrastructure.yml
     with:
-        run-deploy: ${{ needs.changes.outputs.shared_infra == 'true' }}
+      run-deploy: ${{ needs.changes.outputs.shared_infra == 'true' }}
     secrets: inherit
     needs: changes
   deploy-infra:
     uses: ./.github/workflows/apply-infrastructure.yml
     with:
-        run-deploy: ${{ needs.changes.outputs.infra == 'true' }}
+      run-deploy: ${{ needs.changes.outputs.infra == 'true' }}
     secrets: inherit
     needs:
       - changes
@@ -133,6 +147,7 @@ jobs:
       - deploy-recruiter-dashboard-ui
       - deploy-recruiter-portal-ui
       - deploy-seeker-portal-ui
+      - deploy-cms-ui
       - deploy-shared-infra
       - deploy-infra
     uses: ./.github/workflows/e2e-tests.yml
