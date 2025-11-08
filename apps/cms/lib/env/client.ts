@@ -10,6 +10,7 @@ export const env = createEnv({
 		NEXT_PUBLIC_ENVIRONMENT: z.enum(['development', 'testing', 'production']),
 		NEXT_PUBLIC_ROOT_DOMAIN: z.string()
 	},
+
 	// For Next.js >= 13.4.4, you only need to destructure client variables:
 	runtimeEnv: {
 		NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,
