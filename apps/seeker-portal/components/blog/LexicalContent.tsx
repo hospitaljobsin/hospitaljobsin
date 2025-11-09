@@ -20,7 +20,7 @@ export function LexicalContent({ content }: LexicalContentProps) {
 		return renderLexicalContent(content);
 	}, [content]);
 
-	return <div className='prose prose-lg max-w-none dark:prose-invert'>{renderedContent}</div>;
+	return <>{renderedContent}</>;
 }
 
 function extractTextFromChildren(children: LexicalNode[]): string {
@@ -71,8 +71,19 @@ function renderNode(node: LexicalNode, key: string): React.ReactNode {
 				.toLowerCase()
 				.replace(/[^a-z0-9]+/g, '-')
 				.replace(/(^-|-$)/g, '');
+
+			// Define heading classes based on tag
+			const headingClasses: Record<string, string> = {
+				'1': 'text-2xl font-bold mt-8 mb-4',
+				'2': 'text-xl font-semibold mt-8 mb-4',
+				'3': 'text-lg font-semibold mt-6 mb-3',
+				'4': 'text-lg font-semibold mt-4 mb-2',
+				'5': 'text-md font-semibold mt-4 mb-2',
+				'6': 'text-base font-semibold mt-4 mb-2'
+			};
+
 			return (
-				<HeadingTag key={key} id={id}>
+				<HeadingTag key={key} id={id} className={headingClasses[tag] || headingClasses['2']}>
 					{renderChildren(node.children || [])}
 				</HeadingTag>
 			);
@@ -218,7 +229,7 @@ function renderBlock(node: LexicalNode, key: string): React.ReactNode {
 			const caption = fields?.caption as string | undefined;
 			if (media?.url) {
 				return (
-					<figure key={key} className='my-8'>
+					<figure key={key} className='my-8 w-full'>
 						<CMSImage
 							src={media.url as string}
 							alt={(media.alt as string) || ''}

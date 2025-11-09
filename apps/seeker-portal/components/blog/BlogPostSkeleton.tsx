@@ -4,7 +4,7 @@ import { Skeleton } from '@heroui/react';
 
 export function BlogPostSkeleton() {
 	return (
-		<div className='max-w-4xl mx-auto space-y-6'>
+		<div className='max-w-7xl px-4 mx-auto space-y-6'>
 			<Skeleton className='w-full h-[400px] rounded-lg' />
 			<div className='flex gap-2'>
 				<Skeleton className='w-20 h-6 rounded-full' />

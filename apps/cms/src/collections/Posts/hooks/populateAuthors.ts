@@ -14,22 +14,100 @@ export const populateAuthors: CollectionAfterReadHook = async ({ doc, req: { pay
 				const authorDoc = await payload.findByID({
 					id: typeof author === 'object' ? author?.id : author,
 					collection: 'users',
-					depth: 0
+					depth: 1 // Increase depth to get avatar relationship when possible
 				});
 
 				if (authorDoc) {
 					authorDocs.push(authorDoc);
 				}
-
-				if (authorDocs.length > 0) {
-					doc.populatedAuthors = authorDocs.map(authorDoc => ({
-						id: authorDoc.id,
-						name: authorDoc.name
-					}));
-				}
 			} catch {
-				// swallow error
+				// swallow error for individual author fetches
 			}
+		}
+
+		if (authorDocs.length > 0) {
+			// Normalize avatars and build populatedAuthors. Use Promise.all because we may need to fetch media docs.
+			doc.populatedAuthors = await Promise.all(
+				authorDocs.map(async authorDoc => {
+					let avatarMedia: {
+						id: string;
+						url?: string | null;
+						alt?: string | null;
+						width?: number | null;
+						height?: number | null;
+						filename?: string | null;
+					} | null = null;
+
+					try {
+						const rawAvatar: any = (authorDoc as any).avatar;
+
+						// Cases handled:
+						// - null/undefined -> leave null
+						// - string (id only) -> fetch media doc
+						// - object with value -> use value (payload sometimes nests as { relationTo, value })
+						// - populated media object -> use fields directly
+						if (rawAvatar) {
+							if (typeof rawAvatar === 'string') {
+								// avatar is an id only
+								const mediaDoc = await payload.findByID({ id: rawAvatar, collection: 'media' });
+								if (mediaDoc) {
+									avatarMedia = {
+										id: mediaDoc.id,
+										url: (mediaDoc as any).url,
+										alt: (mediaDoc as any).alt,
+										width: (mediaDoc as any).width,
+										height: (mediaDoc as any).height,
+										filename: (mediaDoc as any).filename
+									};
+								}
+							} else if (rawAvatar.value && typeof rawAvatar.value === 'object') {
+								// payload can return relation as { relationTo, value }
+								const v = rawAvatar.value;
+								avatarMedia = {
+									id: v.id,
+									url: v.url,
+									alt: v.alt,
+									width: v.width,
+									height: v.height,
+									filename: v.filename
+								};
+							} else if (rawAvatar.id && (rawAvatar.url || rawAvatar.filename)) {
+								// already populated media-like object
+								avatarMedia = {
+									id: rawAvatar.id,
+									url: rawAvatar.url,
+									alt: rawAvatar.alt,
+									width: rawAvatar.width,
+									height: rawAvatar.height,
+									filename: rawAvatar.filename
+								};
+							} else if (rawAvatar.id) {
+								// has id but not populated fields; fetch media
+								const mediaDoc = await payload.findByID({ id: rawAvatar.id, collection: 'media' });
+								if (mediaDoc) {
+									avatarMedia = {
+										id: mediaDoc.id,
+										url: (mediaDoc as any).url,
+										alt: (mediaDoc as any).alt,
+										width: (mediaDoc as any).width,
+										height: (mediaDoc as any).height,
+										filename: (mediaDoc as any).filename
+									};
+								}
+							}
+						}
+					} catch (e) {
+						// ignore avatar normalization failures per author
+					}
+
+					return {
+						id: (authorDoc as any).id,
+						name: (authorDoc as any).name,
+						about: (authorDoc as any).about,
+						avatar: avatarMedia
+					};
+				})
+			);
 		}
 	}
 

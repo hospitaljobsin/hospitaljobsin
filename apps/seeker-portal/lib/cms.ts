@@ -37,6 +37,15 @@ export async function fetchPosts(options: FetchPostsOptions = {}): Promise<Paylo
 					populatedAuthors {
 						id
 						name
+						about
+						avatar {
+							id
+							url
+							alt
+							width
+							height
+							filename
+						}
 					}
 					categories {
 						id
@@ -130,6 +139,15 @@ export async function fetchPostBySlug(slug: string): Promise<PayloadPost | null>
 					populatedAuthors {
 						id
 						name
+						about
+						avatar {
+							id
+							url
+							alt
+							width
+							height
+							filename
+						}
 					}
 					categories {
 						id

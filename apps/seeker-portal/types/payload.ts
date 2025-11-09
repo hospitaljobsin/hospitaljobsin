@@ -8,10 +8,7 @@ export interface PayloadPost {
 	heroImage?: PayloadMedia;
 	publishedAt?: string;
 	authors?: PayloadUser[];
-	populatedAuthors?: Array<{
-		id: string;
-		name: string;
-	}>;
+	populatedAuthors?: PayloadAuthor[];
 	categories?: PayloadCategory[];
 	meta?: {
 		title?: string;
@@ -38,6 +35,13 @@ export interface PayloadCategory {
 export interface PayloadUser {
 	id: string;
 	name?: string;
+}
+
+export interface PayloadAuthor {
+	id: string;
+	name: string;
+	about?: string;
+	avatar?: PayloadMedia;
 }
 
 export interface PayloadPostsResponse {

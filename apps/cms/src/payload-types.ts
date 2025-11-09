@@ -257,6 +257,15 @@ export interface Post {
     | {
         id?: string | null;
         name?: string | null;
+        about?: string | null;
+        avatar?: {
+          id?: string | null;
+          url?: string | null;
+          alt?: string | null;
+          width?: number | null;
+          height?: number | null;
+          filename?: string | null;
+        };
       }[]
     | null;
   /**
@@ -419,6 +428,8 @@ export interface Category {
 export interface User {
   id: string;
   name?: string | null;
+  about?: string | null;
+  avatar?: (string | null) | Media;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -1210,6 +1221,17 @@ export interface PostsSelect<T extends boolean = true> {
     | {
         id?: T;
         name?: T;
+        about?: T;
+        avatar?:
+          | T
+          | {
+              id?: T;
+              url?: T;
+              alt?: T;
+              width?: T;
+              height?: T;
+              filename?: T;
+            };
       };
   generateSlug?: T;
   slug?: T;
@@ -1338,6 +1360,8 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  about?: T;
+  avatar?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
