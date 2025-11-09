@@ -132,6 +132,10 @@ output "ecs_username" {
   value = aws_iam_role.ecs_task_execution_role.arn
 }
 
+output "cms_username" {
+  value = aws_iam_role.cms_exec_role.arn
+}
+
 
 
 output "basic_auth_username" {

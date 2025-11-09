@@ -22,6 +22,12 @@ variable "mongodb_database_name" {
   default     = "medicaljobs"
 }
 
+variable "mongodb_cms_database_name" {
+  type        = string
+  description = "MongoDB CMS database name."
+  default     = "cms"
+}
+
 
 variable "ecs_username" {
   type        = string

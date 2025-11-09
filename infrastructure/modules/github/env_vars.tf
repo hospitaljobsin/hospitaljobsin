@@ -262,3 +262,12 @@ resource "github_actions_environment_variable" "actions_runner_ami_id" {
   variable_name = "ACTIONS_RUNNER_AMI_ID"
   value         = var.actions_runner_ami_id
 }
+
+
+resource "github_actions_environment_variable" "sst_cms_iam_role" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "SST_CMS_IAM_ROLE"
+  value         = var.sst_cms_iam_role
+
+}
