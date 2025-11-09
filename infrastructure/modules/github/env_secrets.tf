@@ -93,7 +93,7 @@ resource "github_actions_environment_secret" "cms_database_uri" {
   repository      = data.github_repository.this.name
   environment     = github_repository_environment.this.environment
   secret_name     = "SST_CMS_DATABASE_URI"
-  plaintext_value = var.sst_cms_database_uri
+  plaintext_value = "${var.sst_cms_database_uri}?authMechanism=MONGODB-AWS&authSource=$external"
 }
 
 resource "github_actions_environment_secret" "cms_payload_secret" {
