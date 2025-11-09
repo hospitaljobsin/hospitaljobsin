@@ -23,6 +23,24 @@ export function LexicalContent({ content }: LexicalContentProps) {
 	return <div className='prose prose-lg max-w-none dark:prose-invert'>{renderedContent}</div>;
 }
 
+function extractTextFromChildren(children: LexicalNode[]): string {
+	if (!children || !Array.isArray(children)) {
+		return '';
+	}
+
+	return children
+		.map(child => {
+			if (child.text) {
+				return child.text;
+			}
+			if (child.children && Array.isArray(child.children)) {
+				return extractTextFromChildren(child.children);
+			}
+			return '';
+		})
+		.join('');
+}
+
 function renderLexicalContent(editorState: SerializedEditorState): React.ReactNode {
 	if (!editorState?.root?.children) {
 		return null;
@@ -48,7 +66,16 @@ function renderNode(node: LexicalNode, key: string): React.ReactNode {
 		case 'heading': {
 			const tag = (node.tag as string) || '2';
 			const HeadingTag = `h${tag}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-			return <HeadingTag key={key}>{renderChildren(node.children || [])}</HeadingTag>;
+			const text = extractTextFromChildren(node.children || []);
+			const id = text
+				.toLowerCase()
+				.replace(/[^a-z0-9]+/g, '-')
+				.replace(/(^-|-$)/g, '');
+			return (
+				<HeadingTag key={key} id={id}>
+					{renderChildren(node.children || [])}
+				</HeadingTag>
+			);
 		}
 
 		case 'list': {

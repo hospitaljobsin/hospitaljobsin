@@ -1,7 +1,7 @@
 'use client';
-import type { DashboardHeaderClientComponentQuery as DashboardHeaderClientComponentQueryType } from '@/__generated__/DashboardHeaderClientComponentQuery.graphql';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import type { DashboardHeaderClientComponentQuery as DashboardHeaderClientComponentQueryType } from '@/__generated__/DashboardHeaderClientComponentQuery.graphql';
 import DashboardHeader from './DashboardHeader';
 
 export const DashboardHeaderClientComponentQuery = graphql`
@@ -15,7 +15,12 @@ export default function DashboardHeaderClientComponent({ animate = true }: { ani
 		DashboardHeaderClientComponentQuery,
 		{},
 		{
-			fetchPolicy: 'store-or-network'
+			fetchPolicy: 'store-or-network',
+			networkCacheConfig: {
+				metadata: {
+					includeAuth: true
+				}
+			}
 		}
 	);
 

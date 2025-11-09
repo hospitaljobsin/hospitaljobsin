@@ -32,7 +32,7 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
 				</CardHeader>
 			)}
 			<CardBody className='gap-2'>
-				<h2 className='text-xl font-bold line-clamp-2'>{post.title}</h2>
+				<h2 className='text-lg font-medium line-clamp-2'>{post.title}</h2>
 				{post.meta?.description && <p className='text-sm text-default-500 line-clamp-3'>{post.meta.description}</p>}
 			</CardBody>
 			<CardFooter className='gap-4 flex-col items-start pt-0'>

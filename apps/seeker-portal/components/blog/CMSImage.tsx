@@ -10,5 +10,5 @@ type CMSImageProps = ComponentProps<typeof Image>;
  * Uses unoptimized mode to avoid issues with S3 image URLs.
  */
 export function CMSImage(props: CMSImageProps) {
-	return <Image {...props} unoptimized />;
+	return <Image {...props} />;
 }
