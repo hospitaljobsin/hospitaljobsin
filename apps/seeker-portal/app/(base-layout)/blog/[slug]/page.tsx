@@ -3,15 +3,34 @@ import { notFound } from 'next/navigation';
 import type { BlogPosting, WithContext } from 'schema-dts';
 import { BlogPostDetail } from '@/components/blog/BlogPostDetail';
 import DashboardHeaderClientComponent from '@/components/layout/DashboardHeaderClientComponent';
-import { fetchPostBySlug } from '@/lib/cms';
+import { fetchPostBySlug, fetchPosts } from '@/lib/cms';
 import { APP_NAME } from '@/lib/constants';
 import { env } from '@/lib/env/client';
 import links from '@/lib/links';
+
+// Enable ISR - revalidate every 60 seconds
+export const revalidate = 60;
 
 interface BlogPostPageProps {
 	params: Promise<{
 		slug: string;
 	}>;
+}
+
+// Generate static params for all blog posts at build time
+export async function generateStaticParams() {
+	try {
+		// Fetch all published posts to generate static pages
+		const postsData = await fetchPosts({ limit: 1000 });
+
+		return postsData.docs.map(post => ({
+			slug: post.slug
+		}));
+	} catch (error) {
+		console.error('Error generating static params for blog posts:', error);
+		// Return empty array to avoid build failure
+		return [];
+	}
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {

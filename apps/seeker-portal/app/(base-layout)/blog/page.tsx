@@ -8,6 +8,9 @@ import { APP_NAME } from '@/lib/constants';
 import { env } from '@/lib/env/client';
 import links from '@/lib/links';
 
+// Enable ISR - revalidate every 60 seconds
+export const revalidate = 60;
+
 export const metadata: Metadata = {
 	title: 'Hospital Pulse - Healthcare Career Insights & Industry Trends',
 	description:
