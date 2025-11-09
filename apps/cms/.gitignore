@@ -1,51 +1,21 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
+build
+dist / media
+node_modules
 .DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# env files (can opt-in for committing if needed)
 .env
-
-# vercel
+.next
 .vercel
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# Payload default media upload directory
+public/media/
+
+public/robots.txt
+public/sitemap*.xml
 
 
-# sst
-.sst
-
-
-# open-next
-.open-next
-
-# Sentry Config File
-.env.sentry-build-plugin
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

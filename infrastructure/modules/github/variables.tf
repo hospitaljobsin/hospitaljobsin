@@ -275,3 +275,30 @@ variable "actions_runner_ami_id" {
   type        = string
   description = "The AMI ID for the actions runner."
 }
+
+
+variable "sst_cms_database_uri" {
+  type        = string
+  description = "The MongoDB connection string for the CMS."
+  sensitive   = true
+}
+
+variable "sst_cms_payload_secret" {
+  type        = string
+  description = "The Payload CMS secret for the CMS."
+  sensitive   = true
+}
+
+
+variable "sst_cms_cron_secret" {
+  type        = string
+  description = "The Payload CMS cron secret for the CMS."
+  sensitive   = true
+}
+
+
+variable "sst_cms_preview_secret" {
+  type        = string
+  description = "The Payload CMS preview secret for the CMS."
+  sensitive   = true
+}

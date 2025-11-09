@@ -3,11 +3,10 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from '@sentry/nextjs';
-import { env } from './lib/env/client';
 
 Sentry.init({
-	dsn: env.NEXT_PUBLIC_SENTRY_DSN,
-	environment: env.NEXT_PUBLIC_ENVIRONMENT,
+	dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+	environment: process.env.NEXT_PUBLIC_ENVIRONMENT,
 	// Add optional integrations for additional features
 	integrations: [Sentry.replayIntegration(), Sentry.browserTracingIntegration()],
 

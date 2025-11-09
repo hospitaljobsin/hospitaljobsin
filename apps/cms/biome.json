@@ -93,6 +93,12 @@
 					}
 				}
 			}
+		},
+		{
+			"includes": ["**/payload-types.ts"],
+			"linter": {
+				"enabled": false
+			}
 		}
 	]
 }

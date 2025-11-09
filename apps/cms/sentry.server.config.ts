@@ -3,13 +3,12 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from '@sentry/nextjs';
-import { env } from './lib/env/client';
 
 export const initSentry = (runtime: 'nodejs' | 'edge') => {
 	if (runtime === 'nodejs') {
 		Sentry.init({
-			dsn: env.NEXT_PUBLIC_SENTRY_DSN,
-			environment: env.NEXT_PUBLIC_ENVIRONMENT,
+			dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+			environment: process.env.NEXT_PUBLIC_ENVIRONMENT,
 			// Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
 			tracesSampleRate: 1.0,
 
@@ -20,8 +19,8 @@ export const initSentry = (runtime: 'nodejs' | 'edge') => {
 		});
 	} else {
 		Sentry.init({
-			dsn: env.NEXT_PUBLIC_SENTRY_DSN,
-			environment: env.NEXT_PUBLIC_ENVIRONMENT,
+			dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+			environment: process.env.NEXT_PUBLIC_ENVIRONMENT,
 			// Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
 			tracesSampleRate: 1.0,
 

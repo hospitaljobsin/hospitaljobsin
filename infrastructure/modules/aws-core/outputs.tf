@@ -193,3 +193,19 @@ output "job_alerts_lambda_username" {
 output "staging_db_setup_lambda_username" {
   value = module.lambda_workers.lambda_staging_db_exec_role_arn
 }
+
+
+output "sst_cms_payload_secret" {
+  value     = random_bytes.cms_payload_secret.hex
+  sensitive = true
+}
+
+output "sst_cms_preview_secret" {
+  value     = random_bytes.cms_preview_secret.hex
+  sensitive = true
+}
+
+output "sst_cms_cron_secret" {
+  value     = random_bytes.cms_cron_secret.hex
+  sensitive = true
+}
