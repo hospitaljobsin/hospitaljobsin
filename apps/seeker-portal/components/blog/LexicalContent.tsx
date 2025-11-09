@@ -74,12 +74,12 @@ function renderNode(node: LexicalNode, key: string): React.ReactNode {
 
 			// Define heading classes based on tag
 			const headingClasses: Record<string, string> = {
-				h1: 'text-2xl font-bold mt-8 mb-4',
-				h2: 'text-xl font-semibold mt-8 mb-4',
-				h3: 'text-lg font-semibold mt-6 mb-3',
-				h4: 'text-lg font-semibold mt-4 mb-2',
-				h5: 'text-md font-semibold mt-4 mb-2',
-				h6: 'text-base font-semibold mt-4 mb-2'
+				h1: 'text-xl sm:text-2xl font-semibold mt-8 mb-4',
+				h2: 'text-lg sm:text-xl font-semibold mt-8 mb-4',
+				h3: 'text-md sm:text-lg font-medium mt-6 mb-3',
+				h4: 'text-md sm:text-lg font-medium mt-4 mb-2',
+				h5: 'text-base sm:text-md font-medium mt-4 mb-2',
+				h6: 'text-sm sm:text-base font-medium mt-4 mb-2'
 			};
 
 			return (
