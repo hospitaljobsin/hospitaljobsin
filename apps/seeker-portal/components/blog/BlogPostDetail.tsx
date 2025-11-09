@@ -1,100 +1,23 @@
 'use client';
 
-import { Button, Chip, Link as HeroUILink } from '@heroui/react';
+import { Button, Chip } from '@heroui/react';
 import { format } from 'date-fns';
-import type { SerializedEditorState } from 'lexical';
 import { ArrowLeft, CalendarDays, Clock, Facebook, Linkedin, Share2, Twitter, User } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { PayloadPost } from '@/types/payload';
 import { CMSImage } from './CMSImage';
 import { LexicalContent } from './LexicalContent';
+import { PostTableOfContents } from './PostTableOfContents';
 
 interface BlogPostDetailProps {
 	post: PayloadPost;
 }
 
-interface TableOfContentsItem {
-	id: string;
-	text: string;
-	level: number;
-}
-
-type LexicalNode = Record<string, unknown> & {
-	type: string;
-	children?: LexicalNode[];
-	text?: string;
-	tag?: string;
-};
-
-function extractHeadings(content: SerializedEditorState): TableOfContentsItem[] {
-	const headings: TableOfContentsItem[] = [];
-
-	function traverseNodes(nodes: LexicalNode[]): void {
-		for (const node of nodes) {
-			if (node.type === 'heading') {
-				const level = Number.parseInt(node.tag as string, 10) || 2;
-				const text = extractTextFromNode(node);
-				if (text) {
-					const id = text
-						.toLowerCase()
-						.replace(/[^a-z0-9]+/g, '-')
-						.replace(/(^-|-$)/g, '');
-					headings.push({ id, text, level });
-				}
-			}
-			if (node.children && Array.isArray(node.children)) {
-				traverseNodes(node.children);
-			}
-		}
-	}
-
-	if (content?.root?.children) {
-		traverseNodes(content.root.children as LexicalNode[]);
-	}
-
-	return headings;
-}
-
-function extractTextFromNode(node: LexicalNode): string {
-	if (node.text) {
-		return node.text;
-	}
-	if (node.children && Array.isArray(node.children)) {
-		return node.children.map(child => extractTextFromNode(child)).join('');
-	}
-	return '';
-}
-
 export function BlogPostDetail({ post }: BlogPostDetailProps) {
 	const publishedDate = post.publishedAt ? format(new Date(post.publishedAt), 'MMMM d, yyyy') : null;
 	const authors = post.populatedAuthors || [];
-	const [activeId, setActiveId] = useState<string>('');
 	const [showShareMenu, setShowShareMenu] = useState(false);
-	const tableOfContents = post.content ? extractHeadings(post.content) : [];
-
-	useEffect(() => {
-		const observer = new IntersectionObserver(
-			entries => {
-				for (const entry of entries) {
-					if (entry.isIntersecting) {
-						setActiveId(entry.target.id);
-					}
-				}
-			},
-			{
-				rootMargin: '-80px 0px -66%',
-				threshold: 0.5
-			}
-		);
-
-		const headings = document.querySelectorAll('h2[id], h3[id], h4[id]');
-		for (const heading of headings) {
-			observer.observe(heading);
-		}
-
-		return () => observer.disconnect();
-	}, []);
 
 	const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
 	const shareTitle = post.title;
@@ -111,7 +34,7 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 	};
 
 	return (
-		<div className='h-full'>
+		<div className='h-full w-full'>
 			{/* Back to Blog Header */}
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 py-4 border-b border-divider'>
 				<Link href='/blog' className='inline-flex items-center gap-2 text-default-600 hover:text-primary transition-colors'>
@@ -126,25 +49,11 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 					<aside className='hidden lg:block lg:col-span-4 lg:order-2'>
 						<div className='lg:sticky lg:top-24 space-y-6'>
 							{/* Table of Contents */}
-							{tableOfContents.length > 0 && (
+							{post.content && (
 								<div className='bg-background border border-default-200 rounded-lg p-6'>
 									<h3 className='text-lg font-semibold mb-4'>Table of contents</h3>
 									<nav>
-										<ul className='space-y-2'>
-											{tableOfContents.map(item => (
-												<li key={item.id} style={{ paddingLeft: `${(item.level - 2) * 12}px` }}>
-													<HeroUILink
-														href={`#${item.id}`}
-														color={activeId === item.id ? 'primary' : 'foreground'}
-														className={`text-sm hover:text-primary transition-colors block py-1 ${
-															activeId === item.id ? 'font-semibold border-l-2 border-primary pl-2 -ml-2 bg-primary/5' : ''
-														}`}
-													>
-														{item.text}
-													</HeroUILink>
-												</li>
-											))}
-										</ul>
+										<PostTableOfContents content={post.content} />
 									</nav>
 								</div>
 							)}
@@ -262,32 +171,18 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 						)}
 
 						{/* Mobile Table of Contents - Shows after hero image */}
-						{tableOfContents.length > 0 && (
+						{post.content && (
 							<div className='lg:hidden bg-background border border-default-200 rounded-lg p-6 mb-8'>
 								<h3 className='text-lg font-semibold mb-4'>Table of contents</h3>
 								<nav>
-									<ul className='space-y-2'>
-										{tableOfContents.map(item => (
-											<li key={item.id} style={{ paddingLeft: `${(item.level - 2) * 12}px` }}>
-												<HeroUILink
-													href={`#${item.id}`}
-													color={activeId === item.id ? 'primary' : 'foreground'}
-													className={`text-sm hover:text-primary transition-colors block py-1 ${
-														activeId === item.id ? 'font-semibold border-l-2 border-primary pl-2 -ml-2 bg-primary/5' : ''
-													}`}
-												>
-													{item.text}
-												</HeroUILink>
-											</li>
-										))}
-									</ul>
+									<PostTableOfContents content={post.content} />
 								</nav>
 							</div>
 						)}
 
 						{/* Content */}
 						{post.content && (
-							<div className='prose prose-lg prose-slate dark:prose-invert max-w-none prose-headings:scroll-mt-20 prose-headings:font-semibold prose-h2:text-3xl prose-h3:text-2xl prose-h4:text-xl prose-p:text-default-700 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-default-900 prose-strong:font-semibold prose-code:text-primary prose-code:bg-default-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-default-100 prose-pre:border prose-pre:border-default-200 prose-img:rounded-lg prose-img:shadow-md'>
+							<div className='prose prose-lg prose-slate dark:prose-invert max-w-none prose-headings:scroll-mt-32 prose-headings:font-semibold prose-h2:text-3xl prose-h3:text-2xl prose-h4:text-xl prose-p:text-default-700 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-default-900 prose-strong:font-semibold prose-code:text-primary prose-code:bg-default-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-default-100 prose-pre:border prose-pre:border-default-200 prose-img:rounded-lg prose-img:shadow-md'>
 								<LexicalContent content={post.content} />
 							</div>
 						)}
