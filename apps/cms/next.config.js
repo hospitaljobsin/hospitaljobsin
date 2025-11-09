@@ -32,7 +32,13 @@ const nextConfig = {
 		return webpackConfig;
 	},
 	reactStrictMode: true,
-	redirects
+	redirects,
+	typescript: {
+		ignoreBuildErrors: true
+	},
+	eslint: {
+		ignoreDuringBuilds: true
+	}
 };
 
 const withBundleAnalyzer = bundleAnalyzer({

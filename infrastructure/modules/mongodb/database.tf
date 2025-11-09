@@ -121,6 +121,24 @@ resource "mongodbatlas_database_user" "job_alerts_user" {
   }
 }
 
+# CMS user with password authentication (for CI/CD and Lambda access)
+resource "random_password" "cms_user_password" {
+  length  = 32
+  special = true
+}
+
+resource "mongodbatlas_database_user" "cms_user" {
+  username           = var.cms_username
+  password           = random_password.cms_user_password.result
+  project_id         = mongodbatlas_project.project.id
+  auth_database_name = "admin"
+
+  roles {
+    role_name     = "readWrite"
+    database_name = "cms"
+  }
+}
+
 # Flexible backups are only supported on M10+ clusters
 # resource "mongodbatlas_cloud_backup_schedule" "this" {
 #   project_id   = mongodbatlas_advanced_cluster.this.project_id
