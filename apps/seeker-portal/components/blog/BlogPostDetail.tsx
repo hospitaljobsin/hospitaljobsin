@@ -4,7 +4,6 @@ import { Button, Chip } from '@heroui/react';
 import { format } from 'date-fns';
 import { ArrowLeft, CalendarDays, Clock, Facebook, Linkedin, Share2, Twitter, User } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
 import type { PayloadPost } from '@/types/payload';
 import { CMSImage } from './CMSImage';
 import { LexicalContent } from './LexicalContent';
@@ -17,7 +16,6 @@ interface BlogPostDetailProps {
 export function BlogPostDetail({ post }: BlogPostDetailProps) {
 	const publishedDate = post.publishedAt ? format(new Date(post.publishedAt), 'MMMM d, yyyy') : null;
 	const authors = post.populatedAuthors || [];
-	const [showShareMenu, setShowShareMenu] = useState(false);
 
 	const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
 	const shareTitle = post.title;
@@ -30,7 +28,6 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 		};
 
 		window.open(urls[platform as keyof typeof urls], '_blank', 'width=600,height=400');
-		setShowShareMenu(false);
 	};
 
 	return (
@@ -48,10 +45,10 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 					{/* Sidebar - Desktop only */}
 					<aside className='hidden lg:block lg:col-span-4 lg:order-2'>
 						<div className='lg:sticky lg:top-24 space-y-6'>
-							{/* Table of Contents */}
+							{/* On This Page */}
 							{post.content && (
 								<div className='bg-background border border-default-200 rounded-lg p-6'>
-									<h3 className='text-lg font-semibold mb-4'>Table of contents</h3>
+									<h3 className='text-lg font-medium mb-4 text-foreground-600'>On This Page</h3>
 									<nav>
 										<PostTableOfContents content={post.content} />
 									</nav>
@@ -59,46 +56,40 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 							)}
 
 							{/* Share Section */}
-							<div className='bg-background border border-default-200 rounded-lg p-6'>
-								<h3 className='text-lg font-semibold mb-4 flex items-center gap-2'>
-									<Share2 className='w-5 h-5' />
-									Share
+							<div className='px-4'>
+								<h3 className='text-lg font-medium mb-4 flex items-center gap-2 text-foreground-600'>
+									<Share2 className='w-4 h-4' />
+									Share This Post
 								</h3>
-								<div className='flex flex-col gap-2'>
-									<Button
-										variant='flat'
-										color='default'
-										startContent={<Twitter className='w-4 h-4' />}
-										onPress={() => handleShare('twitter')}
-										className='justify-start'
-									>
-										Share on Twitter
+								<div className='flex gap-3 text-foreground-600'>
+									<Button isIconOnly variant='flat' color='default' onPress={() => handleShare('twitter')} aria-label='Share on Twitter'>
+										<Twitter className='w-5 h-5' />
 									</Button>
-									<Button
-										variant='flat'
-										color='default'
-										startContent={<Facebook className='w-4 h-4' />}
-										onPress={() => handleShare('facebook')}
-										className='justify-start'
-									>
-										Share on Facebook
+									<Button isIconOnly variant='flat' color='default' onPress={() => handleShare('facebook')} aria-label='Share on Facebook'>
+										<Facebook className='w-5 h-5' />
 									</Button>
-									<Button
-										variant='flat'
-										color='default'
-										startContent={<Linkedin className='w-4 h-4' />}
-										onPress={() => handleShare('linkedin')}
-										className='justify-start'
-									>
-										Share on LinkedIn
+									<Button isIconOnly variant='flat' color='default' onPress={() => handleShare('linkedin')} aria-label='Share on LinkedIn'>
+										<Linkedin className='w-5 h-5' />
 									</Button>
 								</div>
 							</div>
 						</div>
 					</aside>
-
 					{/* Main Content */}
 					<article className='lg:col-span-8 lg:order-1'>
+						{/* Hero Image */}
+						{post.heroImage?.url && (
+							<div className='relative w-full h-[400px] mb-8 rounded-lg overflow-hidden'>
+								<CMSImage
+									src={post.heroImage.url}
+									alt={post.heroImage.alt || post.title}
+									fill
+									className='object-cover'
+									sizes='(max-width: 1200px) 100vw, 1200px'
+									priority
+								/>
+							</div>
+						)}
 						{/* Categories */}
 						{post.categories && post.categories.length > 0 && (
 							<div className='flex gap-2 flex-wrap mb-4'>
@@ -156,24 +147,10 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 							)}
 						</div>
 
-						{/* Hero Image */}
-						{post.heroImage?.url && (
-							<div className='relative w-full h-[400px] mb-8 rounded-lg overflow-hidden'>
-								<CMSImage
-									src={post.heroImage.url}
-									alt={post.heroImage.alt || post.title}
-									fill
-									className='object-cover'
-									sizes='(max-width: 1200px) 100vw, 1200px'
-									priority
-								/>
-							</div>
-						)}
-
-						{/* Mobile Table of Contents - Shows after hero image */}
+						{/* Mobile On This Page - Shows after hero image */}
 						{post.content && (
 							<div className='lg:hidden bg-background border border-default-200 rounded-lg p-6 mb-8'>
-								<h3 className='text-lg font-semibold mb-4'>Table of contents</h3>
+								<h3 className='text-lg font-medium mb-4 text-foreground-600'>On This Page</h3>
 								<nav>
 									<PostTableOfContents content={post.content} />
 								</nav>
@@ -190,14 +167,14 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 						{/* Author Bio Section */}
 						{authors.length > 0 && (
 							<div className='mt-12 pt-8 border-t border-default-200'>
-								<h3 className='text-lg font-medium mb-4'>About the Author{authors.length > 1 ? 's' : ''}</h3>
+								<h3 className='text-lg font-medium mb-4 text-foreground-600'>About the Author{authors.length > 1 ? 's' : ''}</h3>
 								<div className='space-y-4'>
 									{authors.map(author => {
 										console.log('Author data:', author);
 										const hasAvatar = author.avatar && typeof author.avatar === 'object' && author.avatar.url;
 
 										return (
-											<div key={author.id} className='flex items-start gap-4 bg-default-100 rounded-lg'>
+											<div key={author.id} className='flex items-center gap-4 bg-default-100 rounded-lg'>
 												<div className='flex-shrink-0'>
 													{hasAvatar && author.avatar ? (
 														<div className='w-16 h-16 rounded-full overflow-hidden'>
@@ -228,37 +205,19 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 
 						{/* Mobile Share Section */}
 						<div className='lg:hidden mt-8 pt-6 border-t border-default-200'>
-							<h3 className='text-lg font-semibold mb-4 flex items-center gap-2'>
+							<h3 className='text-lg font-medium mb-4 flex items-center gap-2 text-foreground-600'>
 								<Share2 className='w-5 h-5' />
-								Share
+								Share This Post
 							</h3>
-							<div className='flex flex-col gap-2'>
-								<Button
-									variant='flat'
-									color='default'
-									startContent={<Twitter className='w-4 h-4' />}
-									onPress={() => handleShare('twitter')}
-									className='justify-start'
-								>
-									Share on Twitter
+							<div className='flex gap-2'>
+								<Button isIconOnly variant='flat' color='default' onPress={() => handleShare('twitter')} aria-label='Share on Twitter'>
+									<Twitter className='w-5 h-5' />
 								</Button>
-								<Button
-									variant='flat'
-									color='default'
-									startContent={<Facebook className='w-4 h-4' />}
-									onPress={() => handleShare('facebook')}
-									className='justify-start'
-								>
-									Share on Facebook
+								<Button isIconOnly variant='flat' color='default' onPress={() => handleShare('facebook')} aria-label='Share on Facebook'>
+									<Facebook className='w-5 h-5' />
 								</Button>
-								<Button
-									variant='flat'
-									color='default'
-									startContent={<Linkedin className='w-4 h-4' />}
-									onPress={() => handleShare('linkedin')}
-									className='justify-start'
-								>
-									Share on LinkedIn
+								<Button isIconOnly variant='flat' color='default' onPress={() => handleShare('linkedin')} aria-label='Share on LinkedIn'>
+									<Linkedin className='w-5 h-5' />
 								</Button>
 							</div>
 						</div>

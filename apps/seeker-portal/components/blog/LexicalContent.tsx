@@ -64,8 +64,8 @@ function renderNode(node: LexicalNode, key: string): React.ReactNode {
 		}
 
 		case 'heading': {
-			const tag = (node.tag as string) || '2';
-			const HeadingTag = `h${tag}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+			const tag = (node.tag as string) || 'h2';
+			const HeadingTag = tag as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 			const text = extractTextFromChildren(node.children || []);
 			const id = text
 				.toLowerCase()
@@ -74,16 +74,16 @@ function renderNode(node: LexicalNode, key: string): React.ReactNode {
 
 			// Define heading classes based on tag
 			const headingClasses: Record<string, string> = {
-				'1': 'text-2xl font-bold mt-8 mb-4',
-				'2': 'text-xl font-semibold mt-8 mb-4',
-				'3': 'text-lg font-semibold mt-6 mb-3',
-				'4': 'text-lg font-semibold mt-4 mb-2',
-				'5': 'text-md font-semibold mt-4 mb-2',
-				'6': 'text-base font-semibold mt-4 mb-2'
+				h1: 'text-2xl font-bold mt-8 mb-4',
+				h2: 'text-xl font-semibold mt-8 mb-4',
+				h3: 'text-lg font-semibold mt-6 mb-3',
+				h4: 'text-lg font-semibold mt-4 mb-2',
+				h5: 'text-md font-semibold mt-4 mb-2',
+				h6: 'text-base font-semibold mt-4 mb-2'
 			};
 
 			return (
-				<HeadingTag key={key} id={id} className={headingClasses[tag] || headingClasses['2']}>
+				<HeadingTag key={key} id={id} className={headingClasses[tag] || headingClasses.h2}>
 					{renderChildren(node.children || [])}
 				</HeadingTag>
 			);

@@ -2,7 +2,7 @@
 
 import { Link as HeroUILink } from '@heroui/react';
 import type { SerializedEditorState } from 'lexical';
-import { ArrowRight, Hash } from 'lucide-react';
+import { ArrowRight, CircleSmall } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 type LexicalNode = Record<string, unknown> & {
@@ -55,53 +55,76 @@ export function PostTableOfContents({ className, content }: Props) {
 	};
 
 	useEffect(() => {
-		const callback: IntersectionObserverCallback = headings => {
-			activeHeadingRef.current = headings.reduce((map: Record<string, IntersectionObserverEntry>, headingElement) => {
-				map[headingElement.target.id] = headingElement;
-				return map;
-			}, activeHeadingRef.current);
+		// Only enable active heading tracking on desktop (screens wider than 1024px)
+		const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
 
-			const visibleHeadings: IntersectionObserverEntry[] = [];
-			for (const key of Object.keys(activeHeadingRef.current)) {
-				const headingElement = activeHeadingRef.current[key];
-				if (headingElement.isIntersecting) visibleHeadings.push(headingElement);
+		if (!isDesktop) {
+			return;
+		}
+
+		let observer: IntersectionObserver | null = null;
+		let retryCount = 0;
+		const maxRetries = 10;
+
+		const setupIntersectionObserver = () => {
+			const headingElements: Element[] = Array.from(document.querySelectorAll('article h1, article h2, article h3'));
+
+			// Check if headings have IDs
+			const headingsWithIds = headingElements.filter(el => el.id);
+
+			if (headingsWithIds.length === 0) {
+				return false;
 			}
 
-			const getIndexFromId = (id: string) => headingElements.findIndex(heading => heading.id === id);
+			const callback: IntersectionObserverCallback = headings => {
+				activeHeadingRef.current = headings.reduce((map: Record<string, IntersectionObserverEntry>, headingElement) => {
+					map[headingElement.target.id] = headingElement;
+					return map;
+				}, activeHeadingRef.current);
 
-			if (visibleHeadings.length === 1) {
-				setActiveId(visibleHeadings[0].target.id);
-			} else if (visibleHeadings.length > 1) {
-				const sortedVisibleHeadings = visibleHeadings.sort((a, b) =>
-					getIndexFromId(a.target.id) > getIndexFromId(b.target.id) ? getIndexFromId(a.target.id) : getIndexFromId(b.target.id)
-				);
-				setActiveId(sortedVisibleHeadings[0].target.id);
-			}
-
-			if (visibleHeadings.length === 0) {
-				const activeElement = headingElements.find(el => el.id === activeId);
-				const activeIndex = headingElements.findIndex(el => el.id === activeId);
-
-				const activeIdYcoord = activeElement?.getBoundingClientRect().y;
-				if (activeIdYcoord && activeIdYcoord > 150 && activeIndex !== 0) {
-					setActiveId(headingElements[activeIndex - 1].id);
+				const visibleHeadings: IntersectionObserverEntry[] = [];
+				for (const key of Object.keys(activeHeadingRef.current)) {
+					const headingElement = activeHeadingRef.current[key];
+					if (headingElement.isIntersecting) visibleHeadings.push(headingElement);
 				}
+
+				const getIndexFromId = (id: string) => headingsWithIds.findIndex(heading => heading.id === id);
+
+				if (visibleHeadings.length === 1) {
+					setActiveId(visibleHeadings[0].target.id);
+				} else if (visibleHeadings.length > 1) {
+					const sortedVisibleHeadings = visibleHeadings.sort((a, b) => getIndexFromId(a.target.id) - getIndexFromId(b.target.id));
+					setActiveId(sortedVisibleHeadings[0].target.id);
+				}
+			};
+
+			observer = new IntersectionObserver(callback, {
+				rootMargin: '-120px 0px -40% 0px'
+			});
+
+			for (const element of headingsWithIds) {
+				observer.observe(element);
+			}
+
+			return true;
+		};
+
+		// Try to set up observer with retries
+		const trySetup = () => {
+			const success = setupIntersectionObserver();
+
+			if (!success && retryCount < maxRetries) {
+				retryCount++;
+				setTimeout(trySetup, 100);
 			}
 		};
 
-		const observer = new IntersectionObserver(callback, {
-			// Adjust root margin to account for header
-			rootMargin: '-120px 0px -40% 0px'
-		});
+		trySetup();
 
-		const headingElements: Element[] = Array.from((document.querySelector('article') ?? document).querySelectorAll('h1, h2, h3'));
-
-		for (const element of headingElements) {
-			observer.observe(element);
-		}
-
-		return () => observer.disconnect();
-	}, [activeId]);
+		return () => {
+			observer?.disconnect();
+		};
+	}, [content]);
 
 	if (!content?.root?.children) return null;
 
@@ -128,17 +151,10 @@ export function PostTableOfContents({ className, content }: Props) {
 
 	const headings = collectHeadings(content.root.children);
 
-	console.log('🔍 Headings found:', headings.length);
-	console.log(
-		'🔍 Heading details:',
-		headings.map(h => ({ tag: h.tag, text: extractText(h) }))
-	);
-
 	return (
 		<ul className={`list-none space-y-2 ${className || ''}`}>
-			{headings.map((node, index) => {
+			{headings.map(node => {
 				const text = extractText(node);
-				console.log(`🔍 Rendering heading ${index}:`, text);
 				if (!text) return null;
 
 				const id = text
@@ -151,8 +167,11 @@ export function PostTableOfContents({ className, content }: Props) {
 				const indent = (level - 1) * 12;
 				const isActive = activeId === id;
 
+				// Create a more unique key to avoid the index-as-key warning
+				const uniqueKey = `${id}-${level}-${text.slice(0, 20)}`;
+
 				return (
-					<li key={`${id}-${index}`} style={{ paddingLeft: `${indent}px` }}>
+					<li key={uniqueKey} style={{ paddingLeft: `${indent}px` }}>
 						<HeroUILink
 							href={`#${id}`}
 							onClick={(e: React.MouseEvent) => {
@@ -164,7 +183,7 @@ export function PostTableOfContents({ className, content }: Props) {
 								isActive ? 'font-semibold border-l-2 border-primary pl-2 -ml-2 bg-primary/5' : ''
 							}`}
 						>
-							{isActive ? <ArrowRight className='w-3.5 h-3.5 flex-shrink-0' /> : <Hash className='w-3.5 h-3.5 flex-shrink-0' />}
+							{isActive ? <ArrowRight className='w-3.5 h-3.5 flex-shrink-0' /> : <CircleSmall className='w-3.5 h-3.5 flex-shrink-0' />}
 							<span>{text}</span>
 						</HeroUILink>
 					</li>
