@@ -24,6 +24,7 @@ https://www.planttext.com?text=u-LoA2v9B2efpStXvShBJqbLK0eepIbE3SylobPmJ4xEByqhA
 | Hospital Jobs Recruiter Portal Core | [apps/recruitment-portal-core](./apps/recruiter-portal-core) | Recruitment platform UI          |
 | Hospital Jobs Recruiter Dashboard   | [apps/recruitment-dashboard](./apps/recruiter-dashboard)     | Recruitment platform UI          |
 | Hospital Jobs                       | [apps/seeker-portal](./apps/seeker-portal)                   | Job Seeker platform UI           |
+| Hospital Jobs CMS                   | [apps/cms](./apps/cms)                                       | Payload CMS Dashboard            |
 | Hospital Jobs API                   | [server](./server)                                           | GraphQL API Server               |
 | E2E Test Suite                      | [e2e](./e2e)                                                 | Playwright End-To-End Tests      |
 | Infrastructure                      | [infrastructure](./infrastructure)                           | Terraform Infrastructure as Code |
@@ -349,13 +350,9 @@ To set up a WhatsApp Business API account using Meta's developer tools, follow t
 - Create a new account
 - Copy the API key
 
-### 11. OutStatic CMS Setup
+### 11. Payload CMS Setup
 
-- Create a separate github repository for storing the CMS content (ex: hospitaljobsin/outstatic)
-- Create a Github Oauth2 App following the [Outstatic docs](https://outstatic.com/docs/github-apps-authentication)
-- Copy the Client ID and Client Secret
-
-_Note: separate github apps are required for each environment- staging, dev and production_
+- TODO
 
 ### 12. Terraform Setup
 
@@ -374,7 +371,6 @@ GitHub Actions Variables:
 - `MONGODB_ATLAS_ORG_ID`
 - `WHATSAPP_PHONE_NUMBER_ID`
 - `POSTHOG_API_HOST`
-- `OST_GITHUB_ID`
 
 GitHub Actions Secrets:
 
@@ -392,7 +388,6 @@ GitHub Actions Secrets:
 - `WHATSAPP_ACCESS_TOKEN`
 - `TWO_FACTOR_IN_API_KEY`
 - `POSTHOG_API_KEY`
-- `OST_GITHUB_SECRET`
 
 During the initial terraform deployment:
 

@@ -73,6 +73,10 @@ module "github" {
   actions_runner_ami_id                             = module.core.actions_runner_ami_id
   sst_jwe_secret_key                                = module.core.sst_jwe_secret_key
   sst_revalidate_secret                             = module.core.sst_revalidate_secret
+  sst_cms_database_uri                              = module.mongodb.cms_connection_string
+  sst_cms_cron_secret                               = module.core.sst_cms_cron_secret
+  sst_cms_payload_secret                            = module.core.sst_cms_payload_secret
+  sst_cms_preview_secret                            = module.core.sst_cms_preview_secret
 }
 
 

@@ -30,3 +30,16 @@ resource "aws_secretsmanager_secret_version" "example" {
 
   depends_on = [random_bytes.jwe_secret, ]
 }
+
+
+resource "random_bytes" "cms_payload_secret" {
+  length = 16
+}
+
+resource "random_bytes" "cms_preview_secret" {
+  length = 16
+}
+
+resource "random_bytes" "cms_cron_secret" {
+  length = 16
+}

@@ -87,3 +87,32 @@ resource "github_actions_environment_secret" "basic_auth_password" {
   secret_name     = "BASIC_AUTH_PASSWORD"
   plaintext_value = var.basic_auth_password
 }
+
+
+resource "github_actions_environment_secret" "cms_database_uri" {
+  repository      = data.github_repository.this.name
+  environment     = github_repository_environment.this.environment
+  secret_name     = "SST_CMS_DATABASE_URI"
+  plaintext_value = var.sst_cms_database_uri
+}
+
+resource "github_actions_environment_secret" "cms_payload_secret" {
+  repository      = data.github_repository.this.name
+  environment     = github_repository_environment.this.environment
+  secret_name     = "SST_CMS_PAYLOAD_SECRET"
+  plaintext_value = var.sst_cms_payload_secret
+}
+
+resource "github_actions_environment_secret" "cms_cron_secret" {
+  repository      = data.github_repository.this.name
+  environment     = github_repository_environment.this.environment
+  secret_name     = "SST_CMS_CRON_SECRET"
+  plaintext_value = var.sst_cms_cron_secret
+}
+
+resource "github_actions_environment_secret" "cms_preview_secret" {
+  repository      = data.github_repository.this.name
+  environment     = github_repository_environment.this.environment
+  secret_name     = "SST_CMS_PREVIEW_SECRET"
+  plaintext_value = var.sst_cms_preview_secret
+}

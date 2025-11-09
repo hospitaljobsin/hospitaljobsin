@@ -15,8 +15,6 @@ env: # repo-level and non-env-specific secrets/vars
   AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: ${{ vars.AWS_REGION }}
-  OST_GITHUB_SECRET: ${{ secrets.OST_GITHUB_SECRET }}
-  OST_GITHUB_ID: ${{ vars.OST_GITHUB_ID }}
 
 jobs:
   build-and-push:
@@ -80,13 +78,18 @@ jobs:
           NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.CMS_SENTRY_DSN }}
           NEXT_PUBLIC_SENTRY_ORGANIZATION: ${{ vars.SENTRY_ORGANIZATION }}
           NEXT_PUBLIC_SENTRY_PROJECT: ${{vars.CMS_SENTRY_PROJECT}}
-          SKIP_ENV_VALIDATION: true
+          NEXT_PUBLIC_ROOT_DOMAIN: ${{ vars.PUBLIC_ROOT_DOMAIN }}
           NODE_ENV: production
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-          NEXT_PUBLIC_ROOT_DOMAIN: ${{ vars.PUBLIC_ROOT_DOMAIN }}
-          OST_GITHUB_SECRET: ${{ env.OST_GITHUB_SECRET }}
-          OST_GITHUB_ID: ${{ env.OST_GITHUB_ID }}
-          OST_REPO_SLUG: outstatic
-          OST_REPO_BRANCH: main
-          OST_REPO_OWNER: hospitaljobsin
+          # Database connection string
+          DATABASE_URI: ${{ secrets.SST_CMS_DATABASE_URI }}
+          # Used to encrypt JWT tokens
+          PAYLOAD_SECRET: ${{ secrets.SST_CMS_PAYLOAD_SECRET }}
+          # Used to configure CORS, format links and more. No trailing slash
+          NEXT_PUBLIC_SERVER_URL: ${{ vars.SST_CMS_BASE_URL }}
+          # Secret used to authenticate cron jobs
+          CRON_SECRET: ${{ secrets.SST_CMS_CRON_SECRET }}
+          # Used to validate preview requests
+          PREVIEW_SECRET: ${{ secrets.SST_CMS_PREVIEW_SECRET }}
+          # Added by Payload

@@ -1,6 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./.sst/platform/config.d.ts" />
-const { env } = await import('./lib/env/client');
 
 export default $config({
 	app(input) {
@@ -26,21 +25,15 @@ export default $config({
 		new sst.aws.Nextjs('cms-ui', {
 			buildCommand: 'pnpm run package',
 			domain: {
-				name: `content.${env.NEXT_PUBLIC_ROOT_DOMAIN}`,
+				name: `content.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`,
 				aliases: [process.env.SST_CMS_DOMAIN]
 			},
 			environment: {
-				NEXT_PUBLIC_URL: env.NEXT_PUBLIC_URL,
-				NEXT_PUBLIC_SENTRY_DSN: env.NEXT_PUBLIC_SENTRY_DSN,
-				NEXT_PUBLIC_SENTRY_ORGANIZATION: env.NEXT_PUBLIC_SENTRY_ORGANIZATION,
-				NEXT_PUBLIC_SENTRY_PROJECT: env.NEXT_PUBLIC_SENTRY_PROJECT,
-				NEXT_PUBLIC_ENVIRONMENT: env.NEXT_PUBLIC_ENVIRONMENT,
-				NEXT_PUBLIC_ROOT_DOMAIN: env.NEXT_PUBLIC_ROOT_DOMAIN,
-				OST_GITHUB_SECRET: process.env.OST_GITHUB_SECRET,
-				OST_GITHUB_ID: process.env.OST_GITHUB_ID,
-				OST_REPO_SLUG: process.env.OST_REPO_SLUG,
-				OST_REPO_BRANCH: process.env.OST_REPO_BRANCH,
-				OST_REPO_OWNER: process.env.OST_REPO_OWNER
+				DATABASE_URI: process.env.DATABASE_URI,
+				PAYLOAD_SECRET: process.env.PAYLOAD_SECRET,
+				NEXT_PUBLIC_SERVER_URL: process.env.NEXT_PUBLIC_SERVER_URL,
+				CRON_SECRET: process.env.CRON_SECRET,
+				PREVIEW_SECRET: process.env.PREVIEW_SECRET
 			},
 			assets: {
 				textEncoding: 'utf-8',
