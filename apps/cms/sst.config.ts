@@ -11,17 +11,7 @@ export default $config({
 		};
 	},
 
-	async run() {
-		const enableBasicAuth = $app.stage === 'staging';
-
-		// Encode the Basic Auth credentials from process.env
-		let basicAuthHeader: string | undefined;
-		if (enableBasicAuth) {
-			const username = process.env.BASIC_AUTH_USERNAME || '';
-			const password = process.env.BASIC_AUTH_PASSWORD || '';
-			basicAuthHeader = Buffer.from(`${username}:${password}`).toString('base64');
-		}
-
+	run() {
 		new sst.aws.Nextjs('cms-ui', {
 			buildCommand: 'pnpm run package',
 			domain: {
@@ -80,27 +70,7 @@ export default $config({
 						}
 					};
 				}
-			},
-			...(enableBasicAuth && {
-				edge: {
-					viewerRequest: {
-						injection: `
-							if (
-								!event.request.headers.authorization ||
-								event.request.headers.authorization.value !== "Basic ${basicAuthHeader}"
-							) {
-								return {
-									statusCode: 401,
-									statusDescription: "Unauthorized",
-									headers: {
-										"www-authenticate": { value: "Basic" }
-									}
-								};
-							}
-						`
-					}
-				}
-			})
+			}
 		});
 	}
 });
