@@ -2,9 +2,11 @@ import type { MetadataRoute } from 'next';
 import { fetchQuery, graphql } from 'relay-runtime';
 import type { sitemapJobsQuery as sitemapJobsType } from '@/__generated__/sitemapJobsQuery.graphql';
 import type { sitemapOrganizationsQuery as SiteMapOrganizationQueryType } from '@/__generated__/sitemapOrganizationsQuery.graphql';
+import { fetchPosts } from '@/lib/cms';
 import { env } from '@/lib/env/client';
 import links from '@/lib/links';
 import { getCurrentEnvironment } from '@/lib/relay/environments';
+import type { PayloadPost } from '@/types/payload';
 
 export const SitemapJobsQuery = graphql`
   query sitemapJobsQuery($cursor: ID, $count: Int!) {
@@ -103,6 +105,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 			lastModified: new Date(),
 			changeFrequency: 'monthly',
 			priority: 0.6
+		},
+		{
+			url: `${env.NEXT_PUBLIC_URL}${links.blog}`,
+			lastModified: new Date(),
+			changeFrequency: 'weekly',
+			priority: 0.8
 		}
 		// add more static pages here
 	];
@@ -112,6 +120,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	}
 	const jobs = await genJobsSitemap();
 	const organizations = await genOrganizationsSitemap();
+	const blogPosts = await genBlogPostsSitemap();
 
 	const searchLocations = genSearchLocationsSitemap();
 	const searchMapLocations = genSearchLocationsMapSitemap();
@@ -122,6 +131,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		...staticPages,
 		...jobs,
 		...organizations,
+		...blogPosts,
 		...searchLocations,
 		...searchMapLocations,
 		...searchSpecialities,
@@ -131,7 +141,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 async function genJobsSitemap(): Promise<MetadataRoute.Sitemap> {
 	const environment = getCurrentEnvironment();
-	const allJobs = [];
+	const allJobs: Array<{
+		id: string;
+		slug: string;
+		createdAt: string;
+		updatedAt: string;
+		organization: {
+			slug: string;
+			name: string;
+			bannerUrl: string;
+		};
+	}> = [];
 	let cursor: string | null = null;
 	let hasNextPage = true;
 	const batchSize = 100;
@@ -173,7 +193,12 @@ async function genJobsSitemap(): Promise<MetadataRoute.Sitemap> {
 
 async function genOrganizationsSitemap(): Promise<MetadataRoute.Sitemap> {
 	const environment = getCurrentEnvironment();
-	const allOrganizations = [];
+	const allOrganizations: Array<{
+		slug: string;
+		name: string;
+		bannerUrl: string;
+		createdAt: string;
+	}> = [];
 	let cursor: string | null = null;
 	let hasNextPage = true;
 	const batchSize = 100;
@@ -204,6 +229,46 @@ async function genOrganizationsSitemap(): Promise<MetadataRoute.Sitemap> {
 		changeFrequency: 'weekly',
 		priority: 0.7,
 		images: [organization.bannerUrl]
+	}));
+}
+
+async function genBlogPostsSitemap(): Promise<MetadataRoute.Sitemap> {
+	const allBlogPosts: PayloadPost[] = [];
+	let currentPage = 1;
+	let hasNextPage = true;
+	const limit = 100;
+
+	// Fetch all blog posts using page-based pagination
+	while (hasNextPage) {
+		console.log('fetching blog posts', currentPage);
+		try {
+			const data = await fetchPosts({
+				limit,
+				page: currentPage
+			});
+
+			if (!data?.docs || data.docs.length === 0) {
+				break;
+			}
+
+			// Add posts from this batch
+			allBlogPosts.push(...data.docs);
+
+			// Update pagination state
+			hasNextPage = data.hasNextPage;
+			currentPage += 1;
+		} catch (error) {
+			console.error('error fetching blog posts', error);
+			break;
+		}
+	}
+
+	return allBlogPosts.map(post => ({
+		url: `${env.NEXT_PUBLIC_URL}${links.blogDetail(post.slug)}`,
+		lastModified: post.publishedAt ? new Date(post.publishedAt) : new Date(),
+		changeFrequency: 'weekly' as const,
+		priority: 0.7,
+		images: post.heroImage?.url ? [post.heroImage.url] : []
 	}));
 }
 
