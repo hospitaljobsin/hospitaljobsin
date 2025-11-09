@@ -67,6 +67,10 @@ const nextConfig: NextConfig = {
 				protocol: 'https',
 				hostname: 'api.dicebear.com'
 			},
+			{
+				protocol: 'https',
+				hostname: 'content.localtest.me'
+			},
 			// Add your specific S3 bucket domain here
 			// {
 			//   protocol: "https",

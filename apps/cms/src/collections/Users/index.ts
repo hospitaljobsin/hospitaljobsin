@@ -20,6 +20,15 @@ export const Users: CollectionConfig = {
 		{
 			name: 'name',
 			type: 'text'
+		},
+		{
+			name: 'about',
+			type: 'text'
+		},
+		{
+			name: 'avatar',
+			type: 'relationship',
+			relationTo: 'media' // this should match your Media collection slug
 		}
 	],
 	timestamps: true

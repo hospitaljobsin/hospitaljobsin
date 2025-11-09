@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload';
+import { MetaDescriptionField, MetaImageField, MetaTitleField, OverviewField, PreviewField } from '@payloadcms/plugin-seo/fields';
 
 import {
 	BlocksFeature,
@@ -8,18 +8,17 @@ import {
 	InlineToolbarFeature,
 	lexicalEditor
 } from '@payloadcms/richtext-lexical';
-
+import type { CollectionConfig } from 'payload';
+import { slugField } from 'payload';
 import { authenticated } from '../../access/authenticated';
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished';
 import { Banner } from '../../blocks/Banner/config';
 import { Code } from '../../blocks/Code/config';
 import { MediaBlock } from '../../blocks/MediaBlock/config';
 import { generatePreviewPath } from '../../utilities/generatePreviewPath';
+import { generateReadingTime } from './hooks/generateReadingTime';
 import { populateAuthors } from './hooks/populateAuthors';
 import { revalidateDelete, revalidatePost } from './hooks/revalidatePost';
-
-import { MetaDescriptionField, MetaImageField, MetaTitleField, OverviewField, PreviewField } from '@payloadcms/plugin-seo/fields';
-import { slugField } from 'payload';
 
 export const Posts: CollectionConfig<'posts'> = {
 	slug: 'posts',
@@ -205,12 +204,54 @@ export const Posts: CollectionConfig<'posts'> = {
 				{
 					name: 'name',
 					type: 'text'
+				},
+				{
+					name: 'about',
+					type: 'text'
+				},
+				{
+					name: 'avatar',
+					type: 'group',
+					fields: [
+						{
+							name: 'id',
+							type: 'text'
+						},
+						{
+							name: 'url',
+							type: 'text'
+						},
+						{
+							name: 'alt',
+							type: 'text'
+						},
+						{
+							name: 'width',
+							type: 'number'
+						},
+						{
+							name: 'height',
+							type: 'number'
+						},
+						{
+							name: 'filename',
+							type: 'text'
+						}
+					]
 				}
 			]
+		},
+		{
+			name: 'readingTime',
+			type: 'number',
+			admin: {
+				hidden: true
+			}
 		},
 		slugField()
 	],
 	hooks: {
+		beforeValidate: [generateReadingTime],
 		afterChange: [revalidatePost],
 		afterRead: [populateAuthors],
 		afterDelete: [revalidateDelete]

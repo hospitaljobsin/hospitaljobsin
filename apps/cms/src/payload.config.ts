@@ -69,11 +69,13 @@ export default buildConfig({
 		s3Storage({
 			collections: {
 				media: {
-					signedDownloads: {
-						shouldUseSignedURL: () => true
-					},
+					// Remove signed URLs for public bucket
 					disableLocalStorage: true,
-					prefix: 'media/'
+					prefix: 'media/',
+					disablePayloadAccessControl: true,
+					generateFileURL: file => {
+						return `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/media/${file.filename}`;
+					}
 				}
 			},
 			bucket: process.env.S3_BUCKET,
