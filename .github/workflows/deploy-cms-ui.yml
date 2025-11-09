@@ -83,7 +83,7 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
 
-          SST_CMS_IAM_ROLE: ${{ secrets.SST_CMS_IAM_ROLE }}
+          SST_CMS_IAM_ROLE: ${{ vars.SST_CMS_IAM_ROLE }}
           # Database connection string
           DATABASE_URI: ${{ secrets.SST_CMS_DATABASE_URI }}
           # Used to encrypt JWT tokens
