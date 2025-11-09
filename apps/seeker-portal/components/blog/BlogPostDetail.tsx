@@ -3,7 +3,7 @@
 import { Button, Chip, Link as HeroUILink } from '@heroui/react';
 import { format } from 'date-fns';
 import type { SerializedEditorState } from 'lexical';
-import { ArrowLeft, CalendarDays, Facebook, Linkedin, Share2, Twitter, User } from 'lucide-react';
+import { ArrowLeft, CalendarDays, Clock, Facebook, Linkedin, Share2, Twitter, User } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { PayloadPost } from '@/types/payload';
@@ -202,10 +202,10 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 						)}
 
 						{/* Title */}
-						<h1 className='text-4xl md:text-5xl font-semibold tracking-tight mb-6 text-default-900'>{post.title}</h1>
+						<h1 className='text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight mb-6 text-default-900'>{post.title}</h1>
 
 						{/* Author and Date Info */}
-						<div className='flex items-center gap-4 mb-8 pb-6 border-b border-default-200'>
+						<div className='flex flex-col sm:flex-row sm:items-center gap-4 mb-8 pb-6 border-b border-default-200'>
 							<div className='flex items-center gap-3 flex-wrap'>
 								{authors.length > 0 &&
 									authors.map(author => {
@@ -234,9 +234,15 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 									})}
 							</div>
 							{publishedDate && (
-								<div className='flex items-center gap-2 text-sm text-default-500'>
+								<div className='flex items-center gap-2 text-sm text-default-600'>
 									<CalendarDays className='w-4 h-4' />
 									<span>{publishedDate}</span>
+								</div>
+							)}
+							{post.readingTime && (
+								<div className='flex items-center gap-2 text-sm text-default-600'>
+									<Clock className='w-4 h-4' />
+									<span>{post.readingTime} min read</span>
 								</div>
 							)}
 						</div>

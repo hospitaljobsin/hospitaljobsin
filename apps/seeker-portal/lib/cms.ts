@@ -26,6 +26,7 @@ export async function fetchPosts(options: FetchPostsOptions = {}): Promise<Paylo
 					title
 					slug
 					publishedAt
+					readingTime
 					heroImage {
 						id
 						url
@@ -128,6 +129,7 @@ export async function fetchPostBySlug(slug: string): Promise<PayloadPost | null>
 					slug
 					content
 					publishedAt
+					readingTime
 					heroImage {
 						id
 						url

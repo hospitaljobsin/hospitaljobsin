@@ -268,6 +268,7 @@ export interface Post {
         };
       }[]
     | null;
+  readingTime?: number | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -1233,6 +1234,7 @@ export interface PostsSelect<T extends boolean = true> {
               filename?: T;
             };
       };
+  readingTime?: T;
   generateSlug?: T;
   slug?: T;
   updatedAt?: T;

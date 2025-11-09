@@ -16,6 +16,7 @@ import { Banner } from '../../blocks/Banner/config';
 import { Code } from '../../blocks/Code/config';
 import { MediaBlock } from '../../blocks/MediaBlock/config';
 import { generatePreviewPath } from '../../utilities/generatePreviewPath';
+import { generateReadingTime } from './hooks/generateReadingTime';
 import { populateAuthors } from './hooks/populateAuthors';
 import { revalidateDelete, revalidatePost } from './hooks/revalidatePost';
 
@@ -240,9 +241,17 @@ export const Posts: CollectionConfig<'posts'> = {
 				}
 			]
 		},
+		{
+			name: 'readingTime',
+			type: 'number',
+			admin: {
+				hidden: true
+			}
+		},
 		slugField()
 	],
 	hooks: {
+		beforeValidate: [generateReadingTime],
 		afterChange: [revalidatePost],
 		afterRead: [populateAuthors],
 		afterDelete: [revalidateDelete]

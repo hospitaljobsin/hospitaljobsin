@@ -7,6 +7,7 @@ export interface PayloadPost {
 	content?: SerializedEditorState;
 	heroImage?: PayloadMedia;
 	publishedAt?: string;
+	readingTime?: number;
 	authors?: PayloadUser[];
 	populatedAuthors?: PayloadAuthor[];
 	categories?: PayloadCategory[];
