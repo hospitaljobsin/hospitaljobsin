@@ -3,6 +3,7 @@ repos:
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
+        exclude: payload-types\.ts$
       - id: end-of-file-fixer
         exclude: payload-types\.ts$
       - id: check-yaml
