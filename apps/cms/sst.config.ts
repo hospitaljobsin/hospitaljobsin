@@ -53,15 +53,10 @@ export default $config({
 			server: {
 				runtime: 'nodejs22.x',
 				layers: ['arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:17'],
-				memory: '1024 MB'
+				memory: '1024 MB',
+				install: ['sharp', 'unrs-resolver']
 			},
 			warm: 5,
-			permissions: [
-				{
-					actions: ['secretsmanager:GetSecretValue'],
-					resources: ['*'] // TODO: restrict to the secret ARN
-				}
-			],
 			transform: {
 				server(args, opts, name) {
 					args.role = process.env.SST_CMS_IAM_ROLE!;
