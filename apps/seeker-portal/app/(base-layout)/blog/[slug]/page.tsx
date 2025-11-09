@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 		keywords: post.categories?.map(cat => cat.title).join(', '),
 		authors: authors,
 		creator: authors?.[0]?.name,
-		publisher: 'Hospital Jobs',
+		publisher: APP_NAME,
 		alternates: {
 			canonical: canonicalUrl
 		},
@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 			title: metaTitle,
 			description: metaDescription,
 			url: canonicalUrl,
-			siteName: 'Hospital Jobs',
+			siteName: APP_NAME,
 			images: metaImage
 				? [
 						{

@@ -3,6 +3,7 @@ import { env } from './env/client';
 const links = {
 	landing: '/',
 	faq: '/faq',
+	blog: '/blog',
 	blogDetail: (slug: string) => `/blog/${slug}`,
 	search: (location: string | undefined = undefined, speciality: string | undefined = undefined) =>
 		location && speciality

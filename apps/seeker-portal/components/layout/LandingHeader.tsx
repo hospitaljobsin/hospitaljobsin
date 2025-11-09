@@ -50,6 +50,17 @@ export default function LandingHeader({ rootQuery }: { rootQuery: LandingHeaderF
 				<NavbarContent justify='end'>
 					<NavbarItem className='hidden md:block'>
 						<Link
+							href={links.blog}
+							target='_blank'
+							rel='noopener noreferrer'
+							color='foreground'
+							className={'text-primary-foreground flex items-center gap-2'}
+						>
+							Blog
+						</Link>
+					</NavbarItem>
+					<NavbarItem className='hidden md:block'>
+						<Link
 							href={links.faq}
 							target='_blank'
 							rel='noopener noreferrer'
