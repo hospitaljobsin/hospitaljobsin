@@ -47,8 +47,10 @@ export default $config({
 			server: {
 				runtime: 'nodejs20.x',
 				layers: ['arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:17'],
-				memory: '1024 MB',
-				install: ['sharp', 'unrs-resolver']
+				memory: '1024 MB'
+			},
+			imageOptimization: {
+				memory: '1024 MB'
 			},
 			warm: 5,
 			transform: {
