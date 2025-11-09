@@ -122,6 +122,7 @@ jobs:
       - deploy-backend
       - deploy-shared-infra
       - deploy-infra
+      - deploy-cms-ui
 
   deploy-shared-infra:
     uses: ./.github/workflows/apply-shared-infrastructure.yml
