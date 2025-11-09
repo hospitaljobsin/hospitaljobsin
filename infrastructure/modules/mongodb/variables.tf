@@ -58,3 +58,9 @@ variable "job_alerts_lambda_username" {
   nullable    = true
   default     = null
 }
+
+variable "cms_username" {
+  type        = string
+  description = "CMS database username for password-based authentication."
+  default     = "cms-user"
+}
