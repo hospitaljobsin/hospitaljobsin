@@ -4,8 +4,8 @@ output "connection_string" {
 
 
 output "cms_connection_string" {
-  # Build a connection string with username and password for the CMS user
-  # Format: mongodb+srv://username:password@host/cms
-  value     = replace(mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv, "://", "://${mongodbatlas_database_user.cms_user.username}:${random_password.cms_user_password.result}@")
-  sensitive = true
+  # Append /cms database name to the connection string
+  # If there are query parameters (?...), insert /cms before them
+  # Otherwise, append /cms at the end
+  value = can(regex("\\?", mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv)) ? replace(mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv, "/(\\?)", "/${var.mongodb_cms_database_name}$1") : "${mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv}/${var.mongodb_cms_database_name}"
 }

@@ -121,21 +121,16 @@ resource "mongodbatlas_database_user" "job_alerts_user" {
   }
 }
 
-# CMS user with password authentication (for CI/CD and Lambda access)
-resource "random_password" "cms_user_password" {
-  length  = 32
-  special = true
-}
 
 resource "mongodbatlas_database_user" "cms_user" {
   username           = var.cms_username
-  password           = random_password.cms_user_password.result
   project_id         = mongodbatlas_project.project.id
-  auth_database_name = "admin"
+  auth_database_name = "$external"
+  aws_iam_type       = "ROLE"
 
   roles {
     role_name     = "readWrite"
-    database_name = "cms"
+    database_name = var.mongodb_cms_database_name
   }
 }
 

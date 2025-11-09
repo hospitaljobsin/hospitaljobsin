@@ -302,3 +302,9 @@ variable "sst_cms_preview_secret" {
   description = "The Payload CMS preview secret for the CMS."
   sensitive   = true
 }
+
+
+variable "sst_cms_iam_role" {
+  type        = string
+  description = "The IAM role for the CMS Lambda function."
+}

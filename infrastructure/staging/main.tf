@@ -77,6 +77,7 @@ module "github" {
   sst_cms_cron_secret                               = module.core.sst_cms_cron_secret
   sst_cms_payload_secret                            = module.core.sst_cms_payload_secret
   sst_cms_preview_secret                            = module.core.sst_cms_preview_secret
+  sst_cms_iam_role                                  = module.core.cms_username
 }
 
 
@@ -120,6 +121,7 @@ module "mongodb" {
   lambda_username                  = module.core.lambda_username
   worker_username                  = module.core.worker_username
   staging_db_setup_lambda_username = module.core.staging_db_setup_lambda_username
+  cms_username                     = module.core.cms_username
 }
 
 module "redis" {

@@ -63,6 +63,9 @@ export default $config({
 				}
 			],
 			transform: {
+				server(args, opts, name) {
+					args.role = process.env.SST_CMS_IAM_ROLE!;
+				},
 				cdn(args, opts, name) {
 					args.defaultCacheBehavior = {
 						...args.defaultCacheBehavior,
