@@ -10,7 +10,6 @@ export default $config({
 			home: 'aws'
 		};
 	},
-
 	run() {
 		new sst.aws.Nextjs('cms-ui', {
 			buildCommand: 'pnpm run package',
