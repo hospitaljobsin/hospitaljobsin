@@ -19,9 +19,22 @@ const nextConfig = {
 					hostname: url.hostname,
 					protocol: url.protocol.replace(':', '')
 				};
-			})
+			}),
+			{
+				protocol: 'https',
+				hostname: '**.amazonaws.com'
+			},
+			{
+				protocol: 'https',
+				hostname: '**.s3.*.amazonaws.com'
+			},
+			{
+				protocol: 'https',
+				hostname: '**.s3.amazonaws.com'
+			}
 		]
 	},
+	allowedDevOrigins: ['content.localtest.me'],
 	webpack: webpackConfig => {
 		webpackConfig.resolve.extensionAlias = {
 			'.cjs': ['.cts', '.cjs'],

@@ -271,3 +271,10 @@ resource "github_actions_environment_variable" "sst_cms_iam_role" {
   value         = var.sst_cms_iam_role
 
 }
+
+resource "github_actions_environment_variable" "sst_cms_s3_bucket" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "SST_CMS_S3_BUCKET"
+  value         = var.sst_cms_s3_bucket
+}

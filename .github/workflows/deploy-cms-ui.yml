@@ -95,3 +95,6 @@ jobs:
           # Used to validate preview requests
           PREVIEW_SECRET: ${{ secrets.SST_CMS_PREVIEW_SECRET }}
           # Added by Payload
+          S3_BUCKET: ${{ vars.SST_CMS_S3_BUCKET}}
+
+          S3_REGION: ${{ env.AWS_REGION }}
