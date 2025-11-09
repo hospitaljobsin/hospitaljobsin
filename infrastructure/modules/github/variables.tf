@@ -308,3 +308,8 @@ variable "sst_cms_iam_role" {
   type        = string
   description = "The IAM role for the CMS Lambda function."
 }
+
+variable "sst_cms_s3_bucket" {
+  type        = string
+  description = "The S3 bucket name for the CMS."
+}

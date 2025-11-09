@@ -213,3 +213,8 @@ output "sst_cms_cron_secret" {
   value     = random_bytes.cms_cron_secret.hex
   sensitive = true
 }
+
+
+output "sst_cms_s3_bucket" {
+  value = aws_s3_bucket.cms.bucket
+}

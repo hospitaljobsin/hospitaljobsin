@@ -1,5 +1,6 @@
 // storage-adapter-import-placeholder
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
+import { s3Storage } from '@payloadcms/storage-s3';
 import path from 'path';
 import { buildConfig, type PayloadRequest } from 'payload';
 import sharp from 'sharp'; // sharp-import
@@ -64,8 +65,24 @@ export default buildConfig({
 	cors: [getServerSideURL()].filter(Boolean),
 	globals: [Header, Footer],
 	plugins: [
-		...plugins
-		// storage-adapter-placeholder
+		...plugins,
+		s3Storage({
+			collections: {
+				media: {
+					signedDownloads: {
+						shouldUseSignedURL: () => true
+					},
+					disableLocalStorage: true,
+					prefix: 'media/'
+				}
+			},
+			bucket: process.env.S3_BUCKET,
+			config: {
+				// Credentials will be automatically obtained from the IAM role
+				// attached to the EC2/ECS/EKS instance via the default credential provider chain
+				region: process.env.S3_REGION
+			}
+		})
 	],
 	secret: process.env.PAYLOAD_SECRET,
 	sharp,

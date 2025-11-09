@@ -78,6 +78,7 @@ module "github" {
   sst_cms_payload_secret                            = module.core.sst_cms_payload_secret
   sst_cms_preview_secret                            = module.core.sst_cms_preview_secret
   sst_cms_iam_role                                  = module.core.cms_username
+  sst_cms_s3_bucket                                 = module.core.sst_cms_s3_bucket
 }
 
 
