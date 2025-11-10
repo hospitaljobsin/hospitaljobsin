@@ -75,7 +75,8 @@ export default buildConfig({
 					disablePayloadAccessControl: true,
 					generateFileURL: ({ filename, prefix }) => {
 						if (!filename) return '';
-						const path = prefix ? `${prefix}/${filename}` : filename;
+						console.log('Generating file URL for S3 storage adapter', { filename, prefix });
+						const path = prefix ? `${prefix}${filename}` : filename;
 						return `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/${path}`;
 					}
 				}
