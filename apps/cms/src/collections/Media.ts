@@ -1,7 +1,6 @@
-import type { CollectionConfig } from 'payload';
-
 import { FixedToolbarFeature, InlineToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
 import path from 'path';
+import type { CollectionConfig } from 'payload';
 import { fileURLToPath } from 'url';
 
 import { anyone } from '../access/anyone';
@@ -36,9 +35,15 @@ export const Media: CollectionConfig = {
 		}
 	],
 	upload: {
-		// Upload to the public/media directory in Next.js making them publicly accessible even outside of Payload
-		staticDir: path.resolve(dirname, '../../public/media'),
-		adminThumbnail: 'thumbnail',
+		adminThumbnail: ({ doc }) => {
+			if (doc?.sizes?.thumbnail?.filename) {
+				return `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/media/${doc.sizes.thumbnail.filename}`;
+			}
+			if (doc?.filename) {
+				return `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/media/${doc.filename}`;
+			}
+			return undefined;
+		},
 		focalPoint: true,
 		imageSizes: [
 			{
