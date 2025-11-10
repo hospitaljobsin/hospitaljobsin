@@ -1,7 +1,7 @@
-import { PayloadRequest, CollectionSlug } from 'payload';
+import type { CollectionSlug, PayloadRequest } from 'payload';
 
 const collectionPrefixMap: Partial<Record<CollectionSlug, string>> = {
-	posts: '/posts',
+	posts: '/blog-preview',
 	pages: ''
 };
 
@@ -20,6 +20,12 @@ export const generatePreviewPath = ({ collection, slug }: Props) => {
 	// Encode to support slugs with special characters
 	const encodedSlug = encodeURIComponent(slug);
 
+	// For posts, return the direct blog-preview URL
+	if (collection === 'posts') {
+		return `${process.env.NEXT_PUBLIC_SEEKER_PORTAL_URL}${collectionPrefixMap[collection]}/${encodedSlug}`;
+	}
+
+	// For other collections, use the preview API route
 	const encodedParams = new URLSearchParams({
 		slug: encodedSlug,
 		collection,

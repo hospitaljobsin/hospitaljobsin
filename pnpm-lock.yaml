@@ -963,6 +963,9 @@ importers:
       '@opennextjs/aws':
         specifier: 3.7.7
         version: 3.7.7
+      '@payloadcms/live-preview-react':
+        specifier: 3.63.0
+        version: 3.63.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@payloadcms/richtext-lexical':
         specifier: 3.63.0
         version: 3.63.0(@faceless-ui/modal@3.0.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@faceless-ui/scroll-info@2.0.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@payloadcms/next@3.63.0(@types/react@19.1.15)(graphql@16.11.0)(next@15.5.4(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(sass@1.77.4))(payload@3.63.0(graphql@16.11.0)(typescript@5.9.2))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2))(@types/react@19.1.15)(next@15.5.4(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(sass@1.77.4))(payload@3.63.0(graphql@16.11.0)(typescript@5.9.2))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2)(yjs@13.6.27)
@@ -17897,6 +17900,12 @@ snapshots:
       '@payloadcms/live-preview': 3.63.0
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
+
+  '@payloadcms/live-preview-react@3.63.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
+    dependencies:
+      '@payloadcms/live-preview': 3.63.0
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
 
   '@payloadcms/live-preview@3.63.0': {}
 

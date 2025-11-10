@@ -62,7 +62,8 @@ export default buildConfig({
 		url: process.env.DATABASE_URI || ''
 	}),
 	collections: [Pages, Posts, Media, Categories, Users],
-	cors: [getServerSideURL()].filter(Boolean),
+	cors: [getServerSideURL(), process.env.NEXT_PUBLIC_SEEKER_PORTAL_URL].filter(Boolean),
+	csrf: [getServerSideURL(), process.env.NEXT_PUBLIC_SEEKER_PORTAL_URL].filter(Boolean),
 	globals: [Header, Footer],
 	plugins: [
 		...plugins,

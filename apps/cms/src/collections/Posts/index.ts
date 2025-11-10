@@ -10,8 +10,8 @@ import {
 } from '@payloadcms/richtext-lexical';
 import type { CollectionConfig } from 'payload';
 import { slugField } from 'payload';
+import { anyone } from '@/access/anyone';
 import { authenticated } from '../../access/authenticated';
-import { authenticatedOrPublished } from '../../access/authenticatedOrPublished';
 import { Banner } from '../../blocks/Banner/config';
 import { Code } from '../../blocks/Code/config';
 import { MediaBlock } from '../../blocks/MediaBlock/config';
@@ -25,7 +25,10 @@ export const Posts: CollectionConfig<'posts'> = {
 	access: {
 		create: authenticated,
 		delete: authenticated,
-		read: authenticatedOrPublished,
+		// TODO: make this more secure in the future. need a proper way to access drafts from the separate frontend
+		// need to find a way to integrate the auth system of our backend with our CMS for this.
+		// then we will have a streamlined flow.
+		read: anyone, //authenticatedOrPublished,
 		update: authenticated
 	},
 	// This config controls what's populated by default when a post is referenced
