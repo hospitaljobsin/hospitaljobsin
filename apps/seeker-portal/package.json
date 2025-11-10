@@ -36,6 +36,7 @@
 		"@next/mdx": "15.5.4",
 		"@next/third-parties": "15.5.4",
 		"@opennextjs/aws": "3.7.7",
+		"@payloadcms/live-preview-react": "3.63.0",
 		"@payloadcms/richtext-lexical": "3.63.0",
 		"@react-oauth/google": "0.12.2",
 		"@sentry/nextjs": "10.22.0",

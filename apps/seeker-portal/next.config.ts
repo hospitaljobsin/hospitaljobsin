@@ -265,10 +265,11 @@ const nextConfig: NextConfig = {
 						key: 'X-Content-Type-Options',
 						value: 'nosniff'
 					},
-					{
-						key: 'X-Frame-Options',
-						value: 'DENY'
-					},
+					// we have a CSP instead which is recommended, and allows us to preview inside iframes from our CMS
+					// {
+					// 	key: 'X-Frame-Options',
+					// 	value: 'DENY'
+					// },
 					{
 						key: 'Referrer-Policy',
 						value: 'strict-origin-when-cross-origin'

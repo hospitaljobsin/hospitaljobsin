@@ -206,3 +206,96 @@ export async function fetchPostBySlug(slug: string): Promise<PayloadPost | null>
 		throw error;
 	}
 }
+
+export async function fetchPostBySlugDraft(slug: string): Promise<PayloadPost | null> {
+	const query = `
+		query PreviewPostBySlug($slug: String!) {
+			Posts(where: { slug: { equals: $slug } }, limit: 1, draft: true, trash: true) {
+				docs {
+					id
+					title
+					slug
+					content
+					publishedAt
+					readingTime
+					heroImage {
+						id
+						url
+						alt
+						width
+						height
+						filename
+					}
+					populatedAuthors {
+						id
+						name
+						about
+						avatar {
+							id
+							url
+							alt
+							width
+							height
+							filename
+						}
+					}
+					categories {
+						id
+						title
+						slug
+					}
+					meta {
+						title
+						description
+						image {
+							id
+							url
+							alt
+							width
+							height
+							filename
+						}
+					}
+				}
+			}
+		}
+	`;
+
+	// TODO: pass authentication here as draft content is protected
+
+	try {
+		const response = await fetch(CMS_GRAPHQL_ENDPOINT, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				query,
+				variables: { slug }
+			}),
+			// No caching for draft content
+			cache: 'no-store',
+			next: {
+				revalidate: 0
+			}
+		});
+
+		if (!response.ok) {
+			throw new Error(`Failed to fetch draft post: ${response.statusText}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(`GraphQL errors: ${JSON.stringify(result.errors)}`);
+		}
+
+		console.log('Draft post fetch result:', result);
+
+		const posts = result.data.Posts.docs;
+		return posts.length > 0 ? posts[0] : null;
+	} catch (error) {
+		console.error('Error fetching draft post from CMS:', error);
+		throw error;
+	}
+}

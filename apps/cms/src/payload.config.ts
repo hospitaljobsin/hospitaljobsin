@@ -62,26 +62,26 @@ export default buildConfig({
 		url: process.env.DATABASE_URI || ''
 	}),
 	collections: [Pages, Posts, Media, Categories, Users],
-	cors: [getServerSideURL()].filter(Boolean),
+	cors: [getServerSideURL(), process.env.NEXT_PUBLIC_SEEKER_PORTAL_URL].filter(Boolean),
+	csrf: [getServerSideURL(), process.env.NEXT_PUBLIC_SEEKER_PORTAL_URL].filter(Boolean),
 	globals: [Header, Footer],
 	plugins: [
 		...plugins,
 		s3Storage({
 			collections: {
 				media: {
-					// Remove signed URLs for public bucket
 					disableLocalStorage: true,
-					prefix: 'media/',
+					prefix: 'media',
 					disablePayloadAccessControl: true,
-					generateFileURL: file => {
-						return `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/media/${file.filename}`;
+					generateFileURL: ({ filename, prefix }) => {
+						if (!filename) return '';
+						const path = prefix ? `${prefix}/${filename}` : filename;
+						return `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/${path}`;
 					}
 				}
 			},
 			bucket: process.env.S3_BUCKET,
 			config: {
-				// Credentials will be automatically obtained from the IAM role
-				// attached to the EC2/ECS/EKS instance via the default credential provider chain
 				region: process.env.S3_REGION
 			}
 		})
