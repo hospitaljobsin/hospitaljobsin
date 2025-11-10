@@ -7,6 +7,47 @@ const AUTHENTICATED_ROUTES = [/\/saved(\/.*)?/, /\/resume-builder(\/.*)?/, /\/pr
 
 const ANONYMOUS_ROUTES: RegExp[] = [];
 
+const AI_BOT_USER_AGENTS = [
+	'PerplexityBot',
+	'Perplexity-User',
+	'GPTBot',
+	'ChatGPT-User',
+	'Google-Extended',
+	'Applebot-Extended',
+	'anthropic-ai',
+	'Claude-Web',
+	'ClaudeBot',
+	'Gemini',
+	'OAI-SearchBot',
+	'Facebookbot',
+	'Amazonbot',
+	'YouBot',
+	'NeevaBot',
+	'PhindBot',
+	'AndiBot',
+	'Cohere',
+	'DeepSeekBot',
+	'CCBot',
+	'Omgili',
+	'Omgilibot',
+	'ByteDance',
+	'Character.AI'
+];
+
+const MARKDOWN_ELIGIBLE_ROUTES = [/^\/organizations\/[^/]+$/, /^\/jobs\/[^/]+$/, /^\/search\//];
+
+function isAIBot(userAgent: string): boolean {
+	return AI_BOT_USER_AGENTS.some(bot => userAgent.includes(bot));
+}
+
+function isMarkdownEligibleRoute(pathname: string): boolean {
+	return MARKDOWN_ELIGIBLE_ROUTES.some(route => route.test(pathname));
+}
+
+function getMarkdownPath(pathname: string): string {
+	return `${pathname}.md`;
+}
+
 function requiresAuthenticated(request: NextRequest): boolean {
 	return AUTHENTICATED_ROUTES.some(route => route.test(request.nextUrl.pathname));
 }
@@ -29,6 +70,21 @@ function getAnonymousResponse(request: NextRequest): NextResponse {
 
 export async function middleware(request: NextRequest) {
 	const { pathname, searchParams } = request.nextUrl;
+	const userAgent = request.headers.get('user-agent') || '';
+	const isDevelopment = env.NEXT_PUBLIC_ENVIRONMENT === 'development';
+	const isBot = isAIBot(userAgent);
+
+	// Block direct access to markdown pages in non-dev environments for non-bots
+	if (!isDevelopment && !isBot && pathname.endsWith('.md')) {
+		return new NextResponse(null, { status: 404 });
+	}
+
+	// Redirect bots to markdown version in non-dev environments
+	if (!isDevelopment && isBot && isMarkdownEligibleRoute(pathname) && !pathname.endsWith('.md')) {
+		const markdownURL = new URL(getMarkdownPath(pathname), request.url);
+		markdownURL.search = searchParams.toString();
+		return NextResponse.redirect(markdownURL);
+	}
 
 	if ((pathname.startsWith('/organizations-md') || pathname.startsWith('/search-md')) && !searchParams.has('via_markdown_rewrite')) {
 		return new NextResponse(null, { status: 404 });
