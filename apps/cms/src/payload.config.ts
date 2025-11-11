@@ -78,7 +78,7 @@ export default buildConfig({
 					generateFileURL: ({ filename, prefix }) => {
 						if (!filename) return '';
 						console.log('Generating file URL for S3 storage adapter', { filename, prefix });
-						const path = prefix ? `${prefix}${filename}` : filename;
+						const path = prefix ? (prefix.endsWith('/') ? `${prefix}${filename}` : `${prefix}/${filename}`) : filename;
 						return `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/${path}`;
 					}
 				}
