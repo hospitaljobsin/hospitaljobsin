@@ -71,7 +71,7 @@ output "sst_recruiter_dashboard_domain" {
 
 
 output "sst_cms_domain" {
-  value = "cms.${var.domain_name}"
+  value = "content.${var.domain_name}"
 }
 output "recruiter_portal_sentry_dsn" {
   value     = var.sentry_recruiter_portal_ui_dsn
@@ -97,7 +97,7 @@ output "sst_accounts_base_url" {
 
 
 output "sst_cms_base_url" {
-  value = "https://cms.${var.domain_name}"
+  value = "https://content.${var.domain_name}"
 }
 
 

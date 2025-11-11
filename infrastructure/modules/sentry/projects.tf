@@ -30,8 +30,8 @@ resource "sentry_project" "cms_ui" {
 
   client_security = {
     allowed_domains = [
-      "https://cms.${var.domain_name}",
-      "https://cms.localtest.me",
+      "https://content.${var.domain_name}",
+      "https://content.localtest.me",
     ]
   }
 }
