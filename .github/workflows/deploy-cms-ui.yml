@@ -90,7 +90,6 @@ jobs:
           PAYLOAD_SECRET: ${{ secrets.SST_CMS_PAYLOAD_SECRET }}
           # Used to configure CORS, format links and more. No trailing slash
           NEXT_PUBLIC_SERVER_URL: ${{ vars.SST_CMS_BASE_URL }}
-
           NEXT_PUBLIC_SEEKER_PORTAL_URL: ${{ vars.SST_SEEKER_PORTAL_BASE_URL }}
           # Secret used to authenticate cron jobs
           CRON_SECRET: ${{ secrets.SST_CMS_CRON_SECRET }}
