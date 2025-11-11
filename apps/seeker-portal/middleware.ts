@@ -100,6 +100,7 @@ export async function middleware(request: NextRequest) {
 	}
 
 	const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
+
 	const cspHeader = `
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://*.posthog.com;
