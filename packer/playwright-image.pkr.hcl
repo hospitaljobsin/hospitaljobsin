@@ -40,7 +40,6 @@ variable "build_timeout" {
 
 source "amazon-ebs" "playwright" {
   region                  = var.aws_region
-  instance_type           = var.instance_type
   ami_name                = "${var.ami_name} ${formatdate("YYYYMMDD-hhmmss", timestamp())}"
   ami_description         = "Ubuntu with Node.js, pnpm, and Playwright installed"
   ssh_username  = "ubuntu"
