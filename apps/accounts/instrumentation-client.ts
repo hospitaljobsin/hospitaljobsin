@@ -14,7 +14,7 @@ posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
 	cross_subdomain_cookie: true,
 	secure_cookie: true,
 	persistence: cookieConsentGiven() === 'yes' ? 'localStorage+cookie' : 'memory',
-	loaded: function (ph) {
+	loaded: ph => {
 		if (env.NEXT_PUBLIC_ENVIRONMENT !== 'production') {
 			ph.opt_out_capturing(); // opts a user out of event capture
 			ph.set_config({ disable_session_recording: true });
@@ -34,7 +34,6 @@ Sentry.init({
 
 	// Add optional integrations for additional features
 	integrations: [
-		Sentry.replayIntegration(),
 		Sentry.graphqlClientIntegration({
 			endpoints: [env.NEXT_PUBLIC_API_URL, /\/graphql$/]
 		}),
@@ -47,10 +46,10 @@ Sentry.init({
 	// Define how likely Replay events are sampled.
 	// This sets the sample rate to be 10%. You may want this to be 100% while
 	// in development and sample at a lower rate in production
-	replaysSessionSampleRate: 0.1,
+	replaysSessionSampleRate: 0,
 
 	// Define how likely Replay events are sampled when an error occurs.
-	replaysOnErrorSampleRate: 1.0,
+	replaysOnErrorSampleRate: 0,
 
 	// Setting this option to true will print useful information to the console while you're setting up Sentry.
 	debug: false
