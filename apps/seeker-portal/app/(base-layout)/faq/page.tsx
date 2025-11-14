@@ -3,7 +3,7 @@ import FAQContent from '@/components/faq/FAQContent';
 import DashboardHeaderClientComponent from '@/components/layout/DashboardHeaderClientComponent';
 
 export const metadata: Metadata = {
-	title: 'FAQ Guide for Job Seekers & Employers | Hospital Jobs',
+	title: 'FAQ Guide for Job Seekers & Employers',
 	description:
 		'Explore our FAQ section to learn how HospitalJobs.in helps job seekers apply for hospital jobs and recruiters post verified openings. Simple, secure, and AI-powered for healthcare hiring in India.'
 };
