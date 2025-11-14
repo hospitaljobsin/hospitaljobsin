@@ -3,6 +3,7 @@
 import type { SerializedEditorState } from 'lexical';
 import { useMemo } from 'react';
 import { CMSImage } from './CMSImage';
+import { FAQBlock } from './FAQBlock';
 
 interface LexicalContentProps {
 	content: SerializedEditorState;
@@ -240,6 +241,14 @@ function renderBlock(node: LexicalNode, key: string): React.ReactNode {
 						{caption && <figcaption className='text-center text-sm text-gray-500 mt-2'>{caption}</figcaption>}
 					</figure>
 				);
+			}
+			return null;
+		}
+
+		case 'faq': {
+			const faqs = fields?.faqs as Array<{ question: string; answer: string }> | undefined;
+			if (faqs && faqs.length > 0) {
+				return <FAQBlock key={key} faqs={faqs} />;
 			}
 			return null;
 		}

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Chip } from '@heroui/react';
+import { Alert, Button, Chip } from '@heroui/react';
 import { format } from 'date-fns';
 import { ArrowLeft, CalendarDays, Clock, Facebook, Linkedin, Share2, Twitter, User } from 'lucide-react';
 import Link from 'next/link';
@@ -15,7 +15,9 @@ interface BlogPostDetailProps {
 
 export function BlogPostDetail({ post }: BlogPostDetailProps) {
 	const publishedDate = post.publishedAt ? format(new Date(post.publishedAt), 'MMMM d, yyyy') : null;
+	const updatedDate = post.updatedAt ? format(new Date(post.updatedAt), 'MMMM d, yyyy') : null;
 	const authors = post.populatedAuthors || [];
+	const reviewer = post.populatedReviewer;
 
 	const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
 	const shareTitle = post.title;
@@ -105,8 +107,30 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 						<h1 className='text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight mb-6 text-default-900'>{post.title}</h1>
 
 						{/* Author and Date Info */}
-						<div className='flex flex-col sm:flex-row sm:items-center gap-4 mb-8 pb-6 border-b border-default-200'>
-							<div className='flex items-center gap-3 flex-wrap'>
+						<div className='flex flex-col gap-6 mb-8'>
+							{/* Dates and Reading Time */}
+							<div className='flex sm:items-center gap-6 flex-col sm:flex-row sm:flex-wrap text-sm text-default-600 mt-2'>
+								{publishedDate && (
+									<div className='flex items-center gap-2'>
+										<CalendarDays className='w-4 h-4' />
+										<span>{publishedDate}</span>
+									</div>
+								)}
+								{updatedDate && updatedDate !== publishedDate && (
+									<div className='flex items-center gap-2'>
+										<CalendarDays className='w-4 h-4' />
+										<span>Last Updated: {updatedDate}</span>
+									</div>
+								)}
+								{post.readingTime && (
+									<div className='flex items-center gap-2'>
+										<Clock className='w-4 h-4' />
+										<span>{post.readingTime} min read</span>
+									</div>
+								)}
+							</div>{' '}
+							{/* Authors and Reviewer */}
+							<div className='flex items-baseline-last gap-6 w-full'>
 								{authors.length > 0 &&
 									authors.map(author => {
 										const hasAvatar = author.avatar && typeof author.avatar === 'object' && author.avatar.url;
@@ -128,23 +152,14 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 														<User className='w-4 h-4 text-primary' />
 													</div>
 												)}
-												<span className='text-sm font-medium text-default-700'>{author.name}</span>
+												<div>
+													<span className='text-sm font-medium text-default-700'>By {author.name}</span>
+													{author.credentials && <span className='text-xs text-default-600 block'>{author.credentials}</span>}
+												</div>
 											</div>
 										);
 									})}
 							</div>
-							{publishedDate && (
-								<div className='flex items-center gap-2 text-sm text-default-600'>
-									<CalendarDays className='w-4 h-4' />
-									<span>{publishedDate}</span>
-								</div>
-							)}
-							{post.readingTime && (
-								<div className='flex items-center gap-2 text-sm text-default-600'>
-									<Clock className='w-4 h-4' />
-									<span>{post.readingTime} min read</span>
-								</div>
-							)}
 						</div>
 
 						{/* Mobile On This Page - Shows after hero image */}
@@ -157,6 +172,13 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 							</div>
 						)}
 
+						{/* Career Disclaimer */}
+						{post.careerDisclaimer && (
+							<Alert color='warning' variant='flat' className='mb-6 not-prose' hideIconWrapper hideIcon>
+								<div className='max-w-none'>{<LexicalContent content={post.careerDisclaimer} />}</div>
+							</Alert>
+						)}
+
 						{/* Content */}
 						{post.content && (
 							<div className='prose prose-lg prose-slate dark:prose-invert max-w-none prose-headings:scroll-mt-32 prose-headings:font-semibold prose-h2:text-3xl prose-h3:text-2xl prose-h4:text-xl prose-p:text-default-700 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-default-900 prose-strong:font-semibold prose-code:text-primary prose-code:bg-default-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-default-100 prose-pre:border prose-pre:border-default-200 prose-img:rounded-lg prose-img:shadow-md'>
@@ -164,42 +186,80 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 							</div>
 						)}
 
-						{/* Author Bio Section */}
-						{authors.length > 0 && (
-							<div className='mt-12 pt-8 border-t border-default-200'>
-								<h3 className='text-lg font-medium mb-4 text-foreground-600'>About the Author{authors.length > 1 ? 's' : ''}</h3>
-								<div className='space-y-4'>
-									{authors.map(author => {
-										console.log('Author data:', author);
-										const hasAvatar = author.avatar && typeof author.avatar === 'object' && author.avatar.url;
+						{/* Author and Reviewer Bio Section */}
+						{(authors.length > 0 || reviewer) && (
+							<div className='mt-12 pt-8 border-t border-default-200 space-y-10'>
+								{authors.length > 0 && (
+									<div>
+										<h3 className='text-lg text-foreground-600 font-medium mb-6'>About the Author{authors.length > 1 ? 's' : ''}</h3>
+										<div className='space-y-8'>
+											{authors.map(author => {
+												const hasAvatar = author.avatar && typeof author.avatar === 'object' && author.avatar.url;
 
-										return (
-											<div key={author.id} className='flex items-center gap-4 bg-default-100 rounded-lg'>
+												return (
+													<div className='flex flex-col gap-6 p-6 bg-default-50 rounded-2xl border border-default-200' key={author.id}>
+														<div className='flex flex-col sm:flex-row gap-6'>
+															<div className='flex-shrink-0'>
+																{hasAvatar && author.avatar ? (
+																	<div className='w-14 h-14 rounded-full overflow-hidden'>
+																		<CMSImage
+																			src={author.avatar.url as string}
+																			alt={author.avatar.alt || author.name}
+																			width={96}
+																			height={96}
+																			className='object-cover w-full h-full'
+																		/>
+																	</div>
+																) : (
+																	<div className='w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center'>
+																		<User className='w-12 h-12 text-primary' />
+																	</div>
+																)}
+															</div>
+															<div className='flex-1'>
+																<h4 className='text-lg font-medium text-default-900 mb-1'>{author.name}</h4>
+																{author.credentials && <p className='text-sm'>{author.credentials}</p>}
+															</div>
+														</div>
+														{author.about && <p className='text-base text-default-700 leading-relaxed'>{author.about}</p>}
+													</div>
+												);
+											})}
+										</div>
+									</div>
+								)}
+
+								{reviewer && (
+									<div>
+										<h3 className='text-lg text-foreground-600 font-medium mb-6'>Reviewed By</h3>
+										<div className='flex flex-col gap-6 p-6 bg-default-50 rounded-2xl border border-default-200'>
+											<div className='flex flex-col sm:flex-row gap-6'>
 												<div className='flex-shrink-0'>
-													{hasAvatar && author.avatar ? (
-														<div className='w-16 h-16 rounded-full overflow-hidden'>
+													{reviewer.avatar?.url ? (
+														<div className='w-14 h-14 rounded-full overflow-hidden'>
 															<CMSImage
-																src={author.avatar.url as string}
-																alt={author.avatar.alt || author.name}
-																width={64}
-																height={64}
+																src={reviewer.avatar.url}
+																alt={reviewer.avatar.alt || reviewer.name}
+																width={96}
+																height={96}
 																className='object-cover w-full h-full'
 															/>
 														</div>
 													) : (
-														<div className='w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center'>
-															<User className='w-8 h-8 text-primary' />
+														<div className='w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center'>
+															<User className='w-12 h-12 text-primary' />
 														</div>
 													)}
 												</div>
 												<div className='flex-1'>
-													<h4 className='font-medium text-default-900 mb-1'>{author.name}</h4>
-													{author.about && <p className='text-sm text-default-600'>{author.about}</p>}
+													<h4 className='text-lg font-medium text-default-900 mb-1'>{reviewer.name}</h4>
+													{reviewer.credentials && <p className='text-sm'>{reviewer.credentials}</p>}
 												</div>
 											</div>
-										);
-									})}
-								</div>
+											{reviewer.about && <p className='text-base text-default-700 leading-relaxed'>{reviewer.about}</p>}
+										</div>
+									</div>
+								)}
 							</div>
 						)}
 

@@ -11,6 +11,7 @@ export interface PayloadPost {
 	authors?: PayloadUser[];
 	populatedAuthors?: PayloadAuthor[];
 	categories?: PayloadCategory[];
+	careerDisclaimer?: string;
 	meta?: {
 		title?: string;
 		description?: string;

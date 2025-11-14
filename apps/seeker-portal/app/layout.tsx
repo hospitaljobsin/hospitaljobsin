@@ -12,7 +12,8 @@ import Providers from './providers';
 
 const workSans = Work_Sans({
 	variable: '--font-work-sans',
-	subsets: ['latin']
+	subsets: ['latin'],
+	display: 'swap'
 });
 
 export const metadata: Metadata = {
@@ -25,6 +26,16 @@ export const metadata: Metadata = {
 	alternates: {
 		canonical: './'
 	},
+	viewport: {
+		width: 'device-width',
+		initialScale: 1,
+		maximumScale: 5,
+		userScalable: true
+	},
+	themeColor: [
+		{ media: '(prefers-color-scheme: light)', color: '#ffffff' },
+		{ media: '(prefers-color-scheme: dark)', color: '#000000' }
+	],
 	robots: {
 		follow: true,
 		index: true,

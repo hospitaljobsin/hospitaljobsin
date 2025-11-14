@@ -265,7 +265,8 @@ async function genBlogPostsSitemap(): Promise<MetadataRoute.Sitemap> {
 
 	return allBlogPosts.map(post => ({
 		url: `${env.NEXT_PUBLIC_URL}${links.blogDetail(post.slug)}`,
-		lastModified: post.publishedAt ? new Date(post.publishedAt) : new Date(),
+		// Use updatedAt if available, otherwise fall back to publishedAt
+		lastModified: post.updatedAt ? new Date(post.updatedAt) : post.publishedAt ? new Date(post.publishedAt) : new Date(),
 		changeFrequency: 'weekly' as const,
 		priority: 0.7,
 		images: post.heroImage?.url ? [post.heroImage.url] : []

@@ -22,8 +22,18 @@ export const Users: CollectionConfig = {
 			type: 'text'
 		},
 		{
+			name: 'credentials',
+			type: 'text',
+			admin: {
+				description: 'Professional credentials (e.g., "Healthcare Recruitment Specialist, 10+ years experience")'
+			}
+		},
+		{
 			name: 'about',
-			type: 'text'
+			type: 'textarea',
+			admin: {
+				description: 'A detailed bio about the author/reviewer'
+			}
 		},
 		{
 			name: 'avatar',

@@ -1,18 +1,19 @@
+import { GoogleTagManager } from '@next/third-parties/google';
+import type { Metadata } from 'next';
+import { Work_Sans } from 'next/font/google';
+import { headers } from 'next/headers';
 import CookieBanner from '@/components/CookieBanner';
 import PostHogIdentifier from '@/components/PostHogIdentifier';
 import { ReactScan } from '@/components/ReactScanComponent';
 import { APP_NAME, APP_TAGLINE } from '@/lib/constants';
 import { env } from '@/lib/env/client';
-import { GoogleTagManager } from '@next/third-parties/google';
-import type { Metadata } from 'next';
-import { Work_Sans } from 'next/font/google';
-import { headers } from 'next/headers';
 import './globals.css';
 import Providers from './providers';
 
 const workSans = Work_Sans({
 	variable: '--font-work-sans',
-	subsets: ['latin']
+	subsets: ['latin'],
+	display: 'swap'
 });
 
 export const dynamic = 'force-dynamic';

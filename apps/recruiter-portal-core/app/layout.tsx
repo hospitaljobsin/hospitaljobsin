@@ -13,7 +13,8 @@ import Providers from './providers';
 
 const workSans = Work_Sans({
 	variable: '--font-work-sans',
-	subsets: ['latin']
+	subsets: ['latin'],
+	display: 'swap'
 });
 
 export const dynamic = 'force-dynamic';

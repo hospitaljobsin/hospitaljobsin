@@ -104,10 +104,96 @@ export const populateAuthors: CollectionAfterReadHook = async ({ doc, req: { pay
 						id: (authorDoc as any).id,
 						name: (authorDoc as any).name,
 						about: (authorDoc as any).about,
+						credentials: (authorDoc as any).credentials,
 						avatar: avatarMedia
 					};
 				})
 			);
+		}
+	}
+
+	// Populate reviewer data
+	if (doc?.reviewedBy) {
+		try {
+			const reviewerId = typeof doc.reviewedBy === 'object' ? doc.reviewedBy?.id : doc.reviewedBy;
+			const reviewerDoc = await payload.findByID({
+				id: reviewerId,
+				collection: 'users',
+				depth: 1
+			});
+
+			if (reviewerDoc) {
+				let avatarMedia: {
+					id: string;
+					url?: string | null;
+					alt?: string | null;
+					width?: number | null;
+					height?: number | null;
+					filename?: string | null;
+				} | null = null;
+
+				try {
+					const rawAvatar: any = (reviewerDoc as any).avatar;
+					if (rawAvatar) {
+						if (typeof rawAvatar === 'string') {
+							const mediaDoc = await payload.findByID({ id: rawAvatar, collection: 'media' });
+							if (mediaDoc) {
+								avatarMedia = {
+									id: mediaDoc.id,
+									url: (mediaDoc as any).url,
+									alt: (mediaDoc as any).alt,
+									width: (mediaDoc as any).width,
+									height: (mediaDoc as any).height,
+									filename: (mediaDoc as any).filename
+								};
+							}
+						} else if (rawAvatar.value && typeof rawAvatar.value === 'object') {
+							const v = rawAvatar.value;
+							avatarMedia = {
+								id: v.id,
+								url: v.url,
+								alt: v.alt,
+								width: v.width,
+								height: v.height,
+								filename: v.filename
+							};
+						} else if (rawAvatar.id && (rawAvatar.url || rawAvatar.filename)) {
+							avatarMedia = {
+								id: rawAvatar.id,
+								url: rawAvatar.url,
+								alt: rawAvatar.alt,
+								width: rawAvatar.width,
+								height: rawAvatar.height,
+								filename: rawAvatar.filename
+							};
+						} else if (rawAvatar.id) {
+							const mediaDoc = await payload.findByID({ id: rawAvatar.id, collection: 'media' });
+							if (mediaDoc) {
+								avatarMedia = {
+									id: mediaDoc.id,
+									url: (mediaDoc as any).url,
+									alt: (mediaDoc as any).alt,
+									width: (mediaDoc as any).width,
+									height: (mediaDoc as any).height,
+									filename: (mediaDoc as any).filename
+								};
+							}
+						}
+					}
+				} catch {
+					// ignore avatar normalization failures
+				}
+
+				doc.populatedReviewer = {
+					id: (reviewerDoc as any).id,
+					name: (reviewerDoc as any).name,
+					about: (reviewerDoc as any).about,
+					credentials: (reviewerDoc as any).credentials,
+					avatar: avatarMedia
+				};
+			}
+		} catch {
+			// swallow error for reviewer fetch
 		}
 	}
 
