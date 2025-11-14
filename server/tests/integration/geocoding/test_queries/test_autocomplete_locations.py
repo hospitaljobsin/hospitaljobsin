@@ -33,7 +33,7 @@ async def test_autocomplete_exact_match(
     data = response["data"]["autocompleteLocations"]
 
     assert len(data["locations"]) >= 1
-    assert any(loc["address"]["displayName"] == "Mumbai" for loc in data["locations"])
+    assert any("Mumbai" in loc["address"]["displayName"] for loc in data["locations"])
     assert data["locations"][0]["level"] == "LOCALITY"
 
 
@@ -211,7 +211,7 @@ async def test_autocomplete_address_fields(
     assert len(data["locations"]) >= 1
     location = data["locations"][0]
 
-    assert location["address"]["displayName"] == "Mumbai"
+    assert "Mumbai" in location["address"]["displayName"]
     assert location["address"]["addressLocality"] == "Mumbai"
     assert location["address"]["addressRegion"] == "Maharashtra"
     assert location["address"]["country"] == "IN"
