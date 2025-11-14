@@ -1,12 +1,3 @@
-import type { UpdateOrganizationFormBannerPresignedUrlMutation } from '@/__generated__/UpdateOrganizationFormBannerPresignedUrlMutation.graphql';
-import type { UpdateOrganizationFormFragment$key } from '@/__generated__/UpdateOrganizationFormFragment.graphql';
-import type { UpdateOrganizationFormLogoPresignedUrlMutation } from '@/__generated__/UpdateOrganizationFormLogoPresignedUrlMutation.graphql';
-import type { UpdateOrganizationFormMutation as UpdateOrganizationFormMutationType } from '@/__generated__/UpdateOrganizationFormMutation.graphql';
-import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
-import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
-import { env } from '@/lib/env/client';
-import links from '@/lib/links';
-import { uploadFileToS3 } from '@/lib/presignedUrl';
 import {
 	addToast,
 	Button,
@@ -31,6 +22,15 @@ import Cropper from 'react-easy-crop';
 import { Controller, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod';
+import type { UpdateOrganizationFormBannerPresignedUrlMutation } from '@/__generated__/UpdateOrganizationFormBannerPresignedUrlMutation.graphql';
+import type { UpdateOrganizationFormFragment$key } from '@/__generated__/UpdateOrganizationFormFragment.graphql';
+import type { UpdateOrganizationFormLogoPresignedUrlMutation } from '@/__generated__/UpdateOrganizationFormLogoPresignedUrlMutation.graphql';
+import type { UpdateOrganizationFormMutation as UpdateOrganizationFormMutationType } from '@/__generated__/UpdateOrganizationFormMutation.graphql';
+import LocationAutocomplete from '@/components/forms/LocationAutocomplete';
+import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
+import { env } from '@/lib/env/client';
+import links from '@/lib/links';
+import { uploadFileToS3 } from '@/lib/presignedUrl';
 import DeleteOrganizationBannerModal from './DeleteOrganizationBannerModal';
 import DeleteOrganizationLogoModal from './DeleteOrganizationLogoModal';
 
@@ -38,7 +38,7 @@ const UpdateOrganizationFormMutation = graphql`
 mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $slug: String!, $location: String, $website: String, $logoUrl: String, $bannerUrl: String, $description: String) {
 	updateOrganization(organizationId: $organizationId, name: $name, slug: $slug, location: $location, website: $website, logoUrl: $logoUrl, bannerUrl: $bannerUrl, description: $description) {
 		__typename
-		...on Organization {
+		... on Organization {
 			id
 			slug
 			name
@@ -119,6 +119,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 	const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [selectedBanner, setSelectedBanner] = useState<File | null>(null);
+
 	const [bannerPreviewUrl, setBannerPreviewUrl] = useState<string | null>(null);
 	const [tempImageUrl, setTempImageUrl] = useState<string | null>(null);
 
