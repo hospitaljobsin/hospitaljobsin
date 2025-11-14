@@ -120,6 +120,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [selectedBanner, setSelectedBanner] = useState<File | null>(null);
 	const [bannerPreviewUrl, setBannerPreviewUrl] = useState<string | null>(null);
+	const [tempImageUrl, setTempImageUrl] = useState<string | null>(null);
 
 	const [showDeleteOrganizationLogoModal, setShowDeleteOrganizationLogoModal] = useState(false);
 	const [showDeleteOrganizationBannerModal, setShowDeleteOrganizationBannerModal] = useState(false);
@@ -161,26 +162,24 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 		const file = event.target.files?.[0];
 		if (file) {
 			setSelectedLogo(file);
-			// Create preview URL for the selected file
 			const url = URL.createObjectURL(file);
-			setPreviewUrl(url);
-			// Set cropping type and open the cropper modal
+			setTempImageUrl(url);
 			setCroppingType('logo');
 			onOpen();
 		}
+		event.target.value = '';
 	}
 
 	async function handleBannerChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const file = event.target.files?.[0];
 		if (file) {
 			setSelectedBanner(file);
-			// Create preview URL for the selected file
 			const url = URL.createObjectURL(file);
-			setBannerPreviewUrl(url);
-			// Set cropping type and open the cropper modal
+			setTempImageUrl(url);
 			setCroppingType('banner');
 			onOpen();
 		}
+		event.target.value = '';
 	}
 
 	const onCropComplete = useCallback((croppedArea: Area, croppedAreaPixels: Area) => {
@@ -222,10 +221,9 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 	}, []);
 
 	const handleCropSave = useCallback(async () => {
-		const imageSource = croppingType === 'logo' ? previewUrl : bannerPreviewUrl;
-		if (imageSource && croppedAreaPixels) {
+		if (tempImageUrl && croppedAreaPixels) {
 			try {
-				const croppedImageUrl = await createCroppedImage(imageSource, croppedAreaPixels);
+				const croppedImageUrl = await createCroppedImage(tempImageUrl, croppedAreaPixels);
 				setCroppedImage(croppedImageUrl);
 
 				if (croppingType === 'logo') {
@@ -234,28 +232,30 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 					setBannerPreviewUrl(croppedImageUrl);
 				}
 
+				setTempImageUrl(null);
 				onClose();
 			} catch (error) {
 				console.error('Error creating cropped image:', error);
 			}
 		}
-	}, [previewUrl, bannerPreviewUrl, croppedAreaPixels, createCroppedImage, onClose, croppingType]);
+	}, [tempImageUrl, croppedAreaPixels, createCroppedImage, onClose, croppingType]);
 
 	const handleCropCancel = useCallback(() => {
-		onClose();
+		if (tempImageUrl) {
+			URL.revokeObjectURL(tempImageUrl);
+			setTempImageUrl(null);
+		}
 		if (croppingType === 'logo') {
 			setSelectedLogo(null);
-			setPreviewUrl(null);
 		} else if (croppingType === 'banner') {
 			setSelectedBanner(null);
-			setBannerPreviewUrl(null);
 		}
 		setCrop({ x: 0, y: 0 });
 		setZoom(1);
 		setCroppedAreaPixels(null);
-		setCroppedImage(null);
 		setCroppingType('logo');
-	}, [onClose, croppingType]);
+		onClose();
+	}, [onClose, croppingType, tempImageUrl]);
 
 	function getPresignedUrl(logo: File): Promise<string | null> {
 		return new Promise((resolve, reject) => {
@@ -421,12 +421,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 								<p className='text-tiny text-foreground-500'>Organization Logo</p>
 								<div className='flex flex-col items-start gap-4'>
 									<div className='relative w-28 h-28'>
-										<NextImage
-											src={previewUrl || (selectedLogo ? URL.createObjectURL(selectedLogo) : data.logoUrl)}
-											alt='Organization Logo'
-											className='object-cover rounded-md border'
-											fill
-										/>
+										<NextImage src={previewUrl || data.logoUrl} alt='Organization Logo' className='object-cover rounded-md border' fill />
 									</div>
 									<div className='flex gap-2 items-center'>
 										<Button as='label' variant='bordered' size='sm' startContent={<EditIcon size={14} />}>
@@ -573,10 +568,11 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 					<ModalBody>
 						<div className='relative w-full h-80'>
 							<Cropper
-								image={croppingType === 'logo' ? previewUrl || undefined : (bannerPreviewUrl ?? undefined)}
+								image={tempImageUrl || undefined}
 								crop={crop}
 								zoom={zoom}
 								aspect={croppingType === 'logo' ? 1 : 16 / 9}
+								objectFit='contain'
 								onCropChange={setCrop}
 								onZoomChange={setZoom}
 								onCropComplete={onCropComplete}
