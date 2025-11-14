@@ -2,31 +2,30 @@
 // The added config here will be used whenever a users loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-import * as Sentry from "@sentry/nextjs";
-import posthog from "posthog-js";
-import { cookieConsentGiven } from "./lib/cookie-consent";
-import { env } from "./lib/env/client";
+import * as Sentry from '@sentry/nextjs';
+import posthog from 'posthog-js';
+import { cookieConsentGiven } from './lib/cookie-consent';
+import { env } from './lib/env/client';
 
 posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
 	api_host: env.NEXT_PUBLIC_POSTHOG_HOST,
-	defaults: "2025-05-24",
-	autocapture: env.NEXT_PUBLIC_ENVIRONMENT === "production",
+	defaults: '2025-05-24',
+	autocapture: env.NEXT_PUBLIC_ENVIRONMENT === 'production',
 	cross_subdomain_cookie: true,
 	secure_cookie: true,
-	persistence:
-		cookieConsentGiven() === "yes" ? "localStorage+cookie" : "memory",
-	loaded: function (ph) {
-		if (env.NEXT_PUBLIC_ENVIRONMENT !== "production") {
+	persistence: cookieConsentGiven() === 'yes' ? 'localStorage+cookie' : 'memory',
+	loaded: ph => {
+		if (env.NEXT_PUBLIC_ENVIRONMENT !== 'production') {
 			ph.opt_out_capturing(); // opts a user out of event capture
 			ph.set_config({ disable_session_recording: true });
 		}
-	},
+	}
 });
 
 // Register portal-specific property
 posthog.register({
-	app: "recruiter-dashboard",
-	env: env.NEXT_PUBLIC_ENVIRONMENT,
+	app: 'recruiter-dashboard',
+	env: env.NEXT_PUBLIC_ENVIRONMENT
 });
 
 Sentry.init({
@@ -34,11 +33,10 @@ Sentry.init({
 	environment: env.NEXT_PUBLIC_ENVIRONMENT,
 	// Add optional integrations for additional features
 	integrations: [
-		Sentry.replayIntegration(),
 		Sentry.graphqlClientIntegration({
-			endpoints: [env.NEXT_PUBLIC_API_URL, /\/graphql$/],
+			endpoints: [env.NEXT_PUBLIC_API_URL, /\/graphql$/]
 		}),
-		Sentry.browserTracingIntegration(),
+		Sentry.browserTracingIntegration()
 	],
 
 	// Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
@@ -47,13 +45,13 @@ Sentry.init({
 	// Define how likely Replay events are sampled.
 	// This sets the sample rate to be 10%. You may want this to be 100% while
 	// in development and sample at a lower rate in production
-	replaysSessionSampleRate: 0.1,
+	replaysSessionSampleRate: 0,
 
 	// Define how likely Replay events are sampled when an error occurs.
-	replaysOnErrorSampleRate: 1.0,
+	replaysOnErrorSampleRate: 0,
 
 	// Setting this option to true will print useful information to the console while you're setting up Sentry.
-	debug: false,
+	debug: false
 });
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
