@@ -68,7 +68,7 @@ export default function BlogPage() {
 			<DashboardHeaderClientComponent />
 			<div className='container mx-auto px-4 py-8 max-w-7xl'>
 				<div className='mb-8'>
-					<h1 className='text-xl sm:text-4xl font-medium tracking-tight mb-2'>Hospital Pulse</h1>
+					<h1 className='text-xl sm:text-4xl font-medium tracking-tight text-foreground-600 mb-2'>Hospital Pulse</h1>
 					<p className='text-xs sm:text-lg text-default-500'>
 						Career insights, industry trends, and expert advice for healthcare professionals and recruiters
 					</p>

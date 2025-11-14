@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import type { BlogPosting, WithContext } from 'schema-dts';
+import type { Article, BreadcrumbList, FAQPage, Organization, WithContext } from 'schema-dts';
 import { BlogPostDetail } from '@/components/blog/BlogPostDetail';
 import DashboardHeaderClientComponent from '@/components/layout/DashboardHeaderClientComponent';
 import { fetchPostBySlug, fetchPosts } from '@/lib/cms';
@@ -57,13 +57,14 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 		name: author.name
 	}));
 
-	// Format published date for article metadata
+	// Format published and modified dates for article metadata
 	const publishedTime = post.publishedAt ? new Date(post.publishedAt).toISOString() : undefined;
+	const modifiedTime = post.updatedAt ? new Date(post.updatedAt).toISOString() : undefined;
 
 	return {
 		title: metaTitle,
 		description: metaDescription,
-		keywords: post.categories?.map(cat => cat.title).join(', '),
+		keywords: post.meta?.keywords || post.categories?.map(cat => cat.title).join(', '),
 		authors: authors,
 		creator: authors?.[0]?.name,
 		publisher: APP_NAME,
@@ -88,6 +89,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 			locale: 'en_US',
 			type: 'article',
 			publishedTime: publishedTime,
+			modifiedTime: modifiedTime,
 			authors: authors?.map(author => author.name),
 			tags: post.categories?.map(cat => cat.title)
 		},
@@ -119,21 +121,56 @@ async function BlogPostContent({ slug }: { slug: string }) {
 		notFound();
 	}
 
+	// Calculate word count from content
+	const wordCount = post.content
+		? JSON.stringify(post.content)
+				.replace(/<[^>]*>/g, '')
+				.split(/\s+/)
+				.filter(word => word.length > 0).length
+		: undefined;
+
+	// Extract FAQ blocks from content for FAQPage schema
+	const faqBlocks: Array<{ question: string; answer: string }> = [];
+	if (post.content?.root?.children) {
+		const extractFAQs = (nodes: any[]): void => {
+			nodes.forEach(node => {
+				if (node.type === 'block' && node.fields?.blockType === 'faq') {
+					const faqs = node.fields.faqs as Array<{ question: string; answer: string }>;
+					if (faqs) {
+						faqBlocks.push(...faqs);
+					}
+				}
+				if (node.children) {
+					extractFAQs(node.children);
+				}
+			});
+		};
+		extractFAQs(post.content.root.children);
+	}
+
 	// Generate JSON-LD structured data for better SEO using schema-dts
-	const jsonLd: WithContext<BlogPosting> = {
+	const articleSchema: WithContext<Article> = {
 		'@context': 'https://schema.org',
-		'@type': 'BlogPosting',
+		'@type': 'Article',
 		headline: post.meta?.title || post.title,
 		description: post.meta?.description || `Read ${post.title} on Hospital Jobs`,
 		image: post.meta?.image?.url || post.heroImage?.url,
 		datePublished: post.publishedAt,
-		dateModified: post.publishedAt,
+		dateModified: post.updatedAt || post.publishedAt,
 		author: post.populatedAuthors?.map(author => ({
 			'@type': 'Person',
 			name: author.name,
 			...(author.about && { description: author.about }),
+			...(author.credentials && { jobTitle: author.credentials }),
 			...(author.avatar?.url && { image: author.avatar.url })
 		})),
+		...(post.populatedReviewer && {
+			reviewedBy: {
+				'@type': 'Person',
+				name: post.populatedReviewer.name,
+				...(post.populatedReviewer.credentials && { jobTitle: post.populatedReviewer.credentials })
+			}
+		}),
 		publisher: {
 			'@type': 'Organization',
 			name: APP_NAME,
@@ -145,9 +182,11 @@ async function BlogPostContent({ slug }: { slug: string }) {
 		...(post.readingTime && {
 			timeRequired: `PT${post.readingTime}M`
 		}),
+		...(wordCount && { wordCount }),
 		...(post.categories &&
 			post.categories.length > 0 && {
-				keywords: post.categories.map(cat => cat.title).join(', ')
+				keywords: post.categories.map(cat => cat.title).join(', '),
+				articleSection: post.categories[0].title
 			}),
 		mainEntityOfPage: {
 			'@type': 'WebPage',
@@ -155,14 +194,100 @@ async function BlogPostContent({ slug }: { slug: string }) {
 		}
 	};
 
+	const breadcrumbSchema: WithContext<BreadcrumbList> = {
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement: [
+			{
+				'@type': 'ListItem',
+				position: 1,
+				name: 'Home',
+				item: env.NEXT_PUBLIC_URL
+			},
+			{
+				'@type': 'ListItem',
+				position: 2,
+				name: 'Blog',
+				item: `${env.NEXT_PUBLIC_URL}/blog`
+			},
+			...(post.categories && post.categories.length > 0
+				? [
+						{
+							'@type': 'ListItem',
+							position: 3,
+							name: post.categories[0].title,
+							item: `${env.NEXT_PUBLIC_URL}${links.blog}?category=${post.categories[0].slug}`
+						},
+						{
+							'@type': 'ListItem',
+							position: 4,
+							name: post.title,
+							item: `${env.NEXT_PUBLIC_URL}${links.blogDetail(slug)}`
+						}
+					]
+				: [
+						{
+							'@type': 'ListItem',
+							position: 3,
+							name: post.title,
+							item: `${env.NEXT_PUBLIC_URL}${links.blogDetail(slug)}`
+						}
+					])
+		]
+	};
+
+	const organizationSchema: WithContext<Organization> = {
+		'@context': 'https://schema.org',
+		'@type': 'Organization',
+		name: APP_NAME,
+		url: env.NEXT_PUBLIC_URL,
+		logo: `${env.NEXT_PUBLIC_URL}/logo.png`,
+		sameAs: [
+			// Add social media profiles here when available
+		]
+	};
+
+	const faqPageSchema: WithContext<FAQPage> | null =
+		faqBlocks.length > 0
+			? {
+					'@context': 'https://schema.org',
+					'@type': 'FAQPage',
+					mainEntity: faqBlocks.map(faq => ({
+						'@type': 'Question',
+						name: faq.question,
+						acceptedAnswer: {
+							'@type': 'Answer',
+							text: faq.answer
+						}
+					}))
+				}
+			: null;
+
 	return (
 		<>
 			{/* Add JSON-LD structured data */}
 			<script
 				type='application/ld+json'
 				// biome-ignore lint/security/noDangerouslySetInnerHtml: Required for JSON-LD structured data
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
 			/>
+			<script
+				type='application/ld+json'
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: Required for JSON-LD structured data
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+			/>
+			<script
+				type='application/ld+json'
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: Required for JSON-LD structured data
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+			/>
+			{faqPageSchema && (
+				<script
+					type='application/ld+json'
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: Required for JSON-LD structured data
+					dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageSchema) }}
+				/>
+			)}
 			<BlogPostDetail post={post} />
 		</>
 	);

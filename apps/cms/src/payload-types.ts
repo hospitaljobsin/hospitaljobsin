@@ -250,14 +250,41 @@ export interface Post {
      */
     image?: (string | null) | Media;
     description?: string | null;
+    /**
+     * Comma-separated keywords (optional, not used by Google for ranking)
+     */
+    keywords?: string | null;
   };
+  /**
+   * Disclaimer for YMYL (Your Money or Your Life) content. Required for career advice posts.
+   */
+  careerDisclaimer?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   publishedAt?: string | null;
   authors?: (string | User)[] | null;
+  /**
+   * Expert reviewer for E-E-A-T credibility (e.g., Senior HR Manager)
+   */
+  reviewedBy?: (string | null) | User;
   populatedAuthors?:
     | {
         id?: string | null;
         name?: string | null;
         about?: string | null;
+        credentials?: string | null;
         avatar?: {
           id?: string | null;
           url?: string | null;
@@ -268,6 +295,20 @@ export interface Post {
         };
       }[]
     | null;
+  populatedReviewer?: {
+    id?: string | null;
+    name?: string | null;
+    about?: string | null;
+    credentials?: string | null;
+    avatar?: {
+      id?: string | null;
+      url?: string | null;
+      alt?: string | null;
+      width?: number | null;
+      height?: number | null;
+      filename?: string | null;
+    };
+  };
   readingTime?: number | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
@@ -429,6 +470,13 @@ export interface Category {
 export interface User {
   id: string;
   name?: string | null;
+  /**
+   * Professional credentials (e.g., "Healthcare Recruitment Specialist, 10+ years experience")
+   */
+  credentials?: string | null;
+  /**
+   * A detailed bio about the author/reviewer
+   */
   about?: string | null;
   avatar?: (string | null) | Media;
   updatedAt: string;
@@ -1214,15 +1262,37 @@ export interface PostsSelect<T extends boolean = true> {
         title?: T;
         image?: T;
         description?: T;
+        keywords?: T;
       };
+  careerDisclaimer?: T;
   publishedAt?: T;
   authors?: T;
+  reviewedBy?: T;
   populatedAuthors?:
     | T
     | {
         id?: T;
         name?: T;
         about?: T;
+        credentials?: T;
+        avatar?:
+          | T
+          | {
+              id?: T;
+              url?: T;
+              alt?: T;
+              width?: T;
+              height?: T;
+              filename?: T;
+            };
+      };
+  populatedReviewer?:
+    | T
+    | {
+        id?: T;
+        name?: T;
+        about?: T;
+        credentials?: T;
         avatar?:
           | T
           | {
@@ -1362,6 +1432,7 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  credentials?: T;
   about?: T;
   avatar?: T;
   updatedAt?: T;
@@ -1817,6 +1888,22 @@ export interface CodeBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'code';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQBlock".
+ */
+export interface FAQBlock {
+  faqs?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faq';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

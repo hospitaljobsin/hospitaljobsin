@@ -15,6 +15,7 @@ import { authenticated } from '../../access/authenticated';
 import { Banner } from '../../blocks/Banner/config';
 import { Code } from '../../blocks/Code/config';
 import { MediaBlock } from '../../blocks/MediaBlock/config';
+import { FAQ } from '../../blocks/FAQ/config';
 import { generatePreviewPath } from '../../utilities/generatePreviewPath';
 import { generateReadingTime } from './hooks/generateReadingTime';
 import { populateAuthors } from './hooks/populateAuthors';
@@ -85,7 +86,7 @@ export const Posts: CollectionConfig<'posts'> = {
 									return [
 										...rootFeatures,
 										HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-										BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
+										BlocksFeature({ blocks: [Banner, Code, MediaBlock, FAQ] }),
 										FixedToolbarFeature(),
 										InlineToolbarFeature(),
 										HorizontalRuleFeature()
@@ -145,6 +146,14 @@ export const Posts: CollectionConfig<'posts'> = {
 						}),
 
 						MetaDescriptionField({}),
+						{
+							name: 'keywords',
+							type: 'text',
+							label: 'Keywords',
+							admin: {
+								description: 'Comma-separated keywords (optional, not used by Google for ranking)'
+							}
+						},
 						PreviewField({
 							// if the `generateUrl` function is configured
 							hasGenerateFn: true,
@@ -156,6 +165,19 @@ export const Posts: CollectionConfig<'posts'> = {
 					]
 				}
 			]
+		},
+		{
+			name: 'careerDisclaimer',
+			type: 'richText',
+			editor: lexicalEditor({
+				features: ({ rootFeatures }) => {
+					return [...rootFeatures, FixedToolbarFeature(), InlineToolbarFeature()];
+				}
+			}),
+			label: 'Career Information Disclaimer',
+			admin: {
+				description: 'Disclaimer for YMYL (Your Money or Your Life) content. Required for career advice posts.'
+			}
 		},
 		{
 			name: 'publishedAt',
@@ -186,6 +208,15 @@ export const Posts: CollectionConfig<'posts'> = {
 			hasMany: true,
 			relationTo: 'users'
 		},
+		{
+			name: 'reviewedBy',
+			type: 'relationship',
+			admin: {
+				position: 'sidebar',
+				description: 'Expert reviewer for E-E-A-T credibility (e.g., Senior HR Manager)'
+			},
+			relationTo: 'users'
+		},
 		// This field is only used to populate the user data via the `populateAuthors` hook
 		// This is because the `user` collection has access control locked to protect user privacy
 		// GraphQL will also not return mutated user data that differs from the underlying schema
@@ -210,6 +241,69 @@ export const Posts: CollectionConfig<'posts'> = {
 				},
 				{
 					name: 'about',
+					type: 'text'
+				},
+				{
+					name: 'credentials',
+					type: 'text'
+				},
+				{
+					name: 'avatar',
+					type: 'group',
+					fields: [
+						{
+							name: 'id',
+							type: 'text'
+						},
+						{
+							name: 'url',
+							type: 'text'
+						},
+						{
+							name: 'alt',
+							type: 'text'
+						},
+						{
+							name: 'width',
+							type: 'number'
+						},
+						{
+							name: 'height',
+							type: 'number'
+						},
+						{
+							name: 'filename',
+							type: 'text'
+						}
+					]
+				}
+			]
+		},
+		{
+			name: 'populatedReviewer',
+			type: 'group',
+			access: {
+				update: () => false
+			},
+			admin: {
+				disabled: true,
+				readOnly: true
+			},
+			fields: [
+				{
+					name: 'id',
+					type: 'text'
+				},
+				{
+					name: 'name',
+					type: 'text'
+				},
+				{
+					name: 'about',
+					type: 'text'
+				},
+				{
+					name: 'credentials',
 					type: 'text'
 				},
 				{

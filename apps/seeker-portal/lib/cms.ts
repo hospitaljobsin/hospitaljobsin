@@ -26,6 +26,7 @@ export async function fetchPosts(options: FetchPostsOptions = {}): Promise<Paylo
 					title
 					slug
 					publishedAt
+					updatedAt
 					readingTime
 					heroImage {
 						id
@@ -39,6 +40,7 @@ export async function fetchPosts(options: FetchPostsOptions = {}): Promise<Paylo
 						id
 						name
 						about
+						credentials
 						avatar {
 							id
 							url
@@ -128,7 +130,9 @@ export async function fetchPostBySlug(slug: string): Promise<PayloadPost | null>
 					title
 					slug
 					content
+					careerDisclaimer
 					publishedAt
+					updatedAt
 					readingTime
 					heroImage {
 						id
@@ -142,6 +146,21 @@ export async function fetchPostBySlug(slug: string): Promise<PayloadPost | null>
 						id
 						name
 						about
+						credentials
+						avatar {
+							id
+							url
+							alt
+							width
+							height
+							filename
+						}
+					}
+					populatedReviewer {
+						id
+						name
+						about
+						credentials
 						avatar {
 							id
 							url
@@ -216,7 +235,9 @@ export async function fetchPostBySlugDraft(slug: string): Promise<PayloadPost | 
 					title
 					slug
 					content
+					careerDisclaimer
 					publishedAt
+					updatedAt
 					readingTime
 					heroImage {
 						id
@@ -230,6 +251,21 @@ export async function fetchPostBySlugDraft(slug: string): Promise<PayloadPost | 
 						id
 						name
 						about
+						credentials
+						avatar {
+							id
+							url
+							alt
+							width
+							height
+							filename
+						}
+					}
+					populatedReviewer {
+						id
+						name
+						about
+						credentials
 						avatar {
 							id
 							url
