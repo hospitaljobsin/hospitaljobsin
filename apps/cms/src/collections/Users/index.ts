@@ -39,6 +39,20 @@ export const Users: CollectionConfig = {
 			name: 'avatar',
 			type: 'relationship',
 			relationTo: 'media' // this should match your Media collection slug
+		},
+		{
+			name: 'linkedinUrl',
+			type: 'text',
+			admin: {
+				description: 'LinkedIn profile URL (optional)'
+			}
+		},
+		{
+			name: 'twitterUrl',
+			type: 'text',
+			admin: {
+				description: 'Twitter/X profile URL (optional)'
+			}
 		}
 	],
 	timestamps: true

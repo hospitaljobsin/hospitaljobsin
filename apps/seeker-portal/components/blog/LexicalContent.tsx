@@ -65,17 +65,17 @@ function renderNode(node: LexicalNode, key: string): React.ReactNode {
 		}
 
 		case 'heading': {
-			const tag = (node.tag as string) || 'h2';
-			const HeadingTag = tag as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+			let tag = (node.tag as string) || 'h2';
+			// Convert h1 to h2 to ensure only one h1 per page (the post title)
+			if (tag === 'h1') tag = 'h2';
+			const HeadingTag = tag as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 			const text = extractTextFromChildren(node.children || []);
 			const id = text
 				.toLowerCase()
 				.replace(/[^a-z0-9]+/g, '-')
 				.replace(/(^-|-$)/g, '');
 
-			// Define heading classes based on tag
 			const headingClasses: Record<string, string> = {
-				h1: 'text-xl sm:text-2xl font-semibold mt-8 mb-4',
 				h2: 'text-lg sm:text-xl font-semibold mt-8 mb-4',
 				h3: 'text-md sm:text-lg font-medium mt-6 mb-3',
 				h4: 'text-md sm:text-lg font-medium mt-4 mb-2',

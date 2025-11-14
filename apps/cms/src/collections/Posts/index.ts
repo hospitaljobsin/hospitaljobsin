@@ -248,6 +248,14 @@ export const Posts: CollectionConfig<'posts'> = {
 					type: 'text'
 				},
 				{
+					name: 'linkedinUrl',
+					type: 'text'
+				},
+				{
+					name: 'twitterUrl',
+					type: 'text'
+				},
+				{
 					name: 'avatar',
 					type: 'group',
 					fields: [
@@ -304,6 +312,14 @@ export const Posts: CollectionConfig<'posts'> = {
 				},
 				{
 					name: 'credentials',
+					type: 'text'
+				},
+				{
+					name: 'linkedinUrl',
+					type: 'text'
+				},
+				{
+					name: 'twitterUrl',
 					type: 'text'
 				},
 				{

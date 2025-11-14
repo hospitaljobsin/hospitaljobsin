@@ -23,7 +23,7 @@ export const generateMeta = async (args: { doc: Partial<Page> | Partial<Post> | 
 
 	const ogImage = getImageURL(doc?.meta?.image);
 
-	const title = doc?.meta?.title ? doc?.meta?.title + ' | Hospital Jobs' : 'Hospital Jobs';
+	const title = doc?.meta?.title ? doc?.meta?.title : 'Hospital Jobs';
 
 	return {
 		description: doc?.meta?.description,
