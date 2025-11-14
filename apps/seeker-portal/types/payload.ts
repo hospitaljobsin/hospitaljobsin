@@ -7,15 +7,18 @@ export interface PayloadPost {
 	content?: SerializedEditorState;
 	heroImage?: PayloadMedia;
 	publishedAt?: string;
+	updatedAt?: string;
 	readingTime?: number;
 	authors?: PayloadUser[];
 	populatedAuthors?: PayloadAuthor[];
+	populatedReviewer?: PayloadAuthor;
 	categories?: PayloadCategory[];
-	careerDisclaimer?: string;
+	careerDisclaimer?: SerializedEditorState;
 	meta?: {
 		title?: string;
 		description?: string;
 		image?: PayloadMedia;
+		keywords?: string;
 	};
 }
 
@@ -42,8 +45,11 @@ export interface PayloadUser {
 export interface PayloadAuthor {
 	id: string;
 	name: string;
+	credentials?: string;
 	about?: string;
 	avatar?: PayloadMedia;
+	linkedinUrl?: string;
+	twitterUrl?: string;
 }
 
 export interface PayloadPostsResponse {

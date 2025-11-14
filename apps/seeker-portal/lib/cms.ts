@@ -41,6 +41,8 @@ export async function fetchPosts(options: FetchPostsOptions = {}): Promise<Paylo
 						name
 						about
 						credentials
+						linkedinUrl
+						twitterUrl
 						avatar {
 							id
 							url
@@ -147,6 +149,8 @@ export async function fetchPostBySlug(slug: string): Promise<PayloadPost | null>
 						name
 						about
 						credentials
+						linkedinUrl
+						twitterUrl
 						avatar {
 							id
 							url
@@ -161,6 +165,8 @@ export async function fetchPostBySlug(slug: string): Promise<PayloadPost | null>
 						name
 						about
 						credentials
+						linkedinUrl
+						twitterUrl
 						avatar {
 							id
 							url
@@ -252,6 +258,8 @@ export async function fetchPostBySlugDraft(slug: string): Promise<PayloadPost | 
 						name
 						about
 						credentials
+						linkedinUrl
+						twitterUrl
 						avatar {
 							id
 							url
@@ -266,6 +274,8 @@ export async function fetchPostBySlugDraft(slug: string): Promise<PayloadPost | 
 						name
 						about
 						credentials
+						linkedinUrl
+						twitterUrl
 						avatar {
 							id
 							url

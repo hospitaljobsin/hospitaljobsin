@@ -105,7 +105,9 @@ export const populateAuthors: CollectionAfterReadHook = async ({ doc, req: { pay
 						name: (authorDoc as any).name,
 						about: (authorDoc as any).about,
 						credentials: (authorDoc as any).credentials,
-						avatar: avatarMedia
+						avatar: avatarMedia,
+						linkedinUrl: (authorDoc as any).linkedinUrl,
+						twitterUrl: (authorDoc as any).twitterUrl
 					};
 				})
 			);
@@ -189,7 +191,9 @@ export const populateAuthors: CollectionAfterReadHook = async ({ doc, req: { pay
 					name: (reviewerDoc as any).name,
 					about: (reviewerDoc as any).about,
 					credentials: (reviewerDoc as any).credentials,
-					avatar: avatarMedia
+					avatar: avatarMedia,
+					linkedinUrl: (reviewerDoc as any).linkedinUrl,
+					twitterUrl: (reviewerDoc as any).twitterUrl
 				};
 			}
 		} catch {

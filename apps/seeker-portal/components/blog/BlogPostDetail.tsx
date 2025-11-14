@@ -217,11 +217,39 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 																)}
 															</div>
 															<div className='flex-1'>
-																<h4 className='text-lg font-medium text-default-900 mb-1'>{author.name}</h4>
+																<div className='flex items-center gap-2'>
+																	<h4 className='text-lg font-medium text-default-900 mb-1'>{author.name}</h4>
+																</div>
 																{author.credentials && <p className='text-sm'>{author.credentials}</p>}
 															</div>
 														</div>
 														{author.about && <p className='text-base text-default-700 leading-relaxed'>{author.about}</p>}
+														{(author.linkedinUrl || author.twitterUrl) && (
+															<div className='flex gap-3'>
+																{author.linkedinUrl && (
+																	<a
+																		href={author.linkedinUrl}
+																		target='_blank'
+																		rel='noopener noreferrer'
+																		aria-label={`${author.name}'s LinkedIn profile`}
+																		className='text-foreground-600 hover:text-primary transition-colors'
+																	>
+																		<Linkedin className='w-5 h-5' />
+																	</a>
+																)}
+																{author.twitterUrl && (
+																	<a
+																		href={author.twitterUrl}
+																		target='_blank'
+																		rel='noopener noreferrer'
+																		aria-label={`${author.name}'s Twitter profile`}
+																		className='text-foreground-600 hover:text-primary transition-colors'
+																	>
+																		<Twitter className='w-5 h-5' />
+																	</a>
+																)}
+															</div>
+														)}
 													</div>
 												);
 											})}
@@ -252,11 +280,39 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 													)}
 												</div>
 												<div className='flex-1'>
-													<h4 className='text-lg font-medium text-default-900 mb-1'>{reviewer.name}</h4>
+													<div className='flex items-center gap-2'>
+														<h4 className='text-lg font-medium text-default-900 mb-1'>{reviewer.name}</h4>
+													</div>
 													{reviewer.credentials && <p className='text-sm'>{reviewer.credentials}</p>}
 												</div>
 											</div>
 											{reviewer.about && <p className='text-base text-default-700 leading-relaxed'>{reviewer.about}</p>}
+											{(reviewer.linkedinUrl || reviewer.twitterUrl) && (
+												<div className='flex gap-3'>
+													{reviewer.linkedinUrl && (
+														<a
+															href={reviewer.linkedinUrl}
+															target='_blank'
+															rel='noopener noreferrer'
+															aria-label={`${reviewer.name}'s LinkedIn profile`}
+															className='text-foreground-600 hover:text-primary transition-colors'
+														>
+															<Linkedin className='w-5 h-5' />
+														</a>
+													)}
+													{reviewer.twitterUrl && (
+														<a
+															href={reviewer.twitterUrl}
+															target='_blank'
+															rel='noopener noreferrer'
+															aria-label={`${reviewer.name}'s Twitter profile`}
+															className='text-foreground-600 hover:text-primary transition-colors'
+														>
+															<Twitter className='w-5 h-5' />
+														</a>
+													)}
+												</div>
+											)}
 										</div>
 									</div>
 								)}

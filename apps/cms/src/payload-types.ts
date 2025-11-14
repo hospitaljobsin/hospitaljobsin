@@ -285,6 +285,8 @@ export interface Post {
         name?: string | null;
         about?: string | null;
         credentials?: string | null;
+        linkedinUrl?: string | null;
+        twitterUrl?: string | null;
         avatar?: {
           id?: string | null;
           url?: string | null;
@@ -300,6 +302,8 @@ export interface Post {
     name?: string | null;
     about?: string | null;
     credentials?: string | null;
+    linkedinUrl?: string | null;
+    twitterUrl?: string | null;
     avatar?: {
       id?: string | null;
       url?: string | null;
@@ -479,6 +483,14 @@ export interface User {
    */
   about?: string | null;
   avatar?: (string | null) | Media;
+  /**
+   * LinkedIn profile URL (optional)
+   */
+  linkedinUrl?: string | null;
+  /**
+   * Twitter/X profile URL (optional)
+   */
+  twitterUrl?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -1275,6 +1287,8 @@ export interface PostsSelect<T extends boolean = true> {
         name?: T;
         about?: T;
         credentials?: T;
+        linkedinUrl?: T;
+        twitterUrl?: T;
         avatar?:
           | T
           | {
@@ -1293,6 +1307,8 @@ export interface PostsSelect<T extends boolean = true> {
         name?: T;
         about?: T;
         credentials?: T;
+        linkedinUrl?: T;
+        twitterUrl?: T;
         avatar?:
           | T
           | {
@@ -1435,6 +1451,8 @@ export interface UsersSelect<T extends boolean = true> {
   credentials?: T;
   about?: T;
   avatar?: T;
+  linkedinUrl?: T;
+  twitterUrl?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
