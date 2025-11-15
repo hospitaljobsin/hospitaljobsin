@@ -79,6 +79,7 @@ module "github" {
   sst_cms_preview_secret                            = module.core.sst_cms_preview_secret
   sst_cms_iam_role                                  = module.core.cms_username
   sst_cms_s3_bucket                                 = module.core.sst_cms_s3_bucket
+  proxy_posthog_api_host                            = data.terraform_remote_state.shared.outputs.proxy_posthog_api_host
 }
 
 
@@ -102,7 +103,7 @@ module "core" {
   whatsapp_phone_number_id          = var.whatsapp_phone_number_id
   two_factor_in_api_key             = var.two_factor_in_api_key
   posthog_api_key                   = var.posthog_api_key
-  posthog_api_host                  = var.posthog_api_host
+  server_posthog_api_host           = var.server_posthog_api_host
   mongodb_connection_string         = module.mongodb.connection_string
   mongodb_database_name             = var.mongodb_database_name
   vpc_id                            = data.terraform_remote_state.shared.outputs.vpc_id

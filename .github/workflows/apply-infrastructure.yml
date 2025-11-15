@@ -35,11 +35,11 @@ env:
   TF_VAR_whatsapp_phone_number_id: ${{ vars.WHATSAPP_PHONE_NUMBER_ID }}
   TF_VAR_two_factor_in_api_key: ${{ secrets.TWO_FACTOR_IN_API_KEY }}
   TF_VAR_posthog_api_key: ${{ secrets.POSTHOG_API_KEY }}
-  TF_VAR_posthog_api_host: ${{ vars.POSTHOG_API_HOST }}
+  TF_VAR_server_posthog_api_host: ${{ vars.POSTHOG_API_HOST }}
 
 concurrency:
-  group: deploy-infrastructure-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
-  cancel-in-progress: false      # Waits instead of cancelling previous runs
+  group: deploy-infrastructure-${{ github.ref_name == 'production' && 'production' || 'staging' }} # Ensures only one run of this workflow at a time
+  cancel-in-progress: false # Waits instead of cancelling previous runs
 
 jobs:
   terraform:
@@ -70,7 +70,6 @@ jobs:
         with:
           terraform_version: 1.12.1
 
-
       - name: Terraform Init
         if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}
         id: init
@@ -82,7 +81,6 @@ jobs:
         id: fmt
         working-directory: ./infrastructure/${{ steps.env.outputs.dir }}
         run: terraform fmt -check
-
 
       - name: Terraform Validate
         if: ${{ (github.event_name == 'pull_request') || (github.event_name == 'workflow_call' && inputs.run-deploy) }}

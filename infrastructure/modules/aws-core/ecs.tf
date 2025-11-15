@@ -696,7 +696,7 @@ resource "aws_ecs_task_definition" "app" {
         },
         {
           name  = "SERVER_POSTHOG_API_HOST"
-          value = var.posthog_api_host
+          value = var.server_posthog_api_host
         },
         {
           name  = "SERVER_REVALIDATE_BASE_URL"

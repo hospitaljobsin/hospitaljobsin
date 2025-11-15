@@ -74,3 +74,8 @@ output "aws_secret_access_key" {
   value     = aws_iam_access_key.github_actions.secret
   sensitive = true
 }
+
+output "proxy_posthog_api_host" {
+  value       = "https://${aws_cloudfront_distribution.posthog_proxy.domain_name}"
+  description = "PostHog API host URL for client initialization"
+}

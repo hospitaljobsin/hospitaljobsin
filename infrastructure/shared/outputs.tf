@@ -116,3 +116,9 @@ output "aws_secret_access_key" {
   value     = module.aws-foundation.aws_secret_access_key
   sensitive = true
 }
+
+
+output "proxy_posthog_api_host" {
+  value       = module.aws-foundation.proxy_posthog_api_host
+  description = "PostHog API host URL for client initialization"
+}
