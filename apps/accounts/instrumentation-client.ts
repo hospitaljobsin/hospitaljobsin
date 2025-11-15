@@ -9,6 +9,7 @@ import { env } from './lib/env/client';
 
 posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
 	api_host: env.NEXT_PUBLIC_POSTHOG_HOST,
+	ui_host: env.NEXT_PUBLIC_POSTHOG_UI_HOST,
 	defaults: '2025-05-24',
 	autocapture: env.NEXT_PUBLIC_ENVIRONMENT === 'production',
 	cross_subdomain_cookie: true,

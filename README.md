@@ -370,7 +370,7 @@ GitHub Actions Variables:
 - `CLOUDFLARE_ACCOUNT_ID`
 - `MONGODB_ATLAS_ORG_ID`
 - `WHATSAPP_PHONE_NUMBER_ID`
-- `POSTHOG_API_HOST`
+- `POSTHOG_HOST`
 
 GitHub Actions Secrets:
 

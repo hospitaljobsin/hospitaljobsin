@@ -17,7 +17,8 @@ export const env = createEnv({
 		NEXT_PUBLIC_ENVIRONMENT: z.enum(['development', 'testing', 'production']),
 		NEXT_PUBLIC_ROOT_DOMAIN: z.string(),
 		NEXT_PUBLIC_POSTHOG_KEY: z.string(),
-		NEXT_PUBLIC_POSTHOG_HOST: z.string()
+		NEXT_PUBLIC_POSTHOG_HOST: z.string(),
+		NEXT_PUBLIC_POSTHOG_UI_HOST: z.string()
 	},
 	// For Next.js >= 13.4.4, you only need to destructure client variables:
 	runtimeEnv: {
@@ -35,7 +36,8 @@ export const env = createEnv({
 		NEXT_PUBLIC_SENTRY_PROJECT: process.env.NEXT_PUBLIC_SENTRY_PROJECT,
 		NEXT_PUBLIC_ROOT_DOMAIN: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
 		NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
-		NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST
+		NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+		NEXT_PUBLIC_POSTHOG_UI_HOST: process.env.NEXT_PUBLIC_POSTHOG_UI_HOST
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
