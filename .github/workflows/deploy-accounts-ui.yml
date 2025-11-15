@@ -16,6 +16,7 @@ env: # repo-level and non-env-specific secrets/vars
   AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: ${{ vars.AWS_REGION }}
   GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+  POSTHOG_HOST: ${{ vars.POSTHOG_HOST }}
 
 jobs:
   build-and-push:
@@ -96,5 +97,6 @@ jobs:
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.POSTHOG_API_KEY }}
           NEXT_PUBLIC_POSTHOG_HOST: ${{ vars.POSTHOG_PROXY_API_HOST }}
+          NEXT_PUBLIC_POSTHOG_UI_HOST: ${{ env.POSTHOG_HOST }}
           NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ env.GOOGLE_OAUTH_CLIENT_ID }}
           JWE_SECRET_KEY: ${{ secrets.SST_JWE_SECRET_KEY }}
