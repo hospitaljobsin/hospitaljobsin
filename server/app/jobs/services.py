@@ -296,6 +296,7 @@ class JobService:
         job_metric_repo: JobMetricRepo,
         region_repo: RegionRepo,
         revalidation_service: BaseRevalidationService,
+        posthog_client: Posthog,
     ) -> None:
         self._job_repo = job_repo
         self._organization_repo = organization_repo
@@ -304,6 +305,7 @@ class JobService:
         self._job_metric_repo = job_metric_repo
         self._region_repo = region_repo
         self._revalidation_service = revalidation_service
+        self._posthog_client = posthog_client
 
     async def log_view_start(
         self,
@@ -485,6 +487,20 @@ class JobService:
             address=address,
         )
 
+        self._posthog_client.capture(
+            event="job_created",
+            distinct_id=str(relay.GlobalID("Account", str(account.id))),
+            groups={
+                "organization": str(
+                    relay.GlobalID("Organization", str(existing_organization.id))
+                )
+            },
+            properties={
+                "job_id": str(relay.GlobalID("Job", str(job.id))),
+                "job_title": job.title,
+            },
+        )
+
         return Ok(job)
 
     @validate_call()
@@ -656,6 +672,20 @@ class JobService:
 
         await self._revalidation_service.revalidate_tag(
             tag=f"job:{existing_job.organization.slug}:{existing_job.slug}"
+        )
+
+        self._posthog_client.capture(
+            event="job_published",
+            distinct_id=str(relay.GlobalID("Account", str(account.id))),
+            groups={
+                "organization": str(
+                    relay.GlobalID("Organization", str(existing_job.organization.id))
+                )
+            },
+            properties={
+                "job_id": str(relay.GlobalID("Job", str(existing_job.id))),
+                "job_title": existing_job.title,
+            },
         )
 
         return Ok(existing_job)
@@ -956,7 +986,17 @@ class JobApplicantService:
         self._posthog_client.capture(
             event="job_applied",
             distinct_id=str(relay.GlobalID("Account", str(account.id))),
-            properties={"job_id": str(existing_job.id)},
+            groups={
+                "organization": str(
+                    relay.GlobalID(
+                        "Organization", str(existing_job.organization.ref.id)
+                    )
+                )
+            },
+            properties={
+                "job_id": str(relay.GlobalID("Job", str(existing_job.id))),
+                "job_title": existing_job.title,
+            },
         )
 
         return Ok(job_application)

@@ -8,8 +8,10 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from email_validator import EmailNotValidError, validate_email
 from humanize import naturaldelta
+from posthog import Posthog
 from pydantic import Field, HttpUrl, StringConstraints, validate_call
 from result import Err, Ok, Result
+from strawberry import relay
 from types_aiobotocore_s3 import S3Client
 
 from app.accounts.documents import Account
@@ -234,6 +236,7 @@ class OrganizationService:
         s3_client: S3Client,
         aws_settings: AWSSettings,
         revalidation_service: BaseRevalidationService,
+        posthog_client: Posthog,
     ) -> None:
         self._organization_repo = organization_repo
         self._organization_member_repo = organization_member_repo
@@ -241,6 +244,7 @@ class OrganizationService:
         self._s3_client = s3_client
         self._aws_settings = aws_settings
         self._revalidation_service = revalidation_service
+        self._posthog_client = posthog_client
 
     @validate_call()
     async def create(
@@ -292,6 +296,28 @@ class OrganizationService:
             organization_id=organization.id,
             account=admin,
             role="admin",
+        )
+
+        self._posthog_client.group_identify(
+            "organization",
+            str(relay.GlobalID("Organization", str(organization.id))),
+            {
+                "name": organization.name,
+                "slug": organization.slug,
+                "created_at": organization.id.generation_time,
+            },
+        )
+
+        self._posthog_client.capture(
+            event="organization_created",
+            distinct_id=str(relay.GlobalID("Account", str(admin.id))),
+            properties={
+                "organization_id": str(
+                    relay.GlobalID("Organization", str(organization.id))
+                ),
+                "organization_name": organization.name,
+                "organization_slug": organization.slug,
+            },
         )
 
         return Ok(organization)
