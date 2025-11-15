@@ -187,16 +187,16 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 		setCroppedAreaPixels(croppedAreaPixels);
 	}, []);
 
-	const createCroppedImage = useCallback(async (imageSrc: string, pixelCrop: Area): Promise<string> => {
+	const createCroppedImage = useCallback(async (imageSrc: string, pixelCrop: Area, file: File): Promise<Blob> => {
 		const image = new Image();
 		image.src = imageSrc;
-		return new Promise(resolve => {
+		return new Promise((resolve, reject) => {
 			image.onload = () => {
 				const canvas = document.createElement('canvas');
 				const ctx = canvas.getContext('2d');
 
 				if (!ctx) {
-					resolve(imageSrc);
+					reject(new Error('Failed to get canvas context'));
 					return;
 				}
 
@@ -208,14 +208,13 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 				canvas.toBlob(
 					blob => {
 						if (blob) {
-							const croppedImageUrl = URL.createObjectURL(blob);
-							resolve(croppedImageUrl);
+							resolve(blob);
 						} else {
-							resolve(imageSrc);
+							reject(new Error('Failed to create blob'));
 						}
 					},
-					'image/jpeg',
-					0.9
+					file.type,
+					0.95
 				);
 			};
 		});
@@ -223,13 +222,20 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 
 	const handleCropSave = useCallback(async () => {
 		if (tempImageUrl && croppedAreaPixels) {
+			const file = croppingType === 'logo' ? selectedLogo : selectedBanner;
+			if (!file) return;
+
 			try {
-				const croppedImageUrl = await createCroppedImage(tempImageUrl, croppedAreaPixels);
+				const croppedBlob = await createCroppedImage(tempImageUrl, croppedAreaPixels, file);
+				const croppedFile = new File([croppedBlob], file.name, { type: file.type });
+				const croppedImageUrl = URL.createObjectURL(croppedBlob);
 				setCroppedImage(croppedImageUrl);
 
 				if (croppingType === 'logo') {
+					setSelectedLogo(croppedFile);
 					setPreviewUrl(croppedImageUrl);
 				} else if (croppingType === 'banner') {
+					setSelectedBanner(croppedFile);
 					setBannerPreviewUrl(croppedImageUrl);
 				}
 
@@ -239,7 +245,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 				console.error('Error creating cropped image:', error);
 			}
 		}
-	}, [tempImageUrl, croppedAreaPixels, createCroppedImage, onClose, croppingType]);
+	}, [tempImageUrl, croppedAreaPixels, createCroppedImage, onClose, croppingType, selectedLogo, selectedBanner]);
 
 	const handleCropCancel = useCallback(() => {
 		if (tempImageUrl) {
@@ -573,7 +579,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 								crop={crop}
 								zoom={zoom}
 								aspect={croppingType === 'logo' ? 1 : 16 / 9}
-								objectFit='contain'
+								objectFit='horizontal-cover'
 								onCropChange={setCrop}
 								onZoomChange={setZoom}
 								onCropComplete={onCropComplete}
