@@ -579,7 +579,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 								crop={crop}
 								zoom={zoom}
 								aspect={croppingType === 'logo' ? 1 : 16 / 9}
-								objectFit='horizontal-cover'
+								objectFit='contain'
 								onCropChange={setCrop}
 								onZoomChange={setZoom}
 								onCropComplete={onCropComplete}
