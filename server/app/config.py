@@ -384,6 +384,10 @@ class JobAlertsSettings(CoreSettings):
     sqs_job_alerts_queue_url: str
 
 
+class GoogleIndexingSettings(CoreSettings):
+    google_service_account_secret_arn: str
+
+
 class AuthSettings(CoreSettings):
     session_user_cookie_name: str = "user_session"
 
