@@ -59,6 +59,7 @@ ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
 ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=$NEXT_PUBLIC_GOOGLE_CLIENT_ID
 # Add any other NEXT_PUBLIC variables your app needs
 
+
 COPY ./apps/accounts/ ./apps/accounts/
 
 RUN pnpm --filter accounts run relay --validate

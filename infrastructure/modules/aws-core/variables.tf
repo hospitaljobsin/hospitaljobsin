@@ -112,9 +112,9 @@ variable "posthog_api_key" {
   sensitive   = true
 }
 
-variable "posthog_api_host" {
+variable "server_posthog_api_host" {
   type        = string
-  description = "PostHog API host."
+  description = "Server PostHog API host."
 }
 
 

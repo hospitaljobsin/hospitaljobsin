@@ -313,3 +313,9 @@ variable "sst_cms_s3_bucket" {
   type        = string
   description = "The S3 bucket name for the CMS."
 }
+
+
+variable "proxy_posthog_api_host" {
+  type        = string
+  description = "The PostHog proxy API host."
+}

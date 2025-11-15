@@ -8,11 +8,10 @@ on:
         type: boolean
 
 concurrency:
-  group: deploy-accounts-ui-${{ github.ref_name == 'production' && 'production' || 'staging' }}  # Ensures only one run of this workflow at a time
-  cancel-in-progress: false      # Waits instead of cancelling previous runs
+  group: deploy-accounts-ui-${{ github.ref_name == 'production' && 'production' || 'staging' }} # Ensures only one run of this workflow at a time
+  cancel-in-progress: false # Waits instead of cancelling previous runs
 
-
-env:  # repo-level and non-env-specific secrets/vars
+env: # repo-level and non-env-specific secrets/vars
   AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: ${{ vars.AWS_REGION }}
@@ -75,27 +74,27 @@ jobs:
         if: ${{ inputs.run-deploy }}
         run: npx sst deploy --stage ${{ github.ref_name == 'production' && 'production' || 'staging' }} --print-logs
         env:
-            SST_VPC_PRIVATE_SUBNETS: ${{ vars.SST_VPC_PRIVATE_SUBNETS }}
-            SST_VPC_SECURITY_GROUPS: ${{ vars.SST_VPC_SECURITY_GROUPS }}
-            SST_ACCOUNTS_DOMAIN: ${{vars.SST_ACCOUNTS_DOMAIN }}
-            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-            NEXT_PUBLIC_API_URL: ${{ vars.SST_API_URL }}
-            NEXT_PUBLIC_INTERNAL_API_URL: ${{ vars.SST_API_URL }}
-            NEXT_PUBLIC_URL: ${{ vars.SST_ACCOUNTS_BASE_URL }}
-            NEXT_PUBLIC_CAPTCHA_SITE_KEY: ${{ vars.SST_CAPTCHA_SITE_KEY }}
-            NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: ${{ vars.SST_RECRUITER_PORTAL_BASE_URL }}
-            NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL: ${{ vars.SST_SEEKER_PORTAL_BASE_URL}}
-            NEXT_PUBLIC_SESSION_COOKIE_KEY: user_session
-            NEXT_PUBLIC_ENVIRONMENT: production
-            NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.ACCOUNTS_SENTRY_DSN }}
-            NEXT_PUBLIC_SENTRY_ORGANIZATION: ${{ vars.SENTRY_ORGANIZATION }}
-            NEXT_PUBLIC_SENTRY_PROJECT: ${{vars.ACCOUNTS_SENTRY_PROJECT}}
-            NEXT_PUBLIC_ROOT_DOMAIN: ${{ vars.PUBLIC_ROOT_DOMAIN }}
-            SKIP_ENV_VALIDATION: true
-            NODE_ENV: production
-            BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-            BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-            NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.POSTHOG_API_KEY }}
-            NEXT_PUBLIC_POSTHOG_HOST: ${{ vars.POSTHOG_API_HOST }}
-            NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ env.GOOGLE_OAUTH_CLIENT_ID }}
-            JWE_SECRET_KEY: ${{ secrets.SST_JWE_SECRET_KEY }}
+          SST_VPC_PRIVATE_SUBNETS: ${{ vars.SST_VPC_PRIVATE_SUBNETS }}
+          SST_VPC_SECURITY_GROUPS: ${{ vars.SST_VPC_SECURITY_GROUPS }}
+          SST_ACCOUNTS_DOMAIN: ${{vars.SST_ACCOUNTS_DOMAIN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          NEXT_PUBLIC_API_URL: ${{ vars.SST_API_URL }}
+          NEXT_PUBLIC_INTERNAL_API_URL: ${{ vars.SST_API_URL }}
+          NEXT_PUBLIC_URL: ${{ vars.SST_ACCOUNTS_BASE_URL }}
+          NEXT_PUBLIC_CAPTCHA_SITE_KEY: ${{ vars.SST_CAPTCHA_SITE_KEY }}
+          NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: ${{ vars.SST_RECRUITER_PORTAL_BASE_URL }}
+          NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL: ${{ vars.SST_SEEKER_PORTAL_BASE_URL}}
+          NEXT_PUBLIC_SESSION_COOKIE_KEY: user_session
+          NEXT_PUBLIC_ENVIRONMENT: production
+          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.ACCOUNTS_SENTRY_DSN }}
+          NEXT_PUBLIC_SENTRY_ORGANIZATION: ${{ vars.SENTRY_ORGANIZATION }}
+          NEXT_PUBLIC_SENTRY_PROJECT: ${{vars.ACCOUNTS_SENTRY_PROJECT}}
+          NEXT_PUBLIC_ROOT_DOMAIN: ${{ vars.PUBLIC_ROOT_DOMAIN }}
+          SKIP_ENV_VALIDATION: true
+          NODE_ENV: production
+          BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
+          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+          NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ vars.POSTHOG_PROXY_API_HOST }}
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ env.GOOGLE_OAUTH_CLIENT_ID }}
+          JWE_SECRET_KEY: ${{ secrets.SST_JWE_SECRET_KEY }}

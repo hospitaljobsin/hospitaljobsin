@@ -278,3 +278,11 @@ resource "github_actions_environment_variable" "sst_cms_s3_bucket" {
   variable_name = "SST_CMS_S3_BUCKET"
   value         = var.sst_cms_s3_bucket
 }
+
+
+resource "github_actions_environment_variable" "proxy_posthog_api_host" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "POSTHOG_PROXY_API_HOST"
+  value         = var.proxy_posthog_api_host
+}

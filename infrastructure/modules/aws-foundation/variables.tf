@@ -17,3 +17,9 @@ variable "github_repository_name" {
   type        = string
   description = "The name of the GitHub repository."
 }
+
+variable "posthog_region" {
+  type        = string
+  description = "PostHog region (us or eu)."
+  default     = "us"
+}
