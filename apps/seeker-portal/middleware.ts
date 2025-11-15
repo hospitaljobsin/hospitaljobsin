@@ -34,7 +34,7 @@ const AI_BOT_USER_AGENTS = [
 	'Character.AI'
 ];
 
-const MARKDOWN_ELIGIBLE_ROUTES = [/^\/organizations\/[^/]+$/, /^\/jobs\/[^/]+$/, /^\/search\//];
+const MARKDOWN_ELIGIBLE_ROUTES = [/^\/organizations\/[^/]+$/, /^\/jobs\/[^/]+$/, /^\/search\//, /^\/blog$/, /^\/blog\/[^/]+$/];
 
 function isAIBot(userAgent: string): boolean {
 	return AI_BOT_USER_AGENTS.some(bot => userAgent.includes(bot));
@@ -86,7 +86,10 @@ export async function middleware(request: NextRequest) {
 		return NextResponse.redirect(markdownURL);
 	}
 
-	if ((pathname.startsWith('/organizations-md') || pathname.startsWith('/search-md')) && !searchParams.has('via_markdown_rewrite')) {
+	if (
+		(pathname.startsWith('/organizations-md') || pathname.startsWith('/search-md') || pathname.startsWith('/blog-md')) &&
+		!searchParams.has('via_markdown_rewrite')
+	) {
 		return new NextResponse(null, { status: 404 });
 	}
 

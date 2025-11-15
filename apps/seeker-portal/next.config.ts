@@ -100,6 +100,14 @@ const nextConfig: NextConfig = {
 	async rewrites() {
 		return [
 			{
+				source: '/blog.md',
+				destination: '/blog-md?via_markdown_rewrite=true'
+			},
+			{
+				source: '/blog/:slug.md',
+				destination: '/blog-md/:slug?via_markdown_rewrite=true'
+			},
+			{
 				source: '/organizations/:slug/jobs/:jobSlug.md',
 				destination: '/organizations-md/:slug/jobs-md/:jobSlug?via_markdown_rewrite=true'
 			},
@@ -231,6 +239,18 @@ const nextConfig: NextConfig = {
 			},
 			{
 				source: '/organizations-md/:path*',
+				has: [
+					{
+						type: 'query',
+						key: 'via_markdown_rewrite',
+						value: undefined
+					}
+				],
+				destination: '/404',
+				permanent: false
+			},
+			{
+				source: '/blog-md/:path*',
 				has: [
 					{
 						type: 'query',
