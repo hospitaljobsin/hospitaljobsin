@@ -385,7 +385,7 @@ class JobAlertsSettings(CoreSettings):
 
 
 class GoogleIndexingSettings(CoreSettings):
-    service_account_info: SecretStr
+    google_indexing_service_account_json: str
 
 
 class AuthSettings(CoreSettings):

@@ -96,3 +96,10 @@ variable "server_posthog_api_host" {
   type        = string
   description = "Server PostHog API host."
 }
+
+
+variable "google_indexing_service_account_json" {
+  type        = string
+  description = "Google Indexing API service account JSON."
+  sensitive   = true
+}

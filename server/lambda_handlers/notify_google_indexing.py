@@ -33,7 +33,11 @@ logger = get_logger(__name__)
 
 SCOPES = ["https://www.googleapis.com/auth/indexing"]
 BATCH_ENDPOINT = "https://indexing.googleapis.com/batch"
-BATCH_SIZE = 100
+BATCH_SIZE = 50
+
+DAILY_QUOTA = 200
+RUNS_PER_DAY = 4
+REQUEST_QUOTA_PER_RUN = DAILY_QUOTA // RUNS_PER_DAY  # 50 requests per run
 
 
 async def initialize_handler() -> None:
@@ -61,50 +65,28 @@ def lambda_handler(event: dict, context: LambdaContext) -> str:
 
 
 async def notify_google_indexing() -> str:
-    """Notify Google Indexing API about all active job postings."""
+    """Notify Google Indexing API about active job postings within daily quota."""
     async with container.context() as ctx:
         job_repo = await ctx.resolve(JobRepo)
 
     frontend_settings = get_settings(FrontendSettings)
     indexing_settings = get_settings(GoogleIndexingSettings)
     service_account_info = json.loads(
-        indexing_settings.service_account_info.get_secret_value()
+        indexing_settings.google_indexing_service_account_json
     )
     credentials = service_account.Credentials.from_service_account_info(
         service_account_info, scopes=SCOPES
     )
     credentials.refresh(Request())
 
-    # Get all active jobs
-    jobs_result = await job_repo.get_all_active(first=BATCH_SIZE)
     total_notified = 0
     total_failed = 0
+    quota_exceeded = False
 
     async with httpx.AsyncClient() as client:
-        # Process first page
-        batch_body = await _build_batch_request(
-            jobs_result.entities, frontend_settings, credentials.token
-        )
-        try:
-            response = await client.post(
-                BATCH_ENDPOINT,
-                headers={"Content-Type": "multipart/mixed; boundary=batch_boundary"},
-                content=batch_body,
-            )
-            response.raise_for_status()
-            # Update google_index_notified_at for successfully notified jobs
-            job_ids = [job.id for job in jobs_result.entities]
-            await job_repo.mark_as_notified_on_google_index(job_ids)
-            total_notified += len(jobs_result.entities)
-        except Exception as e:
-            total_failed += len(jobs_result.entities)
-            logger.exception(f"Failed to notify Google about batch: {e}")
+        jobs_result = await job_repo.get_for_google_indexing(first=BATCH_SIZE)
 
-        while jobs_result.page_info.has_next_page:
-            jobs_result = await job_repo.get_all_active(
-                first=BATCH_SIZE, after=str(jobs_result.page_info.end_cursor)
-            )
-
+        while jobs_result.entities and total_notified < REQUEST_QUOTA_PER_RUN:
             batch_body = await _build_batch_request(
                 jobs_result.entities, frontend_settings, credentials.token
             )
@@ -117,20 +99,37 @@ async def notify_google_indexing() -> str:
                     content=batch_body,
                 )
                 response.raise_for_status()
-                # Update google_index_notified_at for successfully notified jobs
                 job_ids = [job.id for job in jobs_result.entities]
                 await job_repo.mark_as_notified_on_google_index(job_ids)
                 total_notified += len(jobs_result.entities)
+            except httpx.HTTPStatusError as e:
+                if e.response.status_code == 429:
+                    quota_exceeded = True
+                    logger.warning(f"Google Indexing API quota exceeded: {e}")
+                    break
+                total_failed += len(jobs_result.entities)
+                logger.error(f"HTTP error notifying Google: {e}")
             except Exception as e:
                 total_failed += len(jobs_result.entities)
                 logger.exception(f"Failed to notify Google about batch: {e}")
 
+            if (
+                not jobs_result.page_info.has_next_page
+                or total_notified >= REQUEST_QUOTA_PER_RUN
+            ):
+                break
+
+            jobs_result = await job_repo.get_for_google_indexing(
+                first=BATCH_SIZE, after=str(jobs_result.page_info.end_cursor)
+            )
+
+    status = "quota_exceeded" if quota_exceeded else "ok"
     logger.info(
-        f"Completed Google Indexing notification: {total_notified} notified, {total_failed} failed"
+        f"Completed Google Indexing notification: {total_notified} notified, {total_failed} failed, status={status}"
     )
 
     return json.dumps(
-        {"status": "ok", "notified": total_notified, "failed": total_failed}
+        {"status": status, "notified": total_notified, "failed": total_failed}
     )
 
 

@@ -139,3 +139,10 @@ variable "aws_lambda_backend_repository_url" {
   type        = string
   description = "AWS Lambda backend repository URL."
 }
+
+
+variable "google_indexing_service_account_json" {
+  type        = string
+  description = "Google Indexing API service account JSON."
+  sensitive   = true
+}
