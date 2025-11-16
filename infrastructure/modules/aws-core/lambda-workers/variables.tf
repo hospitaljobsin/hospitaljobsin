@@ -86,3 +86,9 @@ variable "google_indexing_service_account_json" {
   type      = string
   sensitive = true
 }
+
+
+variable "bing_indexnow_api_key" {
+  type      = string
+  sensitive = true
+}

@@ -146,3 +146,8 @@ variable "google_indexing_service_account_json" {
   description = "Google Indexing API service account JSON."
   sensitive   = true
 }
+
+variable "bing_indexnow_api_key" {
+  type      = string
+  sensitive = true
+}

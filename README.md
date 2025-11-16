@@ -413,9 +413,32 @@ To enable programmatic submission of URLs to Google Search for indexing, you nee
    - The service account can now submit URL indexing requests via the Google Indexing API
    - Copy the JSON credentials
 
-### 13. Terraform Setup
+### 13. Bing IndexNow Setup
 
-#### 13.1 Prerequisites:
+To enable instant URL submission to Bing and other participating search engines using the IndexNow protocol, you need to generate an API key.
+
+1. **Generate an API Key**
+
+   - Generate a unique API key (a random string of characters, typically 32+ characters)
+   - You can use any method to generate a secure random string, for example:
+     - Online UUID generator
+     - Command line: `openssl rand -hex 32`
+     - Or use any cryptographically secure random string generator
+
+2. **Store the API Key**
+
+   - Copy and securely store the generated API key
+   - This key will be used to authenticate IndexNow API requests to Bing and other search engines
+
+3. **Verify the Key (Post-Deployment)**
+
+   - After deployment, the API key must be accessible at: `https://hospitaljobs.in/{api-key}.txt`
+   - The file should contain only the API key as plain text
+   - This verification step is handled automatically by the infrastructure
+
+### 14. Terraform Setup
+
+#### 14.1 Prerequisites:
 
 - Create an S3 bucket that will act as the terraform state backend
 
@@ -448,6 +471,7 @@ GitHub Actions Secrets:
 - `TWO_FACTOR_IN_API_KEY`
 - `POSTHOG_API_KEY`
 - `GOOGLE_INDEXING_SERVICE_ACCOUNT_JSON`
+- `BING_INDEXNOW_API_KEY`
 
 During the initial terraform deployment:
 
