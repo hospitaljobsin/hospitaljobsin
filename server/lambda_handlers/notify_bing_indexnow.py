@@ -92,8 +92,11 @@ async def notify_bing_indexnow() -> str:
                 or not jobs_result.page_info.has_next_page
             ):
                 payload = {
-                    "host": frontend_settings.base_domain,
+                    "host": frontend_settings.seeker_portal_base_url.removeprefix(
+                        "https://"
+                    ),
                     "key": indexing_settings.bing_indexnow_api_key,
+                    "keyLocation": f"{frontend_settings.seeker_portal_base_url}/{indexing_settings.bing_indexnow_api_key}.txt",
                     "urlList": accumulated_urls,
                 }
 
