@@ -18,7 +18,8 @@ export const env = createEnv({
 		NEXT_PUBLIC_POSTHOG_HOST: z.string(),
 		NEXT_PUBLIC_POSTHOG_UI_HOST: z.string(),
 		NEXT_PUBLIC_ROOT_DOMAIN: z.string(),
-		NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.string()
+		NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.string(),
+		NEXT_PUBLIC_BING_INDEXNOW_API_KEY: z.string()
 	},
 	// For Next.js >= 13.4.4, you only need to destructure client variables:
 	runtimeEnv: {
@@ -37,7 +38,8 @@ export const env = createEnv({
 		NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
 		NEXT_PUBLIC_POSTHOG_UI_HOST: process.env.NEXT_PUBLIC_POSTHOG_UI_HOST,
 		NEXT_PUBLIC_ROOT_DOMAIN: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
-		NEXT_PUBLIC_GOOGLE_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+		NEXT_PUBLIC_GOOGLE_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+		NEXT_PUBLIC_BING_INDEXNOW_API_KEY: process.env.NEXT_PUBLIC_BING_INDEXNOW_API_KEY
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

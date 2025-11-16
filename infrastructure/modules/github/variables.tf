@@ -319,3 +319,9 @@ variable "proxy_posthog_api_host" {
   type        = string
   description = "The PostHog proxy API host."
 }
+
+
+variable "bing_indexnow_api_key" {
+  type      = string
+  sensitive = true
+}

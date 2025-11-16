@@ -74,6 +74,14 @@ export async function middleware(request: NextRequest) {
 	const isDevelopment = env.NEXT_PUBLIC_ENVIRONMENT === 'development';
 	const isBot = isAIBot(userAgent);
 
+	// Handle Bing IndexNow API key verification
+	if (pathname.endsWith('.txt') && pathname === `/${env.NEXT_PUBLIC_BING_INDEXNOW_API_KEY}.txt`) {
+		return new NextResponse(env.NEXT_PUBLIC_BING_INDEXNOW_API_KEY, {
+			status: 200,
+			headers: { 'Content-Type': 'text/plain' }
+		});
+	}
+
 	// Block direct access to markdown pages in non-dev environments for non-bots
 	if (!isDevelopment && !isBot && pathname.endsWith('.md')) {
 		return new NextResponse(null, { status: 404 });
