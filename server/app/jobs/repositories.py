@@ -790,6 +790,12 @@ class JobRepo:
             {Job.whatsapp_channel_posted_at: datetime.now(UTC)}
         )
 
+    async def mark_as_notified_on_google_index(self, job_ids: list[ObjectId]) -> None:
+        """Mark jobs as notified on Google Indexing API."""
+        await Job.find(In(Job.id, job_ids)).set(
+            {Job.google_index_notified_at: datetime.now(UTC)}
+        )
+
     async def create(
         self,
         *,

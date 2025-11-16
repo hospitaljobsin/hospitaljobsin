@@ -77,6 +77,10 @@ class Job(Document):
 
     whatsapp_channel_posted_at: datetime | None = None
 
+    google_index_notified_at: datetime | None = None
+
+    bing_indexnow_notified_at: datetime | None = None
+
     organization: Link[Organization]
 
     organization_name: str | None = None

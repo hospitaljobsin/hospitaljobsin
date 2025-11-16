@@ -354,9 +354,68 @@ To set up a WhatsApp Business API account using Meta's developer tools, follow t
 
 - TODO
 
-### 12. Terraform Setup
+### 12. Google Indexing Setup
 
-#### 12.1 Prerequisites:
+To enable programmatic submission of URLs to Google Search for indexing, you need to set up a Google Cloud service account with the Indexing API enabled.
+
+1. **Create a Google Cloud Project**
+
+   - Go to the [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or select an existing one
+   - Note down the **Project ID** for later use
+
+2. **Enable the Indexing API**
+
+   - In the Google Cloud Console, navigate to **APIs & Services** > **Library**
+   - Search for "Indexing API"
+   - Click on **Web Search Indexing API** (or **Indexing API**)
+   - Click **Enable** to activate the API for your project
+
+3. **Create a Service Account**
+
+   - Navigate to **APIs & Services** > **Credentials**
+   - Click **Create Credentials** > **Service Account**
+   - Provide a service account name (e.g., "google-indexing-service")
+   - Optionally add a description (e.g., "Service account for programmatic URL indexing")
+   - Click **Create and Continue**
+   - Skip the optional "Grant this service account access to project" step by clicking **Continue**
+   - Skip the optional "Grant users access to this service account" step by clicking **Done**
+
+4. **Generate Service Account Key (JSON)**
+
+   - In the **Credentials** page, locate your newly created service account under **Service Accounts**
+   - Click on the service account email to open its details
+   - Navigate to the **Keys** tab
+   - Click **Add Key** > **Create new key**
+   - Select **JSON** as the key type
+   - Click **Create** - this will download a JSON file containing your service account credentials
+   - **Store this JSON file securely** - it contains sensitive credentials that grant API access
+   - Note the service account email address (format: `service-account-name@project-id.iam.gserviceaccount.com`)
+
+5. **Add Service Account to Google Search Console**
+
+   - Go to [Google Search Console](https://search.google.com/search-console)
+   - Select your property (e.g., `https://hospitaljobs.in`)
+   - If you haven't added your property yet:
+     - Click **Add Property**
+     - Choose **URL prefix** and enter your domain (e.g., `https://hospitaljobs.in`)
+     - Verify ownership using one of the provided methods (DNS record, HTML file upload, HTML tag, Google Analytics, or Google Tag Manager)
+   - Once your property is verified, navigate to **Settings** (gear icon in the left sidebar)
+   - Click on **Users and permissions**
+   - Click **Add user**
+   - Enter the **service account email address** (from Step 4)
+   - Select **Owner** as the permission level (required for Indexing API access)
+   - Click **Add**
+
+6. **Verify API Access**
+
+   - You can test the setup by making a test API call using the service account credentials
+   - The service account can now submit URL indexing requests via the Google Indexing API
+   - Copy the JSON credentials
+
+### 13. Terraform Setup
+
+#### 13.1 Prerequisites:
 
 - Create an S3 bucket that will act as the terraform state backend
 
@@ -388,6 +447,7 @@ GitHub Actions Secrets:
 - `WHATSAPP_ACCESS_TOKEN`
 - `TWO_FACTOR_IN_API_KEY`
 - `POSTHOG_API_KEY`
+- `GOOGLE_INDEXING_SERVICE_ACCOUNT_JSON`
 
 During the initial terraform deployment:
 

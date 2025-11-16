@@ -1,8 +1,6 @@
 import asyncio
 import json
-import os
 
-import boto3
 import httpx
 from app.config import (
     DatabaseSettings,
@@ -69,13 +67,9 @@ async def notify_google_indexing() -> str:
 
     frontend_settings = get_settings(FrontendSettings)
     indexing_settings = get_settings(GoogleIndexingSettings)
-
-    # Get service account credentials from Secrets Manager
-    secrets_client = boto3.client("secretsmanager")
-    secret_response = secrets_client.get_secret_value(
-        SecretId=indexing_settings.google_service_account_secret_arn
+    service_account_info = json.loads(
+        indexing_settings.service_account_info.get_secret_value()
     )
-    service_account_info = json.loads(secret_response["SecretString"])
     credentials = service_account.Credentials.from_service_account_info(
         service_account_info, scopes=SCOPES
     )
@@ -88,7 +82,7 @@ async def notify_google_indexing() -> str:
 
     async with httpx.AsyncClient() as client:
         # Process first page
-        batch_body = _build_batch_request(
+        batch_body = await _build_batch_request(
             jobs_result.entities, frontend_settings, credentials.token
         )
         try:
@@ -98,6 +92,9 @@ async def notify_google_indexing() -> str:
                 content=batch_body,
             )
             response.raise_for_status()
+            # Update google_index_notified_at for successfully notified jobs
+            job_ids = [job.id for job in jobs_result.entities]
+            await job_repo.mark_as_notified_on_google_index(job_ids)
             total_notified += len(jobs_result.entities)
         except Exception as e:
             total_failed += len(jobs_result.entities)
@@ -108,7 +105,7 @@ async def notify_google_indexing() -> str:
                 first=BATCH_SIZE, after=str(jobs_result.page_info.end_cursor)
             )
 
-            batch_body = _build_batch_request(
+            batch_body = await _build_batch_request(
                 jobs_result.entities, frontend_settings, credentials.token
             )
             try:
@@ -120,6 +117,9 @@ async def notify_google_indexing() -> str:
                     content=batch_body,
                 )
                 response.raise_for_status()
+                # Update google_index_notified_at for successfully notified jobs
+                job_ids = [job.id for job in jobs_result.entities]
+                await job_repo.mark_as_notified_on_google_index(job_ids)
                 total_notified += len(jobs_result.entities)
             except Exception as e:
                 total_failed += len(jobs_result.entities)
@@ -134,11 +134,10 @@ async def notify_google_indexing() -> str:
     )
 
 
-def _build_batch_request(jobs: list[Job], frontend_settings, token: str) -> str:
+async def _build_batch_request(jobs: list[Job], frontend_settings, token: str) -> str:
     """Build a multipart/mixed batch request body."""
     parts = []
     for job in jobs:
-        # TODO: optimize this
         await job.fetch_link(Job.organization)
         job_url = f"{frontend_settings.seeker_portal_base_url}/organizations/{job.organization.slug}/jobs/{job.slug}"
         body = json.dumps({"url": job_url, "type": "URL_UPDATED"})
