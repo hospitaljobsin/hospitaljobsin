@@ -116,3 +116,10 @@ resource "github_actions_environment_secret" "cms_preview_secret" {
   secret_name     = "SST_CMS_PREVIEW_SECRET"
   plaintext_value = var.sst_cms_preview_secret
 }
+
+resource "github_actions_environment_secret" "bing_indexnow_api_key" {
+  repository      = data.github_repository.this.name
+  environment     = github_repository_environment.this.environment
+  secret_name     = "BING_INDEXNOW_API_KEY"
+  plaintext_value = var.bing_indexnow_api_key
+}

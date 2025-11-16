@@ -80,6 +80,7 @@ module "github" {
   sst_cms_iam_role                                  = module.core.cms_username
   sst_cms_s3_bucket                                 = module.core.sst_cms_s3_bucket
   proxy_posthog_api_host                            = data.terraform_remote_state.shared.outputs.proxy_posthog_api_host
+  bing_indexnow_api_key                             = var.bing_indexnow_api_key
 }
 
 
