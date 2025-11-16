@@ -47,10 +47,12 @@ from app.config import (
     AppSettings,
     AuthSettings,
     AWSSettings,
+    BingIndexNowSettings,
     DatabaseSettings,
     EmailSettings,
     EnvironmentSettings,
     FrontendSettings,
+    GoogleIndexingSettings,
     JobAlertsSettings,
     Oauth2Settings,
     PosthogSettings,
@@ -172,6 +174,8 @@ settings_classes: list[type[BaseSettings]] = [
     Oauth2Settings,
     RevalidateSettings,
     JobAlertsSettings,
+    BingIndexNowSettings,
+    GoogleIndexingSettings,
 ]
 
 

@@ -60,4 +60,5 @@ module "lambda_workers" {
   s3_bucket_arn                        = aws_s3_bucket.this.arn
   secrets_manager_secret_id            = aws_secretsmanager_secret.backend.id
   google_indexing_service_account_json = var.google_indexing_service_account_json
+  bing_indexnow_api_key                = var.bing_indexnow_api_key
 }

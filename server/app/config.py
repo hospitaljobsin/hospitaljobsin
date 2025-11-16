@@ -388,6 +388,10 @@ class GoogleIndexingSettings(CoreSettings):
     google_indexing_service_account_json: str
 
 
+class BingIndexNowSettings(CoreSettings):
+    bing_indexnow_api_key: str
+
+
 class AuthSettings(CoreSettings):
     session_user_cookie_name: str = "user_session"
 
