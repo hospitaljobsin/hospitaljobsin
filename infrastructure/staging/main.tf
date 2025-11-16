@@ -84,32 +84,33 @@ module "github" {
 
 
 module "core" {
-  source                            = "../modules/aws-core"
-  environment_name                  = "staging"
-  app_name                          = var.app_name
-  aws_region                        = var.aws_region
-  turnstile_widget_secret           = "1x0000000000000000000000000000000AA"
-  domain_name                       = var.domain_name
-  google_oauth_client_id            = var.google_oauth_client_id
-  google_oauth_client_secret        = var.google_oauth_client_secret
-  resource_prefix                   = var.resource_prefix
-  sentry_backend_dsn                = data.terraform_remote_state.shared.outputs.sentry_backend_dsn
-  sentry_accounts_ui_dsn            = data.terraform_remote_state.shared.outputs.sentry_accounts_ui_dsn
-  sentry_recruiter_portal_ui_dsn    = data.terraform_remote_state.shared.outputs.sentry_recruiter_portal_ui_dsn
-  sentry_seeker_portal_ui_dsn       = data.terraform_remote_state.shared.outputs.sentry_seeker_portal_ui_dsn
-  redis_password                    = module.redis.redis_password
-  redis_endpoint                    = module.redis.public_endpoint
-  whatsapp_access_token             = var.whatsapp_access_token
-  whatsapp_phone_number_id          = var.whatsapp_phone_number_id
-  two_factor_in_api_key             = var.two_factor_in_api_key
-  posthog_api_key                   = var.posthog_api_key
-  server_posthog_api_host           = var.server_posthog_api_host
-  mongodb_connection_string         = module.mongodb.connection_string
-  mongodb_database_name             = var.mongodb_database_name
-  vpc_id                            = data.terraform_remote_state.shared.outputs.vpc_id
-  hosted_zone_id                    = data.terraform_remote_state.shared.outputs.hosted_zone_id
-  aws_lambda_worker_repository_url  = data.terraform_remote_state.shared.outputs.aws_lambda_worker_repository_url
-  aws_lambda_backend_repository_url = data.terraform_remote_state.shared.outputs.aws_lambda_backend_repository_url
+  source                               = "../modules/aws-core"
+  environment_name                     = "staging"
+  app_name                             = var.app_name
+  aws_region                           = var.aws_region
+  turnstile_widget_secret              = "1x0000000000000000000000000000000AA"
+  domain_name                          = var.domain_name
+  google_oauth_client_id               = var.google_oauth_client_id
+  google_oauth_client_secret           = var.google_oauth_client_secret
+  resource_prefix                      = var.resource_prefix
+  sentry_backend_dsn                   = data.terraform_remote_state.shared.outputs.sentry_backend_dsn
+  sentry_accounts_ui_dsn               = data.terraform_remote_state.shared.outputs.sentry_accounts_ui_dsn
+  sentry_recruiter_portal_ui_dsn       = data.terraform_remote_state.shared.outputs.sentry_recruiter_portal_ui_dsn
+  sentry_seeker_portal_ui_dsn          = data.terraform_remote_state.shared.outputs.sentry_seeker_portal_ui_dsn
+  redis_password                       = module.redis.redis_password
+  redis_endpoint                       = module.redis.public_endpoint
+  whatsapp_access_token                = var.whatsapp_access_token
+  whatsapp_phone_number_id             = var.whatsapp_phone_number_id
+  two_factor_in_api_key                = var.two_factor_in_api_key
+  posthog_api_key                      = var.posthog_api_key
+  server_posthog_api_host              = var.server_posthog_api_host
+  mongodb_connection_string            = module.mongodb.connection_string
+  mongodb_database_name                = var.mongodb_database_name
+  vpc_id                               = data.terraform_remote_state.shared.outputs.vpc_id
+  hosted_zone_id                       = data.terraform_remote_state.shared.outputs.hosted_zone_id
+  aws_lambda_worker_repository_url     = data.terraform_remote_state.shared.outputs.aws_lambda_worker_repository_url
+  aws_lambda_backend_repository_url    = data.terraform_remote_state.shared.outputs.aws_lambda_backend_repository_url
+  google_indexing_service_account_json = var.google_indexing_service_account_json
 }
 
 module "mongodb" {

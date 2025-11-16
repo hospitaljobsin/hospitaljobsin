@@ -36,6 +36,7 @@ env:
   TF_VAR_two_factor_in_api_key: ${{ secrets.TWO_FACTOR_IN_API_KEY }}
   TF_VAR_posthog_api_key: ${{ secrets.POSTHOG_API_KEY }}
   TF_VAR_server_posthog_api_host: ${{ vars.POSTHOG_HOST }}
+  TF_VAR_google_indexing_service_account_json: ${{ secrets.GOOGLE_INDEXING_SERVICE_ACCOUNT_JSON }}
 
 concurrency:
   group: deploy-infrastructure-${{ github.ref_name == 'production' && 'production' || 'staging' }} # Ensures only one run of this workflow at a time

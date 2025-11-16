@@ -124,7 +124,7 @@ type JobApplicantAnalyzerAgent = Agent[None, JobApplicantAnalysisOutput]
 
 def create_job_applicant_analyzer_agent() -> JobApplicantAnalyzerAgent:
     return Agent(
-        model="bedrock:us.amazon.nova-pro-v1:0",
+        model="bedrock:us.amazon.nova-premier-v1:0",
         output_type=JobApplicantAnalysisOutput,
         system_prompt=(
             "You are a Senior Healthcare Recruiter. You are given a job description and a job applicant profile. "

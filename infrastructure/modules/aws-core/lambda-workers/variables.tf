@@ -81,3 +81,8 @@ variable "s3_bucket_arn" {
 variable "secrets_manager_secret_id" {
   type = string
 }
+
+variable "google_indexing_service_account_json" {
+  type      = string
+  sensitive = true
+}

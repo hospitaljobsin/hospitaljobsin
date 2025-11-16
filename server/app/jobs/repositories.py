@@ -790,6 +790,43 @@ class JobRepo:
             {Job.whatsapp_channel_posted_at: datetime.now(UTC)}
         )
 
+    async def mark_as_notified_on_google_index(self, job_ids: list[ObjectId]) -> None:
+        """Mark jobs as notified on Google Indexing API."""
+        await Job.find(In(Job.id, job_ids)).set(
+            {Job.google_index_notified_at: datetime.now(UTC)}
+        )
+
+    async def get_for_google_indexing(
+        self,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[Job, ObjectId]:
+        """Get paginated active jobs that haven't been indexed on Google yet."""
+        paginator: Paginator[Job, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=Job,
+            paginate_by="_id",
+            entity_paginate_by="id",
+        )
+
+        search_criteria = Job.find(
+            Job.is_active == True,
+            Job.google_index_notified_at == None,
+            Or(Job.expires_at == None, Job.expires_at > datetime.now(UTC)),
+            fetch_links=True,
+            nesting_depth=2,
+        ).sort(-Job.id)
+
+        return await paginator.paginate(
+            search_criteria=search_criteria,
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
+
     async def create(
         self,
         *,
