@@ -30,7 +30,8 @@ container = create_container()
 logger = get_logger(__name__)
 
 INDEXNOW_ENDPOINT = "https://api.indexnow.org/indexnow"
-BATCH_SIZE = 10000  # IndexNow supports up to 10,000 URLs per request
+REPO_PAGE_SIZE = 100  # Job repo pagination limit
+INDEXNOW_BATCH_SIZE = 10000  # IndexNow supports up to 10,000 URLs per request
 
 
 async def initialize_handler() -> None:
@@ -69,39 +70,57 @@ async def notify_bing_indexnow() -> str:
     total_failed = 0
 
     async with httpx.AsyncClient() as client:
-        jobs_result = await job_repo.get_for_bing_indexing(first=BATCH_SIZE)
+        accumulated_jobs = []
+        accumulated_urls = []
+        cursor = None
 
-        while jobs_result.entities:
-            url_list = await _build_url_list(jobs_result.entities, frontend_settings)
-            payload = {
-                "host": frontend_settings.base_domain,
-                "key": indexing_settings.bing_indexnow_api_key,
-                "urlList": url_list,
-            }
+        while True:
+            jobs_result = await job_repo.get_for_bing_indexing(
+                first=REPO_PAGE_SIZE, after=cursor
+            )
 
-            try:
-                response = await client.post(
-                    INDEXNOW_ENDPOINT,
-                    headers={"Content-Type": "application/json; charset=utf-8"},
-                    json=payload,
-                )
-                response.raise_for_status()
-                job_ids = [job.id for job in jobs_result.entities]
-                await job_repo.mark_as_notified_on_bing_index(job_ids)
-                total_notified += len(jobs_result.entities)
-            except httpx.HTTPStatusError as e:
-                total_failed += len(jobs_result.entities)
-                logger.error(f"HTTP error notifying Bing IndexNow: {e}")
-            except Exception as e:
-                total_failed += len(jobs_result.entities)
-                logger.exception(f"Failed to notify Bing IndexNow about batch: {e}")
+            if not jobs_result.entities:
+                break
+
+            accumulated_jobs.extend(jobs_result.entities)
+            accumulated_urls.extend(
+                await _build_url_list(jobs_result.entities, frontend_settings)
+            )
+
+            if (
+                len(accumulated_urls) >= INDEXNOW_BATCH_SIZE
+                or not jobs_result.page_info.has_next_page
+            ):
+                payload = {
+                    "host": frontend_settings.base_domain,
+                    "key": indexing_settings.bing_indexnow_api_key,
+                    "urlList": accumulated_urls,
+                }
+
+                try:
+                    response = await client.post(
+                        INDEXNOW_ENDPOINT,
+                        headers={"Content-Type": "application/json; charset=utf-8"},
+                        json=payload,
+                    )
+                    response.raise_for_status()
+                    job_ids = [job.id for job in accumulated_jobs]
+                    await job_repo.mark_as_notified_on_bing_index(job_ids)
+                    total_notified += len(accumulated_jobs)
+                except httpx.HTTPStatusError as e:
+                    total_failed += len(accumulated_jobs)
+                    logger.error(f"HTTP error notifying Bing IndexNow: {e}")
+                except Exception as e:
+                    total_failed += len(accumulated_jobs)
+                    logger.exception(f"Failed to notify Bing IndexNow about batch: {e}")
+
+                accumulated_jobs = []
+                accumulated_urls = []
 
             if not jobs_result.page_info.has_next_page:
                 break
 
-            jobs_result = await job_repo.get_for_bing_indexing(
-                first=BATCH_SIZE, after=str(jobs_result.page_info.end_cursor)
-            )
+            cursor = str(jobs_result.page_info.end_cursor)
 
     logger.info(
         f"Completed Bing IndexNow notification: {total_notified} notified, {total_failed} failed"
