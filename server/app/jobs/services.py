@@ -966,7 +966,7 @@ class JobApplicantService:
                     job_id=str(existing_job.id),
                 ).model_dump_json(),
             )
-        if self._env_settings.is_development:
+        elif self._env_settings.is_development:
             # do not run in test/ staging environments to save costs
             await self._job_applicant_analysis_service.analyse_job_applicant(
                 job_application=job_application,
