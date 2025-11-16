@@ -161,9 +161,12 @@ resource "aws_iam_policy" "ecs_custom_policy" {
         Resource = "*"
       },
       {
-        Effect   = "Allow",
-        Action   = ["sqs:SendMessage"],
-        Resource = [aws_sqs_queue.job_alerts.arn, "${aws_sqs_queue.job_alerts.arn}/*"]
+        Effect = "Allow",
+        Action = ["sqs:SendMessage"],
+        Resource = [
+          aws_sqs_queue.this.arn,
+          aws_sqs_queue.job_alerts.arn
+        ]
       }
     ]
   })
