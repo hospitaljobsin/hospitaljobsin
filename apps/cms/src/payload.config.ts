@@ -103,10 +103,19 @@ export default buildConfig({
 				// If there is no logged in user, then check
 				// for the Vercel Cron secret to be present as an
 				// Authorization header:
-				const authHeader = req.headers.get('authorization');
+				const authHeader = req.headers.get('Authorization');
 				return authHeader === `Bearer ${process.env.CRON_SECRET}`;
 			}
 		},
-		tasks: []
+		tasks: [],
+		autoRun:
+			process.env.ENABLE_PAYLOAD_AUTORUN === 'true'
+				? [
+						{
+							cron: '* * * * *', // Process jobs every minute
+							queue: 'tracker-queue'
+						}
+					]
+				: []
 	}
 });
