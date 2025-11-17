@@ -93,6 +93,8 @@ jobs:
           NEXT_PUBLIC_SEEKER_PORTAL_URL: ${{ vars.SST_SEEKER_PORTAL_BASE_URL }}
           # Secret used to authenticate cron jobs
           CRON_SECRET: ${{ secrets.SST_CMS_CRON_SECRET }}
+
+          ENABLE_PAYLOAD_AUTORUN: false
           # Used to validate preview requests
           PREVIEW_SECRET: ${{ secrets.SST_CMS_PREVIEW_SECRET }}
           # Added by Payload
