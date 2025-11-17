@@ -417,24 +417,13 @@ To enable programmatic submission of URLs to Google Search for indexing, you nee
 
 To enable instant URL submission to Bing and other participating search engines using the IndexNow protocol, you need to generate an API key.
 
-1. **Generate an API Key**
-
-   - Generate a unique API key (a random string of characters, typically 32+ characters)
-   - You can use any method to generate a secure random string, for example:
-     - Online UUID generator
-     - Command line: `openssl rand -hex 32`
-     - Or use any cryptographically secure random string generator
-
-2. **Store the API Key**
-
-   - Copy and securely store the generated API key
-   - This key will be used to authenticate IndexNow API requests to Bing and other search engines
-
-3. **Verify the Key (Post-Deployment)**
-
-   - After deployment, the API key must be accessible at: `https://hospitaljobs.in/{api-key}.txt`
-   - The file should contain only the API key as plain text
-   - This verification step is handled automatically by the infrastructure
+- Generate a unique API key (a random string of characters, typically 32+ characters)
+- You can use any method to generate a secure random string, for example:
+  - Directly from Bing Webmaster Dashboard
+  - Online UUID generator
+  - Command line: `openssl rand -hex 32`
+  - Or use any cryptographically secure random string generator
+- Copy and securely store the generated API key
 
 ### 14. Terraform Setup
 

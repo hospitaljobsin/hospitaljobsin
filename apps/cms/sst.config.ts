@@ -11,7 +11,7 @@ export default $config({
 		};
 	},
 	run() {
-		new sst.aws.Nextjs('cms-ui', {
+		const cmsUi = new sst.aws.Nextjs('cms-ui', {
 			buildCommand: 'pnpm run package',
 			domain: {
 				name: `content.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`,
@@ -73,6 +73,17 @@ export default $config({
 							// args.continuousDeploymentPolicyId = "" While doing that, set this on the production distribution
 						}
 					};
+				}
+			}
+		});
+
+		new sst.aws.Cron('PayloadJobsCron', {
+			schedule: 'rate(5 minutes)',
+			function: {
+				handler: 'src/cron.handler',
+				environment: {
+					CMS_URL: cmsUi.url,
+					CRON_SECRET: process.env.CRON_SECRET
 				}
 			}
 		});
