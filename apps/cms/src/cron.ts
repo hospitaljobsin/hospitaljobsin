@@ -3,7 +3,7 @@ export async function handler() {
 	const cronSecret = process.env.CRON_SECRET;
 
 	const response = await fetch(`${cmsUrl}/api/payload-jobs/run`, {
-		method: 'POST',
+		method: 'GET',
 		headers: {
 			Authorization: `Bearer ${cronSecret}`
 		}
