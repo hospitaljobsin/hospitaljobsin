@@ -5,6 +5,8 @@ const links = {
 	faq: '/faq',
 	blog: '/blog',
 	blogDetail: (slug: string) => `/blog/${slug}`,
+	blogFeed: '/blog/feed.xml',
+	feed: '/feed',
 	search: (location: string | undefined = undefined, speciality: string | undefined = undefined) =>
 		location && speciality
 			? `/search/${speciality.trim().replace(/\s+/g, '-')}-jobs-in-${location.trim().replace(/\s+/g, '-')}`

@@ -2,8 +2,9 @@
 
 import { Alert, Button, Chip } from '@heroui/react';
 import { format } from 'date-fns';
-import { ArrowLeft, CalendarDays, Clock, Facebook, Linkedin, Share2, Twitter, User } from 'lucide-react';
+import { ArrowLeft, CalendarDays, Clock, Facebook, Linkedin, Rss, Share2, Twitter, User } from 'lucide-react';
 import Link from 'next/link';
+import links from '@/lib/links';
 import type { PayloadPost } from '@/types/payload';
 import { CMSImage } from './CMSImage';
 import { LexicalContent } from './LexicalContent';
@@ -72,6 +73,9 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 									</Button>
 									<Button isIconOnly variant='flat' color='default' onPress={() => handleShare('linkedin')} aria-label='Share on LinkedIn'>
 										<Linkedin className='w-5 h-5' />
+									</Button>
+									<Button as={Link} href={links.feed} isIconOnly variant='flat' color='default' aria-label='RSS Feed'>
+										<Rss className='w-5 h-5' />
 									</Button>
 								</div>
 							</div>
@@ -334,6 +338,9 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 								</Button>
 								<Button isIconOnly variant='flat' color='default' onPress={() => handleShare('linkedin')} aria-label='Share on LinkedIn'>
 									<Linkedin className='w-5 h-5' />
+								</Button>
+								<Button as={Link} href={links.feed} isIconOnly variant='flat' color='default' aria-label='RSS Feed'>
+									<Rss className='w-5 h-5' />
 								</Button>
 							</div>
 						</div>
