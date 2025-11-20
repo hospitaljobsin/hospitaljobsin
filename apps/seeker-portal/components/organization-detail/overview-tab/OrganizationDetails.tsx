@@ -203,8 +203,8 @@ export default function OrganizationDetails({ rootQuery }: { rootQuery: Organiza
 										<Card className='h-full' shadow='none'>
 											<CardBody className='flex flex-row gap-6'>
 												{benefit.posterImageUrl && (
-													<div className='relative w-96 h-64 flex-shrink-0 rounded-md overflow-hidden'>
-														<Image src={benefit.posterImageUrl} alt={benefit.title} fill className='object-cover' sizes='256px' />
+													<div className='relative w-96 flex-shrink-0 rounded-md overflow-hidden' style={{ aspectRatio: '16/9' }}>
+														<Image src={benefit.posterImageUrl} alt={benefit.title} fill className='object-cover' sizes='384px' />
 													</div>
 												)}
 												<div className='flex flex-col gap-4'>

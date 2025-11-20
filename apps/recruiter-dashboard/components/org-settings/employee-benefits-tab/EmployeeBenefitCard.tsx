@@ -43,20 +43,22 @@ export default function EmployeeBenefitCard({
 	return (
 		<>
 			<Card ref={setNodeRef} style={style} fullWidth className='p-4' shadow='none'>
-				<CardBody className='flex flex-row gap-4 items-start'>
+				<CardBody className='flex flex-row gap-4 items-start w-full'>
 					<button type='button' className='cursor-grab active:cursor-grabbing mt-1' {...attributes} {...listeners}>
 						<GripVertical size={20} className='text-foreground-400' />
 					</button>
-					{benefit.posterImageUrl && (
-						<div className='relative w-48 h-24 flex-shrink-0 rounded-md overflow-hidden'>
-							<Image src={benefit.posterImageUrl} alt={benefit.title} fill className='object-cover' />
+					<div className='flex flex-col sm:flex-row gap-6 w-full'>
+						{benefit.posterImageUrl && (
+							<div className='relative w-48 flex-shrink-0 rounded-md overflow-hidden aspect-video'>
+								<Image src={benefit.posterImageUrl} alt={benefit.title} fill className='object-cover' />
+							</div>
+						)}
+						<div className='flex-1 flex flex-col gap-2'>
+							<h3 className='text-lg font-medium'>{benefit.title}</h3>
+							<p className='text-sm text-foreground-600 line-clamp-2'>{benefit.description}</p>
 						</div>
-					)}
-					<div className='flex-1 flex flex-col gap-2'>
-						<h3 className='text-lg font-medium'>{benefit.title}</h3>
-						<p className='text-sm text-foreground-600 line-clamp-2'>{benefit.description}</p>
 					</div>
-					<div className='flex gap-2'>
+					<div className='flex flex-col sm:flex-row gap-2'>
 						<Button isIconOnly size='sm' variant='light' onPress={onEditOpen}>
 							<Edit size={16} />
 						</Button>
