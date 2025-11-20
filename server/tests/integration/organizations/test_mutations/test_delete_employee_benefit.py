@@ -24,9 +24,11 @@ mutation DeleteEmployeeBenefitMutation(
         benefitId: $benefitId
     ) {
         __typename
-        ... on EmployeeBenefit {
-            id
-            title
+        ... on EmployeeBenefitEdge {
+            node {
+                id
+                title
+            }
         }
         ... on OrganizationNotFoundError {
             message
@@ -86,8 +88,8 @@ async def test_delete_employee_benefit_successful(
     )
 
     data = response["data"]["deleteEmployeeBenefit"]
-    assert data["__typename"] == "EmployeeBenefit"
-    assert data["title"] == "Health Insurance"
+    assert data["__typename"] == "EmployeeBenefitEdge"
+    assert data["node"]["title"] == "Health Insurance"
 
     deleted_benefit = await employee_benefit_repo.get(
         organization_id=organization.id,
