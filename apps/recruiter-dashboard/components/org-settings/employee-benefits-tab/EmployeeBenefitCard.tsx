@@ -2,7 +2,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Button, Card, CardBody, useDisclosure } from '@heroui/react';
-import { Edit, GripVertical, Trash2 } from 'lucide-react';
+import { Edit, GripVertical, TrashIcon } from 'lucide-react';
 import Image from 'next/image';
 import { graphql, useFragment } from 'react-relay';
 import type { EmployeeBenefitCardFragment$key } from '@/__generated__/EmployeeBenefitCardFragment.graphql';
@@ -42,7 +42,7 @@ export default function EmployeeBenefitCard({
 
 	return (
 		<>
-			<Card ref={setNodeRef} style={style} fullWidth className='p-4' shadow='sm'>
+			<Card ref={setNodeRef} style={style} fullWidth className='p-4' shadow='none'>
 				<CardBody className='flex flex-row gap-4 items-start'>
 					<button type='button' className='cursor-grab active:cursor-grabbing mt-1' {...attributes} {...listeners}>
 						<GripVertical size={20} className='text-foreground-400' />
@@ -60,8 +60,8 @@ export default function EmployeeBenefitCard({
 						<Button isIconOnly size='sm' variant='light' onPress={onEditOpen}>
 							<Edit size={16} />
 						</Button>
-						<Button isIconOnly size='sm' variant='light' color='danger' onPress={onDeleteOpen}>
-							<Trash2 size={16} />
+						<Button isIconOnly size='sm' variant='light' onPress={onDeleteOpen}>
+							<TrashIcon size={16} />
 						</Button>
 					</div>
 				</CardBody>

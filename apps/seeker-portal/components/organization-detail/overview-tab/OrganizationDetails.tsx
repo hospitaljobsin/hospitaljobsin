@@ -86,7 +86,7 @@ export default function OrganizationDetails({ rootQuery }: { rootQuery: Organiza
 
 					{/* Logo Overlapping Banner */}
 					<div className='absolute -bottom-12 left-6 sm:left-8'>
-						<div className='relative w-24 h-24 sm:w-32 sm:h-32 rounded-xl overflow-hidden border-4 border-background shadow-lg bg-background'>
+						<div className='relative w-24 h-24 sm:w-32 sm:h-32 rounded-xl overflow-hidden border-4 border-background bg-background'>
 							<Image src={data.logoUrl} alt={data.name} fill className='object-cover' sizes='(max-width: 640px) 96px, 128px' />
 						</div>
 					</div>
