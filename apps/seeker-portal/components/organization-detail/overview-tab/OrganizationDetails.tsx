@@ -82,7 +82,7 @@ export default function OrganizationDetails({ rootQuery }: { rootQuery: Organiza
 		<div className='w-full flex flex-col gap-6'>
 			<Card fullWidth shadow='none' className='overflow-visible'>
 				{/* Banner Image */}
-				<div className='relative w-full h-48 sm:h-64'>
+				<div className='relative w-full' style={{ aspectRatio: '4.8' }}>
 					<Image
 						src={data.homePageBannerUrl}
 						alt={`${data.name} banner`}
@@ -93,7 +93,7 @@ export default function OrganizationDetails({ rootQuery }: { rootQuery: Organiza
 					/>
 
 					{/* Logo Overlapping Banner */}
-					<div className='absolute -bottom-12 left-6 sm:left-8'>
+					<div className='absolute -bottom-16 sm:-bottom-12 left-6 sm:left-8'>
 						<div className='relative w-24 h-24 sm:w-32 sm:h-32 rounded-xl overflow-hidden border-4 border-background bg-background'>
 							<Image src={data.logoUrl} alt={data.name} fill className='object-cover' sizes='(max-width: 640px) 96px, 128px' />
 						</div>
