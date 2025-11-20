@@ -1,11 +1,6 @@
 'use client';
-import type { EditEmployeeBenefitModalFragment$key } from '@/__generated__/EditEmployeeBenefitModalFragment.graphql';
-import type { EditEmployeeBenefitModalMutation as EditEmployeeBenefitModalMutationType } from '@/__generated__/EditEmployeeBenefitModalMutation.graphql';
-import type { EditEmployeeBenefitModalPresignedUrlMutation } from '@/__generated__/EditEmployeeBenefitModalPresignedUrlMutation.graphql';
-import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
-import { uploadFileToS3 } from '@/lib/presignedUrl';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { addToast, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Upload } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import type { Area } from 'react-easy-crop';
@@ -13,6 +8,11 @@ import Cropper from 'react-easy-crop';
 import { Controller, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod';
+import type { EditEmployeeBenefitModalFragment$key } from '@/__generated__/EditEmployeeBenefitModalFragment.graphql';
+import type { EditEmployeeBenefitModalMutation as EditEmployeeBenefitModalMutationType } from '@/__generated__/EditEmployeeBenefitModalMutation.graphql';
+import type { EditEmployeeBenefitModalPresignedUrlMutation } from '@/__generated__/EditEmployeeBenefitModalPresignedUrlMutation.graphql';
+import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
+import { uploadFileToS3 } from '@/lib/presignedUrl';
 
 const EditEmployeeBenefitModalFragment = graphql`
   fragment EditEmployeeBenefitModalFragment on EmployeeBenefit {
@@ -167,7 +167,7 @@ export default function EditEmployeeBenefitModal({
 	}, [onCropClose, tempImageUrl]);
 
 	async function onSubmit(formData: z.infer<typeof formSchema>) {
-		let posterImageUrl: string | null | undefined = undefined;
+		let posterImageUrl: string | null | undefined;
 
 		if (selectedImage) {
 			const presignedUrl = await new Promise<string | null>(resolve => {
@@ -204,8 +204,8 @@ export default function EditEmployeeBenefitModal({
 
 	return (
 		<>
-			<Modal isOpen={isOpen} onOpenChange={onOpenChange} size='2xl'>
-				<ModalContent>
+			<Modal isOpen={isOpen} onOpenChange={onOpenChange} size='2xl' scrollBehavior='inside'>
+				<ModalContent className='overflow-y-scroll'>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<ModalHeader>Edit Employee Benefit</ModalHeader>
 						<ModalBody className='gap-4'>
@@ -235,7 +235,7 @@ export default function EditEmployeeBenefitModal({
 							/>
 							<div className='flex flex-col gap-2'>
 								<label className='text-sm'>Poster Image</label>
-								{previewUrl && <img src={previewUrl} alt='Preview' className='w-full h-48 object-cover rounded-md' />}
+								{previewUrl && <img src={previewUrl} alt='Preview' className='w-full object-cover rounded-md aspect-video' />}
 								<Button as='label' variant='bordered' startContent={<Upload size={16} />}>
 									{selectedImage ? 'Change Image' : 'Upload New Image'}
 									<input type='file' accept='image/*' className='hidden' onChange={handleImageChange} />

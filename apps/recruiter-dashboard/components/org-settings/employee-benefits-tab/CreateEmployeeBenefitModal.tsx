@@ -205,8 +205,8 @@ export default function CreateEmployeeBenefitModal({
 
 	return (
 		<>
-			<Modal isOpen={isOpen} onOpenChange={onOpenChange} size='2xl'>
-				<ModalContent>
+			<Modal isOpen={isOpen} onOpenChange={onOpenChange} size='2xl' scrollBehavior='inside'>
+				<ModalContent className='overflow-y-scroll'>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<ModalHeader>Add Employee Benefit</ModalHeader>
 						<ModalBody className='gap-4'>
@@ -236,7 +236,7 @@ export default function CreateEmployeeBenefitModal({
 							/>
 							<div className='flex flex-col gap-2'>
 								<label className='text-sm'>Poster Image (Optional)</label>
-								{previewUrl && <img src={previewUrl} alt='Preview' className='w-full h-48 object-cover rounded-md' />}
+								{previewUrl && <img src={previewUrl} alt='Preview' className='w-full object-cover rounded-md aspect-video' />}
 								<Button as='label' variant='bordered' startContent={<Upload size={16} />}>
 									{selectedImage ? 'Change Image' : 'Upload Image'}
 									<input type='file' accept='image/*' className='hidden' onChange={handleImageChange} />

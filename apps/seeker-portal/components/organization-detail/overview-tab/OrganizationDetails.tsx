@@ -184,7 +184,7 @@ export default function OrganizationDetails({ rootQuery }: { rootQuery: Organiza
 						<div className='flex items-center justify-between'>
 							<div className='flex items-center gap-2'>
 								<Gift size={20} className='text-foreground-600' />
-								<h2 className='text-medium font-medium text-foreground-600'>Employee Benefits</h2>
+								<h2 className='text-medium font-normal text-foreground-600'>Employee Benefits</h2>
 							</div>
 							<div className='flex gap-2'>
 								<Button isIconOnly size='sm' variant='flat' onPress={scrollPrev}>
@@ -201,9 +201,12 @@ export default function OrganizationDetails({ rootQuery }: { rootQuery: Organiza
 								{data.employeeBenefits.edges.map(({ node: benefit }) => (
 									<div key={benefit.id} className='flex-[0_0_100%] min-w-0'>
 										<Card className='h-full' shadow='none'>
-											<CardBody className='flex flex-row gap-6'>
+											<CardBody className='flex flex-col sm:flex-row gap-6'>
 												{benefit.posterImageUrl && (
-													<div className='relative w-96 flex-shrink-0 rounded-md overflow-hidden' style={{ aspectRatio: '16/9' }}>
+													<div
+														className='relative w-full sm:max-w-96 flex-shrink-0 rounded-md overflow-hidden'
+														style={{ aspectRatio: '16/9' }}
+													>
 														<Image src={benefit.posterImageUrl} alt={benefit.title} fill className='object-cover' sizes='384px' />
 													</div>
 												)}
