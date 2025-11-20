@@ -1,15 +1,15 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 'use client';
-import type { OrganizationOverviewTabFragment$key } from '@/__generated__/OrganizationOverviewTabFragment.graphql';
-import OrgDetailHeaderSkeleton from '@/components/layout/OrgDetailHeaderSkeleton';
 import dynamic from 'next/dynamic';
 import { graphql, useFragment } from 'react-relay';
+import type { OrganizationOverviewTabFragment$key } from '@/__generated__/OrganizationOverviewTabFragment.graphql';
+import DashboardHeaderSkeleton from '@/components/layout/DashboardHeaderSkeleton';
 import OrganizationDetails from './OrganizationDetails';
 import OrganizationJobsListSkeleton from './OrganizationJobsListSkeleton';
 
-const OrgDetailHeaderClientComponent = dynamic(() => import('@/components/layout/OrgDetailHeaderClientComponent'), {
+const DashboardHeaderClientComponent = dynamic(() => import('@/components/layout/DashboardHeaderClientComponent'), {
 	ssr: false,
-	loading: () => <OrgDetailHeaderSkeleton />
+	loading: () => <DashboardHeaderSkeleton />
 });
 
 const OrganizationJobsListClientComponent = dynamic(() => import('./OrganizationJobsListClientComponent'), {
@@ -32,7 +32,7 @@ export default function OrganizationOverviewTab(props: { rootQuery: Organization
 
 	return (
 		<div className='w-full flex flex-col flex-1'>
-			<OrgDetailHeaderClientComponent slug={props.slug} />
+			<DashboardHeaderClientComponent />
 			<div className='w-full mx-auto bg-background-600'>
 				<div className='w-full px-5 max-w-7xl mx-auto'>
 					<div className='py-8 w-full h-full flex flex-col items-center gap-12'>

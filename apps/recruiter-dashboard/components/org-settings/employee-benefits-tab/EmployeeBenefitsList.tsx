@@ -1,5 +1,6 @@
 'use client';
 import { closestCenter, DndContext, type DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { restrictToParentElement, restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Gift } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -119,7 +120,12 @@ export default function EmployeeBenefitsList({
 
 	return (
 		<>
-			<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+			<DndContext
+				sensors={sensors}
+				collisionDetection={closestCenter}
+				onDragEnd={handleDragEnd}
+				modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+			>
 				<SortableContext items={benefits.map(b => b.id)} strategy={verticalListSortingStrategy}>
 					<div className='w-full flex flex-col gap-4'>
 						{benefits.map(benefit => (

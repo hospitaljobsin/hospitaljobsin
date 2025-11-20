@@ -1,5 +1,5 @@
 import { Card, CardBody, Divider, Link, Tooltip } from '@heroui/react';
-import { Facebook, Instagram, Linkedin, Mail, MapPin, VerifiedIcon, Youtube } from 'lucide-react';
+import { Facebook, Gift, Instagram, Linkedin, Mail, MapPin, VerifiedIcon, Youtube } from 'lucide-react';
 import Image from 'next/image';
 import { graphql, useFragment } from 'react-relay';
 import invariant from 'tiny-invariant';
@@ -172,7 +172,10 @@ export default function OrganizationDetails({ rootQuery }: { rootQuery: Organiza
 			{data.employeeBenefits?.edges && data.employeeBenefits.edges.length > 0 && (
 				<Card fullWidth className='p-6' shadow='none'>
 					<CardBody className='flex flex-col gap-6 w-full'>
-						<h2 className='text-medium font-medium text-foreground-600'>Employee Benefits</h2>
+						<div className='flex items-center gap-2'>
+							<Gift size={20} className='text-foreground-600' />
+							<h2 className='text-medium font-medium text-foreground-600'>Employee Benefits</h2>
+						</div>
 						<Divider />
 						<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
 							{data.employeeBenefits.edges.map(({ node: benefit }) => (
