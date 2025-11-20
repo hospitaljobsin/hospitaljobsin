@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<7b0495081e8d51663dd3eaa4bc0e8728>>
- * @relayHash 8337e0842318042831c39a9f8d56691f
+ * @generated SignedSource<<cd4a197dab09d68c6c079324835095e2>>
+ * @relayHash 79562e1a9413b4bca68c03778f4b6a04
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 8337e0842318042831c39a9f8d56691f
+// @relayRequestID 79562e1a9413b4bca68c03778f4b6a04
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -142,6 +142,52 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
+                "name": "homePageBannerUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "SocialLinks",
+                "kind": "LinkedField",
+                "name": "socialLinks",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "linkedinUrl",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "youtubeUrl",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "instagramUrl",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "facebookUrl",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
                 "name": "description",
                 "storageKey": null
               },
@@ -191,7 +237,7 @@ return {
     ]
   },
   "params": {
-    "id": "8337e0842318042831c39a9f8d56691f",
+    "id": "79562e1a9413b4bca68c03778f4b6a04",
     "metadata": {},
     "name": "OrganizationGeneralSettingsClientComponentQuery",
     "operationKind": "query",

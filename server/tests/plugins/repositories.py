@@ -24,6 +24,7 @@ from app.jobs.repositories import (
     SavedJobRepo,
 )
 from app.organizations.repositories import (
+    EmployeeBenefitRepo,
     OrganizationInviteRepo,
     OrganizationMemberRepo,
     OrganizationRepo,
@@ -194,3 +195,11 @@ async def region_repo(
 ) -> RegionRepo:
     async with container.context() as ctx:
         return await ctx.resolve(RegionRepo)
+
+
+@pytest.fixture(scope="session")
+async def employee_benefit_repo(
+    container: Container,
+) -> EmployeeBenefitRepo:
+    async with container.context() as ctx:
+        return await ctx.resolve(EmployeeBenefitRepo)

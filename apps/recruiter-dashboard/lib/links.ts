@@ -12,6 +12,7 @@ const links = {
 	organizationDetailMembers: '/settings/members',
 	organizationDetailMemberInvites: '/settings/invites',
 	organizationDetailVerification: '/settings/verification',
+	organizationDetailEmployeeBenefits: '/settings/employee-benefits',
 	organizationCreateJob: '/new-job',
 	organizationDetailSettings: '/settings',
 	jobDetailSettingsApplicationForm: (jobSlug: string) => `/jobs/${jobSlug}/screening-questions`,

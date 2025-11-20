@@ -19,6 +19,8 @@ mutation UpdateOrganizationMutation(
     $description: String
     $logoUrl: String
     $bannerUrl: String
+    $homePageBannerUrl: String
+    $socialLinks: SocialLinksInput
 ) {
     updateOrganization(
         organizationId: $organizationId
@@ -29,6 +31,8 @@ mutation UpdateOrganizationMutation(
         description: $description
         logoUrl: $logoUrl
         bannerUrl: $bannerUrl
+        homePageBannerUrl: $homePageBannerUrl
+        socialLinks: $socialLinks
     ) {
         __typename
         ... on Organization {
@@ -40,6 +44,13 @@ mutation UpdateOrganizationMutation(
             description
             logoUrl
             bannerUrl
+            homePageBannerUrl
+            socialLinks {
+                linkedinUrl
+                youtubeUrl
+                instagramUrl
+                facebookUrl
+            }
         }
         ... on OrganizationNotFoundError {
             __typename
@@ -700,3 +711,99 @@ async def test_update_organization_very_long_location(
     )
 
     assert "errors" in response
+
+
+async def test_update_organization_home_page_banner_url(
+    password_auth_graphql_client: GraphQLClient,
+    organization: Organization,
+) -> None:
+    """Test organization update with home page banner URL."""
+    response = await password_auth_graphql_client(
+        UPDATE_ORGANIZATION_MUTATION,
+        variables={
+            "organizationId": to_base64("Organization", str(organization.id)),
+            "name": organization.name,
+            "slug": organization.slug,
+            "homePageBannerUrl": "https://cdn.example.com/home-banner.png",
+        },
+    )
+
+    data = response["data"]["updateOrganization"]
+    assert data["__typename"] == "Organization"
+    assert data["homePageBannerUrl"] == "https://cdn.example.com/home-banner.png"
+
+
+async def test_update_organization_social_links_all_platforms(
+    password_auth_graphql_client: GraphQLClient,
+    organization: Organization,
+) -> None:
+    """Test organization update with all social media links."""
+    response = await password_auth_graphql_client(
+        UPDATE_ORGANIZATION_MUTATION,
+        variables={
+            "organizationId": to_base64("Organization", str(organization.id)),
+            "name": organization.name,
+            "slug": organization.slug,
+            "socialLinks": {
+                "linkedinUrl": "https://linkedin.com/company/test",
+                "youtubeUrl": "https://youtube.com/@test",
+                "instagramUrl": "https://instagram.com/test",
+                "facebookUrl": "https://facebook.com/test",
+            },
+        },
+    )
+
+    data = response["data"]["updateOrganization"]
+    assert data["__typename"] == "Organization"
+    assert data["socialLinks"]["linkedinUrl"] == "https://linkedin.com/company/test"
+    assert data["socialLinks"]["youtubeUrl"] == "https://youtube.com/@test"
+    assert data["socialLinks"]["instagramUrl"] == "https://instagram.com/test"
+    assert data["socialLinks"]["facebookUrl"] == "https://facebook.com/test"
+
+
+async def test_update_organization_social_links_partial(
+    password_auth_graphql_client: GraphQLClient,
+    organization: Organization,
+) -> None:
+    """Test organization update with partial social media links."""
+    response = await password_auth_graphql_client(
+        UPDATE_ORGANIZATION_MUTATION,
+        variables={
+            "organizationId": to_base64("Organization", str(organization.id)),
+            "name": organization.name,
+            "slug": organization.slug,
+            "socialLinks": {
+                "linkedinUrl": "https://linkedin.com/company/test",
+                "youtubeUrl": None,
+                "instagramUrl": None,
+                "facebookUrl": None,
+            },
+        },
+    )
+
+    data = response["data"]["updateOrganization"]
+    assert data["__typename"] == "Organization"
+    assert data["socialLinks"]["linkedinUrl"] == "https://linkedin.com/company/test"
+    assert data["socialLinks"]["youtubeUrl"] is None
+    assert data["socialLinks"]["instagramUrl"] is None
+    assert data["socialLinks"]["facebookUrl"] is None
+
+
+async def test_update_organization_social_links_null(
+    password_auth_graphql_client: GraphQLClient,
+    organization: Organization,
+) -> None:
+    """Test organization update with null social links."""
+    response = await password_auth_graphql_client(
+        UPDATE_ORGANIZATION_MUTATION,
+        variables={
+            "organizationId": to_base64("Organization", str(organization.id)),
+            "name": organization.name,
+            "slug": organization.slug,
+            "socialLinks": None,
+        },
+    )
+
+    data = response["data"]["updateOrganization"]
+    assert data["__typename"] == "Organization"
+    assert data["socialLinks"] is None

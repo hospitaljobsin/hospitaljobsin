@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<71f183d179324d3e722b2f36ece53775>>
- * @relayHash 14b51f28cd6da3d5bda84c05e8a2fa24
+ * @generated SignedSource<<feceac1b368e713d7713cde066b29252>>
+ * @relayHash 0375dca8eca992088f9392c2f713ebb9
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 14b51f28cd6da3d5bda84c05e8a2fa24
+// @relayRequestID 0375dca8eca992088f9392c2f713ebb9
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -161,6 +161,52 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
+                "name": "homePageBannerUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "SocialLinks",
+                "kind": "LinkedField",
+                "name": "socialLinks",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "linkedinUrl",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "youtubeUrl",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "instagramUrl",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "facebookUrl",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
                 "name": "description",
                 "storageKey": null
               },
@@ -189,7 +235,7 @@ return {
     ]
   },
   "params": {
-    "id": "14b51f28cd6da3d5bda84c05e8a2fa24",
+    "id": "0375dca8eca992088f9392c2f713ebb9",
     "metadata": {},
     "name": "DeleteOrganizationBannerModalMutation",
     "operationKind": "mutation",

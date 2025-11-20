@@ -11,7 +11,7 @@ from humanize import naturaldelta
 from posthog import Posthog
 from pydantic import Field, HttpUrl, StringConstraints, validate_call
 from result import Err, Ok, Result
-from strawberry import relay
+from strawberry import UNSET, relay
 from types_aiobotocore_s3 import S3Client
 
 from app.accounts.documents import Account
@@ -32,9 +32,12 @@ from app.organizations.documents import (
     Organization,
     OrganizationInvite,
     OrganizationMember,
+    SocialLinks,
 )
 from app.organizations.exceptions import (
+    EmployeeBenefitNotFoundError,
     InsufficientOrganizationAdminsError,
+    MaxEmployeeBenefitsReachedError,
     MemberAlreadyExistsError,
     OrganizationAlreadyVerifiedError,
     OrganizationAuthorizationError,
@@ -44,6 +47,7 @@ from app.organizations.exceptions import (
     OrganizationVerificationRequestAlreadyExistsError,
 )
 from app.organizations.repositories import (
+    EmployeeBenefitRepo,
     OrganizationInviteRepo,
     OrganizationMemberRepo,
     OrganizationRepo,
@@ -360,6 +364,19 @@ class OrganizationService:
             HttpMethod="PUT",
         )
 
+    async def create_home_page_banner_presigned_url(self, content_type: str) -> str:
+        """Create a presigned URL for uploading an organization home page banner."""
+        return await self._s3_client.generate_presigned_url(
+            "put_object",
+            Params={
+                "Bucket": self._aws_settings.s3_bucket_name,
+                "Key": f"org-home-page-banners/{uuid.uuid4()}",
+                "ContentType": content_type,
+            },
+            ExpiresIn=3600,
+            HttpMethod="PUT",
+        )
+
     async def remove_logo(
         self,
         organization_id: ObjectId,
@@ -448,6 +465,8 @@ class OrganizationService:
         website: HttpUrl | None = None,
         logo_url: HttpUrl | None = None,
         banner_url: HttpUrl | None = None,
+        home_page_banner_url: HttpUrl | None = None,
+        social_links: Annotated[SocialLinks | None, Field(exclude=True)] = None,
     ) -> Result[
         Organization,
         OrganizationSlugInUseError
@@ -485,6 +504,10 @@ class OrganizationService:
             website=str(website) if website else None,
             logo_url=str(logo_url) if logo_url else None,
             banner_url=str(banner_url) if banner_url else None,
+            home_page_banner_url=(
+                str(home_page_banner_url) if home_page_banner_url else None
+            ),
+            social_links=social_links,
         )
         await self._revalidation_service.revalidate_tag(
             tag=f"organization:{existing_organization.slug}"
@@ -806,3 +829,197 @@ class OrganizationInviteService:
         )
 
         return Ok(existing_invite)
+
+
+class EmployeeBenefitService:
+    def __init__(
+        self,
+        employee_benefit_repo: EmployeeBenefitRepo,
+        organization_repo: OrganizationRepo,
+        organization_member_service: OrganizationMemberService,
+        s3_client: S3Client,
+        aws_settings: AWSSettings,
+    ) -> None:
+        self._employee_benefit_repo = employee_benefit_repo
+        self._organization_repo = organization_repo
+        self._organization_member_service = organization_member_service
+        self._s3_client = s3_client
+        self._aws_settings = aws_settings
+
+    async def create(
+        self,
+        account: Account,
+        organization_id: ObjectId,
+        title: str,
+        description: str,
+        poster_image_url: str | None,
+    ) -> Result[
+        EmployeeBenefit,
+        OrganizationNotFoundError
+        | OrganizationAuthorizationError
+        | MaxEmployeeBenefitsReachedError,
+    ]:
+        existing_organization = await self._organization_repo.get(
+            organization_id=organization_id,
+        )
+
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        # Limit to 10 benefits per organization
+        current_count = await self._employee_benefit_repo.count_by_organization(
+            organization_id
+        )
+        if current_count >= 10:
+            return Err(MaxEmployeeBenefitsReachedError())
+
+        max_order = await self._employee_benefit_repo.get_max_order(organization_id)
+        benefit = await self._employee_benefit_repo.create(
+            organization_id=organization_id,
+            title=title,
+            description=description,
+            poster_image_url=poster_image_url,
+            order=max_order + 1,
+        )
+
+        return Ok(benefit)
+
+    async def update(
+        self,
+        account: Account,
+        organization_id: ObjectId,
+        benefit_id: ObjectId,
+        title: str | None = None,
+        description: str | None = None,
+        poster_image_url: str | None = None,
+    ) -> Result[
+        EmployeeBenefit,
+        OrganizationNotFoundError
+        | EmployeeBenefitNotFoundError
+        | OrganizationAuthorizationError,
+    ]:
+        existing_organization = await self._organization_repo.get(
+            organization_id=organization_id,
+        )
+
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        existing_benefit = await self._employee_benefit_repo.get(
+            organization_id=organization_id,
+            benefit_id=benefit_id,
+        )
+
+        if existing_benefit is None:
+            return Err(EmployeeBenefitNotFoundError())
+
+        benefit = await self._employee_benefit_repo.update(
+            existing_benefit,
+            title=title if title is not None else UNSET,
+            description=description if description is not None else UNSET,
+            poster_image_url=poster_image_url
+            if poster_image_url is not None
+            else UNSET,
+        )
+
+        return Ok(benefit)
+
+    async def delete(
+        self,
+        account: Account,
+        organization_id: ObjectId,
+        benefit_id: ObjectId,
+    ) -> Result[
+        EmployeeBenefit,
+        OrganizationNotFoundError
+        | EmployeeBenefitNotFoundError
+        | OrganizationAuthorizationError,
+    ]:
+        existing_organization = await self._organization_repo.get(
+            organization_id=organization_id,
+        )
+
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        existing_benefit = await self._employee_benefit_repo.get(
+            organization_id=organization_id,
+            benefit_id=benefit_id,
+        )
+
+        if existing_benefit is None:
+            return Err(EmployeeBenefitNotFoundError())
+
+        await self._employee_benefit_repo.delete(existing_benefit)
+
+        # Reorder remaining benefits
+        remaining_benefits = (
+            await self._employee_benefit_repo.get_all_by_organization_id_as_list(
+                organization_id=organization_id,
+            )
+        )
+        for index, benefit in enumerate(remaining_benefits):
+            benefit.order = index
+            await benefit.save()
+
+        return Ok(existing_benefit)
+
+    async def reorder(
+        self,
+        account: Account,
+        organization_id: ObjectId,
+        benefit_ids: list[str],
+    ) -> Result[
+        list[EmployeeBenefit],
+        OrganizationNotFoundError | OrganizationAuthorizationError,
+    ]:
+        existing_organization = await self._organization_repo.get(
+            organization_id=organization_id,
+        )
+
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        benefits = await self._employee_benefit_repo.reorder(
+            organization_id=organization_id,
+            benefit_ids=benefit_ids,
+        )
+
+        return Ok(benefits)
+
+    async def create_poster_presigned_url(self, content_type: str) -> str:
+        """Create a presigned URL for uploading an employee benefit poster."""
+        return await self._s3_client.generate_presigned_url(
+            "put_object",
+            Params={
+                "Bucket": self._aws_settings.s3_bucket_name,
+                "Key": f"employee-benefit-posters/{uuid.uuid4()}",
+                "ContentType": content_type,
+            },
+            ExpiresIn=3600,
+            HttpMethod="PUT",
+        )

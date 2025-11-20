@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a74d3230be5117a3790219aa47895eae>>
+ * @generated SignedSource<<9eecb73d4b0dcf517667377e99851013>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,9 +13,27 @@ import type { FragmentRefs } from "relay-runtime";
 export type OrganizationDetailsInternalFragment$data = {
   readonly descriptionHtml: string | null | undefined;
   readonly email: string | null | undefined;
+  readonly employeeBenefits: {
+    readonly edges: ReadonlyArray<{
+      readonly node: {
+        readonly description: string;
+        readonly id: string;
+        readonly order: number;
+        readonly posterImageUrl: string | null | undefined;
+        readonly title: string;
+      };
+    }>;
+  };
+  readonly homePageBannerUrl: string;
   readonly location: string | null | undefined;
   readonly logoUrl: string;
   readonly name: string;
+  readonly socialLinks: {
+    readonly facebookUrl: string | null | undefined;
+    readonly instagramUrl: string | null | undefined;
+    readonly linkedinUrl: string | null | undefined;
+    readonly youtubeUrl: string | null | undefined;
+  } | null | undefined;
   readonly verificationStatus: {
     readonly __typename: string;
     readonly message?: string;
@@ -57,6 +75,13 @@ const node: ReaderFragment = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
+      "name": "homePageBannerUrl",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "descriptionHtml",
       "storageKey": null
     },
@@ -80,6 +105,119 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "location",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "SocialLinks",
+      "kind": "LinkedField",
+      "name": "socialLinks",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "linkedinUrl",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "youtubeUrl",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "instagramUrl",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "facebookUrl",
+          "storageKey": null
+        }
+      ],
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": [
+        {
+          "kind": "Literal",
+          "name": "first",
+          "value": 100
+        }
+      ],
+      "concreteType": "EmployeeBenefitConnection",
+      "kind": "LinkedField",
+      "name": "employeeBenefits",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "concreteType": "EmployeeBenefitEdge",
+          "kind": "LinkedField",
+          "name": "edges",
+          "plural": true,
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "concreteType": "EmployeeBenefit",
+              "kind": "LinkedField",
+              "name": "node",
+              "plural": false,
+              "selections": [
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "id",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "title",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "description",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "posterImageUrl",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "order",
+                  "storageKey": null
+                }
+              ],
+              "storageKey": null
+            }
+          ],
+          "storageKey": null
+        }
+      ],
+      "storageKey": "employeeBenefits(first:100)"
     },
     {
       "alias": null,
@@ -164,6 +302,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "f84613280e9209f546063675143d74b0";
+(node as any).hash = "1ae5edeab3197e36312c63d86008c6a1";
 
 export default node;

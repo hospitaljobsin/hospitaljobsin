@@ -19,10 +19,12 @@ from app.database.paginator import PaginatedResult, Paginator, TextSearchPaginat
 from app.jobs.documents import Job, JobApplicant, SavedJob
 
 from .documents import (
+    EmployeeBenefit,
     Organization,
     OrganizationInvite,
     OrganizationMember,
     OrganizationVerificationRequest,
+    SocialLinks,
 )
 
 
@@ -74,6 +76,8 @@ class OrganizationRepo:
         website: str | None = UNSET,
         logo_url: str | None = UNSET,
         banner_url: str | None = UNSET,
+        home_page_banner_url: str | None = UNSET,
+        social_links: SocialLinks | None = UNSET,
     ) -> Organization:
         """Update the given organization."""
         if name is not UNSET:
@@ -99,6 +103,10 @@ class OrganizationRepo:
             organization.logo_url = logo_url
         if banner_url is not UNSET:
             organization.banner_url = banner_url
+        if home_page_banner_url is not UNSET:
+            organization.home_page_banner_url = home_page_banner_url
+        if social_links is not UNSET:
+            organization.social_links = social_links
         return await organization.save()
 
     async def get_many_by_ids(
@@ -577,3 +585,128 @@ class OrganizationInviteRepo:
             )
             for invite_token in invite_tokens
         ]
+
+
+class EmployeeBenefitRepo:
+    async def create(
+        self,
+        organization_id: ObjectId,
+        title: str,
+        description: str,
+        poster_image_url: str | None,
+        order: int,
+    ) -> EmployeeBenefit:
+        """Create a new employee benefit."""
+        benefit = EmployeeBenefit(
+            organization=organization_id,
+            title=title,
+            description=description,
+            poster_image_url=poster_image_url,
+            order=order,
+        )
+        return await benefit.insert()
+
+    async def get(
+        self, organization_id: ObjectId, benefit_id: ObjectId
+    ) -> EmployeeBenefit | None:
+        """Get employee benefit by ID."""
+        return await EmployeeBenefit.find_one(
+            EmployeeBenefit.id == benefit_id,
+            EmployeeBenefit.organization.id == organization_id,
+        )
+
+    async def get_all_by_organization_id(
+        self,
+        organization_id: ObjectId,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[EmployeeBenefit, ObjectId]:
+        """Get all employee benefits for an organization, ordered by order field."""
+        paginator: Paginator[EmployeeBenefit, ObjectId] = Paginator(
+            reverse=False,
+            document_cls=EmployeeBenefit,
+            paginate_by="order",
+            entity_paginate_by="id",
+            apply_ordering=True,
+        )
+
+        return await paginator.paginate(
+            search_criteria=EmployeeBenefit.find(
+                EmployeeBenefit.organization.id == organization_id
+            ),
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
+
+    async def get_all_by_organization_id_as_list(
+        self, organization_id: ObjectId
+    ) -> list[EmployeeBenefit]:
+        """Get all employee benefits for an organization as a list, ordered by order field."""
+        return (
+            await EmployeeBenefit.find(
+                EmployeeBenefit.organization.id == organization_id
+            )
+            .sort(+EmployeeBenefit.order)
+            .to_list()
+        )
+
+    async def update(
+        self,
+        benefit: EmployeeBenefit,
+        *,
+        title: str | None = UNSET,
+        description: str | None = UNSET,
+        poster_image_url: str | None = UNSET,
+    ) -> EmployeeBenefit:
+        """Update an employee benefit."""
+        if title is not UNSET:
+            benefit.title = title
+        if description is not UNSET:
+            benefit.description = description
+        if poster_image_url is not UNSET:
+            benefit.poster_image_url = poster_image_url
+        return await benefit.save()
+
+    async def delete(self, benefit: EmployeeBenefit) -> None:
+        """Delete an employee benefit."""
+        await benefit.delete()
+
+    async def reorder(
+        self, organization_id: ObjectId, benefit_ids: list[str]
+    ) -> list[EmployeeBenefit]:
+        """Reorder employee benefits."""
+        benefits = await EmployeeBenefit.find(
+            EmployeeBenefit.organization.id == organization_id,
+            In(EmployeeBenefit.id, [ObjectId(bid) for bid in benefit_ids]),
+        ).to_list()
+
+        benefit_by_id = {str(benefit.id): benefit for benefit in benefits}
+
+        for index, benefit_id in enumerate(benefit_ids):
+            if benefit_id in benefit_by_id:
+                benefit_by_id[benefit_id].order = index
+                await benefit_by_id[benefit_id].save()
+
+        return await self.get_all_by_organization_id_as_list(organization_id)
+
+    async def get_max_order(self, organization_id: ObjectId) -> int:
+        """Get the maximum order value for benefits in an organization."""
+        benefits = (
+            await EmployeeBenefit.find(
+                EmployeeBenefit.organization.id == organization_id
+            )
+            .sort(-EmployeeBenefit.order)
+            .limit(1)
+            .to_list()
+        )
+        return benefits[0].order if benefits else -1
+
+    async def count_by_organization(self, organization_id: ObjectId) -> int:
+        """Count employee benefits for an organization."""
+        return await EmployeeBenefit.find(
+            EmployeeBenefit.organization.id == organization_id
+        ).count()

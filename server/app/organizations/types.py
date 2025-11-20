@@ -33,13 +33,16 @@ from app.jobs.types import (
     JobSortByEnum,
 )
 from app.organizations.documents import (
+    EmployeeBenefit,
     Organization,
     OrganizationInvite,
     OrganizationMember,
     OrganizationVerificationRequest,
+    SocialLinks,
 )
 from app.organizations.exceptions import OrganizationAuthorizationError
 from app.organizations.repositories import (
+    EmployeeBenefitRepo,
     OrganizationInviteRepo,
     OrganizationMemberRepo,
 )
@@ -87,6 +90,115 @@ class AddressProofTypeEnum(Enum):
     RENTAL_AGREEMENT = "RENTAL_AGREEMENT"
     BANK_STATEMENT = "BANK_STATEMENT"
     OTHER = "OTHER"
+
+
+@strawberry.type(
+    name="SocialLinks",
+    description="Social media links for an organization.",
+)
+class SocialLinksType:
+    linkedin_url: str | None = strawberry.field(
+        description="LinkedIn profile URL.",
+    )
+    youtube_url: str | None = strawberry.field(
+        description="YouTube channel URL.",
+    )
+    instagram_url: str | None = strawberry.field(
+        description="Instagram profile URL.",
+    )
+    facebook_url: str | None = strawberry.field(
+        description="Facebook page URL.",
+    )
+
+    @classmethod
+    def marshal(cls, social_links: SocialLinks) -> Self:
+        """Marshal into a type instance."""
+        return cls(
+            linkedin_url=social_links.linkedin_url,
+            youtube_url=social_links.youtube_url,
+            instagram_url=social_links.instagram_url,
+            facebook_url=social_links.facebook_url,
+        )
+
+
+@strawberry.input(
+    name="SocialLinksInput",
+    description="Social media links input for an organization.",
+)
+class SocialLinksInputType:
+    linkedin_url: str | None = strawberry.field(
+        description="LinkedIn profile URL.",
+        default=None,
+    )
+    youtube_url: str | None = strawberry.field(
+        description="YouTube channel URL.",
+        default=None,
+    )
+    instagram_url: str | None = strawberry.field(
+        description="Instagram profile URL.",
+        default=None,
+    )
+    facebook_url: str | None = strawberry.field(
+        description="Facebook page URL.",
+        default=None,
+    )
+
+    def to_document(self) -> SocialLinks:
+        """Convert to document model."""
+        return SocialLinks(
+            linkedin_url=self.linkedin_url,
+            youtube_url=self.youtube_url,
+            instagram_url=self.instagram_url,
+            facebook_url=self.facebook_url,
+        )
+
+
+@strawberry.type(
+    name="EmployeeBenefit",
+    description="An employee benefit offered by an organization.",
+)
+class EmployeeBenefitType(BaseNodeType[EmployeeBenefit]):
+    title: str = strawberry.field(
+        description="The title of the benefit.",
+    )
+    description: str = strawberry.field(
+        description="The description of the benefit (markdown).",
+    )
+    poster_image_url: str | None = strawberry.field(
+        description="The poster image URL for the benefit.",
+    )
+    order: int = strawberry.field(
+        description="The display order of the benefit.",
+    )
+
+    @classmethod
+    def marshal(cls, benefit: EmployeeBenefit) -> Self:
+        """Marshal into a node instance."""
+        return cls(
+            id=str(benefit.id),
+            title=benefit.title,
+            description=benefit.description,
+            poster_image_url=benefit.poster_image_url,
+            order=benefit.order,
+        )
+
+
+@strawberry.type(name="EmployeeBenefitEdge")
+class EmployeeBenefitEdgeType(BaseEdgeType[EmployeeBenefitType, EmployeeBenefit]):
+    @classmethod
+    def marshal(cls, benefit: EmployeeBenefit) -> Self:
+        """Marshal into an edge instance."""
+        return cls(
+            node=EmployeeBenefitType.marshal(benefit),
+            cursor=relay.to_base64(EmployeeBenefitType, benefit.id),
+        )
+
+
+@strawberry.type(name="EmployeeBenefitConnection")
+class EmployeeBenefitConnectionType(
+    BaseConnectionType[EmployeeBenefitType, EmployeeBenefitEdgeType]
+):
+    pass
 
 
 @strawberry.type(
@@ -187,9 +299,9 @@ class OrganizationInviteType(BaseNodeType[OrganizationInvite]):
     created_by: AccountType = strawberry.field(
         description="The account that created this invite.",
     )
-    organization: "OrganizationType" = strawberry.field(
-        description="The organization that the invite is for."
-    )
+    organization: Annotated[
+        "OrganizationType", strawberry.lazy("app.organizations.types")  # noqa: UP037
+    ] = strawberry.field(description="The organization that the invite is for.")
     status: InviteStatusTypeEnum = strawberry.field(
         description="The status of the invite.",
     )
@@ -296,6 +408,12 @@ class OrganizationType(BaseNodeType[Organization]):
     banner_url: str = strawberry.field(
         description="The banner URL of the organization.",
     )
+    home_page_banner_url: str = strawberry.field(
+        description="The home page banner URL of the organization.",
+    )
+    social_links: SocialLinksType | None = strawberry.field(
+        description="Social media links for the organization.",
+    )
     created_at: datetime = strawberry.field(
         description="When the organization was created.",
     )
@@ -379,6 +497,12 @@ class OrganizationType(BaseNodeType[Organization]):
             logo_url=organization.logo_url,
             verification_request=organization.verification_request,
             banner_url=organization.banner_url,
+            home_page_banner_url=organization.home_page_banner_url,
+            social_links=(
+                SocialLinksType.marshal(organization.social_links)
+                if organization.social_links
+                else None
+            ),
             created_at=organization.id.generation_time,
         )
 
@@ -722,6 +846,49 @@ class OrganizationType(BaseNodeType[Organization]):
 
         return OrganizationMemberConnectionType.marshal(paginated_members)
 
+    @strawberry.field(  # type: ignore[misc]
+        description="The employee benefits offered by the organization.",
+    )
+    @inject
+    async def employee_benefits(
+        self,
+        employee_benefit_repo: Annotated[EmployeeBenefitRepo, Inject],
+        before: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items before the given cursor.",
+            ),
+        ] = None,
+        after: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items after the given cursor.",
+            ),
+        ] = None,
+        first: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return after the cursor?",
+            ),
+        ] = None,
+        last: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return before the cursor?",
+            ),
+        ] = None,
+    ) -> EmployeeBenefitConnectionType:
+        """Return all employee benefits for the organization."""
+        paginated_benefits = await employee_benefit_repo.get_all_by_organization_id(
+            organization_id=ObjectId(self.id),
+            after=(after.node_id if after else None),
+            before=(before.node_id if before else None),
+            first=first,
+            last=last,
+        )
+
+        return EmployeeBenefitConnectionType.marshal(paginated_benefits)
+
 
 @strawberry.type(name="OrganizationEdge")
 class OrganizationEdgeType(BaseEdgeType[OrganizationType, Organization]):
@@ -1037,5 +1204,80 @@ DemoteOrganizationMemberPayload = Annotated[
     strawberry.union(
         name="DemoteOrganizationMemberPayload",
         description="The demote organization member payload.",
+    ),
+]
+
+
+@strawberry.type(
+    name="EmployeeBenefitNotFoundError",
+    description="Used when the employee benefit is not found.",
+)
+class EmployeeBenefitNotFoundErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Employee benefit not found!",
+    )
+
+
+@strawberry.type(
+    name="CreateEmployeeBenefitSuccess",
+    description="Create employee benefit success.",
+)
+class CreateEmployeeBenefitSuccessType:
+    employee_benefit_edge: EmployeeBenefitEdgeType = strawberry.field(
+        description="The employee benefit edge.",
+    )
+
+
+CreateEmployeeBenefitPayload = Annotated[
+    CreateEmployeeBenefitSuccessType
+    | OrganizationNotFoundErrorType
+    | OrganizationAuthorizationErrorType,
+    strawberry.union(
+        name="CreateEmployeeBenefitPayload",
+        description="The create employee benefit payload.",
+    ),
+]
+
+UpdateEmployeeBenefitPayload = Annotated[
+    EmployeeBenefitType
+    | OrganizationNotFoundErrorType
+    | EmployeeBenefitNotFoundErrorType
+    | OrganizationAuthorizationErrorType,
+    strawberry.union(
+        name="UpdateEmployeeBenefitPayload",
+        description="The update employee benefit payload.",
+    ),
+]
+
+DeleteEmployeeBenefitPayload = Annotated[
+    EmployeeBenefitEdgeType
+    | OrganizationNotFoundErrorType
+    | EmployeeBenefitNotFoundErrorType
+    | OrganizationAuthorizationErrorType,
+    strawberry.union(
+        name="DeleteEmployeeBenefitPayload",
+        description="The delete employee benefit payload.",
+    ),
+]
+
+
+@strawberry.type(
+    name="ReorderEmployeeBenefitsSuccess",
+    description="Reorder employee benefits success.",
+)
+class ReorderEmployeeBenefitsSuccessType:
+    employee_benefits: list[EmployeeBenefitType] = strawberry.field(
+        description="The reordered employee benefits.",
+    )
+
+
+ReorderEmployeeBenefitsPayload = Annotated[
+    ReorderEmployeeBenefitsSuccessType
+    | OrganizationNotFoundErrorType
+    | OrganizationAuthorizationErrorType,
+    strawberry.union(
+        name="ReorderEmployeeBenefitsPayload",
+        description="The reorder employee benefits payload.",
     ),
 ]

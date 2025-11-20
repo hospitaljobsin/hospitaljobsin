@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0752a3c3529352c57bcfd96cac3199fc>>
- * @relayHash b53dabdf4d46e3ad48fb3cc6a987bd2a
+ * @generated SignedSource<<9007120d375eedab0708876760ac13df>>
+ * @relayHash fe09d374bfa89b89d355b97a09bbe3ab
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b53dabdf4d46e3ad48fb3cc6a987bd2a
+// @relayRequestID fe09d374bfa89b89d355b97a09bbe3ab
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -68,6 +68,52 @@ v3 = {
       "args": null,
       "kind": "ScalarField",
       "name": "bannerUrl",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "homePageBannerUrl",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "SocialLinks",
+      "kind": "LinkedField",
+      "name": "socialLinks",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "linkedinUrl",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "youtubeUrl",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "instagramUrl",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "facebookUrl",
+          "storageKey": null
+        }
+      ],
       "storageKey": null
     }
   ],
@@ -142,7 +188,7 @@ return {
     ]
   },
   "params": {
-    "id": "b53dabdf4d46e3ad48fb3cc6a987bd2a",
+    "id": "fe09d374bfa89b89d355b97a09bbe3ab",
     "metadata": {},
     "name": "pageOrganizationDetailMetadataQuery",
     "operationKind": "query",

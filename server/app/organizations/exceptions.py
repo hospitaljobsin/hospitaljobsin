@@ -28,3 +28,11 @@ class OrganizationAlreadyVerifiedError:
 
 class OrganizationVerificationRequestAlreadyExistsError:
     """Raised when an organization verification request already exists."""
+
+
+class EmployeeBenefitNotFoundError:
+    """Raised when an employee benefit is not found."""
+
+
+class MaxEmployeeBenefitsReachedError:
+    """Raised when the maximum number of employee benefits has been reached."""

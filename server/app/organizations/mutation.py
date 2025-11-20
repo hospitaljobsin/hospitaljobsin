@@ -20,6 +20,7 @@ from app.base.types import (
 from app.context import AuthInfo
 from app.jobs.exceptions import OrganizationNotFoundError
 from app.organizations.exceptions import (
+    EmployeeBenefitNotFoundError,
     InsufficientOrganizationAdminsError,
     MemberAlreadyExistsError,
     OrganizationAlreadyVerifiedError,
@@ -30,6 +31,7 @@ from app.organizations.exceptions import (
     OrganizationVerificationRequestAlreadyExistsError,
 )
 from app.organizations.services import (
+    EmployeeBenefitService,
     OrganizationInviteService,
     OrganizationMemberService,
     OrganizationService,
@@ -40,13 +42,19 @@ from .types import (
     AddressProofTypeEnum,
     BusinessProofTypeEnum,
     CheckOrganizationSlugAvailabilityPayloadType,
+    CreateEmployeeBenefitPayload,
+    CreateEmployeeBenefitSuccessType,
     CreateOrganizationInvitePayload,
     CreateOrganizationPayload,
     DeclineOrganizationInvitePayload,
+    DeleteEmployeeBenefitPayload,
     DeleteOrganizationInvitePayload,
     DeleteOrganizationPayload,
     DemoteOrganizationMemberPayload,
     DemoteOrganizationMemberSuccessType,
+    EmployeeBenefitEdgeType,
+    EmployeeBenefitNotFoundErrorType,
+    EmployeeBenefitType,
     InsufficientOrganizationAdminsErrorType,
     MemberAlreadyExistsErrorType,
     OrganizationAlreadyVerifiedErrorType,
@@ -66,7 +74,11 @@ from .types import (
     RemoveOrganizationMediaPayload,
     RemoveOrganizationMemberPayload,
     RemoveOrganizationMemberSuccessType,
+    ReorderEmployeeBenefitsPayload,
+    ReorderEmployeeBenefitsSuccessType,
     RequestOrganizationVerificationPayload,
+    SocialLinksInputType,
+    UpdateEmployeeBenefitPayload,
     UpdateOrganizationPayload,
 )
 
@@ -342,6 +354,18 @@ class OrganizationMutation:
             str | None,
             strawberry.argument(description="The banner URL of the organization."),
         ] = None,
+        home_page_banner_url: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The home page banner URL of the organization."
+            ),
+        ] = None,
+        social_links: Annotated[
+            SocialLinksInputType | None,
+            strawberry.argument(
+                description="The social media links of the organization."
+            ),
+        ] = None,
     ) -> UpdateOrganizationPayload:
         """Update an organization."""
         match await organization_service.update(
@@ -354,6 +378,8 @@ class OrganizationMutation:
             description=description,
             logo_url=logo_url,
             banner_url=banner_url,
+            home_page_banner_url=home_page_banner_url,
+            social_links=social_links.to_document() if social_links else None,
         ):
             case Err(error):
                 match error:
@@ -822,3 +848,268 @@ class OrganizationMutation:
                 )
             case _ as unreachable:
                 assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=CreatePresignedURLPayloadType,
+        description="Create an organization home page banner presigned URL.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def create_organization_home_page_banner_presigned_url(
+        self,
+        organization_service: Annotated[OrganizationService, Inject],
+        content_type: Annotated[
+            str, strawberry.argument(description="The content type of the file.")
+        ],
+    ) -> CreatePresignedURLPayloadType:
+        """Create an organization home page banner presigned url."""
+        result = await organization_service.create_home_page_banner_presigned_url(
+            content_type=content_type
+        )
+        return CreatePresignedURLPayloadType(presigned_url=result)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=CreateEmployeeBenefitPayload,
+        description="Create an employee benefit.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def create_employee_benefit(
+        self,
+        info: AuthInfo,
+        employee_benefit_service: Annotated[EmployeeBenefitService, Inject],
+        organization_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the organization.",
+            ),
+        ],
+        title: Annotated[
+            str, strawberry.argument(description="The title of the benefit.")
+        ],
+        description: Annotated[
+            str, strawberry.argument(description="The description of the benefit.")
+        ],
+        poster_image_url: Annotated[
+            str | None,
+            strawberry.argument(description="The poster image URL of the benefit."),
+        ] = None,
+    ) -> CreateEmployeeBenefitPayload:
+        """Create an employee benefit."""
+        match await employee_benefit_service.create(
+            account=info.context["current_user"],
+            organization_id=ObjectId(organization_id.node_id),
+            title=title,
+            description=description,
+            poster_image_url=poster_image_url,
+        ):
+            case Ok(benefit):
+                return CreateEmployeeBenefitSuccessType(
+                    employee_benefit_edge=EmployeeBenefitEdgeType.marshal(benefit)
+                )
+            case Err(error):
+                match error:
+                    case OrganizationNotFoundError():
+                        return OrganizationNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateEmployeeBenefitPayload,
+        description="Update an employee benefit.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_employee_benefit(
+        self,
+        info: AuthInfo,
+        employee_benefit_service: Annotated[EmployeeBenefitService, Inject],
+        organization_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the organization.",
+            ),
+        ],
+        benefit_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the benefit to update.",
+            ),
+        ],
+        title: Annotated[
+            str | None,
+            strawberry.argument(description="The title of the benefit."),
+        ] = None,
+        description: Annotated[
+            str | None,
+            strawberry.argument(description="The description of the benefit."),
+        ] = None,
+        poster_image_url: Annotated[
+            str | None,
+            strawberry.argument(description="The poster image URL of the benefit."),
+        ] = None,
+    ) -> UpdateEmployeeBenefitPayload:
+        """Update an employee benefit."""
+        match await employee_benefit_service.update(
+            account=info.context["current_user"],
+            organization_id=ObjectId(organization_id.node_id),
+            benefit_id=ObjectId(benefit_id.node_id),
+            title=title,
+            description=description,
+            poster_image_url=poster_image_url,
+        ):
+            case Ok(benefit):
+                return EmployeeBenefitType.marshal(benefit)
+            case Err(error):
+                match error:
+                    case OrganizationNotFoundError():
+                        return OrganizationNotFoundErrorType()
+                    case EmployeeBenefitNotFoundError():
+                        return EmployeeBenefitNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=DeleteEmployeeBenefitPayload,
+        description="Delete an employee benefit.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def delete_employee_benefit(
+        self,
+        info: AuthInfo,
+        employee_benefit_service: Annotated[EmployeeBenefitService, Inject],
+        organization_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the organization.",
+            ),
+        ],
+        benefit_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the benefit to delete.",
+            ),
+        ],
+    ) -> DeleteEmployeeBenefitPayload:
+        """Delete an employee benefit."""
+        match await employee_benefit_service.delete(
+            account=info.context["current_user"],
+            organization_id=ObjectId(organization_id.node_id),
+            benefit_id=ObjectId(benefit_id.node_id),
+        ):
+            case Ok(benefit):
+                return EmployeeBenefitEdgeType.marshal(benefit)
+            case Err(error):
+                match error:
+                    case OrganizationNotFoundError():
+                        return OrganizationNotFoundErrorType()
+                    case EmployeeBenefitNotFoundError():
+                        return EmployeeBenefitNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=ReorderEmployeeBenefitsPayload,
+        description="Reorder employee benefits.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def reorder_employee_benefits(
+        self,
+        info: AuthInfo,
+        employee_benefit_service: Annotated[EmployeeBenefitService, Inject],
+        organization_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the organization.",
+            ),
+        ],
+        benefit_ids: Annotated[
+            list[relay.GlobalID],
+            strawberry.argument(
+                description="The ordered list of benefit IDs.",
+            ),
+        ],
+    ) -> ReorderEmployeeBenefitsPayload:
+        """Reorder employee benefits."""
+        match await employee_benefit_service.reorder(
+            account=info.context["current_user"],
+            organization_id=ObjectId(organization_id.node_id),
+            benefit_ids=[benefit_id.node_id for benefit_id in benefit_ids],
+        ):
+            case Ok(benefits):
+                return ReorderEmployeeBenefitsSuccessType(
+                    employee_benefits=[
+                        EmployeeBenefitType.marshal(benefit) for benefit in benefits
+                    ]
+                )
+            case Err(error):
+                match error:
+                    case OrganizationNotFoundError():
+                        return OrganizationNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=CreatePresignedURLPayloadType,
+        description="Create an employee benefit poster presigned URL.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def create_employee_benefit_poster_presigned_url(
+        self,
+        employee_benefit_service: Annotated[EmployeeBenefitService, Inject],
+        content_type: Annotated[
+            str, strawberry.argument(description="The content type of the file.")
+        ],
+    ) -> CreatePresignedURLPayloadType:
+        """Create an employee benefit poster presigned url."""
+        result = await employee_benefit_service.create_poster_presigned_url(
+            content_type=content_type
+        )
+        return CreatePresignedURLPayloadType(presigned_url=result)

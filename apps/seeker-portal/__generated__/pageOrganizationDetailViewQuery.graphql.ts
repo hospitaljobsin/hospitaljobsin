@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a13502b3b0f50a23ac15ca45796baf05>>
- * @relayHash fcc229690944925581f1c6e3fe3f5fce
+ * @generated SignedSource<<9f35997f528db751d4e032a271354e9c>>
+ * @relayHash b1bd8e094509ec3c0f4892ad1abbea60
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID fcc229690944925581f1c6e3fe3f5fce
+// @relayRequestID b1bd8e094509ec3c0f4892ad1abbea60
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -44,6 +44,13 @@ v2 = {
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
   "storageKey": null
 };
 return {
@@ -118,6 +125,13 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
+                "name": "homePageBannerUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
                 "name": "descriptionHtml",
                 "storageKey": null
               },
@@ -141,6 +155,113 @@ return {
                 "kind": "ScalarField",
                 "name": "location",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "SocialLinks",
+                "kind": "LinkedField",
+                "name": "socialLinks",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "linkedinUrl",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "youtubeUrl",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "instagramUrl",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "facebookUrl",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": [
+                  {
+                    "kind": "Literal",
+                    "name": "first",
+                    "value": 100
+                  }
+                ],
+                "concreteType": "EmployeeBenefitConnection",
+                "kind": "LinkedField",
+                "name": "employeeBenefits",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "EmployeeBenefitEdge",
+                    "kind": "LinkedField",
+                    "name": "edges",
+                    "plural": true,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "EmployeeBenefit",
+                        "kind": "LinkedField",
+                        "name": "node",
+                        "plural": false,
+                        "selections": [
+                          (v3/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "title",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "description",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "posterImageUrl",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "order",
+                            "storageKey": null
+                          }
+                        ],
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": "employeeBenefits(first:100)"
               },
               {
                 "alias": null,
@@ -217,13 +338,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "id",
-                "storageKey": null
-              }
+              (v3/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -234,7 +349,7 @@ return {
     ]
   },
   "params": {
-    "id": "fcc229690944925581f1c6e3fe3f5fce",
+    "id": "b1bd8e094509ec3c0f4892ad1abbea60",
     "metadata": {},
     "name": "pageOrganizationDetailViewQuery",
     "operationKind": "query",

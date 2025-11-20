@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ea18093b40c1b4868da0dcf7e06c8c2e>>
+ * @generated SignedSource<<175fbc9a56e781036efd5d79838d91b8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,14 @@ export type pageOrganizationDetailMetadataFragment$data = {
     readonly __typename: "Organization";
     readonly bannerUrl: string;
     readonly descriptionCleaned: string | null | undefined;
+    readonly homePageBannerUrl: string;
     readonly name: string;
+    readonly socialLinks: {
+      readonly facebookUrl: string | null | undefined;
+      readonly instagramUrl: string | null | undefined;
+      readonly linkedinUrl: string | null | undefined;
+      readonly youtubeUrl: string | null | undefined;
+    } | null | undefined;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -33,6 +40,6 @@ const node: ReaderInlineDataFragment = {
   "name": "pageOrganizationDetailMetadataFragment"
 };
 
-(node as any).hash = "e5482aefaebdd3f847b1393dff3fafaf";
+(node as any).hash = "bb1bcfd5f2534c5f0b45372ea6700c02";
 
 export default node;

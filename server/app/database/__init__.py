@@ -39,6 +39,7 @@ from app.jobs.documents import (
     SavedJob,
 )
 from app.organizations.documents import (
+    EmployeeBenefit,
     Organization,
     OrganizationInvite,
     OrganizationMember,
@@ -289,6 +290,7 @@ async def initialize_database(
                 RecoveryCode,
                 TemporaryTwoFactorChallenge,
                 OrganizationInvite,
+                EmployeeBenefit,
                 Region,
                 JobAlert,
                 RecommendedJobAlert,

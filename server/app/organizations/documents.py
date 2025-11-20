@@ -13,6 +13,13 @@ from app.config import FrontendSettings, get_settings
 from app.core.constants import OrganizationMemberRoleType
 
 
+class SocialLinks(BaseModel):
+    linkedin_url: str | None = None
+    youtube_url: str | None = None
+    instagram_url: str | None = None
+    facebook_url: str | None = None
+
+
 class OrganizationVerificationRequest(BaseModel):
     registered_organization_name: str
     contact_email: str
@@ -56,6 +63,10 @@ class Organization(Document):
     verification_request: OrganizationVerificationRequest | None = None
     internal_logo_url: str | None = Field(default=None, alias="logo_url")
     internal_banner_url: str | None = Field(default=None, alias="banner_url")
+    internal_home_page_banner_url: str | None = Field(
+        default=None, alias="home_page_banner_url"
+    )
+    social_links: SocialLinks | None = None
 
     is_spam: bool = False
 
@@ -90,6 +101,20 @@ class Organization(Document):
     def banner_url(self, value: str | None) -> None:
         """Set the internal banner URL."""
         self.internal_banner_url = value
+
+    @property
+    def home_page_banner_url(self) -> str:
+        """Return the organization's home page banner URL, or a placeholder."""
+        if self.internal_home_page_banner_url is not None:
+            return self.internal_home_page_banner_url
+
+        banner_index = hash(self.slug) % 4
+        return f"{get_settings(FrontendSettings).seeker_portal_base_url}/org-banners/{banner_index}.png"
+
+    @home_page_banner_url.setter
+    def home_page_banner_url(self, value: str | None) -> None:
+        """Set the internal home page banner URL."""
+        self.internal_home_page_banner_url = value
 
     class Settings:
         name = "organizations"
@@ -156,5 +181,22 @@ class OrganizationInvite(Document):
                 ],
                 name="organization_invite_email_text_index",
                 default_language="english",
+            ),
+        ]
+
+
+class EmployeeBenefit(Document):
+    organization: Link[Organization]
+    title: str
+    description: str
+    poster_image_url: str | None = None
+    order: int
+
+    class Settings:
+        name = "employee_benefits"
+        indexes: ClassVar[list[IndexModel]] = [
+            IndexModel(
+                ["organization", "order"],
+                name="organization_order_index",
             ),
         ]

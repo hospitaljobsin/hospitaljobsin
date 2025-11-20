@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0a2bbd9dc4acd67bf08dceb3809cb215>>
- * @relayHash 0bbc605dcb5dca12a0fc80632fb98465
+ * @generated SignedSource<<c987b7f22fe4b4f41d0638c9a6ecc245>>
+ * @relayHash 182812fe78fcbecb128de76a8a541682
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,25 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 0bbc605dcb5dca12a0fc80632fb98465
+// @relayRequestID 182812fe78fcbecb128de76a8a541682
 
 import type { ConcreteRequest } from 'relay-runtime';
+export type SocialLinksInput = {
+  facebookUrl?: string | null | undefined;
+  instagramUrl?: string | null | undefined;
+  linkedinUrl?: string | null | undefined;
+  youtubeUrl?: string | null | undefined;
+};
 export type UpdateOrganizationFormMutation$variables = {
   bannerUrl?: string | null | undefined;
   description?: string | null | undefined;
+  homePageBannerUrl?: string | null | undefined;
   location?: string | null | undefined;
   logoUrl?: string | null | undefined;
   name: string;
   organizationId: string;
   slug: string;
+  socialLinks?: SocialLinksInput | null | undefined;
   website?: string | null | undefined;
 };
 export type UpdateOrganizationFormMutation$data = {
@@ -27,11 +35,18 @@ export type UpdateOrganizationFormMutation$data = {
     readonly __typename: "Organization";
     readonly bannerUrl: string;
     readonly description: string | null | undefined;
+    readonly homePageBannerUrl: string;
     readonly id: string;
     readonly location: string | null | undefined;
     readonly logoUrl: string;
     readonly name: string;
     readonly slug: string;
+    readonly socialLinks: {
+      readonly facebookUrl: string | null | undefined;
+      readonly instagramUrl: string | null | undefined;
+      readonly linkedinUrl: string | null | undefined;
+      readonly youtubeUrl: string | null | undefined;
+    } | null | undefined;
     readonly website: string | null | undefined;
   } | {
     readonly __typename: "OrganizationAuthorizationError";
@@ -68,34 +83,44 @@ v1 = {
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "location"
+  "name": "homePageBannerUrl"
 },
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "logoUrl"
+  "name": "location"
 },
 v4 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "name"
+  "name": "logoUrl"
 },
 v5 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "organizationId"
+  "name": "name"
 },
 v6 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "slug"
+  "name": "organizationId"
 },
 v7 = {
   "defaultValue": null,
   "kind": "LocalArgument",
+  "name": "slug"
+},
+v8 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "socialLinks"
+},
+v9 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
   "name": "website"
 },
-v8 = [
+v10 = [
   {
     "kind": "Variable",
     "name": "bannerUrl",
@@ -105,6 +130,11 @@ v8 = [
     "kind": "Variable",
     "name": "description",
     "variableName": "description"
+  },
+  {
+    "kind": "Variable",
+    "name": "homePageBannerUrl",
+    "variableName": "homePageBannerUrl"
   },
   {
     "kind": "Variable",
@@ -133,28 +163,33 @@ v8 = [
   },
   {
     "kind": "Variable",
+    "name": "socialLinks",
+    "variableName": "socialLinks"
+  },
+  {
+    "kind": "Variable",
     "name": "website",
     "variableName": "website"
   }
 ],
-v9 = {
+v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v10 = {
+v12 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v11 = {
+v13 = {
   "kind": "InlineFragment",
   "selections": [
-    (v10/*: any*/),
+    (v12/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -201,6 +236,52 @@ v11 = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
+      "name": "homePageBannerUrl",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "SocialLinks",
+      "kind": "LinkedField",
+      "name": "socialLinks",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "linkedinUrl",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "youtubeUrl",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "instagramUrl",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "facebookUrl",
+          "storageKey": null
+        }
+      ],
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "location",
       "storageKey": null
     }
@@ -208,7 +289,7 @@ v11 = {
   "type": "Organization",
   "abstractKey": null
 },
-v12 = {
+v14 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -232,7 +313,9 @@ return {
       (v4/*: any*/),
       (v5/*: any*/),
       (v6/*: any*/),
-      (v7/*: any*/)
+      (v7/*: any*/),
+      (v8/*: any*/),
+      (v9/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -240,15 +323,15 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v8/*: any*/),
+        "args": (v10/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateOrganization",
         "plural": false,
         "selections": [
-          (v9/*: any*/),
           (v11/*: any*/),
-          (v12/*: any*/)
+          (v13/*: any*/),
+          (v14/*: any*/)
         ],
         "storageKey": null
       }
@@ -259,13 +342,15 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v5/*: any*/),
-      (v4/*: any*/),
       (v6/*: any*/),
-      (v2/*: any*/),
+      (v5/*: any*/),
       (v7/*: any*/),
       (v3/*: any*/),
+      (v9/*: any*/),
+      (v4/*: any*/),
       (v0/*: any*/),
+      (v2/*: any*/),
+      (v8/*: any*/),
       (v1/*: any*/)
     ],
     "kind": "Operation",
@@ -273,19 +358,19 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v8/*: any*/),
+        "args": (v10/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateOrganization",
         "plural": false,
         "selections": [
-          (v9/*: any*/),
           (v11/*: any*/),
-          (v12/*: any*/),
+          (v13/*: any*/),
+          (v14/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              (v10/*: any*/)
+              (v12/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -296,7 +381,7 @@ return {
     ]
   },
   "params": {
-    "id": "0bbc605dcb5dca12a0fc80632fb98465",
+    "id": "182812fe78fcbecb128de76a8a541682",
     "metadata": {},
     "name": "UpdateOrganizationFormMutation",
     "operationKind": "mutation",
@@ -305,6 +390,6 @@ return {
 };
 })();
 
-(node as any).hash = "110826d37d4b94f63b931f76a22439d9";
+(node as any).hash = "6f72cafc8eec3d91710ef569a2e05a53";
 
 export default node;
