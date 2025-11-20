@@ -671,6 +671,21 @@ type CheckOrganizationSlugAvailabilityPayload {
 }
 
 """
+The create employee benefit payload.
+"""
+union CreateEmployeeBenefitPayload = CreateEmployeeBenefitSuccess | OrganizationNotFoundError | OrganizationAuthorizationError
+
+"""
+Create employee benefit success.
+"""
+type CreateEmployeeBenefitSuccess {
+	"""
+	The employee benefit edge.
+	"""
+	employeeBenefitEdge: EmployeeBenefitEdge!
+}
+
+"""
 The create job alert payload.
 """
 union CreateJobAlertPayload = JobAlert | JobAlertAlreadyExistsError | MaxJobAlertsReachedError
@@ -789,6 +804,15 @@ scalar DateTime
 The decline organization invite payload.
 """
 union DeclineOrganizationInvitePayload = OrganizationInviteEdge | OrganizationInviteNotFoundError
+
+"""
+The delete employee benefit payload.
+"""
+union DeleteEmployeeBenefitPayload =
+	| EmployeeBenefitEdge
+	| OrganizationNotFoundError
+	| EmployeeBenefitNotFoundError
+	| OrganizationAuthorizationError
 
 """
 The delete job alert payload.
@@ -940,6 +964,75 @@ type EmailVerificationTokenCooldownError implements Error {
 	"""
 	message: String!
 	remainingSeconds: Int!
+}
+
+"""
+An employee benefit offered by an organization.
+"""
+type EmployeeBenefit implements Node {
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
+
+	"""
+	The title of the benefit.
+	"""
+	title: String!
+
+	"""
+	The description of the benefit (markdown).
+	"""
+	description: String!
+
+	"""
+	The poster image URL for the benefit.
+	"""
+	posterImageUrl: String
+
+	"""
+	The display order of the benefit.
+	"""
+	order: Int!
+}
+
+type EmployeeBenefitConnection {
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
+
+	"""
+	A list of edges.
+	"""
+	edges: [EmployeeBenefitEdge!]!
+
+	"""
+	The total number of items in the connection.
+	"""
+	totalCount: Int
+}
+
+type EmployeeBenefitEdge {
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
+
+	"""
+	The item at the end of the edge
+	"""
+	node: EmployeeBenefit!
+}
+
+"""
+Used when the employee benefit is not found.
+"""
+type EmployeeBenefitNotFoundError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
 """
@@ -3462,6 +3555,16 @@ type Mutation {
 		The banner URL of the organization.
 		"""
 		bannerUrl: String = null
+
+		"""
+		The home page banner URL of the organization.
+		"""
+		homePageBannerUrl: String = null
+
+		"""
+		The social media links of the organization.
+		"""
+		socialLinks: SocialLinksInput = null
 	): UpdateOrganizationPayload! @isAuthenticated
 
 	"""
@@ -3625,6 +3728,111 @@ type Mutation {
 	): DemoteOrganizationMemberPayload! @isAuthenticated @requiresSudoMode
 
 	"""
+	Create an organization home page banner presigned URL.
+	"""
+	createOrganizationHomePageBannerPresignedUrl(
+		"""
+		The content type of the file.
+		"""
+		contentType: String!
+	): CreatePresignedURLPayloadType! @isAuthenticated
+
+	"""
+	Create an employee benefit.
+	"""
+	createEmployeeBenefit(
+		"""
+		The ID of the organization.
+		"""
+		organizationId: ID!
+
+		"""
+		The title of the benefit.
+		"""
+		title: String!
+
+		"""
+		The description of the benefit.
+		"""
+		description: String!
+
+		"""
+		The poster image URL of the benefit.
+		"""
+		posterImageUrl: String = null
+	): CreateEmployeeBenefitPayload! @isAuthenticated
+
+	"""
+	Update an employee benefit.
+	"""
+	updateEmployeeBenefit(
+		"""
+		The ID of the organization.
+		"""
+		organizationId: ID!
+
+		"""
+		The ID of the benefit to update.
+		"""
+		benefitId: ID!
+
+		"""
+		The title of the benefit.
+		"""
+		title: String = null
+
+		"""
+		The description of the benefit.
+		"""
+		description: String = null
+
+		"""
+		The poster image URL of the benefit.
+		"""
+		posterImageUrl: String = null
+	): UpdateEmployeeBenefitPayload! @isAuthenticated
+
+	"""
+	Delete an employee benefit.
+	"""
+	deleteEmployeeBenefit(
+		"""
+		The ID of the organization.
+		"""
+		organizationId: ID!
+
+		"""
+		The ID of the benefit to delete.
+		"""
+		benefitId: ID!
+	): DeleteEmployeeBenefitPayload! @isAuthenticated
+
+	"""
+	Reorder employee benefits.
+	"""
+	reorderEmployeeBenefits(
+		"""
+		The ID of the organization.
+		"""
+		organizationId: ID!
+
+		"""
+		The ordered list of benefit IDs.
+		"""
+		benefitIds: [ID!]!
+	): ReorderEmployeeBenefitsPayload! @isAuthenticated
+
+	"""
+	Create an employee benefit poster presigned URL.
+	"""
+	createEmployeeBenefitPosterPresignedUrl(
+		"""
+		The content type of the file.
+		"""
+		contentType: String!
+	): CreatePresignedURLPayloadType! @isAuthenticated
+
+	"""
 	Create a job alert.
 	"""
 	createJobAlert(
@@ -3770,6 +3978,16 @@ type Organization implements Node {
 	The banner URL of the organization.
 	"""
 	bannerUrl: String!
+
+	"""
+	The home page banner URL of the organization.
+	"""
+	homePageBannerUrl: String!
+
+	"""
+	Social media links for the organization.
+	"""
+	socialLinks: SocialLinks
 
 	"""
 	When the organization was created.
@@ -3950,6 +4168,31 @@ type Organization implements Node {
 		"""
 		last: Int = null
 	): OrganizationMemberConnection!
+
+	"""
+	The employee benefits offered by the organization.
+	"""
+	employeeBenefits(
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
+
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
+
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
+
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): EmployeeBenefitConnection!
 }
 
 """
@@ -5014,6 +5257,21 @@ type RemoveRecommendedJobAlertsSuccess {
 }
 
 """
+The reorder employee benefits payload.
+"""
+union ReorderEmployeeBenefitsPayload = ReorderEmployeeBenefitsSuccess | OrganizationNotFoundError | OrganizationAuthorizationError
+
+"""
+Reorder employee benefits success.
+"""
+type ReorderEmployeeBenefitsSuccess {
+	"""
+	The reordered employee benefits.
+	"""
+	employeeBenefits: [EmployeeBenefit!]!
+}
+
+"""
 Request email verification success.
 """
 type RequestEmailVerificationSuccess {
@@ -5250,6 +5508,56 @@ union SetAccount2FAPayload =
 	| TwoFactorAuthenticationChallengeNotFoundError
 
 """
+Social media links for an organization.
+"""
+type SocialLinks {
+	"""
+	LinkedIn profile URL.
+	"""
+	linkedinUrl: String
+
+	"""
+	YouTube channel URL.
+	"""
+	youtubeUrl: String
+
+	"""
+	Instagram profile URL.
+	"""
+	instagramUrl: String
+
+	"""
+	Facebook page URL.
+	"""
+	facebookUrl: String
+}
+
+"""
+Social media links input for an organization.
+"""
+input SocialLinksInput {
+	"""
+	LinkedIn profile URL.
+	"""
+	linkedinUrl: String = null
+
+	"""
+	YouTube channel URL.
+	"""
+	youtubeUrl: String = null
+
+	"""
+	Instagram profile URL.
+	"""
+	instagramUrl: String = null
+
+	"""
+	Facebook page URL.
+	"""
+	facebookUrl: String = null
+}
+
+"""
 site core statistics
 """
 type Stats {
@@ -5388,6 +5696,15 @@ union UpdateAccountPhoneNumberPayload = Account | InvalidPhoneNumberVerification
 The update account WhatsApp job alerts payload.
 """
 union UpdateAccountWhatsappJobAlertsPayload = Account | PhoneNumberMissingError
+
+"""
+The update employee benefit payload.
+"""
+union UpdateEmployeeBenefitPayload =
+	| EmployeeBenefit
+	| OrganizationNotFoundError
+	| EmployeeBenefitNotFoundError
+	| OrganizationAuthorizationError
 
 """
 The update job alert payload.

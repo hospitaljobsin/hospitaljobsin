@@ -1,14 +1,14 @@
-import type { ResumeProgressAccountFragment$key } from '@/__generated__/ResumeProgressAccountFragment.graphql';
-import type { ResumeProgressFragment$key } from '@/__generated__/ResumeProgressFragment.graphql';
-import { getResumeProgressColor } from '@/lib/color';
-import { getRelativeTimeString } from '@/lib/intl';
-import links from '@/lib/links';
 import { Card, CardBody, Link, Progress } from '@heroui/react';
 import { MailIcon, PhoneIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import invariant from 'tiny-invariant';
+import type { ResumeProgressAccountFragment$key } from '@/__generated__/ResumeProgressAccountFragment.graphql';
+import type { ResumeProgressFragment$key } from '@/__generated__/ResumeProgressFragment.graphql';
+import { getResumeProgressColor } from '@/lib/color';
+import { getRelativeTimeString } from '@/lib/intl';
+import links from '@/lib/links';
 
 function getProgressText(percentage: number): string {
 	if (percentage < 50) return 'weak';
@@ -77,7 +77,7 @@ export default function ResumeProgress({ query }: { query: ResumeProgressFragmen
 							alt={data.fullName}
 							width={112}
 							height={112}
-							className='rounded-full ring-4 ring-background'
+							className='rounded-full ring-4 ring-background bg-background'
 						/>
 					</div>
 				</div>

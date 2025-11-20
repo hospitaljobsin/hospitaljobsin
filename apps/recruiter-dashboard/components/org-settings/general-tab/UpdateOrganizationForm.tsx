@@ -35,8 +35,8 @@ import DeleteOrganizationBannerModal from './DeleteOrganizationBannerModal';
 import DeleteOrganizationLogoModal from './DeleteOrganizationLogoModal';
 
 const UpdateOrganizationFormMutation = graphql`
-mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $slug: String!, $location: String, $website: String, $logoUrl: String, $bannerUrl: String, $description: String) {
-	updateOrganization(organizationId: $organizationId, name: $name, slug: $slug, location: $location, website: $website, logoUrl: $logoUrl, bannerUrl: $bannerUrl, description: $description) {
+mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $slug: String!, $location: String, $website: String, $logoUrl: String, $bannerUrl: String, $homePageBannerUrl: String, $socialLinks: SocialLinksInput, $description: String) {
+	updateOrganization(organizationId: $organizationId, name: $name, slug: $slug, location: $location, website: $website, logoUrl: $logoUrl, bannerUrl: $bannerUrl, homePageBannerUrl: $homePageBannerUrl, socialLinks: $socialLinks, description: $description) {
 		__typename
 		... on Organization {
 			id
@@ -46,6 +46,13 @@ mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $s
 			description
 			logoUrl
 			bannerUrl
+			homePageBannerUrl
+			socialLinks {
+				linkedinUrl
+				youtubeUrl
+				instagramUrl
+				facebookUrl
+			}
 			location
 		}
         ... on OrganizationNotFoundError {
@@ -79,6 +86,14 @@ mutation UpdateOrganizationFormBannerPresignedUrlMutation($contentType: String!)
 }
 `;
 
+const CreateOrganizationHomePageBannerPresignedUrlMutation = graphql`
+mutation UpdateOrganizationFormHomePageBannerPresignedUrlMutation($contentType: String!) {
+	createOrganizationHomePageBannerPresignedUrl(contentType: $contentType) {
+		presignedUrl
+	}
+}
+`;
+
 const UpdateOrganizationFormFragment = graphql`
   fragment UpdateOrganizationFormFragment on Organization {
 	id
@@ -87,6 +102,13 @@ const UpdateOrganizationFormFragment = graphql`
 	website
 	logoUrl
 	bannerUrl
+	homePageBannerUrl
+	socialLinks {
+		linkedinUrl
+		youtubeUrl
+		instagramUrl
+		facebookUrl
+	}
 	description
 	location
 	...DeleteOrganizationLogoModalFragment
@@ -112,15 +134,61 @@ const formSchema = z.object({
 		),
 		z.literal('')
 	]),
-	location: z.nullable(z.string())
+	location: z.nullable(z.string()),
+	linkedinUrl: z.union([
+		z.nullable(
+			z.optional(
+				z
+					.string()
+					.url()
+					.refine(url => url.includes('linkedin.com'), { message: 'Must be a LinkedIn URL' })
+			)
+		),
+		z.literal('')
+	]),
+	youtubeUrl: z.union([
+		z.nullable(
+			z.optional(
+				z
+					.string()
+					.url()
+					.refine(url => url.includes('youtube.com') || url.includes('youtu.be'), { message: 'Must be a YouTube URL' })
+			)
+		),
+		z.literal('')
+	]),
+	instagramUrl: z.union([
+		z.nullable(
+			z.optional(
+				z
+					.string()
+					.url()
+					.refine(url => url.includes('instagram.com'), { message: 'Must be an Instagram URL' })
+			)
+		),
+		z.literal('')
+	]),
+	facebookUrl: z.union([
+		z.nullable(
+			z.optional(
+				z
+					.string()
+					.url()
+					.refine(url => url.includes('facebook.com') || url.includes('fb.com'), { message: 'Must be a Facebook URL' })
+			)
+		),
+		z.literal('')
+	])
 });
 
 export default function UpdateOrganizationForm({ rootQuery }: Props) {
 	const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [selectedBanner, setSelectedBanner] = useState<File | null>(null);
+	const [selectedHomePageBanner, setSelectedHomePageBanner] = useState<File | null>(null);
 
 	const [bannerPreviewUrl, setBannerPreviewUrl] = useState<string | null>(null);
+	const [homePageBannerPreviewUrl, setHomePageBannerPreviewUrl] = useState<string | null>(null);
 	const [tempImageUrl, setTempImageUrl] = useState<string | null>(null);
 
 	const [showDeleteOrganizationLogoModal, setShowDeleteOrganizationLogoModal] = useState(false);
@@ -132,13 +200,15 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 	const [zoom, setZoom] = useState(1);
 	const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 	const [croppedImage, setCroppedImage] = useState<string | null>(null);
-	const [croppingType, setCroppingType] = useState<'logo' | 'banner'>('logo');
+	const [croppingType, setCroppingType] = useState<'logo' | 'banner' | 'homePageBanner'>('logo');
 
 	const [commitMutation, isMutationInFlight] = useMutation<UpdateOrganizationFormMutationType>(UpdateOrganizationFormMutation);
 	const [commitCreateOrganizationLogoPresignedUrlMutation, isCreateOrganizationLogoPresignedUrlMutationInflight] =
 		useMutation<UpdateOrganizationFormLogoPresignedUrlMutation>(CreateOrganizationLogoPresignedUrlMutation);
 	const [commitCreateOrganizationBannerPresignedUrlMutation, isCreateOrganizationBannerPresignedUrlMutationInflight] =
 		useMutation<UpdateOrganizationFormBannerPresignedUrlMutation>(CreateOrganizationBannerPresignedUrlMutation);
+	const [commitCreateOrganizationHomePageBannerPresignedUrlMutation, isCreateOrganizationHomePageBannerPresignedUrlMutationInflight] =
+		useMutation(CreateOrganizationHomePageBannerPresignedUrlMutation);
 	const data = useFragment(UpdateOrganizationFormFragment, rootQuery);
 
 	const {
@@ -155,7 +225,11 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			slug: data.slug,
 			website: data.website ?? null,
 			description: data.description ?? '',
-			location: data.location ?? null
+			location: data.location ?? null,
+			linkedinUrl: data.socialLinks?.linkedinUrl ?? null,
+			youtubeUrl: data.socialLinks?.youtubeUrl ?? null,
+			instagramUrl: data.socialLinks?.instagramUrl ?? null,
+			facebookUrl: data.socialLinks?.facebookUrl ?? null
 		}
 	});
 
@@ -176,8 +250,18 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 		if (file) {
 			setSelectedBanner(file);
 			const url = URL.createObjectURL(file);
+			setBannerPreviewUrl(url);
+		}
+		event.target.value = '';
+	}
+
+	async function handleHomePageBannerChange(event: React.ChangeEvent<HTMLInputElement>) {
+		const file = event.target.files?.[0];
+		if (file) {
+			setSelectedHomePageBanner(file);
+			const url = URL.createObjectURL(file);
 			setTempImageUrl(url);
-			setCroppingType('banner');
+			setCroppingType('homePageBanner');
 			onOpen();
 		}
 		event.target.value = '';
@@ -222,7 +306,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 
 	const handleCropSave = useCallback(async () => {
 		if (tempImageUrl && croppedAreaPixels) {
-			const file = croppingType === 'logo' ? selectedLogo : selectedBanner;
+			const file = croppingType === 'logo' ? selectedLogo : croppingType === 'banner' ? selectedBanner : selectedHomePageBanner;
 			if (!file) return;
 
 			try {
@@ -237,6 +321,9 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 				} else if (croppingType === 'banner') {
 					setSelectedBanner(croppedFile);
 					setBannerPreviewUrl(croppedImageUrl);
+				} else if (croppingType === 'homePageBanner') {
+					setSelectedHomePageBanner(croppedFile);
+					setHomePageBannerPreviewUrl(croppedImageUrl);
 				}
 
 				setTempImageUrl(null);
@@ -245,7 +332,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 				console.error('Error creating cropped image:', error);
 			}
 		}
-	}, [tempImageUrl, croppedAreaPixels, createCroppedImage, onClose, croppingType, selectedLogo, selectedBanner]);
+	}, [tempImageUrl, croppedAreaPixels, createCroppedImage, onClose, croppingType, selectedLogo, selectedBanner, selectedHomePageBanner]);
 
 	const handleCropCancel = useCallback(() => {
 		if (tempImageUrl) {
@@ -256,6 +343,8 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			setSelectedLogo(null);
 		} else if (croppingType === 'banner') {
 			setSelectedBanner(null);
+		} else if (croppingType === 'homePageBanner') {
+			setSelectedHomePageBanner(null);
 		}
 		setCrop({ x: 0, y: 0 });
 		setZoom(1);
@@ -298,15 +387,32 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 		});
 	}
 
+	function getHomePageBannerPresignedUrl(banner: File): Promise<string | null> {
+		return new Promise((resolve, reject) => {
+			commitCreateOrganizationHomePageBannerPresignedUrlMutation({
+				variables: {
+					contentType: banner.type
+				},
+				onCompleted: response => {
+					resolve(response.createOrganizationHomePageBannerPresignedUrl?.presignedUrl || null);
+				},
+				onError: error => {
+					console.error('Error fetching homepage banner presigned URL:', error);
+					reject(error);
+				}
+			});
+		});
+	}
+
 	async function onSubmit(formData: z.infer<typeof formSchema>) {
 		let logoUrlResult: string | null = data.logoUrl || null;
-		let bannerUrlResult: string | null = null;
+		let bannerUrlResult: string | null = data.bannerUrl || null;
+		let homePageBannerUrlResult: string | null = data.homePageBannerUrl || null;
 
 		if (selectedLogo) {
 			const presignedUrl = await getPresignedUrl(selectedLogo);
 			if (presignedUrl) {
 				await uploadFileToS3(presignedUrl, selectedLogo);
-				// Extract the URL from the presignedUrl
 				logoUrlResult = presignedUrl.split('?')[0];
 			}
 		}
@@ -315,8 +421,15 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			const presignedUrl = await getBannerPresignedUrl(selectedBanner);
 			if (presignedUrl) {
 				await uploadFileToS3(presignedUrl, selectedBanner);
-				// Extract the URL from the presignedUrl
 				bannerUrlResult = presignedUrl.split('?')[0];
+			}
+		}
+
+		if (selectedHomePageBanner) {
+			const presignedUrl = await getHomePageBannerPresignedUrl(selectedHomePageBanner);
+			if (presignedUrl) {
+				await uploadFileToS3(presignedUrl, selectedHomePageBanner);
+				homePageBannerUrlResult = presignedUrl.split('?')[0];
 			}
 		}
 
@@ -328,6 +441,13 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 				website: formData.website || null,
 				logoUrl: logoUrlResult,
 				bannerUrl: bannerUrlResult,
+				homePageBannerUrl: homePageBannerUrlResult,
+				socialLinks: {
+					linkedinUrl: formData.linkedinUrl || null,
+					youtubeUrl: formData.youtubeUrl || null,
+					instagramUrl: formData.instagramUrl || null,
+					facebookUrl: formData.facebookUrl || null
+				},
 				description: formData.description || null,
 				location: formData.location
 			},
@@ -343,13 +463,19 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 							slug: response.updateOrganization.slug,
 							website: response.updateOrganization.website,
 							description: response.updateOrganization.description,
-							location: response.updateOrganization.location
+							location: response.updateOrganization.location,
+							linkedinUrl: response.updateOrganization.socialLinks?.linkedinUrl ?? null,
+							youtubeUrl: response.updateOrganization.socialLinks?.youtubeUrl ?? null,
+							instagramUrl: response.updateOrganization.socialLinks?.instagramUrl ?? null,
+							facebookUrl: response.updateOrganization.socialLinks?.facebookUrl ?? null
 						});
 						setSelectedLogo(null);
 						setPreviewUrl(null);
 						setCroppedImage(null);
 						setSelectedBanner(null);
 						setBannerPreviewUrl(null);
+						setSelectedHomePageBanner(null);
+						setHomePageBannerPreviewUrl(null);
 					}
 					// Handle successful update
 				} else if (response.updateOrganization.__typename === 'OrganizationNotFoundError') {
@@ -384,8 +510,11 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			if (bannerPreviewUrl) {
 				URL.revokeObjectURL(bannerPreviewUrl);
 			}
+			if (homePageBannerPreviewUrl) {
+				URL.revokeObjectURL(homePageBannerPreviewUrl);
+			}
 		};
-	}, [previewUrl, croppedImage, bannerPreviewUrl]);
+	}, [previewUrl, croppedImage, bannerPreviewUrl, homePageBannerPreviewUrl]);
 
 	return (
 		<>
@@ -514,8 +643,104 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 
 						<div className='mb-12'>
 							<div className='flex flex-col gap-4'>
-								<p className='text-tiny text-foreground-500'>Organization Banner</p>
-								<p className='text-tiny text-foreground-400'>Upload a horizontal landscape image that will appear on social media links</p>
+								<h2 className='font-medium text-foreground-400'>Social Links</h2>
+								<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+									<Controller
+										name='linkedinUrl'
+										control={control}
+										render={({ field }) => (
+											<Input
+												{...field}
+												fullWidth
+												label='LinkedIn URL'
+												placeholder='https://linkedin.com/company/...'
+												errorMessage={errors.linkedinUrl?.message}
+												isInvalid={!!errors.linkedinUrl}
+												value={field.value || ''}
+											/>
+										)}
+									/>
+									<Controller
+										name='youtubeUrl'
+										control={control}
+										render={({ field }) => (
+											<Input
+												{...field}
+												fullWidth
+												label='YouTube URL'
+												placeholder='https://youtube.com/@...'
+												errorMessage={errors.youtubeUrl?.message}
+												isInvalid={!!errors.youtubeUrl}
+												value={field.value || ''}
+											/>
+										)}
+									/>
+									<Controller
+										name='instagramUrl'
+										control={control}
+										render={({ field }) => (
+											<Input
+												{...field}
+												fullWidth
+												label='Instagram URL'
+												placeholder='https://instagram.com/...'
+												errorMessage={errors.instagramUrl?.message}
+												isInvalid={!!errors.instagramUrl}
+												value={field.value || ''}
+											/>
+										)}
+									/>
+									<Controller
+										name='facebookUrl'
+										control={control}
+										render={({ field }) => (
+											<Input
+												{...field}
+												fullWidth
+												label='Facebook URL'
+												placeholder='https://facebook.com/...'
+												errorMessage={errors.facebookUrl?.message}
+												isInvalid={!!errors.facebookUrl}
+												value={field.value || ''}
+											/>
+										)}
+									/>
+								</div>
+							</div>
+						</div>
+
+						<div className='mb-12'>
+							<div className='flex flex-col gap-4'>
+								<p className='text-tiny text-foreground-500'>Homepage Banner</p>
+								<p className='text-tiny text-foreground-400'>
+									Upload a wide banner image for your organization's public page (recommended: 1920x400)
+								</p>
+								<div className='flex flex-col items-start gap-4'>
+									{(homePageBannerPreviewUrl || data.homePageBannerUrl) && (
+										<div className='w-full max-w-2xl'>
+											<NextImage
+												src={homePageBannerPreviewUrl || data.homePageBannerUrl}
+												alt='Homepage Banner'
+												className='object-cover rounded-md border'
+												width={1920}
+												height={400}
+											/>
+										</div>
+									)}
+									<Button as='label' variant='bordered' size='sm' startContent={<EditIcon size={14} />}>
+										{selectedHomePageBanner ? 'Change' : 'Upload'}
+										<input type='file' accept='image/*' className='hidden' multiple={false} onChange={handleHomePageBannerChange} />
+									</Button>
+								</div>
+							</div>
+						</div>
+
+						<div className='mb-12'>
+							<div className='flex flex-col gap-4'>
+								<p className='text-tiny text-foreground-500'>Social Media Banner</p>
+								<p className='text-tiny text-foreground-400'>
+									Upload a horizontal landscape image that will appear on social media links (recommended: 1200x630)
+								</p>
 								<div className='flex flex-col items-start gap-4'>
 									{(bannerPreviewUrl || data.bannerUrl) && (
 										<div className='w-full max-w-md'>
@@ -554,12 +779,13 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 						<Button
 							type='submit'
 							color='primary'
-							isDisabled={!isDirty && !selectedLogo && !selectedBanner}
+							isDisabled={!isDirty && !selectedLogo && !selectedBanner && !selectedHomePageBanner}
 							isLoading={
 								isSubmitting ||
 								isMutationInFlight ||
 								isCreateOrganizationLogoPresignedUrlMutationInflight ||
-								isCreateOrganizationBannerPresignedUrlMutationInflight
+								isCreateOrganizationBannerPresignedUrlMutationInflight ||
+								isCreateOrganizationHomePageBannerPresignedUrlMutationInflight
 							}
 						>
 							Save Changes
@@ -571,14 +797,16 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			{/* Cropper Modal */}
 			<Modal isOpen={isOpen} onOpenChange={onClose} size='2xl'>
 				<ModalContent>
-					<ModalHeader className='flex flex-col gap-1'>Crop Organization {croppingType === 'logo' ? 'Logo' : 'Banner'}</ModalHeader>
+					<ModalHeader className='flex flex-col gap-1'>
+						Crop Organization {croppingType === 'logo' ? 'Logo' : croppingType === 'banner' ? 'Banner' : 'Homepage Banner'}
+					</ModalHeader>
 					<ModalBody>
 						<div className='relative w-full h-80'>
 							<Cropper
 								image={tempImageUrl || undefined}
 								crop={crop}
 								zoom={zoom}
-								aspect={croppingType === 'logo' ? 1 : 16 / 9}
+								aspect={croppingType === 'logo' ? 1 : croppingType === 'banner' ? 16 / 9 : 1920 / 400}
 								objectFit='contain'
 								onCropChange={setCrop}
 								onZoomChange={setZoom}

@@ -139,11 +139,13 @@ from app.organizations.dataloaders import (
     create_organization_member_by_id_dataloader,
 )
 from app.organizations.repositories import (
+    EmployeeBenefitRepo,
     OrganizationInviteRepo,
     OrganizationMemberRepo,
     OrganizationRepo,
 )
 from app.organizations.services import (
+    EmployeeBenefitService,
     OrganizationInviteService,
     OrganizationMemberService,
     OrganizationService,
@@ -358,6 +360,8 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(JobAlertRepo))
     container.register(aioinject.Singleton(RecommendedJobAlertRepo))
     container.register(aioinject.Scoped(JobAlertService))
+    container.register(aioinject.Singleton(EmployeeBenefitRepo))
+    container.register(aioinject.Scoped(EmployeeBenefitService))
     container.register(aioinject.Scoped(create_account_by_id_dataloader))
     container.register(aioinject.Scoped(create_profile_by_id_dataloader))
     container.register(aioinject.Scoped(create_job_by_id_dataloader))

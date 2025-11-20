@@ -52,6 +52,13 @@ const PageOrganizationDetailMetadataFragment = graphql`
 		name
 		descriptionCleaned
 		bannerUrl
+		homePageBannerUrl
+		socialLinks {
+			linkedinUrl
+			youtubeUrl
+			instagramUrl
+			facebookUrl
+		}
 	  }
 
 	}
@@ -94,13 +101,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		};
 	}
 
+	const socialLinks = data.organization.socialLinks;
+	const sameAs = [socialLinks?.linkedinUrl, socialLinks?.youtubeUrl, socialLinks?.instagramUrl, socialLinks?.facebookUrl].filter(Boolean);
+
 	return {
 		title: data.organization.name,
 		description: data.organization.descriptionCleaned,
 		openGraph: {
 			images: [
 				{
-					url: data.organization.bannerUrl,
+					url: data.organization.homePageBannerUrl || data.organization.bannerUrl,
 					width: 1200,
 					height: 630,
 					alt: data.organization.name
@@ -113,6 +123,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 		},
 		alternates: {
 			canonical: `${env.NEXT_PUBLIC_URL}${links.organizationDetail(slug)}`
+		},
+		other: {
+			'application/ld+json': JSON.stringify({
+				'@context': 'https://schema.org',
+				'@type': 'Organization',
+				name: data.organization.name,
+				url: `${env.NEXT_PUBLIC_URL}${links.organizationDetail(slug)}`,
+				image: data.organization.homePageBannerUrl || data.organization.bannerUrl,
+				description: data.organization.descriptionCleaned,
+				...(sameAs.length > 0 && { sameAs })
+			})
 		}
 	};
 }
