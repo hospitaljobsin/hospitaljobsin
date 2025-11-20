@@ -839,12 +839,14 @@ class EmployeeBenefitService:
         organization_member_service: OrganizationMemberService,
         s3_client: S3Client,
         aws_settings: AWSSettings,
+        revalidation_service: BaseRevalidationService,
     ) -> None:
         self._employee_benefit_repo = employee_benefit_repo
         self._organization_repo = organization_repo
         self._organization_member_service = organization_member_service
         self._s3_client = s3_client
         self._aws_settings = aws_settings
+        self._revalidation_service = revalidation_service
 
     async def create(
         self,
@@ -886,6 +888,10 @@ class EmployeeBenefitService:
             description=description,
             poster_image_url=poster_image_url,
             order=max_order + 1,
+        )
+
+        await self._revalidation_service.revalidate_tag(
+            tag=f"organization:{existing_organization.slug}"
         )
 
         return Ok(benefit)
@@ -934,6 +940,10 @@ class EmployeeBenefitService:
             else UNSET,
         )
 
+        await self._revalidation_service.revalidate_tag(
+            tag=f"organization:{existing_organization.slug}"
+        )
+
         return Ok(benefit)
 
     async def delete(
@@ -980,6 +990,10 @@ class EmployeeBenefitService:
             benefit.order = index
             await benefit.save()
 
+        await self._revalidation_service.revalidate_tag(
+            tag=f"organization:{existing_organization.slug}"
+        )
+
         return Ok(existing_benefit)
 
     async def reorder(
@@ -1007,6 +1021,10 @@ class EmployeeBenefitService:
         benefits = await self._employee_benefit_repo.reorder(
             organization_id=organization_id,
             benefit_ids=benefit_ids,
+        )
+
+        await self._revalidation_service.revalidate_tag(
+            tag=f"organization:{existing_organization.slug}"
         )
 
         return Ok(benefits)
