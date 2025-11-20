@@ -135,10 +135,50 @@ const formSchema = z.object({
 		z.literal('')
 	]),
 	location: z.nullable(z.string()),
-	linkedinUrl: z.union([z.nullable(z.optional(z.string().url({ message: 'Invalid LinkedIn URL' }))), z.literal('')]),
-	youtubeUrl: z.union([z.nullable(z.optional(z.string().url({ message: 'Invalid YouTube URL' }))), z.literal('')]),
-	instagramUrl: z.union([z.nullable(z.optional(z.string().url({ message: 'Invalid Instagram URL' }))), z.literal('')]),
-	facebookUrl: z.union([z.nullable(z.optional(z.string().url({ message: 'Invalid Facebook URL' }))), z.literal('')])
+	linkedinUrl: z.union([
+		z.nullable(
+			z.optional(
+				z
+					.string()
+					.url()
+					.refine(url => url.includes('linkedin.com'), { message: 'Must be a LinkedIn URL' })
+			)
+		),
+		z.literal('')
+	]),
+	youtubeUrl: z.union([
+		z.nullable(
+			z.optional(
+				z
+					.string()
+					.url()
+					.refine(url => url.includes('youtube.com') || url.includes('youtu.be'), { message: 'Must be a YouTube URL' })
+			)
+		),
+		z.literal('')
+	]),
+	instagramUrl: z.union([
+		z.nullable(
+			z.optional(
+				z
+					.string()
+					.url()
+					.refine(url => url.includes('instagram.com'), { message: 'Must be an Instagram URL' })
+			)
+		),
+		z.literal('')
+	]),
+	facebookUrl: z.union([
+		z.nullable(
+			z.optional(
+				z
+					.string()
+					.url()
+					.refine(url => url.includes('facebook.com') || url.includes('fb.com'), { message: 'Must be a Facebook URL' })
+			)
+		),
+		z.literal('')
+	])
 });
 
 export default function UpdateOrganizationForm({ rootQuery }: Props) {

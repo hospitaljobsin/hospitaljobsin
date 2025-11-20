@@ -102,57 +102,58 @@ export default function OrganizationDetails({ rootQuery }: { rootQuery: Organiza
 							</Tooltip>
 						)}
 					</div>
-
-					{(data.location || data.email || data.website) && (
-						<div className='flex flex-wrap gap-4 items-center text-foreground-600 text-sm'>
-							{data.location && (
-								<div className='flex items-center gap-2'>
-									<MapPin size={16} />
-									{data.location}
-								</div>
-							)}
-							{data.email && (
-								<div className='flex items-center gap-2'>
-									<Mail size={16} /> {data.email}
-								</div>
-							)}
-							{data.website && (
-								<Link showAnchorIcon href={data.website} isExternal>
-									Visit website
-								</Link>
-							)}
-						</div>
-					)}
-
-					{/* Social Links */}
-					{data.socialLinks &&
-						(data.socialLinks.linkedinUrl ||
-							data.socialLinks.youtubeUrl ||
-							data.socialLinks.instagramUrl ||
-							data.socialLinks.facebookUrl) && (
-							<div className='flex gap-3 items-center'>
-								{data.socialLinks.linkedinUrl && (
-									<Link href={data.socialLinks.linkedinUrl} isExternal aria-label='LinkedIn'>
-										<Linkedin size={20} className='text-foreground-500 hover:text-foreground transition-colors' />
-									</Link>
+					<div className='flex flex-col gap-6 sm:flex-row sm:justify-between sm:items-center'>
+						{(data.location || data.email || data.website) && (
+							<div className='flex flex-wrap gap-4 items-center text-foreground-600 text-sm'>
+								{data.location && (
+									<div className='flex items-center gap-2'>
+										<MapPin size={16} />
+										{data.location}
+									</div>
 								)}
-								{data.socialLinks.youtubeUrl && (
-									<Link href={data.socialLinks.youtubeUrl} isExternal aria-label='YouTube'>
-										<Youtube size={20} className='text-foreground-500 hover:text-foreground transition-colors' />
-									</Link>
+								{data.email && (
+									<div className='flex items-center gap-2'>
+										<Mail size={16} /> {data.email}
+									</div>
 								)}
-								{data.socialLinks.instagramUrl && (
-									<Link href={data.socialLinks.instagramUrl} isExternal aria-label='Instagram'>
-										<Instagram size={20} className='text-foreground-500 hover:text-foreground transition-colors' />
-									</Link>
-								)}
-								{data.socialLinks.facebookUrl && (
-									<Link href={data.socialLinks.facebookUrl} isExternal aria-label='Facebook'>
-										<Facebook size={20} className='text-foreground-500 hover:text-foreground transition-colors' />
+								{data.website && (
+									<Link showAnchorIcon href={data.website} isExternal>
+										Visit website
 									</Link>
 								)}
 							</div>
 						)}
+
+						{/* Social Links */}
+						{data.socialLinks &&
+							(data.socialLinks.linkedinUrl ||
+								data.socialLinks.youtubeUrl ||
+								data.socialLinks.instagramUrl ||
+								data.socialLinks.facebookUrl) && (
+								<div className='flex gap-3 items-center'>
+									{data.socialLinks.linkedinUrl && (
+										<Link href={data.socialLinks.linkedinUrl} isExternal aria-label='LinkedIn'>
+											<Linkedin size={20} className='text-foreground-500 hover:text-foreground transition-colors' />
+										</Link>
+									)}
+									{data.socialLinks.youtubeUrl && (
+										<Link href={data.socialLinks.youtubeUrl} isExternal aria-label='YouTube'>
+											<Youtube size={20} className='text-foreground-500 hover:text-foreground transition-colors' />
+										</Link>
+									)}
+									{data.socialLinks.instagramUrl && (
+										<Link href={data.socialLinks.instagramUrl} isExternal aria-label='Instagram'>
+											<Instagram size={20} className='text-foreground-500 hover:text-foreground transition-colors' />
+										</Link>
+									)}
+									{data.socialLinks.facebookUrl && (
+										<Link href={data.socialLinks.facebookUrl} isExternal aria-label='Facebook'>
+											<Facebook size={20} className='text-foreground-500 hover:text-foreground transition-colors' />
+										</Link>
+									)}
+								</div>
+							)}
+					</div>
 				</CardBody>
 			</Card>
 			{data.descriptionHtml && (
