@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader, Divider, Link, Tooltip } from '@heroui/react';
+import { Card, CardBody, Divider, Link, Tooltip } from '@heroui/react';
 import { Facebook, Instagram, Linkedin, Mail, MapPin, VerifiedIcon, Youtube } from 'lucide-react';
 import Image from 'next/image';
 import { graphql, useFragment } from 'react-relay';
@@ -72,100 +72,88 @@ export default function OrganizationDetails({ rootQuery }: { rootQuery: Organiza
 
 	return (
 		<div className='w-full flex flex-col gap-6'>
-			{/* Homepage Banner */}
-			{data.homePageBannerUrl && (
-				<div className='relative w-full h-64 sm:h-80 md:h-96 rounded-lg overflow-hidden'>
+			<Card fullWidth shadow='none' className='overflow-visible'>
+				{/* Banner Image */}
+				<div className='relative w-full h-48 sm:h-64'>
 					<Image
 						src={data.homePageBannerUrl}
 						alt={`${data.name} banner`}
 						fill
-						className='object-cover'
+						className='object-cover rounded-t-lg'
 						sizes='(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px'
 						priority
 					/>
-				</div>
-			)}
-			<Card fullWidth className='p-6 space-y-6' shadow='none'>
-				<CardHeader>
-					<div className='flex w-full justify-between gap-12 sm:gap-6 sm:items-center flex-col sm:flex-row items-start'>
-						<div className='w-full flex flex-col gap-6'>
-							<div className='flex flex-col sm:flex-row gap-6 items-start w-full'>
-								<div className='relative aspect-square w-16 h-16'>
-									<Image
-										src={data.logoUrl}
-										alt={data.name}
-										fill
-										className='rounded-md object-cover'
-										sizes='(max-width: 640px) 48px, 56px'
-									/>
-								</div>
-								<div className='flex flex-col gap-4 items-start w-full'>
-									<div className='flex flex-row items-center gap-2'>
-										<h4 className='text-lg sm:text-xl font-medium'>{data.name}</h4>
-										{data.verificationStatus.verified && (
-											<Tooltip content='This organization is verified' placement='right'>
-												<VerifiedIcon className='w-4 h-4 text-primary' strokeWidth={2.5} />
-											</Tooltip>
-										)}
-									</div>
-									{(data.location || data.email || data.website) && (
-										<div className='flex flex-wrap gap-4 items-center text-foreground-600 w-full'>
-											{data.location && (
-												<div className='flex items-center gap-2'>
-													<MapPin size={16} />
-													{data.location}
-												</div>
-											)}
-											{data.email && (
-												<div className='flex items-center gap-2'>
-													<Mail size={16} /> {data.email}
-												</div>
-											)}
-											{data.website && (
-												<Link showAnchorIcon className='text-foreground-600' href={data.website} isExternal>
-													Visit website
-												</Link>
-											)}
-										</div>
-									)}
-									{/* Social Links */}
-									{data.socialLinks &&
-										(data.socialLinks.linkedinUrl ||
-											data.socialLinks.youtubeUrl ||
-											data.socialLinks.instagramUrl ||
-											data.socialLinks.facebookUrl) && (
-											<div className='flex gap-3 items-center'>
-												{data.socialLinks.linkedinUrl && (
-													<Link href={data.socialLinks.linkedinUrl} isExternal aria-label='LinkedIn'>
-														<Linkedin size={20} className='text-foreground-600 hover:text-primary transition-colors' />
-													</Link>
-												)}
-												{data.socialLinks.youtubeUrl && (
-													<Link href={data.socialLinks.youtubeUrl} isExternal aria-label='YouTube'>
-														<Youtube size={20} className='text-foreground-600 hover:text-primary transition-colors' />
-													</Link>
-												)}
-												{data.socialLinks.instagramUrl && (
-													<Link href={data.socialLinks.instagramUrl} isExternal aria-label='Instagram'>
-														<Instagram size={20} className='text-foreground-600 hover:text-primary transition-colors' />
-													</Link>
-												)}
-												{data.socialLinks.facebookUrl && (
-													<Link href={data.socialLinks.facebookUrl} isExternal aria-label='Facebook'>
-														<Facebook size={20} className='text-foreground-600 hover:text-primary transition-colors' />
-													</Link>
-												)}
-											</div>
-										)}
-								</div>
-							</div>
+
+					{/* Logo Overlapping Banner */}
+					<div className='absolute -bottom-12 left-6 sm:left-8'>
+						<div className='relative w-24 h-24 sm:w-32 sm:h-32 rounded-xl overflow-hidden border-4 border-background shadow-lg bg-background'>
+							<Image src={data.logoUrl} alt={data.name} fill className='object-cover' sizes='(max-width: 640px) 96px, 128px' />
 						</div>
-						{/* TODO: add this after notifications infra
-						<Button size="lg" className="w-full sm:w-auto">
-							Follow
-						</Button>*/}
 					</div>
-				</CardHeader>
+				</div>
+
+				{/* Organization Details */}
+				<CardBody className='flex flex-col gap-4 mt-12 p-6'>
+					<div className='flex flex-row items-center gap-2'>
+						<h1 className='text-2xl sm:text-3xl font-semibold'>{data.name}</h1>
+						{data.verificationStatus.verified && (
+							<Tooltip content='This organization is verified' placement='right'>
+								<VerifiedIcon className='w-5 h-5 text-primary' strokeWidth={2.5} />
+							</Tooltip>
+						)}
+					</div>
+
+					{(data.location || data.email || data.website) && (
+						<div className='flex flex-wrap gap-4 items-center text-foreground-600 text-sm'>
+							{data.location && (
+								<div className='flex items-center gap-2'>
+									<MapPin size={16} />
+									{data.location}
+								</div>
+							)}
+							{data.email && (
+								<div className='flex items-center gap-2'>
+									<Mail size={16} /> {data.email}
+								</div>
+							)}
+							{data.website && (
+								<Link showAnchorIcon href={data.website} isExternal>
+									Visit website
+								</Link>
+							)}
+						</div>
+					)}
+
+					{/* Social Links */}
+					{data.socialLinks &&
+						(data.socialLinks.linkedinUrl ||
+							data.socialLinks.youtubeUrl ||
+							data.socialLinks.instagramUrl ||
+							data.socialLinks.facebookUrl) && (
+							<div className='flex gap-3 items-center'>
+								{data.socialLinks.linkedinUrl && (
+									<Link href={data.socialLinks.linkedinUrl} isExternal aria-label='LinkedIn'>
+										<Linkedin size={20} className='text-foreground-500 hover:text-foreground transition-colors' />
+									</Link>
+								)}
+								{data.socialLinks.youtubeUrl && (
+									<Link href={data.socialLinks.youtubeUrl} isExternal aria-label='YouTube'>
+										<Youtube size={20} className='text-foreground-500 hover:text-foreground transition-colors' />
+									</Link>
+								)}
+								{data.socialLinks.instagramUrl && (
+									<Link href={data.socialLinks.instagramUrl} isExternal aria-label='Instagram'>
+										<Instagram size={20} className='text-foreground-500 hover:text-foreground transition-colors' />
+									</Link>
+								)}
+								{data.socialLinks.facebookUrl && (
+									<Link href={data.socialLinks.facebookUrl} isExternal aria-label='Facebook'>
+										<Facebook size={20} className='text-foreground-500 hover:text-foreground transition-colors' />
+									</Link>
+								)}
+							</div>
+						)}
+				</CardBody>
 			</Card>
 			{data.descriptionHtml && (
 				<Card fullWidth className='p-6' shadow='none'>

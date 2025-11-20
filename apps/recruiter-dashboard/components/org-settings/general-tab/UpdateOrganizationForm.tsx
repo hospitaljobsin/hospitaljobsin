@@ -366,8 +366,8 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 
 	async function onSubmit(formData: z.infer<typeof formSchema>) {
 		let logoUrlResult: string | null = data.logoUrl || null;
-		let bannerUrlResult: string | null = null;
-		let homePageBannerUrlResult: string | null = null;
+		let bannerUrlResult: string | null = data.bannerUrl || null;
+		let homePageBannerUrlResult: string | null = data.homePageBannerUrl || null;
 
 		if (selectedLogo) {
 			const presignedUrl = await getPresignedUrl(selectedLogo);
