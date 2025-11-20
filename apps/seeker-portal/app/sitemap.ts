@@ -8,6 +8,12 @@ import links from '@/lib/links';
 import { getCurrentEnvironment } from '@/lib/relay/environments';
 import type { PayloadPost } from '@/types/payload';
 
+export const dynamic = 'force-dynamic';
+
+export const dynamicParams = true;
+
+export const revalidate = 86400; // Revalidate once a day
+
 export const SitemapJobsQuery = graphql`
   query sitemapJobsQuery($cursor: ID, $count: Int!) {
     jobs(after: $cursor, first: $count, workMode: [], jobType: []) {
