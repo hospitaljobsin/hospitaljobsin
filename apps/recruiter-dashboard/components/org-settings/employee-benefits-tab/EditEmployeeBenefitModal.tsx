@@ -5,9 +5,11 @@ import type { EditEmployeeBenefitModalPresignedUrlMutation } from '@/__generated
 import MarkdownEditor from '@/components/forms/text-editor/MarkdownEditor';
 import { uploadFileToS3 } from '@/lib/presignedUrl';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { addToast, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
+import { addToast, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/react';
 import { Upload } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import type { Area } from 'react-easy-crop';
+import Cropper from 'react-easy-crop';
 import { Controller, useForm } from 'react-hook-form';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { z } from 'zod';
@@ -64,8 +66,14 @@ export default function EditEmployeeBenefitModal({
 	const benefit = useFragment(EditEmployeeBenefitModalFragment, benefitKey);
 	const [selectedImage, setSelectedImage] = useState<File | null>(null);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(benefit.posterImageUrl);
+	const [tempImageUrl, setTempImageUrl] = useState<string | null>(null);
 	const [commitEdit, isEditing] = useMutation<EditEmployeeBenefitModalMutationType>(EditMutation);
 	const [commitPresignedUrl] = useMutation<EditEmployeeBenefitModalPresignedUrlMutation>(PresignedUrlMutation);
+
+	const { isOpen: isCropOpen, onOpen: onCropOpen, onClose: onCropClose } = useDisclosure();
+	const [crop, setCrop] = useState({ x: 0, y: 0 });
+	const [zoom, setZoom] = useState(1);
+	const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
 	const {
 		handleSubmit,
@@ -86,9 +94,77 @@ export default function EditEmployeeBenefitModal({
 		const file = event.target.files?.[0];
 		if (file) {
 			setSelectedImage(file);
-			setPreviewUrl(URL.createObjectURL(file));
+			const url = URL.createObjectURL(file);
+			setTempImageUrl(url);
+			onCropOpen();
 		}
+		event.target.value = '';
 	}
+
+	const onCropComplete = useCallback((croppedArea: Area, croppedAreaPixels: Area) => {
+		setCroppedAreaPixels(croppedAreaPixels);
+	}, []);
+
+	const createCroppedImage = useCallback(async (imageSrc: string, pixelCrop: Area, file: File): Promise<Blob> => {
+		const image = new Image();
+		image.src = imageSrc;
+		return new Promise((resolve, reject) => {
+			image.onload = () => {
+				const canvas = document.createElement('canvas');
+				const ctx = canvas.getContext('2d');
+
+				if (!ctx) {
+					reject(new Error('Failed to get canvas context'));
+					return;
+				}
+
+				canvas.width = pixelCrop.width;
+				canvas.height = pixelCrop.height;
+
+				ctx.drawImage(image, pixelCrop.x, pixelCrop.y, pixelCrop.width, pixelCrop.height, 0, 0, pixelCrop.width, pixelCrop.height);
+
+				canvas.toBlob(
+					blob => {
+						if (blob) {
+							resolve(blob);
+						} else {
+							reject(new Error('Failed to create blob'));
+						}
+					},
+					file.type,
+					0.95
+				);
+			};
+		});
+	}, []);
+
+	const handleCropSave = useCallback(async () => {
+		if (tempImageUrl && croppedAreaPixels && selectedImage) {
+			try {
+				const croppedBlob = await createCroppedImage(tempImageUrl, croppedAreaPixels, selectedImage);
+				const croppedFile = new File([croppedBlob], selectedImage.name, { type: selectedImage.type });
+				const croppedImageUrl = URL.createObjectURL(croppedBlob);
+				setSelectedImage(croppedFile);
+				setPreviewUrl(croppedImageUrl);
+				setTempImageUrl(null);
+				onCropClose();
+			} catch (error) {
+				console.error('Error creating cropped image:', error);
+			}
+		}
+	}, [tempImageUrl, croppedAreaPixels, selectedImage, createCroppedImage, onCropClose]);
+
+	const handleCropCancel = useCallback(() => {
+		if (tempImageUrl) {
+			URL.revokeObjectURL(tempImageUrl);
+			setTempImageUrl(null);
+		}
+		setSelectedImage(null);
+		setCrop({ x: 0, y: 0 });
+		setZoom(1);
+		setCroppedAreaPixels(null);
+		onCropClose();
+	}, [onCropClose, tempImageUrl]);
 
 	async function onSubmit(formData: z.infer<typeof formSchema>) {
 		let posterImageUrl: string | null | undefined = undefined;
@@ -127,54 +203,91 @@ export default function EditEmployeeBenefitModal({
 	}
 
 	return (
-		<Modal isOpen={isOpen} onOpenChange={onOpenChange} size='2xl'>
-			<ModalContent>
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<ModalHeader>Edit Employee Benefit</ModalHeader>
-					<ModalBody className='gap-4'>
-						<Controller
-							name='title'
-							control={control}
-							render={({ field }) => (
-								<Input
-									{...field}
-									label='Title'
-									placeholder='e.g., Health Insurance'
-									errorMessage={errors.title?.message}
-									isInvalid={!!errors.title}
-								/>
-							)}
-						/>
-						<Controller
-							name='description'
-							control={control}
-							render={({ field }) => (
-								<div className='flex flex-col gap-2'>
-									<label className='text-sm'>Description</label>
-									<MarkdownEditor initialValue={field.value} onValueChange={field.onChange} isInvalid={!!errors.description} />
-									{errors.description && <p className='text-tiny text-danger'>{errors.description.message}</p>}
-								</div>
-							)}
-						/>
-						<div className='flex flex-col gap-2'>
-							<label className='text-sm'>Poster Image</label>
-							{previewUrl && <img src={previewUrl} alt='Preview' className='w-full h-48 object-cover rounded-md' />}
-							<Button as='label' variant='bordered' startContent={<Upload size={16} />}>
-								{selectedImage ? 'Change Image' : 'Upload New Image'}
-								<input type='file' accept='image/*' className='hidden' onChange={handleImageChange} />
+		<>
+			<Modal isOpen={isOpen} onOpenChange={onOpenChange} size='2xl'>
+				<ModalContent>
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<ModalHeader>Edit Employee Benefit</ModalHeader>
+						<ModalBody className='gap-4'>
+							<Controller
+								name='title'
+								control={control}
+								render={({ field }) => (
+									<Input
+										{...field}
+										label='Title'
+										placeholder='e.g., Health Insurance'
+										errorMessage={errors.title?.message}
+										isInvalid={!!errors.title}
+									/>
+								)}
+							/>
+							<Controller
+								name='description'
+								control={control}
+								render={({ field }) => (
+									<div className='flex flex-col gap-2'>
+										<label className='text-sm'>Description</label>
+										<MarkdownEditor initialValue={field.value} onValueChange={field.onChange} isInvalid={!!errors.description} />
+										{errors.description && <p className='text-tiny text-danger'>{errors.description.message}</p>}
+									</div>
+								)}
+							/>
+							<div className='flex flex-col gap-2'>
+								<label className='text-sm'>Poster Image</label>
+								{previewUrl && <img src={previewUrl} alt='Preview' className='w-full h-48 object-cover rounded-md' />}
+								<Button as='label' variant='bordered' startContent={<Upload size={16} />}>
+									{selectedImage ? 'Change Image' : 'Upload New Image'}
+									<input type='file' accept='image/*' className='hidden' onChange={handleImageChange} />
+								</Button>
+							</div>
+						</ModalBody>
+						<ModalFooter>
+							<Button variant='light' onPress={onClose}>
+								Cancel
 							</Button>
+							<Button color='primary' type='submit' isLoading={isEditing}>
+								Update
+							</Button>
+						</ModalFooter>
+					</form>
+				</ModalContent>
+			</Modal>
+
+			<Modal isOpen={isCropOpen} onOpenChange={onCropClose} size='2xl'>
+				<ModalContent>
+					<ModalHeader>Crop Poster Image</ModalHeader>
+					<ModalBody>
+						<div className='relative w-full h-80'>
+							<Cropper
+								image={tempImageUrl || undefined}
+								crop={crop}
+								zoom={zoom}
+								aspect={16 / 9}
+								objectFit='contain'
+								onCropChange={setCrop}
+								onZoomChange={setZoom}
+								onCropComplete={onCropComplete}
+								style={{
+									containerStyle: {
+										width: '100%',
+										height: '100%',
+										backgroundColor: '#000'
+									}
+								}}
+							/>
 						</div>
 					</ModalBody>
 					<ModalFooter>
-						<Button variant='light' onPress={onClose}>
+						<Button variant='light' onPress={handleCropCancel}>
 							Cancel
 						</Button>
-						<Button color='primary' type='submit' isLoading={isEditing}>
-							Update
+						<Button color='primary' onPress={handleCropSave}>
+							Crop & Save
 						</Button>
 					</ModalFooter>
-				</form>
-			</ModalContent>
-		</Modal>
+				</ModalContent>
+			</Modal>
+		</>
 	);
 }

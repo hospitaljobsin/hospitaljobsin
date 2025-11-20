@@ -48,7 +48,7 @@ export default function EmployeeBenefitCard({
 						<GripVertical size={20} className='text-foreground-400' />
 					</button>
 					{benefit.posterImageUrl && (
-						<div className='relative w-24 h-24 flex-shrink-0 rounded-md overflow-hidden'>
+						<div className='relative w-48 h-24 flex-shrink-0 rounded-md overflow-hidden'>
 							<Image src={benefit.posterImageUrl} alt={benefit.title} fill className='object-cover' />
 						</div>
 					)}

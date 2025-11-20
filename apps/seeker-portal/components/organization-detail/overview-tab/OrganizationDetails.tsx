@@ -1,6 +1,9 @@
-import { Card, CardBody, Divider, Link, Tooltip } from '@heroui/react';
-import { Facebook, Gift, Instagram, Linkedin, Mail, MapPin, VerifiedIcon, Youtube } from 'lucide-react';
+'use client';
+import { Button, Card, CardBody, Divider, Link, Tooltip } from '@heroui/react';
+import useEmblaCarousel from 'embla-carousel-react';
+import { ChevronLeft, ChevronRight, Facebook, Gift, Instagram, Linkedin, Mail, MapPin, VerifiedIcon, Youtube } from 'lucide-react';
 import Image from 'next/image';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import invariant from 'tiny-invariant';
 import type { OrganizationDetailsFragment$key } from '@/__generated__/OrganizationDetailsFragment.graphql';
@@ -69,6 +72,11 @@ export default function OrganizationDetails({ rootQuery }: { rootQuery: Organiza
 	const root = useFragment(OrganizationDetailsFragment, rootQuery);
 	invariant(root.organization.__typename === 'Organization', "Expected 'Organization' node type");
 	const data = useFragment<OrganizationDetailsInternalFragmentType>(OrganizationDetailsInternalFragment, root.organization);
+
+	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'start' });
+
+	const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+	const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
 	return (
 		<div className='w-full flex flex-col gap-6'>
@@ -173,35 +181,45 @@ export default function OrganizationDetails({ rootQuery }: { rootQuery: Organiza
 			{data.employeeBenefits?.edges && data.employeeBenefits.edges.length > 0 && (
 				<Card fullWidth className='p-6' shadow='none'>
 					<CardBody className='flex flex-col gap-6 w-full'>
-						<div className='flex items-center gap-2'>
-							<Gift size={20} className='text-foreground-600' />
-							<h2 className='text-medium font-medium text-foreground-600'>Employee Benefits</h2>
+						<div className='flex items-center justify-between'>
+							<div className='flex items-center gap-2'>
+								<Gift size={20} className='text-foreground-600' />
+								<h2 className='text-medium font-medium text-foreground-600'>Employee Benefits</h2>
+							</div>
+							<div className='flex gap-2'>
+								<Button isIconOnly size='sm' variant='flat' onPress={scrollPrev}>
+									<ChevronLeft size={18} />
+								</Button>
+								<Button isIconOnly size='sm' variant='flat' onPress={scrollNext}>
+									<ChevronRight size={18} />
+								</Button>
+							</div>
 						</div>
 						<Divider />
-						<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-							{data.employeeBenefits.edges.map(({ node: benefit }) => (
-								<Card key={benefit.id} className='p-4' shadow='sm'>
-									<CardBody className='flex flex-col gap-4'>
-										{benefit.posterImageUrl && (
-											<div className='relative w-full h-48 rounded-md overflow-hidden'>
-												<Image
-													src={benefit.posterImageUrl}
-													alt={benefit.title}
-													fill
-													className='object-cover'
-													sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
-												/>
-											</div>
-										)}
-										<h3 className='text-lg font-medium'>{benefit.title}</h3>
-										<div
-											// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-											dangerouslySetInnerHTML={{ __html: benefit.description }}
-											className='prose prose-foreground prose-sm max-w-none text-foreground-600'
-										/>
-									</CardBody>
-								</Card>
-							))}
+						<div className='overflow-hidden' ref={emblaRef}>
+							<div className='flex gap-4'>
+								{data.employeeBenefits.edges.map(({ node: benefit }) => (
+									<div key={benefit.id} className='flex-[0_0_100%] min-w-0'>
+										<Card className='h-full' shadow='none'>
+											<CardBody className='flex flex-row gap-6'>
+												{benefit.posterImageUrl && (
+													<div className='relative w-96 h-64 flex-shrink-0 rounded-md overflow-hidden'>
+														<Image src={benefit.posterImageUrl} alt={benefit.title} fill className='object-cover' sizes='256px' />
+													</div>
+												)}
+												<div className='flex flex-col gap-4'>
+													<h3 className='text-lg font-medium'>{benefit.title}</h3>
+													<div
+														// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+														dangerouslySetInnerHTML={{ __html: benefit.description }}
+														className='prose prose-foreground prose-sm max-w-none text-foreground-600'
+													/>
+												</div>
+											</CardBody>
+										</Card>
+									</div>
+								))}
+							</div>
 						</div>
 					</CardBody>
 				</Card>

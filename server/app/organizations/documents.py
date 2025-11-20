@@ -107,9 +107,8 @@ class Organization(Document):
         """Return the organization's home page banner URL, or a placeholder."""
         if self.internal_home_page_banner_url is not None:
             return self.internal_home_page_banner_url
-
-        banner_index = hash(self.slug) % 4
-        return f"{get_settings(FrontendSettings).seeker_portal_base_url}/org-banners/{banner_index}.png"
+        banner_index = 0
+        return f"{get_settings(FrontendSettings).seeker_portal_base_url}/org-home-banners/{banner_index}.png"
 
     @home_page_banner_url.setter
     def home_page_banner_url(self, value: str | None) -> None:

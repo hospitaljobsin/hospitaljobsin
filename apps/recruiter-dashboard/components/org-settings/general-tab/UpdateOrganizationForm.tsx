@@ -806,7 +806,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 								image={tempImageUrl || undefined}
 								crop={crop}
 								zoom={zoom}
-								aspect={croppingType === 'logo' ? 1 : croppingType === 'banner' ? 16 / 9 : 16 / 9}
+								aspect={croppingType === 'logo' ? 1 : croppingType === 'banner' ? 16 / 9 : 1920 / 400}
 								objectFit='contain'
 								onCropChange={setCrop}
 								onZoomChange={setZoom}
