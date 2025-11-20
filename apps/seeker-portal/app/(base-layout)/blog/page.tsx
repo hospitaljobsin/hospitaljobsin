@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { BlogPostList } from '@/components/blog/BlogPostList';
 import { BlogPostsSkeleton } from '@/components/blog/BlogPostsSkeleton';
+import { BlogHeader } from '@/components/blog/BlogHeader';
 import DashboardHeaderClientComponent from '@/components/layout/DashboardHeaderClientComponent';
 import { fetchPosts } from '@/lib/cms';
 import { APP_NAME } from '@/lib/constants';
@@ -67,12 +68,7 @@ export default function BlogPage() {
 		<>
 			<DashboardHeaderClientComponent />
 			<div className='container mx-auto px-4 py-8 max-w-7xl'>
-				<div className='mb-8'>
-					<h1 className='text-xl sm:text-4xl font-medium tracking-tight text-foreground-600 mb-2'>Hospital Pulse</h1>
-					<p className='text-xs sm:text-lg text-default-500'>
-						Career insights, industry trends, and expert advice for healthcare professionals and recruiters
-					</p>
-				</div>
+				<BlogHeader />
 
 				<Suspense fallback={<BlogPostsSkeleton />}>
 					<BlogPosts />
