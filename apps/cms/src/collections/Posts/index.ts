@@ -10,12 +10,12 @@ import {
 } from '@payloadcms/richtext-lexical';
 import type { CollectionConfig } from 'payload';
 import { slugField } from 'payload';
-import { anyone } from '@/access/anyone';
+import { authenticatedOrPublished } from '@/access/authenticatedOrPublished';
 import { authenticated } from '../../access/authenticated';
 import { Banner } from '../../blocks/Banner/config';
 import { Code } from '../../blocks/Code/config';
-import { MediaBlock } from '../../blocks/MediaBlock/config';
 import { FAQ } from '../../blocks/FAQ/config';
+import { MediaBlock } from '../../blocks/MediaBlock/config';
 import { generatePreviewPath } from '../../utilities/generatePreviewPath';
 import { generateReadingTime } from './hooks/generateReadingTime';
 import { populateAuthors } from './hooks/populateAuthors';
@@ -26,10 +26,7 @@ export const Posts: CollectionConfig<'posts'> = {
 	access: {
 		create: authenticated,
 		delete: authenticated,
-		// TODO: make this more secure in the future. need a proper way to access drafts from the separate frontend
-		// need to find a way to integrate the auth system of our backend with our CMS for this.
-		// then we will have a streamlined flow.
-		read: anyone, //authenticatedOrPublished,
+		read: authenticatedOrPublished,
 		update: authenticated
 	},
 	// This config controls what's populated by default when a post is referenced
@@ -372,7 +369,7 @@ export const Posts: CollectionConfig<'posts'> = {
 	versions: {
 		drafts: {
 			autosave: {
-				interval: 100 // We set this interval for optimal live preview
+				interval: 50 // We set this interval for optimal live preview
 			},
 			schedulePublish: true
 		},

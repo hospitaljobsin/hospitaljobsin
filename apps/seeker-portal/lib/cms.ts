@@ -307,19 +307,26 @@ export async function fetchPostBySlugDraft(slug: string): Promise<PayloadPost | 
 		}
 	`;
 
-	// TODO: pass authentication here as draft content is protected
+	const { cookies } = await import('next/headers');
+
+	const cookieStore = await cookies();
+	const cookieHeader = cookieStore
+		.getAll()
+		.map(cookie => `${cookie.name}=${cookie.value}`)
+		.join('; ');
 
 	try {
 		const response = await fetch(CMS_GRAPHQL_ENDPOINT, {
 			method: 'POST',
+			credentials: 'include',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				...(cookieHeader && { Cookie: cookieHeader })
 			},
 			body: JSON.stringify({
 				query,
 				variables: { slug }
 			}),
-			// No caching for draft content
 			cache: 'no-store',
 			next: {
 				revalidate: 0
