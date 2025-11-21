@@ -1,9 +1,9 @@
 'use client';
-import { Suspense } from 'react';
+import { type ForwardedRef, Suspense, forwardRef } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import type { JobListClientComponentQuery as JobListClientComponentQueryType } from '@/__generated__/JobListClientComponentQuery.graphql';
-import JobList from './JobList';
+import JobList, { type JobListHandle } from './JobList';
 import JobListSkeleton from './JobListSkeleton';
 
 const JobListClientComponentQuery = graphql`
@@ -12,7 +12,9 @@ const JobListClientComponentQuery = graphql`
   }
 `;
 
-export default function JobListClientComponent() {
+export type { JobListHandle };
+
+function JobListClientComponent(_props: object, ref: ForwardedRef<JobListHandle>) {
 	const data = useLazyLoadQuery<JobListClientComponentQueryType>(
 		JobListClientComponentQuery,
 		{},
@@ -23,7 +25,9 @@ export default function JobListClientComponent() {
 
 	return (
 		<Suspense fallback={<JobListSkeleton />}>
-			<JobList rootQuery={data} />
+			<JobList ref={ref} rootQuery={data} />
 		</Suspense>
 	);
 }
+
+export default forwardRef(JobListClientComponent);
