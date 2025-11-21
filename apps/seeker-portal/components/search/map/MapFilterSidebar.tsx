@@ -2,6 +2,7 @@
 
 import { Button, Select, SelectItem } from '@heroui/react';
 import { ChevronLeft } from 'lucide-react';
+import { parseAsString, useQueryState } from 'nuqs';
 import { useEffect, useRef, useState } from 'react';
 import ViewportJobsList from './ClusterJobsList';
 
@@ -38,18 +39,13 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 	const [hasJobsInViewport, setHasJobsInViewport] = useState(false);
 	// Main collapse state - starts collapsed if no jobs initially
 	const [isCollapsed, setIsCollapsed] = useState(true);
-	// Sort by state
-	const [sortBy, setSortBy] = useState<string>(filters.sortBy || 'RELEVANCE');
+	// Sort by state from URL
+	const [sortBy, setSortBy] = useQueryState('sortBy', parseAsString.withDefault('RELEVANCE'));
 	// Track the actual total count from the jobs list query
 	const [actualTotalCount, setActualTotalCount] = useState<number>(totalCount);
 
 	// Track if this is the initial mount
 	const isInitialMount = useRef(true);
-
-	// Sync sortBy state with filters prop
-	useEffect(() => {
-		setSortBy(filters.sortBy || 'RELEVANCE');
-	}, [filters.sortBy]);
 
 	// Handle force open prop
 	useEffect(() => {
@@ -151,7 +147,7 @@ export default function MapFilterSidebar({ filters, totalCount, bounds, currentZ
 								}}
 							>
 								<SelectItem key='RELEVANCE'>Relevance</SelectItem>
-								<SelectItem key='CREATED_AT'>Newest First</SelectItem>
+								<SelectItem key='UPDATED_AT'>Newest First</SelectItem>
 							</Select>
 						</div>
 					</div>

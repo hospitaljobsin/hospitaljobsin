@@ -85,11 +85,6 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 		}
 	}, [forceOpen, isManuallyTucked]);
 
-	// Sync sortBy state with filters prop
-	useEffect(() => {
-		setSortBy(filters.sortBy || 'RELEVANCE');
-	}, [filters.sortBy]);
-
 	// Auto-snap based on cluster state
 	useEffect(() => {
 		// If user has manually tucked the sheet, respect their choice - never auto-open
@@ -245,7 +240,7 @@ export default function FilterSheet({ totalCount, selectedCluster, bounds, filte
 							}}
 						>
 							<SelectItem key='RELEVANCE'>Relevance</SelectItem>
-							<SelectItem key='CREATED_AT'>Newest First</SelectItem>
+							<SelectItem key='UPDATED_AT'>Newest First</SelectItem>
 						</Select>
 					</div>
 				</div>
