@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d5e0b98e9ddc2eb59e07aab2428e8e56>>
+ * @generated SignedSource<<5afeb4cbb2e62865f638b3bb9cb0cea0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -26,6 +26,9 @@ export type JobDetailsFragment$data = {
     // value in case none of the concrete values match.
     readonly __typename: "%other";
   };
+  readonly viewer: {
+    readonly __typename: string;
+  };
   readonly " $fragmentType": "JobDetailsFragment";
 };
 export type JobDetailsFragment$key = {
@@ -38,6 +41,6 @@ const node: ReaderInlineDataFragment = {
   "name": "JobDetailsFragment"
 };
 
-(node as any).hash = "badabb0707e5a896db8e61851aaee384";
+(node as any).hash = "a1045db5629ef5a221d71355ec589948";
 
 export default node;
