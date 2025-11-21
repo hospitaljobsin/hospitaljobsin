@@ -1,9 +1,9 @@
 'use client';
-import { Button, Card, CardBody } from '@heroui/react';
+import { Card, CardBody } from '@heroui/react';
 import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
-import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
-import { useCallback } from 'react';
+import { Search } from 'lucide-react';
+import { forwardRef, useImperativeHandle } from 'react';
 import { useFragment, usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import type { JobListClientComponentQuery as JobListClientComponentQueryType } from '@/__generated__/JobListClientComponentQuery.graphql';
@@ -47,23 +47,29 @@ const JobListInternalFragment = graphql`
   }
 `;
 
+export type JobListHandle = {
+	scrollPrev: () => void;
+	scrollNext: () => void;
+};
+
 type Props = {
 	rootQuery: JobListFragment$key;
 };
 
-export default function JobList({ rootQuery }: Props) {
+function JobList({ rootQuery }: Props, ref: React.ForwardedRef<JobListHandle>) {
 	const root = useFragment<JobListFragment$key>(JobListFragment, rootQuery);
 	const { data } = usePaginationFragment<JobListClientComponentQueryType, JobListInternalFragment$key>(JobListInternalFragment, root);
 
 	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' }, [Autoplay({ delay: 4000, stopOnMouseEnter: true })]);
 
-	const scrollPrev = useCallback(() => {
-		if (emblaApi) emblaApi.scrollPrev();
-	}, [emblaApi]);
-
-	const scrollNext = useCallback(() => {
-		if (emblaApi) emblaApi.scrollNext();
-	}, [emblaApi]);
+	useImperativeHandle(
+		ref,
+		() => ({
+			scrollPrev: () => emblaApi?.scrollPrev(),
+			scrollNext: () => emblaApi?.scrollNext()
+		}),
+		[emblaApi]
+	);
 
 	if (data.jobs.edges?.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (
@@ -89,7 +95,7 @@ export default function JobList({ rootQuery }: Props) {
 					<Job key={jobEdge.node.id} job={jobEdge.node} authQueryRef={root.viewer} />
 				))}
 			</div>
-			<div className='hidden md:block relative w-full'>
+			<div className='hidden md:block w-full'>
 				<div className='overflow-hidden -mx-4' ref={emblaRef}>
 					<div className='flex'>
 						{data.jobs.edges.map(jobEdge => (
@@ -99,25 +105,9 @@ export default function JobList({ rootQuery }: Props) {
 						))}
 					</div>
 				</div>
-				<Button
-					isIconOnly
-					size='sm'
-					variant='bordered'
-					className='absolute -left-6 top-1/2 -translate-y-1/2 z-10 shadow-sm bg-background'
-					onPress={scrollPrev}
-				>
-					<ChevronLeft size={16} />
-				</Button>
-				<Button
-					isIconOnly
-					size='sm'
-					variant='bordered'
-					className='absolute -right-6 top-1/2 -translate-y-1/2 z-10 shadow-sm bg-background'
-					onPress={scrollNext}
-				>
-					<ChevronRight size={16} />
-				</Button>
 			</div>
 		</>
 	);
 }
+
+export default forwardRef(JobList);

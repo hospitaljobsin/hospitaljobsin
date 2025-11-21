@@ -13,8 +13,9 @@ import type {
 	JobType,
 	WorkMode
 } from '@/__generated__/JobDetailsInternalFragment.graphql';
-import { dateFormat, salaryFormat } from '@/lib/intl';
 import { env } from '@/lib/env/client';
+import useIsAuthenticated from '@/lib/hooks/useIsAuthenticated';
+import { dateFormat, salaryFormat } from '@/lib/intl';
 import links from '@/lib/links';
 import OneStepCreateJobAlertModal from '../shared/OneStepCreateJobAlertModal';
 import JobControlsSkeleton from './JobControlsSkeleton';
@@ -101,7 +102,7 @@ const JobDetailsInternalFragment = graphql`
 export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragment$key }) {
 	const [showAlertModal, setShowAlertModal] = useState(false);
 	const root = readInlineData(JobDetailsFragment, rootQuery);
-	const isAuthenticated = root.viewer.__typename === 'Account';
+	const { isAuthenticated } = useIsAuthenticated();
 
 	invariant(root.organization, 'Organization not found');
 

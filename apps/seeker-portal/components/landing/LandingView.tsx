@@ -1,13 +1,16 @@
 'use client';
-import { ArrowRight, SparklesIcon } from 'lucide-react';
+import { Button } from '@heroui/react';
+import { ArrowRight, ChevronLeft, ChevronRight, SparklesIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRef } from 'react';
 import type { SiteStatsFragment$key } from '@/__generated__/SiteStatsFragment.graphql';
 import links from '@/lib/links';
 import LandingHeaderSkeleton from '../layout/LandingHeaderSkeleton';
 import AboutAndMapSection from './AboutAndMapSection';
 import CompanyLogos from './CompanyLogos';
+import type { JobListHandle } from './JobListClientComponent';
 import JobListSkeleton from './JobListSkeleton';
 import { LandingSearchController } from './LandingSearchController';
 import SiteStats from './SiteStats';
@@ -27,6 +30,8 @@ const JobListClientComponent = dynamic(() => import('./JobListClientComponent'),
 });
 
 export default function LandingView({ siteStatsData }: { siteStatsData: SiteStatsFragment$key }) {
+	const jobListRef = useRef<JobListHandle>(null);
+
 	return (
 		<div className='w-full flex flex-col bg-background-600 h-full'>
 			{/* Hero Section */}
@@ -92,13 +97,23 @@ export default function LandingView({ siteStatsData }: { siteStatsData: SiteStat
 			<div className='py-8 sm:py-16 flex flex-col gap-8 max-w-7xl w-full px-4 sm:px-5 mx-auto bg-background-600'>
 				<div className='w-full flex flex-col gap-4 items-center justify-center'>
 					<div className='flex flex-col gap-4 w-full py-8'>
-						<div className='flex items-center gap-4 w-full'>
-							<SparklesIcon className='text-foreground-600 w-7 h-7' />
-							<h2 className='text-lg font-medium text-foreground-600 tracking-tight'>Latest Jobs</h2>
+						<div className='flex items-center justify-between w-full'>
+							<div className='flex items-center gap-4'>
+								<SparklesIcon className='text-foreground-600 w-7 h-7' />
+								<h2 className='text-lg font-medium text-foreground-600 tracking-tight'>Latest Jobs</h2>
+							</div>
+							<div className='hidden md:flex items-center gap-2'>
+								<Button isIconOnly size='sm' variant='bordered' className='bg-background' onPress={() => jobListRef.current?.scrollPrev()}>
+									<ChevronLeft size={16} />
+								</Button>
+								<Button isIconOnly size='sm' variant='bordered' className='bg-background' onPress={() => jobListRef.current?.scrollNext()}>
+									<ChevronRight size={16} />
+								</Button>
+							</div>
 						</div>
 						<h3 className='text-foreground-500 text-sm sm:text-base font-medium tracking-tight'>Latest Healthcare Jobs Posted</h3>
 					</div>
-					<JobListClientComponent />
+					<JobListClientComponent ref={jobListRef} />
 				</div>
 				<Link href={links.search()} className='flex items-center gap-2 text-lg text-foreground-600 font-medium -mt-2'>
 					View all jobs <ArrowRight className='w-4 h-4' strokeWidth={3} />
