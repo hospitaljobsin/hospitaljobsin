@@ -14,6 +14,7 @@ import type {
 	WorkMode
 } from '@/__generated__/JobDetailsInternalFragment.graphql';
 import { dateFormat, salaryFormat } from '@/lib/intl';
+import { env } from '@/lib/env/client';
 import links from '@/lib/links';
 import OneStepCreateJobAlertModal from '../shared/OneStepCreateJobAlertModal';
 import JobControlsSkeleton from './JobControlsSkeleton';
@@ -32,6 +33,9 @@ const JobDetailsFragment = graphql`
 	slug: { type: "String!"}
 	jobSlug: { type: "String!"}
     ) @inline {
+		viewer {
+			__typename
+		}
 		organization(slug: $slug) {
 		__typename
 		... on Organization {
@@ -97,6 +101,7 @@ const JobDetailsInternalFragment = graphql`
 export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragment$key }) {
 	const [showAlertModal, setShowAlertModal] = useState(false);
 	const root = readInlineData(JobDetailsFragment, rootQuery);
+	const isAuthenticated = root.viewer.__typename === 'Account';
 
 	invariant(root.organization, 'Organization not found');
 
@@ -287,28 +292,55 @@ export default function JobDetails({ rootQuery }: { rootQuery: JobDetailsFragmen
 			<Card shadow='none' className='sm:px-6 sm:py-4'>
 				<CardBody className='w-full flex flex-row items-center justify-between gap-6'>
 					<p className='text-sm sm:text-base text-foreground-600 hidden sm:block'>Send me jobs like this</p>
-					<Button type='button' variant='flat' size='md' className='hidden sm:block' onPress={() => setShowAlertModal(true)}>
+					<Button
+						type='button'
+						variant='flat'
+						size='md'
+						className='hidden sm:block'
+						onPress={() => {
+							if (!isAuthenticated) {
+								window.location.href = links.login(`${env.NEXT_PUBLIC_URL}${links.jobDetail(data.organization?.slug || '', data.slug)}`);
+								return;
+							}
+							setShowAlertModal(true);
+						}}
+					>
 						Create alert
 					</Button>
-					<Button type='button' variant='flat' size='md' className='sm:hidden' fullWidth onPress={() => setShowAlertModal(true)}>
+					<Button
+						type='button'
+						variant='flat'
+						size='md'
+						className='sm:hidden'
+						fullWidth
+						onPress={() => {
+							if (!isAuthenticated) {
+								window.location.href = links.login(`${env.NEXT_PUBLIC_URL}${links.jobDetail(data.organization?.slug || '', data.slug)}`);
+								return;
+							}
+							setShowAlertModal(true);
+						}}
+					>
 						Send me jobs like this
 					</Button>
 				</CardBody>
 			</Card>
-			<OneStepCreateJobAlertModal
-				filters={{
-					jobType: data.type ? [data.type] : [],
-					workMode: data.workMode ? [data.workMode] : [],
-					minExperience: data.minExperience ?? undefined,
-					maxExperience: data.maxExperience ?? undefined,
-					minSalary: data.minSalary ?? undefined,
-					maxSalary: data.maxSalary ?? undefined,
-					location: data.location,
-					searchTerm: data.title
-				}}
-				isOpen={showAlertModal}
-				onOpenChange={setShowAlertModal}
-			/>
+			{isAuthenticated && (
+				<OneStepCreateJobAlertModal
+					filters={{
+						jobType: data.type ? [data.type] : [],
+						workMode: data.workMode ? [data.workMode] : [],
+						minExperience: data.minExperience ?? undefined,
+						maxExperience: data.maxExperience ?? undefined,
+						minSalary: data.minSalary ?? undefined,
+						maxSalary: data.maxSalary ?? undefined,
+						location: data.location,
+						searchTerm: data.title
+					}}
+					isOpen={showAlertModal}
+					onOpenChange={setShowAlertModal}
+				/>
+			)}
 			<StickyJobApplyButton slug={data.organization?.slug || ''} jobSlug={data.slug} />
 			{/* Job and Company Details */}
 
