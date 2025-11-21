@@ -101,3 +101,5 @@ jobs:
           S3_BUCKET: ${{ vars.SST_CMS_S3_BUCKET}}
 
           S3_REGION: ${{ env.AWS_REGION }}
+
+          REVALIDATE_SECRET: ${{ secrets.SST_REVALIDATE_SECRET }}
