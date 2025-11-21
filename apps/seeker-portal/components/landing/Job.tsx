@@ -213,11 +213,16 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 				</CardBody>
 				<CardFooter className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-6 w-full text-left sm:text-left'>
 					<div className='flex flex-wrap gap-2 sm:gap-4 mt-1 sm:mt-2 w-full sm:w-auto justify-start'>
-						{data.skills.map(skill => (
+						{data.skills.slice(0, 5).map(skill => (
 							<Chip variant='flat' key={skill} className='text-xs sm:text-sm px-2 py-1'>
 								{skill}
 							</Chip>
 						))}
+						{data.skills.length > 5 && (
+							<Chip variant='flat' className='text-xs sm:text-sm px-2 py-1 text-foreground-500'>
+								+{data.skills.length - 5} more
+							</Chip>
+						)}
 					</div>
 					<div className='w-full sm:w-auto flex justify-end mt-2 sm:mt-0'>
 						<JobControls job={data} authQueryRef={rootQuery} />
