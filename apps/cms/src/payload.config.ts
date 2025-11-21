@@ -21,6 +21,10 @@ const dirname = path.dirname(filename);
 
 export default buildConfig({
 	serverURL: getServerSideURL(),
+	cookiePrefix: 'payload',
+	auth: {
+		jwtOrder: ['cookie', 'Bearer', 'JWT']
+	},
 
 	admin: {
 		components: {

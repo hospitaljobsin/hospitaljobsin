@@ -15,7 +15,13 @@ export const Users: CollectionConfig = {
 		defaultColumns: ['name', 'email'],
 		useAsTitle: 'name'
 	},
-	auth: true,
+	auth: {
+		cookies: {
+			domain: `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`,
+			sameSite: 'Lax',
+			secure: true
+		}
+	},
 	fields: [
 		{
 			name: 'name',
