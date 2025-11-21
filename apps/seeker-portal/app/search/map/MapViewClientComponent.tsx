@@ -93,7 +93,7 @@ export default function MapViewClientComponent({
 }) {
 	const router = useRouter();
 
-	// URL state management with nuqs
+	// URL state management with nuqs - with validation
 	const [filters, setFilters] = useQueryStates(
 		{
 			minExperience: parseAsInteger,
@@ -104,8 +104,37 @@ export default function MapViewClientComponent({
 			jobType: parseAsArrayOf(parseAsString).withDefault(FILTER_DEFAULTS.jobType),
 			sortBy: parseAsString.withDefault('RELEVANCE')
 		},
-		{ shallow: true }
+		{
+			shallow: true,
+			history: 'push',
+			clearOnDefault: true
+		}
 	);
+
+	// Validate and clean filters on mount
+	useEffect(() => {
+		const VALID_WORK_MODES = ['HYBRID', 'OFFICE', 'REMOTE'];
+		const VALID_JOB_TYPES = ['CONTRACT', 'FULL_TIME', 'INTERNSHIP', 'LOCUM', 'PART_TIME'];
+		const VALID_SORT_BY = ['RELEVANCE', 'UPDATED_AT'];
+
+		const cleanedWorkMode = filters.workMode.filter(mode => VALID_WORK_MODES.includes(mode));
+		const cleanedJobType = filters.jobType.filter(type => VALID_JOB_TYPES.includes(type));
+		const cleanedSortBy = VALID_SORT_BY.includes(filters.sortBy) ? filters.sortBy : 'RELEVANCE';
+
+		const needsCleaning =
+			cleanedWorkMode.length !== filters.workMode.length ||
+			cleanedJobType.length !== filters.jobType.length ||
+			cleanedSortBy !== filters.sortBy;
+
+		if (needsCleaning) {
+			setFilters({
+				workMode: cleanedWorkMode,
+				jobType: cleanedJobType,
+				sortBy: cleanedSortBy
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	// Internal state for speciality (searchTerm) - initialized from path params
 	// This allows us to update the speciality client-side without page reloads
