@@ -227,7 +227,24 @@ class RegionRepo:
                             "$name",
                             {
                                 "$cond": {
-                                    "if": {"$ne": ["$address.address_locality", None]},
+                                    "if": {
+                                        "$and": [
+                                            {
+                                                "$ne": [
+                                                    "$address.address_locality",
+                                                    None,
+                                                ]
+                                            },
+                                            {
+                                                "$ne": [
+                                                    {
+                                                        "$toLower": "$address.address_locality"
+                                                    },
+                                                    {"$toLower": "$name"},
+                                                ]
+                                            },
+                                        ]
+                                    },
                                     "then": {
                                         "$concat": [
                                             ", ",
@@ -244,7 +261,19 @@ class RegionRepo:
                             },
                             {
                                 "$cond": {
-                                    "if": {"$ne": ["$address.address_region", None]},
+                                    "if": {
+                                        "$and": [
+                                            {"$ne": ["$address.address_region", None]},
+                                            {
+                                                "$ne": [
+                                                    {
+                                                        "$toLower": "$address.address_region"
+                                                    },
+                                                    {"$toLower": "$name"},
+                                                ]
+                                            },
+                                        ]
+                                    },
                                     "then": {
                                         "$concat": [
                                             ", ",
