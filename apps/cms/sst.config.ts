@@ -30,7 +30,8 @@ export default $config({
 				NEXT_PUBLIC_SEEKER_PORTAL_URL: process.env.NEXT_PUBLIC_SEEKER_PORTAL_URL,
 				ENABLE_PAYLOAD_AUTORUN: process.env.ENABLE_PAYLOAD_AUTORUN,
 				S3_BUCKET: process.env.S3_BUCKET,
-				S3_REGION: process.env.S3_REGION
+				S3_REGION: process.env.S3_REGION,
+				REVALIDATE_SECRET: process.env.REVALIDATE_SECRET
 			},
 			assets: {
 				textEncoding: 'utf-8',
