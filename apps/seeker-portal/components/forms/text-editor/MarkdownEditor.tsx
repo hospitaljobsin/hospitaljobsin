@@ -57,7 +57,7 @@ const exportMap: DOMExportOutputMap = new Map<Klass<LexicalNode>, (editor: Lexic
 ]);
 
 const getExtraStyles = (_element: HTMLElement): string => {
-	let extraStyles = '';
+	const extraStyles = '';
 	// Example: parseAllowedFontSize, parseAllowedColor could be implemented as needed
 	return extraStyles;
 };
@@ -153,7 +153,7 @@ export default function MarkdownEditor({
 							contentEditable={
 								<ContentEditable
 									className={cn(
-										'prose prose-sm prose-foreground max-w-full min-h-32 rounded-md focus:outline-none',
+										'prose prose-sm prose-foreground min-w-full w-full max-w-full min-h-32 rounded-md focus:outline-none',
 										{
 											'border-danger': isInvalid,
 											'border-gray-300': !isInvalid,
