@@ -129,6 +129,132 @@ tmuxinator start medical_jobs
    pnpm run test
    ```
 
+## Claude Code Setup
+
+This section provides setup instructions for Claude Code's MCP (Model Context Protocol) servers that enhance development productivity.
+
+### Prerequisites
+
+- [Claude Code](https://claude.ai/code) installed and configured
+- [Node.js](https://nodejs.org/) (for Context7 MCP)
+- [Python](https://python.org/) (for Serena MCP)
+
+### Context7 MCP Setup
+
+Context7 provides up-to-date library documentation and code examples directly within Claude Code.
+
+#### 1. Obtain Context7 API Key
+
+1. Visit [Context7](https://context7.io)
+2. Sign up for an account
+3. Navigate to your dashboard
+4. Generate a new API key
+5. Copy the API key for configuration
+
+#### 2. Configure Context7 MCP
+
+Set the `CONTEXT7_API_KEY` env variable in the .env file
+
+### Serena MCP Setup
+
+Serena provides semantic code indexing and retrieval capabilities for efficient code navigation and understanding.
+
+#### 1. Activate and Index the Project
+
+Since the project already exists, activate it and run indexing:
+
+```bash
+# Start Claude Code with the new MCP servers
+claude
+
+# Within Claude Code, activate the existing project
+Activate the project /home/aryaniyaps/web-projects/hospitaljobsin
+
+# Index the project for semantic search
+<serena> project index
+```
+
+This process will:
+
+- **Project Activation**: Connect Claude Code to your existing project
+- **Project Indexing**: Create comprehensive semantic indices for efficient code search and navigation
+- **Automatic Onboarding**: Serena performs automatic onboarding on first project startup to:
+  - Analyze codebase structure
+  - Store project memories in `.serena/memories/` for improved future interactions
+  - Set up symbol relationships and cross-references
+- **Continuous Updates**: Regular usage automatically updates the index to reflect code changes
+
+**Note**: The indexing command should be run once after project activation. Subsequent code changes will be automatically incorporated into the index.
+
+### Verification
+
+To verify both MCP servers are working correctly:
+
+1. **Test Context7**:
+
+   ```bash
+   # In Claude Code, ask for library documentation
+   "Show me React Router v6 documentation for route protection"
+   ```
+
+2. **Test Serena**:
+   ```bash
+   # In Claude Code, ask for code analysis
+   "Find all authentication-related components in the seeker portal"
+   ```
+
+### Troubleshooting
+
+#### Common Issues
+
+1. **MCP servers not loading**:
+
+   - Check your MCP configuration file syntax
+   - Ensure API keys are correctly set
+   - Verify the servers are installed correctly
+
+2. **Serena indexing issues**:
+
+   - Ensure the project path is correct
+   - Check file permissions for the project directory
+   - Run onboarding again if project structure changes significantly
+
+3. **Context7 API errors**:
+   - Verify your API key is valid and active
+   - Check your internet connection
+   - Ensure Context7 service is available
+
+#### Configuration File Location
+
+MCP configuration is typically stored at:
+
+- **macOS/Linux**: `~/.config/claude/mcp-servers.json`
+- **Windows**: `%APPDATA%\Claude\mcp-servers.json`
+
+#### Getting Help
+
+- Context7 documentation: [Context7 Documentation](https://docs.context7.io)
+- Serena MCP repository: [Serena MCP GitHub](https://github.com/serena-mcp/serena-mcp)
+- Claude Code documentation: [Claude Code Help](https://docs.anthropic.com/claude/docs/claude-code)
+
+### Usage Examples
+
+Once set up, you can use these powerful features:
+
+```bash
+# Get library documentation automatically
+"How do I implement form validation with React Hook Form and Zod?"
+
+# Perform semantic code searches
+"Show me all GraphQL mutations related to job applications"
+
+# Understand code relationships
+"What components depend on the authentication service?"
+
+# Get contextual code examples
+"Show me how to implement a pagination component using HeroUI"
+```
+
 ## Cloud deployment
 
 Follow these steps to deploy the project to the cloud:
