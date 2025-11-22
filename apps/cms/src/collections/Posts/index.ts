@@ -285,8 +285,8 @@ export const Posts: CollectionConfig<'posts'> = {
 			]
 		},
 		{
-			name: 'populatedReviewer',
-			type: 'group',
+			name: 'populatedReviewers',
+			type: 'array',
 			access: {
 				update: () => false
 			},

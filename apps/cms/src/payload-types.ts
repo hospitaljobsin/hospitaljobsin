@@ -297,22 +297,24 @@ export interface Post {
         };
       }[]
     | null;
-  populatedReviewer?: {
-    id?: string | null;
-    name?: string | null;
-    about?: string | null;
-    credentials?: string | null;
-    linkedinUrl?: string | null;
-    twitterUrl?: string | null;
-    avatar?: {
-      id?: string | null;
-      url?: string | null;
-      alt?: string | null;
-      width?: number | null;
-      height?: number | null;
-      filename?: string | null;
-    };
-  };
+  populatedReviewers?:
+    | {
+        id?: string | null;
+        name?: string | null;
+        about?: string | null;
+        credentials?: string | null;
+        linkedinUrl?: string | null;
+        twitterUrl?: string | null;
+        avatar?: {
+          id?: string | null;
+          url?: string | null;
+          alt?: string | null;
+          width?: number | null;
+          height?: number | null;
+          filename?: string | null;
+        };
+      }[]
+    | null;
   readingTime?: number | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
@@ -493,6 +495,9 @@ export interface User {
   twitterUrl?: string | null;
   updatedAt: string;
   createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -1300,7 +1305,7 @@ export interface PostsSelect<T extends boolean = true> {
               filename?: T;
             };
       };
-  populatedReviewer?:
+  populatedReviewers?:
     | T
     | {
         id?: T;
@@ -1455,6 +1460,9 @@ export interface UsersSelect<T extends boolean = true> {
   twitterUrl?: T;
   updatedAt?: T;
   createdAt?: T;
+  enableAPIKey?: T;
+  apiKey?: T;
+  apiKeyIndex?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;

@@ -18,7 +18,8 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 	const publishedDate = post.publishedAt ? format(new Date(post.publishedAt), 'MMMM d, yyyy') : null;
 	const updatedDate = post.updatedAt ? format(new Date(post.updatedAt), 'MMMM d, yyyy') : null;
 	const authors = post.populatedAuthors || [];
-	const reviewer = post.populatedReviewer;
+	const reviewers = post.populatedReviewers || [];
+	const reviewer = reviewers.length > 0 ? reviewers[0] : null;
 
 	const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
 	const shareTitle = post.title;
@@ -179,13 +180,13 @@ export function BlogPostDetail({ post }: BlogPostDetailProps) {
 						{/* Career Disclaimer */}
 						{post.careerDisclaimer && (
 							<Alert color='warning' variant='flat' className='mb-6 not-prose' hideIconWrapper hideIcon>
-								<div className='max-w-none'>{<LexicalContent content={post.careerDisclaimer} />}</div>
+								<div className='w-full min-w-full'>{<LexicalContent content={post.careerDisclaimer} />}</div>
 							</Alert>
 						)}
 
 						{/* Content */}
 						{post.content && (
-							<div className='prose prose-lg prose-slate dark:prose-invert max-w-none prose-headings:scroll-mt-32 prose-headings:font-semibold prose-h2:text-3xl prose-h3:text-2xl prose-h4:text-xl prose-p:text-default-700 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-default-900 prose-strong:font-semibold prose-code:text-primary prose-code:bg-default-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-default-100 prose-pre:border prose-pre:border-default-200 prose-img:rounded-lg prose-img:shadow-md'>
+							<div className='prose prose-lg prose-slate dark:prose-invert max-w-full min-w-full w-full prose-headings:scroll-mt-32 prose-headings:font-semibold prose-h2:text-3xl prose-h3:text-2xl prose-h4:text-xl prose-p:text-default-700 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-default-900 prose-strong:font-semibold prose-code:text-primary prose-code:bg-default-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-default-100 prose-pre:border prose-pre:border-default-200 prose-img:rounded-lg prose-img:shadow-md'>
 								<LexicalContent content={post.content} />
 							</div>
 						)}
