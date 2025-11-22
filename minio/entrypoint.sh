@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 
-# Start the MinIO server in the background using the original Bitnami startup script.
+# Start the MinIO server in the background using the official MinIO command
 echo "Starting MinIO server..."
-/opt/bitnami/scripts/minio/run.sh &
+minio server /data --console-address ":9001" &
 MINIO_PID=$!
 
-# Wait until the MinIO server health check passes.
+# Wait until the MinIO server health check passes
 echo "Waiting for MinIO server to become healthy..."
 until curl -s "${MINIO_SERVER_URL}/minio/health/live" >/dev/null; do
   sleep 1
@@ -14,19 +14,19 @@ done
 
 echo "MinIO server is healthy. Configuring bucket policies for anonymous GET access..."
 
-# Configure mc alias using environment variables for credentials.
+# Configure mc alias using environment variables for credentials
 mc alias set myminio "${MINIO_SERVER_URL}" "${MINIO_ROOT_USER}" "${MINIO_ROOT_PASSWORD}"
 
-# Check if MINIO_DEFAULT_BUCKETS is defined.
+# Check if MINIO_DEFAULT_BUCKETS is defined
 if [ -z "${MINIO_DEFAULT_BUCKETS}" ]; then
   echo "MINIO_DEFAULT_BUCKETS is not set. Skipping bucket policy configuration."
 else
-  # Split the MINIO_DEFAULT_BUCKETS env var on commas into an array.
+  # Split the MINIO_DEFAULT_BUCKETS env var on commas into an array
   IFS=',' read -ra BUCKET_PAIRS <<< "${MINIO_DEFAULT_BUCKETS}"
 
-  # Loop through each bucket:policy pair.
+  # Loop through each bucket:policy pair
   for pair in "${BUCKET_PAIRS[@]}"; do
-    # Split each pair by colon (":") to extract the bucket name.
+    # Split each pair by colon (":") to extract the bucket name
     IFS=':' read -ra parts <<< "${pair}"
     bucket="$(echo "${parts[0]}" | tr -d '\n' | xargs)"
 
@@ -55,5 +55,5 @@ fi
 
 echo "Bucket policy configuration complete. Foregrounding MinIO process."
 
-# Wait for the MinIO server process to exit.
+# Wait for the MinIO server process to exit
 wait ${MINIO_PID}

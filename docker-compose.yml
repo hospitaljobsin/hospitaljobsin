@@ -32,13 +32,14 @@ services:
       - RUNNER_LOG_FILE=/dev/stderr
 
   redis:
-    image: docker.io/bitnami/redis:latest
+    image: redis:latest
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes # Or set a password with REDIS_PASSWORD
+      - ALLOW_EMPTY_PASSWORD=yes # Note: official Redis does not support empty password, consider setting your own REDIS_PASSWORD
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/bitnami/redis/data
+      - redis_data:/data
+
 
   mailcatcher:
     image: schickling/mailcatcher:latest
@@ -47,19 +48,17 @@ services:
       - "1025:1025"
 
   minio:
-    build:
-      context: ./minio
-      dockerfile: Dockerfile
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
     ports:
-      - '9000:9000'
-      - '9001:9001'
+      - "9000:9000"
+      - "9001:9001"
     volumes:
-      - 'minio_data:/bitnami/minio/data'
+      - minio_data:/data
     environment:
-      - MINIO_ROOT_USER=minio-access-key
-      - MINIO_ROOT_PASSWORD=minio-secret-key
-      - MINIO_DEFAULT_BUCKETS=medicaljobs:readonly
-      - MINIO_SERVER_URL=http://localhost:9000
+      MINIO_ROOT_USER: minio-access-key
+      MINIO_ROOT_PASSWORD: minio-secret-key
+      MINIO_DEFAULT_BUCKETS: medicaljobs
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
