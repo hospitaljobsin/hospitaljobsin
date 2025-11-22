@@ -20,7 +20,8 @@ export const Users: CollectionConfig = {
 			domain: `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`,
 			sameSite: 'Lax',
 			secure: true
-		}
+		},
+		useAPIKey: true
 	},
 	fields: [
 		{
