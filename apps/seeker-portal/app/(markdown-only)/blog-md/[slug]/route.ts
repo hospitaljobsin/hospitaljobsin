@@ -41,9 +41,10 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
 			? `---\n\n## About the Author${post.populatedAuthors.length > 1 ? 's' : ''}\n\n${post.populatedAuthors.map(author => `### ${author.name}${author.credentials ? `, ${author.credentials}` : ''}\n\n${author.about || 'No bio available.'}`).join('\n\n')}\n\n`
 			: '';
 
-	const reviewerSection = post.populatedReviewer
-		? `---\n\n## Reviewed By\n\n### ${post.populatedReviewer.name}${post.populatedReviewer.credentials ? `, ${post.populatedReviewer.credentials}` : ''}\n\n${post.populatedReviewer.about || 'No bio available.'}\n\n`
-		: '';
+	const reviewerSection =
+		post.populatedReviewers && post.populatedReviewers.length > 0
+			? `---\n\n## Reviewed By\n\n### ${post.populatedReviewers[0].name}${post.populatedReviewers[0].credentials ? `, ${post.populatedReviewers[0].credentials}` : ''}\n\n${post.populatedReviewers[0].about || 'No bio available.'}\n\n`
+			: '';
 
 	const markdown = `Title: ${post.title}
 
@@ -63,7 +64,7 @@ ${
 }**Reading Time:** ${post.readingTime ? `${post.readingTime} min` : 'Not specified'}
 **Categories:** ${categoriesText}
 **Authors:** ${authorsText}
-${post.populatedReviewer ? `**Reviewed By:** ${post.populatedReviewer.name}${post.populatedReviewer.credentials ? `, ${post.populatedReviewer.credentials}` : ''}` : ''}
+${post.populatedReviewers && post.populatedReviewers.length > 0 ? `**Reviewed By:** ${post.populatedReviewers[0].name}${post.populatedReviewers[0].credentials ? `, ${post.populatedReviewers[0].credentials}` : ''}` : ''}
 
 ---
 

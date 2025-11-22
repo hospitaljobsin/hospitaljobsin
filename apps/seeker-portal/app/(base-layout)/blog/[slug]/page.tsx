@@ -164,13 +164,14 @@ async function BlogPostContent({ slug }: { slug: string }) {
 			...(author.credentials && { jobTitle: author.credentials }),
 			...(author.avatar?.url && { image: author.avatar.url })
 		})),
-		...(post.populatedReviewer && {
-			reviewedBy: {
-				'@type': 'Person',
-				name: post.populatedReviewer.name,
-				...(post.populatedReviewer.credentials && { jobTitle: post.populatedReviewer.credentials })
-			}
-		}),
+		...(post.populatedReviewers &&
+			post.populatedReviewers.length > 0 && {
+				reviewedBy: {
+					'@type': 'Person',
+					name: post.populatedReviewers[0].name,
+					...(post.populatedReviewers[0].credentials && { jobTitle: post.populatedReviewers[0].credentials })
+				}
+			}),
 		publisher: {
 			'@type': 'Organization',
 			name: APP_NAME,

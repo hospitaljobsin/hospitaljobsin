@@ -11,7 +11,7 @@ export interface PayloadPost {
 	readingTime?: number;
 	authors?: PayloadUser[];
 	populatedAuthors?: PayloadAuthor[];
-	populatedReviewer?: PayloadAuthor;
+	populatedReviewers?: PayloadAuthor[];
 	categories?: PayloadCategory[];
 	careerDisclaimer?: SerializedEditorState;
 	meta?: {

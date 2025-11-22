@@ -160,7 +160,7 @@ export async function fetchPostBySlug(slug: string): Promise<PayloadPost | null>
 							filename
 						}
 					}
-					populatedReviewer {
+					populatedReviewers {
 						id
 						name
 						about
@@ -269,7 +269,7 @@ export async function fetchPostBySlugDraft(slug: string): Promise<PayloadPost | 
 							filename
 						}
 					}
-					populatedReviewer {
+					populatedReviewers {
 						id
 						name
 						about

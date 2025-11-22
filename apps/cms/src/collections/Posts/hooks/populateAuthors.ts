@@ -114,7 +114,7 @@ export const populateAuthors: CollectionAfterReadHook = async ({ doc, req: { pay
 		}
 	}
 
-	// Populate reviewer data
+	// Only populate reviewer data if a reviewer exists, otherwise remove the field
 	if (doc?.reviewedBy) {
 		try {
 			const reviewerId = typeof doc.reviewedBy === 'object' ? doc.reviewedBy?.id : doc.reviewedBy;
@@ -186,19 +186,28 @@ export const populateAuthors: CollectionAfterReadHook = async ({ doc, req: { pay
 					// ignore avatar normalization failures
 				}
 
-				doc.populatedReviewer = {
-					id: (reviewerDoc as any).id,
-					name: (reviewerDoc as any).name,
-					about: (reviewerDoc as any).about,
-					credentials: (reviewerDoc as any).credentials,
-					avatar: avatarMedia,
-					linkedinUrl: (reviewerDoc as any).linkedinUrl,
-					twitterUrl: (reviewerDoc as any).twitterUrl
-				};
+				doc.populatedReviewers = [
+					{
+						id: (reviewerDoc as any).id,
+						name: (reviewerDoc as any).name,
+						about: (reviewerDoc as any).about,
+						credentials: (reviewerDoc as any).credentials,
+						avatar: avatarMedia,
+						linkedinUrl: (reviewerDoc as any).linkedinUrl,
+						twitterUrl: (reviewerDoc as any).twitterUrl
+					}
+				];
+			} else {
+				// Reviewer was not found, set to empty array
+				doc.populatedReviewers = [];
 			}
 		} catch {
-			// swallow error for reviewer fetch
+			// Error fetching reviewer, set to empty array
+			doc.populatedReviewers = [];
 		}
+	} else {
+		// No reviewer relationship exists, set to empty array
+		doc.populatedReviewers = [];
 	}
 
 	return doc;
