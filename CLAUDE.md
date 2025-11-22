@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Always use context7 when I need code generation, setup or configuration steps, or
+library/API documentation. This means you should automatically use the Context7 MCP
+tools to resolve library id and get library docs without me having to explicitly ask.
+
 ## Project Overview
 
 Hospital Jobs is a medical recruitment platform connecting healthcare professionals with job opportunities. The system consists of multiple services:
@@ -109,6 +113,7 @@ cd server && uv run strawberry export-schema app.schema:schema > ../schema/schem
 ### React & Frontend Development
 
 #### DO
+
 - Use Relay GraphQL client for data fetching. Queries must be in the component files that need them, or in a separate hook file if they need to be reused
 - Use Suspense with appropriate skeletons over components that fetch data
 - Declare fragments for each sub component that needs to read data
@@ -121,6 +126,7 @@ cd server && uv run strawberry export-schema app.schema:schema > ../schema/schem
 - Always use Context7 when you need code generation, setup or configuration steps, or library/API documentation
 
 #### DON'T
+
 - Don't edit the GraphQL schema in schema/schema.graphql manually - it's a generated file from the Python GraphQL code
 - Don't use class components in React
 - Don't declare fragments in a top-level component and prop drill it to child components. Each child component must have its own fragment, following Relay best practices
@@ -129,10 +135,12 @@ cd server && uv run strawberry export-schema app.schema:schema > ../schema/schem
 ### Backend & Database Development
 
 #### DO
+
 - Always run Python scripts/tests with `uv` instead of the raw Python command to ensure the right virtual environment is activated
 - Use Beanie V4 with the PyMongo async client while interacting with the database
 
 #### DON'T
+
 - Don't use the legacy MongoDB motor client - use PyMongo async client instead
 - Don't create class containers for test cases in pytest. Test cases must always be functional. Separate test cases by files as boundaries if required
 
