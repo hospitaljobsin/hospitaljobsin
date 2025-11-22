@@ -26,6 +26,7 @@
     "relay.pathToRelay": "/usr/lib/node_modules/relay-compiler/linux-x64/relay",
     "terminal.integrated.env.linux": {
       "PYTHONPATH": "${workspaceFolder}/server"
-    }
+    },
+    "python.terminal.activateEnvironment": false
   }
 }
