@@ -200,8 +200,8 @@ export default function OrganizationDetails({ rootQuery }: { rootQuery: Organiza
 							<div className='flex gap-4'>
 								{data.employeeBenefits.edges.map(({ node: benefit }) => (
 									<div key={benefit.id} className='flex-[0_0_100%] min-w-0'>
-										<Card className='h-full' shadow='none'>
-											<CardBody className='flex flex-col sm:flex-row gap-6'>
+										<Card className='h-full w-full' shadow='none'>
+											<CardBody className='flex flex-col sm:flex-row gap-6 w-full'>
 												{benefit.posterImageUrl && (
 													<div
 														className='relative w-full sm:max-w-96 flex-shrink-0 rounded-md overflow-hidden'
@@ -210,12 +210,12 @@ export default function OrganizationDetails({ rootQuery }: { rootQuery: Organiza
 														<Image src={benefit.posterImageUrl} alt={benefit.title} fill className='object-cover' sizes='384px' />
 													</div>
 												)}
-												<div className='flex flex-col gap-4'>
+												<div className='flex flex-col gap-4 w-full'>
 													<h3 className='text-lg font-medium'>{benefit.title}</h3>
 													<div
 														// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 														dangerouslySetInnerHTML={{ __html: benefit.description }}
-														className='prose prose-foreground prose-sm max-w-none text-foreground-600'
+														className='prose prose-foreground prose-sm text-foreground-600 min-w-full w-full'
 													/>
 												</div>
 											</CardBody>
