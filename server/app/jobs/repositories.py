@@ -802,6 +802,70 @@ class JobRepo:
             {Job.bing_indexnow_notified_at: datetime.now(UTC)}
         )
 
+    async def mark_as_posted_on_facebook_jobs(
+        self, job_ids_with_fb_ids: list[tuple[ObjectId, str]]
+    ) -> None:
+        """Mark jobs as posted on Facebook Jobs with job IDs."""
+        for job_id, fb_job_id in job_ids_with_fb_ids:
+            await Job.find(Job.id == job_id).set(
+                {
+                    Job.facebook_job_posted_at: datetime.now(UTC),
+                    Job.facebook_job_id: fb_job_id,
+                }
+            )
+
+    async def get_for_facebook_jobs_posting(
+        self,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[Job, ObjectId]:
+        """Get paginated active jobs that haven't been posted to Facebook Jobs yet."""
+        paginator: Paginator[Job, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=Job,
+            paginate_by="_id",
+            entity_paginate_by="id",
+        )
+
+        # Get jobs from the past day that haven't been posted to Facebook Jobs yet
+        cutoff_datetime = datetime.now(UTC) - timedelta(days=1)
+        search_criteria = Job.find(
+            Job.is_active == True,
+            Job.facebook_job_posted_at == None,
+            Or(Job.expires_at == None, Job.expires_at > datetime.now(UTC)),
+            Job.updated_at >= cutoff_datetime,
+            fetch_links=True,
+            nesting_depth=2,
+        ).sort(-Job.id)
+
+        return await paginator.paginate(
+            search_criteria=search_criteria,
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
+
+    async def get_expired_facebook_jobs(self) -> list[Job]:
+        """Get jobs posted to Facebook Jobs that have expired."""
+        return await Job.find(
+            Job.facebook_job_id != None,
+            Job.expires_at != None,
+            Job.expires_at <= datetime.now(UTC),
+            fetch_links=False,
+        ).to_list(length=None)
+
+    async def clear_facebook_job_reference(self, job_id: ObjectId) -> None:
+        """Clear Facebook Job reference for a job."""
+        await Job.find(Job.id == job_id).set(
+            {
+                Job.facebook_job_posted_at: None,
+                Job.facebook_job_id: None,
+            }
+        )
+
     async def get_for_google_indexing(
         self,
         first: int | None = None,

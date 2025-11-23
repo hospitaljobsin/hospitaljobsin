@@ -605,6 +605,18 @@ wheels = [
 ]
 
 [[package]]
+name = "curlify"
+version = "3.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/62/df/e9c2720d32c5de985ce64d5dedf883b52c26ff5e9aa2ba2becea00098320/curlify-3.0.0.tar.gz", hash = "sha256:7b488ff3c924dba3433a1cc74044c0942da21f0a97fa26c3138319ba640ca412", size = 3668, upload-time = "2025-05-25T11:50:00.785Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9e/f8/912ebddbff8ea603d4c90fa31557096f927b17efd30a166ce7ac1242910a/curlify-3.0.0-py3-none-any.whl", hash = "sha256:52060c0eb7a656b7bde6b668c32f337bed4d736ce230755767e3ada56a09c338", size = 3580, upload-time = "2025-05-25T11:49:59.335Z" },
+]
+
+[[package]]
 name = "debugpy"
 version = "1.8.17"
 source = { registry = "https://pypi.org/simple" }
@@ -685,6 +697,22 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/cc/28/c14e053b6762b1044f34a13aab6859bbf40456d37d23aa286ac24cfd9a5d/executing-2.2.1.tar.gz", hash = "sha256:3632cc370565f6648cc328b32435bd120a1e4ebb20c77e3fdde9a13cd1e533c4", size = 1129488, upload-time = "2025-09-01T09:48:10.866Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c1/ea/53f2148663b321f21b5a606bd5f191517cf40b7072c0497d3c92c4a13b1e/executing-2.2.1-py2.py3-none-any.whl", hash = "sha256:760643d3452b4d777d295bb167ccc74c64a81df23fb5e08eff250c425a4b2017", size = 28317, upload-time = "2025-09-01T09:48:08.5Z" },
+]
+
+[[package]]
+name = "facebook-business"
+version = "24.0.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "aiohttp" },
+    { name = "curlify" },
+    { name = "pycountry" },
+    { name = "requests" },
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/93/dd/3d53f7ba013387b2166cdc416238469fbbe0182f71ec4ac4baa15bf05bcb/facebook_business-24.0.1.tar.gz", hash = "sha256:3c77443852e4e96afc98178ee70186a3d8f5282d24ae03d9fbbc177dc9fefec6", size = 675746, upload-time = "2025-11-20T18:53:55.097Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ba/39/ea4250789fe678710e947db8fb25e9338c5932c8097a500c57140112359b/facebook_business-24.0.1-py3-none-any.whl", hash = "sha256:d91d51119db28b6c462e05c3ae83854b5b5e5f12543d10a57104a29b1c9129e3", size = 1399124, upload-time = "2025-11-20T18:53:53.582Z" },
 ]
 
 [[package]]
@@ -2368,6 +2396,7 @@ dependencies = [
     { name = "beautifulsoup4" },
     { name = "bleach" },
     { name = "email-validator" },
+    { name = "facebook-business" },
     { name = "fastapi" },
     { name = "filelock" },
     { name = "geopy" },
@@ -2462,6 +2491,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "bleach", specifier = "==6.2.0" },
     { name = "email-validator", specifier = "==2.2.0" },
+    { name = "facebook-business", specifier = "==24.0.1" },
     { name = "fastapi", specifier = "==0.118.3" },
     { name = "filelock", specifier = "==3.19.1" },
     { name = "geopy", specifier = "==2.4.1" },

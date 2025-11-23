@@ -81,6 +81,10 @@ class Job(Document):
 
     bing_indexnow_notified_at: datetime | None = None
 
+    facebook_job_posted_at: datetime | None = None
+
+    facebook_job_id: str | None = None
+
     organization: Link[Organization]
 
     organization_name: str | None = None

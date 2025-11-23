@@ -392,6 +392,13 @@ class BingIndexNowSettings(CoreSettings):
     bing_indexnow_api_key: str
 
 
+class FacebookSettings(CoreSettings):
+    facebook_app_id: str
+    facebook_app_secret: str
+    facebook_page_access_token: str
+    facebook_page_id: str
+
+
 class AuthSettings(CoreSettings):
     session_user_cookie_name: str = "user_session"
 

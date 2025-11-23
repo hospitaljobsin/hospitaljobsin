@@ -61,4 +61,8 @@ module "lambda_workers" {
   secrets_manager_secret_id            = aws_secretsmanager_secret.backend.id
   google_indexing_service_account_json = var.google_indexing_service_account_json
   bing_indexnow_api_key                = var.bing_indexnow_api_key
+  facebook_jobs_access_token           = var.facebook_jobs_access_token
+  facebook_app_id                      = var.facebook_app_id
+  facebook_app_secret                  = var.facebook_app_secret
+  facebook_page_id                     = var.facebook_page_id
 }
