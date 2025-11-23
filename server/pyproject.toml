@@ -158,6 +158,12 @@ dev = [
     "tqdm>=4.67.1",
     "shapely==2.1.2",
 ]
+regions = [
+    "geopandas==1.1.1",
+    "pandas==2.3.3",
+    "pyarrow==22.0.0",
+    "tenacity==9.1.2",
+]
 test = [
     "anyio==4.10.0",
     "asgi-lifespan==2.1.0",
