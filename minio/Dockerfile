@@ -1,4 +1,4 @@
-FROM bitnami/minio:latest
+FROM minio/minio:latest
 
 # Switch to root to install additional tools
 USER root
@@ -7,8 +7,8 @@ USER root
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Switch back to the non-root user (Bitnami image default, adjust if necessary)
-USER 1001
+# Switch back to minio user (default user in official MinIO image is "minio" with UID 1000)
+USER minio
 
 # Use our entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]

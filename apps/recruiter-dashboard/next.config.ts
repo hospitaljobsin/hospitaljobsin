@@ -22,9 +22,9 @@ const nextConfig: NextConfig = {
 	poweredByHeader: false,
 	pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
 	experimental: {
-		mdxRs: true,
-		reactCompiler: true
+		mdxRs: true
 	},
+	reactCompiler: true,
 	turbopack: {
 		resolveAlias: {
 			canvas: './empty-module.ts'
@@ -42,9 +42,6 @@ const nextConfig: NextConfig = {
 	allowedDevOrigins: ['*.localtest.me'],
 	typescript: {
 		ignoreBuildErrors: true
-	},
-	eslint: {
-		ignoreDuringBuilds: true
 	},
 	images: {
 		loader: 'default',
@@ -90,7 +87,7 @@ const nextConfig: NextConfig = {
 	},
 	// biome-ignore lint/suspicious/useAwait: nextjs expects an async function here
 	async headers() {
-		return [
+		return Promise.resolve([
 			{
 				source: '/(.*)',
 				headers: [
@@ -143,7 +140,7 @@ const nextConfig: NextConfig = {
 			// 		},
 			// 	],
 			// },
-		];
+		]);
 	}
 };
 

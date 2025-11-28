@@ -470,17 +470,146 @@ To set up a WhatsApp Business API account using Meta's developer tools, follow t
    - Select the WhatsApp Business Account and locate the **Phone Number ID** (also called the WhatsApp Business Phone Number ID).
    - Copy the **Phone Number ID** for use in API requests.
 
-### 10. Two Factor IN Setup
+### 10. Facebook Jobs Partner Application Setup
+
+To enable automatic job posting to Facebook Jobs platform, you need to apply for and configure the Jobs on Facebook Partner Application. This creates structured job postings that appear in Facebook's job ecosystem, not regular page posts.
+
+1. **Create a Meta Developer Account**
+
+   - Visit the [Meta for Developers](https://developers.facebook.com/) website
+   - Sign in with your Facebook account or create a new one
+   - Register as a developer by following the prompts to set up your Meta Developer Account
+
+2. **Create a New Facebook App**
+
+   - Go to the [Meta for Developers Apps page](https://developers.facebook.com/apps)
+   - Click **Create App**
+   - Select **Business** as the app type
+   - Fill in the required details:
+     - **App Name**: "Hospital Jobs Integration" (or your preferred name)
+     - **App Contact Email**: Your email address
+     - **Business Manager**: Select your existing business account or create a new one
+   - Click **Create App**
+
+3. **Apply for Jobs on Facebook Partner Program**
+
+   - Visit the [Jobs on Facebook Partner Program](https://developers.facebook.com/docs/jobs/)
+   - Click **Apply to Become a Partner**
+   - Fill out the partnership application with:
+     - **Company Information**: Your business details and website
+     - **Integration Type**: Select "Job Board" or "ATS"
+     - **Technical Capabilities**: Describe your job posting system
+     - **Volume Estimates**: Expected number of job postings per month
+     - **Compliance**: Confirm you understand Jobs on Facebook policies
+
+4. **Add Jobs Product to Your App**
+
+   Once approved:
+   - Go to your App Dashboard
+   - Click **Add Product** > **Jobs**
+   - Follow the setup wizard for Jobs integration
+   - Configure your job posting workflow
+
+5. **Configure App Permissions**
+
+   - Go to **App Review** > **Permissions and Features**
+   - Add the following permissions:
+     - `jobs_manage` - To create and manage job postings
+     - `jobs_read` - To read job posting data
+     - `pages_read_engagement` - To read page engagement metrics
+   - Click **Request Review** for each permission
+
+6. **Create System User Access Token**
+
+   - In Business Manager, go to **Settings** > **Business Settings** > **Users** > **System Users**
+   - Create a new System User with **Admin** role
+   - Assign your app to the System User
+   - Generate a **long-lived access token** with Jobs permissions:
+     - `jobs_manage`
+     - `jobs_read`
+     - `pages_read_engagement`
+
+7. **Get App Credentials**
+
+   - In your app dashboard, go to **Settings** > **Basic**
+   - Copy the **App ID** and **App Secret**
+   - **Important**: Keep your App Secret secure and never expose it in client-side code
+
+8. **Set Up Webhook (Optional)**
+
+   For real-time updates on job applications:
+   - Go to your App Dashboard > **Jobs** > **Webhooks**
+   - Configure webhook URL to receive application notifications
+   - Subscribe to `jobs_applied` events
+
+9. **Test the Configuration**
+
+   - Use the Graph API Explorer to test creating a job posting:
+     ```
+     POST /me/jobs
+     title="Senior Nurse"
+     description="We are looking for experienced nurses..."
+     location="{
+       'city': 'Mumbai',
+       'country': 'India'
+     }"
+     employment_type="FULL_TIME"
+     application_url="https://hospitaljobs.in/jobs/123"
+     ```
+   - You should see the job appear in Facebook Jobs interface
+
+10. **Store Your Credentials Securely**
+
+    You now have all the required values:
+    - **App ID** (`SERVER_FACEBOOK_APP_ID`)
+    - **App Secret** (`SERVER_FACEBOOK_APP_SECRET`)
+    - **System User Access Token** (`SERVER_FACEBOOK_JOBS_ACCESS_TOKEN`)
+
+    Store these values in your environment variables and AWS Secrets Manager.
+
+11. **Environment Variables**
+
+    Add these to your `.env` file and AWS Secrets Manager:
+
+    **Public Variables (can be GitHub Actions variables):**
+    ```bash
+    SERVER_FACEBOOK_APP_ID="your-facebook-app-id"
+    ```
+
+    **Secret Variables (must be GitHub Actions secrets):**
+    ```bash
+    SERVER_FACEBOOK_APP_SECRET="your-facebook-app-secret"
+    SERVER_FACEBOOK_JOBS_ACCESS_TOKEN="your-long-lived-system-user-token"
+    ```
+
+12. **Important Notes**
+
+    - **Partner Approval**: You must be approved for the Jobs on Facebook Partner Program before posting jobs
+    - **Job Format**: Jobs must comply with Facebook's structured job posting format and policies
+    - **Application Tracking**: Set up application URLs to track applicants from Facebook
+    - **Compliance**: Ensure job postings comply with equal employment opportunity laws
+    - **Rate Limits**: Jobs API has specific rate limits for posting and updating jobs
+    - **Testing**: Test thoroughly with the Graph API Explorer before implementing automated posting
+
+The system will now automatically:
+- Post new jobs to Facebook Jobs platform 4 times daily (01:00, 07:00, 13:00, 19:00 UTC)
+- Create structured job postings with proper job metadata
+- Update existing job postings when they change
+- Expire/close job postings when jobs are no longer active
+- Handle errors gracefully and provide detailed logging
+- Track applications through your application URLs
+
+### 11. Two Factor IN Setup
 
 - Go to the [Two Factor IN Console](https://2factor.in)
 - Create a new account
 - Copy the API key
 
-### 11. Payload CMS Setup
+### 12. Payload CMS Setup
 
 - TODO
 
-### 12. Google Indexing Setup
+### 13. Google Indexing Setup
 
 To enable programmatic submission of URLs to Google Search for indexing, you need to set up a Google Cloud service account with the Indexing API enabled.
 
@@ -539,7 +668,7 @@ To enable programmatic submission of URLs to Google Search for indexing, you nee
    - The service account can now submit URL indexing requests via the Google Indexing API
    - Copy the JSON credentials
 
-### 13. Bing IndexNow Setup
+### 14. Bing IndexNow Setup
 
 To enable instant URL submission to Bing and other participating search engines using the IndexNow protocol, you need to generate an API key.
 
@@ -551,9 +680,9 @@ To enable instant URL submission to Bing and other participating search engines 
   - Or use any cryptographically secure random string generator
 - Copy and securely store the generated API key
 
-### 14. Terraform Setup
+### 15. Terraform Setup
 
-#### 14.1 Prerequisites:
+#### 15.1 Prerequisites:
 
 - Create an S3 bucket that will act as the terraform state backend
 
@@ -568,6 +697,8 @@ GitHub Actions Variables:
 - `MONGODB_ATLAS_ORG_ID`
 - `WHATSAPP_PHONE_NUMBER_ID`
 - `POSTHOG_HOST`
+- `FACEBOOK_PAGE_ID`
+- `FACEBOOK_APP_ID`
 
 GitHub Actions Secrets:
 
@@ -587,6 +718,9 @@ GitHub Actions Secrets:
 - `POSTHOG_API_KEY`
 - `GOOGLE_INDEXING_SERVICE_ACCOUNT_JSON`
 - `BING_INDEXNOW_API_KEY`
+- `FACEBOOK_APP_SECRET`
+- `FACEBOOK_JOBS_ACCESS_TOKEN`
+
 
 During the initial terraform deployment:
 

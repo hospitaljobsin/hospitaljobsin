@@ -113,6 +113,10 @@ module "core" {
   aws_lambda_backend_repository_url    = data.terraform_remote_state.shared.outputs.aws_lambda_backend_repository_url
   google_indexing_service_account_json = var.google_indexing_service_account_json
   bing_indexnow_api_key                = var.bing_indexnow_api_key
+  facebook_app_id                      = var.facebook_app_id
+  facebook_app_secret                  = var.facebook_app_secret
+  facebook_jobs_access_token           = var.facebook_jobs_access_token
+  facebook_page_id                     = var.facebook_page_id
 }
 
 module "mongodb" {

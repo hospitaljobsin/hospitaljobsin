@@ -1,13 +1,10 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { ORG_SUBDOMAIN_HEADER_NAME } from "./lib/constants";
-import { env } from "./lib/env/client";
-import links from "./lib/links";
-import { unsign } from "./lib/session";
+import { type NextRequest, NextResponse } from 'next/server';
+import { ORG_SUBDOMAIN_HEADER_NAME } from './lib/constants';
+import { env } from './lib/env/client';
+import links from './lib/links';
+import { unsign } from './lib/session';
 
-function getAuthenticationResponse(
-	request: NextRequest,
-	host: string,
-): NextResponse {
+function getAuthenticationResponse(request: NextRequest, host: string): NextResponse {
 	const protocol = request.nextUrl.protocol;
 	const redirectURL = new URL(links.login());
 
@@ -17,35 +14,29 @@ function getAuthenticationResponse(
 
 	const returnTo = `${protocol}://${host}${pathname}${search}`;
 
-	redirectURL.searchParams.set("return_to", returnTo);
+	redirectURL.searchParams.set('return_to', returnTo);
 	return NextResponse.redirect(redirectURL);
 }
 
 function extractSubdomain(request: NextRequest): string | null {
-	const host = request.headers.get("host") || "";
-	const hostname = host.split(":")[0];
+	const host = request.headers.get('host') || '';
+	const hostname = host.split(':')[0];
 
 	// Local development support (e.g., org1.localhost:3000)
-	if (hostname.includes("localtest.me")) {
+	if (hostname.includes('localtest.me')) {
 		const match = hostname.match(/^([^.]+)\.localtest.me/);
 		return match?.[1] ?? null;
 	}
 
 	// Production environment
-	const rootDomain = env.NEXT_PUBLIC_ROOT_DOMAIN.replace(
-		/^https?:\/\//,
-		"",
-	).split(":")[0]; // remove protocol and port
-	const isSubdomain =
-		hostname !== rootDomain &&
-		hostname !== `www.${rootDomain}` &&
-		hostname.endsWith(`.${rootDomain}`);
+	const rootDomain = env.NEXT_PUBLIC_ROOT_DOMAIN.replace(/^https?:\/\//, '').split(':')[0]; // remove protocol and port
+	const isSubdomain = hostname !== rootDomain && hostname !== `www.${rootDomain}` && hostname.endsWith(`.${rootDomain}`);
 
-	return isSubdomain ? hostname.replace(`.${rootDomain}`, "") : null;
+	return isSubdomain ? hostname.replace(`.${rootDomain}`, '') : null;
 }
 
-export async function middleware(request: NextRequest) {
-	const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+export async function proxy(request: NextRequest) {
+	const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 	const cspHeader = `
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://*.posthog.com;
@@ -61,19 +52,14 @@ export async function middleware(request: NextRequest) {
     upgrade-insecure-requests;
 `;
 	// Replace newline characters and spaces
-	const contentSecurityPolicyHeaderValue = cspHeader
-		.replace(/\s{2,}/g, " ")
-		.trim();
+	const contentSecurityPolicyHeaderValue = cspHeader.replace(/\s{2,}/g, ' ').trim();
 
 	const requestHeaders = new Headers(request.headers);
-	requestHeaders.set("x-nonce", nonce);
+	requestHeaders.set('x-nonce', nonce);
 
-	requestHeaders.set(
-		"Content-Security-Policy",
-		contentSecurityPolicyHeaderValue,
-	);
+	requestHeaders.set('Content-Security-Policy', contentSecurityPolicyHeaderValue);
 
-	const host = request.headers.get("host") || "";
+	const host = request.headers.get('host') || '';
 	const subdomain = extractSubdomain(request);
 
 	const sessionCookie = request.cookies.get(env.NEXT_PUBLIC_SESSION_COOKIE_KEY);
@@ -87,18 +73,18 @@ export async function middleware(request: NextRequest) {
 				isAuthenticated = true;
 			}
 		} catch (error) {
-			console.error("Error unsigning session cookie:", error);
+			console.error('Error unsigning session cookie:', error);
 			request.cookies.delete(env.NEXT_PUBLIC_SESSION_COOKIE_KEY);
 		}
 	}
 
 	// Set the authentication header
-	requestHeaders.set("x-is-authenticated", isAuthenticated ? "true" : "false");
+	requestHeaders.set('x-is-authenticated', isAuthenticated ? 'true' : 'false');
 
 	const response = NextResponse.next({
 		request: {
-			headers: requestHeaders,
-		},
+			headers: requestHeaders
+		}
 	});
 
 	if (subdomain) {
@@ -110,8 +96,8 @@ export async function middleware(request: NextRequest) {
 		return NextResponse.next({
 			request: {
 				// New request headers
-				headers: requestHeaders,
-			},
+				headers: requestHeaders
+			}
 		});
 	}
 
@@ -121,11 +107,11 @@ export async function middleware(request: NextRequest) {
 export const config = {
 	matcher: [
 		{
-			source: "/((?!api|_next/static|_next/image|favicon.ico).*)",
+			source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
 			missing: [
-				{ type: "header", key: "next-router-prefetch" },
-				{ type: "header", key: "purpose", value: "prefetch" },
-			],
-		},
-	],
+				{ type: 'header', key: 'next-router-prefetch' },
+				{ type: 'header', key: 'purpose', value: 'prefetch' }
+			]
+		}
+	]
 };

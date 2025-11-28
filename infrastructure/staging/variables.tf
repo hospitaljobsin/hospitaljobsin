@@ -105,3 +105,24 @@ variable "bing_indexnow_api_key" {
   description = "Bing IndexNow API key."
   sensitive   = true
 }
+
+
+variable "facebook_app_id" {
+  type      = string
+  sensitive = true
+}
+
+variable "facebook_app_secret" {
+  type      = string
+  sensitive = true
+}
+
+variable "facebook_jobs_access_token" {
+  type      = string
+  sensitive = true
+}
+
+variable "facebook_page_id" {
+  type      = string
+  sensitive = true
+}
