@@ -23,21 +23,26 @@ export async function GET() {
 		generator: APP_NAME
 	});
 
-	const { docs: posts } = await fetchPosts({ limit: 50 });
+	try {
+		const { docs: posts } = await fetchPosts({ limit: 50 });
 
-	for (const post of posts) {
-		const item: Item = {
-			title: post.title,
-			id: `${env.NEXT_PUBLIC_URL}${links.blogDetail(post.slug)}`,
-			link: `${env.NEXT_PUBLIC_URL}${links.blogDetail(post.slug)}`,
-			description: post.meta?.description || '',
-			date: new Date(post.publishedAt || post.updatedAt),
-			image: post.heroImage?.url
-		};
-		if (post.populatedAuthors?.[0]) {
-			item.author = [{ name: post.populatedAuthors[0].name }];
+		for (const post of posts) {
+			const item: Item = {
+				title: post.title,
+				id: `${env.NEXT_PUBLIC_URL}${links.blogDetail(post.slug)}`,
+				link: `${env.NEXT_PUBLIC_URL}${links.blogDetail(post.slug)}`,
+				description: post.meta?.description || '',
+				date: new Date(post.publishedAt || post.updatedAt),
+				image: post.heroImage?.url
+			};
+			if (post.populatedAuthors?.[0]) {
+				item.author = [{ name: post.populatedAuthors[0].name }];
+			}
+			feed.addItem(item);
 		}
-		feed.addItem(item);
+	} catch (error) {
+		// If CMS fetch fails, return empty feed rather than failing the build
+		console.warn('Failed to fetch posts for RSS feed:', error);
 	}
 
 	return new Response(feed.rss2(), {

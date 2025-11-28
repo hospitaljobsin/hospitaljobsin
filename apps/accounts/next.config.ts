@@ -20,9 +20,7 @@ const nextConfig: NextConfig = {
 	typedRoutes: true,
 	poweredByHeader: false,
 	reactStrictMode: true,
-	experimental: {
-		reactCompiler: true
-	},
+	reactCompiler: true,
 	compiler: {
 		removeConsole: process.env.NODE_ENV === 'production',
 		relay: {
@@ -34,9 +32,6 @@ const nextConfig: NextConfig = {
 	allowedDevOrigins: ['accounts.localtest.me'],
 	typescript: {
 		ignoreBuildErrors: true
-	},
-	eslint: {
-		ignoreDuringBuilds: true
 	},
 	images: {
 		loader: 'default',
@@ -91,7 +86,7 @@ const nextConfig: NextConfig = {
 	},
 	// biome-ignore lint/suspicious/useAwait: nextjs expects an async function here
 	async headers() {
-		return [
+		return Promise.resolve([
 			{
 				source: '/(.*)',
 				headers: [
@@ -144,7 +139,7 @@ const nextConfig: NextConfig = {
 			// 		},
 			// 	],
 			// },
-		];
+		]);
 	}
 };
 

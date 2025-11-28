@@ -21,6 +21,11 @@
 			"type": "stdio",
 			"command": "npx",
 			"args": ["-y", "@upstash/context7-mcp", "--api-key", "${CONTEXT7_API_KEY}"]
+		},
+		"next-devtools": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["-y", "next-devtools-mcp@latest"]
 		}
 	}
 }

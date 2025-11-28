@@ -68,7 +68,7 @@ function getAnonymousResponse(request: NextRequest): NextResponse {
 	return NextResponse.redirect(redirectURL);
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
 	const { pathname, searchParams } = request.nextUrl;
 	const userAgent = request.headers.get('user-agent') || '';
 	const isDevelopment = env.NEXT_PUBLIC_ENVIRONMENT === 'development';
