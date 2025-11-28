@@ -1,5 +1,5 @@
 import { GoogleTagManager } from '@next/third-parties/google';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Work_Sans } from 'next/font/google';
 import { headers } from 'next/headers';
 import CookieBanner from '@/components/CookieBanner';
@@ -26,16 +26,7 @@ export const metadata: Metadata = {
 	alternates: {
 		canonical: './'
 	},
-	viewport: {
-		width: 'device-width',
-		initialScale: 1,
-		maximumScale: 5,
-		userScalable: true
-	},
-	themeColor: [
-		{ media: '(prefers-color-scheme: light)', color: '#ffffff' },
-		{ media: '(prefers-color-scheme: dark)', color: '#000000' }
-	],
+
 	robots: {
 		follow: true,
 		index: true,
@@ -48,6 +39,17 @@ export const metadata: Metadata = {
 	other: {
 		bingbot: ['index, follow']
 	}
+};
+
+export const viewport: Viewport = {
+	width: 'device-width',
+	initialScale: 1,
+	maximumScale: 5,
+	userScalable: true,
+	themeColor: [
+		{ media: '(prefers-color-scheme: light)', color: '#ffffff' },
+		{ media: '(prefers-color-scheme: dark)', color: '#000000' }
+	]
 };
 
 export default function RootLayout({
