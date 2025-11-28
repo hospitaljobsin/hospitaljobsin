@@ -47,7 +47,6 @@ export async function networkFetch(
 	options: RequestInit = {},
 	includeAuth = false
 ): Promise<GraphQLResponse> {
-	console.log('MAKING A SERVER SIDE REQUEST...', request.id);
 	let method = 'POST';
 	let url = `${env.NEXT_PUBLIC_INTERNAL_API_URL}/graphql`;
 	let body: string | undefined;
