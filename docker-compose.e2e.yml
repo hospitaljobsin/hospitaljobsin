@@ -35,11 +35,13 @@ services:
       context: ./server
       dockerfile: Dockerfile
       target: development-server
+      args:
+        BUILDKIT_INLINE_CACHE: 1
     ports:
       - "8000:8000"
     environment:
       SERVER_DEBUG: 'true'
-      SERVER_ENVIRONMENT: 'testing'
+      SERVER_ENVIRONMENT: 'staging'
       SERVER_DATABASE_URL: 'mongodb://user:pass@test-mongodb:27017/?directConnection=true'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '8000'
@@ -78,6 +80,20 @@ services:
       SERVER_TWO_FACTOR_IN_API_KEY: ""
       SERVER_POSTHOG_API_HOST: ""
       SERVER_POSTHOG_API_KEY: ""
+      SERVER_BASE_DOMAIN: "localtest.me"
+      SERVER_AWS_ENDPOINT_URL: "http://localhost:9000"
+      SERVER_AWS_SECRET_ACCESS_KEY: "minio-secret-key"
+      SERVER_AWS_ACCESS_KEY_ID: "minio-access-key"
+      SERVER_GEOCODING_PROVIDER: "aws_location"
+      SERVER_GEOCODER_DOMAIN: "localhost:8080"
+      SERVER_GEOCODER_USER_AGENT: "medical-jobs-server"
+      SERVER_SQS_JOB_ALERTS_QUEUE_URL: ""
+      SERVER_REVALIDATE_SECRET: "revalidate-secret"
+      SERVER_REVALIDATE_BASE_URL: "https://localtest.me/api/revalidate"
+      SERVER_FACEBOOK_APP_ID: ""
+      SERVER_FACEBOOK_APP_SECRET: ""
+      SERVER_FACEBOOK_PAGE_ACCESS_TOKEN: ""
+      SERVER_FACEBOOK_PAGE_ID: ""
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8000/health/"]
       interval: 10s
@@ -104,6 +120,13 @@ services:
         - NEXT_PUBLIC_SENTRY_PROJECT=hospital-jobs-accounts-ui
         - NEXT_PUBLIC_ENVIRONMENT=testing
         - NEXT_PUBLIC_ROOT_DOMAIN=localtest.me
+        - NEXT_TURBOPACK_TRACING=1
+        - NEXT_PUBLIC_POSTHOG_KEY=XXX
+        - NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+        - NEXT_PUBLIC_POSTHOG_UI_HOST=https://us.i.posthog.com
+        - NEXT_PUBLIC_GOOGLE_CLIENT_ID=54903425274-ru25bg9cvfrbsms789vcse41sdpe0ku0.apps.googleusercontent.com
+        - NEXT_RUNTIME=nodejs
+        - BUILDKIT_INLINE_CACHE=1
     ports:
       - "5002:5002"
     environment:
@@ -135,6 +158,16 @@ services:
         - NEXT_PUBLIC_SENTRY_ORGANIZATION=hospitaljobsin
         - NEXT_PUBLIC_SENTRY_PROJECT=hospital-jobs-seeker-portal-ui
         - NEXT_PUBLIC_ENVIRONMENT=testing
+        - NEXT_PUBLIC_CMS_URL=https://content.localtest.me
+        - NEXT_PUBLIC_POSTHOG_KEY=XXX
+        - NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+        - NEXT_PUBLIC_POSTHOG_UI_HOST=https://us.i.posthog.com
+        - NEXT_PUBLIC_ROOT_DOMAIN=localtest.me
+        - NEXT_PUBLIC_GOOGLE_CLIENT_ID=54903425274-ru25bg9cvfrbsms789vcse41sdpe0ku0.apps.googleusercontent.com
+        - NEXT_RUNTIME=nodejs
+        - REVALIDATE_SECRET=revalidate-secret
+        - NEXT_PUBLIC_BING_INDEXNOW_API_KEY=""
+        - BUILDKIT_INLINE_CACHE=1
     ports:
       - "5000:5000"
     environment:
@@ -144,6 +177,82 @@ services:
         CI: ${CI}
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:5000/api/health/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      test-server:
+        condition: service_healthy
+
+  test-recruiter-portal-core:
+    build:
+      context: .
+      dockerfile: apps/recruiter-portal-core/Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=https://api.localtest.me
+        - NEXT_PUBLIC_INTERNAL_API_URL=http://test-server:8000
+        - NEXT_PUBLIC_URL=https://recruiter.localtest.me
+        - NEXT_PUBLIC_ACCOUNTS_BASE_URL=https://accounts.localtest.me
+        - NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL=https://localtest.me
+        - NEXT_PUBLIC_SESSION_COOKIE_KEY=user_session
+        - NEXT_PUBLIC_SENTRY_DSN=${RECRUITER_PORTAL_UI_SENTRY_DSN}
+        - NEXT_PUBLIC_SENTRY_ORGANIZATION=hospitaljobsin
+        - NEXT_PUBLIC_SENTRY_PROJECT=hospital-jobs-recruiter-portal-ui
+        - NEXT_PUBLIC_ENVIRONMENT=testing
+        - NEXT_PUBLIC_ROOT_DOMAIN=localtest.me
+        - NEXT_PUBLIC_POSTHOG_KEY=XXX
+        - NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+        - NEXT_PUBLIC_POSTHOG_UI_HOST=https://us.i.posthog.com
+        - NEXT_RUNTIME=nodejs
+        - BUILDKIT_INLINE_CACHE=1
+    ports:
+      - "5003:5003"
+    environment:
+        HOST: 0.0.0.0
+        JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
+        NODE_ENV: test
+        CI: ${CI}
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:5003/api/health/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      test-server:
+        condition: service_healthy
+
+  test-recruiter-dashboard:
+    build:
+      context: .
+      dockerfile: apps/recruiter-dashboard/Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=https://api.localtest.me
+        - NEXT_PUBLIC_INTERNAL_API_URL=http://test-server:8000
+        - NEXT_PUBLIC_URL=https://recruiter.localtest.me
+        - NEXT_PUBLIC_ACCOUNTS_BASE_URL=https://accounts.localtest.me
+        - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=https://recruiter.localtest.me
+        - NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL=https://localtest.me
+        - NEXT_PUBLIC_SESSION_COOKIE_KEY=user_session
+        - NEXT_PUBLIC_SENTRY_DSN=${RECRUITER_DASHBOARD_UI_SENTRY_DSN}
+        - NEXT_PUBLIC_SENTRY_ORGANIZATION=hospitaljobsin
+        - NEXT_PUBLIC_SENTRY_PROJECT=hospital-jobs-recruiter-dashboard-ui
+        - NEXT_PUBLIC_ENVIRONMENT=testing
+        - NEXT_PUBLIC_ROOT_DOMAIN=localtest.me
+        - NEXT_PUBLIC_POSTHOG_KEY=XXX
+        - NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+        - NEXT_PUBLIC_POSTHOG_UI_HOST=https://us.i.posthog.com
+        - NEXT_RUNTIME=nodejs
+        - BUILDKIT_INLINE_CACHE=1
+    ports:
+      - "5001:5001"
+    environment:
+        HOST: 0.0.0.0
+        JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
+        NODE_ENV: test
+        CI: ${CI}
+        NODE_OPTIONS: --use-system-ca
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:5001/api/health/"]
       interval: 10s
       timeout: 5s
       retries: 10

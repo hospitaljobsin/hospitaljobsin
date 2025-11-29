@@ -18,7 +18,7 @@ COPY ./apps/accounts/package.json ./apps/accounts/.npmrc ./apps/accounts/
 COPY ./schema/ ./schema/
 
 # Copy root-level workspace config and lockfiles
-COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
+COPY pnpm-workspace.yaml pnpm-lock.yaml ./
 
 RUN pnpm install --filter accounts --frozen-lockfile --shamefully-hoist
 
@@ -50,7 +50,7 @@ ENV NEXT_PUBLIC_SENTRY_PROJECT=$NEXT_PUBLIC_SENTRY_PROJECT
 ARG NEXT_PUBLIC_ENVIRONMENT
 ENV NEXT_PUBLIC_ENVIRONMENT=$NEXT_PUBLIC_ENVIRONMENT
 ARG NEXT_PUBLIC_ROOT_DOMAIN
-ENV NEXT_PUBLIC_ROOT_DOMAIN=NEXT_PUBLIC_ROOT_DOMAIN
+ENV NEXT_PUBLIC_ROOT_DOMAIN=$NEXT_PUBLIC_ROOT_DOMAIN
 ARG NEXT_PUBLIC_POSTHOG_KEY
 ENV NEXT_PUBLIC_POSTHOG_KEY=$NEXT_PUBLIC_POSTHOG_KEY
 ARG NEXT_PUBLIC_POSTHOG_HOST
@@ -59,6 +59,10 @@ ARG NEXT_PUBLIC_POSTHOG_UI_HOST
 ENV NEXT_PUBLIC_POSTHOG_UI_HOST=$NEXT_PUBLIC_POSTHOG_UI_HOST
 ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
 ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=$NEXT_PUBLIC_GOOGLE_CLIENT_ID
+ARG NEXT_TURBOPACK_TRACING
+ENV NEXT_TURBOPACK_TRACING=$NEXT_TURBOPACK_TRACING
+ARG NEXT_RUNTIME
+ENV NEXT_RUNTIME=$NEXT_RUNTIME
 # Add any other NEXT_PUBLIC variables your app needs
 
 
@@ -79,11 +83,11 @@ RUN apk --no-cache add curl
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=base /app/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=base /app/package.json ./package.json
 
 # Copy app-specific output and files
 COPY --from=base /app/apps/accounts/.next ./apps/accounts/.next
 COPY --from=base /app/apps/accounts/package.json ./apps/accounts/package.json
+COPY --from=base /app/apps/accounts/node_modules ./apps/accounts/node_modules
 
 EXPOSE 5002
 

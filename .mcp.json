@@ -1,5 +1,10 @@
 {
 	"mcpServers": {
+		"ddg-search": {
+			"type": "stdio",
+			"command": "uvx",
+			"args": ["duckduckgo-mcp-server"]
+		},
 		"serena": {
 			"type": "stdio",
 			"command": "uvx",
@@ -26,6 +31,11 @@
 			"type": "stdio",
 			"command": "npx",
 			"args": ["-y", "next-devtools-mcp@latest"]
+		},
+		"playwright": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["@playwright/mcp@latest"]
 		}
 	}
 }

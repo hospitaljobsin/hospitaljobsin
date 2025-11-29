@@ -16,7 +16,7 @@ WORKDIR /app
 COPY ./apps/recruiter-portal-core/package.json ./apps/recruiter-portal-core/.npmrc  ./apps/recruiter-portal-core/
 COPY ./schema/ ./schema/
 # Copy root-level workspace config and lockfiles
-COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
+COPY pnpm-workspace.yaml pnpm-lock.yaml ./
 
 # WORKDIR /app/apps/recruiter-portal-core
 
@@ -37,6 +37,8 @@ ARG NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL
 ENV NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL=$NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL
 ARG NEXT_PUBLIC_ACCOUNTS_BASE_URL
 ENV NEXT_PUBLIC_ACCOUNTS_BASE_URL=$NEXT_PUBLIC_ACCOUNTS_BASE_URL
+ARG NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL
+ENV NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=$NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL
 ARG NEXT_PUBLIC_SESSION_COOKIE_KEY
 ENV NEXT_PUBLIC_SESSION_COOKIE_KEY=$NEXT_PUBLIC_SESSION_COOKIE_KEY
 ARG NEXT_PUBLIC_SENTRY_DSN
@@ -55,6 +57,8 @@ ARG NEXT_PUBLIC_POSTHOG_HOST
 ENV NEXT_PUBLIC_POSTHOG_HOST=$NEXT_PUBLIC_POSTHOG_HOST
 ARG NEXT_PUBLIC_POSTHOG_UI_HOST
 ENV NEXT_PUBLIC_POSTHOG_UI_HOST=$NEXT_PUBLIC_POSTHOG_UI_HOST
+ARG NEXT_RUNTIME
+ENV NEXT_RUNTIME=$NEXT_RUNTIME
 # Add any other NEXT_PUBLIC variables your app needs
 
 COPY ./apps/recruiter-portal-core/ ./apps/recruiter-portal-core/
@@ -74,11 +78,11 @@ RUN apk --no-cache add curl
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=base /app/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=base /app/package.json ./package.json
 
 # Copy app-specific output and files
 COPY --from=base /app/apps/recruiter-portal-core/.next ./apps/recruiter-portal-core/.next
 COPY --from=base /app/apps/recruiter-portal-core/package.json ./apps/recruiter-portal-core/package.json
+COPY --from=base /app/apps/recruiter-portal-core/node_modules ./apps/recruiter-portal-core/node_modules
 
 EXPOSE 5003
 

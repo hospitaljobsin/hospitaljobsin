@@ -125,8 +125,7 @@ tmuxinator start medical_jobs
 
 3. Run the E2E tests:
    ```bash
-   cd e2e
-   pnpm run test
+   pnpm --filter e2e run test
    ```
 
 ## Claude Code Setup
