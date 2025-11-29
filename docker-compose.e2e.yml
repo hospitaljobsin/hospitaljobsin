@@ -46,8 +46,8 @@ services:
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '8000'
       SERVER_LOG_LEVEL: 'INFO'
-      SERVER_CORS_ALLOW_ORIGINS: '["https://localtest.me"]'
-      SERVER_CORS_ALLOW_ORIGIN_REGEX: 'https://.*\.localtest\.me'
+      SERVER_CORS_ALLOW_ORIGINS: '["https://localtest.me", "https://accounts.localtest.me", "https://recruiter.localtest.me", "https://api.localtest.me"]'
+      SERVER_CORS_ALLOW_ORIGIN_REGEX: "https://.*\\.localtest\\.me"
       SERVER_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       SERVER_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       SERVER_EMAIL_HOST: 'dummy'
@@ -281,6 +281,12 @@ services:
       - "6379:6379"
     volumes:
       - test_redis_data:/data
+
+  test-mailcatcher:
+    image: schickling/mailcatcher:latest
+    ports:
+      - "1080:1080"
+      - "1025:1025"
 
 
   # playwright:

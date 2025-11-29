@@ -1,10 +1,10 @@
-import { env } from "@/lib/env";
-import { authTest, expect, test } from "@/playwright/fixtures";
-import { generateValidOTP } from "@/tests/utils/authenticator";
-import { waitForCaptcha } from "@/tests/utils/captcha";
-import { TOTP_USER_SECRET } from "@/tests/utils/constants";
+import { env } from '@/lib/env';
+import { authTest, expect, test } from '@/playwright/fixtures';
+import { generateValidOTP } from '@/tests/utils/authenticator';
+import { waitForCaptcha } from '@/tests/utils/captcha';
+import { TOTP_USER_SECRET } from '@/tests/utils/constants';
 
-test.describe("2FA Recovery Page", () => {
+test.describe('2FA Recovery Page', () => {
 	test.beforeEach(async ({ page, twoFactorAuth }) => {
 		// Navigate to login page
 		await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/login`);
@@ -13,9 +13,9 @@ test.describe("2FA Recovery Page", () => {
 		await waitForCaptcha({ page });
 
 		// Fill form with credentials that require 2FA
-		await page.getByLabel("Email Address").fill(twoFactorAuth.account.email);
-		await page.getByRole("textbox", { name: "Password" }).fill("Password123!");
-		await page.getByRole("button", { name: "Log in" }).click();
+		await page.getByLabel('Email or Phone Number').fill(twoFactorAuth.account.email);
+		await page.getByRole('textbox', { name: 'Password' }).fill('Password123!');
+		await page.getByRole('button', { name: 'Log in' }).click();
 
 		// Should redirect to 2FA page
 		await page.waitForURL(`${env.ACCOUNTS_UI_BASE_URL}/auth/2fa`);
@@ -27,104 +27,85 @@ test.describe("2FA Recovery Page", () => {
 		await waitForCaptcha({ page });
 	});
 
-	test("should display 2FA recovery form with all elements", async ({
-		page,
-	}) => {
+	test('should display 2FA recovery form with all elements', async ({ page }) => {
 		// Check page title
 		await expect(page).toHaveTitle(/Two Factor Recovery/);
 
 		// Check form elements
-		await expect(page.getByLabel("Recovery Code")).toBeVisible();
-		await expect(
-			page.getByRole("button", { name: "Verify Code" }),
-		).toBeVisible();
-		await expect(
-			page.getByRole("link", { name: "Use your authenticator app instead" }),
-		).toBeVisible();
-		await expect(
-			page.getByRole("button", { name: "Try another sign in method" }),
-		).toBeVisible();
+		await expect(page.getByLabel('Recovery Code')).toBeVisible();
+		await expect(page.getByRole('button', { name: 'Verify Code' })).toBeVisible();
+		await expect(page.getByRole('link', { name: 'Use your authenticator app instead' })).toBeVisible();
+		await expect(page.getByRole('button', { name: 'Try another sign in method' })).toBeVisible();
 
 		// ensure recaptcha terms and conditions are visible
-		await expect(
-			page.getByText(/This site is protected by Cloudflare Turnstile/),
-		).toBeVisible();
-		await expect(page.getByText("Cloudflare Privacy Policy")).toBeVisible();
+		await expect(page.getByText(/This site is protected by Cloudflare Turnstile/)).toBeVisible();
+		await expect(page.getByText('Cloudflare Privacy Policy')).toBeVisible();
 	});
 
-	test("should navigate to 2FA page", async ({ page }) => {
+	test('should navigate to 2FA page', async ({ page }) => {
 		// increase timeout to incorporate navigation
 		// Click on 2fa link
-		await page
-			.getByRole("link", { name: /Use your authenticator app instead/ })
-			.click();
+		await page.getByRole('link', { name: /Use your authenticator app instead/ }).click();
 
 		// Verify navigation
 		await expect(page).toHaveURL(/\/auth\/2fa/);
 	});
 
-	test("should validate empty form submission", async ({ page }) => {
+	test('should validate empty form submission', async ({ page }) => {
 		// Submit without entering data
-		await page.getByRole("button", { name: "Verify Code" }).click();
+		await page.getByRole('button', { name: 'Verify Code' }).click();
 
 		// Check validation messages
 		await expect(
 			page
-				.locator("div")
+				.locator('div')
 				.filter({ hasText: /^This field is required$/ })
-				.first(),
+				.first()
 		).toBeVisible();
 	});
 
-	test("should validate invalid recovery code", async ({ page }) => {
+	test('should validate invalid recovery code', async ({ page }) => {
 		// Enter invalid email
-		await page.getByLabel("Recovery Code").fill("XXXXXXX");
-		await page.getByRole("button", { name: "Verify Code" }).click();
+		await page.getByLabel('Recovery Code').fill('XXXXXXX');
+		await page.getByRole('button', { name: 'Verify Code' }).click();
 
 		// Check validation message
 		await expect(
 			page
-				.locator("div")
+				.locator('div')
 				.filter({ hasText: /^Invalid credentials provided.$/ })
-				.first(),
+				.first()
 		).toBeVisible();
 	});
 
-	test("should not verify authentication code", async ({ page }) => {
+	test('should not verify authentication code', async ({ page }) => {
 		const otp = await generateValidOTP({
-			totp_secret: TOTP_USER_SECRET,
+			totp_secret: TOTP_USER_SECRET
 		});
 
-		await page.getByLabel("Recovery Code").fill(otp);
-		await page.getByRole("button", { name: "Verify Code" }).click();
+		await page.getByLabel('Recovery Code').fill(otp);
+		await page.getByRole('button', { name: 'Verify Code' }).click();
 
 		// Check validation message
 		await expect(
 			page
-				.locator("div")
+				.locator('div')
 				.filter({ hasText: /^Invalid credentials provided.$/ })
-				.first(),
+				.first()
 		).toBeVisible();
 	});
 
-	test("should successfully verify valid recovery code", async ({
-		page,
-		twoFactorAuth,
-	}) => {
-		await page
-			.getByLabel("Recovery Code")
-			.fill(twoFactorAuth.account.recoveryCodes[0]);
-		await page.getByRole("button", { name: "Verify Code" }).click();
+	test('should successfully verify valid recovery code', async ({ page, twoFactorAuth }) => {
+		await page.getByLabel('Recovery Code').fill(twoFactorAuth.account.recoveryCodes[0]);
+		await page.getByRole('button', { name: 'Verify Code' }).click();
 
 		// Should redirect to home page
 		await page.waitForURL(`${env.SEEKER_PORTAL_BASE_URL}/`);
 	});
 });
 
-test.describe("2FA Recovery Page 2FA Challenge Redirects", () => {
-	test("should redirect to login page when 2fa challenge expires/ is invalid", async ({
-		page,
-	}) => {
+test.describe('2FA Recovery Page 2FA Challenge Redirects', () => {
+	test('should redirect to login page when 2fa challenge expires/ is invalid', async ({ page }) => {
 		// Navigate to 2FA page
 		await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/2fa/recovery`);
 
@@ -133,12 +114,9 @@ test.describe("2FA Recovery Page 2FA Challenge Redirects", () => {
 	});
 });
 
-authTest.describe("2FA Recovery Page Authentication Redirects", () => {
-	authTest(
-		"should redirect to home page when already authenticated",
-		async ({ page }) => {
-			await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/signup`);
-			await page.waitForURL(`${env.SEEKER_PORTAL_BASE_URL}/`);
-		},
-	);
+authTest.describe('2FA Recovery Page Authentication Redirects', () => {
+	authTest('should redirect to home page when already authenticated', async ({ page }) => {
+		await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/signup`);
+		await page.waitForURL(`${env.SEEKER_PORTAL_BASE_URL}/`);
+	});
 });
