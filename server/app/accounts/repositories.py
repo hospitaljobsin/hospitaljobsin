@@ -1,10 +1,10 @@
 import hashlib
 import secrets
 import string
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Literal
 
-from beanie import PydanticObjectId, WriteRules
+from beanie import PydanticObjectId
 from beanie.operators import In
 from bson import ObjectId
 from passlib.hash import argon2
@@ -16,26 +16,14 @@ from app.core.constants import (
     PHONE_NUMBER_VERIFICATION_EXPIRES_IN,
     TERMS_AND_POLICY_LATEST_VERSION,
     AuthProvider,
-    GenderType,
-    JobKindType,
-    MaritalStatusType,
-    WorkModeType,
 )
-from app.geocoding.repositories import RegionRepo
 
 from .documents import (
     Account,
     AnalyticsPreference,
-    CareerProfile,
-    Certification,
-    Education,
     EmailVerificationToken,
-    Language,
-    License,
     PhoneNumberVerificationToken,
-    Profile,
     TermsAndPolicy,
-    WorkExperience,
 )
 
 
@@ -306,190 +294,3 @@ class EmailVerificationTokenRepo:
     def hash_verification_token(token: str) -> str:
         """Hash verification token."""
         return hashlib.md5(token.encode("utf-8")).hexdigest()  # noqa: S324
-
-
-class ProfileRepo:
-    def __init__(self, region_repo: RegionRepo) -> None:
-        self._region_repo = region_repo
-
-    async def create(
-        self,
-        account: Account,
-        gender: GenderType | None = None,
-        date_of_birth: date | None = None,
-        address: str | None = None,
-        marital_status: MaritalStatusType | None = None,
-        category: str | None = None,
-        education: list[Education] = [],
-        licenses: list[License] = [],
-        languages: list[Language] = [],
-        job_preferences: list[str] = [],
-        work_experience: list[WorkExperience] = [],
-        career_profile: CareerProfile | None = None,
-        certifications: list[Certification] = [],
-        professional_summary: str | None = None,
-        headline: str | None = None,
-        resume_url: str | None = None,
-    ) -> Profile:
-        """Create a new profile."""
-        profile = Profile(
-            gender=gender,
-            date_of_birth=date_of_birth,
-            address=address,
-            marital_status=marital_status,
-            category=category,
-            education=education,
-            licenses=licenses,
-            languages=languages,
-            job_preferences=job_preferences,
-            work_experience=work_experience,
-            career_profile=career_profile,
-            certifications=certifications,
-            professional_summary=professional_summary,
-            headline=headline,
-            resume_url=resume_url,
-        )
-        await profile.insert()
-        account.profile = profile
-        await account.save()
-        return profile
-
-    def _calculate_total_work_experience(
-        self, work_experience: list[WorkExperience]
-    ) -> float:
-        return sum(
-            [
-                (
-                    (
-                        work_experience.completed_at - work_experience.started_at
-                    ).total_seconds()
-                    if work_experience.completed_at
-                    else (
-                        datetime.now(UTC).date() - work_experience.started_at
-                    ).total_seconds()
-                )
-                / (365 * 24 * 60 * 60)
-                for work_experience in work_experience
-            ]
-        )
-
-    async def update(
-        self,
-        profile: Profile,
-        *,
-        gender: GenderType | None = UNSET,
-        date_of_birth: date | None = UNSET,
-        address: str | None = UNSET,
-        marital_status: MaritalStatusType | None = UNSET,
-        category: str | None = UNSET,
-        education: list[Education] = UNSET,
-        licenses: list[License] = UNSET,
-        languages: list[Language] = UNSET,
-        job_preferences: list[str] = UNSET,
-        work_experience: list[WorkExperience] = UNSET,
-        career_profile: CareerProfile | None = UNSET,
-        certifications: list[Certification] = UNSET,
-        professional_summary: str | None = UNSET,
-        headline: str | None = UNSET,
-        resume_url: str | None = UNSET,
-    ) -> Profile:
-        """Update a profile with new fields."""
-        if gender is not UNSET:
-            profile.gender = gender
-        if date_of_birth is not UNSET:
-            profile.date_of_birth = date_of_birth
-        if address is not UNSET:
-            profile.address = address
-        if marital_status is not UNSET:
-            profile.marital_status = marital_status
-        if category is not UNSET:
-            profile.category = category
-        if education is not UNSET:
-            profile.education = education
-        if licenses is not UNSET:
-            profile.licenses = licenses
-        if languages is not UNSET:
-            profile.languages = languages
-        if job_preferences is not UNSET:
-            profile.job_preferences = job_preferences
-        if work_experience is not UNSET:
-            profile.work_experience = work_experience
-            profile.total_work_experience_years = self._calculate_total_work_experience(
-                work_experience
-            )
-        if career_profile is not UNSET:
-            profile.career_profile = career_profile
-        if certifications is not UNSET:
-            profile.certifications = certifications
-        if professional_summary is not UNSET:
-            profile.professional_summary = professional_summary
-        if headline is not UNSET:
-            profile.headline = headline
-        if resume_url is not UNSET:
-            profile.resume_url = resume_url
-        profile.updated_at = datetime.now(UTC)
-        return await profile.save(link_rule=WriteRules.WRITE)
-
-    async def update_career_profile(
-        self,
-        profile: Profile,
-        current_industry: str | None = UNSET,
-        desired_job_types: list[JobKindType] = UNSET,
-        desired_work_modes: list[WorkModeType] = UNSET,
-        expected_salary: float | None = UNSET,
-        locations_open_to_work: list[str] = UNSET,
-        open_to_relocation_anywhere: bool = UNSET,
-    ) -> Profile:
-        career_profile = profile.career_profile or CareerProfile()
-
-        if current_industry is not UNSET:
-            career_profile.current_industry = current_industry
-        if desired_job_types is not UNSET:
-            career_profile.desired_job_types = desired_job_types
-        if desired_work_modes is not UNSET:
-            career_profile.desired_work_modes = desired_work_modes
-        if expected_salary is not UNSET:
-            career_profile.expected_salary = expected_salary
-        if locations_open_to_work is not UNSET:
-            career_profile.locations_open_to_work = locations_open_to_work
-        if open_to_relocation_anywhere is not UNSET:
-            career_profile.open_to_relocation_anywhere = open_to_relocation_anywhere
-
-        return await self.update(profile, career_profile=career_profile)
-
-    async def get(self, profile_id: str) -> Profile | None:
-        """Get profile by ID."""
-        return await Profile.get(profile_id)
-
-    async def get_many_by_ids(
-        self, profile_ids: list[ObjectId]
-    ) -> list[Profile | None]:
-        """Get multiple profiles by IDs."""
-        profiles = await Profile.find(In(Profile.id, profile_ids)).to_list()
-        profile_by_id = {profile.id: profile for profile in profiles}
-
-        return [
-            profile_by_id.get(PydanticObjectId(profile_id))
-            for profile_id in profile_ids
-        ]
-
-    async def get_by_account(self, account: Account) -> Profile | None:
-        """Get profile by account ID."""
-        if account.profile is None:
-            return None
-        # If already loaded as a Profile instance
-        if isinstance(account.profile, Profile):
-            return account.profile
-        # If it's a Link, fetch the Profile document
-        await account.fetch_link(Account.profile)
-        if isinstance(account.profile, Profile):
-            return account.profile
-        return None
-
-    async def delete(self, profile: Profile) -> None:
-        """Delete a profile by ID."""
-        await profile.delete()
-
-    async def get_profiles_by_ids(self, profile_ids: list[ObjectId]) -> list[Profile]:
-        """Get multiple profiles by IDs."""
-        return await Profile.find(In(Profile.id, profile_ids)).to_list()

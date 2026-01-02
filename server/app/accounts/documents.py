@@ -1,203 +1,16 @@
 import hashlib
-from datetime import UTC, date, datetime
+from datetime import UTC, datetime
 from typing import Annotated, ClassVar, Literal
 
 import pymongo
-from beanie import Document, Indexed, Link
+from beanie import Document, Indexed
 from pydantic import BaseModel, Field
 from pymongo import IndexModel
 
-from app.base.models import GeoObject
 from app.core.constants import (
     AuthProvider,
-    ExperienceEmploymentType,
-    GenderType,
-    JobKindType,
-    LanguageProficiencyType,
-    LicenseVerificationStatusType,
-    MaritalStatusType,
     TwoFactorProvider,
-    WorkModeType,
 )
-
-
-# EDUCATION
-class Education(BaseModel):
-    degree: str = Field(..., description="The degree of the education.")
-    institution: str = Field(..., description="The institution of the education.")
-    started_at: date = Field(..., description="When the education started.")
-    completed_at: date | None = Field(None, description="When the education ended.")
-
-
-# LICENSE
-class License(BaseModel):
-    name: Annotated[
-        str,
-        Field(description="The name of the license."),
-    ]
-    issuer: Annotated[
-        str,
-        Field(description="The issuer of the license."),
-    ]
-    license_number: Annotated[
-        str,
-        Field(description="The license number."),
-    ]
-    registration_year: int = Field(
-        ...,
-        description="The year the license was registered.",
-    )
-    verification_status: LicenseVerificationStatusType = Field(
-        ..., description="The verification status of the license."
-    )
-    verified_at: date | None = Field(None, description="When the license was verified.")
-    verification_notes: str | None = Field(
-        None, description="The notes from the verification."
-    )
-
-
-# LANGUAGE (update to use enum)
-class Language(BaseModel):
-    name: str = Field(..., description="The name of the language.")
-    proficiency: LanguageProficiencyType = Field(
-        ..., description="The proficiency level of the language."
-    )
-
-
-# WORK EXPERIENCE
-class WorkExperience(BaseModel):
-    title: str = Field(..., description="The title of the work experience.")
-    description: str | None = Field(
-        None, description="The description of the work experience."
-    )
-    organization: str = Field(
-        ..., description="The organization of the work experience."
-    )
-    started_at: date = Field(..., description="When the work experience started.")
-    completed_at: date | None = Field(
-        None, description="When the work experience ended."
-    )
-    employment_type: ExperienceEmploymentType | None = Field(
-        None, description="The type of employment (full-time, part-time, etc.)."
-    )
-    skills: list[str] = Field(..., description="The skills of the work experience.")
-
-
-class CareerProfile(BaseModel):
-    current_industry: str | None = None
-    desired_job_types: list[JobKindType] = []
-    desired_work_modes: list[WorkModeType] = []
-    expected_salary: float | None = None
-    locations_open_to_work: list[str] = Field(
-        default_factory=list,
-        description="The locations the candidate prefers to work in.",
-    )
-    open_to_relocation_anywhere: bool = Field(
-        default=False,
-        description="Whether the candidate is open to relocation anywhere.",
-    )
-
-
-# CERTIFICATION
-class Certification(BaseModel):
-    name: str = Field(
-        ...,
-        description="The name of the certification.",
-    )
-    issuer: str = Field(
-        ...,
-        description="The issuer of the certification.",
-    )
-    certification_url: str = Field(
-        ..., description="The absolute URL of the certification."
-    )
-    created_at: date = Field(..., description="When the certification was created.")
-    expires_at: date | None = Field(None, description="When the certification expires.")
-
-
-class Location(BaseModel):
-    name: str
-    geo: GeoObject
-
-
-class BaseProfile(BaseModel):
-    # personal details
-    gender: GenderType | None = None
-    date_of_birth: date | None = None
-    address: str | None = None
-    marital_status: MaritalStatusType | None = None
-    category: str | None = None
-    education: list[Education]
-    licenses: list[License]
-    languages: list[Language]
-    job_preferences: list[str]
-    work_experience: list[WorkExperience]
-    total_work_experience_years: float = 0.0
-    career_profile: CareerProfile | None = None
-    certifications: list[Certification]
-    professional_summary: str | None = None
-    headline: str | None = None
-    resume_url: str | None = None
-
-    def __str__(self) -> str:
-        """LLM friendly text representation of a job."""
-        return self.model_dump_json()
-
-
-# Main Job Seeker Profile Document
-# AKA Reusable Resume
-class Profile(BaseProfile, Document):
-    embedding: list[float] | None = Field(default=None, repr=False)
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
-
-    class Settings:
-        name = "profiles"  # MongoDB collection name
-
-    @property
-    def is_complete(self) -> bool:
-        """Checks if the profile has the minimum required information to apply for a job."""
-        return all(
-            [
-                self.date_of_birth,
-                self.address,
-                (
-                    self.career_profile
-                    and (
-                        self.career_profile.locations_open_to_work
-                        or self.career_profile.open_to_relocation_anywhere
-                    )
-                ),
-                self.headline,
-                self.resume_url,
-            ]
-        )
-
-    @property
-    def progress_percentage(self) -> int:
-        """Calculates the profile completion percentage based on filled fields."""
-        total_fields = 8  # Total number of key fields to check
-        filled_fields = sum(
-            [
-                bool(self.date_of_birth),
-                bool(self.address),
-                bool(self.work_experience),
-                bool(self.education),
-                bool(
-                    self.career_profile
-                    and (
-                        self.career_profile.locations_open_to_work
-                        or self.career_profile.open_to_relocation_anywhere
-                    )
-                ),
-                bool(self.professional_summary),
-                bool(self.headline),
-            ]
-        )
-        return int((filled_fields / total_fields) * 100)
-
-    def __str__(self) -> str:
-        """LLM friendly text representation of a job."""
-        return self.model_dump_json(exclude={"embedding", "account", "updated_at"})
 
 
 class TermsAndPolicy(BaseModel):
@@ -226,8 +39,6 @@ class Account(Document):
     internal_avatar_url: str | None = Field(default=None, alias="avatar_url")
 
     auth_providers: list[AuthProvider]
-
-    profile: Link[Profile] | None = None
 
     terms_and_policy: TermsAndPolicy
 

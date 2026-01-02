@@ -2,10 +2,6 @@ class AccountNotFoundError:
     """Raised when an account is not found."""
 
 
-class AccountProfileIncompleteError(Exception):
-    """Raised when an account profile is incomplete."""
-
-
 class InvalidPhoneNumberError:
     """Raised when an invalid phone number is provided."""
 

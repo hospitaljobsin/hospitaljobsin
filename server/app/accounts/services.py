@@ -1,26 +1,18 @@
 import uuid
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Annotated, Literal
 
 import phonenumbers
 from fastapi import Response
 from pydantic import Field, HttpUrl, StringConstraints, validate_call
 from result import Err, Ok, Result
-from strawberry import UNSET
 from types_aiobotocore_s3 import S3Client
 
-from app.accounts.agents.profile_parser import ProfileParserAgent
 from app.accounts.documents import (
     Account,
     AnalyticsPreference,
-    Certification,
-    Education,
-    Language,
-    License,
     PhoneNumberVerificationToken,
-    Profile,
     TermsAndPolicy,
-    WorkExperience,
 )
 from app.accounts.exceptions import (
     InvalidPhoneNumberError,
@@ -30,51 +22,31 @@ from app.accounts.exceptions import (
     PhoneNumberMissingError,
     PhoneNumberVerificationTokenCooldownError,
 )
-from app.accounts.models import (
-    CertificationInput,
-    EducationInput,
-    LicenseInput,
-    WorkExperienceInput,
-)
 from app.accounts.repositories import (
     AccountRepo,
     PhoneNumberVerificationTokenRepo,
-    ProfileRepo,
 )
-from app.base.exceptions import InvalidLocationError
 from app.config import AuthSettings, AWSSettings
 from app.core.constants import (
     TERMS_AND_POLICY_LATEST_VERSION,
-    JobKindType,
-    WorkModeType,
 )
 from app.core.messages import BaseMessageSender
-from app.core.ocr import BaseOCRClient
-from app.geocoding.repositories import RegionRepo
-from app.job_alerts.models import AlertFilters
-from app.job_alerts.repositories import JobAlertRepo, RecommendedJobAlertRepo
-from app.jobs.repositories import JobApplicantRepo
-from app.organizations.repositories import OrganizationMemberRepo
 
 
 class AccountService:
     def __init__(
         self,
         account_repo: AccountRepo,
-        organization_member_repo: OrganizationMemberRepo,
         phone_number_verification_token_repo: PhoneNumberVerificationTokenRepo,
-        job_applicant_repo: JobApplicantRepo,
         s3_client: S3Client,
         aws_settings: AWSSettings,
         settings: AuthSettings,
         message_sender: BaseMessageSender,
     ) -> None:
         self._account_repo = account_repo
-        self._organization_member_repo = organization_member_repo
         self._phone_number_verification_token_repo = (
             phone_number_verification_token_repo
         )
-        self._job_applicant_repo = job_applicant_repo
         self._s3_client = s3_client
         self._aws_settings = aws_settings
         self._settings = settings
@@ -113,12 +85,6 @@ class AccountService:
             full_name=full_name,
             avatar_url=str(avatar_url),
         )
-        # update denormalized full_name in organization members
-        await self._organization_member_repo.update_all(
-            account=account, full_name=full_name
-        )
-        # update denormalized full_name in job applicants
-        await self._job_applicant_repo.update_all(account=account, full_name=full_name)
         return Ok(account)
 
     async def update_analytics_preference(
@@ -330,409 +296,4 @@ class AccountService:
             account=account,
             whatsapp_job_alerts_enabled=enabled,
         )
-        return Ok(account)
-
-
-class ProfileParserService:
-    def __init__(
-        self,
-        profile_parser_agent: ProfileParserAgent,
-        ocr_client: BaseOCRClient,
-        profile_repo: ProfileRepo,
-        s3_client: S3Client,
-        aws_settings: AWSSettings,
-        account_repo: AccountRepo,
-        recommended_job_alert_repo: RecommendedJobAlertRepo,
-        job_alert_repo: JobAlertRepo,
-    ) -> None:
-        self._profile_parser_agent = profile_parser_agent
-        self._ocr_client = ocr_client
-        self._profile_repo = profile_repo
-        self._s3_client = s3_client
-        self._aws_settings = aws_settings
-        self._account_repo = account_repo
-        self._recommended_job_alert_repo = recommended_job_alert_repo
-        self._job_alert_repo = job_alert_repo
-
-    async def generate_presigned_url(self, content_type: str) -> Ok[tuple[str, str]]:
-        """Generate a presigned URL for a document."""
-        file_key = f"autofill-profiles/{uuid.uuid4()}"
-        presigned_url = await self._s3_client.generate_presigned_url(
-            "put_object",
-            Params={
-                "Bucket": self._aws_settings.s3_bucket_name,
-                "Key": file_key,
-                "ContentType": content_type,
-            },
-            ExpiresIn=3600,
-            HttpMethod="PUT",
-        )
-        return Ok((presigned_url, file_key))
-
-    async def parse_profile_document(
-        self,
-        *,
-        file_key: str,
-        resume_url: str,
-        account: Account,
-        overwrite: bool,
-    ) -> Ok[Profile]:
-        """Parse a profile document into structured data."""
-        ocr_texts = await self._ocr_client(file_key)
-
-        result = await self._profile_parser_agent.run(
-            f"OCR text:\n{'\n'.join(ocr_texts)}"
-        )
-
-        profile_output = result.output
-        profile = await self._profile_repo.get_by_account(account)
-        if profile is None:
-            profile = await self._profile_repo.create(account)
-            await self._account_repo.update_profile(account=account, profile=profile)
-
-        if overwrite:
-            profile = await self._profile_repo.update(
-                resume_url=resume_url,
-                profile=profile,
-                address=profile_output.address,
-                date_of_birth=profile_output.date_of_birth,
-                gender=profile_output.gender,
-                marital_status=profile_output.marital_status,
-                category=profile_output.category,
-                education=profile_output.education,
-                licenses=[
-                    License(
-                        **partial_license.model_dump(), verification_status="pending"
-                    )
-                    for partial_license in profile_output.licenses
-                ],
-                languages=profile_output.languages,
-                job_preferences=profile_output.job_preferences,
-                work_experience=profile_output.work_experience,
-                career_profile=profile_output.career_profile,
-                certifications=profile_output.certifications,
-                professional_summary=profile_output.professional_summary,
-                headline=profile_output.headline,
-            )
-        else:
-            # add the non null fields to the profile
-            profile = await self._profile_repo.update(
-                resume_url=resume_url,
-                profile=profile,
-                address=profile_output.address if profile_output.address else UNSET,
-                date_of_birth=profile_output.date_of_birth
-                if profile_output.date_of_birth
-                else UNSET,
-                gender=profile_output.gender if profile_output.gender else UNSET,
-                marital_status=profile_output.marital_status
-                if profile_output.marital_status
-                else UNSET,
-                category=profile_output.category if profile_output.category else UNSET,
-                education=profile_output.education
-                if profile_output.education
-                else UNSET,
-                licenses=[
-                    License(
-                        **partial_license.model_dump(), verification_status="pending"
-                    )
-                    for partial_license in profile_output.licenses
-                ]
-                if profile_output.licenses
-                else UNSET,
-                languages=profile_output.languages
-                if profile_output.languages
-                else UNSET,
-                job_preferences=profile_output.job_preferences
-                if profile_output.job_preferences
-                else UNSET,
-                work_experience=profile_output.work_experience
-                if profile_output.work_experience
-                else UNSET,
-                career_profile=profile_output.career_profile
-                if profile_output.career_profile
-                else UNSET,
-                certifications=profile_output.certifications
-                if profile_output.certifications
-                else UNSET,
-                professional_summary=profile_output.professional_summary
-                if profile_output.professional_summary
-                else UNSET,
-                headline=profile_output.headline if profile_output.headline else UNSET,
-            )
-        await self._recommended_job_alert_repo.delete_all(account=account)
-        if profile_output.recommended_job_alerts:
-            existing_job_alerts = await self._job_alert_repo.get_all_list(
-                account=account
-            )
-            filtered_recommended_alerts = [
-                alert
-                for alert in profile_output.recommended_job_alerts
-                if not any(
-                    alert.search_term == existing_alert.filters.search_term
-                    and alert.location == existing_alert.filters.location
-                    and alert.min_experience == existing_alert.filters.min_experience
-                    and alert.max_experience == existing_alert.filters.max_experience
-                    and alert.min_salary == existing_alert.filters.min_salary
-                    and alert.max_salary == existing_alert.filters.max_salary
-                    and alert.job_type == existing_alert.filters.job_type
-                    and alert.work_mode == existing_alert.filters.work_mode
-                    for existing_alert in existing_job_alerts
-                )
-            ]
-            if filtered_recommended_alerts:
-                await self._recommended_job_alert_repo.create_many(
-                    account=account,
-                    filters=[
-                        AlertFilters(
-                            search_term=alert.search_term,
-                            location=alert.location,
-                            min_experience=alert.min_experience,
-                            max_experience=alert.max_experience,
-                            min_salary=alert.min_salary,
-                            max_salary=alert.max_salary,
-                            job_type=alert.job_type,
-                            work_mode=alert.work_mode,
-                        )
-                        for alert in filtered_recommended_alerts
-                    ],
-                )
-        return Ok(profile)
-
-
-class ProfileService:
-    def __init__(
-        self,
-        profile_repo: ProfileRepo,
-        account_repo: AccountRepo,
-        region_repo: RegionRepo,
-        profile_parser_service: ProfileParserService,
-    ) -> None:
-        self._profile_repo = profile_repo
-        self._account_repo = account_repo
-        self._region_repo = region_repo
-        self._profile_parser_service = profile_parser_service
-
-    async def update_personal_details(
-        self,
-        account: Account,
-        gender: str | None = UNSET,
-        date_of_birth: date | None = UNSET,
-        marital_status: str | None = UNSET,
-        category: str | None = UNSET,
-        address: str | None = UNSET,
-    ) -> Result[Account, InvalidLocationError]:
-        existing_profile = await self._profile_repo.get_by_account(account)
-        if existing_profile is None:
-            existing_profile = await self._profile_repo.create(account)
-            await self._account_repo.update_profile(
-                account=account, profile=existing_profile
-            )
-
-        if address is not UNSET and address:
-            location = await self._region_repo.get_by_name(name=address)
-            if location is None:
-                return Err(InvalidLocationError())
-
-        await self._profile_repo.update(
-            profile=existing_profile,
-            gender=gender,
-            date_of_birth=date_of_birth,
-            marital_status=marital_status,
-            category=category,
-            address=address,
-        )
-
-        return Ok(account)
-
-    async def update_languages(
-        self,
-        account: Account,
-        languages: list[Language],
-    ) -> Ok[Account]:
-        existing_profile = await self._profile_repo.get_by_account(account)
-        if existing_profile is None:
-            existing_profile = await self._profile_repo.create(account)
-            await self._account_repo.update_profile(
-                account=account, profile=existing_profile
-            )
-
-        await self._profile_repo.update(
-            profile=existing_profile,
-            languages=languages,
-        )
-
-        return Ok(account)
-
-    @validate_call()
-    async def update_education(
-        self,
-        account: Annotated[Account, Field(exclude=True)],
-        education: list[EducationInput],
-    ) -> Ok[Account]:
-        existing_profile = await self._profile_repo.get_by_account(account)
-        if existing_profile is None:
-            existing_profile = await self._profile_repo.create(account)
-            await self._account_repo.update_profile(
-                account=account, profile=existing_profile
-            )
-
-        await self._profile_repo.update(
-            profile=existing_profile,
-            education=[Education(**edu.model_dump()) for edu in education],
-        )
-
-        return Ok(account)
-
-    @validate_call()
-    async def update_experience(
-        self,
-        account: Annotated[Account, Field(exclude=True)],
-        work_experience: list[WorkExperienceInput],
-    ) -> Ok[Account]:
-        existing_profile = await self._profile_repo.get_by_account(account)
-        if existing_profile is None:
-            existing_profile = await self._profile_repo.create(account)
-            await self._account_repo.update_profile(
-                account=account, profile=existing_profile
-            )
-
-        await self._profile_repo.update(
-            profile=existing_profile,
-            work_experience=[
-                WorkExperience(**work_exp.model_dump()) for work_exp in work_experience
-            ],
-        )
-
-        return Ok(account)
-
-    @validate_call()
-    async def update_certifications(
-        self,
-        account: Annotated[Account, Field(exclude=True)],
-        certifications: list[CertificationInput],
-    ) -> Ok[Account]:
-        existing_profile = await self._profile_repo.get_by_account(account)
-        if existing_profile is None:
-            existing_profile = await self._profile_repo.create(account)
-            await self._account_repo.update_profile(
-                account=account, profile=existing_profile
-            )
-
-        await self._profile_repo.update(
-            profile=existing_profile,
-            certifications=[
-                Certification(
-                    name=certification.name,
-                    issuer=certification.issuer,
-                    certification_url=str(certification.certification_url),
-                    expires_at=certification.expires_at,
-                    created_at=certification.created_at,
-                )
-                for certification in certifications
-            ],
-        )
-
-        return Ok(account)
-
-    @validate_call()
-    async def update_licenses(
-        self,
-        account: Annotated[Account, Field(exclude=True)],
-        licenses: list[LicenseInput],
-    ) -> Ok[Account]:
-        existing_profile = await self._profile_repo.get_by_account(account)
-        if existing_profile is None:
-            existing_profile = await self._profile_repo.create(account)
-            await self._account_repo.update_profile(
-                account=account, profile=existing_profile
-            )
-
-        await self._profile_repo.update(
-            profile=existing_profile,
-            licenses=[
-                License(**profile_license.model_dump()) for profile_license in licenses
-            ],
-        )
-
-        return Ok(account)
-
-    @validate_call()
-    async def update_about_me(
-        self,
-        account: Annotated[Account, Field(exclude=True)],
-        professional_summary: Annotated[str | None, Field(max_length=750)] = None,
-        headline: Annotated[str | None, Field(max_length=100)] = None,
-    ) -> Ok[Account]:
-        existing_profile = await self._profile_repo.get_by_account(account)
-        if existing_profile is None:
-            existing_profile = await self._profile_repo.create(account)
-            await self._account_repo.update_profile(
-                account=account, profile=existing_profile
-            )
-
-        await self._profile_repo.update(
-            profile=existing_profile,
-            professional_summary=professional_summary,
-            headline=headline,
-        )
-
-        return Ok(account)
-
-    @validate_call()
-    async def update_career_profile(
-        self,
-        *,
-        account: Annotated[Account, Field(exclude=True)],
-        current_industry: str | None,
-        desired_job_types: list[JobKindType],
-        desired_work_modes: list[WorkModeType],
-        expected_salary: Annotated[float | None, Field(ge=0)],
-        locations_open_to_work: list[str],
-        open_to_relocation_anywhere: bool,
-    ) -> Ok[Account]:
-        existing_profile = await self._profile_repo.get_by_account(account)
-        if existing_profile is None:
-            existing_profile = await self._profile_repo.create(account)
-            await self._account_repo.update_profile(
-                account=account, profile=existing_profile
-            )
-
-        await self._profile_repo.update_career_profile(
-            profile=existing_profile,
-            current_industry=current_industry,
-            desired_job_types=desired_job_types,
-            desired_work_modes=desired_work_modes,
-            expected_salary=expected_salary,
-            locations_open_to_work=locations_open_to_work,
-            open_to_relocation_anywhere=open_to_relocation_anywhere,
-        )
-
-        return Ok(account)
-
-    async def update_resume(
-        self,
-        account: Account,
-        resume_url: str | None = None,
-        file_key: str | None = None,
-    ) -> Ok[Account]:
-        existing_profile = await self._profile_repo.get_by_account(account)
-        if existing_profile is None:
-            existing_profile = await self._profile_repo.create(account)
-            await self._account_repo.update_profile(
-                account=account, profile=existing_profile
-            )
-
-        if file_key is not None and resume_url is not None:
-            await self._profile_parser_service.parse_profile_document(
-                file_key=file_key,
-                resume_url=resume_url,
-                account=account,
-                overwrite=False,
-            )
-        else:
-            await self._profile_repo.update(
-                profile=existing_profile,
-                resume_url=None,
-            )
-
         return Ok(account)

@@ -1,5 +1,5 @@
 import sentry_sdk
-from beanie import Document, init_beanie
+from beanie import init_beanie
 from pymongo import AsyncMongoClient
 from pymongo.operations import SearchIndexModel
 from structlog import get_logger
@@ -8,7 +8,6 @@ from app.accounts.documents import (
     Account,
     EmailVerificationToken,
     PhoneNumberVerificationToken,
-    Profile,
 )
 from app.auth.documents import (
     OAuthCredential,
@@ -28,22 +27,6 @@ from app.core.constants import (
     REGION_SEARCH_INDEX_NAME,
 )
 from app.geocoding.documents import Region
-from app.job_alerts.documents import JobAlert, RecommendedJobAlert
-from app.jobs.documents import (
-    BaseJobMetric,
-    CoreJobMetric,
-    ImpressionJobMetric,
-    Job,
-    JobApplicant,
-    JobApplicationForm,
-    SavedJob,
-)
-from app.organizations.documents import (
-    EmployeeBenefit,
-    Organization,
-    OrganizationInvite,
-    OrganizationMember,
-)
 
 logger = get_logger()
 
@@ -268,32 +251,18 @@ async def initialize_database(
         await init_beanie(
             database=db_client.get_database(name=default_database_name),
             document_models=[
-                Job,
-                JobApplicant,
-                JobApplicationForm,
-                CoreJobMetric,
-                ImpressionJobMetric,
-                BaseJobMetric,
                 Account,
-                Profile,
-                SavedJob,
                 Session,
                 EmailVerificationToken,
                 PhoneNumberVerificationToken,
                 PasswordResetToken,
-                Organization,
-                OrganizationMember,
                 WebAuthnCredential,
                 WebAuthnChallenge,
                 OAuthCredential,
                 TwoFactorAuthenticationChallenge,
                 RecoveryCode,
                 TemporaryTwoFactorChallenge,
-                OrganizationInvite,
-                EmployeeBenefit,
                 Region,
-                JobAlert,
-                RecommendedJobAlert,
             ],
         )
         await create_search_indexes(db_client, default_database_name)

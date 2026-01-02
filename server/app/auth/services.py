@@ -45,7 +45,6 @@ from app.accounts.documents import Account, EmailVerificationToken
 from app.accounts.repositories import (
     AccountRepo,
     EmailVerificationTokenRepo,
-    ProfileRepo,
 )
 from app.auth.documents import (
     PasswordResetToken,
@@ -107,7 +106,6 @@ class AuthService:
         account_repo: AccountRepo,
         session_repo: SessionRepo,
         email_verification_token_repo: EmailVerificationTokenRepo,
-        profile_repo: ProfileRepo,
         password_reset_token_repo: PasswordResetTokenRepo,
         web_authn_credential_repo: WebAuthnCredentialRepo,
         webauthn_challenge_repo: WebAuthnChallengeRepo,
@@ -126,7 +124,6 @@ class AuthService:
         self._account_repo = account_repo
         self._session_repo = session_repo
         self._email_verification_token_repo = email_verification_token_repo
-        self._profile_repo = profile_repo
         self._password_reset_token_repo = password_reset_token_repo
         self._web_authn_credential_repo = web_authn_credential_repo
         self._webauthn_challenge_repo = webauthn_challenge_repo
@@ -353,8 +350,6 @@ class AuthService:
             analytics_preference=get_analytics_preference(request, self._settings),
         )
 
-        await self._profile_repo.create(account=account)
-
         # delete the email verification token
         await self._email_verification_token_repo.delete(
             existing_email_verification_token
@@ -520,8 +515,6 @@ class AuthService:
             transports=passkey_registration_credential.response.transports,
             nickname=passkey_nickname,
         )
-
-        await self._profile_repo.create(account=account)
 
         # delete the email verification token
         await self._email_verification_token_repo.delete(
@@ -880,7 +873,6 @@ class AuthService:
                 auth_providers=["oauth_google"],
                 analytics_preference=get_analytics_preference(request, self._settings),
             )
-            await self._profile_repo.create(account=account)
             # create an oauth credential for the user
             await self._oauth_credential_repo.create(
                 account_id=account.id,

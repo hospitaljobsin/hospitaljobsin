@@ -20,18 +20,15 @@ from aioinject.extensions.providers import (
 )
 from pydantic_settings import BaseSettings
 
-from app.accounts.agents.profile_parser import create_profile_parser_agent
 from app.accounts.dataloaders import (
     create_account_by_id_dataloader,
-    create_profile_by_id_dataloader,
 )
 from app.accounts.repositories import (
     AccountRepo,
     EmailVerificationTokenRepo,
     PhoneNumberVerificationTokenRepo,
-    ProfileRepo,
 )
-from app.accounts.services import AccountService, ProfileParserService, ProfileService
+from app.accounts.services import AccountService
 from app.auth.repositories import (
     OauthCredentialRepo,
     PasswordResetTokenRepo,
@@ -97,65 +94,14 @@ from app.core.oauth import create_oauth_client
 from app.core.ocr import BaseOCRClient, TesseractOCRClient, TextractOCRClient
 from app.core.redis_client import create_redis_client
 from app.core.templates import create_jinja2_environment, create_jinja2_mjml_environment
-from app.core.whatsapp_client import WhatsappClient
 from app.dataloaders import create_dataloaders
 from app.geocoding.repositories import RegionRepo
-from app.job_alerts.repositories import JobAlertRepo, RecommendedJobAlertRepo
-from app.job_alerts.services import JobAlertService
-from app.jobs.agents.applicant_analysis import (
-    create_job_applicant_analyzer_agent,
-)
-from app.jobs.agents.applicant_query_parser import create_applicant_query_parser_agent
-from app.jobs.dataloaders import (
-    create_applicant_count_by_job_id_dataloader,
-    create_job_applicant_by_id_dataloader,
-    create_job_applicant_by_slug_dataloader,
-    create_job_application_form_by_id_dataloader,
-    create_job_by_id_dataloader,
-    create_job_by_slug_dataloader,
-    create_saved_job_by_id_dataloader,
-)
-from app.jobs.repositories import (
-    JobApplicantRepo,
-    JobApplicationFormRepo,
-    JobMetricRepo,
-    JobRepo,
-    SavedJobRepo,
-)
-from app.jobs.services import (
-    JobApplicantAnalysisService,
-    JobApplicantService,
-    JobApplicationFormService,
-    JobClusterService,
-    JobMetricService,
-    JobService,
-    SavedJobService,
-)
 from app.mailbox.messages import DummyMailbox
-from app.organizations.dataloaders import (
-    create_organization_by_id_dataloader,
-    create_organization_by_slug_dataloader,
-    create_organization_invite_by_token_dataloader,
-    create_organization_member_by_id_dataloader,
-)
-from app.organizations.repositories import (
-    EmployeeBenefitRepo,
-    OrganizationInviteRepo,
-    OrganizationMemberRepo,
-    OrganizationRepo,
-)
-from app.organizations.services import (
-    EmployeeBenefitService,
-    OrganizationInviteService,
-    OrganizationMemberService,
-    OrganizationService,
-)
 from app.revalidation.services import (
     BaseRevalidationService,
     DummyRevalidationService,
     RevalidationService,
 )
-from app.stats.services import StatsService
 from app.testing.services import TestSetupService
 
 settings_classes: list[type[BaseSettings]] = [
@@ -325,62 +271,19 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(create_captcha_verifier))
     container.register(aioinject.Singleton(create_redis_client))
     container.register(aioinject.Singleton(RegionRepo))
-    container.register(aioinject.Singleton(JobApplicantRepo))
-    container.register(aioinject.Singleton(JobRepo))
-    container.register(aioinject.Singleton(SavedJobRepo))
     container.register(aioinject.Singleton(PhoneNumberVerificationTokenRepo))
     container.register(aioinject.Scoped(AuthService))
-    container.register(aioinject.Singleton(ProfileRepo))
-    container.register(aioinject.Scoped(ProfileService))
     container.register(aioinject.Scoped(AccountService))
     container.register(aioinject.Singleton(AccountRepo))
     container.register(aioinject.Singleton(SessionRepo))
     container.register(aioinject.Singleton(EmailVerificationTokenRepo))
     container.register(aioinject.Singleton(PasswordResetTokenRepo))
-    container.register(aioinject.Scoped(JobService))
-    container.register(aioinject.Scoped(JobClusterService))
-    container.register(aioinject.Scoped(SavedJobService))
-    container.register(aioinject.Scoped(JobMetricService))
-    container.register(aioinject.Singleton(OrganizationRepo))
-    container.register(aioinject.Singleton(OrganizationMemberRepo))
-    container.register(aioinject.Scoped(OrganizationService))
-    container.register(aioinject.Scoped(OrganizationMemberService))
     container.register(aioinject.Singleton(WebAuthnCredentialRepo))
     container.register(aioinject.Singleton(WebAuthnChallengeRepo))
     container.register(aioinject.Singleton(OauthCredentialRepo))
     container.register(aioinject.Singleton(TwoFactorAuthenticationChallengeRepo))
     container.register(aioinject.Singleton(RecoveryCodeRepo))
     container.register(aioinject.Singleton(TemporaryTwoFactorChallengeRepo))
-    container.register(aioinject.Singleton(OrganizationInviteRepo))
-    container.register(aioinject.Singleton(JobApplicationFormRepo))
-    container.register(aioinject.Scoped(JobApplicationFormService))
-    container.register(aioinject.Scoped(OrganizationInviteService))
-    container.register(aioinject.Scoped(JobApplicantService))
-    container.register(aioinject.Singleton(JobMetricRepo))
-    container.register(aioinject.Singleton(JobAlertRepo))
-    container.register(aioinject.Singleton(RecommendedJobAlertRepo))
-    container.register(aioinject.Scoped(JobAlertService))
-    container.register(aioinject.Singleton(EmployeeBenefitRepo))
-    container.register(aioinject.Scoped(EmployeeBenefitService))
     container.register(aioinject.Scoped(create_account_by_id_dataloader))
-    container.register(aioinject.Scoped(create_profile_by_id_dataloader))
-    container.register(aioinject.Scoped(create_job_by_id_dataloader))
-    container.register(aioinject.Scoped(create_job_by_slug_dataloader))
-    container.register(aioinject.Scoped(create_saved_job_by_id_dataloader))
-    container.register(aioinject.Scoped(create_organization_by_id_dataloader))
-    container.register(aioinject.Scoped(create_organization_by_slug_dataloader))
-    container.register(aioinject.Scoped(create_organization_invite_by_token_dataloader))
-    container.register(aioinject.Scoped(create_job_application_form_by_id_dataloader))
-    container.register(aioinject.Scoped(create_applicant_count_by_job_id_dataloader))
-    container.register(aioinject.Scoped(create_job_applicant_by_id_dataloader))
-    container.register(aioinject.Scoped(create_job_applicant_by_slug_dataloader))
-    container.register(aioinject.Scoped(create_organization_member_by_id_dataloader))
     container.register(aioinject.Scoped(create_dataloaders))
-    container.register(aioinject.Singleton(create_job_applicant_analyzer_agent))
-    container.register(aioinject.Singleton(create_applicant_query_parser_agent))
-    container.register(aioinject.Singleton(create_profile_parser_agent))
-    container.register(aioinject.Singleton(JobApplicantAnalysisService))
-    container.register(aioinject.Singleton(ProfileParserService))
-    container.register(aioinject.Singleton(WhatsappClient))
-    container.register(aioinject.Singleton(StatsService))
     return container

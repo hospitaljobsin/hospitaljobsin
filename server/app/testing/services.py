@@ -6,7 +6,7 @@ from uuid import uuid4
 from fastapi import Request
 from webauthn.helpers.structs import AuthenticatorTransport
 
-from app.accounts.repositories import AccountRepo, ProfileRepo
+from app.accounts.repositories import AccountRepo
 from app.auth.documents import WebAuthnCredential
 from app.auth.repositories import (
     OauthCredentialRepo,
@@ -29,7 +29,6 @@ class TestSetupService:
     def __init__(
         self,
         account_repo: AccountRepo,
-        profile_repo: ProfileRepo,
         webauthn_credential_repo: WebAuthnCredentialRepo,
         recovery_code_repo: RecoveryCodeRepo,
         oauth_credential_repo: OauthCredentialRepo,
@@ -37,7 +36,6 @@ class TestSetupService:
         settings: AuthSettings,
     ) -> None:
         self._account_repo = account_repo
-        self._profile_repo = profile_repo
         self._webauthn_credential_repo = webauthn_credential_repo
         self._recovery_code_repo = recovery_code_repo
         self._oauth_credential_repo = oauth_credential_repo
@@ -85,9 +83,6 @@ class TestSetupService:
                 provider="google",
                 provider_user_id=uuid4().hex,
             )
-
-        # create profile
-        await self._profile_repo.create(account=account)
 
         recovery_codes = []
 
