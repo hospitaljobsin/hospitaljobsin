@@ -4,7 +4,6 @@ from app.accounts.repositories import (
     AccountRepo,
     EmailVerificationTokenRepo,
     PhoneNumberVerificationTokenRepo,
-    ProfileRepo,
 )
 from app.auth.repositories import (
     PasswordResetTokenRepo,
@@ -14,20 +13,6 @@ from app.auth.repositories import (
     TwoFactorAuthenticationChallengeRepo,
     WebAuthnChallengeRepo,
     WebAuthnCredentialRepo,
-)
-from app.geocoding.repositories import RegionRepo
-from app.job_alerts.repositories import JobAlertRepo, RecommendedJobAlertRepo
-from app.jobs.repositories import (
-    JobApplicantRepo,
-    JobApplicationFormRepo,
-    JobRepo,
-    SavedJobRepo,
-)
-from app.organizations.repositories import (
-    EmployeeBenefitRepo,
-    OrganizationInviteRepo,
-    OrganizationMemberRepo,
-    OrganizationRepo,
 )
 
 
@@ -78,91 +63,11 @@ async def recovery_code_repo(
 
 
 @pytest.fixture(scope="session")
-async def organization_repo(
-    container: Container,
-) -> OrganizationRepo:
-    async with container.context() as ctx:
-        return await ctx.resolve(OrganizationRepo)
-
-
-@pytest.fixture(scope="session")
-async def organization_member_repo(
-    container: Container,
-) -> OrganizationMemberRepo:
-    async with container.context() as ctx:
-        return await ctx.resolve(OrganizationMemberRepo)
-
-
-@pytest.fixture(scope="session")
-async def organization_invite_repo(
-    container: Container,
-) -> OrganizationInviteRepo:
-    async with container.context() as ctx:
-        return await ctx.resolve(OrganizationInviteRepo)
-
-
-@pytest.fixture(scope="session")
-async def saved_job_repo(
-    container: Container,
-) -> SavedJobRepo:
-    async with container.context() as ctx:
-        return await ctx.resolve(SavedJobRepo)
-
-
-@pytest.fixture(scope="session")
-async def job_alert_repo(
-    container: Container,
-) -> JobAlertRepo:
-    async with container.context() as ctx:
-        return await ctx.resolve(JobAlertRepo)
-
-
-@pytest.fixture(scope="session")
-async def recommended_job_alert_repo(
-    container: Container,
-) -> RecommendedJobAlertRepo:
-    async with container.context() as ctx:
-        return await ctx.resolve(RecommendedJobAlertRepo)
-
-
-@pytest.fixture(scope="session")
-async def job_repo(
-    container: Container,
-) -> JobRepo:
-    async with container.context() as ctx:
-        return await ctx.resolve(JobRepo)
-
-
-@pytest.fixture(scope="session")
 async def phone_number_verification_token_repo(
     container: Container,
 ) -> PhoneNumberVerificationTokenRepo:
     async with container.context() as ctx:
         return await ctx.resolve(PhoneNumberVerificationTokenRepo)
-
-
-@pytest.fixture(scope="session")
-async def job_application_form_repo(
-    container: Container,
-) -> JobApplicationFormRepo:
-    async with container.context() as ctx:
-        return await ctx.resolve(JobApplicationFormRepo)
-
-
-@pytest.fixture(scope="session")
-async def profile_repo(
-    container: Container,
-) -> ProfileRepo:
-    async with container.context() as ctx:
-        return await ctx.resolve(ProfileRepo)
-
-
-@pytest.fixture(scope="session")
-async def job_applicant_repo(
-    container: Container,
-) -> JobApplicantRepo:
-    async with container.context() as ctx:
-        return await ctx.resolve(JobApplicantRepo)
 
 
 @pytest.fixture(scope="session")
@@ -187,19 +92,3 @@ async def two_factor_authentication_challenge_repo(
 ) -> TwoFactorAuthenticationChallengeRepo:
     async with container.context() as ctx:
         return await ctx.resolve(TwoFactorAuthenticationChallengeRepo)
-
-
-@pytest.fixture(scope="session")
-async def region_repo(
-    container: Container,
-) -> RegionRepo:
-    async with container.context() as ctx:
-        return await ctx.resolve(RegionRepo)
-
-
-@pytest.fixture(scope="session")
-async def employee_benefit_repo(
-    container: Container,
-) -> EmployeeBenefitRepo:
-    async with container.context() as ctx:
-        return await ctx.resolve(EmployeeBenefitRepo)

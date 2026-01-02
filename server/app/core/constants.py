@@ -64,86 +64,6 @@ OAuthProvider = Literal["google"]
 
 TwoFactorProvider = Literal["authenticator",]
 
-
-# Job Applications
-JobApplicantStatus = Literal[
-    "applied", "shortlisted", "interviewed", "onhold", "offered"
-]
-
-
-# Job metrics
-CoreJobMetricEventType = Literal["impression", "save", "unsave", "apply"]
-
-ImpressionJobMetricEventType = Literal["view_start", "view_end"]
-
-JobApplicantAnalysisStatus = Literal["pending", "complete", "failed"]
-
-JobKindType = Literal["full_time", "part_time", "internship", "contract", "locum"]
-
-WorkModeType = Literal["remote", "hybrid", "office"]
-
-RegionLevel = Literal["continent", "country", "state", "locality"]
-
-JobAlertFrequency = Literal["daily", "weekly", "monthly"]
-
-OrganizationMemberRoleType = Literal["admin", "member"]
-
-GenderType = Literal["MALE", "FEMALE", "OTHER"]
-MaritalStatusType = Literal["MARRIED", "SINGLE"]
-LanguageProficiencyType = Literal["NATIVE", "PROFESSIONAL", "BASIC"]
-LicenseVerificationStatusType = Literal["pending", "verified", "rejected"]
-ExperienceEmploymentType = Literal[
-    "FULL_TIME",
-    "PART_TIME",
-    "CONTRACT",
-    "INTERNSHIP",
-    "TEMPORARY",
-    "VOLUNTEER",
-    "OTHER",
-]
-
-# Organization names
-# (subdomains which are in use/ might be needed in the future)
-RESERVED_ORGANIZATION_NAMES = [
-    "www",
-    "staging",
-    "api",
-    "recruiter",
-    "seeker",
-    "settings",
-    "accounts",
-    "legal",
-    "blog",
-    "content",
-    "docs",
-    "n8n",
-]
-
-
-# Embeddings
-# Gemini text-embedding-004
-# https://ai.google.dev/gemini-api/docs/models#text-embedding
-JOB_EMBEDDING_DIMENSIONS = 1024
-
-JOB_EMBEDDING_INDEX_NAME = "job_embedding_titan_vector_index"
-
-RELATED_JOBS_SIMILARITY_THRESHOLD = 0.85
-
-JOB_APPLICANT_EMBEDDING_DIMENSIONS = 1024
-
-JOB_APPLICANT_EMBEDDING_INDEX_NAME = "job_applicant_titan_embedding_vector_index"
-
-JOB_SEARCH_INDEX_NAME = "atlas_job_search_engine_index"
-
-REGION_SEARCH_INDEX_NAME = "atlas_region_search_engine_index"
-
-RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD = 0.7
-
-TRENDING_JOBS_LIMIT = 5
-
-DEFAULT_AUTOCOMPLETE_SUGGESTIONS_LIMIT = 10
-
-
 # terms and policy
 TERMS_AND_POLICY_LATEST_VERSION = "1.0.0"
 
@@ -166,7 +86,3 @@ DISPOSABLE_EMAIL_DOMAINS = {
     "chacuo.net",
     "dispostable.com",
 }
-
-
-# Job alerts
-MAX_JOB_ALERTS_PER_ACCOUNT = 10

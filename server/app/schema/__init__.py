@@ -22,7 +22,6 @@ from app.auth.query import AuthQuery
 from app.base.query import BaseQuery
 from app.config import AppSettings, EnvironmentSettings, get_settings
 from app.container import create_container
-from app.geocoding.query import GeocodingQuery
 from app.scalars import DateTime
 from app.schema.extensions.mask_errors import MaskErrors
 from app.schema.extensions.persisted_queries import PersistedQueriesExtension
@@ -33,7 +32,6 @@ query = merge_types(
         AccountQuery,
         AuthQuery,
         BaseQuery,
-        GeocodingQuery,
     ),
 )
 

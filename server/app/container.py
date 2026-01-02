@@ -95,7 +95,6 @@ from app.core.ocr import BaseOCRClient, TesseractOCRClient, TextractOCRClient
 from app.core.redis_client import create_redis_client
 from app.core.templates import create_jinja2_environment, create_jinja2_mjml_environment
 from app.dataloaders import create_dataloaders
-from app.geocoding.repositories import RegionRepo
 from app.mailbox.messages import DummyMailbox
 from app.revalidation.services import (
     BaseRevalidationService,
@@ -270,7 +269,6 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(create_oauth_client))
     container.register(aioinject.Singleton(create_captcha_verifier))
     container.register(aioinject.Singleton(create_redis_client))
-    container.register(aioinject.Singleton(RegionRepo))
     container.register(aioinject.Singleton(PhoneNumberVerificationTokenRepo))
     container.register(aioinject.Scoped(AuthService))
     container.register(aioinject.Scoped(AccountService))

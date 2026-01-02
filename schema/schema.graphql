@@ -31,9 +31,6 @@ type Account implements Node {
   """Whether the account has 2FA enabled."""
   has2faEnabled: Boolean!
 
-  """Whether Whatsapp job alerts have been enabled for the account."""
-  whatsappJobAlertsEnabled: Boolean!
-
   """The terms and policy of the account."""
   termsAndPolicy: TermsAndPolicy!
 
@@ -74,26 +71,6 @@ type Account implements Node {
   ): WebAuthnCredentialConnection!
 }
 
-type Address {
-  """Full display name of the address."""
-  displayName: String
-
-  """Street address."""
-  streetAddress: String
-
-  """Address locality."""
-  addressLocality: String
-
-  """Address region."""
-  addressRegion: String
-
-  """Country."""
-  country: String
-
-  """Postal code."""
-  postalCode: String
-}
-
 """The analytics preference."""
 type AnalyticsPreference {
   type: AnalyticsPreferenceType!
@@ -124,12 +101,6 @@ enum AuthProvider {
 type AuthenticatorNotEnabledError implements Error {
   """Human readable error message."""
   message: String!
-}
-
-"""The payload for the search locations query."""
-type AutocompleteLocationsPayload {
-  """List of search locations."""
-  locations: [LocationAutocompleteSuggestion!]!
 }
 
 """The create webauthn credential payload."""
@@ -321,24 +292,6 @@ type InvalidPhoneNumberVerificationTokenError implements Error {
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf).
 """
 scalar JSON @specifiedBy(url: "https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf")
-
-"""Location autocomplete suggestion."""
-type LocationAutocompleteSuggestion {
-  """Place ID of the location"""
-  placeId: String!
-
-  """The level of the region."""
-  level: RegionLevel!
-
-  """Display name of the location"""
-  address: Address!
-
-  """Longitude coordinate of the location"""
-  longitude: Float!
-
-  """Latitude coordinate of the location"""
-  latitude: Float!
-}
 
 """The login with passkey payload."""
 union LoginWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidCaptchaTokenError | WebAuthnChallengeNotFoundError
@@ -761,20 +714,6 @@ type Query {
     """The ID of the object."""
     id: ID!
   ): Node
-
-  """Get available autocomplete locations for the given search term."""
-  autocompleteLocations(
-    """The search (query) term"""
-    searchTerm: String!
-  ): AutocompleteLocationsPayload!
-}
-
-"""The level of the region."""
-enum RegionLevel {
-  CONTINENT
-  COUNTRY
-  STATE
-  LOCALITY
 }
 
 """The register with passkey payload."""
