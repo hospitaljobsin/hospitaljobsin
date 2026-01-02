@@ -44,8 +44,6 @@ class Account(Document):
 
     analytics_preference: AnalyticsPreference
 
-    whatsapp_job_alerts_enabled: bool = False
-
     @property
     def avatar_url(self) -> str:
         """Return the account's avatar URL, or a placeholder."""

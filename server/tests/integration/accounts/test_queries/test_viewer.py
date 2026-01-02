@@ -16,7 +16,6 @@ query ViewerQuery {
             authProviders
             twoFactorProviders
             has2faEnabled
-            whatsappJobAlertsEnabled
             termsAndPolicy {
                 type
                 updatedAt
@@ -92,7 +91,6 @@ async def test_viewer_returns_all_fields(
     assert "authProviders" in viewer
     assert "twoFactorProviders" in viewer
     assert "has2faEnabled" in viewer
-    assert "whatsappJobAlertsEnabled" in viewer
     assert "termsAndPolicy" in viewer
     assert "analyticsPreference" in viewer
 

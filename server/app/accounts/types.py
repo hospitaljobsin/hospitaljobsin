@@ -124,10 +124,6 @@ class AccountType(BaseNodeType[Account]):
         description="Whether the account has 2FA enabled.",
     )
 
-    whatsapp_job_alerts_enabled: bool = strawberry.field(
-        description="Whether Whatsapp job alerts have been enabled for the account."
-    )
-
     terms_and_policy: TermsAndPolicyType = strawberry.field(
         description="The terms and policy of the account.",
     )
@@ -166,7 +162,6 @@ class AccountType(BaseNodeType[Account]):
                 ),
                 updated_at=account.analytics_preference.updated_at,
             ),
-            whatsapp_job_alerts_enabled=account.whatsapp_job_alerts_enabled,
         )
 
     @classmethod

@@ -121,7 +121,6 @@ class AccountRepo:
         phone_number: str | None = UNSET,
         terms_and_policy: TermsAndPolicy = UNSET,
         analytics_preference: AnalyticsPreference = UNSET,
-        whatsapp_job_alerts_enabled: bool = UNSET,
     ) -> Account:
         """Update the given account."""
         if full_name is not UNSET:
@@ -134,8 +133,6 @@ class AccountRepo:
             account.terms_and_policy = terms_and_policy
         if analytics_preference is not UNSET:
             account.analytics_preference = analytics_preference
-        if whatsapp_job_alerts_enabled is not UNSET:
-            account.whatsapp_job_alerts_enabled = whatsapp_job_alerts_enabled
         return await account.save()
 
     async def update_profile(self, account: Account, profile: Profile) -> Account:

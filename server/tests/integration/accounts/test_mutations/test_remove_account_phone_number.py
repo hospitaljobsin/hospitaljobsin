@@ -1,4 +1,3 @@
-import pytest
 from app.accounts.documents import Account
 from app.accounts.repositories import AccountRepo
 
@@ -13,7 +12,6 @@ mutation RemoveAccountPhoneNumberMutation {
             __typename
             id
             phoneNumber
-            whatsappJobAlertsEnabled
         }
         ... on PhoneNumberDoesNotExistError {
             __typename
@@ -118,10 +116,8 @@ async def test_remove_account_phone_number_disables_whatsapp_alerts(
     await account_repo.update(
         account=password_account,
         phone_number=phone_number,
-        whatsapp_job_alerts_enabled=True,
     )
     await password_account.sync()
-    assert password_account.whatsapp_job_alerts_enabled is True
 
     response = await password_auth_sudo_graphql_client(
         REMOVE_ACCOUNT_PHONE_NUMBER_MUTATION
@@ -129,15 +125,10 @@ async def test_remove_account_phone_number_disables_whatsapp_alerts(
 
     assert response["data"]["removeAccountPhoneNumber"]["__typename"] == "Account"
     assert response["data"]["removeAccountPhoneNumber"]["phoneNumber"] is None
-    assert (
-        response["data"]["removeAccountPhoneNumber"]["whatsappJobAlertsEnabled"]
-        is False
-    )
 
     # Verify the account was actually updated
     await password_account.sync()
     assert password_account.phone_number is None
-    assert password_account.whatsapp_job_alerts_enabled is False
 
 
 async def test_remove_account_phone_number_idempotent(
