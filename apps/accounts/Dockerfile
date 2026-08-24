@@ -1,4 +1,4 @@
-FROM node:24-alpine AS base
+FROM node:26-alpine AS base
 
 # Update
 RUN apk add --no-cache libc6-compat
@@ -72,7 +72,7 @@ RUN pnpm --filter accounts run relay --validate
 
 RUN pnpm --filter accounts build
 
-FROM node:24-alpine AS release
+FROM node:26-alpine AS release
 WORKDIR /app
 RUN corepack enable
 
