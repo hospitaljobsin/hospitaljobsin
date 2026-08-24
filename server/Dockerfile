@@ -39,7 +39,7 @@ EXPOSE 8000
 
 CMD ["uv", "run", "scripts/run_server.py"]
 
-FROM debian:12-slim AS layer-build
+FROM debian:13-slim AS layer-build
 
 # Set AWS environment variables with optional defaults
 ARG AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-"us-east-1"}
