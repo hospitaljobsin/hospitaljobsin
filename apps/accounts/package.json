@@ -38,7 +38,7 @@
 		"jose": "6.1.0",
 		"js-cookie": "3.0.5",
 		"lucide-react": "0.544.0",
-		"next": "16.0.5",
+		"next": "16.3.3",
 		"next-navigation-guard": "0.2.0",
 		"next-themes": "0.4.6",
 		"posthog-js": "1.292.0",
