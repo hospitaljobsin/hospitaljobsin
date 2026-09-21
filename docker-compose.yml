@@ -23,7 +23,7 @@ services:
       - CMS_HOST=host.docker.internal
 
   mongodb:
-    image: mongodb/mongodb-atlas-local:8.0.1
+    image: mongodb/mongodb-atlas-local:8.2.11
     ports:
       - "27017:27017"
     environment:
