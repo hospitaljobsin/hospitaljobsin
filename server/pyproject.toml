@@ -14,7 +14,7 @@ dependencies = [
     "beanie==2.0.0",
     "passlib[argon2]==1.7.4",
     "result==0.17.0",
-    "authlib==1.6.0",
+    "authlib==1.9.1",
     "httpx==0.28.1",
     "itsdangerous==2.2.0",
     "aiosmtplib==4.0.1",
